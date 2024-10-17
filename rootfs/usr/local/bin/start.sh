@@ -713,8 +713,10 @@ fi
 
 if [ "$NGINX_DISABLE_PROXY_BUFFERING" = "true" ]; then
     sed -i "s|proxy_buffering.*|proxy_buffering off;|g" /usr/local/nginx/conf/nginx.conf
+    sed -i "s|proxy_request_buffering.*|proxy_request_buffering off;|g" /usr/local/nginx/conf/nginx.conf
 else
     sed -i "s|proxy_buffering.*|proxy_buffering on;|g" /usr/local/nginx/conf/nginx.conf
+    sed -i "s|proxy_request_buffering.*|proxy_request_buffering on;|g" /usr/local/nginx/conf/nginx.conf
 fi
 
 if [ "$LOGROTATE" = "true" ]; then
