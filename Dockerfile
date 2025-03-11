@@ -37,12 +37,12 @@ RUN apk upgrade --no-cache -a && \
 
 FROM --platform="$BUILDPLATFORM" alpine:3.21.3 AS crowdsec
 SHELL ["/bin/ash", "-eo", "pipefail", "-c"]
-ARG CSNB_VER=v1.0.8
+ARG CSNB_VER=v1.0.9
 WORKDIR /src
 RUN apk upgrade --no-cache -a && \
     apk add --no-cache ca-certificates git build-base && \
     git clone --recursive https://github.com/crowdsecurity/cs-nginx-bouncer --branch "$CSNB_VER" /src && \
-    LUA_BOUNCER_BRANCH=before-metrics make && \
+    make && \
     tar xzf crowdsec-nginx-bouncer.tgz && \
     mv crowdsec-nginx-bouncer-* crowdsec-nginx-bouncer && \
     sed -i "/lua_package_path/d" /src/crowdsec-nginx-bouncer/nginx/crowdsec_nginx.conf && \
@@ -61,7 +61,7 @@ RUN apk upgrade --no-cache -a && \
     sed -i "s|APPSEC_PROCESS_TIMEOUT=.*|APPSEC_PROCESS_TIMEOUT=10000|g" /src/crowdsec-nginx-bouncer/lua-mod/config_example.conf
 
 
-FROM zoeyvid/nginx-quic:450-python
+FROM zoeyvid/nginx-quic:458-python
 SHELL ["/bin/ash", "-eo", "pipefail", "-c"]
 ENV NODE_ENV=production
 ARG CRS_VER=v4.12.0
