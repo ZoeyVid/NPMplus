@@ -159,7 +159,8 @@ a) Custom Nginx Configuration (advanced tab), which looks the following for file
 location / {
     include conf.d/include/always.conf;
     alias /var/www/<your-html-site-folder-name>/;
-    fancyindex off; # alternative to nginxs "index" option (looks better and has more options), please load the module first in the compose.yaml
+    #fancyindex off; # alternative to nginxs "index" option (looks better and has more options), please load the module first in the compose.yaml
+}
 ```
 b) Custom Nginx Configuration (advanced tab), which looks the following for file server and **php**:
 - Note: the slash at the end of the file path is important
@@ -170,7 +171,7 @@ b) Custom Nginx Configuration (advanced tab), which looks the following for file
 location / {
     include conf.d/include/always.conf;
     alias /var/www/<your-html-site-folder-name>/;
-    fancyindex off; # alternative to nginxs "index" option (looks better and has more options), please load the module first in the compose.yaml
+    #fancyindex off; # alternative to nginxs "index" option (looks better and has more options), please load the module first in the compose.yaml
     location ~ [^/]\.php(/|$) {
         fastcgi_pass php82;
         fastcgi_split_path_info ^(.+?\.php)(/.*)$;
