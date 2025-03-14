@@ -391,10 +391,10 @@ bcrypt@5.1.1:
     "@mapbox/node-pre-gyp" "^1.0.11"
     node-addon-api "^5.0.0"
 
-better-sqlite3@11.8.1:
-  version "11.8.1"
-  resolved "https://registry.yarnpkg.com/better-sqlite3/-/better-sqlite3-11.8.1.tgz#bcb1c494984065a7ed76a5df5ecbcb0f068d47fa"
-  integrity sha512-9BxNaBkblMjhJW8sMRZxnxVTRgbRmssZW0Oxc1MPBTfiR+WW21e2Mk4qu8CzrcZb1LwPCnFsfDEzq+SNcBU8eg==
+better-sqlite3@11.9.0:
+  version "11.9.0"
+  resolved "https://registry.yarnpkg.com/better-sqlite3/-/better-sqlite3-11.9.0.tgz#465eb9f382ce1c1d1bde7ad7a5e5618c2056437c"
+  integrity sha512-4b9xYnoaskj8eIkke9ZCB42p5bOPabptSku8Rl4Yww70Jf+aHeLvrIjXDJrKQxUEjdppsFb+fdJSjoH4TklROA==
   dependencies:
     bindings "^1.5.0"
     prebuild-install "^7.1.1"
