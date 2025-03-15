@@ -80,7 +80,7 @@ so that the barrier for entry here is low.
 - stop nginx-proxy-manager download the latest compose.yaml, adjust your paths (of /etc/letsencrypt and /data) to the ones you used with nginx-proxy-manager and adjust the envs of the compose file how you like it and then deploy it
 - you can now remove the /etc/letsencrypt mount, since it was moved to /data while migration, and redeploy the compose file
 - since many buttons changed, please check if they are still correct for every host you have.
-- if you proxy NPM(plus) through NPM(plus) make sure to change the scheme vom http to https
+- if you proxy NPM(plus) through NPM(plus) make sure to change the scheme from http to https
 - maybe setup crowdsec (see below)
 - please report all (migration) issues you may have
 
