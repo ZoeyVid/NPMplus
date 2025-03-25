@@ -284,4 +284,5 @@ All are welcome to create pull requests for this project, but this does not mean
 ## Getting Help
 1. [Support/Questions](https://github.com/ZoeyVid/NPMplus/discussions)
 2. [Reddit](https://reddit.com/r/NPMplus)
-3. [Bugs](https://github.com/ZoeyVid/NPMplus/issues)
+3. [Discord](https://discord.gg/y8DhYhv427)
+4. [Bugs](https://github.com/ZoeyVid/NPMplus/issues)
