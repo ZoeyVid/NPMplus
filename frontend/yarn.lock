@@ -1318,10 +1318,10 @@ backbone.radio@^2.0.0:
   resolved "https://registry.yarnpkg.com/backbone.radio/-/backbone.radio-2.0.0.tgz#bbe8672b373e313f99f36d2fbcf583fe77d04f42"
   integrity sha512-SHdSh2OaWqalbYi1sXvbTtnRFym5AV9loybNi2Q1iHkU2vveQDlWsmDn9l8onmfR6ZkemuYgHLgtfAYKfyfBZg==
 
-backbone@1.6.0:
-  version "1.6.0"
-  resolved "https://registry.yarnpkg.com/backbone/-/backbone-1.6.0.tgz#5cdfa25257819b223109a77a74dde26d38995930"
-  integrity sha512-13PUjmsgw/49EowNcQvfG4gmczz1ximTMhUktj0Jfrjth0MVaTxehpU+qYYX4MxnuIuhmvBLC6/ayxuAGnOhbA==
+backbone@1.6.1:
+  version "1.6.1"
+  resolved "https://registry.yarnpkg.com/backbone/-/backbone-1.6.1.tgz#6e067777767f54b9e150d3de825f7d66e7ed77d0"
+  integrity sha512-YQzWxOrIgL6BoFnZjThVN99smKYhyEXXFyJJ2lsF1wJLyo4t+QjmkLrH8/fN22FZ4ykF70Xq7PgTugJVR4zS9Q==
   dependencies:
     underscore ">=1.8.3"
 
