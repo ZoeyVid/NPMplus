@@ -2054,20 +2054,20 @@ pg-connection-string@2.6.2:
   resolved "https://registry.yarnpkg.com/pg-connection-string/-/pg-connection-string-2.6.2.tgz#713d82053de4e2bd166fab70cd4f26ad36aab475"
   integrity sha512-ch6OwaeaPYcova4kKZ15sbJ2hKb/VP48ZD2gE7i1J+L4MspCtBMAx8nMgz7bksc7IojCIIWuEhHibSMFH8m8oA==
 
-pg-connection-string@^2.8.0:
-  version "2.8.0"
-  resolved "https://registry.yarnpkg.com/pg-connection-string/-/pg-connection-string-2.8.0.tgz#1cd0dd526eb4ee9e91873d36e9aca2744b994174"
-  integrity sha512-cXWgKbPawDbp6bJaQGxO1wo+kSqPW3+TrXbFVitmH2HfD0+dJTssJ4beIFV1iT0zxtr1xEWS7nR9OZwtwvsqKA==
+pg-connection-string@^2.8.1:
+  version "2.8.1"
+  resolved "https://registry.yarnpkg.com/pg-connection-string/-/pg-connection-string-2.8.1.tgz#9d6b878b14459ff5c6d9f311358d6c758b1ec500"
+  integrity sha512-/K3E7SgRJms0N/GCEI5IsrfY86FzTAfox/5nRfJT0I1NGM0JPutpbKfVOSRnlMkIJYFmlyQ7+5jHEfL9IIPFLQ==
 
 pg-int8@1.0.1:
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/pg-int8/-/pg-int8-1.0.1.tgz#943bd463bf5b71b4170115f80f8efc9a0c0eb78c"
   integrity sha512-WCtabS6t3c8SkpDBUlb1kjOs7l66xsGdKpIPZsg4wR+B3+u9UAum2odSsF9tnvxg80h4ZxLWMy4pRjOsFIqQpw==
 
-pg-pool@^3.9.0:
-  version "3.9.0"
-  resolved "https://registry.yarnpkg.com/pg-pool/-/pg-pool-3.9.0.tgz#88885402d16efe19c4bc5ce113c90ed9df95387c"
-  integrity sha512-HXUNm1OUwUNdIj52oVbwqAOOmY18pBJiwHXP+t7XikvZuLbf2x9AZQFAg+V1If83TRoIxAuUzy6IxN52QDC/9A==
+pg-pool@^3.9.1:
+  version "3.9.1"
+  resolved "https://registry.yarnpkg.com/pg-pool/-/pg-pool-3.9.1.tgz#0cba0562edc4787848128711c69fea0344a08cd4"
+  integrity sha512-gC8F55MsCWsFmiXlNVzoyYU5tvhDrKqnpKG+YJzxjGwbOQxFHy/AS/QxuG8723OrxC6kTHxIrbAeelVAePqJyw==
 
 pg-protocol@^1.9.0:
   version "1.9.0"
@@ -2085,13 +2085,13 @@ pg-types@^2.1.0:
     postgres-date "~1.0.4"
     postgres-interval "^1.1.0"
 
-pg@8.15.0:
-  version "8.15.0"
-  resolved "https://registry.yarnpkg.com/pg/-/pg-8.15.0.tgz#0ab219cffcfd51e3213a577346e081e9abb8a9c2"
-  integrity sha512-N4OXL0tOYKRVyeZMK0RCAbcfYIesMEOxMb6hIS6sYpkn/NzdyL1TB+YFtUjE2ote0otdRsPXu+SsjVrJc93Etw==
+pg@8.15.1:
+  version "8.15.1"
+  resolved "https://registry.yarnpkg.com/pg/-/pg-8.15.1.tgz#3b17971e8319d2bf8ad2084f36bd2aacf5944977"
+  integrity sha512-tC0r/yaCpAcWdYyjxtiNw9PCxlPJg+XJfm+Gzz1wpPTql5LYUHmYqXFEkJwpLEMKqpnevR/fqvXEa1O5O0sWiw==
   dependencies:
-    pg-connection-string "^2.8.0"
-    pg-pool "^3.9.0"
+    pg-connection-string "^2.8.1"
+    pg-pool "^3.9.1"
     pg-protocol "^1.9.0"
     pg-types "^2.1.0"
     pgpass "1.x"
