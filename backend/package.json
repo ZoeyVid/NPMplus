@@ -21,7 +21,7 @@
     "liquidjs": "10.21.0",
     "lodash": "4.17.21",
     "moment": "2.30.1",
-    "mysql2": "3.14.0",
+    "mysql2": "3.14.1",
     "node-rsa": "1.1.1",
     "objection": "3.1.5",
     "path": "0.12.7",
