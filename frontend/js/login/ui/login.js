@@ -54,12 +54,12 @@ module.exports = Mn.View.extend({
             let   raw = cookie.split('='),
                  name = raw[0].trim(),
                 value = raw[1];
-            if (name === 'npm_oidc') {
+            if (name === 'npmplus_oidc') {
                 let v  = value.split('---');
                 token  = v[0];
                 expiry = v[1];
             }
-            if (name === 'npm_oidc_error') {
+            if (name === 'npmplus_oidc_error') {
                 error = decodeURIComponent(value);
             }
         }
