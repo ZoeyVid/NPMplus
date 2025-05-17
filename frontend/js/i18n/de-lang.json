@@ -22,7 +22,7 @@
     "public": "Öffentlicher Zugang",
     "public-sub": "Keine Zugangsbeschränkungen",
     "satisfy": "Benötigt",
-    "satisfy-any": "Zugriff zulassen, wenn mindestens eine Autorisierungsmethode erfolgreich war",
+    "satisfy-any": "Zugriff zulassen, wenn bereits eine, statt alle Autorisierungsmethoden, erfolgreich war",
     "search": "Suche Zugriffslisten...",
     "title": "Zugriffslisten"
   },
