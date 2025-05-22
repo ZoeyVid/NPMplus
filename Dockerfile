@@ -37,7 +37,7 @@ RUN apk upgrade --no-cache -a && \
 
 FROM --platform="$BUILDPLATFORM" alpine:3.21.3 AS crowdsec
 SHELL ["/bin/ash", "-eo", "pipefail", "-c"]
-ARG CSNB_VER=v1.1.1
+ARG CSNB_VER=v1.1.2
 WORKDIR /src
 RUN apk upgrade --no-cache -a && \
     apk add --no-cache ca-certificates git build-base && \
