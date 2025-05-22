@@ -1043,6 +1043,9 @@ if [ "$LOGROTATE" = "true" ]; then
     touch /data/nginx/access.log \
           /data/nginx/stream.log \
           /data/nginx/error.log
+    if [ ! -s /data/logrotate.conf ]; then
+        cp -van /etc/logrotate /data/logrotate.conf
+    fi
 elif [ "$FULLCLEAN" = "true" ]; then
     rm -vrf /data/logrotate.status \
             /data/nginx/access.log \
