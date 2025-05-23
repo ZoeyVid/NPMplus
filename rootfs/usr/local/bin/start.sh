@@ -1014,6 +1014,7 @@ fi
 
 if [ "$NGINX_LOAD_OPENAPPSEC_ATTACHMENT_MODULE" = "true" ]; then
     sed -i "s|#\(load_module.\+libngx_module.so;\)|\1|g" /usr/local/nginx/conf/nginx.conf
+    sed -i "s|brotli|#brotli|g" /usr/local/nginx/conf/nginx.conf
 fi
 if [ "$NGINX_LOAD_OPENTELEMETRY_MODULE" = "true" ]; then
     sed -i "s|#\(load_module.\+otel_ngx_module.so;\)|\1|g" /usr/local/nginx/conf/nginx.conf
@@ -1102,7 +1103,7 @@ if [ "$PUID" != "0" ]; then
         sed -i "s|;\?user =.*|;user = root|" /data/php/84/php-fpm.d/www.conf
         sed -i "s|;\?group =.*|;group = root|" /data/php/84/php-fpm.d/www.conf
     fi
-    sed -i "s|#\?user root;|#user root;|g" /usr/local/nginx/conf/nginx.conf
+    sed -i "s|user root;|#user root;|g" /usr/local/nginx/conf/nginx.conf
     exec su-exec "$PUID:$PGID" launch.sh
 else
     find /data -not \( -uid 0 -and -gid 0 \) -exec chown 0:0 {} \;
