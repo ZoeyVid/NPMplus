@@ -1006,10 +1006,10 @@ if [ "$NGINX_HSTS_SUBDMAINS" = "false" ]; then
     sed -i "s|includeSubDomains; ||g" /usr/local/nginx/conf/nginx.conf
 fi
 if [ "$X_FRAME_OPTIONS" = "deny" ]; then
-    sed -i "s|SAMEORIGIN|DENY|g" /usr/local/nginx/conf/conf.d/include/hsts.conf
+    sed -i "s|SAMEORIGIN|DENY|g" /app/templates/_hsts.conf
 fi
 if [ "$X_FRAME_OPTIONS" = "none" ]; then
-    sed -i "s|#\?\(.*SAMEORIGIN\)|#\1|g" /usr/local/nginx/conf/conf.d/include/hsts.conf
+    sed -i "s|#\?\(.*SAMEORIGIN\)|#\1|g" /app/templates/_hsts.conf
 fi
 
 if [ "$NGINX_LOAD_OPENAPPSEC_ATTACHMENT_MODULE" = "true" ]; then
