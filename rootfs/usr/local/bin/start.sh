@@ -1038,8 +1038,8 @@ fi
 
 if [ "$LOGROTATE" = "true" ]; then
     sed -i "s|rotate [0-9]\+|rotate $LOGROTATIONS|g" /etc/logrotate
-    sed -i "s|access_log off; # http|access_log /data/nginx/access.log log;|g" /usr/local/nginx/conf/nginx.conf
-    sed -i "s|access_log off; # stream|access_log /data/nginx/stream.log proxy;|g" /usr/local/nginx/conf/nginx.conf
+    sed -i "s|access_log off; # http|access_log /data/nginx/access.log alog;|g" /usr/local/nginx/conf/nginx.conf
+    sed -i "s|access_log off; # stream|access_log /data/nginx/stream.log slog;|g" /usr/local/nginx/conf/nginx.conf
     sed -i "s|#error_log|error_log|g" /usr/local/nginx/conf/nginx.conf
     touch /data/nginx/access.log \
           /data/nginx/stream.log \
@@ -1048,10 +1048,10 @@ elif [ "$FULLCLEAN" = "true" ]; then
     rm -vrf /data/logrotate.status \
             /data/nginx/access.log \
             /data/nginx/access.log.* \
-            /data/nginx/stream.log \
-            /data/nginx/stream.log.* \
             /data/nginx/error.log \
-            /data/nginx/error.log.*
+            /data/nginx/error.log.* \
+            /data/nginx/stream.log \
+            /data/nginx/stream.log.*
 fi
 
 find /data/tls \
