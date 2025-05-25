@@ -111,6 +111,7 @@ Note: Using Immich behind NPMplus with enabled appsec causes issues, see here: [
 3. open `/opt/crowdsec/conf/acquis.d/npmplus.yaml` (path may be different depending how you installed crowdsec) and fill it with:
 ```yaml
 filenames:
+  - /opt/npmplus/nginx/access.log
   - /opt/npmplus/nginx/error.log
 labels:
   type: npmplus
