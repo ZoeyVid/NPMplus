@@ -226,7 +226,7 @@ proxy_set_header X-authentik-uid $authentik_uid;
 #auth_request_set $authentik_auth $upstream_http_authorization;
 #proxy_set_header Authorization $authentik_auth;
 ```
-2. create a location with the path `/outpost.goauthentik.io`, this should proxy to your authentik, examples: http://authentik.company:9000/outpost.goauthentik.io (embedded outpost) or http://outpost.company:9000 (manual outpost deployments), then press the gear button and paste the following in the new text field
+2. create a location with the path `/outpost.goauthentik.io`, this should proxy to your authentik, examples: `http://authentik.company:9000/outpost.goauthentik.io` (embedded outpost) or `http://outpost.company:9000` (manual outpost deployments), then press the gear button and paste the following in the new text field
 ```
 auth_request_set $auth_cookie $upstream_http_set_cookie;
 more_set_headers 'Set-Cookie: $auth_cookie';
@@ -270,6 +270,21 @@ internal;
 proxy_method GET;
 proxy_pass_request_body off;
 proxy_set_header Content-Length "";
+```
+
+### tinyauth config example (no guarantee for security of it)
+1. create a custom location / (or the location you want to use), set your proxy settings, then press the gear button and paste the following in the new text field:
+```
+auth_request /tinyauth;
+error_page 401 = @tinyauth_login;
+```
+2. create a location with the path `/tinyauth`, this should proxy to your tinyauth, example: `http://<ip>:<port>/api/auth/nginx`
+3. paste the following in the advanced config tab, you may need to adjust the last lines:
+```
+location @tinyauth_login {
+    internal;
+    return 302 http://tinyauth.example.com/login?redirect_uri=$scheme://$host$request_uri; # Make sure to replace the http://tinyauth.example.com with your own app URL
+}
 ```
 
 ### prerun scripts (EXPERT option) - if you don't know what this is, ignore it
