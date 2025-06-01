@@ -30,7 +30,7 @@ so that the barrier for entry here is low.
 - Supports HTTP/3 (QUIC) protocol, requires you to expose https with udp.
 - Supports CrowdSec IPS. Please see [here](https://github.com/ZoeyVid/NPMplus#crowdsec) to enable it.
 - goaccess included, see compose.yaml to enable, runs by default on `https://<ip>:91` (nginx config from [here](https://github.com/xavier-hernandez/goaccess-for-nginxproxymanager/blob/main/resources/nginx/nginx.conf))
-- Supports ModSecurity, with coreruleset as an option. You can configure ModSecurity/coreruleset by editing the files in the `/opt/npmplus/modsecurity` folder (no support from me, you need to write the rules yourself - for CoreRuleSet I can try to help you).
+- Supports ModSecurity (which tends to overblocking), with coreruleset as an option. You can configure ModSecurity/coreruleset by editing the files in the `/opt/npmplus/modsecurity` folder (no support from me, you need to write the rules yourself - for CoreRuleSet I can try to help you).
   - By default NPMplus UI does not work when you proxy NPMplus through NPMplus and you have CoreRuleSet enabled, see below
   - ModSecurity by default blocks uploads of big files, you need to edit its config to fix this, but it can use a lot of resources to scan big files by ModSecurity
   - ModSecurity overblocking (403 Error) when using CoreRuleSet? Please see [here](https://coreruleset.org/docs/concepts/false_positives_tuning) and edit the `/opt/npmplus/modsecurity/crs-setup.conf` file.
@@ -106,6 +106,7 @@ Immediately after logging in with this default user you will be asked to modify 
 
 # Crowdsec
 Note: Using Immich behind NPMplus with enabled appsec causes issues, see here: [#1241](https://github.com/ZoeyVid/NPMplus/discussions/1241)
+Note: If you don't [disable sharing in crowdsec](https://docs.crowdsec.net/docs/next/configuration/crowdsec_configuration/#sharing), you need to mention that [this](https://docs.crowdsec.net/docs/central_api/intro/#signal-meta-data) is sent to crowdsec.
 1. Install crowdsec and the ZoeyVid/npmplus collection for example by using crowdsec container at the end of the compose.yaml
 2. set LOGROTATE to `true` in your `compose.yaml` and redeploy
 3. open `/opt/crowdsec/conf/acquis.d/npmplus.yaml` (path may be different depending how you installed crowdsec) and fill it with:
