@@ -299,8 +299,8 @@ location @tinyauth_login {
 7. If you use open-appsec `NGINX_LOAD_OPENAPPSEC_ATTACHMENT_MODULE`, you should also include information about it; since I don't use it myself, I can't give you further hints.
 8. If you collect any user information (like through other custom nginx modules, modules you can load via env, lua scripts, ...), also mention it.
 10. If you use the caddy http to https redirect container, you should also mention the data collected by it, since it will also collect (error) logs.
-11. If you do any extra custom/advanced configuration/modification, which is in someway related to the users data, then yes, akeep in mind to also mention this.
-12. Anything else you do with the users data, should also be menntioned. (Like what you backend does or any other proxies in front of NPMplus)
+11. If you do any extra custom/advanced configuration/modification, which is in someway related to the users data, then yes, keep in mind to also mention this.
+12. Anything else you do with the users data, should also be mentioned. (Like what you backend does or any other proxies in front of NPMplus)
 
 ### prerun scripts (EXPERT option) - if you don't know what this is, ignore it
 if you need to run scripts before NPMplus launches put them under: `/opt/npmplus/prerun/*.sh` (please add `#!/usr/bin/env sh` / `#!/usr/bin/env bash` to the top of the script) you need to create this folder yourself, also enable the env
