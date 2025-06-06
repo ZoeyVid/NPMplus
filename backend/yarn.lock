@@ -10,6 +10,14 @@
     "@types/json-schema" "^7.0.15"
     js-yaml "^4.1.0"
 
+"@apidevtools/json-schema-ref-parser@13.0.2":
+  version "13.0.2"
+  resolved "https://registry.yarnpkg.com/@apidevtools/json-schema-ref-parser/-/json-schema-ref-parser-13.0.2.tgz#d5455cf6ca5ada49fa36c82cb6cd66e1f4c0ec1b"
+  integrity sha512-ThpknSFmb1zJXU16ba8cFbDRL3WRs6WETW323gOhj7Gwdj9GUqNpA5JFhdAINxINyAz03gqgF5Y4UydAjE3Pdg==
+  dependencies:
+    "@types/json-schema" "^7.0.15"
+    js-yaml "^4.1.0"
+
 "@apidevtools/openapi-schemas@^2.1.0":
   version "2.1.0"
   resolved "https://registry.yarnpkg.com/@apidevtools/openapi-schemas/-/openapi-schemas-2.1.0.tgz#9fa08017fb59d80538812f03fc7cac5992caaa17"
@@ -20,12 +28,12 @@
   resolved "https://registry.yarnpkg.com/@apidevtools/swagger-methods/-/swagger-methods-3.0.2.tgz#b789a362e055b0340d04712eafe7027ddc1ac267"
   integrity sha512-QAkD5kK2b1WfjDS/UQn/qQkbwF31uqRjPTrsCs5ZG9BQGAkjwvqGFjjPqAuzac/IYzpPtRzjCP1WrTuAIjMrXg==
 
-"@apidevtools/swagger-parser@11.0.0":
-  version "11.0.0"
-  resolved "https://registry.yarnpkg.com/@apidevtools/swagger-parser/-/swagger-parser-11.0.0.tgz#9530504fea4b5ede66a709827ca1a894609ab24a"
-  integrity sha512-eNegfUv6BI0TeqEpwnvWyVaTp70cU7OYxnyw+gICTryMEYCMJF0mnPg+aDiUXKoMkHpxHSiKaNWDs484txyKaA==
+"@apidevtools/swagger-parser@11.0.1":
+  version "11.0.1"
+  resolved "https://registry.yarnpkg.com/@apidevtools/swagger-parser/-/swagger-parser-11.0.1.tgz#ef3dbdf6c1653c6b17f8bfcfd64ee2a0432bc46f"
+  integrity sha512-0OzWjKPUr7dvXOgQi6hsNLpwgQRtPgyQoYMuaIB+Zj50Qjbwxph/nu4BndwOA446FtQUTwkR3BxLnORpVYLHYw==
   dependencies:
-    "@apidevtools/json-schema-ref-parser" "13.0.1"
+    "@apidevtools/json-schema-ref-parser" "13.0.2"
     "@apidevtools/openapi-schemas" "^2.1.0"
     "@apidevtools/swagger-methods" "^3.0.2"
     ajv "^8.17.1"
