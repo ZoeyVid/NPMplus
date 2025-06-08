@@ -60,7 +60,6 @@ export ACME_SERVER_TLS_VERIFY="${ACME_SERVER_TLS_VERIFY:-true}"
 export CUSTOM_OCSP_STAPLING="${CUSTOM_OCSP_STAPLING:-false}"
 export PUID="${PUID:-0}"
 export PGID="${PGID:-0}"
-export NIBEP="${NIBEP:-48681}"
 export GOAIWSP="${GOAIWSP:-48691}"
 export NPM_PORT="${NPM_PORT:-81}"
 export GOA_PORT="${GOA_PORT:-91}"
@@ -120,6 +119,12 @@ fi
 #tmp
 if [ -n "$GOA_DISABLE_IPV6" ]; then
     echo "GOA_DISABLE_IPV6 env is not supported. DISABLE_IPV6 will also disable IPv6 for goaccess."
+    sleep inf
+fi
+
+#tmp
+if [ -n "$NIBEP" ]; then
+    echo "NIBEP env is not supported. NPMplus now uses a unix socket instead."
     sleep inf
 fi
 
