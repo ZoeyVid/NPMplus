@@ -60,7 +60,6 @@ export ACME_SERVER_TLS_VERIFY="${ACME_SERVER_TLS_VERIFY:-true}"
 export CUSTOM_OCSP_STAPLING="${CUSTOM_OCSP_STAPLING:-false}"
 export PUID="${PUID:-0}"
 export PGID="${PGID:-0}"
-export GOAIWSP="${GOAIWSP:-48691}"
 export NPM_PORT="${NPM_PORT:-81}"
 export GOA_PORT="${GOA_PORT:-91}"
 export IPV4_BINDING="${IPV4_BINDING:-0.0.0.0}"
@@ -112,19 +111,22 @@ export NGINX_LOAD_VHOST_TRAFFIC_STATUS_MODULE="${NGINX_LOAD_VHOST_TRAFFIC_STATUS
 
 #tmp
 if [ -n "$NPM_DISABLE_IPV6" ]; then
-    echo "NPM_DISABLE_IPV6 env is not supported. DISABLE_IPV6 will also disable IPv6 for the NPMplus web UI."
+    echo "NPM_DISABLE_IPV6 env is not supported. DISABLE_IPV6 now also disables IPv6 for the NPMplus web UI."
     sleep inf
 fi
-
 #tmp
 if [ -n "$GOA_DISABLE_IPV6" ]; then
-    echo "GOA_DISABLE_IPV6 env is not supported. DISABLE_IPV6 will also disable IPv6 for goaccess."
+    echo "GOA_DISABLE_IPV6 env is not supported. DISABLE_IPV6 now also disables IPv6 for goaccess."
     sleep inf
 fi
-
 #tmp
 if [ -n "$NIBEP" ]; then
     echo "NIBEP env is not supported. NPMplus now uses a unix socket instead."
+    sleep inf
+fi
+#tmp
+if [ -n "$GOAIWSP" ]; then
+    echo "GOAIWSP env is not supported. NPMplus now uses a unix socket instead."
     sleep inf
 fi
 
@@ -223,17 +225,6 @@ fi
 
 if [ "$PGID" = "0" ] && [ "$PUID" != "0" ]; then
     echo "You've set PUID but not PGID. Are you sure that this is what you wanted?"
-fi
-
-
-if ! echo "$NIBEP" | grep -q "^[0-9]\+$"; then
-    echo "NIBEP needs to be a number."
-    sleep inf
-fi
-
-if ! echo "$GOAIWSP" | grep -q "^[0-9]\+$"; then
-    echo "GOAIWSP needs to be a number."
-    sleep inf
 fi
 
 
@@ -962,9 +953,6 @@ if [ -s "$DEFAULT_STAPLING_FILE" ]; then
     sed -i "s|#\?ssl_stapling|ssl_stapling|g" /usr/local/nginx/conf/conf.d/include/goaccess.conf
     sed -i "s|#\?ssl_stapling_file .*|ssl_stapling_file $DEFAULT_STAPLING_FILE;|g" /usr/local/nginx/conf/conf.d/include/goaccess.conf
 fi
-
-sed -i "s|48681|$NIBEP|g" /usr/local/nginx/conf/conf.d/npm.conf
-sed -i "s|48691|$GOAIWSP|g" /usr/local/nginx/conf/conf.d/include/goaccess.conf
 
 sed -i "s|#\?listen 0.0.0.0:81 |listen $NPM_IPV4_BINDING:$NPM_PORT |g" /usr/local/nginx/conf/conf.d/npm.conf
 sed -i "s|#\?listen 0.0.0.0:91 |listen $GOA_IPV4_BINDING:$GOA_PORT |g" /usr/local/nginx/conf/conf.d/include/goaccess.conf
