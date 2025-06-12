@@ -26,8 +26,8 @@ SHELL ["/bin/ash", "-eo", "pipefail", "-c"]
 COPY rootfs /
 COPY src    /app/src
 
-COPY --from=zoeyvid/valkey-static:46 /usr/local/bin/valkey-cli    /usr/local/bin/valkey-cli
-COPY --from=zoeyvid/valkey-static:46 /usr/local/bin/valkey-server /usr/local/bin/valkey-server
+COPY --from=zoeyvid/valkey-static:47 /usr/local/bin/valkey-cli    /usr/local/bin/valkey-cli
+COPY --from=zoeyvid/valkey-static:47 /usr/local/bin/valkey-server /usr/local/bin/valkey-server
 
 ARG CRS_VER=v4.7.0
 RUN apk upgrade --no-cache -a && \
