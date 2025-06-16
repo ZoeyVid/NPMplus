@@ -49,7 +49,7 @@ so that the barrier for entry here is low.
 - Admin backend interface runs with https
 - Default page also runs with https
 - option to change default TLS cert
-- Option to use [fancyindex](https://gitHub.com/Naereen/Nginx-Fancyindex-Theme) if used as webserver
+- Option to use fancyindex if used as webserver
 - Exposes INTERNAL backend api only to localhost
 - Basic security headers are added if you enable HSTS (HSTS has always subdomains and preload enabled)
 - access.log is disabled by default, unified and moved to `/opt/npmplus/nginx/access.log`
