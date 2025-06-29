@@ -345,10 +345,10 @@ bcrypt@6.0.0:
     node-addon-api "^8.3.0"
     node-gyp-build "^4.8.4"
 
-better-sqlite3@12.1.1:
-  version "12.1.1"
-  resolved "https://registry.yarnpkg.com/better-sqlite3/-/better-sqlite3-12.1.1.tgz#a317fb6586fe3739b49629e6134103e3dbb73cce"
-  integrity sha512-xjl/TjWLy/6yLa5wkbQSjTgIgSiaEJy3XzjF5TAdiWaAsu/v0OCkYOc6tos+PkM/k4qURN2pFKTsbcG3gk29Uw==
+better-sqlite3@12.2.0:
+  version "12.2.0"
+  resolved "https://registry.yarnpkg.com/better-sqlite3/-/better-sqlite3-12.2.0.tgz#de7c3466074f2d1a5d260f510647e822e42684d2"
+  integrity sha512-eGbYq2CT+tos1fBwLQ/tkBt9J5M3JEHjku4hbvQUePCckkvVf14xWj+1m7dGoK81M/fOjFT7yM9UMeKT/+vFLQ==
   dependencies:
     bindings "^1.5.0"
     prebuild-install "^7.1.1"
