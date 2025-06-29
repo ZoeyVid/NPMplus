@@ -80,7 +80,7 @@
 		"empty": "Es gibt keine TLS-Zertifikate",
 		"force-renew": "Erneuerung erzwingen",
 		"form-title": "{id, select, undefined{Neues Zertifikat} other{Zertifikat bearbeiten}}",
-		"help-content": "TLS-Zertifikate (ehemals SSL-Zertifikate) sind digitale Verschlüsselungsschlüssel. Sie dienen der Verschlüsselung der Verbindung zwischen Ihrer Website und den Endnutzer:innen.\nNPMplus verwendet standardmäßig einen Dienst namens Let's Encrypt, um kostenlos TLS-Zertifikate auszustellen.\nWenn Sie persönliche Informationen, Passwörter oder sensible Daten hinter NPM haben, ist es wahrscheinlich eine gute Idee, ein Zertifikat zu verwenden.\nNPMplus unterstützt auch die DNS-Authentifizierung, wenn Sie Ihre Website nicht mit dem Internet verbinden oder wenn Sie nur ein Platzhalterzertifikat benötigen.",
+		"help-content": "TLS-Zertifikate (ehemals SSL-Zertifikate) sind digitale Verschlüsselungsschlüssel. Sie dienen der Verschlüsselung der Verbindung zwischen Ihrer Website und den Endnutzer:innen.\nNPMplus verwendet standardmäßig einen Dienst namens Let's Encrypt, um kostenlos TLS-Zertifikate auszustellen.\nWenn Sie persönliche Informationen, Passwörter oder sensible Daten hinter NPMplus haben, ist es wahrscheinlich eine gute Idee, ein Zertifikat zu verwenden.\nNPMplus unterstützt auch die DNS-Authentifizierung, wenn Sie Ihre Website nicht mit dem Internet verbinden oder wenn Sie nur ein Platzhalterzertifikat benötigen.",
 		"help-title": "TLS-Zertifikate",
 		"in-use": "In Verwendung",
 		"inactive": "Inaktiv",
@@ -179,7 +179,6 @@
 		"user": "Benutzer:in"
 	},
 	"settings": {
-		"default-site": "Standard-Seite",
 		"default-site-404": "Seite nicht gefunden",
 		"default-site-444": "Verbindung abbrechen",
 		"default-site-congratulations": "Glückwunsch-Seite",
@@ -214,7 +213,7 @@
 		"offline": "Offline",
 		"online": "Online",
 		"password": "Passwort",
-		"please-wait": "Bitte warten.",
+		"please-wait": "Bitte warten...",
 		"public": "Öffentlich",
 		"roles": "Rollen",
 		"save": "Speichern",
