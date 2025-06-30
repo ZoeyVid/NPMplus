@@ -30,20 +30,20 @@ While advanced configuration options are available, they remain entirely optiona
 - Supports CrowdSec IPS. Please see [here](https://github.com/ZoeyVid/NPMplus#crowdsec) to enable it
 - Goaccess included, see compose.yaml to enable, runs by default on `https://<ip>:91` (nginx config from [here](https://github.com/xavier-hernandez/goaccess-for-nginxproxymanager/blob/main/resources/nginx/nginx.conf))
 - Supports ModSecurity (which tends to overblocking), with coreruleset as an option. You can configure ModSecurity/coreruleset by editing the files in the `/opt/npmplus/modsecurity` folder (no support from me, you need to write the rules yourself - for CoreRuleSet I can try to help you)
-- By default NPMplus UI does not work when you proxy NPMplus through NPMplus and you have CoreRuleSet enabled, see below
-- ModSecurity by default blocks uploads of big files, you need to edit its config to fix this, but it can use a lot of resources to scan big files by ModSecurity
-- ModSecurity overblocking (403 Error) when using CoreRuleSet? Please see [here](https://coreruleset.org/docs/concepts/false_positives_tuning) and edit the `/opt/npmplus/modsecurity/crs-setup.conf` file
-- Try to whitelist the Content-Type you are sending (for example, `application/activity+json` for Mastodon and `application/dns-message` for DoH)
-- Try to whitelist the HTTP request method you are using (for example, `PUT` is blocked by default, which also blocks NPMplus UI)
-- CoreRuleSet plugins are supported, you can find a guide in this readme
+    - By default NPMplus UI does not work when you proxy NPMplus through NPMplus and you have CoreRuleSet enabled, see below
+    - ModSecurity by default blocks uploads of big files, you need to edit its config to fix this, but it can use a lot of resources to scan big files by ModSecurity
+    - ModSecurity overblocking (403 Error) when using CoreRuleSet? Please see [here](https://coreruleset.org/docs/concepts/false_positives_tuning) and edit the `/opt/npmplus/modsecurity/crs-setup.conf` file
+    - Try to whitelist the Content-Type you are sending (for example, `application/activity+json` for Mastodon and `application/dns-message` for DoH)
+    - Try to whitelist the HTTP request method you are using (for example, `PUT` is blocked by default, which also blocks NPMplus UI)
+    - CoreRuleSet plugins are supported, you can find a guide in this readme
 - Option to load the openappsec attachment module, see compose.yaml for details
 - Darkmode button in the footer for comfortable viewing (CSS done by [@theraw](https://github.com/theraw))
 - Load balancing possible (requires custom configuration), see below
 - Only enables TLSv1.2 and TLSv1.3 protocols, also ML-KEM support
 - Faster creation of TLS certificates is achieved by eliminating unnecessary nginx reloads and configuration creations
-- Supports OCSP Stapling/Must-Staple for enhanced security (manual certs not supported, see compose.yaml for details)
-- Resolved dnspod plugin issue
-- To migrate manually, delete all dnspod certs and recreate them OR change the credentials file as per the template given [here](https://github.com/ZoeyVid/NPMplus/blob/develop/global/certbot-dns-plugins.js)
+    - Supports OCSP Stapling/Must-Staple for enhanced security (manual certs not supported, see compose.yaml for details)
+    - Resolved dnspod plugin issue
+    - To migrate manually, delete all dnspod certs and recreate them OR change the credentials file as per the template given [here](https://github.com/ZoeyVid/NPMplus/blob/develop/global/certbot-dns-plugins.js)
 - Smaller docker image based on alpine linux
 - Admin backend interface runs with https
 - Default page also runs with https
@@ -74,7 +74,7 @@ While advanced configuration options are available, they remain entirely optiona
 - Other small changes/improvements
 
 ## Migration
-- NOTE: Migrating back to the original version is not possible. Please make a backup before migrating, so you have the option to revert if needed
+- **NOTE: Migrating back to the original version is not possible.** Please make a **backup** before migrating, so you have the option to revert if needed
 - Please delete all certs using dnspod as DNS provider and recreate them after migration, since the certbot plugin used was replaced
 - Stop nginx-proxy-manager download the latest compose.yaml, adjust your paths (of /etc/letsencrypt and /data) to the ones you used with nginx-proxy-manager and adjust the envs of the compose file how you like it and then deploy it
 - You can now remove the `/etc/letsencrypt` mount, since it was moved to `/data` while migration, and redeploy the compose file
@@ -303,11 +303,10 @@ proxy_set_header Content-Length "";
 10. If use use anubis, see here: https://anubis.techaro.lol/docs/admin/configuration/impressum
 11. If you do any extra custom/advanced configuration/modification, which is in someway related to the users data, then yes, keep in mind to also mention this.
 12. Anything else you do with the users data, should also be mentioned. (Like what your backend does or any other proxies in front of NPMplus, how data is stored, duration, ads, analytic tools, how data is handled if they contact you, etc.)
-13.I don't think this needs to be mentioned, but you can include it if you want to be thorough (note: this does not apply if you're using Let's Encrypt, as they no longer support OCSP):
-
+13. I don't think this needs to be mentioned, but you can include it if you want to be thorough (note: this does not apply if you're using Let's Encrypt, as they no longer support OCSP):
 Some clients (like Firefox) send OCSP requests to the certificate authority (CA) by default if the CA includes OCSP URLs in the certificate. This behavior can be disabled by users in Firefox. In my opinion, it doesn't need to be mentioned, as no data is sent to you — the client communicates directly with the CA. The check is initiated by the client itself; it's neither requested nor required by you. Your certificate simply indicates that the client can perform this check if it chooses to.
 
-14: Also optional and, in my opinion, not required: Some information about the data stored by the nameservers running your domain. I don't think this should be required, since in most cases there's a provider between the users and your nameserver acting as a proxy. This means the DNS requests of your users are hidden behind their provider. It’s the provider who should explain to their users how they handle data in their role as a "DNS proxy."
+14. Also optional and, in my opinion, not required: Some information about the data stored by the nameservers running your domain. I don't think this should be required, since in most cases there's a provider between the users and your nameserver acting as a proxy. This means the DNS requests of your users are hidden behind their provider. It’s the provider who should explain to their users how they handle data in their role as a "DNS proxy."
 
 ## Coreruleset plugins
 1. Download the plugin (all files inside the `plugins` folder of the git repo), most of the time: `<plugin-name>-before.conf`, `<plugin-name>-config.conf` and `<plugin-name>-after.conf` and sometimes `<plugin-name>.data` and/or `<plugin-name>.lua` or similar files
