@@ -180,7 +180,7 @@
 	},
 	"settings": {
 		"default-site": "Standard-Seite",
-		"default-site-404": "Serverfehler: Host nicht gefunden",
+		"default-site-404": "Hinweis auf nicht existente Seite (Dead Host)",
 		"default-site-444": "Verbindung abbrechen",
 		"default-site-congratulations": "Glückwunsch-Seite",
 		"default-site-description": "Was angezeigt werden soll, wenn Nginx einen unbekannten Host antrifft",
