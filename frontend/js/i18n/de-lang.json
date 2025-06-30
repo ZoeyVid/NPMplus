@@ -179,7 +179,8 @@
 		"user": "Benutzer:in"
 	},
 	"settings": {
-		"default-site-404": "Seite nicht gefunden",
+		"default-site": "Standard-Seite",
+		"default-site-404": "Serverfehler: Host nicht gefunden",
 		"default-site-444": "Verbindung abbrechen",
 		"default-site-congratulations": "Glückwunsch-Seite",
 		"default-site-description": "Was angezeigt werden soll, wenn Nginx einen unbekannten Host antrifft",
@@ -252,9 +253,9 @@
 		"tcp-forwarding": "TCP-Weiterleitung",
 		"title": "Streams",
 		"udp": "UDP",
-		"udp+pp": "UDP + proxy protocol",
-		"udp+tls": "UDP + TLS",
-		"udp+pp+tls": "UDP + proxy protocol + TLS",
+		"udp+pp": "UDP+proxy protocol",
+		"udp+tls": "UDP+TLS",
+		"udp+pp+tls": "UDP+proxy protocol+TLS",
 		"udp-forwarding": "UDP-Weiterleitung"
 	},
 	"tls": {
