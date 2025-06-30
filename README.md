@@ -30,20 +30,20 @@ While advanced configuration options are available, they remain entirely optiona
 - Supports CrowdSec IPS. Please see [here](https://github.com/ZoeyVid/NPMplus#crowdsec) to enable it
 - Goaccess included, see compose.yaml to enable, runs by default on `https://<ip>:91` (nginx config from [here](https://github.com/xavier-hernandez/goaccess-for-nginxproxymanager/blob/main/resources/nginx/nginx.conf))
 - Supports ModSecurity (which tends to overblocking), with coreruleset as an option. You can configure ModSecurity/coreruleset by editing the files in the `/opt/npmplus/modsecurity` folder (no support from me, you need to write the rules yourself - for CoreRuleSet I can try to help you)
-    - By default NPMplus UI does not work when you proxy NPMplus through NPMplus and you have CoreRuleSet enabled, see below
-    - ModSecurity by default blocks uploads of big files, you need to edit its config to fix this, but it can use a lot of resources to scan big files by ModSecurity
-    - ModSecurity overblocking (403 Error) when using CoreRuleSet? Please see [here](https://coreruleset.org/docs/concepts/false_positives_tuning) and edit the `/opt/npmplus/modsecurity/crs-setup.conf` file
+  - By default NPMplus UI does not work when you proxy NPMplus through NPMplus and you have CoreRuleSet enabled, see below
+  - ModSecurity by default blocks uploads of big files, you need to edit its config to fix this, but it can use a lot of resources to scan big files by ModSecurity
+  - ModSecurity overblocking (403 Error) when using CoreRuleSet? Please see [here](https://coreruleset.org/docs/concepts/false_positives_tuning) and edit the `/opt/npmplus/modsecurity/crs-setup.conf` file
     - Try to whitelist the Content-Type you are sending (for example, `application/activity+json` for Mastodon and `application/dns-message` for DoH)
     - Try to whitelist the HTTP request method you are using (for example, `PUT` is blocked by default, which also blocks NPMplus UI)
-    - CoreRuleSet plugins are supported, you can find a guide in this readme
+  - CoreRuleSet plugins are supported, you can find a guide in this readme
 - Option to load the openappsec attachment module, see compose.yaml for details
 - Darkmode button in the footer for comfortable viewing (CSS done by [@theraw](https://github.com/theraw))
 - Load balancing possible (requires custom configuration), see below
 - Only enables TLSv1.2 and TLSv1.3 protocols, also ML-KEM support
 - Faster creation of TLS certificates is achieved by eliminating unnecessary nginx reloads and configuration creations
-    - Supports OCSP Stapling/Must-Staple for enhanced security (manual certs not supported, see compose.yaml for details)
-    - Resolved dnspod plugin issue
-    - To migrate manually, delete all dnspod certs and recreate them OR change the credentials file as per the template given [here](https://github.com/ZoeyVid/NPMplus/blob/develop/global/certbot-dns-plugins.js)
+- Supports OCSP Stapling/Must-Staple for enhanced security (manual certs not supported, see compose.yaml for details)
+- Resolved dnspod plugin issue
+  - To migrate manually, delete all dnspod certs and recreate them OR change the credentials file as per the template given [here](https://github.com/ZoeyVid/NPMplus/blob/develop/global/certbot-dns-plugins.js)
 - Smaller docker image based on alpine linux
 - Admin backend interface runs with https
 - Default page also runs with https
