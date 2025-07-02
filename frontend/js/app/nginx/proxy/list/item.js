@@ -61,6 +61,13 @@ module.exports = Mn.View.extend({
         }
     },
 
+    onRender: function () {
+        // Set avatar background image
+        const owner = this.model.get('owner');
+        const avatarUrl = (owner && owner.avatar) || '/images/default-avatar.jpg';
+        this.$('.avatar').css('background-image', `url(${avatarUrl})`);
+    },
+
     initialize: function () {
         this.listenTo(this.model, 'change', this.render);
     }
