@@ -1,0 +1,135 @@
+<div class="modal-content">
+  <div class="modal-header">
+    <h5 class="modal-title">
+      <%- i18n('proxy-hosts', 'logs-title', {domains: domain_names.join(', ')})
+      %>
+    </h5>
+    <button
+      type="button"
+      class="close cancel"
+      aria-label="Close"
+      data-dismiss="modal"
+    >
+      &nbsp;
+    </button>
+  </div>
+  <div class="modal-body">
+    <div class="row mb-3">
+      <div class="col-sm-4">
+        <div class="form-group">
+          <label class="form-label"
+            ><%- i18n('proxy-hosts', 'log-type') %></label
+          >
+          <select id="log-type" class="form-control custom-select">
+            <option value="access">
+              <%- i18n('proxy-hosts', 'access-logs') %>
+            </option>
+            <option value="error">
+              <%- i18n('proxy-hosts', 'error-logs') %>
+            </option>
+          </select>
+        </div>
+      </div>
+      <div class="col-sm-4">
+        <div class="form-group">
+          <label class="form-label"
+            ><%- i18n('proxy-hosts', 'lines-to-show') %></label
+          >
+          <select id="lines-count" class="form-control custom-select">
+            <option value="100">100</option>
+            <option value="200">200</option>
+            <option value="500">500</option>
+            <option value="1000">1000</option>
+          </select>
+        </div>
+      </div>
+      <div class="col-sm-4">
+        <div class="form-group">
+          <label class="form-label"
+            ><%- i18n('proxy-hosts', 'search-filter') %></label
+          >
+          <input
+            type="text"
+            id="search-filter"
+            class="form-control"
+            placeholder="<%- i18n('proxy-hosts', 'search-placeholder') %>"
+          />
+        </div>
+      </div>
+    </div>
+    <div class="row mb-3">
+      <div class="col-sm-12">
+        <button type="button" class="btn btn-primary" id="refresh-logs">
+          <i class="fe fe-refresh-cw"></i> <%- i18n('str', 'refresh') %>
+        </button>
+        <button
+          type="button"
+          class="btn btn-secondary"
+          id="auto-refresh"
+          data-auto="false"
+        >
+          <i class="fe fe-play"></i> <%- i18n('proxy-hosts', 'auto-refresh') %>
+        </button>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12">
+        <div id="log-stats" class="mb-3 text-muted"></div>
+        <div id="log-content" class="card">
+          <div class="card-header">
+            <h4 class="card-title">
+              <%- i18n('proxy-hosts', 'log-entries') %>
+            </h4>
+          </div>
+          <div class="card-body">
+            <div id="log-loading" class="text-center p-4">
+              <div class="spinner-border text-primary" role="status">
+                <span class="sr-only"><%- i18n('str', 'loading') %>...</span>
+              </div>
+            </div>
+            <div id="log-entries" class="d-none">
+              <table class="table table-sm table-hover">
+                <thead>
+                  <tr>
+                    <th width="140px">
+                      <%- i18n('proxy-hosts', 'timestamp') %>
+                    </th>
+                    <th width="120px">
+                      <%- i18n('proxy-hosts', 'client-ip') %>
+                    </th>
+                    <th width="80px"><%- i18n('proxy-hosts', 'method') %></th>
+                    <th width="80px"><%- i18n('proxy-hosts', 'status') %></th>
+                    <th width="80px"><%- i18n('proxy-hosts', 'size') %></th>
+                    <th><%- i18n('proxy-hosts', 'url') %></th>
+                  </tr>
+                </thead>
+                <tbody id="log-table-body"></tbody>
+              </table>
+            </div>
+            <div id="log-empty" class="text-center p-4 d-none">
+              <i class="fe fe-file-text text-muted" style="font-size: 48px"></i>
+              <p class="text-muted mt-3">
+                <%- i18n('proxy-hosts', 'no-log-entries') %>
+              </p>
+            </div>
+            <div id="log-error" class="text-center p-4 d-none">
+              <i
+                class="fe fe-alert-triangle text-danger"
+                style="font-size: 48px"
+              ></i>
+              <p class="text-danger mt-3">
+                <%- i18n('proxy-hosts', 'log-load-error') %>
+              </p>
+              <p class="text-muted" id="error-message"></p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-secondary cancel" data-dismiss="modal">
+      <%- i18n('str', 'close') %>
+    </button>
+  </div>
+</div>

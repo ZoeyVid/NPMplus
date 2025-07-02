@@ -23,6 +23,9 @@ const model = Backbone.Model.extend({
             http2_support:           false,
             advanced_config:         '',
             enabled:                 true,
+            enable_logs:             true,
+            log_format:              'combined',
+            log_retention_days:      30,
             meta:                    {},
             // The following are expansions:
             owner:                   null,

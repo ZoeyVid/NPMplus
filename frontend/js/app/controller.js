@@ -141,6 +141,19 @@ module.exports = {
 	},
 
 	/**
+	 * Proxy Host Logs
+	 *
+	 * @param model
+	 */
+	showNginxProxyLogs: function (model) {
+		if (Cache.User.isAdmin() || Cache.User.canView('proxy_hosts')) {
+			require(['./main', './nginx/proxy/logs'], function (App, View) {
+				App.UI.showModalDialog(new View({model: model}));
+			});
+		}
+	},
+
+	/**
 	 * Nginx Redirection Hosts
 	 */
 	showNginxRedirection: function () {

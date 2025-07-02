@@ -185,7 +185,30 @@
 		"help-content": "A Proxy Host is the incoming endpoint for a web service that you want to forward.\nIt provides optional TLS termination for your service that might not have TLS support built in.\nProxy Hosts are the most common use for the NPMplus.",
 		"help-title": "What is a Proxy Host?",
 		"search": "Search Host…",
-		"title": "Proxy Hosts"
+		"title": "Proxy Hosts",
+		"enable-domain-logs": "Enable Domain-Specific Logging",
+		"enable-domain-logs-help": "Create separate access and error logs for this domain",
+		"log-format": "Log Format",
+		"log-format-help": "Nginx log format to use for access logs",
+		"log-retention-days": "Log Retention Days",
+		"log-retention-days-help": "Number of days to keep log files before deletion",
+		"logs-title": "Logs for {domains}",
+		"log-type": "Log Type",
+		"access-logs": "Access Logs",
+		"error-logs": "Error Logs",
+		"lines-to-show": "Lines to Show",
+		"search-filter": "Search Filter",
+		"search-placeholder": "Search in logs...",
+		"auto-refresh": "Auto Refresh",
+		"log-entries": "Log Entries",
+		"no-log-entries": "No log entries found",
+		"log-load-error": "Failed to load logs",
+		"timestamp": "Timestamp",
+		"client-ip": "Client IP",
+		"method": "Method",
+		"status": "Status",
+		"size": "Size",
+		"url": "URL"
 	},
 	"redirection-hosts": {
 		"add": "Add Redirection Host",
@@ -257,7 +280,10 @@
 		"try-again": "Try again",
 		"unknown": "Unknown",
 		"username": "Username",
-		"value": "Value"
+		"value": "Value",
+		"logs": "Logs",
+		"refresh": "Refresh",
+		"loading": "Loading"
 	},
 	"streams": {
 		"add": "Add Stream",

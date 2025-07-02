@@ -10,6 +10,7 @@
                 <li role="presentation" class="nav-item"><a href="#details" aria-controls="tab1" role="tab" data-toggle="tab" class="nav-link active"><i class="fe fe-zap"></i> <%- i18n('all-hosts', 'details') %></a></li>
                 <li role="presentation" class="nav-item"><a href="#locations" aria-controls="tab4" role="tab" data-toggle="tab" class="nav-link"><i class="fe fe-layers"></i> <%- i18n('all-hosts', 'locations') %></a></li>
                 <li role="presentation" class="nav-item"><a href="#ssl-options" aria-controls="tab2" role="tab" data-toggle="tab" class="nav-link"><i class="fe fe-shield"></i> <%- i18n('str', 'tls') %></a></li>
+                <li role="presentation" class="nav-item"><a href="#logs" aria-controls="tab5" role="tab" data-toggle="tab" class="nav-link"><i class="fe fe-file-text"></i> <%- i18n('str', 'logs') %></a></li>
                 <li role="presentation" class="nav-item"><a href="#advanced" aria-controls="tab3" role="tab" data-toggle="tab" class="nav-link"><i class="fe fe-settings"></i> <%- i18n('all-hosts', 'advanced') %></a></li>
             </ul>
             <div class="tab-content">
@@ -254,6 +255,40 @@
                                     <span class="custom-switch-indicator"></span>
                                     <span class="custom-switch-description"><%= i18n('tls', 'certbot-agree', {url: 'https://letsencrypt.org/repository'}) %> <span class="form-required">*</span></span>
                                 </label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Logs -->
+                <div role="tabpanel" class="tab-pane" id="logs">
+                    <div class="row">
+                        <div class="col-sm-12 col-md-12">
+                            <div class="form-group">
+                                <label class="custom-switch">
+                                    <input type="checkbox" class="custom-switch-input" name="enable_logs" value="1"<%- enable_logs ? ' checked' : '' %>>
+                                    <span class="custom-switch-indicator"></span>
+                                    <span class="custom-switch-description"><%- i18n('proxy-hosts', 'enable-domain-logs') %></span>
+                                </label>
+                                <span class="form-help"><%- i18n('proxy-hosts', 'enable-domain-logs-help') %></span>
+                            </div>
+                        </div>
+                        <div class="col-sm-6 col-md-6">
+                            <div class="form-group">
+                                <label class="form-label"><%- i18n('proxy-hosts', 'log-format') %></label>
+                                <select name="log_format" class="form-control custom-select"<%- !enable_logs ? ' disabled' : '' %>>
+                                    <option value="combined" <%- log_format === 'combined' ? 'selected' : '' %>>Combined</option>
+                                    <option value="common" <%- log_format === 'common' ? 'selected' : '' %>>Common</option>
+                                    <option value="main" <%- log_format === 'main' ? 'selected' : '' %>>Main</option>
+                                </select>
+                                <span class="form-help"><%- i18n('proxy-hosts', 'log-format-help') %></span>
+                            </div>
+                        </div>
+                        <div class="col-sm-6 col-md-6">
+                            <div class="form-group">
+                                <label class="form-label"><%- i18n('proxy-hosts', 'log-retention-days') %></label>
+                                <input type="number" name="log_retention_days" class="form-control" min="1" max="365" value="<%- log_retention_days %>"<%- !enable_logs ? ' disabled' : '' %>>
+                                <span class="form-help"><%- i18n('proxy-hosts', 'log-retention-days-help') %></span>
                             </div>
                         </div>
                     </div>

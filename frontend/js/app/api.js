@@ -382,6 +382,19 @@ module.exports = {
              */
             disable: function (id) {
                 return fetch('post', 'nginx/proxy-hosts/' + id + '/disable');
+            },
+
+            /**
+             * @param   {Number}  id
+             * @param   {Object}  params
+             * @returns {Promise}
+             */
+            getLogs: function (id, params) {
+                let url = 'nginx/proxy-hosts/' + id + '/logs';
+                if (params && Object.keys(params).length) {
+                    url += '?' + $.param(params);
+                }
+                return fetch('get', url);
             }
         },
 
@@ -806,6 +819,15 @@ module.exports = {
             let id = data.id;
             delete data.id;
             return fetch('put', 'settings/' + id, data);
+        }
+    },
+
+    Logs: {
+        /**
+         * @returns {Promise}
+         */
+        getStats: function () {
+            return fetch('get', 'nginx/logs/stats');
         }
     }
 };

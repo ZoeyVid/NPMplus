@@ -45,6 +45,9 @@ module.exports = Mn.View.extend({
         dns_provider_credentials: 'textarea[name="meta[dns_provider_credentials]"]',
         propagation_seconds:      'input[name="meta[propagation_seconds]"]',
         forward_scheme:           'select[name="forward_scheme"]',
+        enable_logs:              'input[name="enable_logs"]',
+        log_format:               'select[name="log_format"]',
+        log_retention_days:       'input[name="log_retention_days"]',
         letsencrypt:              '.letsencrypt'
     },
 
@@ -129,6 +132,16 @@ module.exports = Mn.View.extend({
             }
         },
 
+        'change @ui.enable_logs': function () {
+            let checked = this.ui.enable_logs.prop('checked');
+            let log_controls = this.ui.log_format.add(this.ui.log_retention_days);
+            
+            log_controls
+                .prop('disabled', !checked)
+                .parents('.form-group')
+                .css('opacity', checked ? 1 : 0.5);
+        },
+
         'click @ui.add_location_btn': function (e) {
             e.preventDefault();
 
@@ -167,6 +180,8 @@ module.exports = Mn.View.extend({
             data.hsts_enabled            = !!data.hsts_enabled;
             data.hsts_subdomains         = !!data.hsts_subdomains;
             data.ssl_forced              = !!data.ssl_forced;
+            data.enable_logs             = !!data.enable_logs;
+            data.log_retention_days      = parseInt(data.log_retention_days, 10) || 30;
 
             if (typeof data.meta === 'undefined') data.meta = {};
             data.meta.letsencrypt_agree = data.meta.letsencrypt_agree == 1;
@@ -265,6 +280,7 @@ module.exports = Mn.View.extend({
         let view = this;
 
         this.ui.block_exploits.trigger('change');
+        this.ui.enable_logs.trigger('change');
 
         // Domain names
         this.ui.domain_names.selectize({
