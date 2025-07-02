@@ -26,6 +26,11 @@
 		"owner_user_id": {
 			"$ref": "../common.json#/properties/user_id"
 		},
+		"acme_server_id": {
+			"description": "ACME Server ID",
+			"type": "integer",
+			"minimum": 1
+		},
 		"provider": {
 			"$ref": "../common.json#/properties/ssl_provider"
 		},

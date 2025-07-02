@@ -14,8 +14,61 @@ const certificateModel = require('../models/certificate');
 const dnsPlugins = require('../certbot-dns-plugins.json');
 const internalAuditLog = require('./audit-log');
 const internalNginx = require('./nginx');
+const internalAcmeServer = require('./acme-server');
 
 const punycode = require('punycode/');
+
+/**
+ * Build certbot command arguments based on ACME server configuration
+ * @param {Object} acmeServer - ACME server configuration
+ * @returns {Array} - Array of certbot arguments
+ */
+function buildCertbotArgs(acmeServer) {
+	const baseArgs = [
+		'--logs-dir', '/tmp/certbot-log',
+		'--work-dir', '/tmp/certbot-work',
+		'--config-dir', '/data/tls/certbot',
+		'--config', '/etc/certbot.ini',
+		'--agree-tos',
+		'--non-interactive',
+		'--no-eff-email'
+	];
+
+	// Add profile if specified
+	if (acmeServer.profile && acmeServer.profile !== 'none') {
+		baseArgs.push('--required-profile', acmeServer.profile);
+	}
+
+	// Add email if specified
+	if (acmeServer.email) {
+		baseArgs.push('--email', acmeServer.email);
+	}
+
+	// Add EAB if specified
+	if (acmeServer.eab_kid && acmeServer.eab_hmac_key) {
+		baseArgs.push('--eab-kid', acmeServer.eab_kid);
+		baseArgs.push('--eab-hmac-key', acmeServer.eab_hmac_key);
+	}
+
+	// Add key type
+	if (acmeServer.key_type && acmeServer.key_type !== 'ecdsa') {
+		baseArgs.push('--key-type', acmeServer.key_type);
+	}
+
+	// Add must-staple
+	if (acmeServer.must_staple) {
+		baseArgs.push('--must-staple');
+	}
+
+	// Add server verification
+	if (!acmeServer.tls_verify) {
+		baseArgs.push('--no-verify-ssl');
+	}
+
+	return baseArgs;
+}
+
+// Keep the legacy certbotArgs for backward compatibility during migration
 const certbotArgs = ['--logs-dir', '/tmp/certbot-log', '--work-dir', '/tmp/certbot-work', '--config-dir', '/data/tls/certbot', '--config', '/etc/certbot.ini', '--agree-tos', '--non-interactive', '--no-eff-email', ...(process.env.ACME_PROFILE !== 'none' ? ['--required-profile', process.env.ACME_PROFILE] : [])];
 
 function omissions() {
@@ -41,8 +94,13 @@ const internalCertificate = {
 			internalCertificate.intervalProcessing = true;
 			logger.info('Renewing TLS certs close to expiry...');
 
-			return utils
-				.execFile('certbot', [...certbotArgs, 'renew', '--server', process.env.ACME_SERVER, '--quiet', '--no-random-sleep-on-renew'])
+			// Use default ACME server for batch renewals
+			return internalAcmeServer.getDefaultServer()
+				.then((defaultServer) => {
+					const certbotCmdArgs = buildCertbotArgs(defaultServer);
+					return utils
+						.execFile('certbot', [...certbotCmdArgs, 'renew', '--server', defaultServer.server_url, '--quiet', '--no-random-sleep-on-renew']);
+				})
 				.then((result) => {
 					if (result) {
 						logger.info('Renew Result: ' + result);
@@ -110,6 +168,15 @@ const internalCertificate = {
 
 				if (data.provider === 'letsencrypt') {
 					data.nice_name = data.domain_names.join(', ');
+					
+					// If no ACME server specified, use the default one
+					if (!data.acme_server_id) {
+						return internalAcmeServer.getDefaultServer()
+							.then((defaultServer) => {
+								data.acme_server_id = defaultServer.id;
+								return certificateModel.query().insertAndFetch(data).then(utils.omitRow(omissions()));
+							});
+					}
 				}
 
 				return certificateModel.query().insertAndFetch(data).then(utils.omitRow(omissions()));
@@ -257,7 +324,7 @@ const internalCertificate = {
 		return access
 			.can('certificates:get', data.id)
 			.then((access_data) => {
-				let query = certificateModel.query().where('is_deleted', 0).andWhere('id', data.id).allowGraph('[owner]').allowGraph('[proxy_hosts]').allowGraph('[redirection_hosts]').allowGraph('[dead_hosts]').first();
+				let query = certificateModel.query().where('is_deleted', 0).andWhere('id', data.id).allowGraph('[owner, acme_server, proxy_hosts, redirection_hosts, dead_hosts]').first();
 
 				if (access_data.permission_visibility !== 'all') {
 					query.andWhere('owner_user_id', access.token.getUserId(1));
@@ -408,7 +475,7 @@ const internalCertificate = {
 	 */
 	getAll: (access, expand, search_query) => {
 		return access.can('certificates:list').then((access_data) => {
-			let query = certificateModel.query().where('is_deleted', 0).groupBy('id').allowGraph('[owner]').allowGraph('[proxy_hosts]').allowGraph('[redirection_hosts]').allowGraph('[dead_hosts]').orderBy('nice_name', 'ASC');
+			let query = certificateModel.query().where('is_deleted', 0).groupBy('id').allowGraph('[owner, acme_server, proxy_hosts, redirection_hosts, dead_hosts]').orderBy('nice_name', 'ASC');
 
 			if (access_data.permission_visibility !== 'all') {
 				query.andWhere('owner_user_id', access.token.getUserId(1));
@@ -766,10 +833,33 @@ const internalCertificate = {
 	requestCertbot: (certificate) => {
 		logger.info('Requesting Certbot certificates for Cert #' + certificate.id + ': ' + certificate.domain_names.join(', '));
 
-		return utils.execFile('certbot', [...certbotArgs, 'certonly', '--cert-name', `npm-${certificate.id}`, '--domains', certificate.domain_names.map((domain_name) => punycode.toASCII(domain_name)).join(','), '--server', process.env.ACME_SERVER, '--authenticator', 'webroot', '--webroot-path', '/tmp/acme-challenge']).then((result) => {
-			logger.success(result);
-			return result;
-		});
+		// Get ACME server configuration
+		return certificateModel
+			.query()
+			.findById(certificate.id)
+			.withGraphFetched('acme_server')
+			.then((cert) => {
+				if (!cert.acme_server) {
+					throw new Error('ACME server not found for certificate');
+				}
+
+				const acmeServer = cert.acme_server;
+				const certbotCmdArgs = buildCertbotArgs(acmeServer);
+
+				return utils.execFile('certbot', [
+					...certbotCmdArgs,
+					'certonly',
+					'--cert-name', `npm-${certificate.id}`,
+					'--domains', certificate.domain_names.map((domain_name) => punycode.toASCII(domain_name)).join(','),
+					'--server', acmeServer.server_url,
+					'--authenticator', 'webroot',
+					'--webroot-path', '/tmp/acme-challenge'
+				]);
+			})
+			.then((result) => {
+				logger.success(result);
+				return result;
+			});
 	},
 
 	/**
@@ -790,8 +880,31 @@ const internalCertificate = {
 		const credentialsLocation = '/tmp/certbot-credentials/credentials-' + certificate.id;
 		fs.writeFileSync(credentialsLocation, certificate.meta.dns_provider_credentials, { mode: 0o600 });
 
+		// Get ACME server configuration
+		const cert = await certificateModel
+			.query()
+			.findById(certificate.id)
+			.withGraphFetched('acme_server');
+
+		if (!cert.acme_server) {
+			throw new Error('ACME server not found for certificate');
+		}
+
+		const acmeServer = cert.acme_server;
+		const certbotCmdArgs = buildCertbotArgs(acmeServer);
+
 		try {
-			const result = await utils.execFile('certbot', [...certbotArgs, 'certonly', '--cert-name', `npm-${certificate.id}`, '--domains', certificate.domain_names.map((domain_name) => punycode.toASCII(domain_name)).join(','), '--server', process.env.ACME_SERVER, '--authenticator', dnsPlugin.full_plugin_name, `--${dnsPlugin.full_plugin_name}-credentials`, credentialsLocation, ...(certificate.meta.propagation_seconds !== undefined ? [`--${dnsPlugin.full_plugin_name}-propagation-seconds`] : []), ...(certificate.meta.propagation_seconds !== undefined ? [certificate.meta.propagation_seconds] : [])]);
+			const result = await utils.execFile('certbot', [
+				...certbotCmdArgs,
+				'certonly',
+				'--cert-name', `npm-${certificate.id}`,
+				'--domains', certificate.domain_names.map((domain_name) => punycode.toASCII(domain_name)).join(','),
+				'--server', acmeServer.server_url,
+				'--authenticator', dnsPlugin.full_plugin_name,
+				`--${dnsPlugin.full_plugin_name}-credentials`, credentialsLocation,
+				...(certificate.meta.propagation_seconds !== undefined ? [`--${dnsPlugin.full_plugin_name}-propagation-seconds`] : []),
+				...(certificate.meta.propagation_seconds !== undefined ? [certificate.meta.propagation_seconds] : [])
+			]);
 			logger.info(result);
 			return result;
 		} catch (err) {
@@ -846,20 +959,40 @@ const internalCertificate = {
 	},
 
 	/**
-	 * @param   {Object}  certificate the certificate row
+	 * @param   {Object}  certificate   the certificate row
 	 * @returns {Promise}
 	 */
 	renewCertbot: async (certificate) => {
 		logger.info(`Renewing Certbot certificates for Cert #${certificate.id}: ${certificate.domain_names.join(', ')}`);
 
+		// Get ACME server configuration
+		const cert = await certificateModel
+			.query()
+			.findById(certificate.id)
+			.withGraphFetched('acme_server');
+
+		if (!cert.acme_server) {
+			throw new Error('ACME server not found for certificate');
+		}
+
+		const acmeServer = cert.acme_server;
+		const certbotCmdArgs = buildCertbotArgs(acmeServer);
+
 		try {
-			const revokeResult = await utils.execFile('certbot', [...certbotArgs, 'revoke', '--cert-name', `npm-${certificate.id}`, '--no-delete-after-revoke']);
+			const revokeResult = await utils.execFile('certbot', [...certbotCmdArgs, 'revoke', '--cert-name', `npm-${certificate.id}`, '--no-delete-after-revoke']);
 			logger.info(revokeResult);
 		} catch {
 			// do nothing
 		}
 
-		const renewResult = await utils.execFile('certbot', [...certbotArgs, 'renew', '--server', process.env.ACME_SERVER, '--force-renewal', '--cert-name', `npm-${certificate.id}`, '--no-random-sleep-on-renew']);
+		const renewResult = await utils.execFile('certbot', [
+			...certbotCmdArgs,
+			'renew',
+			'--server', acmeServer.server_url,
+			'--force-renewal',
+			'--cert-name', `npm-${certificate.id}`,
+			'--no-random-sleep-on-renew'
+		]);
 		logger.info(renewResult);
 
 		return renewResult;
@@ -878,14 +1011,34 @@ const internalCertificate = {
 
 		logger.info(`Renewing Certbot certificates via ${dnsPlugin.name} for Cert #${certificate.id}: ${certificate.domain_names.join(', ')}`);
 
+		// Get ACME server configuration
+		const cert = await certificateModel
+			.query()
+			.findById(certificate.id)
+			.withGraphFetched('acme_server');
+
+		if (!cert.acme_server) {
+			throw new Error('ACME server not found for certificate');
+		}
+
+		const acmeServer = cert.acme_server;
+		const certbotCmdArgs = buildCertbotArgs(acmeServer);
+
 		try {
-			const revokeResult = await utils.execFile('certbot', [...certbotArgs, 'revoke', '--cert-name', `npm-${certificate.id}`, '--no-delete-after-revoke']);
+			const revokeResult = await utils.execFile('certbot', [...certbotCmdArgs, 'revoke', '--cert-name', `npm-${certificate.id}`, '--no-delete-after-revoke']);
 			logger.info(revokeResult);
 		} catch {
 			// do nothing
 		}
 
-		const renewResult = await utils.execFile('certbot', [...certbotArgs, 'renew', '--server', process.env.ACME_SERVER, '--force-renewal', '--cert-name', `npm-${certificate.id}`, '--no-random-sleep-on-renew']);
+		const renewResult = await utils.execFile('certbot', [
+			...certbotCmdArgs,
+			'renew',
+			'--server', acmeServer.server_url,
+			'--force-renewal',
+			'--cert-name', `npm-${certificate.id}`,
+			'--no-random-sleep-on-renew'
+		]);
 		logger.info(renewResult);
 
 		return renewResult;

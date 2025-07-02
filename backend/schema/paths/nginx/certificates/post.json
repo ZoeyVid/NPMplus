@@ -32,6 +32,11 @@
 						"domain_names": {
 							"$ref": "../../../components/certificate-object.json#/properties/domain_names"
 						},
+						"acme_server_id": {
+							"description": "ACME Server ID",
+							"type": "integer",
+							"minimum": 1
+						},
 						"meta": {
 							"$ref": "../../../components/certificate-object.json#/properties/meta"
 						}

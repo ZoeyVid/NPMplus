@@ -1,0 +1,118 @@
+{
+	"operationId": "createAcmeServer",
+	"summary": "Create an ACME Server",
+	"tags": [
+		"ACME Servers"
+	],
+	"security": [
+		{
+			"BearerAuth": [
+				"acme_servers"
+			]
+		}
+	],
+	"requestBody": {
+		"description": "ACME Server Payload",
+		"required": true,
+		"content": {
+			"application/json": {
+				"schema": {
+					"type": "object",
+					"additionalProperties": false,
+					"required": [
+						"name",
+						"server_url"
+					],
+					"properties": {
+						"name": {
+							"$ref": "../../components/acme-server-object.json#/properties/name"
+						},
+						"description": {
+							"$ref": "../../components/acme-server-object.json#/properties/description"
+						},
+						"server_url": {
+							"$ref": "../../components/acme-server-object.json#/properties/server_url"
+						},
+						"email": {
+							"$ref": "../../components/acme-server-object.json#/properties/email"
+						},
+						"eab_kid": {
+							"$ref": "../../components/acme-server-object.json#/properties/eab_kid"
+						},
+						"eab_hmac_key": {
+							"$ref": "../../components/acme-server-object.json#/properties/eab_hmac_key"
+						},
+						"profile": {
+							"$ref": "../../components/acme-server-object.json#/properties/profile"
+						},
+						"key_type": {
+							"$ref": "../../components/acme-server-object.json#/properties/key_type"
+						},
+						"must_staple": {
+							"$ref": "../../components/acme-server-object.json#/properties/must_staple"
+						},
+						"ocsp_stapling": {
+							"$ref": "../../components/acme-server-object.json#/properties/ocsp_stapling"
+						},
+						"tls_verify": {
+							"$ref": "../../components/acme-server-object.json#/properties/tls_verify"
+						},
+						"is_default": {
+							"$ref": "../../components/acme-server-object.json#/properties/is_default"
+						},
+						"meta": {
+							"$ref": "../../components/acme-server-object.json#/properties/meta"
+						}
+					}
+				}
+			}
+		}
+	},
+	"responses": {
+		"201": {
+			"description": "201 response",
+			"content": {
+				"application/json": {
+					"examples": {
+						"default": {
+							"value": {
+								"id": 2,
+								"created_on": "2023-01-01T00:00:00.000Z",
+								"modified_on": "2023-01-01T00:00:00.000Z",
+								"owner_user_id": 1,
+								"is_default": false,
+								"name": "ZeroSSL",
+								"description": "ZeroSSL ACME server",
+								"server_url": "https://acme.zerossl.com/v2/DV90",
+								"email": "admin@example.com",
+								"eab_kid": "kid123",
+								"eab_hmac_key": "hmac456",
+								"profile": "none",
+								"key_type": "ecdsa",
+								"must_staple": false,
+								"ocsp_stapling": true,
+								"tls_verify": true,
+								"meta": {},
+								"owner": {
+									"id": 1,
+									"created_on": "2023-01-01T00:00:00.000Z",
+									"modified_on": "2023-01-01T00:00:00.000Z",
+									"is_deleted": false,
+									"is_disabled": false,
+									"email": "admin@example.com",
+									"name": "Administrator",
+									"nickname": "Admin",
+									"avatar": "",
+									"roles": ["admin"]
+								}
+							}
+						}
+					},
+					"schema": {
+						"$ref": "../../components/acme-server-object.json"
+					}
+				}
+			}
+		}
+	}
+}

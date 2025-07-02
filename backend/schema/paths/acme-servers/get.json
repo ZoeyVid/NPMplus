@@ -1,0 +1,74 @@
+{
+	"operationId": "getAcmeServers",
+	"summary": "Get all ACME Servers",
+	"tags": [
+		"ACME Servers"
+	],
+	"security": [
+		{
+			"BearerAuth": [
+				"acme_servers"
+			]
+		}
+	],
+	"parameters": [
+		{
+			"name": "expand",
+			"in": "query",
+			"description": "Expansions",
+			"required": false,
+			"schema": {
+				"type": "string"
+			}
+		},
+		{
+			"name": "search",
+			"in": "query",
+			"description": "Search query",
+			"required": false,
+			"schema": {
+				"type": "string"
+			}
+		}
+	],
+	"responses": {
+		"200": {
+			"description": "200 response",
+			"content": {
+				"application/json": {
+					"examples": {
+						"default": {
+							"value": [
+								{
+									"id": 1,
+									"created_on": "2023-01-01T00:00:00.000Z",
+									"modified_on": "2023-01-01T00:00:00.000Z",
+									"owner_user_id": 1,
+									"is_default": true,
+									"name": "Let's Encrypt",
+									"description": "Let's Encrypt ACME server",
+									"server_url": "https://acme-v02.api.letsencrypt.org/directory",
+									"email": "admin@example.com",
+									"eab_kid": "",
+									"eab_hmac_key": "",
+									"profile": "none",
+									"key_type": "ecdsa",
+									"must_staple": false,
+									"ocsp_stapling": false,
+									"tls_verify": true,
+									"meta": {}
+								}
+							]
+						}
+					},
+					"schema": {
+						"type": "array",
+						"items": {
+							"$ref": "../../components/acme-server-object.json"
+						}
+					}
+				}
+			}
+		}
+	}
+}

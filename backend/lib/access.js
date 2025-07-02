@@ -140,6 +140,32 @@ module.exports = function (token_string) {
 								);
 								break;
 
+							// ACME Servers
+							case 'acme_servers':
+								const acmeServerModel = require('../models/acme_server');
+								query = acmeServerModel.query().select('id').andWhere('is_deleted', 0);
+
+								if (permissions.visibility === 'user') {
+									query.andWhere('owner_user_id', token_user_id);
+								}
+
+								resolve(
+									query.then((rows) => {
+										const result = [];
+										_.forEach(rows, (rule_row) => {
+											result.push(rule_row.id);
+										});
+
+										// enum should not have less than 1 item
+										if (!result.length) {
+											result.push(0);
+										}
+
+										return result;
+									}),
+								);
+								break;
+
 							// DEFAULT: null
 							default:
 								resolve(null);
@@ -254,6 +280,7 @@ module.exports = function (token_string) {
 									permission_streams: permissions.streams,
 									permission_access_lists: permissions.access_lists,
 									permission_certificates: permissions.certificates,
+									permission_acme_servers: permissions.acme_servers,
 								},
 							};
 

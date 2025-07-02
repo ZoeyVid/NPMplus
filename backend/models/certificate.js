@@ -62,6 +62,7 @@ class Certificate extends Model {
 		const DeadHost = require('./dead_host');
 		const User = require('./user');
 		const RedirectionHost = require('./redirection_host');
+		const AcmeServer = require('./acme_server');
 
 		return {
 			owner: {
@@ -73,6 +74,17 @@ class Certificate extends Model {
 				},
 				modify: function (qb) {
 					qb.where('user.is_deleted', 0);
+				},
+			},
+			acme_server: {
+				relation: Model.HasOneRelation,
+				modelClass: AcmeServer,
+				join: {
+					from: 'certificate.acme_server_id',
+					to: 'acme_server.id',
+				},
+				modify: function (qb) {
+					qb.where('acme_server.is_deleted', 0);
 				},
 			},
 			proxy_hosts: {

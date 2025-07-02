@@ -1,0 +1,98 @@
+{
+	"type": "object",
+	"description": "ACME Server object",
+	"required": [
+		"id",
+		"created_on",
+		"modified_on",
+		"owner_user_id",
+		"name",
+		"server_url"
+	],
+	"additionalProperties": false,
+	"properties": {
+		"id": {
+			"$ref": "../common.json#/properties/id"
+		},
+		"created_on": {
+			"$ref": "../common.json#/properties/created_on"
+		},
+		"modified_on": {
+			"$ref": "../common.json#/properties/modified_on"
+		},
+		"owner_user_id": {
+			"$ref": "../common.json#/properties/user_id"
+		},
+		"is_default": {
+			"type": "boolean",
+			"description": "Whether this is the default ACME server"
+		},
+		"name": {
+			"type": "string",
+			"description": "Display name for the ACME server",
+			"minLength": 1,
+			"maxLength": 100
+		},
+		"description": {
+			"type": "string",
+			"description": "Description of the ACME server",
+			"maxLength": 255
+		},
+		"server_url": {
+			"type": "string",
+			"description": "ACME server directory URL",
+			"format": "uri",
+			"maxLength": 500
+		},
+		"email": {
+			"type": "string",
+			"description": "Email address for ACME account registration",
+			"format": "email",
+			"maxLength": 255
+		},
+		"eab_kid": {
+			"type": "string",
+			"description": "External Account Binding Key Identifier",
+			"maxLength": 255
+		},
+		"eab_hmac_key": {
+			"type": "string",
+			"description": "External Account Binding HMAC Key",
+			"maxLength": 500
+		},
+		"profile": {
+			"type": "string",
+			"description": "ACME profile to use",
+			"enum": ["none", "shortlived", "tlsserver"],
+			"default": "none"
+		},
+		"key_type": {
+			"type": "string",
+			"description": "Certificate key type",
+			"enum": ["ecdsa", "rsa"],
+			"default": "ecdsa"
+		},
+		"must_staple": {
+			"type": "boolean",
+			"description": "Enable Must-Staple extension",
+			"default": false
+		},
+		"ocsp_stapling": {
+			"type": "boolean",
+			"description": "Enable OCSP stapling",
+			"default": false
+		},
+		"tls_verify": {
+			"type": "boolean",
+			"description": "Verify ACME server TLS certificate",
+			"default": true
+		},
+		"owner": {
+			"$ref": "./user-object.json"
+		},
+		"meta": {
+			"type": "object",
+			"description": "Additional metadata"
+		}
+	}
+}

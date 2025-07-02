@@ -63,6 +63,15 @@
 				"view",
 				"manage"
 			]
+		},
+		"acme_servers": {
+			"type": "string",
+			"description": "ACME Servers Permissions",
+			"enum": [
+				"hidden",
+				"view",
+				"manage"
+			]
 		}
 	}
 }
