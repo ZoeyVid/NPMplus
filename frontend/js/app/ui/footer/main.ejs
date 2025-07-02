@@ -3,6 +3,21 @@
         <div class="row align-items-center">
             <div class="col-auto">
                 <ul class="list-inline list-inline-dots mb-0">
+                    <li class="list-inline-item">
+                        <!-- Language Selector -->
+                        <div class="dropdown">
+                            <a href="#" class="dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
+                                🌐 <span id="current-language">Language</span>
+                            </a>
+                            <div class="dropdown-menu">
+                                <a class="dropdown-item" href="#" onclick="changeLanguage('en')">🇺🇸 English</a>
+                                <a class="dropdown-item" href="#" onclick="changeLanguage('de')">🇩🇪 Deutsch</a>
+                                <a class="dropdown-item" href="#" onclick="changeLanguage('it')">🇮🇹 Italiano</a>
+                                <a class="dropdown-item" href="#" onclick="changeLanguage('zh')">🇨🇳 中文</a>
+                                <a class="dropdown-item" href="#" onclick="changeLanguage('tr')">🇹🇷 Türkçe</a>
+                            </div>
+                        </div>
+                    </li>
                     <li class="list-inline-item"><a href="#" onclick="toggleDarkMode()"><%- i18n('footer', 'toggle-dark') %></a></li>
                     <li class="list-inline-item"><a href="https://github.com/ZoeyVid/NPMplus" target="_blank"><%- i18n('footer', 'repo') %></a></li>
                 </ul>

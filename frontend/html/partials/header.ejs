@@ -24,6 +24,19 @@
     <link href="/css/main.css?v=<%= version %>" rel="stylesheet" />
 
     <script>
+      // Set document language based on user preference
+      const userLang = localStorage.getItem('language') || navigator.languages[0].toLowerCase();
+      const langCode = userLang.includes('tr') ? 'tr' : 
+                      userLang.includes('de') ? 'de' :
+                      userLang.includes('it') ? 'it' :
+                      userLang.includes('zh') ? 'zh' : 'en';
+      document.documentElement.lang = langCode;
+      
+      // Update Content-Language meta tag
+      document.addEventListener('DOMContentLoaded', function() {
+        document.querySelector('meta[http-equiv="Content-Language"]').content = langCode;
+      });
+      
       function loadCSS(filename) {
         var link = document.createElement("link");
         link.rel = "stylesheet";
@@ -64,6 +77,32 @@
         unloadCSS("/css/darkmode.css");
         localStorage.setItem("darkMode", "off");
       }
+      
+      // Language change function
+      function changeLanguage(lang) {
+        localStorage.setItem('language', lang);
+        window.location.reload();
+      }
+      
+      // Set current language display
+      function updateLanguageDisplay() {
+        const languages = {
+          'en': '🇺🇸 English',
+          'de': '🇩🇪 Deutsch',
+          'it': '🇮🇹 Italiano', 
+          'zh': '🇨🇳 中文',
+          'tr': '🇹🇷 Türkçe'
+        };
+        const currentLang = localStorage.getItem('language') || navigator.languages[0].toLowerCase();
+        const langKey = Object.keys(languages).find(key => currentLang.includes(key)) || 'en';
+        const langElement = document.getElementById('current-language');
+        if (langElement) {
+          langElement.textContent = languages[langKey];
+        }
+      }
+      
+      // Update language display when page loads
+      document.addEventListener('DOMContentLoaded', updateLanguageDisplay);
     </script>
     <script>
       function sortTable(n) {
