@@ -42,6 +42,7 @@
 		"prettier": "3.6.2"
 	},
 	"scripts": {
-		"validate-schema": "node validate-schema.js"
+		"validate-schema": "node validate-schema.js",
+		"log-maintenance": "node log-maintenance.js"
 	}
 }

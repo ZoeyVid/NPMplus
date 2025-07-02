@@ -11,7 +11,7 @@ const now = require('./now_helper');
 
 Model.knex(db);
 
-const boolFields = ['is_deleted', 'ssl_forced', 'caching_enabled', 'block_exploits', 'allow_websocket_upgrade', 'http2_support', 'enabled', 'hsts_enabled', 'hsts_subdomains'];
+const boolFields = ['is_deleted', 'ssl_forced', 'caching_enabled', 'block_exploits', 'allow_websocket_upgrade', 'http2_support', 'enabled', 'hsts_enabled', 'hsts_subdomains', 'enable_logs'];
 
 class ProxyHost extends Model {
 	$beforeInsert() {

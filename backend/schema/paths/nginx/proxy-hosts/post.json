@@ -76,6 +76,15 @@
 						},
 						"locations": {
 							"$ref": "../../../components/proxy-host-object.json#/properties/locations"
+						},
+						"enable_logs": {
+							"$ref": "../../../components/proxy-host-object.json#/properties/enable_logs"
+						},
+						"log_format": {
+							"$ref": "../../../components/proxy-host-object.json#/properties/log_format"
+						},
+						"log_retention_days": {
+							"$ref": "../../../components/proxy-host-object.json#/properties/log_retention_days"
 						}
 					}
 				}

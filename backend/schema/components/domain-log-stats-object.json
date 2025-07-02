@@ -1,0 +1,48 @@
+{
+	"type": "object",
+	"description": "Domain Log Statistics object",
+	"required": [
+		"proxy_host_id",
+		"domain_names",
+		"access_log_size",
+		"error_log_size",
+		"total_log_size",
+		"last_modified",
+		"log_retention_days"
+	],
+	"additionalProperties": false,
+	"properties": {
+		"proxy_host_id": {
+			"type": "integer",
+			"description": "Proxy host ID"
+		},
+		"domain_names": {
+			"type": "array",
+			"description": "Domain names associated with the proxy host",
+			"items": {
+				"type": "string"
+			}
+		},
+		"access_log_size": {
+			"type": "integer",
+			"description": "Access log file size in bytes"
+		},
+		"error_log_size": {
+			"type": "integer",
+			"description": "Error log file size in bytes"
+		},
+		"total_log_size": {
+			"type": "integer",
+			"description": "Total log size in bytes"
+		},
+		"last_modified": {
+			"type": ["string", "null"],
+			"format": "date-time",
+			"description": "Last modification time of the log files"
+		},
+		"log_retention_days": {
+			"type": "integer",
+			"description": "Number of days to retain log files"
+		}
+	}
+}

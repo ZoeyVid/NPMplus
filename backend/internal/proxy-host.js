@@ -6,6 +6,7 @@ const internalHost = require('./host');
 const internalNginx = require('./nginx');
 const internalAuditLog = require('./audit-log');
 const internalCertificate = require('./certificate');
+const internalDomainLog = require('./domain-log');
 const { castJsonIfNeed } = require('../lib/helpers');
 
 function omissions() {
@@ -86,6 +87,15 @@ const internalProxyHost = {
 				return internalNginx.configure(proxyHostModel, 'proxy_host', row).then(() => {
 					return row;
 				});
+			})
+			.then((row) => {
+				// Create log directory if logging is enabled
+				if (row.enable_logs !== false) {
+					return internalDomainLog.ensureLogDirectory(row.id).then(() => {
+						return row;
+					});
+				}
+				return row;
 			})
 			.then((row) => {
 				// Audit log

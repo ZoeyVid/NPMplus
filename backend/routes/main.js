@@ -31,6 +31,7 @@ router.use('/nginx/dead-hosts', require('./nginx/dead_hosts'));
 router.use('/nginx/streams', require('./nginx/streams'));
 router.use('/nginx/access-lists', require('./nginx/access_lists'));
 router.use('/nginx/certificates', require('./nginx/certificates'));
+router.use('/nginx/logs', require('./nginx/domain_logs'));
 
 /**
  * API 404 for all other routes

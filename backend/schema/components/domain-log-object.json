@@ -1,0 +1,44 @@
+{
+	"type": "object",
+	"description": "Domain Log Response object",
+	"required": [
+		"proxy_host_id",
+		"log_type",
+		"file_size",
+		"last_modified",
+		"entries",
+		"total_lines"
+	],
+	"additionalProperties": false,
+	"properties": {
+		"proxy_host_id": {
+			"type": "integer",
+			"description": "Proxy host ID"
+		},
+		"log_type": {
+			"type": "string",
+			"enum": ["access", "error"],
+			"description": "Type of log"
+		},
+		"file_size": {
+			"type": "integer",
+			"description": "Log file size in bytes"
+		},
+		"last_modified": {
+			"type": ["string", "null"],
+			"format": "date-time",
+			"description": "Last modification time of the log file"
+		},
+		"entries": {
+			"type": "array",
+			"description": "Log entries",
+			"items": {
+				"$ref": "./domain-log-entry-object.json"
+			}
+		},
+		"total_lines": {
+			"type": "integer",
+			"description": "Total number of log lines returned"
+		}
+	}
+}

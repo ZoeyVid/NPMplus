@@ -1,0 +1,55 @@
+{
+	"type": "object",
+	"description": "Domain Log Entry object",
+	"required": [
+		"line_number",
+		"timestamp",
+		"ip",
+		"method",
+		"url",
+		"status",
+		"size",
+		"user_agent",
+		"raw_line"
+	],
+	"additionalProperties": false,
+	"properties": {
+		"line_number": {
+			"type": "integer",
+			"description": "Line number in the log file"
+		},
+		"timestamp": {
+			"type": ["string", "null"],
+			"format": "date-time",
+			"description": "Request timestamp"
+		},
+		"ip": {
+			"type": ["string", "null"],
+			"description": "Client IP address"
+		},
+		"method": {
+			"type": ["string", "null"],
+			"description": "HTTP method"
+		},
+		"url": {
+			"type": ["string", "null"],
+			"description": "Requested URL"
+		},
+		"status": {
+			"type": ["integer", "null"],
+			"description": "HTTP status code"
+		},
+		"size": {
+			"type": ["integer", "null"],
+			"description": "Response size in bytes"
+		},
+		"user_agent": {
+			"type": ["string", "null"],
+			"description": "User agent string"
+		},
+		"raw_line": {
+			"type": "string",
+			"description": "Raw log line"
+		}
+	}
+}

@@ -22,7 +22,10 @@
 		"enabled",
 		"locations",
 		"hsts_enabled",
-		"hsts_subdomains"
+		"hsts_subdomains",
+		"enable_logs",
+		"log_format",
+		"log_retention_days"
 	],
 	"additionalProperties": false,
 	"properties": {
@@ -138,6 +141,24 @@
 		},
 		"hsts_subdomains": {
 			"$ref": "../common.json#/properties/hsts_subdomains"
+		},
+		"enable_logs": {
+			"description": "Enable domain-specific logging",
+			"type": "boolean",
+			"default": true
+		},
+		"log_format": {
+			"description": "Nginx log format for access logs",
+			"type": "string",
+			"enum": ["combined", "common", "main"],
+			"default": "combined"
+		},
+		"log_retention_days": {
+			"description": "Number of days to retain log files",
+			"type": "integer",
+			"minimum": 1,
+			"maximum": 365,
+			"default": 30
 		},
 		"certificate": {
 			"oneOf": [

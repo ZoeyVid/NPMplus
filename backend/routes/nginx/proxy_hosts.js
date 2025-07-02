@@ -196,4 +196,11 @@ router
 			.catch(next);
 	});
 
+/**
+ * Domain logs for specific proxy-host
+ *
+ * /api/nginx/proxy-hosts/123/logs
+ */
+router.use('/:host_id/logs', require('./domain_logs'));
+
 module.exports = router;

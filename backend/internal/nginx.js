@@ -218,7 +218,14 @@ const internalNginx = {
 
 			host.env = process.env;
 
-			locationsPromise.then(() => {
+			// Ensure log directory exists for proxy hosts
+			let logDirectoryPromise = Promise.resolve();
+			if (nice_host_type === 'proxy_host' && host.enable_logs !== false && host.id) {
+				const internalDomainLog = require('./domain-log');
+				logDirectoryPromise = internalDomainLog.ensureLogDirectory(host.id);
+			}
+
+			Promise.all([locationsPromise, logDirectoryPromise]).then(() => {
 				renderEngine
 					.parseAndRender(template, host)
 					.then((config_text) => {
