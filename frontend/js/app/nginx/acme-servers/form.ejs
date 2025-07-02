@@ -1,0 +1,256 @@
+<div class="modal-content">
+  <div class="modal-header">
+    <h4 class="modal-title">
+      <% if (isNew) { %> <%- i18n('acme-servers', 'add') %> <% } else { %> <%-
+      i18n('acme-servers', 'edit') %> <% } %>
+    </h4>
+    <button
+      type="button"
+      class="close cancel"
+      aria-label="<%- i18n('str', 'close') %>"
+    >
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body">
+    <form>
+      <div class="row">
+        <div class="col-sm-12">
+          <div class="form-group">
+            <label class="form-label"
+              ><%- i18n('str', 'name') %>
+              <span class="form-required">*</span></label
+            >
+            <input
+              type="text"
+              name="name"
+              class="form-control"
+              placeholder="<%- i18n('acme-servers', 'name-placeholder') %>"
+              required
+            />
+            <div class="form-help">
+              <%- i18n('acme-servers', 'name-help') %>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-sm-12">
+          <div class="form-group">
+            <label class="form-label"><%- i18n('str', 'description') %></label>
+            <input
+              type="text"
+              name="description"
+              class="form-control"
+              placeholder="<%- i18n('acme-servers', 'description-placeholder') %>"
+            />
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-sm-12">
+          <div class="form-group">
+            <label class="form-label"
+              ><%- i18n('acme-servers', 'server-url') %>
+              <span class="form-required">*</span></label
+            >
+            <input
+              type="url"
+              name="server_url"
+              class="form-control"
+              placeholder="https://acme-v02.api.letsencrypt.org/directory"
+              required
+            />
+            <div class="form-help">
+              <%- i18n('acme-servers', 'server-url-help') %>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-sm-12">
+          <div class="form-group">
+            <label class="form-label"><%- i18n('str', 'email') %></label>
+            <input
+              type="email"
+              name="email"
+              class="form-control"
+              placeholder="admin@example.com"
+            />
+            <div class="form-help">
+              <%- i18n('acme-servers', 'email-help') %>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- EAB Section -->
+      <div class="row">
+        <div class="col-sm-12">
+          <div class="form-group">
+            <label class="form-check">
+              <input type="checkbox" name="show_eab" class="form-check-input" />
+              <span class="form-check-label"
+                ><%- i18n('acme-servers', 'enable-eab') %></span
+              >
+            </label>
+            <div class="form-help"><%- i18n('acme-servers', 'eab-help') %></div>
+          </div>
+        </div>
+      </div>
+      <div class="eab-section" style="display: none">
+        <div class="row">
+          <div class="col-sm-6">
+            <div class="form-group">
+              <label class="form-label"
+                ><%- i18n('acme-servers', 'eab-kid') %></label
+              >
+              <input
+                type="text"
+                name="eab_kid"
+                class="form-control"
+                placeholder="Key Identifier"
+              />
+            </div>
+          </div>
+          <div class="col-sm-6">
+            <div class="form-group">
+              <label class="form-label"
+                ><%- i18n('acme-servers', 'eab-hmac-key') %></label
+              >
+              <input
+                type="password"
+                name="eab_hmac_key"
+                class="form-control"
+                placeholder="HMAC Key"
+              />
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Advanced Settings -->
+      <div class="row">
+        <div class="col-sm-6">
+          <div class="form-group">
+            <label class="form-label"
+              ><%- i18n('acme-servers', 'profile') %></label
+            >
+            <select name="profile" class="form-control">
+              <option value="none">
+                <%- i18n('acme-servers', 'profile-none') %>
+              </option>
+              <option value="shortlived">Short-lived</option>
+              <option value="tlsserver">TLS Server</option>
+            </select>
+            <div class="form-help">
+              <%- i18n('acme-servers', 'profile-help') %>
+            </div>
+          </div>
+        </div>
+        <div class="col-sm-6">
+          <div class="form-group">
+            <label class="form-label"
+              ><%- i18n('acme-servers', 'key-type') %></label
+            >
+            <select name="key_type" class="form-control">
+              <option value="ecdsa">ECDSA</option>
+              <option value="rsa">RSA</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <!-- Additional Options -->
+      <div class="row">
+        <div class="col-sm-12">
+          <div class="form-group">
+            <label class="form-check">
+              <input
+                type="checkbox"
+                name="must_staple"
+                class="form-check-input"
+              />
+              <span class="form-check-label"
+                ><%- i18n('acme-servers', 'must-staple') %></span
+              >
+            </label>
+            <div class="form-help">
+              <%- i18n('acme-servers', 'must-staple-help') %>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-sm-12">
+          <div class="form-group">
+            <label class="form-check">
+              <input
+                type="checkbox"
+                name="ocsp_stapling"
+                class="form-check-input"
+              />
+              <span class="form-check-label"
+                ><%- i18n('acme-servers', 'ocsp-stapling') %></span
+              >
+            </label>
+            <div class="form-help">
+              <%- i18n('acme-servers', 'ocsp-stapling-help') %>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-sm-12">
+          <div class="form-group">
+            <label class="form-check">
+              <input
+                type="checkbox"
+                name="tls_verify"
+                class="form-check-input"
+                checked
+              />
+              <span class="form-check-label"
+                ><%- i18n('acme-servers', 'tls-verify') %></span
+              >
+            </label>
+            <div class="form-help">
+              <%- i18n('acme-servers', 'tls-verify-help') %>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-sm-12">
+          <div class="form-group">
+            <label class="form-check">
+              <input
+                type="checkbox"
+                name="is_default"
+                class="form-check-input"
+              />
+              <span class="form-check-label"
+                ><%- i18n('acme-servers', 'set-default') %></span
+              >
+            </label>
+            <div class="form-help">
+              <%- i18n('acme-servers', 'default-help') %>
+            </div>
+          </div>
+        </div>
+      </div>
+    </form>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-outline-secondary cancel">
+      <%- i18n('str', 'cancel') %>
+    </button>
+    <button type="button" class="btn btn-success save">
+      <% if (isNew) { %>
+      <i class="fe fe-plus"></i>
+      <%- i18n('str', 'create') %> <% } else { %>
+      <i class="fe fe-save"></i>
+      <%- i18n('str', 'save') %> <% } %>
+    </button>
+  </div>
+</div>

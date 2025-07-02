@@ -1,0 +1,101 @@
+const Mn             = require('backbone.marionette');
+const App            = require('../../main');
+const AcmeServerModel = require('../../../models/acme-server');
+const ListView       = require('./list/main');
+const ErrorView      = require('../../error/main');
+const EmptyView      = require('../../empty/main');
+const template       = require('./main.ejs');
+
+module.exports = Mn.View.extend({
+    id:       'nginx-acme-servers',
+    template: template,
+
+    ui: {
+        list_region: '.list-region',
+        add:         '.add-item',
+        help:        '.help',
+        dimmer:      '.dimmer',
+        search:      '.search-form',
+        query:       'input[name="source-query"]'
+    },
+
+    fetch: App.Api.Nginx.AcmeServers.getAll,
+
+    showData: function(response) {
+        this.showChildView('list_region', new ListView({
+            collection: new AcmeServerModel.Collection(response)
+        }));
+    },
+
+    showError: function(err) {
+        this.showChildView('list_region', new ErrorView({
+            code:    err.code,
+            message: err.message,
+            retry:   function () {
+                App.Controller.showNginxAcmeServers();
+            }
+        }));
+
+        console.error(err);
+    },
+
+    showEmpty: function() {
+        let manage = App.Cache.User.canManage('acme_servers');
+
+        this.showChildView('list_region', new EmptyView({
+            title:      App.i18n('acme-servers', 'empty'),
+            subtitle:   App.i18n('all-hosts', 'empty-subtitle', {manage: manage}),
+            link:       manage ? App.i18n('acme-servers', 'add') : null,
+            btn_color:  'green',
+            permission: 'acme_servers',
+            action:     function () {
+                App.Controller.showNginxAcmeServerForm();
+            }
+        }));
+    },
+
+    regions: {
+        list_region: '@ui.list_region'
+    },
+
+    events: {
+        'click @ui.add': function (e) {
+            e.preventDefault();
+            App.Controller.showNginxAcmeServerForm();
+        },
+
+        'click @ui.help': function (e) {
+            e.preventDefault();
+            App.Controller.showHelp(App.i18n('acme-servers', 'help-title'), App.i18n('acme-servers', 'help-content'));
+        },
+
+        'submit @ui.search': function (e) {
+            e.preventDefault();
+            let query = this.ui.query.val();
+
+            this.fetch(['owner'], query)
+                .then(response => this.showData(response))
+                .catch(err => {
+                    this.showError(err);
+                });
+        }
+    },
+
+    onRender: function () {
+        let view = this;
+
+        view.fetch(['owner'])
+            .then(response => {
+                if (!view.isDestroyed()) {
+                    if (response && response.length) {
+                        view.showData(response);
+                    } else {
+                        view.showEmpty();
+                    }
+                }
+            })
+            .catch(err => {
+                view.showError(err);
+            });
+    }
+});

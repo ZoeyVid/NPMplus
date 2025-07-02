@@ -1,0 +1,13 @@
+<thead>
+  <th width="30">&nbsp;</th>
+  <th onclick="sortTable(1)"><%- i18n('str', 'name') %></th>
+  <th onclick="sortTable(2)"><%- i18n('acme-servers', 'server-url') %></th>
+  <th onclick="sortTable(3)"><%- i18n('acme-servers', 'profile') %></th>
+  <th onclick="sortTable(4)"><%- i18n('str', 'status') %></th>
+  <% if (canManage) { %>
+  <th>&nbsp;</th>
+  <% } %>
+</thead>
+<tbody>
+  <!-- items -->
+</tbody>

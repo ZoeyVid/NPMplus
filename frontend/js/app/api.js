@@ -703,6 +703,59 @@ module.exports = {
             download: function (id) {
                 return DownloadFile('get', "nginx/certificates/" + id + "/download", "certificate.zip")
             }
+        },
+
+        AcmeServers: {
+            /**
+             * @param   {Array}    [expand]
+             * @param   {String}   [query]
+             * @returns {Promise}
+             */
+            getAll: function (expand, query) {
+                return getAllObjects('nginx/acme-servers', expand, query);
+            },
+
+            /**
+             * @param {Object}  data
+             */
+            create: function (data) {
+                return fetch('post', 'nginx/acme-servers', data);
+            },
+
+            /**
+             * @param   {Object}   data
+             * @param   {Number}   data.id
+             * @returns {Promise}
+             */
+            update: function (data) {
+                let id = data.id;
+                delete data.id;
+                return fetch('put', 'nginx/acme-servers/' + id, data);
+            },
+
+            /**
+             * @param   {Number}  id
+             * @returns {Promise}
+             */
+            delete: function (id) {
+                return fetch('delete', 'nginx/acme-servers/' + id);
+            },
+
+            /**
+             * @param   {Number}  id
+             * @returns {Promise}
+             */
+            get: function (id) {
+                return fetch('get', 'nginx/acme-servers/' + id);
+            },
+
+            /**
+             * @param   {Number}  id
+             * @returns {Promise}
+             */
+            setDefault: function (id) {
+                return fetch('post', 'nginx/acme-servers/' + id + '/set-default');
+            }
         }
     },
 

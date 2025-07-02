@@ -1,0 +1,42 @@
+<div class="modal-content">
+  <div class="modal-header">
+    <h4 class="modal-title">Delete ACME Server</h4>
+    <button
+      type="button"
+      class="btn-close"
+      data-bs-dismiss="modal"
+      aria-label="Close"
+    ></button>
+  </div>
+  <form>
+    <div class="modal-body">
+      <p>
+        Are you sure you want to delete the ACME server "<strong
+          ><%- model.name %></strong
+        >"?
+      </p>
+      <% if (model.is_default) { %>
+      <div class="alert alert-warning">
+        <i class="fa fa-exclamation-triangle" aria-hidden="true"></i>
+        <strong>Warning:</strong> This is the default ACME server. All
+        certificates configured to use the default ACME server will no longer
+        work properly after deletion.
+      </div>
+      <% } %>
+      <div class="secret-error alert alert-danger" style="display: none"></div>
+    </div>
+    <div class="modal-footer">
+      <button
+        type="button"
+        class="btn btn-secondary cancel"
+        data-bs-dismiss="modal"
+      >
+        Cancel
+      </button>
+      <button type="submit" class="btn btn-danger save">
+        <i class="fa fa-trash" aria-hidden="true"></i>
+        Delete
+      </button>
+    </div>
+  </form>
+</div>

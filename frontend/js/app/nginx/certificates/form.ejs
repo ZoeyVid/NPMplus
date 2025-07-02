@@ -18,6 +18,24 @@
                             <input type="text" name="domain_names" class="form-control" id="input-domains" value="<%- domain_names.join(',') %>" required>
                             <div class="text-blue"><i class="fe fe-alert-triangle"></i> <%- i18n('tls', 'hosts-warning') %></div>
                         </div>
+                    </div>
+                    <div class="col-sm-12 col-md-12">
+                        <div class="form-group">
+                            <label class="form-label"><%- i18n('acme-servers', 'title') %></label>
+                            <select name="acme_server_id" class="form-control">
+                                <option value="">Default ACME Server</option>
+                                <% acme_servers.forEach(function(server) { %>
+                                    <option value="<%- server.id %>" <%= acme_server_id == server.id ? 'selected' : '' %>>
+                                        <%- server.name %>
+                                        <% if (server.is_default) { %> (<%- i18n('acme-servers', 'default') %>)<% } %>
+                                    </option>
+                                <% }) %>
+                            </select>
+                            <div class="text-secondary small">
+                                <i class="fe fe-info"></i>
+                                Select the ACME server to use for this certificate. Leave empty to use the default server.
+                            </div>
+                        </div>
                         <div class="mb-3 test-domains-container">
                             <button type="button" class="btn btn-secondary test-domains col-sm-12"><%- i18n('certificates', 'test-reachability') %></button>
                             <div class="text-secondary small">

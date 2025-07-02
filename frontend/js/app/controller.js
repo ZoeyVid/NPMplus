@@ -374,6 +374,47 @@ module.exports = {
 	},
 
 	/**
+	 * Nginx ACME Servers
+	 */
+	showNginxAcmeServers: function () {
+		if (Cache.User.isAdmin() || Cache.User.canView('acme_servers')) {
+			const controller = this;
+			require(['./main', './nginx/acme-servers/main'], (App, View) => {
+				controller.navigate('/nginx/acme-servers');
+				App.UI.showAppContent(new View());
+			});
+		} else {
+			this.showDashboard();
+		}
+	},
+
+	/**
+	 * Nginx ACME Server Form
+	 *
+	 * @param model
+	 */
+	showNginxAcmeServerForm: function (model) {
+		if (Cache.User.isAdmin() || Cache.User.canManage('acme_servers')) {
+			require(['./main', './nginx/acme-servers/form'], function (App, View) {
+				App.UI.showModalDialog(new View({model: model}));
+			});
+		}
+	},
+
+	/**
+	 * Nginx ACME Server Delete Confirm
+	 *
+	 * @param model
+	 */
+	showNginxAcmeServerDeleteConfirm: function (model) {
+		if (Cache.User.isAdmin() || Cache.User.canManage('acme_servers')) {
+			require(['./main', './nginx/acme-servers/delete'], function (App, View) {
+				App.UI.showModalDialog(new View({model: model}));
+			});
+		}
+	},
+
+	/**
 	 * Audit Log
 	 */
 	showAuditLog: function () {

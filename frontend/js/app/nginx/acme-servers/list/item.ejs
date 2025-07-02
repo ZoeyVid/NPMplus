@@ -1,0 +1,76 @@
+<td>
+  <% if (is_default) { %>
+  <i
+    class="fe fe-star text-warning"
+    data-toggle="tooltip"
+    data-title="<%- i18n('acme-servers', 'default-server') %>"
+  ></i>
+  <% } else { %>
+  <i class="fe fe-server text-muted"></i>
+  <% } %>
+</td>
+<td>
+  <a href="#" class="name">
+    <strong><%- name %></strong>
+    <% if (description) { %>
+    <br /><small class="text-muted"><%- description %></small>
+    <% } %>
+  </a>
+</td>
+<td>
+  <span class="text-muted"><%- server_url %></span>
+  <% if (hasEAB()) { %>
+  <br /><small class="badge badge-secondary"
+    ><%- i18n('acme-servers', 'eab-enabled') %></small
+  >
+  <% } %>
+</td>
+<td>
+  <span class="text-muted"><%- getProfileText() %></span>
+  <% if (key_type !== 'ecdsa') { %>
+  <br /><small class="text-muted"><%- key_type.toUpperCase() %></small>
+  <% } %>
+</td>
+<td>
+  <span class="badge badge-<%- getStatusColor() %>"
+    ><%- getStatusText() %></span
+  >
+</td>
+<% if (canManage) { %>
+<td class="text-right">
+  <div class="item-extra">
+    <div
+      class="btn-group"
+      role="group"
+      aria-label="<%- i18n('str', 'options') %>"
+    >
+      <button
+        type="button"
+        class="btn btn-outline-secondary btn-sm dropdown-toggle"
+        data-toggle="dropdown"
+        aria-haspopup="true"
+        aria-expanded="false"
+      >
+        <i class="fe fe-more-vertical"></i>
+      </button>
+      <div class="dropdown-menu dropdown-menu-right">
+        <a class="dropdown-item edit" href="#"
+          ><i class="fe fe-edit dropdown-icon"></i> <%- i18n('str', 'edit')
+          %></a
+        >
+        <% if (!is_default) { %>
+        <a class="dropdown-item set-default" href="#"
+          ><i class="fe fe-star dropdown-icon"></i> <%- i18n('acme-servers',
+          'set-default') %></a
+        >
+        <% } %>
+        <div class="dropdown-divider"></div>
+        <a class="dropdown-item delete" href="#"
+          ><i class="fe fe-trash-2 dropdown-icon"></i> <%- i18n('str', 'delete')
+          %></a
+        >
+      </div>
+    </div>
+  </div>
+</td>
+<% } %>

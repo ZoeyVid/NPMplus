@@ -11,10 +11,12 @@ const model = Backbone.Model.extend({
             provider:          '',
             nice_name:         '',
             domain_names:      [],
+            acme_server_id:    1,
             expires_on:        null,
             meta:              {},
             // The following are expansions:
             owner:             null,
+            acme_server:       null,
             proxy_hosts:       [],
             redirection_hosts: [],
             dead_hosts:        []

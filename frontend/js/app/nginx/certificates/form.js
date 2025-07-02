@@ -29,6 +29,7 @@ module.exports = Mn.View.extend({
         non_loader_content:                   '.non-loader-content',
         le_error_info:                        '#le-error-info',
         domain_names:                         'input[name="domain_names"]',
+        acme_server_id:                       'select[name="acme_server_id"]',
         test_domains_container:               '.test-domains-container',
         test_domains_button:                  '.test-domains',
         buttons:                              '.modal-footer button',
@@ -274,6 +275,9 @@ module.exports = Mn.View.extend({
             return typeof this.meta.propagation_seconds !== 'undefined' ? this.meta.propagation_seconds : '';
         },
         dns_plugins: dns_providers,
+        acme_servers: function () {
+            return this._acme_servers || [];
+        }
     },
 
     onRender: function () {
@@ -304,6 +308,21 @@ module.exports = Mn.View.extend({
     initialize: function (options) {
         if (typeof options.model === 'undefined' || !options.model) {
             this.model = new CertificateModel.Model({provider: 'letsencrypt'});
+        }
+        
+        // Load ACME servers
+        this._acme_servers = [];
+        const view = this;
+        
+        if (App.Cache.User.canView('acme_servers')) {
+            App.Api.Nginx.AcmeServers.getAll()
+                .then(result => {
+                    view._acme_servers = result.data || [];
+                    view.render();
+                })
+                .catch(err => {
+                    console.warn('Could not load ACME servers:', err.message);
+                });
         }
     }
 });
