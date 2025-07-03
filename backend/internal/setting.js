@@ -120,6 +120,28 @@ const internalSetting = {
 			return settingModel.query().orderBy('description', 'ASC');
 		});
 	},
+
+	/**
+	 * Check if CrowdSec is enabled by reading the config file
+	 *
+	 * @returns {Boolean}
+	 */
+	isCrowdSecEnabled: () => {
+		try {
+			const configPath = '/data/crowdsec/crowdsec.conf';
+			if (fs.existsSync(configPath)) {
+				const configContent = fs.readFileSync(configPath, 'utf8');
+				// Check if ENABLED=true in the config file
+				const enabledMatch = configContent.match(/^ENABLED\s*=\s*(.+)$/m);
+				if (enabledMatch) {
+					return enabledMatch[1].trim().toLowerCase() === 'true';
+				}
+			}
+			return false;
+		} catch (error) {
+			return false;
+		}
+	},
 };
 
 module.exports = internalSetting;

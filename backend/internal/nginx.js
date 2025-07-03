@@ -156,7 +156,7 @@ const internalNginx = {
 
 	/**
 	 * @param   {String}  host_type
-	 * @param   {Object}  host
+	 * @param   {Object}  host_row
 	 * @returns {Promise}
 	 */
 	generateConfig: (host_type, host_row) => {
@@ -217,6 +217,17 @@ const internalNginx = {
 			}
 
 			host.env = process.env;
+
+			// Add CrowdSec information to the host object
+			const internalSetting = require('./setting');
+			host.crowdsec_enabled = internalSetting.isCrowdSecEnabled();
+			
+			// For proxy hosts, check if CrowdSec should be disabled for this specific host
+			if (nice_host_type === 'proxy_host' && host.crowdsec_enabled) {
+				host.crowdsec_disabled_for_host = host.crowdsec_disabled || false;
+			} else {
+				host.crowdsec_disabled_for_host = false;
+			}
 
 			// Ensure log directory exists for proxy hosts
 			let logDirectoryPromise = Promise.resolve();

@@ -85,6 +85,9 @@
 						},
 						"log_retention_days": {
 							"$ref": "../../../components/proxy-host-object.json#/properties/log_retention_days"
+						},
+						"crowdsec_disabled": {
+							"$ref": "../../../components/proxy-host-object.json#/properties/crowdsec_disabled"
 						}
 					}
 				}

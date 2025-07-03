@@ -25,7 +25,8 @@
 		"hsts_subdomains",
 		"enable_logs",
 		"log_format",
-		"log_retention_days"
+		"log_retention_days",
+		"crowdsec_disabled"
 	],
 	"additionalProperties": false,
 	"properties": {
@@ -159,6 +160,15 @@
 			"minimum": 1,
 			"maximum": 365,
 			"default": 30
+		},
+		"crowdsec_disabled": {
+			"description": "Whether to disable CrowdSec for this specific proxy host",
+			"type": "boolean",
+			"default": false
+		},
+		"crowdsec_enabled": {
+			"description": "Whether CrowdSec is enabled server-wide (read-only)",
+			"type": "boolean"
 		},
 		"certificate": {
 			"oneOf": [

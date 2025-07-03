@@ -263,6 +263,11 @@ const internalProxyHost = {
 				if (typeof data.omit !== 'undefined' && data.omit !== null) {
 					row = _.omit(row, data.omit);
 				}
+				
+				// Add CrowdSec status information
+				const internalSetting = require('./setting');
+				row.crowdsec_enabled = internalSetting.isCrowdSecEnabled();
+				
 				return row;
 			});
 	},
