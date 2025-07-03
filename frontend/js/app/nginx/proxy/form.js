@@ -48,7 +48,8 @@ module.exports = Mn.View.extend({
         enable_logs:              'input[name="enable_logs"]',
         log_format:               'select[name="log_format"]',
         log_retention_days:       'input[name="log_retention_days"]',
-        letsencrypt:              '.letsencrypt'
+        letsencrypt:              '.letsencrypt',
+        crowdsec_disabled:        'input[name="crowdsec_disabled"]'
     },
 
     regions: {
@@ -182,6 +183,7 @@ module.exports = Mn.View.extend({
             data.ssl_forced              = !!data.ssl_forced;
             data.enable_logs             = !!data.enable_logs;
             data.log_retention_days      = parseInt(data.log_retention_days, 10) || 30;
+            data.crowdsec_disabled       = !!data.crowdsec_disabled;
 
             if (typeof data.meta === 'undefined') data.meta = {};
             data.meta.letsencrypt_agree = data.meta.letsencrypt_agree == 1;

@@ -156,7 +156,9 @@
 		"help-content": "Ein Proxy-Host ist der eingehende Endpunkt für einen Webdienst, den Sie weiterleiten möchten.\nEr bietet eine optionale TLS-Terminierung für Ihren Dienst, der möglicherweise keine TLS-Unterstützung eingebaut hat.\nProxy-Hosts sind die häufigste Anwendung für den NPMplus.",
 		"help-title": "Was ist ein Proxy-Host?",
 		"search": "Suche Host..",
-		"title": "Proxy-Hosts"
+		"title": "Proxy-Hosts",
+		"disable-crowdsec": "CrowdSec für diesen Host deaktivieren",
+		"disable-crowdsec-help": "Wenn aktiviert, wird der CrowdSec-Schutz für diesen spezifischen Proxy-Host deaktiviert (erfordert, dass CrowdSec server-weit aktiviert ist)"
 	},
 	"redirection-hosts": {
 		"add": "Weiterleitungs-Host hinzufügen",
@@ -167,7 +169,7 @@
 		"forward-domain": "Ziel Domain und Pfad (ohne https:// bzw. http://)",
 		"forward-http-status-code": "HTTP Code",
 		"forward-scheme": "Schema",
-		"help-content": "Ein Weiterleitungs Host leitet Anfragen von der eingehenden Domain um und schiebt den Besucher auf eine andere Domain.\nDer häufigste Grund für die Verwendung dieser Art von Host ist, wenn Ihre Website die Domäne wechselt, aber noch Suchmaschinen- oder Referrer-Links auf die alte Domäne verweisen.",
+		"help-content": "Ein Weiterleitungs Host leitet Anfragen von der eingehenden Domain um und schiebt den Besucher auf eine andere Domain.\nDer häufigste Grund für die Verwendung dieser Art von Host ist, wenn Ihre Website die Domäne wechselt, aber noch Suchmaschinen- oder Referrer-Links auf die alte domäne verweisen.",
 		"help-title": "Was ist ein Weiterleitungs-Host?",
 		"preserve-path": "Pfad beibehalten",
 		"search": "Suche Host..",

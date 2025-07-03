@@ -208,7 +208,9 @@
 		"method": "Method",
 		"status": "Status",
 		"size": "Size",
-		"url": "URL"
+		"url": "URL",
+		"disable-crowdsec": "Disable CrowdSec for this host",
+		"disable-crowdsec-help": "When enabled, CrowdSec protection will be disabled for this specific proxy host (requires CrowdSec to be enabled server-wide)"
 	},
 	"redirection-hosts": {
 		"add": "Add Redirection Host",

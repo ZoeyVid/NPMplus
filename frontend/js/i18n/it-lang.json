@@ -156,7 +156,9 @@
 		"help-content": "Un Proxy Host è l'endpoint in entrata per un servizio Web che si desidera inoltrare.\nFornisce una terminazione TLS opzionale per il servizio che potrebbe non avere il supporto TLS integrato.\nL'uso più comune di NPMplus è quello di Proxy Host.",
 		"help-title": "Cos'è un Proxy Host?",
 		"search": "Cerca Host…",
-		"title": "Proxy Host"
+		"title": "Proxy Host",
+		"disable-crowdsec": "Disabilita CrowdSec per questo host",
+		"disable-crowdsec-help": "Quando abilitato, la protezione CrowdSec sarà disabilitata per questo specifico proxy host (richiede che CrowdSec sia abilitato a livello server)"
 	},
 	"redirection-hosts": {
 		"add": "Crea host di reindirizzamento",

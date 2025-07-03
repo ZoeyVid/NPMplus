@@ -156,7 +156,9 @@
 		"help-content": "代理是您要转发的Web服务的传入端点。\n它为可能没有内置TLS支持的服务提供可选的TLS终止。\n代理主机是NPMplus最常见的用途。",
 		"help-title": "什么是代理？",
 		"search": "搜索代理…",
-		"title": "代理"
+		"title": "代理",
+		"disable-crowdsec": "为此主机禁用 CrowdSec",
+		"disable-crowdsec-help": "启用后，将为此特定代理主机禁用 CrowdSec 保护（需要在服务器级别启用 CrowdSec）"
 	},
 	"redirection-hosts": {
 		"add": "添加重定向",

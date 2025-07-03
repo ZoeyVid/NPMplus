@@ -95,6 +95,20 @@
                                 </select>
                             </div>
                         </div>
+                        
+                        <!-- CrowdSec Settings (only show if CrowdSec is enabled server-wide) -->
+                        <% if (typeof crowdsec_enabled !== 'undefined' && crowdsec_enabled) { %>
+                        <div class="col-sm-12 col-md-12">
+                            <div class="form-group">
+                                <label class="custom-switch">
+                                    <input type="checkbox" class="custom-switch-input" name="crowdsec_disabled" value="1"<%- crowdsec_disabled ? ' checked' : '' %>>
+                                    <span class="custom-switch-indicator"></span>
+                                    <span class="custom-switch-description"><%- i18n('proxy-hosts', 'disable-crowdsec') %></span>
+                                </label>
+                                <small class="form-hint"><%- i18n('proxy-hosts', 'disable-crowdsec-help') %></small>
+                            </div>
+                        </div>
+                        <% } %>
                     </div>
                 </div>
 

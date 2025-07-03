@@ -53,6 +53,19 @@
   <% } else { %>
   <span class="status-icon bg-warning"></span> <%- i18n('str', 'unknown') %>
   <% } %>
+  
+  <!-- CrowdSec status indicator -->
+  <% if (typeof crowdsec_enabled !== 'undefined' && crowdsec_enabled) { %>
+    <% if (crowdsec_disabled) { %>
+      <span class="badge badge-secondary ml-1" title="<%- i18n('proxy-hosts', 'disable-crowdsec') %>">
+        <i class="fe fe-shield-off" style="font-size: 10px;"></i>
+      </span>
+    <% } else { %>
+      <span class="badge badge-success ml-1" title="CrowdSec enabled">
+        <i class="fe fe-shield" style="font-size: 10px;"></i>
+      </span>
+    <% } %>
+  <% } %>
 </td>
 <% if (canManage) { %>
 <td class="text-right">
