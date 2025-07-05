@@ -14,7 +14,7 @@
 		"body-parser": "2.2.0",
 		"compression": "1.8.0",
 		"express": "5.1.0",
-		"express-fileupload": "1.5.1",
+		"express-fileupload": "1.5.2",
 		"gravatar": "1.8.2",
 		"jsonwebtoken": "9.0.2",
 		"knex": "3.1.0",
