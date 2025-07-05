@@ -128,6 +128,9 @@ function getAllObjects(path, expand, query) {
         params.push('query=' + query);
     }
 
+    // Add cache buster
+    params.push('_t=' + Date.now());
+
     return fetch('get', path + (params.length ? '?' + params.join('&') : ''));
 }
 
@@ -762,13 +765,6 @@ module.exports = {
                 return fetch('get', 'nginx/acme-servers/' + id);
             },
 
-            /**
-             * @param   {Number}  id
-             * @returns {Promise}
-             */
-            setDefault: function (id) {
-                return fetch('post', 'nginx/acme-servers/' + id + '/set-default');
-            }
         }
     },
 

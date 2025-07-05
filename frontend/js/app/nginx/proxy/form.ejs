@@ -120,7 +120,6 @@
                                 <label class="form-label"><%- i18n('all-hosts', 'tls-certificate') %></label>
                                 <select name="certificate_id" class="form-control custom-select" placeholder="<%- i18n('all-hosts', 'none') %>">
                                     <option selected value="0" data-data="{&quot;id&quot;:0}" <%- certificate_id ? '' : 'selected' %>><%- i18n('all-hosts', 'none') %></option>
-                                    <option selected value="new" data-data="{&quot;id&quot;:&quot;new&quot;}"><%- i18n('all-hosts', 'new-cert') %></option>
                                 </select>
                             </div>
                         </div>
@@ -284,7 +283,7 @@
                                     <span class="custom-switch-indicator"></span>
                                     <span class="custom-switch-description"><%- i18n('proxy-hosts', 'enable-domain-logs') %></span>
                                 </label>
-                                <span class="form-help"><%- i18n('proxy-hosts', 'enable-domain-logs-help') %></span>
+                                <span style="font-size: 9px;"><%- i18n('proxy-hosts', 'enable-domain-logs-help') %></span>
                             </div>
                         </div>
                         <div class="col-sm-6 col-md-6">
@@ -295,14 +294,14 @@
                                     <option value="common" <%- log_format === 'common' ? 'selected' : '' %>>Common</option>
                                     <option value="main" <%- log_format === 'main' ? 'selected' : '' %>>Main</option>
                                 </select>
-                                <span class="form-help"><%- i18n('proxy-hosts', 'log-format-help') %></span>
+                                <span style="font-size: 9px;"><%- i18n('proxy-hosts', 'log-format-help') %></span>
                             </div>
                         </div>
                         <div class="col-sm-6 col-md-6">
                             <div class="form-group">
                                 <label class="form-label"><%- i18n('proxy-hosts', 'log-retention-days') %></label>
                                 <input type="number" name="log_retention_days" class="form-control" min="1" max="365" value="<%- log_retention_days %>"<%- !enable_logs ? ' disabled' : '' %>>
-                                <span class="form-help"><%- i18n('proxy-hosts', 'log-retention-days-help') %></span>
+                                <span style="font-size: 9px;"><%- i18n('proxy-hosts', 'log-retention-days-help') %></span>
                             </div>
                         </div>
                     </div>

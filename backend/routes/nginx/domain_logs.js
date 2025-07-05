@@ -21,7 +21,7 @@ router
 
 	/**
 	 * GET /api/nginx/proxy-hosts/:host_id/logs
-	 * 
+	 *
 	 * プロキシホストのログを取得
 	 */
 	.get((req, res, next) => {
@@ -44,8 +44,7 @@ router
 						maximum: 10000,
 					},
 					search: {
-						type: 'string',
-						minLength: 1,
+						anyOf: [{ type: 'string', minLength: 0 }, { type: 'null' }],
 					},
 				},
 			},
@@ -53,7 +52,7 @@ router
 				host_id: parseInt(req.params.host_id, 10),
 				log_type: req.query.log_type || 'access',
 				lines: parseInt(req.query.lines, 10) || 100,
-				search: req.query.search || null,
+				search: req.query.search && req.query.search.trim() ? req.query.search.trim() : null,
 			},
 		)
 			.then((data) => {

@@ -6,7 +6,7 @@
 <td>
     <div class="wrap">
         <%
-        if (provider === 'letsencrypt') {
+        if (certificate_type === 'acme') {
             domain_names.map(function(host) {
                 if (host.indexOf('*') === -1) {
                     %>
@@ -28,7 +28,7 @@
     </div>
 </td>
 <td>
-    <%- i18n('tls', provider) %><% if (meta.dns_provider) { %> - <%- dns_providers[meta.dns_provider].name %><% } %>
+    <%- i18n('tls', certificate_type) %><% if (meta.dns_provider) { %> - <%- dns_providers[meta.dns_provider].name %><% } %>
 </td>
 <td class="<%- isExpired() ? 'text-danger' : '' %>">
     <%- formatDbDate(expires_on, 'Do MMMM YYYY, HH:mm') %>
@@ -46,7 +46,7 @@
         <a href="#" data-toggle="dropdown" class="icon"><i class="fe fe-more-vertical"></i></a>
         <div class="dropdown-menu dropdown-menu-right">
             <span class="dropdown-header"><%- i18n('audit-log', 'certificate') %> #<%- id %></span>
-            <% if (provider === 'letsencrypt') { %>
+            <% if (certificate_type === 'acme') { %>
                 <a href="#" class="renew dropdown-item"><i class="dropdown-icon fe fe-refresh-cw"></i> <%- i18n('certificates', 'force-renew') %></a>
                 <a href="#" class="download dropdown-item"><i class="dropdown-icon fe fe-download"></i> <%- i18n('certificates', 'download') %></a>
                 <% if (meta.dns_challenge === false) { %>

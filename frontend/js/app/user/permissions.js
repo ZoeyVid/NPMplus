@@ -34,7 +34,8 @@ module.exports = Mn.View.extend({
                     proxy_hosts:       'manage',
                     redirection_hosts: 'manage',
                     streams:           'manage',
-                    certificates:      'manage'
+                    certificates:      'manage',
+                    acme_servers:      'manage'
                 });
             }
 

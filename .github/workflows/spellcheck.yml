@@ -16,4 +16,4 @@ jobs:
           check_filenames: true
           check_hidden: true
           skip: .git,.gitignore,yarn.lock,de-lang.json,it-lang.json,zh-lang.json,showdown.min.js,jquery.min.js,xregexp-all.js
-          ignore_words_list: alog
+          ignore_words_list: alog,hasTable

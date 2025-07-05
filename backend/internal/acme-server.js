@@ -18,8 +18,8 @@ const internalAcmeServer = {
 	create: (access, data) => {
 		return access
 			.can('acme_servers:create', data)
-			.then((access_data) => {
-				data.owner_user_id = access_data.token.get('attrs').id;
+			.then(() => {
+				data.owner_user_id = access.token.getUserId(1);
 
 				// Validate required fields
 				if (!data.name || !data.server_url) {
@@ -31,19 +31,7 @@ const internalAcmeServer = {
 					throw new error.ValidationError('Server URL must be a valid HTTP/HTTPS URL');
 				}
 
-				// If this is set as default, remove default from others
-				if (data.is_default) {
-					return acmeServerModel
-						.query()
-						.patch({ is_default: 0 })
-						.where('is_default', 1)
-						.where('is_deleted', 0)
-						.then(() => {
-							return acmeServerModel.query().insertAndFetch(data);
-						});
-				} else {
-					return acmeServerModel.query().insertAndFetch(data);
-				}
+				return acmeServerModel.query().insertAndFetch(data);
 			})
 			.then((server) => {
 				return internalAcmeServer.get(access, { id: server.id, expand: ['owner'] });
@@ -73,20 +61,7 @@ const internalAcmeServer = {
 					throw new error.ValidationError('Server URL must be a valid HTTP/HTTPS URL');
 				}
 
-				// If this is set as default, remove default from others
-				if (data.is_default) {
-					return acmeServerModel
-						.query()
-						.patch({ is_default: 0 })
-						.where('is_default', 1)
-						.where('is_deleted', 0)
-						.whereNot('id', data.id)
-						.then(() => {
-							return acmeServerModel.query().where({ id: data.id }).patch(data);
-						});
-				} else {
-					return acmeServerModel.query().where({ id: data.id }).patch(data);
-				}
+				return acmeServerModel.query().where({ id: data.id }).patch(data);
 			})
 			.then(() => {
 				return internalAcmeServer.get(access, { id: data.id, expand: ['owner'] });
@@ -114,7 +89,9 @@ const internalAcmeServer = {
 					.first();
 
 				if (typeof data.expand !== 'undefined' && data.expand !== null) {
-					query.withGraphFetched(`[${data.expand.join(', ')}]`);
+					// Convert expand to array if it's a string
+					let expandArray = Array.isArray(data.expand) ? data.expand : [data.expand];
+					query.withGraphFetched(`[${expandArray.join(', ')}]`);
 				}
 
 				return query;
@@ -151,12 +128,14 @@ const internalAcmeServer = {
 					.orderBy('name', 'ASC');
 
 				if (typeof expand !== 'undefined' && expand !== null) {
-					query.withGraphFetched(`[${expand.join(', ')}]`);
+					// Convert expand to array if it's a string
+					let expandArray = Array.isArray(expand) ? expand : [expand];
+					query.withGraphFetched(`[${expandArray.join(', ')}]`);
 				}
 
 				// All users can see their own ACME servers
 				if (access_data.permission_visibility !== 'all') {
-					query.where('owner_user_id', access_data.token.get('attrs').id);
+					query.where('owner_user_id', access.token.getUserId(1));
 				}
 
 				if (typeof search === 'string') {
@@ -168,13 +147,17 @@ const internalAcmeServer = {
 				return query;
 			})
 			.then((rows) => {
-				if (typeof expand !== 'undefined' && expand !== null && expand.indexOf('owner') !== -1) {
-					rows.map(function (row) {
-						if (row.owner) {
-							delete row.owner.password;
-						}
-						return row;
-					});
+				if (typeof expand !== 'undefined' && expand !== null) {
+					// Convert expand to array if it's a string
+					let expandArray = Array.isArray(expand) ? expand : [expand];
+					if (expandArray.indexOf('owner') !== -1) {
+						rows.map(function (row) {
+							if (row.owner) {
+								delete row.owner.password;
+							}
+							return row;
+						});
+					}
 				}
 
 				return rows.map((row) => _.omit(row, omissions()));
@@ -260,59 +243,29 @@ const internalAcmeServer = {
 	},
 
 	/**
-	 * Get the default ACME server
-	 *
-	 * @returns {Promise}
-	 */
-	getDefaultServer: () => {
-		return acmeServerModel
-			.query()
-			.where('is_default', 1)
-			.where('is_deleted', 0)
-			.first()
-			.then((server) => {
-				if (!server) {
-					throw new error.ItemNotFoundError('No default ACME server found');
-				}
-				return server;
-			});
-	},
-
-	/**
-	 * Set a server as default
+	 * Get the first available ACME server (replacement for default server)
 	 *
 	 * @param  {Access}  access
-	 * @param  {Object}  data
-	 * @param  {Number}  data.id
 	 * @returns {Promise}
 	 */
-	setDefault: (access, data) => {
+	getFirstAvailableServer: (access) => {
 		return access
-			.can('acme_servers:update', data.id)
-			.then(() => {
-				return internalAcmeServer.get(access, { id: data.id });
-			})
-			.then((row) => {
-				if (!row) {
-					throw new error.ItemNotFoundError(data.id);
+			.can('acme_servers:list')
+			.then((access_data) => {
+				let query = acmeServerModel.query().where('is_deleted', 0).orderBy('name', 'ASC').first();
+
+				// All users can see their own ACME servers
+				if (access_data.permission_visibility !== 'all') {
+					query.where('owner_user_id', access.token.getUserId(1));
 				}
 
-				// Remove default from all servers first
-				return acmeServerModel
-					.query()
-					.patch({ is_default: 0 })
-					.where('is_default', 1)
-					.where('is_deleted', 0);
+				return query;
 			})
-			.then(() => {
-				// Set this server as default
-				return acmeServerModel
-					.query()
-					.where({ id: data.id })
-					.patch({ is_default: 1 });
-			})
-			.then(() => {
-				return internalAcmeServer.get(access, { id: data.id, expand: ['owner'] });
+			.then((server) => {
+				if (!server) {
+					throw new error.ItemNotFoundError('No ACME servers available');
+				}
+				return server;
 			});
 	},
 };

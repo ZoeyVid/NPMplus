@@ -43,7 +43,6 @@
 		"enable-modsec": "Abilita ModSecurity",
 		"force-https": "Forza HTTPS",
 		"locations": "Location personalizzate",
-		"new-cert": "Richiedi un nuovo certificato TLS",
 		"no-tls": "Questo host non userà HTTPS",
 		"none": "Nessuno",
 		"tls-certificate": "Certificato TLS",
@@ -79,7 +78,7 @@
 		"download": "Scarica",
 		"empty": "Non ci sono certificati TLS",
 		"force-renew": "Rinnova ora",
-		"form-title": "{id, select, undefined{Nuovo} other{Modifica}} un certificato {provider, select, letsencrypt{Certbot} other{Custom}}",
+		"form-title": "{id, select, undefined{Nuovo} other{Modifica}} un certificato {type, select, acme{ACME} custom{Custom} other{}}",
 		"help-content": "I certificati TLS (noti precedentemente come certificati SSL) sono una forma di chiave di crittografia che consente la crittografia del tuo sito per l'utente finale.\nNPMplus utilizza di default un servizio chiamato Let's Encrypt per rilasciare gratuitamente certificati TLS.\nSe NPMplus protegge informazioni personali, password o dati sensibili, probabilmente è una buona idea utilizzare un certificato.\nNPMplus supporta anche l'autenticazione DNS nel caso in cui il tuo sito non sia accessibile da Internet o se desideri semplicemente un certificato wildcard.",
 		"help-title": "Certificati TLS",
 		"in-use": "In uso",
@@ -116,7 +115,7 @@
 		"title": "Dead Host"
 	},
 	"footer": {
-		"text": " - MIT-License da <a href=\"{url1}\" target=\"_blank\">jc21.com</a> NPM, <a href=\"{url2}\" target=\"_blank\">ZoeyVid</a> NPMplus e collaboratori - Tema a cura di <a href=\"{url}\" target=\"_blank\">Tabler v0.0.31</a>",
+		"text": " - MIT License © <a href=\"mailto:git@ktn.works\">Kotone (git@ktn.works)</a>, basato sul lavoro di <a href=\"{url1}\" target=\"_blank\">jc21.com</a>, NPM, <a href=\"{url2}\" target=\"_blank\">ZoeyVid</a> NPMplus, e collaboratori - Tema a cura di <a href=\"{url3}\" target=\"_blank\">Tabler v0.0.31</a>",
 		"repo": "Repository su GitHub",
 		"toggle-dark": "Abilita modalità scura"
 	},
@@ -261,12 +260,14 @@
 		"udp-forwarding": "Inoltro UDP"
 	},
 	"tls": {
+		"acme": "ACME",
 		"certbot": "Certbot",
 		"certbot-agree": "Accetto i <a href=\"{url}\" target=\"_blank\">termini di servizio di Let's Encrypt</a> / termini di servizio della CA custom impostata",
 		"certbot-email": "Indirizzo Email per Certbot",
 		"certbot-warning": "Questa sezione richiede una certa conoscenza di Certbot e dei suoi plugin DNS. Si prega di consultare la documentazione dei rispettivi plugin.",
 		"credentials-file-content": "Contenuto del file delle credenziali",
 		"credentials-file-content-info": "Questo plugin richiede un file di configurazione contenente un token API o altre credenziali per il tuo provider",
+		"custom": "Custom",
 		"delete-tls": "I certificati TLS allegati NON verranno rimossi; dovranno essere rimossi manualmente.",
 		"dns-challenge": "Usa una challenge DNS",
 		"dns-provider": "Provider DNS",
@@ -279,7 +280,8 @@
 		"processing-info": "Elaborazione in corso... Potrebbero volerci alcuni minuti.",
 		"propagation-seconds": "Secondi di propagazione",
 		"propagation-seconds-info": "Lascia vuoto per usare il valore predefinito dei plugin. Numero di secondi di attesa per la propagazione DNS.",
-		"stored-as-plaintext-info": "Questi dati verranno memorizzati come testo in chiaro nel database e in un file!"
+		"stored-as-plaintext-info": "Questi dati verranno memorizzati come testo in chiaro nel database e in un file!",
+		"undefined": "Nessun certificato"
 	},
 	"users": {
 		"add": "Crea utente",

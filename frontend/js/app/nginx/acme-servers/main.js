@@ -46,10 +46,10 @@ module.exports = Mn.View.extend({
             title:      App.i18n('acme-servers', 'empty'),
             subtitle:   App.i18n('all-hosts', 'empty-subtitle', {manage: manage}),
             link:       manage ? App.i18n('acme-servers', 'add') : null,
-            btn_color:  'green',
+            btn_color:  'success',
             permission: 'acme_servers',
             action:     function () {
-                App.Controller.showNginxAcmeServerForm();
+                App.Controller.showNginxAcmeServerForm(new AcmeServerModel.Model());
             }
         }));
     },
@@ -61,7 +61,7 @@ module.exports = Mn.View.extend({
     events: {
         'click @ui.add': function (e) {
             e.preventDefault();
-            App.Controller.showNginxAcmeServerForm();
+            App.Controller.showNginxAcmeServerForm(new AcmeServerModel.Model());
         },
 
         'click @ui.help': function (e) {
@@ -81,6 +81,10 @@ module.exports = Mn.View.extend({
         }
     },
 
+    templateContext: {
+        showAddButton: App.Cache.User.canManage('acme_servers')
+    },
+
     onRender: function () {
         let view = this;
 
@@ -96,6 +100,9 @@ module.exports = Mn.View.extend({
             })
             .catch(err => {
                 view.showError(err);
+            })
+            .then(() => {
+                view.ui.dimmer.removeClass('active');
             });
     }
 });

@@ -30,7 +30,7 @@
 		"punycode": "2.3.1",
 		"signale": "1.4.0"
 	},
-	"author": "Jamie Curnow <jc@jc21.com> and ZoeyVid <zoeyvid@zvcdn.de>",
+	"author": "Kotone <git@ktn.works>, based on work by Jamie Curnow <jc@jc21.com> and ZoeyVid <zoeyvid@zvcdn.de>",
 	"license": "MIT",
 	"devDependencies": {
 		"@apidevtools/swagger-parser": "12.0.0",

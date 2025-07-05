@@ -41,6 +41,6 @@
 	"scripts": {
 		"build": "webpack --mode production"
 	},
-	"author": "Jamie Curnow <jc@jc21.com> and ZoeyVid <zoeyvid@zvcdn.de>",
+	"author": "Kotone <git@ktn.works>, based on work by Jamie Curnow <jc@jc21.com> and ZoeyVid <zoeyvid@zvcdn.de>",
 	"license": "MIT"
 }

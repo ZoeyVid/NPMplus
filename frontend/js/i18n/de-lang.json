@@ -43,7 +43,6 @@
 		"enable-modsec": "ModSecurity einschalten",
 		"force-https": "Erzwinge HTTPS",
 		"locations": "Individuelle Pfade",
-		"new-cert": "Ein neues TLS-Zertifikat anfordern",
 		"no-tls": "Dieser Host unterstützt keine HTTPS-Verbindung",
 		"none": "Keine",
 		"tls-certificate": "TLS-Zertifikat",
@@ -116,7 +115,7 @@
 		"title": "Dead Hosts"
 	},
 	"footer": {
-		"text": " - MIT-Lizenz von <a href=\"{url1}\" target=\"_blank\">jc21.com</a> NPMplus, <a href=\"{url2}\" target=\"_blank\">ZoeyVid</a> NPMplus und Mitwirkende - Thema <a href=\"{url3}\" target=\"_blank\">Tabler v0.0.31</a>",
+		"text": " - MIT Lizenz © <a href=\"mailto:git@ktn.works\">Kotone (git@ktn.works)</a>, basierend auf der Arbeit von <a href=\"{url1}\" target=\"_blank\">jc21.com</a>, NPM, <a href=\"{url2}\" target=\"_blank\">ZoeyVid</a> NPMplus, und Mitwirkende - Thema <a href=\"{url3}\" target=\"_blank\">Tabler v0.0.31</a>",
 		"repo": "Repository auf GitHub",
 		"toggle-dark": "Dark Modus ein-/ausschalten"
 	},
@@ -279,6 +278,7 @@
 		"processing-info": "Verarbeitung... Dies kann ein paar Minuten dauern.",
 		"propagation-seconds": "Verbreitungsdauer (in Sekunden)",
 		"propagation-seconds-info": "Leer lassen, um den Standardwert des Plugins zu verwenden. Anzahl der Sekunden, die auf die DNS-Verbreitung gewartet werden soll.",
+		"undefined": "Kein Zertifikat",
 		"stored-as-plaintext-info": "Diese Daten werden als Klartext in der Datenbank und in einer Datei gespeichert!"
 	},
 	"users": {

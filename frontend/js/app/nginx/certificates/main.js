@@ -61,7 +61,8 @@ module.exports = Mn.View.extend({
     events: {
         'click @ui.add': function (e) {
             e.preventDefault();
-            let model = new CertificateModel.Model({provider: $(e.currentTarget).data('cert')});
+            let certificate_type = $(e.currentTarget).data('cert') === 'other' ? 'custom' : 'acme';
+            let model = new CertificateModel.Model({certificate_type: certificate_type});
             App.Controller.showNginxCertificateForm(model);
         },
 

@@ -43,7 +43,6 @@
 		"enable-modsec": "启用ModSecurity",
 		"force-https": "强制HTTPS",
 		"locations": "自定义位置",
-		"new-cert": "申请新的TLS证书",
 		"no-tls": "此主机不使用HTTPS",
 		"none": "无",
 		"tls-certificate": "TLS证书",
@@ -79,7 +78,7 @@
 		"download": "下载",
 		"empty": "没有TLS证书",
 		"force-renew": "立即续订",
-		"form-title": "{id, select, undefined{新建} other{编辑}}{provider, select, letsencrypt{Certbot} other{自定义}}证书",
+		"form-title": "{id, select, undefined{新建} other{编辑}} {type, select, acme{ACME} custom{自定义} other{}}证书",
 		"help-content": "TLS证书（SSL证书）是一种加密密钥，可为最终用户加密您的站点。\nNPMplus默认使用名为Let's Encrypt的服务免费颁发TLS证书。\n如果NPMplus后面有任何个人信息、密码或敏感数据，使用证书可能是个好主意。\nNPMplus还支持DNS认证，适用于您的站点不面向互联网运行或您只需要通配符证书的情况。",
 		"help-title": "TLS证书",
 		"in-use": "使用中",
@@ -116,7 +115,7 @@
 		"title": "错误页面"
 	},
 	"footer": {
-		"text": " - MIT许可证由<a href=\"{url1}\" target=\"_blank\">jc21.com</a> NPM、<a href=\"{url2}\" target=\"_blank\">ZoeyVid</a> NPMplus和贡献者提供 - 主题<a href=\"{url3}\" target=\"_blank\">Tabler v0.0.31</a>",
+		"text": " - MIT许可证 © <a href=\"mailto:git@ktn.works\">Kotone (git@ktn.works)</a>，基于<a href=\"{url1}\" target=\"_blank\">jc21.com</a>、NPM、<a href=\"{url2}\" target=\"_blank\">ZoeyVid</a> NPMplus和贡献者的工作 - 主题<a href=\"{url3}\" target=\"_blank\">Tabler v0.0.31</a>",
 		"repo": "GitHub上的仓库",
 		"toggle-dark": "切换暗黑模式"
 	},
@@ -261,12 +260,14 @@
 		"udp-forwarding": "UDP转发"
 	},
 	"tls": {
+		"acme": "ACME",
 		"certbot": "Certbot",
 		"certbot-agree": "我同意<a href=\"{url}\" target=\"_blank\">Let's Encrypt服务条款</a> / 自定义CA的ToS",
 		"certbot-email": "Certbot的电子邮件地址",
 		"certbot-warning": "此部分需要一些关于Certbot及其DNS插件的知识。请查阅相应插件的文档。",
 		"credentials-file-content": "凭据文件内容",
 		"credentials-file-content-info": "此插件需要一个包含API令牌或其他提供商凭据的配置文件",
+		"custom": "自定义",
 		"delete-tls": "附加的TLS证书不会被删除，需要手动删除。",
 		"dns-challenge": "使用DNS验证",
 		"dns-provider": "DNS提供商",
@@ -279,7 +280,8 @@
 		"processing-info": "处理中...可能需要几分钟。",
 		"propagation-seconds": "DNS验证等待时间",
 		"propagation-seconds-info": "留空以使用默认值。DNS验证等待时间。",
-		"stored-as-plaintext-info": "此数据将以明文形式存储在数据库和文件中！"
+		"stored-as-plaintext-info": "此数据将以明文形式存储在数据库和文件中！",
+		"undefined": "无证书"
 	},
 	"users": {
 		"add": "添加用户",

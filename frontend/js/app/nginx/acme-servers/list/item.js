@@ -9,8 +9,7 @@ module.exports = Mn.View.extend({
     ui: {
         name:        'a.name',
         edit:        'a.edit',
-        delete:      'a.delete',
-        set_default: 'a.set-default'
+        delete:      'a.delete'
     },
 
     events: {
@@ -27,21 +26,6 @@ module.exports = Mn.View.extend({
         'click @ui.delete': function (e) {
             e.preventDefault();
             App.Controller.showNginxAcmeServerDeleteConfirm(this.model);
-        },
-
-        'click @ui.set_default': function (e) {
-            e.preventDefault();
-            App.UI.showLoading();
-            
-            App.Api.Nginx.AcmeServers.setDefault(this.model.get('id'))
-                .then(() => {
-                    App.UI.hideLoading();
-                    App.Controller.showNginxAcmeServers();
-                })
-                .catch(err => {
-                    App.UI.hideLoading();
-                    App.UI.showError(err.message);
-                });
         }
     },
 

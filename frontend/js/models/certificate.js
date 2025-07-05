@@ -8,10 +8,10 @@ const model = Backbone.Model.extend({
             id:                undefined,
             created_on:        null,
             modified_on:       null,
-            provider:          '',
+            certificate_type:  'acme',
             nice_name:         '',
             domain_names:      [],
-            acme_server_id:    1,
+            acme_server_id:    null,
             expires_on:        null,
             meta:              {},
             // The following are expansions:

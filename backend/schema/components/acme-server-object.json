@@ -23,10 +23,6 @@
 		"owner_user_id": {
 			"$ref": "../common.json#/properties/user_id"
 		},
-		"is_default": {
-			"type": "boolean",
-			"description": "Whether this is the default ACME server"
-		},
 		"name": {
 			"type": "string",
 			"description": "Display name for the ACME server",
@@ -41,13 +37,11 @@
 		"server_url": {
 			"type": "string",
 			"description": "ACME server directory URL",
-			"format": "uri",
 			"maxLength": 500
 		},
 		"email": {
 			"type": "string",
 			"description": "Email address for ACME account registration",
-			"format": "email",
 			"maxLength": 255
 		},
 		"eab_kid": {

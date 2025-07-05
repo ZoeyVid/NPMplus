@@ -9,7 +9,6 @@ const model = Backbone.Model.extend({
             created_on:      null,
             modified_on:     null,
             owner_user_id:   1,
-            is_default:      false,
             name:            '',
             description:     '',
             server_url:      '',

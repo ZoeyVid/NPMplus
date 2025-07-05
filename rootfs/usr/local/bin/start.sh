@@ -807,8 +807,7 @@ fi
 
 rm -vrf /data/letsencrypt-acme-challenge \
         /data/nginx/default_host \
-        /data/nginx/temp \
-        /data/logs
+        /data/nginx/temp
 
 touch /data/modsecurity/modsecurity-extra.conf \
       /data/html/index.html \
@@ -826,6 +825,32 @@ touch /data/modsecurity/modsecurity-extra.conf \
       /data/custom_nginx/server_stream.conf \
       /data/custom_nginx/server_stream_tcp.conf \
       /data/custom_nginx/server_stream_udp.conf
+
+# Ensure logs directory exists
+mkdir -p /data/logs
+echo "Created /data/logs directory"
+
+# Always create proxy-host-1 logs as it seems to be required
+mkdir -p /data/logs/proxy-host-1
+touch /data/logs/proxy-host-1/access.log
+touch /data/logs/proxy-host-1/error.log
+echo "Created log directory and files for proxy-host-1"
+
+# Create log directories and files for existing proxy hosts if they exist
+if [ -f /data/database.sqlite ]; then
+    echo "Database found, querying for proxy hosts..."
+    # Query the database to find all proxy host IDs and create their log directories
+    sqlite3 /data/database.sqlite "SELECT id FROM proxy_host WHERE is_deleted = 0;" 2>/dev/null | while read -r host_id; do
+        if [ -n "$host_id" ] && [ "$host_id" != "1" ]; then
+            mkdir -p "/data/logs/proxy-host-$host_id"
+            touch "/data/logs/proxy-host-$host_id/access.log"
+            touch "/data/logs/proxy-host-$host_id/error.log"
+            echo "Created log directory and files for proxy-host-$host_id"
+        fi
+    done
+else
+    echo "Database not found yet, only created proxy-host-1 logs"
+fi
 
 
 if [ ! -s /data/modsecurity/modsecurity-default.conf ]; then

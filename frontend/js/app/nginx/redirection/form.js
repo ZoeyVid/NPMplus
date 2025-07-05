@@ -39,14 +39,9 @@ module.exports = Mn.View.extend({
     events: {
         'change @ui.certificate_select': function () {
             let id = this.ui.certificate_select.val();
-            if (id === 'new') {
-                this.ui.letsencrypt.show().find('input').prop('disabled', false);
-                this.ui.dns_challenge_content.hide();
-            } else {
-                this.ui.letsencrypt.hide().find('input').prop('disabled', true);
-            }
+            this.ui.letsencrypt.hide().find('input').prop('disabled', true);
 
-            let enabled = id === 'new' || parseInt(id, 10) > 0;
+            let enabled = parseInt(id, 10) > 0;
 
             let inputs = this.ui.ssl_forced.add(this.ui.hsts_subdomains);
             inputs
@@ -137,8 +132,8 @@ module.exports = Mn.View.extend({
                 data.domain_names = data.domain_names.split(',');
             }
 
-            // Check for any domain names containing wildcards, which are not allowed with letsencrypt
-            if (data.certificate_id === 'new') {
+            // Domain validation logic removed since we don't allow creating certificates here anymore
+            if (false) {
                 let domain_err = false;
                 if (!data.meta.dns_challenge) {
                     data.domain_names.map(function (name) {

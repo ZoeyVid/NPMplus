@@ -1,6 +1,6 @@
 <div class="modal-content">
     <div class="modal-header">
-        <h5 class="modal-title"><%- i18n('certificates', 'form-title' , {provider: provider, id: id}) %></h5>
+        <h5 class="modal-title"><%- i18n('certificates', 'form-title', {type: certificate_type(), id: id()}) %></h5>
         <button type="button" class="close cancel non-loader-content" aria-label="Close" data-dismiss="modal">&nbsp;</button>
     </div>
     <div class="modal-body">
@@ -11,21 +11,21 @@
         </div>
         <form class="non-loader-content">
             <div class="row">
-                <% if (provider === 'letsencrypt') { %>
+                <% if (certificate_type() === 'acme') { %>
                     <div class="col-sm-12 col-md-12">
                         <div class="form-group">
                             <label class="form-label"><%- i18n('all-hosts', 'domain-names') %> <span class="form-required">*</span></label>
-                            <input type="text" name="domain_names" class="form-control" id="input-domains" value="<%- domain_names.join(',') %>" required>
+                            <input type="text" name="domain_names" class="form-control" id="input-domains" value="<%- domain_names().join(',') %>" required>
                             <div class="text-blue"><i class="fe fe-alert-triangle"></i> <%- i18n('tls', 'hosts-warning') %></div>
                         </div>
                     </div>
                     <div class="col-sm-12 col-md-12">
                         <div class="form-group">
-                            <label class="form-label"><%- i18n('acme-servers', 'title') %></label>
-                            <select name="acme_server_id" class="form-control">
-                                <option value="">Default ACME Server</option>
-                                <% acme_servers.forEach(function(server) { %>
-                                    <option value="<%- server.id %>" <%= acme_server_id == server.id ? 'selected' : '' %>>
+                            <label class="form-label"><%- i18n('acme-servers', 'title') %> <span class="form-required">*</span></label>
+                            <select name="acme_server_id" class="form-control" required>
+                                <option value=""><%- i18n('acme-servers', 'select-server') %></option>
+                                <% acme_servers().forEach(function(server) { %>
+                                    <option value="<%- server.id %>" <%= getSelectedAcmeServerId() == server.id ? 'selected' : '' %>>
                                         <%- server.name %>
                                         <% if (server.is_default) { %> (<%- i18n('acme-servers', 'default') %>)<% } %>
                                     </option>
@@ -33,7 +33,7 @@
                             </select>
                             <div class="text-secondary small">
                                 <i class="fe fe-info"></i>
-                                Select the ACME server to use for this certificate. Leave empty to use the default server.
+                                <%- i18n('acme-servers', 'select-description') %>
                             </div>
                         </div>
                         <div class="mb-3 test-domains-container">
@@ -44,14 +44,7 @@
                             </div>
                         </div>
                     </div>
-		    <!---
-                    <div class="col-sm-12 col-md-12">
-                        <div class="form-group">
-                            <label class="form-label"><%- i18n('tls', 'certbot-email') %> <span class="form-required">*</span></label>
-                            <input name="meta[letsencrypt_email]" type="email" class="form-control" placeholder="" value="<%- getLetsencryptEmail() %>" required>
-                        </div>
-                    </div>
-		    --->
+
 
                     <!-- DNS challenge -->
                     <div class="col-sm-12 col-md-12">
@@ -144,17 +137,7 @@
                             </div>
                         </fieldset>
                     </div>
-
-                    <div class="col-sm-12 col-md-12">
-                        <div class="form-group">
-                            <label class="custom-switch">
-                                <input type="checkbox" class="custom-switch-input" name="meta[letsencrypt_agree]" value="1" required<%- getLetsencryptAgree() ? ' checked' : '' %>>
-                                <span class="custom-switch-indicator"></span>
-                                <span class="custom-switch-description"><%= i18n('tls', 'certbot-agree', {url: 'https://letsencrypt.org/repository'}) %> <span class="form-required">*</span></span>
-                            </label>
-                        </div>
-                    </div>
-                <% } else if (provider === 'other') { %>
+                <% } else if (certificate_type() === 'custom') { %>
                     <!-- Other -->
                     <div class="col-sm-12 col-md-12">
                         <div class="text-blue mb-4"><%= i18n('tls', 'passphrase-protection-support-info') %></div>

@@ -35,7 +35,8 @@
 								"created_on": "2024-10-09T05:31:58.000Z",
 								"modified_on": "2024-10-09T05:32:11.000Z",
 								"owner_user_id": 1,
-								"provider": "letsencrypt",
+								"certificate_type": "acme",
+								"acme_server_id": 1,
 								"nice_name": "test.example.com",
 								"domain_names": [
 									"test.example.com"

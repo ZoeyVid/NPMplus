@@ -6,7 +6,7 @@
 		"created_on",
 		"modified_on",
 		"owner_user_id",
-		"provider",
+		"certificate_type",
 		"nice_name",
 		"domain_names",
 		"expires_on",
@@ -28,11 +28,13 @@
 		},
 		"acme_server_id": {
 			"description": "ACME Server ID",
-			"type": "integer",
+			"type": ["integer", "null"],
 			"minimum": 1
 		},
-		"provider": {
-			"$ref": "../common.json#/properties/ssl_provider"
+		"certificate_type": {
+			"description": "Certificate type",
+			"type": "string",
+			"enum": ["acme", "custom"]
 		},
 		"nice_name": {
 			"type": "string",

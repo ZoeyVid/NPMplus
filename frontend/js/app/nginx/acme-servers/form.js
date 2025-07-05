@@ -53,19 +53,16 @@ module.exports = Mn.View.extend({
 
             let data = this.ui.form.serializeJSON();
             
+            // Remove UI-only fields that shouldn't be sent to server
+            if (data.show_eab !== undefined) {
+                delete data.show_eab;
+            }
+            
             // Convert string values to proper types
-            if (typeof data.must_staple !== 'undefined') {
-                data.must_staple = !!data.must_staple;
-            }
-            if (typeof data.ocsp_stapling !== 'undefined') {
-                data.ocsp_stapling = !!data.ocsp_stapling;
-            }
-            if (typeof data.tls_verify !== 'undefined') {
-                data.tls_verify = !!data.tls_verify;
-            }
-            if (typeof data.is_default !== 'undefined') {
-                data.is_default = !!data.is_default;
-            }
+            data.must_staple = !!data.must_staple;
+            data.ocsp_stapling = !!data.ocsp_stapling;
+            data.tls_verify = !!data.tls_verify;
+            data.is_default = !!data.is_default;
 
             // Set default values
             if (!data.description) data.description = '';
@@ -91,7 +88,24 @@ module.exports = Mn.View.extend({
                     });
                 })
                 .catch(err => {
-                    App.UI.showError(err.message, err.debug);
+                    let more_info = '';
+                    if (err.code === 500 && err.debug) {
+                        try {
+                            more_info = JSON.parse(err.debug).debug.stack.join("\n");
+                        } catch(e) {}
+                    }
+                    
+                    // Show error message in modal
+                    let errorMsg = `${err.message || 'An error occurred'}${more_info !== '' ? `<pre class="mt-3">${more_info}</pre>` : ''}`;
+                    
+                    // Create or update error alert
+                    let errorAlert = this.$('.alert-danger');
+                    if (errorAlert.length === 0) {
+                        errorAlert = $('<div class="alert alert-danger"></div>').prependTo(this.$('.modal-body'));
+                    }
+                    errorAlert.html(errorMsg).show();
+                    errorAlert[0].scrollIntoView();
+                    
                     this.ui.buttons.prop('disabled', false).removeClass('btn-loading');
                 });
         }

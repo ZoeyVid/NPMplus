@@ -11,6 +11,7 @@ const error = require('../lib/error');
 const utils = require('../lib/utils');
 const certbot = require('../lib/certbot');
 const certificateModel = require('../models/certificate');
+const acmeServerModel = require('../models/acme_server');
 const dnsPlugins = require('../certbot-dns-plugins.json');
 const internalAuditLog = require('./audit-log');
 const internalNginx = require('./nginx');
@@ -94,12 +95,33 @@ const internalCertificate = {
 			internalCertificate.intervalProcessing = true;
 			logger.info('Renewing TLS certs close to expiry...');
 
-			// Use default ACME server for batch renewals
-			return internalAcmeServer.getDefaultServer()
-				.then((defaultServer) => {
-					const certbotCmdArgs = buildCertbotArgs(defaultServer);
-					return utils
-						.execFile('certbot', [...certbotCmdArgs, 'renew', '--server', defaultServer.server_url, '--quiet', '--no-random-sleep-on-renew']);
+			// Check if database tables exist before proceeding
+			const db = require('../db');
+			return db.raw('SELECT 1 FROM certificate LIMIT 1')
+				.catch(() => {
+					logger.warn('Certificate table not available yet, skipping renewal process');
+					internalCertificate.intervalProcessing = false;
+					return null;
+				})
+				.then((result) => {
+					if (!result) {
+						return null; // Skip processing if table check failed
+					}
+
+					// Use first available ACME server for batch renewals
+					return acmeServerModel
+						.query()
+						.where('is_deleted', 0)
+						.orderBy('name', 'ASC')
+						.first()
+						.then((firstServer) => {
+							if (!firstServer) {
+								logger.warn('No ACME servers available for renewal, skipping renewal process');
+								return null;
+							}
+							const certbotCmdArgs = buildCertbotArgs(firstServer);
+							return utils.execFile('certbot', [...certbotCmdArgs, 'renew', '--server', firstServer.server_url, '--quiet', '--no-random-sleep-on-renew']);
+						});
 				})
 				.then((result) => {
 					if (result) {
@@ -116,7 +138,7 @@ const internalCertificate = {
 					return certificateModel
 						.query()
 						.where('is_deleted', 0)
-						.andWhere('provider', 'letsencrypt')
+						.andWhere('certificate_type', 'acme')
 						.then((certificates) => {
 							if (certificates && certificates.length > 0) {
 								const promises = [];
@@ -129,7 +151,7 @@ const internalCertificate = {
 												return certificateModel
 													.query()
 													.where('id', certificate.id)
-													.andWhere('provider', 'letsencrypt')
+													.andWhere('certificate_type', 'acme')
 													.patch({
 														expires_on: moment(cert_info.dates.to, 'X').format('YYYY-MM-DD HH:mm:ss'),
 													});
@@ -166,23 +188,22 @@ const internalCertificate = {
 			.then(() => {
 				data.owner_user_id = access.token.getUserId(1);
 
-				if (data.provider === 'letsencrypt') {
+				if (data.certificate_type === 'acme') {
 					data.nice_name = data.domain_names.join(', ');
 					
-					// If no ACME server specified, use the default one
+					// If no ACME server specified, use the first available one
 					if (!data.acme_server_id) {
-						return internalAcmeServer.getDefaultServer()
-							.then((defaultServer) => {
-								data.acme_server_id = defaultServer.id;
-								return certificateModel.query().insertAndFetch(data).then(utils.omitRow(omissions()));
-							});
+						return internalAcmeServer.getFirstAvailableServer(access).then((firstServer) => {
+							data.acme_server_id = firstServer.id;
+							return certificateModel.query().insertAndFetch(data).then(utils.omitRow(omissions()));
+						});
 					}
 				}
 
 				return certificateModel.query().insertAndFetch(data).then(utils.omitRow(omissions()));
 			})
 			.then((certificate) => {
-				if (certificate.provider === 'letsencrypt') {
+				if (certificate.certificate_type === 'acme') {
 					// Request a new Cert using Certbot. Let the fun begin.
 					if (certificate.meta.dns_challenge) {
 						return internalCertificate
@@ -210,7 +231,7 @@ const internalCertificate = {
 				}
 			})
 			.then((certificate) => {
-				if (certificate.provider === 'letsencrypt') {
+				if (certificate.certificate_type === 'acme') {
 					// At this point, the certbot cert should exist on disk.
 					// Lets get the expiry date from the file and update the row silently
 					return internalCertificate
@@ -289,7 +310,7 @@ const internalCertificate = {
 						}
 
 						// Add row.nice_name for custom certs
-						if (saved_row.provider === 'other') {
+						if (saved_row.certificate_type === 'custom') {
 							data.nice_name = saved_row.nice_name;
 						}
 
@@ -362,7 +383,7 @@ const internalCertificate = {
 					return internalCertificate.get(access, data);
 				})
 				.then((certificate) => {
-					if (certificate.provider === 'letsencrypt') {
+					if (certificate.certificate_type === 'acme') {
 						const zipDirectory = '/data/tls/certbot/live/npm-' + data.id;
 
 						if (!fs.existsSync(zipDirectory)) {
@@ -451,7 +472,7 @@ const internalCertificate = {
 						});
 					})
 					.then(() => {
-						if (row.provider === 'letsencrypt') {
+						if (row.certificate_type === 'acme') {
 							// Revoke the cert
 							return internalCertificate.revokeCertbot(row);
 						} else {
@@ -525,7 +546,7 @@ const internalCertificate = {
 		const dir = '/data/tls/custom/npm-' + certificate.id;
 
 		return new Promise((resolve, reject) => {
-			if (certificate.provider === 'letsencrypt') {
+			if (certificate.certificate_type === 'acme') {
 				reject(new Error('Refusing to write certbot certs here'));
 				return;
 			}
@@ -573,7 +594,7 @@ const internalCertificate = {
 	 */
 	createQuickCertificate: (access, data) => {
 		return internalCertificate.create(access, {
-			provider: 'letsencrypt',
+			certificate_type: 'acme',
 			domain_names: data.domain_names,
 			meta: data.meta,
 		});
@@ -638,8 +659,8 @@ const internalCertificate = {
 	 */
 	upload: (access, data) => {
 		return internalCertificate.get(access, { id: data.id }).then((row) => {
-			if (row.provider !== 'other') {
-				throw new error.ValidationError('Cannot upload certificates for this type of provider');
+			if (row.certificate_type !== 'custom') {
+				throw new error.ValidationError('Cannot upload certificates for this type of certificate');
 			}
 
 			return internalCertificate
@@ -927,7 +948,7 @@ const internalCertificate = {
 				return internalCertificate.get(access, data);
 			})
 			.then((certificate) => {
-				if (certificate.provider === 'letsencrypt') {
+				if (certificate.certificate_type === 'acme') {
 					const renewMethod = certificate.meta.dns_challenge ? internalCertificate.renewCertbotWithDnsChallenge : internalCertificate.renewCertbot;
 					return renewMethod(certificate)
 						.then(() => {

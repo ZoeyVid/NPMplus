@@ -32,14 +32,17 @@
 					"type": "object",
 					"additionalProperties": false,
 					"required": [
-						"provider"
+						"certificate_type"
 					],
 					"properties": {
 						"id": {
 							"$ref": "../../../../common.json#/properties/id"
 						},
-						"provider": {
-							"$ref": "../../../../components/certificate-object.json#/properties/provider"
+						"certificate_type": {
+							"$ref": "../../../../components/certificate-object.json#/properties/certificate_type"
+						},
+						"acme_server_id": {
+							"$ref": "../../../../components/certificate-object.json#/properties/acme_server_id"
 						},
 						"nice_name": {
 							"$ref": "../../../../components/certificate-object.json#/properties/nice_name"
@@ -61,7 +64,8 @@
 								"created_on": "2024-10-09T05:31:58.000Z",
 								"modified_on": "2024-10-09T05:32:11.000Z",
 								"owner_user_id": 1,
-								"provider": "letsencrypt",
+								"certificate_type": "acme",
+								"acme_server_id": 1,
 								"nice_name": "test.example.com",
 								"domain_names": [
 									"test.example.com"

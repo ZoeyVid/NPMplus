@@ -66,7 +66,8 @@ module.exports = Mn.View.extend({
             lines: lines
         };
 
-        if (search) {
+        // 空文字列や空白のみの場合はsearchパラメータを含めない
+        if (search && search.length > 0) {
             params.search = search;
         }
 

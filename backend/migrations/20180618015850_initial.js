@@ -55,6 +55,7 @@ exports.up = function (knex /*, Promise */) {
 				table.string('streams').notNull();
 				table.string('access_lists').notNull();
 				table.string('certificates').notNull();
+				table.string('acme_servers').notNull().defaultTo('manage');
 				table.unique('user_id');
 			});
 		})
@@ -153,7 +154,7 @@ exports.up = function (knex /*, Promise */) {
 				table.dateTime('modified_on').notNull();
 				table.integer('owner_user_id').notNull().unsigned();
 				table.integer('is_deleted').notNull().unsigned().defaultTo(0);
-				table.string('provider').notNull();
+				table.string('certificate_type').notNull().defaultTo('acme');
 				table.string('nice_name').notNull().defaultTo('');
 				table.json('domain_names').notNull();
 				table.dateTime('expires_on').notNull();
@@ -189,6 +190,64 @@ exports.up = function (knex /*, Promise */) {
 		})
 		.then(() => {
 			logger.info('[' + migrate_name + '] audit_log Table created');
+
+			return knex.schema.createTable('acme_server', (table) => {
+				table.increments().primary();
+				table.dateTime('created_on').notNull();
+				table.dateTime('modified_on').notNull();
+				table.integer('owner_user_id').notNull().unsigned();
+				table.integer('is_deleted').notNull().unsigned().defaultTo(0);
+				table.string('name').notNull();
+				table.string('description').defaultTo('');
+				table.string('server_url').notNull();
+				table.json('meta').notNull();
+				table.unique(['owner_user_id', 'name']);
+			});
+		})
+		.then(() => {
+			logger.info('[' + migrate_name + '] acme_server Table created');
+
+			// Add acme_server_id column to certificate table
+			return knex.schema.alterTable('certificate', (table) => {
+				table.integer('acme_server_id').unsigned();
+			});
+		})
+		.then(() => {
+			logger.info('[' + migrate_name + '] certificate Table altered - acme_server_id column added');
+
+			// Create default ACME server
+			const defaultAcmeServer = {
+				created_on: knex.fn.now(),
+				modified_on: knex.fn.now(),
+				owner_user_id: 1,
+				is_deleted: 0,
+				name: process.env.ACME_SERVER_NAME || "Let's Encrypt",
+				description: process.env.ACME_SERVER_DESCRIPTION || "Let's Encrypt ACME Server",
+				server_url: process.env.ACME_SERVER_URL || 'https://acme-v02.api.letsencrypt.org/directory',
+				meta: JSON.stringify({
+					email: process.env.ACME_EMAIL || '',
+					key_type: process.env.ACME_KEY_TYPE || 'ec256',
+					key_size: process.env.ACME_KEY_SIZE || '',
+					hmac_key: process.env.ACME_HMAC_KEY || '',
+					eab_kid: process.env.ACME_EAB_KID || '',
+					ca_bundle: process.env.ACME_CA_BUNDLE || '',
+					skip_challenge_verify: process.env.ACME_SKIP_CHALLENGE_VERIFY === 'true',
+					external_account_binding: process.env.ACME_EAB_KID && process.env.ACME_HMAC_KEY ? true : false,
+				}),
+			};
+
+			return knex('acme_server').insert(defaultAcmeServer);
+		})
+		.then(() => {
+			logger.info('[' + migrate_name + '] Default ACME server created from environment variables');
+
+			// Add foreign key constraint
+			return knex.schema.alterTable('certificate', (table) => {
+				table.foreign('acme_server_id').references('id').inTable('acme_server');
+			});
+		})
+		.then(() => {
+			logger.info('[' + migrate_name + '] Foreign key constraint added');
 		});
 };
 

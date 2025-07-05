@@ -92,10 +92,10 @@ module.exports = Mn.View.extend({
 
             let data      = this.ui.form.serializeJSON();
             data.id = this.model.get('id');
-            data.provider = this.model.get('provider');
+            data.certificate_type = this.model.get('certificate_type') || 'acme';
             let ssl_files = [];
 
-            if (data.provider === 'letsencrypt') {
+            if (data.certificate_type === 'acme') {
                 if (typeof data.meta === 'undefined') data.meta = {};
 
                 let domain_err = false;
@@ -113,7 +113,6 @@ module.exports = Mn.View.extend({
                 }
 
                 // Manipulate
-                data.meta.letsencrypt_agree = data.meta.letsencrypt_agree == 1;
                 data.meta.dns_challenge = data.meta.dns_challenge == 1;
 
                 if(!data.meta.dns_challenge){
@@ -127,7 +126,7 @@ module.exports = Mn.View.extend({
                 if (typeof data.domain_names === 'string' && data.domain_names) {
                     data.domain_names = data.domain_names.split(',');
                 }
-            } else if (data.provider === 'other') {
+            } else if (data.certificate_type === 'custom') {
                 const isNew = data.id == null;
                 // check files are attached
                 // Check Certificate
@@ -252,35 +251,55 @@ module.exports = Mn.View.extend({
     setFileName(ui, e){
         this.getUI(ui).text(e.target.files[0].name)
     },
-    templateContext: {
-        isNew: function () {
-            return this.id == null;
-        },
-        getLetsencryptEmail: function () {
-            return typeof this.meta.letsencrypt_email !== 'undefined' ? this.meta.letsencrypt_email : App.Cache.User.get('email');
-        },
-        getLetsencryptAgree: function () {
-            return typeof this.meta.letsencrypt_agree !== 'undefined' ? this.meta.letsencrypt_agree : false;
-        },
-        getUseDnsChallenge: function () {
-            return typeof this.meta.dns_challenge !== 'undefined' ? this.meta.dns_challenge : false;
-        },
-        getDnsProvider: function () {
-            return typeof this.meta.dns_provider !== 'undefined' && this.meta.dns_provider != '' ? this.meta.dns_provider : null;
-        },
-        getDnsProviderCredentials: function () {
-            return typeof this.meta.dns_provider_credentials !== 'undefined' ? this.meta.dns_provider_credentials : '';
-        },
-        getPropagationSeconds: function () {
-            return typeof this.meta.propagation_seconds !== 'undefined' ? this.meta.propagation_seconds : '';
-        },
-        dns_plugins: dns_providers,
-        acme_servers: function () {
-            return this._acme_servers || [];
-        }
+    templateContext: function() {
+        const model = this.model;
+        const view = this;
+        return {
+            isNew: function () {
+                return model.get('id') == null;
+            },
+            getUseDnsChallenge: function () {
+                const meta = model.get('meta') || {};
+                return typeof meta.dns_challenge !== 'undefined' ? meta.dns_challenge : false;
+            },
+            getDnsProvider: function () {
+                const meta = model.get('meta') || {};
+                return typeof meta.dns_provider !== 'undefined' && meta.dns_provider != '' ? meta.dns_provider : null;
+            },
+            getDnsProviderCredentials: function () {
+                const meta = model.get('meta') || {};
+                return typeof meta.dns_provider_credentials !== 'undefined' ? meta.dns_provider_credentials : '';
+            },
+            getPropagationSeconds: function () {
+                const meta = model.get('meta') || {};
+                return typeof meta.propagation_seconds !== 'undefined' ? meta.propagation_seconds : '';
+            },
+            getSelectedAcmeServerId: function () {
+                return model.get('acme_server_id') || null;
+            },
+            dns_plugins: dns_providers,
+            acme_servers: function () {
+                return view._acme_servers || [];
+            },
+            acme_server_id: function () {
+                return model.get('acme_server_id') || '';
+            },
+            certificate_type: function () {
+                return model.get('certificate_type') || 'acme';
+            },
+            domain_names: function () {
+                return model.get('domain_names') || [];
+            },
+            id: function () {
+                return model.get('id');
+            },
+            nice_name: model.get('nice_name') || ''
+        };
     },
 
     onRender: function () {
+        this._isRendered = true;
+        
         this.ui.domain_names.selectize({
             delimiter:    ',',
             persist:      false,
@@ -293,6 +312,7 @@ module.exports = Mn.View.extend({
             },
             createFilter: /^(([^.]+\.)+[^.]+)|(\[[0-9a-f:]+\])$/
         });
+        
         this.ui.dns_challenge_content.hide();
         this.ui.credentials_file_content.hide();
         this.ui.loader_content.hide();
@@ -307,7 +327,7 @@ module.exports = Mn.View.extend({
 
     initialize: function (options) {
         if (typeof options.model === 'undefined' || !options.model) {
-            this.model = new CertificateModel.Model({provider: 'letsencrypt'});
+            this.model = new CertificateModel.Model({certificate_type: 'acme'});
         }
         
         // Load ACME servers
@@ -317,11 +337,15 @@ module.exports = Mn.View.extend({
         if (App.Cache.User.canView('acme_servers')) {
             App.Api.Nginx.AcmeServers.getAll()
                 .then(result => {
-                    view._acme_servers = result.data || [];
-                    view.render();
+                    view._acme_servers = result && result.data ? result.data : (Array.isArray(result) ? result : []);
+                    // Re-render to show ACME server options
+                    if (view._isRendered) {
+                        view.render();
+                    }
                 })
                 .catch(err => {
                     console.warn('Could not load ACME servers:', err.message);
+                    view._acme_servers = [];
                 });
         }
     }

@@ -141,32 +141,44 @@ const setupDefaultSettings = () => {
  * @returns {Promise}
  */
 const setupCertbotPlugins = () => {
+	// Check if certificate table exists first
 	return certificateModel
-		.query()
-		.where('is_deleted', 0)
-		.andWhere('provider', 'letsencrypt')
-		.then((certificates) => {
-			if (certificates && certificates.length > 0) {
-				const plugins = [];
-				const promises = [];
+		.knex()
+		.schema.hasTable('certificate')
+		.then((exists) => {
+			if (!exists) {
+				logger.info('Certificate table does not exist yet, skipping certbot plugins setup');
+				return Promise.resolve();
+			}
+			
+			logger.info('Certificate table exists, proceeding with certbot plugins setup');
+			return certificateModel
+				.query()
+				.where('is_deleted', 0)
+				.andWhere('certificate_type', 'acme')
+				.then((certificates) => {
+					if (certificates && certificates.length > 0) {
+						const plugins = [];
+						const promises = [];
 
-				certificates.map(function (certificate) {
-					if (certificate.meta && certificate.meta.dns_challenge === true) {
-						if (plugins.indexOf(certificate.meta.dns_provider) === -1) {
-							plugins.push(certificate.meta.dns_provider);
-						}
-						fs.writeFileSync('/tmp/certbot-credentials/credentials-' + certificate.id, certificate.meta.dns_provider_credentials, { mode: 0o600 });
-					}
-				});
+						certificates.map(function (certificate) {
+							if (certificate.meta && certificate.meta.dns_challenge === true) {
+								if (plugins.indexOf(certificate.meta.dns_provider) === -1) {
+									plugins.push(certificate.meta.dns_provider);
+								}
+								fs.writeFileSync('/tmp/certbot-credentials/credentials-' + certificate.id, certificate.meta.dns_provider_credentials, { mode: 0o600 });
+							}
+						});
 
-				return certbot.installPlugins(plugins).then(() => {
-					if (promises.length > 0) {
-						return Promise.all(promises).then(() => {
-							logger.info('Added Certbot plugins ' + plugins.join(', '));
+						return certbot.installPlugins(plugins).then(() => {
+							if (promises.length > 0) {
+								return Promise.all(promises).then(() => {
+									logger.info('Added Certbot plugins ' + plugins.join(', '));
+								});
+							}
 						});
 					}
 				});
-			}
 		});
 };
 

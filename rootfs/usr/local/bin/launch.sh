@@ -88,4 +88,13 @@ if [ "$GOA" = "true" ]; then while true; do if [ -f /data/nginx/access.log ]; th
                     --browsers-file=/etc/goaccess/browsers.list --browsers-file=/etc/goaccess/podcast.list $GOACLA; else sleep 10s; fi; done; fi &
 nginx -e stderr &
 aio.sh &
+
+# Ensure log directories exist before starting Node.js app
+echo "Ensuring log directories exist before starting Node.js..."
+mkdir -p /data/logs
+mkdir -p /data/logs/proxy-host-1
+touch /data/logs/proxy-host-1/access.log
+touch /data/logs/proxy-host-1/error.log
+echo "Log directories ready"
+
 index.js

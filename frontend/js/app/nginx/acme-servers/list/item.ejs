@@ -1,13 +1,5 @@
 <td>
-  <% if (is_default) { %>
-  <i
-    class="fe fe-star text-warning"
-    data-toggle="tooltip"
-    data-title="<%- i18n('acme-servers', 'default-server') %>"
-  ></i>
-  <% } else { %>
   <i class="fe fe-server text-muted"></i>
-  <% } %>
 </td>
 <td>
   <a href="#" class="name">
@@ -58,12 +50,6 @@
           ><i class="fe fe-edit dropdown-icon"></i> <%- i18n('str', 'edit')
           %></a
         >
-        <% if (!is_default) { %>
-        <a class="dropdown-item set-default" href="#"
-          ><i class="fe fe-star dropdown-icon"></i> <%- i18n('acme-servers',
-          'set-default') %></a
-        >
-        <% } %>
         <div class="dropdown-divider"></div>
         <a class="dropdown-item delete" href="#"
           ><i class="fe fe-trash-2 dropdown-icon"></i> <%- i18n('str', 'delete')

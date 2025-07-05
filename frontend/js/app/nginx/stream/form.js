@@ -72,8 +72,8 @@ module.exports = Mn.View.extend({
                 data.domain_names = data.domain_names.split(',');
             }
 
-            // Check for any domain names containing wildcards, which are not allowed with letsencrypt
-            if (data.certificate_id === 'new') {
+            // Domain validation logic removed since we don't allow creating certificates here anymore
+            if (false) {
                 let domain_err = false;
                 if (!data.meta.dns_challenge) {
                     data.domain_names.map(function (name) {
@@ -130,24 +130,7 @@ module.exports = Mn.View.extend({
 
         'change @ui.certificate_select': function () {
             let id = this.ui.certificate_select.val();
-            if (id === 'new') {
-                this.ui.letsencrypt.show().find('input').prop('disabled', false);
-                this.ui.domain_names.prop('required', 'required');
-
-                this.ui.dns_challenge_switch
-                    .prop('disabled', true)
-                    .parents('.form-group')
-                    .css('opacity', 0.5);
-
-                this.ui.dns_provider.prop('required', 'required');
-                const selected_provider = this.ui.dns_provider[0].options[this.ui.dns_provider[0].selectedIndex].value;
-                if (selected_provider != '' && dns_providers[selected_provider].credentials !== false) {
-                    this.ui.dns_provider_credentials.prop('required', 'required');
-                }
-                this.ui.dns_challenge_content.show();
-            } else {
-                this.ui.letsencrypt.hide().find('input').prop('disabled', true);
-            }
+            this.ui.letsencrypt.hide().find('input').prop('disabled', true);
         },
 
         'change @ui.dns_provider': function () {

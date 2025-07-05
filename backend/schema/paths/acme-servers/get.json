@@ -18,7 +18,17 @@
 			"description": "Expansions",
 			"required": false,
 			"schema": {
-				"type": "string"
+				"anyOf": [
+					{
+						"type": "null"
+					},
+					{
+						"type": "string",
+						"enum": [
+							"owner"
+						]
+					}
+				]
 			}
 		},
 		{

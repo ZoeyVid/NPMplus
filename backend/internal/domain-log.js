@@ -25,6 +25,31 @@ const internalDomainLog = {
 				throw err;
 			}
 		}
+
+		// Ensure log files exist to prevent Nginx errors
+		const accessLogPath = `${logDir}/access.log`;
+		const errorLogPath = `${logDir}/error.log`;
+		
+		try {
+			await fs.access(accessLogPath);
+		} catch (err) {
+			if (err.code === 'ENOENT') {
+				await fs.writeFile(accessLogPath, '', { flag: 'wx' }).catch(() => {
+					// File might have been created by another process, ignore error
+				});
+			}
+		}
+
+		try {
+			await fs.access(errorLogPath);
+		} catch (err) {
+			if (err.code === 'ENOENT') {
+				await fs.writeFile(errorLogPath, '', { flag: 'wx' }).catch(() => {
+					// File might have been created by another process, ignore error
+				});
+			}
+		}
+
 		return logDir;
 	},
 
@@ -281,7 +306,30 @@ const internalDomainLog = {
 
 				return stats;
 			});
-	}
+	},
+
+	/**
+	 * すべてのproxy-hostのログディレクトリを初期化
+	 * @returns {Promise}
+	 */
+	initializeAllLogDirectories: async () => {
+		try {
+			const proxyHosts = await proxyHostModel
+				.query()
+				.where('is_deleted', 0)
+				.select('id', 'enable_logs');
+
+			const promises = proxyHosts
+				.filter(host => host.enable_logs !== false)
+				.map(host => internalDomainLog.ensureLogDirectory(host.id));
+
+			await Promise.all(promises);
+			logger.info(`Initialized log directories for ${promises.length} proxy hosts`);
+		} catch (err) {
+			logger.error('Failed to initialize log directories:', err);
+			throw err;
+		}
+	},
 };
 
 module.exports = internalDomainLog;

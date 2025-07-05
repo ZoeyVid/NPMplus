@@ -236,26 +236,21 @@ const internalNginx = {
 				logDirectoryPromise = internalDomainLog.ensureLogDirectory(host.id);
 			}
 
-			Promise.all([locationsPromise, logDirectoryPromise]).then(() => {
-				renderEngine
-					.parseAndRender(template, host)
-					.then((config_text) => {
-						fs.writeFileSync(filename, config_text, { encoding: 'utf8' });
+			Promise.all([locationsPromise, logDirectoryPromise])
+				.then(() => {
+					return renderEngine.parseAndRender(template, host);
+				})
+				.then((config_text) => {
+					fs.writeFileSync(filename, config_text, { encoding: 'utf8' });
 
-						// Restore locations array
-						host.locations = origLocations;
+					// Restore locations array
+					host.locations = origLocations;
 
-						resolve(true);
-					})
-					.catch((err) => {
-						reject(new error.ConfigurationError(err.message));
-					})
-					.then(() => {
-						if (process.env.DISABLE_NGINX_BEAUTIFIER === 'false') {
-							utils.execFile('nginxbeautifier', ['-s', '4', filename]).catch(() => {});
-						}
-					});
-			});
+					resolve(true);
+				})
+				.catch((err) => {
+					reject(new error.ConfigurationError(err.message));
+				});
 		});
 	},
 

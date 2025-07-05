@@ -186,6 +186,9 @@ const internalProxyHost = {
 
 				data = internalHost.cleanSslHstsData(data, row);
 
+				// Remove computed fields that shouldn't be saved to database
+				data = _.omit(data, ['crowdsec_enabled']);
+
 				return proxyHostModel
 					.query()
 					.where({ id: data.id })

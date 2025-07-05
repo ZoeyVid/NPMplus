@@ -8,7 +8,7 @@ const now = require('./now_helper');
 
 Model.knex(db);
 
-const boolFields = ['is_deleted', 'is_default', 'must_staple', 'ocsp_stapling', 'tls_verify'];
+const boolFields = ['is_deleted', 'must_staple', 'ocsp_stapling', 'tls_verify'];
 
 class AcmeServer extends Model {
 	$beforeInsert() {
@@ -19,27 +19,10 @@ class AcmeServer extends Model {
 		if (typeof this.meta === 'undefined') {
 			this.meta = {};
 		}
-
-		// Ensure only one default server
-		if (this.is_default) {
-			return AcmeServer.query()
-				.patch({ is_default: 0 })
-				.where('is_default', 1)
-				.where('is_deleted', 0);
-		}
 	}
 
 	$beforeUpdate() {
 		this.modified_on = now();
-
-		// Ensure only one default server
-		if (this.is_default) {
-			return AcmeServer.query()
-				.patch({ is_default: 0 })
-				.where('is_default', 1)
-				.where('is_deleted', 0)
-				.whereNot('id', this.id);
-		}
 	}
 
 	$parseDatabaseJson(json) {
@@ -92,23 +75,6 @@ class AcmeServer extends Model {
 				},
 			},
 		};
-	}
-
-	/**
-	 * Get the default ACME server
-	 * @returns {Promise<AcmeServer>}
-	 */
-	static async getDefault() {
-		const defaultServer = await AcmeServer.query()
-			.where('is_default', 1)
-			.where('is_deleted', 0)
-			.first();
-
-		if (!defaultServer) {
-			throw new Error('No default ACME server found');
-		}
-
-		return defaultServer;
 	}
 
 	/**

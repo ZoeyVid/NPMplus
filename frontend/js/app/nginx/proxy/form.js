@@ -71,14 +71,9 @@ module.exports = Mn.View.extend({
 
         'change @ui.certificate_select': function () {
             let id = this.ui.certificate_select.val();
-            if (id === 'new') {
-                this.ui.letsencrypt.show().find('input').prop('disabled', false);
-                this.ui.dns_challenge_content.hide();
-            } else {
-                this.ui.letsencrypt.hide().find('input').prop('disabled', true);
-            }
+            this.ui.letsencrypt.hide().find('input').prop('disabled', true);
 
-            let enabled = id === 'new' || parseInt(id, 10) > 0;
+            let enabled = parseInt(id, 10) > 0;
 
             let inputs = this.ui.ssl_forced.add(this.ui.hsts_subdomains);
             inputs
@@ -201,24 +196,7 @@ module.exports = Mn.View.extend({
                 data.domain_names = data.domain_names.split(',');
             }
 
-            // Check for any domain names containing wildcards, which are not allowed with letsencrypt
-            if (data.certificate_id === 'new') {
-                let domain_err = false;
-                if (!data.meta.dns_challenge) {
-                    data.domain_names.map(function (name) {
-                        if (name.match(/\*/im)) {
-                            domain_err = true;
-                        }
-                    });
-                }
-
-                if (domain_err) {
-                    alert(i18n('tls', 'no-wildcard-without-dns'));
-                    return;
-                }
-            } else {
-                data.certificate_id = parseInt(data.certificate_id, 10);
-            }
+            data.certificate_id = parseInt(data.certificate_id, 10);
 
             let method = App.Api.Nginx.ProxyHosts.create;
             let is_new = true;
