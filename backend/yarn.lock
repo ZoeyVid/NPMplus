@@ -10,10 +10,10 @@
     "@types/json-schema" "^7.0.15"
     js-yaml "^4.1.0"
 
-"@apidevtools/json-schema-ref-parser@14.0.3":
-  version "14.0.3"
-  resolved "https://registry.yarnpkg.com/@apidevtools/json-schema-ref-parser/-/json-schema-ref-parser-14.0.3.tgz#e4383570195da08581ef0e1a3e68e2897f2169b1"
-  integrity sha512-XtI3vr6mq5ySDV7j+/ya7m9UDkRYN91NeSM5CBjGE8EZHXTuu5duHMm5emG+X8tmjRCYpEkWpHfxHpVR91owVg==
+"@apidevtools/json-schema-ref-parser@14.1.0":
+  version "14.1.0"
+  resolved "https://registry.yarnpkg.com/@apidevtools/json-schema-ref-parser/-/json-schema-ref-parser-14.1.0.tgz#15b4abeccd47c244d6a6975f5457547b9636356b"
+  integrity sha512-WFWymchOWHvk7wHLg0poBrpzbMyLBlc07XWKHsscAGYTT2r1KTslk5fA2ziFxmSc5q/JsREEPLCzkD2SI/nwfg==
   dependencies:
     "@types/json-schema" "^7.0.15"
     js-yaml "^4.1.0"
