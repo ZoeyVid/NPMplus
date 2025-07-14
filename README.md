@@ -155,7 +155,7 @@ location / {
     location ~* \.php(?:$|/) {
       fastcgi_split_path_info ^(.*\.php)(/.*)$;
       try_files $fastcgi_script_name =404;
-      fastcgi_pass ...; # set this to the address of your php-fpm
+      fastcgi_pass ...; # set this to the address of your php-fpm (socket/tcp)
     }
 }
 ```
