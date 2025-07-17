@@ -12,7 +12,7 @@
 		"bcrypt": "6.0.0",
 		"better-sqlite3": "12.2.0",
 		"body-parser": "2.2.0",
-		"compression": "1.8.0",
+		"compression": "1.8.1",
 		"express": "5.1.0",
 		"express-fileupload": "1.5.2",
 		"gravatar": "1.8.2",
