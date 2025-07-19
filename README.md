@@ -88,12 +88,13 @@ While advanced configuration options are available, they remain entirely optiona
 - [Docker Install documentation](https://docs.docker.com/engine/install)
 - [Docker Compose Install documentation](https://docs.docker.com/compose/install/linux)
 2. Download this [compose.yaml](https://raw.githubusercontent.com/ZoeyVid/NPMplus/refs/heads/develop/compose.yaml) (or use its content as a portainer stack)
-3. Adjust TZ and ACME_EMAIL to your values and maybe adjust other env options to your needs
-4. Start NPMplus by running (or deploy your portainer stack)
+3. Download this [.env.sample](https://raw.githubusercontent.com/ZoeyVid/NPMplus/refs/heads/develop/.env.sample) and rename it to `.env`
+4. Adjust `TZ` and `NPMPLUS_ACME_EMAIL` to your values and maybe adjust other env options to your needs
+5. Start NPMplus by running (or deploy your portainer stack)
 ```bash
 docker compose up -d
 ```
-5. Log in to the Admin UI <br>
+6. Log in to the Admin UI <br>
 When your docker container is running, connect to it on port `81` for the admin interface. <br>
 Sometimes this can take a little bit because of the entropy of keys. <br>
 You may need to open port 81 in your firewall. <br>
