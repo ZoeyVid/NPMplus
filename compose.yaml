@@ -15,11 +15,11 @@ services:
 #      - "/path/to/old/npm/letsencrypt/folder:/etc/letsencrypt" # Only needed for first time migration from original nginx-proxy-manager to this fork, remove after migration
 #      - "shm-volume:/dev/shm/check-point" # required if you want to use the openappsec attachment module, also enable this volume at the end of this compose.yaml
     environment:
-      - "TZ=your-timezone" # set timezone, required, set it to one of the values from the "TZ identifier" https://en.wikipedia.org/wiki/List_of_tz_database_time_zones#List
-      - "ACME_EMAIL=your-email" # email address which should be used for acme, currently optional, may be required in the future, so I recommend you to enter your email here, optional for letsencrypt, but required for zerossl and google public ca
+      - "TZ=${TZ:?error}" # set timezone, required, set it to one of the values from the "TZ identifier" https://en.wikipedia.org/wiki/List_of_tz_database_time_zones#List
+      - "ACME_EMAIL=${NPMPLUS_ACME_EMAIL}" # email address which should be used for acme, currently optional, may be required in the future, so I recommend you to enter your email here, optional for letsencrypt, but required for zerossl and google public ca
 #      - "ACME_SERVER=https://dv.acme-v02.api.pki.goog/directory (google public ca) / https://acme.zerossl.com/v2/DV90 (zerossl)" # acme server used when requesting/renewing certs using certbot, default is set to: https://acme-v02.api.letsencrypt.org/directory (letsencrypt)
-#      - "ACME_EAB_KID=123456789abcdef" # Key Identifier for External Account Binding for the acme server, not supported by letsencrypt, optional for zerossl (Login on theier site => Developer), but required for google public ca: https://cloud.google.com/certificate-manager/docs/public-ca-tutorial?hl=de#request-key-hmac
-#      - "ACME_EAB_HMAC_KEY=123456789abcdef" # HMAC key for External Account Binding for the acme server, not supported by letsencrypt, optional for zerossl (Login on theier site => Developer), but required for google public ca: https://cloud.google.com/certificate-manager/docs/public-ca-tutorial?hl=de#request-key-hmac
+#      - "ACME_EAB_KID=${NPMPLUS_ACME_EAB_KID}" # Key Identifier for External Account Binding for the acme server, not supported by letsencrypt, optional for zerossl (Login on theier site => Developer), but required for google public ca: https://cloud.google.com/certificate-manager/docs/public-ca-tutorial?hl=de#request-key-hmac
+#      - "ACME_EAB_HMAC_KEY=${NPMPLUS_ACME_EAB_HMAC_KEY}" # HMAC key for External Account Binding for the acme server, not supported by letsencrypt, optional for zerossl (Login on theier site => Developer), but required for google public ca: https://cloud.google.com/certificate-manager/docs/public-ca-tutorial?hl=de#request-key-hmac
 #      - "ACME_MUST_STAPLE=true" # enables must-staple, default false, I recommend you to enable this if your CA supports it, supported by zerossl, google public ca ignores this, unsupported by letsencrypt (will fail), overrides ACME_OCSP_STAPLING to true
 #      - "ACME_OCSP_STAPLING=true" # enables ocsp stapling, default false, I recommend you to enable this if your CA supports it, supported by zerossl and google public ca
 #      - "ACME_PROFILE=shortlived" # sets the profile to be used from the acme server, default is "none" (so the default profile), supported by letsencrypt (https://letsencrypt.org/docs/profiles), if you use letsencrypt I would recommend the "shortlived" profile, until it is public you should use the "tlsserver" profile, note: both are limited to 25 domains per cert instead of 100 like the "classic" (default) profile
@@ -70,8 +70,8 @@ services:
 #      - "PHP84=true" # Activate PHP84, default false, supported, but not recommended, you should prefer to use a dedicated php-fpm container
 #      - "PHP84_APKS=php84-curl php84-openssl" # Add php extensions, also enables PHP84, see available packages here: https://pkgs.alpinelinux.org/packages?branch=v3.21&repo=community&arch=x86_64&name=php84-*, default none, requires PHP84
 #      - "PHP_APKS=php-pecl-apcu php-pecl-redis" # Add php extensions, see available packages here: https://pkgs.alpinelinux.org/packages?branch=v3.21&repo=community&arch=x86_64&name=php-*, default none, requires PHP82, PHP83 and/or PHP84, not recommended, please use PHP82_APKS, PHP83_APKS or PHP84_APKS
-#      - "INITIAL_ADMIN_EMAIL=<initial@email.tld>" # email to use instead of admin@example.org on first start of NPMplus for the initial user
-#      - "INITIAL_ADMIN_PASSWORD=<initial-password>" # password to use instead of a random password which is logged on first start of NPMplus for the initial user
+#      - "INITIAL_ADMIN_EMAIL=${NPMPLUS_INITIAL_ADMIN_EMAIL}" # email to use instead of admin@example.org on first start of NPMplus for the initial user
+#      - "INITIAL_ADMIN_PASSWORD=${NPMPLUS_INITIAL_ADMIN_PASSWORD}" # password to use instead of a random password which is logged on first start of NPMplus for the initial user
 #      - "INITIAL_DEFAULT_PAGE=444" # default page to set on first start of NPMplus for the initial user, default congratulations, can be one of: 404, 444, redirect, congratulations or html
 #      - "ENABLE_PRERUN=true" # see readme, default off
 #      - "NGINX_LOAD_OPENAPPSEC_ATTACHMENT_MODULE=true" # loads the openappsec attachment module, you also need to set ipc and enable the shm-volume for NPMplus in this composse file, this will fully disable brotli, default false
@@ -91,7 +91,7 @@ services:
 #      - "127.0.0.1:7422:7422"
 #      - "127.0.0.1:8080:8080"
 #    environment:
-#      - "TZ=your-timezone" # needs to be changed
+#      - "TZ=${TZ:?error}" # needs to be changed
 #      - "COLLECTIONS=ZoeyVid/npmplus"
 #    volumes:
 #      - "/opt/crowdsec/conf:/etc/crowdsec"
@@ -106,10 +106,10 @@ services:
 #    restart: always
 #    network_mode: bridge
 #    environment:
-#      - "TZ=your-timezone" # needs to be changed
+#      - "TZ=${TZ:?error}" # needs to be changed
 #      - "GEOIPUPDATE_EDITION_IDS=GeoLite2-Country GeoLite2-City GeoLite2-ASN"
-#      - "GEOIPUPDATE_ACCOUNT_ID=<your-account-id>" # needs to be changed
-#      - "GEOIPUPDATE_LICENSE_KEY=<your-license-key>" # needs to be changed
+#      - "GEOIPUPDATE_ACCOUNT_ID=${GEOIPUPDATE_ACCOUNT_ID:?error}" # needs to be changed
+#      - "GEOIPUPDATE_LICENSE_KEY=${GEOIPUPDATE_LICENSE_KEY:?error}" # needs to be changed
 #      - "GEOIPUPDATE_FREQUENCY=24"
 #    volumes:
 #      - "/opt/npmplus/goaccess/geoip:/usr/share/GeoIP"
@@ -128,11 +128,11 @@ services:
 #      - "/opt/openappsec/localconf:/ext/appsec" # if you don't set AGENT_TOKEN, then please put a local_policy.yaml in the /opt/openappsec/localconf folder before deploying
 #      - "/opt/openappsec/open-appsec-advanced-model.tgz:/advanced-model/open-appsec-advanced-model.tgz" # optional, if you want to use a different model
 #    environment:
-#      - "TZ=your-timezone" # needs to be changed
+#      - "TZ=${TZ:?error}" # needs to be changed
 #      - "autoPolicyLoad=true"
 #      - "registered_server=NPMplus"
-#      - "user_email=your-email" # optional, from theier docs: "This allows the open-appsec team to provide you easy assistance in case of any issues you might have with your specific deployment in the future and also to provide you information proactively regarding open-appsec in general or regarding your specific deployment. [...] If we send automatic emails there will also be an opt-out option included for receiving similar communication in the future."
-#      - "AGENT_TOKEN=" # optional, you can specify an openappsec deployment profile token for connecting to their central webinterface  at https://my.openappsec.io, if you leave this commented, make sure to uncomment all other openappsec containers below, see: https://docs.openappsec.io/getting-started/using-the-web-ui-saas/create-a-profile
+#      - "user_email=${OPENAPPSEC_USER_EMAIL}" # optional, from theier docs: "This allows the open-appsec team to provide you easy assistance in case of any issues you might have with your specific deployment in the future and also to provide you information proactively regarding open-appsec in general or regarding your specific deployment. [...] If we send automatic emails there will also be an opt-out option included for receiving similar communication in the future."
+#      - "AGENT_TOKEN=${OPENAPPSEC_AGENT_TOKEN}" # optional, you can specify an openappsec deployment profile token for connecting to their central webinterface  at https://my.openappsec.io, if you leave this commented, make sure to uncomment all other openappsec containers below, see: https://docs.openappsec.io/getting-started/using-the-web-ui-saas/create-a-profile
 #      - "SHARED_STORAGE_HOST=openappsec-shared-storage" # uncomment if you don't set AGENT_TOKEN
 #      - "LEARNING_HOST=openappsec-smartsync" # uncomment if you don't set AGENT_TOKEN
 #      - "TUNING_HOST=openappsec-tuning-svc" # uncomment if you don't set AGENT_TOKEN
@@ -144,7 +144,7 @@ services:
 #    image: ghcr.io/openappsec/smartsync:latest
 #    restart: always
 #    environment:
-#      - "TZ=your-timezone" # needs to be changed
+#      - "TZ=${TZ:?error}" # needs to be changed
 #      - "SHARED_STORAGE_HOST=openappsec-shared-storage"
 #    depends_on:
 #      - openappsec-shared-storage
@@ -155,7 +155,7 @@ services:
 #    ipc: service:openappsec-agent
 #    user: root # if you do not want to run this container as "root" user you can comment it out and instead run the following command after the deployment: docker exec -u root openappsec-shared-storage chown -R appuser:appuser /db
 #    environment:
-#      - "TZ=your-timezone" # needs to be changed
+#      - "TZ=${TZ:?error}" # needs to be changed
 #    volumes:
 #      - "/opt/openappsec/storage:/db"
 #  openappsec-tuning-svc:
@@ -163,11 +163,11 @@ services:
 #    image: ghcr.io/openappsec/smartsync-tuning:latest
 #    restart: always
 #    environment:
-#      - "TZ=your-timezone" # needs to be changed
+#      - "TZ=${TZ:?error}" # needs to be changed
 #      - "SHARED_STORAGE_HOST=openappsec-shared-storage"
 #      - "QUERY_DB_HOST=openappsec-db"
-#      - "QUERY_DB_PASSWORD=password" # replace with something secure, should match POSTGRES_PASSWORD from openappsec-db container
-#      - "QUERY_DB_USER=appsec"
+#      - "QUERY_DB_PASSWORD=${OPENAPPSEC_DB_PASSWORD:?error}" # replace with something secure, should match POSTGRES_PASSWORD from openappsec-db container
+#      - "QUERY_DB_USER=${OPENAPPSEC_DB_USER:-appsec}"
 #    volumes:
 #      - "/opt/openappsec/conf:/etc/cp/conf"
 #    depends_on:
@@ -178,9 +178,9 @@ services:
 #    image: postgres:17-alpine
 #    restart: always
 #    environment:
-#      - "TZ=your-timezone" # needs to be changed
-#      - "POSTGRES_PASSWORD=password" # replace with something secure, should match QUERY_DB_PASSWORD from openappsec-tuning-svc container
-#      - "POSTGRES_USER=appsec"
+#      - "TZ=${TZ:?error}" # needs to be changed
+#      - "POSTGRES_PASSWORD=${OPENAPPSEC_DB_PASSWORD:?error}" # replace with something secure, should match QUERY_DB_PASSWORD from openappsec-tuning-svc container
+#      - "POSTGRES_USER=${OPENAPPSEC_DB_USER:-appsec}"
 #    volumes:
 #      - "/opt/openappsec/pgdb:/var/lib/postgresql/data"
 
@@ -193,7 +193,7 @@ services:
 #    ports:
 #      - "80:80"
 #    environment:
-#      - "TZ=your-timezone"
+#      - "TZ=${TZ:?error}"
 
 # volumes:
 #   shm-volume:
@@ -201,4 +201,3 @@ services:
 #     driver_opts:
 #       type: tmpfs
 #       device: tmpfs
-      
