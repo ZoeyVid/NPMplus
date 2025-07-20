@@ -26,7 +26,6 @@ module.exports = Mn.View.extend({
         must_staple:        'input[name="must_staple"]',
         ocsp_stapling:      'input[name="ocsp_stapling"]',
         tls_verify:         'input[name="tls_verify"]',
-        is_default:         'input[name="is_default"]',
         eab_section:        '.eab-section',
         show_eab:           'input[name="show_eab"]'
     },
@@ -62,7 +61,6 @@ module.exports = Mn.View.extend({
             data.must_staple = !!data.must_staple;
             data.ocsp_stapling = !!data.ocsp_stapling;
             data.tls_verify = !!data.tls_verify;
-            data.is_default = !!data.is_default;
 
             // Set default values
             if (!data.description) data.description = '';

@@ -200,6 +200,14 @@ exports.up = function (knex /*, Promise */) {
 				table.string('name').notNull();
 				table.string('description').defaultTo('');
 				table.string('server_url').notNull();
+				table.string('email').defaultTo('');
+				table.string('key_type').notNull().defaultTo('rsa');
+				table.string('profile').defaultTo('none');
+				table.string('eab_kid').defaultTo('');
+				table.string('eab_hmac_key').defaultTo('');
+				table.boolean('must_staple').notNull().defaultTo(false);
+				table.boolean('ocsp_stapling').notNull().defaultTo(false);
+				table.boolean('tls_verify').notNull().defaultTo(true);
 				table.json('meta').notNull();
 				table.unique(['owner_user_id', 'name']);
 			});
@@ -215,7 +223,7 @@ exports.up = function (knex /*, Promise */) {
 		.then(() => {
 			logger.info('[' + migrate_name + '] certificate Table altered - acme_server_id column added');
 
-			// Create default ACME server
+			// Create initial ACME server
 			const defaultAcmeServer = {
 				created_on: knex.fn.now(),
 				modified_on: knex.fn.now(),
@@ -224,22 +232,24 @@ exports.up = function (knex /*, Promise */) {
 				name: process.env.ACME_SERVER_NAME || "Let's Encrypt",
 				description: process.env.ACME_SERVER_DESCRIPTION || "Let's Encrypt ACME Server",
 				server_url: process.env.ACME_SERVER_URL || 'https://acme-v02.api.letsencrypt.org/directory',
+				email: process.env.ACME_EMAIL || '',
+				key_type: process.env.ACME_KEY_TYPE || 'rsa',
+				profile: process.env.ACME_PROFILE || 'none',
+				eab_kid: process.env.ACME_EAB_KID || '',
+				eab_hmac_key: process.env.ACME_HMAC_KEY || '',
+				must_staple: false,
+				ocsp_stapling: false,
+				tls_verify: true,
 				meta: JSON.stringify({
-					email: process.env.ACME_EMAIL || '',
-					key_type: process.env.ACME_KEY_TYPE || 'ec256',
-					key_size: process.env.ACME_KEY_SIZE || '',
-					hmac_key: process.env.ACME_HMAC_KEY || '',
-					eab_kid: process.env.ACME_EAB_KID || '',
 					ca_bundle: process.env.ACME_CA_BUNDLE || '',
 					skip_challenge_verify: process.env.ACME_SKIP_CHALLENGE_VERIFY === 'true',
-					external_account_binding: process.env.ACME_EAB_KID && process.env.ACME_HMAC_KEY ? true : false,
 				}),
 			};
 
 			return knex('acme_server').insert(defaultAcmeServer);
 		})
 		.then(() => {
-			logger.info('[' + migrate_name + '] Default ACME server created from environment variables');
+			logger.info('[' + migrate_name + '] Initial ACME server created from environment variables');
 
 			// Add foreign key constraint
 			return knex.schema.alterTable('certificate', (table) => {

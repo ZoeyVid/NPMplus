@@ -1,7 +1,6 @@
 const _ = require('lodash');
 const error = require('../lib/error');
 const acmeServerModel = require('../models/acme_server');
-const userModel = require('../models/user');
 
 function omissions() {
 	return ['is_deleted', 'owner.is_deleted'];
@@ -81,12 +80,7 @@ const internalAcmeServer = {
 		return access
 			.can('acme_servers:get', data.id)
 			.then(() => {
-				let query = acmeServerModel
-					.query()
-					.where('acme_server.id', data.id)
-					.where('acme_server.is_deleted', 0)
-					.allowGraph('[owner]')
-					.first();
+				let query = acmeServerModel.query().where('acme_server.id', data.id).where('acme_server.is_deleted', 0).allowGraph('[owner]').first();
 
 				if (typeof data.expand !== 'undefined' && data.expand !== null) {
 					// Convert expand to array if it's a string
@@ -121,11 +115,7 @@ const internalAcmeServer = {
 		return access
 			.can('acme_servers:list')
 			.then((access_data) => {
-				let query = acmeServerModel
-					.query()
-					.where('is_deleted', 0)
-					.allowGraph('[owner]')
-					.orderBy('name', 'ASC');
+				let query = acmeServerModel.query().where('is_deleted', 0).allowGraph('[owner]').orderBy('name', 'ASC');
 
 				if (typeof expand !== 'undefined' && expand !== null) {
 					// Convert expand to array if it's a string
@@ -140,7 +130,9 @@ const internalAcmeServer = {
 
 				if (typeof search === 'string') {
 					query.where(function () {
-						this.where('name', 'like', '%' + search + '%').orWhere('description', 'like', '%' + search + '%').orWhere('server_url', 'like', '%' + search + '%');
+						this.where('name', 'like', '%' + search + '%')
+							.orWhere('description', 'like', '%' + search + '%')
+							.orWhere('server_url', 'like', '%' + search + '%');
 					});
 				}
 
@@ -174,11 +166,7 @@ const internalAcmeServer = {
 		return access
 			.can('acme_servers:list')
 			.then(() => {
-				return acmeServerModel
-					.query()
-					.count('id as count')
-					.where('is_deleted', 0)
-					.first();
+				return acmeServerModel.query().count('id as count').where('is_deleted', 0).first();
 			})
 			.then((row) => {
 				return parseInt(row.count, 10);
@@ -204,38 +192,29 @@ const internalAcmeServer = {
 					throw new error.ItemNotFoundError(data.id);
 				}
 
-				// Don't allow deleting the default server if it's the only one
-				if (row.is_default) {
-					return acmeServerModel
-						.query()
-						.count('id as count')
-						.where('is_deleted', 0)
-						.whereNot('id', data.id)
-						.first()
-						.then((countRow) => {
-							if (parseInt(countRow.count, 10) === 0) {
-								throw new error.ValidationError('Cannot delete the last ACME server');
-							}
-						});
-				}
+				// Check if this is the last ACME server
+				return acmeServerModel
+					.query()
+					.count('id as count')
+					.where('is_deleted', 0)
+					.whereNot('id', data.id)
+					.first()
+					.then((countRow) => {
+						if (parseInt(countRow.count, 10) === 0) {
+							throw new error.ValidationError('Cannot delete the last ACME server');
+						}
+					});
 			})
 			.then(() => {
 				// Check if any certificates are using this server
-				return acmeServerModel
-					.query()
-					.findById(data.id)
-					.withGraphFetched('certificates')
-					.first();
+				return acmeServerModel.query().findById(data.id).withGraphFetched('certificates').first();
 			})
 			.then((server) => {
 				if (server.certificates && server.certificates.length > 0) {
 					throw new error.ValidationError('Cannot delete ACME server that is in use by certificates');
 				}
 
-				return acmeServerModel
-					.query()
-					.where({ id: data.id })
-					.patch({ is_deleted: 1 });
+				return acmeServerModel.query().where({ id: data.id }).patch({ is_deleted: 1 });
 			})
 			.then(() => {
 				return true;

@@ -146,9 +146,6 @@ router
 					tls_verify: {
 						type: 'boolean',
 					},
-					is_default: {
-						type: 'boolean',
-					},
 					meta: {
 						type: 'object',
 					},
@@ -273,9 +270,6 @@ router
 						type: 'boolean',
 					},
 					tls_verify: {
-						type: 'boolean',
-					},
-					is_default: {
 						type: 'boolean',
 					},
 					meta: {
