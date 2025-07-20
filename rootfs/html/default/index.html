@@ -1,93 +1,583 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>Default Page</title>
+    <title>nginx Proxy Manager - Welcome</title>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="application-name" content="NPMplus" />
-    <meta name="author" content="ZoeyVid" />
-    <meta name="description" content="Default Page of NPMplus" />
-    <meta name="keywords" content="NPMplus, default" />
-    <!-- TODO: Icon -->
+    <meta name="application-name" content="nginx Proxy Manager" />
+    <meta name="author" content="Kotone" />
+    <meta name="description" content="Welcome to nginx Proxy Manager" />
+    <meta name="keywords" content="nginx, proxy, manager" />
     <link rel="icon" type="image/webp" href="/favicon.webp" />
   </head>
   <body>
     <style>
-      @media (prefers-color-scheme: dark) {
-        body {
-          background-color: rgb(17 24 39);
-          color: white;
-        }
-
-        #box {
-          background-color: rgb(31 41 55);
-        }
-      }
-
-      @media (prefers-color-scheme: light) {
-        body {
-          background-color: white;
-          color: black;
-        }
-
-        #box {
-          background-color: rgb(229 231 235);
-        }
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
       }
 
       body {
-        font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
-        text-align: center;
+        font-family: "Inter", "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+        background: linear-gradient(
+          135deg,
+          #0f172a 0%,
+          #1e293b 50%,
+          #334155 100%
+        );
+        color: #f1f5f9;
+        overflow-x: hidden;
+        min-height: 100vh;
       }
 
-      #box {
-        border-radius: 2rem;
-        position: absolute;
-        padding: 1rem;
-        padding-right: 5rem;
-        padding-left: 5rem;
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%);
-      }
-
-      h1 {
-        font-size: 64px;
-      }
-
-      p {
-        font-size: 24px;
-      }
-
-      #notice {
-        font-size: 12px;
+      /* Animated background particles */
+      .particles {
         position: fixed;
-        bottom: 0;
-        left: 50%;
-        transform: translateX(-50%);
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        z-index: 1;
+        pointer-events: none;
       }
 
-      @media (max-width: 600px) {
-        h1 {
-          font-size: 32px;
+      .particle {
+        position: absolute;
+        width: 2px;
+        height: 2px;
+        background: #60a5fa;
+        border-radius: 50%;
+        animation: float 6s ease-in-out infinite;
+        opacity: 0.6;
+      }
+
+      @keyframes float {
+        0%,
+        100% {
+          transform: translateY(0px) translateX(0px);
+          opacity: 0.6;
+        }
+        25% {
+          transform: translateY(-20px) translateX(10px);
+          opacity: 1;
+        }
+        50% {
+          transform: translateY(-40px) translateX(-5px);
+          opacity: 0.8;
+        }
+        75% {
+          transform: translateY(-20px) translateX(-10px);
+          opacity: 1;
+        }
+      }
+
+      /* Glowing orbs */
+      .orb {
+        position: absolute;
+        border-radius: 50%;
+        background: radial-gradient(
+          circle,
+          rgba(96, 165, 250, 0.3) 0%,
+          transparent 70%
+        );
+        animation: pulse 4s ease-in-out infinite;
+      }
+
+      .orb1 {
+        width: 300px;
+        height: 300px;
+        top: 10%;
+        left: 80%;
+        animation-delay: 0s;
+      }
+
+      .orb2 {
+        width: 200px;
+        height: 200px;
+        bottom: 20%;
+        left: 10%;
+        animation-delay: 2s;
+      }
+
+      @keyframes pulse {
+        0%,
+        100% {
+          transform: scale(1);
+          opacity: 0.3;
+        }
+        50% {
+          transform: scale(1.2);
+          opacity: 0.1;
+        }
+      }
+
+      /* Main container */
+      .container {
+        position: relative;
+        z-index: 10;
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        padding: 2rem;
+      }
+
+      /* Logo animation */
+      .logo-container {
+        text-align: center;
+        margin-bottom: 3rem;
+      }
+
+      .logo {
+        font-size: 4rem;
+        font-weight: 900;
+        background: linear-gradient(45deg, #60a5fa, #a78bfa, #f472b6);
+        background-size: 300% 300%;
+        background-clip: text;
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        animation: gradientShift 3s ease-in-out infinite;
+        text-shadow: 0 0 30px rgba(96, 165, 250, 0.3);
+      }
+
+      @keyframes gradientShift {
+        0%,
+        100% {
+          background-position: 0% 50%;
+        }
+        50% {
+          background-position: 100% 50%;
+        }
+      }
+
+      .subtitle {
+        font-size: 1.2rem;
+        color: #94a3b8;
+        margin-top: 1rem;
+        opacity: 0;
+        animation: fadeInUp 1s ease-out 0.5s forwards;
+      }
+
+      /* Content cards */
+      .content {
+        max-width: 800px;
+        width: 100%;
+      }
+
+      .card {
+        background: rgba(30, 41, 59, 0.8);
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(96, 165, 250, 0.2);
+        border-radius: 20px;
+        padding: 2rem;
+        margin: 1rem 0;
+        opacity: 0;
+        transform: translateY(30px);
+        animation: slideInUp 0.8s ease-out forwards;
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+        transition: all 0.3s ease;
+      }
+
+      .card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 30px 60px rgba(0, 0, 0, 0.4);
+        border-color: rgba(96, 165, 250, 0.4);
+      }
+
+      .card:nth-child(1) {
+        animation-delay: 0.8s;
+      }
+      .card:nth-child(2) {
+        animation-delay: 1.1s;
+      }
+      .card:nth-child(3) {
+        animation-delay: 1.4s;
+      }
+
+      @keyframes slideInUp {
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      @keyframes fadeInUp {
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      .card h2 {
+        color: #60a5fa;
+        font-size: 1.5rem;
+        margin-bottom: 1rem;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+
+      .card p {
+        line-height: 1.8;
+        color: #cbd5e1;
+        font-size: 1.1rem;
+      }
+
+      /* Status indicator */
+      .status {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        background: rgba(34, 197, 94, 0.2);
+        color: #22c55e;
+        padding: 0.5rem 1rem;
+        border-radius: 50px;
+        font-weight: 600;
+        border: 1px solid rgba(34, 197, 94, 0.3);
+      }
+
+      .status-dot {
+        width: 8px;
+        height: 8px;
+        background: #22c55e;
+        border-radius: 50%;
+        animation: blink 2s ease-in-out infinite;
+      }
+
+      @keyframes blink {
+        0%,
+        100% {
+          opacity: 1;
+        }
+        50% {
+          opacity: 0.3;
+        }
+      }
+
+      /* Footer */
+      .footer {
+        text-align: center;
+        margin-top: 3rem;
+        padding: 2rem;
+        color: #64748b;
+        opacity: 0;
+        animation: fadeInUp 1s ease-out 2s forwards;
+      }
+
+      .footer a {
+        color: #60a5fa;
+        text-decoration: none;
+        transition: color 0.3s ease;
+      }
+
+      .footer a:hover {
+        color: #a78bfa;
+      }
+
+      /* Responsive */
+      @media (max-width: 768px) {
+        .logo {
+          font-size: 2.5rem;
         }
 
-        p {
-          font-size: 16px;
+        .subtitle {
+          font-size: 1rem;
         }
 
-        #box {
-          padding-right: 2rem;
-          padding-left: 2rem;
+        .card {
+          padding: 1.5rem;
+        }
+
+        .container {
+          padding: 1rem;
+        }
+      }
+
+      /* Loading animation */
+      .loading-bar {
+        position: fixed;
+        top: 0;
+        left: 0;
+        height: 3px;
+        background: linear-gradient(90deg, #60a5fa, #a78bfa, #f472b6);
+        animation: loading 2s ease-in-out;
+        z-index: 1000;
+      }
+
+      @keyframes loading {
+        0% {
+          width: 0%;
+        }
+        100% {
+          width: 100%;
+        }
+      }
+
+      /* Language switcher */
+      .language-switcher {
+        position: fixed;
+        top: 2rem;
+        right: 2rem;
+        z-index: 1000;
+        display: flex;
+        gap: 0.5rem;
+        opacity: 0;
+        animation: fadeInUp 1s ease-out 1s forwards;
+      }
+
+      .lang-btn {
+        background: rgba(30, 41, 59, 0.8);
+        border: 1px solid rgba(96, 165, 250, 0.3);
+        color: #94a3b8;
+        padding: 0.5rem 1rem;
+        border-radius: 50px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        font-weight: 600;
+        font-size: 0.9rem;
+        backdrop-filter: blur(10px);
+      }
+
+      .lang-btn:hover {
+        background: rgba(96, 165, 250, 0.2);
+        border-color: rgba(96, 165, 250, 0.5);
+        color: #60a5fa;
+        transform: translateY(-2px);
+      }
+
+      .lang-btn.active {
+        background: rgba(96, 165, 250, 0.3);
+        border-color: #60a5fa;
+        color: #60a5fa;
+      }
+
+      @media (max-width: 768px) {
+        .language-switcher {
+          top: 1rem;
+          right: 1rem;
+        }
+
+        .lang-btn {
+          padding: 0.4rem 0.8rem;
+          font-size: 0.8rem;
         }
       }
     </style>
-    <div id="box">
-      <h1>Congratulations!</h1>
-      <p>You've successfully started NPMplus.</p>
-      <p>If you're seeing this site then you're trying to access a host that isn't set up yet.</p>
-      <p>Log in to the Admin panel to get started.</p>
+
+    <!-- Background elements -->
+    <div class="particles" id="particles"></div>
+    <div class="orb orb1"></div>
+    <div class="orb orb2"></div>
+    <div class="loading-bar"></div>
+
+    <!-- Language switcher -->
+    <div class="language-switcher">
+      <button
+        class="lang-btn active"
+        onclick="switchLanguage('en')"
+        id="en-btn"
+      >
+        EN
+      </button>
+      <button class="lang-btn" onclick="switchLanguage('ja')" id="ja-btn">
+        JA
+      </button>
     </div>
-    <p id="notice">Powered by <a href="https://github.com/ZoeyVid/NPMplus">NPMplus</a></p>
+
+    <div class="container">
+      <div class="logo-container">
+        <div class="logo">nginx</div>
+        <div
+          class="subtitle"
+          data-en="Proxy Manager • Powered by Kotone"
+          data-ja="プロキシマネージャー • Powered by Kotone"
+        >
+          Proxy Manager • Powered by Kotone
+        </div>
+      </div>
+
+      <div class="content">
+        <div class="card">
+          <h2>
+            <div class="status">
+              <div class="status-dot"></div>
+              <span data-en="System Online" data-ja="システム稼働中"
+                >System Online</span
+              >
+            </div>
+          </h2>
+          <p
+            data-en="Welcome to nginx Proxy Manager. The system is running smoothly and ready to handle your proxy configurations. This modern interface indicates that all services are operational."
+            data-ja="nginx プロキシマネージャーへようこそ。システムは正常に動作しており、プロキシ設定を処理する準備ができています。このモダンなインターフェースは、すべてのサービスが稼働していることを示しています。"
+          >
+            Welcome to nginx Proxy Manager. The system is running smoothly and
+            ready to handle your proxy configurations. This modern interface
+            indicates that all services are operational.
+          </p>
+        </div>
+
+        <div class="card">
+          <h2>
+            <span data-en="🚀 Getting Started" data-ja="🚀 はじめに"
+              >🚀 Getting Started</span
+            >
+          </h2>
+          <p
+            data-en="You're seeing this page because you're accessing a host that hasn't been configured yet. To begin, access the admin panel and set up your proxy hosts, SSL certificates, and security policies."
+            data-ja="このページが表示されているのは、まだ設定されていないホストにアクセスしているためです。開始するには、管理パネルにアクセスして、プロキシホスト、SSL証明書、セキュリティポリシーを設定してください。"
+          >
+            You're seeing this page because you're accessing a host that hasn't
+            been configured yet. To begin, access the admin panel and set up
+            your proxy hosts, SSL certificates, and security policies.
+          </p>
+        </div>
+
+        <div class="card">
+          <h2>
+            <span
+              data-en="⚡ Next-Gen Proxy Management"
+              data-ja="⚡ 次世代プロキシ管理"
+              >⚡ Next-Gen Proxy Management</span
+            >
+          </h2>
+          <p
+            data-en="Experience the future of web proxy management with advanced SSL automation, real-time monitoring, and intelligent traffic routing. Built for 2025 and beyond."
+            data-ja="高度なSSL自動化、リアルタイム監視、インテリジェントなトラフィックルーティングで、Webプロキシ管理の未来を体験してください。2025年以降に向けて構築されています。"
+          >
+            Experience the future of web proxy management with advanced SSL
+            automation, real-time monitoring, and intelligent traffic routing.
+            Built for 2025 and beyond.
+          </p>
+        </div>
+      </div>
+
+      <div class="footer">
+        <p>
+          <span data-en="Created with ❤️ by" data-ja="❤️ で作成"
+            >Created with ❤️ by</span
+          >
+          <a href="mailto:git@ktn.works">Kotone</a>
+        </p>
+        <p>
+          <a href="https://github.com/ktncode/NPMPlus">GitHub Repository</a>
+        </p>
+      </div>
+    </div>
+
+    <script>
+      // Create floating particles
+      function createParticles() {
+        const particlesContainer = document.getElementById("particles");
+        const particleCount = 50;
+
+        for (let i = 0; i < particleCount; i++) {
+          const particle = document.createElement("div");
+          particle.className = "particle";
+
+          // Random positioning
+          particle.style.left = Math.random() * 100 + "%";
+          particle.style.top = Math.random() * 100 + "%";
+
+          // Random animation delay
+          particle.style.animationDelay = Math.random() * 6 + "s";
+
+          // Random size
+          const size = Math.random() * 3 + 1;
+          particle.style.width = size + "px";
+          particle.style.height = size + "px";
+
+          particlesContainer.appendChild(particle);
+        }
+      }
+
+      // Mouse interaction effect
+      function addMouseInteraction() {
+        document.addEventListener("mousemove", (e) => {
+          const cards = document.querySelectorAll(".card");
+          cards.forEach((card) => {
+            const rect = card.getBoundingClientRect();
+            const x = e.clientX - rect.left;
+            const y = e.clientY - rect.top;
+
+            if (x >= 0 && x <= rect.width && y >= 0 && y <= rect.height) {
+              const centerX = rect.width / 2;
+              const centerY = rect.height / 2;
+              const rotateX = (y - centerY) / 20;
+              const rotateY = (centerX - x) / 20;
+
+              card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) translateY(-5px)`;
+            } else {
+              card.style.transform =
+                "perspective(1000px) rotateX(0deg) rotateY(0deg) translateY(0px)";
+            }
+          });
+        });
+      }
+
+      // Smooth reveal animation
+      function addScrollAnimation() {
+        const observer = new IntersectionObserver((entries) => {
+          entries.forEach((entry) => {
+            if (entry.isIntersecting) {
+              entry.target.style.animationPlayState = "running";
+            }
+          });
+        });
+
+        document.querySelectorAll(".card").forEach((card) => {
+          observer.observe(card);
+        });
+      }
+
+      // Initialize everything
+      document.addEventListener("DOMContentLoaded", () => {
+        createParticles();
+        addMouseInteraction();
+        addScrollAnimation();
+
+        // Remove loading bar after animation
+        setTimeout(() => {
+          const loadingBar = document.querySelector(".loading-bar");
+          if (loadingBar) {
+            loadingBar.style.opacity = "0";
+            setTimeout(() => loadingBar.remove(), 500);
+          }
+        }, 2000);
+      });
+
+      // Language switching functionality
+      function switchLanguage(lang) {
+        // Update button states
+        document.querySelectorAll(".lang-btn").forEach((btn) => {
+          btn.classList.remove("active");
+        });
+        document.getElementById(lang + "-btn").classList.add("active");
+
+        // Update content
+        document.querySelectorAll("[data-en]").forEach((element) => {
+          if (element.hasAttribute("data-" + lang)) {
+            element.textContent = element.getAttribute("data-" + lang);
+          }
+        });
+
+        // Store language preference
+        localStorage.setItem("preferred-language", lang);
+      }
+
+      // Load saved language preference
+      function loadLanguagePreference() {
+        const savedLang = localStorage.getItem("preferred-language");
+        if (savedLang && savedLang === "ja") {
+          switchLanguage("ja");
+        }
+      }
+
+      // Load language preference on page load
+      document.addEventListener("DOMContentLoaded", () => {
+        loadLanguagePreference();
+      });
+    </script>
   </body>
 </html>
