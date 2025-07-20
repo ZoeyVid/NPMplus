@@ -157,7 +157,9 @@
 		"search": "Cerca Host…",
 		"title": "Proxy Host",
 		"disable-crowdsec": "Disabilita CrowdSec per questo host",
-		"disable-crowdsec-help": "Quando abilitato, la protezione CrowdSec sarà disabilitata per questo specifico proxy host (richiede che CrowdSec sia abilitato a livello server)"
+		"disable-crowdsec-help": "Quando abilitato, la protezione CrowdSec sarà disabilitata per questo specifico proxy host (richiede che CrowdSec sia abilitato a livello server)",
+		"use-default-page": "Usa pagina predefinita",
+		"use-default-page-help": "Mostra la pagina Default Site configurata invece di effettuare il proxy al backend"
 	},
 	"redirection-hosts": {
 		"add": "Crea host di reindirizzamento",

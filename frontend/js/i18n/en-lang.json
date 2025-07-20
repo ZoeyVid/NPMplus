@@ -226,7 +226,9 @@
 		"size": "Size",
 		"url": "URL",
 		"disable-crowdsec": "Disable CrowdSec for this host",
-		"disable-crowdsec-help": "When enabled, CrowdSec protection will be disabled for this specific proxy host (requires CrowdSec to be enabled server-wide)"
+		"disable-crowdsec-help": "When enabled, CrowdSec protection will be disabled for this specific proxy host (requires CrowdSec to be enabled server-wide)",
+		"use-default-page": "Use Default Page",
+		"use-default-page-help": "Show the configured Default Site page instead of proxying to the backend"
 	},
 	"redirection-hosts": {
 		"add": "Add Redirection Host",

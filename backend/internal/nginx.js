@@ -229,6 +229,25 @@ const internalNginx = {
 				host.crowdsec_disabled_for_host = false;
 			}
 
+			// Get Default Site setting for proxy hosts with default page enabled
+			let defaultSitePromise = Promise.resolve();
+			if (nice_host_type === 'proxy_host' && host.use_default_page) {
+				const settingModel = require('../models/setting');
+				defaultSitePromise = settingModel
+					.query()
+					.where('id', 'default-site')
+					.first()
+					.then((defaultSiteSetting) => {
+						if (defaultSiteSetting) {
+							host.default_site_setting = defaultSiteSetting;
+						}
+					})
+					.catch(() => {
+						// If default site setting is not found, use fallback
+						host.default_site_setting = { value: 'fallback' };
+					});
+			}
+
 			// Ensure log directory exists for proxy hosts
 			let logDirectoryPromise = Promise.resolve();
 			if (nice_host_type === 'proxy_host' && host.enable_logs !== false && host.id) {
@@ -236,7 +255,7 @@ const internalNginx = {
 				logDirectoryPromise = internalDomainLog.ensureLogDirectory(host.id);
 			}
 
-			Promise.all([locationsPromise, logDirectoryPromise])
+			Promise.all([locationsPromise, logDirectoryPromise, defaultSitePromise])
 				.then(() => {
 					return renderEngine.parseAndRender(template, host);
 				})

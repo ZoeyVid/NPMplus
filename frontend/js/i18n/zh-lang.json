@@ -157,7 +157,9 @@
 		"search": "搜索代理…",
 		"title": "代理",
 		"disable-crowdsec": "为此主机禁用 CrowdSec",
-		"disable-crowdsec-help": "启用后，将为此特定代理主机禁用 CrowdSec 保护（需要在服务器级别启用 CrowdSec）"
+		"disable-crowdsec-help": "启用后，将为此特定代理主机禁用 CrowdSec 保护（需要在服务器级别启用 CrowdSec）",
+		"use-default-page": "使用默认页面",
+		"use-default-page-help": "显示配置的默认站点页面而不是代理到后端"
 	},
 	"redirection-hosts": {
 		"add": "添加重定向",

@@ -157,7 +157,9 @@
 		"search": "Suche Host..",
 		"title": "Proxy-Hosts",
 		"disable-crowdsec": "CrowdSec für diesen Host deaktivieren",
-		"disable-crowdsec-help": "Wenn aktiviert, wird der CrowdSec-Schutz für diesen spezifischen Proxy-Host deaktiviert (erfordert, dass CrowdSec server-weit aktiviert ist)"
+		"disable-crowdsec-help": "Wenn aktiviert, wird der CrowdSec-Schutz für diesen spezifischen Proxy-Host deaktiviert (erfordert, dass CrowdSec server-weit aktiviert ist)",
+		"use-default-page": "Standard-Seite verwenden",
+		"use-default-page-help": "Die konfigurierte Standard-Site-Seite anstelle einer Weiterleitung an das Backend anzeigen"
 	},
 	"redirection-hosts": {
 		"add": "Weiterleitungs-Host hinzufügen",

@@ -166,6 +166,11 @@
 			"type": "boolean",
 			"default": false
 		},
+		"use_default_page": {
+			"description": "Whether to show a default page when backend is unavailable",
+			"type": "boolean",
+			"default": false
+		},
 		"crowdsec_enabled": {
 			"description": "Whether CrowdSec is enabled server-wide (read-only)",
 			"type": "boolean"

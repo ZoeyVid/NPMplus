@@ -27,6 +27,11 @@ class ProxyHost extends Model {
 		if (typeof this.meta === 'undefined') {
 			this.meta = {};
 		}
+
+		// Default for use_default_page
+		if (typeof this.use_default_page === 'undefined') {
+			this.use_default_page = false;
+		}
 	}
 
 	$beforeUpdate() {

@@ -95,6 +95,9 @@
 						},
 						"crowdsec_disabled": {
 							"$ref": "../../../../components/proxy-host-object.json#/properties/crowdsec_disabled"
+						},
+						"use_default_page": {
+							"$ref": "../../../../components/proxy-host-object.json#/properties/use_default_page"
 						}
 					}
 				}
