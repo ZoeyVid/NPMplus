@@ -365,9 +365,13 @@ module.exports = {
 
             /**
              * @param   {Number}  id
+             * @param   {Array}   [expand]
              * @returns {Promise}
              */
-            get: function (id) {
+            get: function (id, expand) {
+                if (expand) {
+                    return fetch('get', 'nginx/proxy-hosts/' + id + '?expand=' + expand.join(','));
+                }
                 return fetch('get', 'nginx/proxy-hosts/' + id);
             },
 

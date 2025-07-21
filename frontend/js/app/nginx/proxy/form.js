@@ -328,7 +328,7 @@ module.exports = Mn.View.extend({
                 }
             },
             load:             function (query, callback) {
-                App.Api.Nginx.Certificates.getAll()
+                App.Api.Nginx.Certificates.getAll(['acme_server'])
                     .then(rows => {
                         callback(rows);
                     })

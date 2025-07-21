@@ -245,7 +245,7 @@ const internalProxyHost = {
 		return access
 			.can('proxy_hosts:get', data.id)
 			.then((access_data) => {
-				const query = proxyHostModel.query().where('is_deleted', 0).andWhere('id', data.id).allowGraph('[owner,access_list.[clients,items],certificate]').first();
+				const query = proxyHostModel.query().where('is_deleted', 0).andWhere('id', data.id).allowGraph('[owner,access_list.[clients,items],certificate.acme_server]').first();
 
 				if (access_data.permission_visibility !== 'all') {
 					query.andWhere('owner_user_id', access.token.getUserId(1));
@@ -431,7 +431,7 @@ const internalProxyHost = {
 		return access
 			.can('proxy_hosts:list')
 			.then((access_data) => {
-				let query = proxyHostModel.query().where('is_deleted', 0).groupBy('id').allowGraph('[owner,access_list.[clients,items],certificate]').orderBy(castJsonIfNeed('domain_names'), 'ASC');
+				let query = proxyHostModel.query().where('is_deleted', 0).groupBy('id').allowGraph('[owner,access_list.[clients,items],certificate.acme_server]').orderBy(castJsonIfNeed('domain_names'), 'ASC');
 
 				if (access_data.permission_visibility !== 'all') {
 					query.andWhere('owner_user_id', access.token.getUserId(1));

@@ -35,7 +35,11 @@
 </td>
 <td>
   <div>
-    <%- certificate && certificate_id ? i18n('tls', certificate.provider) : i18n('tls', 'none') %>
+    <% if (certificate && certificate_id) { %>
+      <%- i18n('tls', certificate.certificate_type) %><% if (certificate.certificate_type === 'acme' && certificate.acme_server) { %> (<%- certificate.acme_server.name %>)<% } %>
+    <% } else { %>
+      <%- i18n('tls', 'none') %>
+    <% } %>
   </div>
 </td>
 <td>
