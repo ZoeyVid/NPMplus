@@ -1,4 +1,4 @@
-<div class="modal-content">
+<div class="modal-content" style="height: 90vh;">
   <div class="modal-header">
     <h5 class="modal-title">
       <%- i18n('proxy-hosts', 'logs-title', {domains: domain_names.join(', ')})
@@ -13,114 +13,139 @@
       &nbsp;
     </button>
   </div>
-  <div class="modal-body">
+  <div class="modal-body" style="overflow-y: auto; height: calc(90vh - 120px);">();
     <div class="row mb-3">
-      <div class="col-sm-4">
+      <div class="col-lg-2 col-md-3 col-sm-6">
         <div class="form-group">
-          <label class="form-label"
-            ><%- i18n('proxy-hosts', 'log-type') %></label
-          >
+          <label class="form-label"><%- i18n('proxy-hosts', 'log-type') %></label>
           <select id="log-type" class="form-control custom-select">
-            <option value="access">
-              <%- i18n('proxy-hosts', 'access-logs') %>
-            </option>
-            <option value="error">
-              <%- i18n('proxy-hosts', 'error-logs') %>
-            </option>
+            <option value="access"><%- i18n('proxy-hosts', 'access-logs') %></option>
+            <option value="error"><%- i18n('proxy-hosts', 'error-logs') %></option>
           </select>
         </div>
       </div>
-      <div class="col-sm-4">
+      <div class="col-lg-2 col-md-3 col-sm-6">
         <div class="form-group">
-          <label class="form-label"
-            ><%- i18n('proxy-hosts', 'lines-to-show') %></label
-          >
+          <label class="form-label"><%- i18n('proxy-hosts', 'lines-to-show') %></label>
           <select id="lines-count" class="form-control custom-select">
             <option value="100">100</option>
-            <option value="200">200</option>
             <option value="500">500</option>
             <option value="1000">1000</option>
           </select>
         </div>
       </div>
-      <div class="col-sm-4">
+      <div class="col-lg-2 col-md-3 col-sm-6">
         <div class="form-group">
-          <label class="form-label"
-            ><%- i18n('proxy-hosts', 'search-filter') %></label
-          >
-          <input
-            type="text"
-            id="search-filter"
-            class="form-control"
-            placeholder="<%- i18n('proxy-hosts', 'search-placeholder') %>"
-          />
+          <label class="form-label"><%- i18n('proxy-hosts', 'per-page') %></label>
+          <select id="per-page" class="form-control custom-select">
+            <option value="10" selected>10</option>
+            <option value="25">25</option>
+            <option value="50">50</option>
+          </select>
+        </div>
+      </div>
+      <div class="col-lg-4 col-md-3 col-sm-6">
+        <div class="form-group">
+          <label class="form-label"><%- i18n('proxy-hosts', 'search-filter') %></label>
+          <input type="text" id="search-filter" class="form-control" placeholder="<%- i18n('proxy-hosts', 'search-placeholder') %>" />
+        </div>
+      </div>
+      <div class="col-lg-2 col-md-12">
+        <div class="form-group">
+          <label class="form-label">&nbsp;</label>
+          <div>
+            <button type="button" class="btn btn-primary btn-block" id="refresh-logs">
+              <i class="fe fe-refresh-cw"></i> <%- i18n('str', 'refresh') %>
+            </button>
+          </div>
         </div>
       </div>
     </div>
     <div class="row mb-3">
-      <div class="col-sm-12">
-        <button type="button" class="btn btn-primary" id="refresh-logs">
-          <i class="fe fe-refresh-cw"></i> <%- i18n('str', 'refresh') %>
-        </button>
-        <button
-          type="button"
-          class="btn btn-secondary"
-          id="auto-refresh"
-          data-auto="false"
-        >
+      <div class="col-sm-6">
+        <button type="button" class="btn btn-secondary" id="auto-refresh" data-auto="false">
           <i class="fe fe-play"></i> <%- i18n('proxy-hosts', 'auto-refresh') %>
         </button>
+      </div>
+      <div class="col-sm-6 text-right">
+        <small id="log-stats" class="text-muted"></small>
       </div>
     </div>
     <div class="row">
       <div class="col-sm-12">
-        <div id="log-stats" class="mb-3 text-muted"></div>
         <div id="log-content" class="card">
-          <div class="card-header">
-            <h4 class="card-title">
+          <div class="card-header d-flex justify-content-between align-items-center">
+            <h4 class="card-title mb-0">
               <%- i18n('proxy-hosts', 'log-entries') %>
             </h4>
+            <div id="pagination" class="d-none">
+              <div class="btn-group" role="group">
+                <button type="button" class="btn btn-outline-secondary" id="prev-page">
+                  <i class="fe fe-chevron-left"></i>
+                </button>
+                <span class="btn btn-outline-secondary disabled" id="page-info">Page 1 of 1</span>
+                <button type="button" class="btn btn-outline-secondary" id="next-page">
+                  <i class="fe fe-chevron-right"></i>
+                </button>
+              </div>
+            </div>
           </div>
-          <div class="card-body">
+          <div class="card-body p-0">
             <div id="log-loading" class="text-center p-4">
               <div class="spinner-border text-primary" role="status">
                 <span class="sr-only"><%- i18n('str', 'loading') %>...</span>
               </div>
             </div>
             <div id="log-entries" class="d-none">
-              <table class="table table-sm table-hover">
-                <thead>
-                  <tr>
-                    <th width="140px">
-                      <%- i18n('proxy-hosts', 'timestamp') %>
-                    </th>
-                    <th width="120px">
-                      <%- i18n('proxy-hosts', 'client-ip') %>
-                    </th>
-                    <th width="80px"><%- i18n('proxy-hosts', 'method') %></th>
-                    <th width="80px"><%- i18n('proxy-hosts', 'status') %></th>
-                    <th width="80px"><%- i18n('proxy-hosts', 'size') %></th>
-                    <th><%- i18n('proxy-hosts', 'url') %></th>
-                  </tr>
-                </thead>
-                <tbody id="log-table-body"></tbody>
-              </table>
+              <div class="table-responsive">
+                <table class="table table-sm table-hover mb-0">
+                  <thead class="thead-light">
+                    <tr>
+                      <th width="160px"><%- i18n('proxy-hosts', 'timestamp') %></th>
+                      <th width="140px"><%- i18n('proxy-hosts', 'client-ip') %></th>
+                      <th width="80px"><%- i18n('proxy-hosts', 'method') %></th>
+                      <th width="80px"><%- i18n('proxy-hosts', 'status') %></th>
+                      <th width="90px"><%- i18n('proxy-hosts', 'size') %></th>
+                      <th><%- i18n('proxy-hosts', 'url') %></th>
+                    </tr>
+                  </thead>
+                  <tbody id="log-table-body"></tbody>
+                </table>
+              </div>
             </div>
             <div id="log-empty" class="text-center p-4 d-none">
               <i class="fe fe-file-text text-muted" style="font-size: 48px"></i>
-              <p class="text-muted mt-3">
-                <%- i18n('proxy-hosts', 'no-log-entries') %>
-              </p>
+              <p class="text-muted mt-3"><%- i18n('proxy-hosts', 'no-log-entries') %></p>
+            </div>
+            <div id="log-no-results" class="text-center p-4 d-none">
+              <i class="fe fe-search text-muted" style="font-size: 48px"></i>
+              <p class="text-muted mt-3"><%- i18n('proxy-hosts', 'no-search-results') %></p>
+              <button type="button" class="btn btn-sm btn-secondary" id="clear-search">
+                <%- i18n('str', 'clear-search') %>
+              </button>
             </div>
             <div id="log-error" class="text-center p-4 d-none">
-              <i
-                class="fe fe-alert-triangle text-danger"
-                style="font-size: 48px"
-              ></i>
-              <p class="text-danger mt-3">
-                <%- i18n('proxy-hosts', 'log-load-error') %>
-              </p>
+              <i class="fe fe-alert-triangle text-danger" style="font-size: 48px"></i>
+              <p class="text-danger mt-3"><%- i18n('proxy-hosts', 'log-load-error') %></p>
               <p class="text-muted" id="error-message"></p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="row mt-3">
+      <div class="col-lg-4 col-md-6 col-sm-12">
+        <div class="card">
+          <div class="card-header">
+            <h5 class="card-title mb-0">
+              <i class="fe fe-bar-chart-2"></i> <%- i18n('proxy-hosts', 'ip-statistics') %>
+            </h5>
+          </div>
+          <div class="card-body">
+            <div id="ip-stats">
+              <div class="text-muted text-center">
+                <p><%- i18n('str', 'loading') %>...</p>
+              </div>
             </div>
           </div>
         </div>

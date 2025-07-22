@@ -225,6 +225,9 @@
 		"status": "Status",
 		"size": "Size",
 		"url": "URL",
+		"per-page": "Per Page",
+		"ip-statistics": "IP Statistics",
+		"no-search-results": "No results found for your search",
 		"disable-crowdsec": "Disable CrowdSec for this host",
 		"disable-crowdsec-help": "When enabled, CrowdSec protection will be disabled for this specific proxy host (requires CrowdSec to be enabled server-wide)",
 		"use-default-page": "Use Default Page",
@@ -271,6 +274,7 @@
 		"any": "Any",
 		"cancel": "Cancel",
 		"choose-file": "Choose file",
+		"clear-search": "Clear Search",
 		"close": "Close",
 		"created-on": "Created: {date}",
 		"delete": "Delete",
@@ -303,7 +307,9 @@
 		"value": "Value",
 		"logs": "Logs",
 		"refresh": "Refresh",
-		"loading": "Loading"
+		"loading": "Loading",
+		"next": "Next",
+		"previous": "Previous"
 	},
 	"streams": {
 		"add": "Add Stream",

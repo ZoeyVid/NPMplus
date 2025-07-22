@@ -46,6 +46,15 @@ router
 					search: {
 						anyOf: [{ type: 'string', minLength: 0 }, { type: 'null' }],
 					},
+					page: {
+						type: 'integer',
+						minimum: 1,
+					},
+					per_page: {
+						type: 'integer',
+						minimum: 1,
+						maximum: 100,
+					},
 				},
 			},
 			{
@@ -53,6 +62,8 @@ router
 				log_type: req.query.log_type || 'access',
 				lines: parseInt(req.query.lines, 10) || 100,
 				search: req.query.search && req.query.search.trim() ? req.query.search.trim() : null,
+				page: parseInt(req.query.page, 10) || 1,
+				per_page: parseInt(req.query.per_page, 10) || 10,
 			},
 		)
 			.then((data) => {
@@ -76,11 +87,12 @@ router
 
 	/**
 	 * GET /api/nginx/logs/stats
-	 * 
+	 *
 	 * すべてのプロキシホストのログ統計を取得
 	 */
 	.get((req, res, next) => {
-		internalDomainLog.getLogStats(res.locals.access)
+		internalDomainLog
+			.getLogStats(res.locals.access)
 			.then((stats) => {
 				res.status(200).send(stats);
 			})

@@ -51,7 +51,6 @@ const internalDomainLog = {
 
 		return logDir;
 	},
-
 	/**
 	 * ログファイルを読み取り、解析する
 	 * @param {Access} access
@@ -59,7 +58,7 @@ const internalDomainLog = {
 	 * @returns {Promise}
 	 */
 	getLogs: async (access, data) => {
-		const { host_id, log_type = 'access', lines = 100, search = null } = data;
+		const { host_id, log_type = 'access', lines = 100, search = null, page = 1, per_page = 10 } = data;
 
 		return access
 			.can('proxy_hosts:get', { id: host_id })
@@ -72,18 +71,22 @@ const internalDomainLog = {
 				}
 
 				const logPath = DomainLog.getLogPath(host_id, log_type);
-				
+
 				try {
 					const stats = await fs.stat(logPath);
-					const logEntries = await internalDomainLog.readLogFile(logPath, lines, search);
-					
+					const logResult = await internalDomainLog.readLogFile(logPath, lines, search, page, per_page);
+
 					return {
 						proxy_host_id: host_id,
 						log_type,
 						file_size: stats.size,
 						last_modified: stats.mtime,
-						entries: logEntries,
-						total_lines: logEntries.length,
+						entries: logResult.entries,
+						total_lines: logResult.total_filtered,
+						total_pages: Math.ceil(logResult.total_filtered / per_page),
+						current_page: page,
+						per_page: per_page,
+						ip_stats: logResult.ip_stats,
 					};
 				} catch (err) {
 					if (err.code === 'ENOENT') {
@@ -94,6 +97,10 @@ const internalDomainLog = {
 							last_modified: null,
 							entries: [],
 							total_lines: 0,
+							total_pages: 0,
+							current_page: 1,
+							per_page: per_page,
+							ip_stats: [],
 						};
 					}
 					throw err;
@@ -106,9 +113,11 @@ const internalDomainLog = {
 	 * @param {String} logPath
 	 * @param {Number} lines
 	 * @param {String} search
-	 * @returns {Promise<Array>}
+	 * @param {Number} page
+	 * @param {Number} per_page
+	 * @returns {Promise<Object>}
 	 */
-	readLogFile: async (logPath, lines = 100, search = null) => {
+	readLogFile: async (logPath, lines = 100, search = null, page = 1, per_page = 10) => {
 		const fileStream = require('fs').createReadStream(logPath);
 		const rl = readline.createInterface({
 			input: fileStream,
@@ -116,20 +125,52 @@ const internalDomainLog = {
 		});
 
 		const allLines = [];
+		const ipCounts = {};
+		const filteredLines = [];
+
 		for await (const line of rl) {
-			if (search && !line.toLowerCase().includes(search.toLowerCase())) {
-				continue;
+			const parsed = internalDomainLog.parseLogLine(line);
+
+			// IP統計を収集（全ログから）
+			if (parsed.ip) {
+				ipCounts[parsed.ip] = (ipCounts[parsed.ip] || 0) + 1;
 			}
+
 			allLines.push(line);
+
+			// 検索フィルター
+			let shouldInclude = true;
+			if (search && search.trim().length > 0) {
+				const searchTerm = search.trim().toLowerCase();
+				shouldInclude = line.toLowerCase().includes(searchTerm) || (parsed.ip && parsed.ip.toLowerCase().includes(searchTerm)) || (parsed.method && parsed.method.toLowerCase().includes(searchTerm)) || (parsed.url && parsed.url.toLowerCase().includes(searchTerm)) || (parsed.status && parsed.status.toString().includes(searchTerm)) || (parsed.user_agent && parsed.user_agent.toLowerCase().includes(searchTerm));
+			}
+
+			if (shouldInclude) {
+				filteredLines.push(line);
+			}
 		}
 
-		// 最新の行から取得
-		const recentLines = allLines.slice(-lines);
+		// IP統計をソート（アクセス数順）
+		const ip_stats = Object.entries(ipCounts)
+			.map(([ip, count]) => ({ ip, count }))
+			.sort((a, b) => b.count - a.count)
+			.slice(0, 20); // 上位20IP
 
-		return recentLines.map((line, index) => {
+		// 最新のログから取得（新しい順にするため配列を逆順にする）
+		const reversedLines = filteredLines.reverse();
+		
+		// 指定された行数に制限
+		const limitedLines = reversedLines.slice(0, lines);
+		
+		// ページネーション
+		const startItem = (page - 1) * per_page;
+		const endItem = startItem + per_page;
+		const paginatedLines = limitedLines.slice(startItem, endItem);
+
+		const entries = paginatedLines.map((line, index) => {
 			const parsed = internalDomainLog.parseLogLine(line);
 			return {
-				line_number: allLines.length - lines + index + 1,
+				line_number: startItem + index + 1,
 				timestamp: parsed.timestamp,
 				ip: parsed.ip,
 				method: parsed.method,
@@ -140,6 +181,12 @@ const internalDomainLog = {
 				raw_line: line,
 			};
 		});
+
+		return {
+			entries,
+			total_filtered: Math.min(limitedLines.length, lines),
+			ip_stats,
+		};
 	},
 
 	/**
