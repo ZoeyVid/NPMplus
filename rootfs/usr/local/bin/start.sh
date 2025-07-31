@@ -769,12 +769,14 @@ fi
 rm -vrf /data/custom_ssl
 
 
-if [ -n "$(ls -A /etc/letsencrypt 2> /dev/null)" ]; then
+if mountpoint -q /etc/letsencrypt; then
     cp -van /etc/letsencrypt/* /data/tls/certbot
-    rm -vrf /etc/letsencrypt/*
-    find /data/tls/certbot/renewal -type f -name '*.conf' -exec sed -i "s|/etc/letsencrypt|/data/tls/certbot|g" {} \;
+    echo "All certbot certs have been copied, please remove the /etc/letsencrypt mountpoint and redeploy to continue the migration!"
+    sleep inf
 fi
 
+#tmp move to mointpoint if block
+find /data/tls/certbot/renewal -type f -name '*.conf' -exec sed -i "s|/etc/letsencrypt|/data/tls/certbot|g" {} \;
 find /data/tls/certbot/renewal -type f -name '*.conf' -exec sed -i "s|/data/tls/certbot/credentials|/tmp/certbot-credentials|g" {} \;
 
 if [ -d /data/tls/certbot/live ] && [ -d /data/tls/certbot/archive ]; then
