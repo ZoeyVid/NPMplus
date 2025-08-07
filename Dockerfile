@@ -83,7 +83,7 @@ RUN apk upgrade --no-cache -a && \
 #    ln -s /usr/local/acme.sh/acme.sh /usr/local/bin/acme.sh && \
     curl https://raw.githubusercontent.com/tomwassenberg/certbot-ocsp-fetcher/refs/heads/main/certbot-ocsp-fetcher -o /usr/local/bin/certbot-ocsp-fetcher.sh && \
     sed -i "s|/live||g" /usr/local/bin/certbot-ocsp-fetcher.sh && \
-    chmod +x /usr/local/bin/certbot-ocsp-fetcher.sh && \
+    chmod +x /usr/local/bin/*.sh && \
     git clone https://github.com/coreruleset/coreruleset --branch "$CRS_VER" /tmp/coreruleset && \
     mkdir -v /usr/local/nginx/conf/conf.d/include/coreruleset && \
     mv -v /tmp/coreruleset/crs-setup.conf.example /usr/local/nginx/conf/conf.d/include/coreruleset/crs-setup.conf.example && \
