@@ -28,6 +28,7 @@ const model = Backbone.Model.extend({
             log_retention_days:      30,
             crowdsec_disabled:       false,
             crowdsec_enabled:        false,
+            use_default_page:        false,
             meta:                    {},
             // The following are expansions:
             owner:                   null,
