@@ -62,7 +62,7 @@ If you don't need the web GUI of NPMplus, you may also have a look at caddy: htt
 ## Compatibility (to Upstream)
 - Supported architectures: x86_64/amd64 and aarch64/arm64 (other archs (including 64-bit ones) and any 32-bit archd (like armhf/armv7 (dropped), armel/armv6) are not supported, because of the duration to compile).
 - I test NPMplus with docker, but podman should also work (I disrecommend you to run the NPMplus container inside an LXC container, it will work, but please don't do it, it will work better without, install docker/podman on the host an run NPMplus with it, there is no downside)
-- MariaDB(/MySQL)/PostgreSQL may work as Databases for NPMplus (configuration like in upstream), but are unsupported, have no advantage over SQLite (at least in in NPMplus) and are not recommended. Please note that you can't migrate from any of theese to SQLite without making a fresh install and copying all manually.
+- MariaDB(/MySQL)/PostgreSQL may work as Databases for NPMplus (configuration like in upstream), but are unsupported, have no advantage over SQLite (at least in in NPMplus) and are not recommended. Please note that you can't migrate from any of these to SQLite without making a fresh install and copying all manually.
 - NPMplus uses https instead of http for the admin interface
 - NPMplus won't trust cloudflare until you set the env SKIP_IP_RANGES to false, but please read [this](#notes-on-cloudflare) first before setting the env to true.
 - route53 is not supported as dns-challenge provider and Amazon CloudFront IPs can't be automatically trusted in NPMplus, even if you set SKIP_IP_RANGES env to false.
@@ -303,7 +303,7 @@ location @goauthentik_proxy_signin {
   - cloudflare has a limit of 100MB per connection, so uploading/downloading big files my cause problems, if no chunking is used
   - because all data does not take direct way between your users and you, the connection time will increase
   - cloudflare only forwards/protects http(s) traffic on port 80/443 to you, services running on other ports/different protocols are not forwarded/protected (STUN/TURN/SSH)
-  - cloudflare can't protect you if the attacker knows your real ip, as cloudflare only rewrites your dns entries to itself and then acts as a reverse proxy, direct ip connectings to you are not protected (use a firewall like ufw, make sure to allow 80/tcp and 443/tcp+udp for NPMplus, if possible don't open SSH and NPMplus GUI to the internet, but secur ethem behind a VPN like Wireguard)
+  - cloudflare can't protect you if the attacker knows your real ip, as cloudflare only rewrites your dns entries to itself and then acts as a reverse proxy, direct ip connectings to you are not protected (use a firewall like ufw, make sure to allow 80/tcp and 443/tcp+udp for NPMplus, if possible don't open SSH and NPMplus GUI to the internet, but secure them behind a VPN like Wireguard)
   - if you need a WAF => use [crowdsec](#crowdsec)
   - if you want to use the "I'm under attack mode" to protect you from (ai) web scrapes => use [anubis](#anubis-config-supported)
 What are reason for cloudflare?
