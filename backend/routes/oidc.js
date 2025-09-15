@@ -123,37 +123,49 @@ let parseValuesFromCookie = (req) => {
  * @return {Promise} a promise resolving to a jwt token
  * */
 let validateCallback = async (req, settings) => {
-	let config = await getConfig(settings);
-	let { nonce, state } = parseValuesFromCookie(req);
-	let currentUrl = new URL(`${req.protocol}://${req.get('host')}${req.originalUrl}`);
-	let tokens = await client.authorizationCodeGrant(config, currentUrl, {
-		expectedNonce: nonce,
-		expectedState: state,
-	});
-	let claims = tokens.claims();
+    const config = await getConfig(settings);
+    const { nonce, state } = parseValuesFromCookie(req);
 
-	if (!claims.email) {
-		throw new error.AuthError("The Identity Provider didn't send the 'email' claim");
-	} else {
-		logger.info('Successful authentication for email ' + claims.email);
-	}
+    // Reconstruct the full public-facing URL that the user was redirected to.
+    // 1. Start with the correct base URL from your settings.
+    const fullPublicUrl = new URL(settings.meta.redirectURL);
+    // 2. Append the query parameters from the actual request.
+    fullPublicUrl.search = new URLSearchParams(req.query).toString();    
+    try {
+        // Pass the reconstructed URL OBJECT, which is the correct type.
+        const tokens = await client.authorizationCodeGrant(config, fullPublicUrl, {
+            expectedNonce: nonce,
+            expectedState: state,
+        });
+        const claims = tokens.claims();
 
-	return internalToken.getTokenFromOAuthClaim({ identity: claims.email });
+        if (!claims.email) {
+            throw new error.AuthError("The Identity Provider didn't send the 'email' claim");
+        } else {
+            logger.info('Successful authentication for email ' + claims.email);
+        }
+
+        return internalToken.getTokenFromOAuthClaim({ identity: claims.email });
+
+    } catch (err) {
+        logger.error('Error during authorization code grant:', err);
+        throw err;
+    }
 };
 
 let redirectToAuthorizationURL = (res, params) => {
-	res.cookie('npmplus_oidc', params.nonce + '___' + params.state, { secure: true, sameSite: 'Strict' });
+	res.cookie('npmplus_oidc', params.nonce + '___' + params.state, { secure: true, sameSite: 'Lax', path: '/' });
 	res.redirect(params.url);
 };
 
 let redirectWithJwtToken = (res, token) => {
-	res.cookie('npmplus_oidc', token.token + '---' + token.expires, { secure: true, sameSite: 'Strict' });
+	res.cookie('npmplus_oidc', token.token + '---' + token.expires, { secure: true, sameSite: 'Lax', path: '/' });
 	res.redirect('/login');
 };
 
-let redirectWithError = (res, error) => {
-	logger.error('Callback error: ' + error.message);
-	res.cookie('npmplus_oidc_error', error.message, { secure: true, sameSite: 'Strict' });
+let redirectWithError = (res, err) => {	
+	logger.error('Callback error:', err);
+	res.cookie('npmplus_oidc_error', err.message, { secure: true, sameSite: 'Strict' });
 	res.redirect('/login');
 };
 
