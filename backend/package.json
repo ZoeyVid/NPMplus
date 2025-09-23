@@ -9,7 +9,7 @@
 		"archiver": "7.0.1",
 		"batchflow": "0.4.0",
 		"bcrypt": "6.0.0",
-		"better-sqlite3": "12.3.0",
+		"better-sqlite3": "12.4.1",
 		"body-parser": "2.2.0",
 		"compression": "1.8.1",
 		"express": "5.1.0",
