@@ -3,7 +3,7 @@
 This is an improved fork of the nginx-proxy-manager, see below for some changes <br>
 If you don't need the web GUI of NPMplus, you may also have a look at caddy: https://caddyserver.com
 
-- [Compatibility (to Upstream)](https://github.com/ZoeyVid/NPMplus/edit/develop/README.md#compatibility-to-upstream)
+- [Compatibility (to Upstream)](#compatibility-to-upstream)
 - [Quick Setup](#quick-setup)
 - [Migration from upstream/vanilla nginx-proxy-manager](#migration-from-upstreamvanilla-nginx-proxy-manager)
 
