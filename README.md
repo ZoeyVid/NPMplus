@@ -85,7 +85,7 @@ The initial unique admin password will be logged to the NPMplus docker logs, you
 
 ## Migration from upstream/vanilla nginx-proxy-manager
 - **NOTE: Migrating back to the original version is not possible.** Please make a **backup** before migrating, so you have the option to revert if needed
-1. Please read [this](https://github.com/ZoeyVid/NPMplus/edit/develop/README.md#compatibility-to-upstream) first
+1. Please read [this](#compatibility-to-upstream) first
 2. make a backup of your data and letsencrypt folders (creating a copy using `cp -a` should be enough)
 3. download the latest compose.yaml of NPMplus
 4. adjust your paths (of /etc/letsencrypt and /data) to the ones you used with nginx-proxy-manager
