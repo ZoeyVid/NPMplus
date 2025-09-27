@@ -1693,10 +1693,10 @@ normalize-path@^3.0.0:
   resolved "https://registry.yarnpkg.com/normalize-path/-/normalize-path-3.0.0.tgz#0dcd69ff23a1c9b11fd0978316644a0388216a65"
   integrity sha512-6eZs5Ls3WtCisHWp9S2GUy8dqkpGi4BVSz3GaqiE6ezub0512ESztXUwUB6C6IKbQkY2Pnb/mD4WYojCRwcwLA==
 
-oauth4webapi@^3.8.1:
-  version "3.8.1"
-  resolved "https://registry.yarnpkg.com/oauth4webapi/-/oauth4webapi-3.8.1.tgz#a6e205570c09e33aa656982c85e78841a57a6fec"
-  integrity sha512-olkZDELNycOWQf9LrsELFq8n05LwJgV8UkrS0cburk6FOwf8GvLam+YB+Uj5Qvryee+vwWOfQVeI5Vm0MVg7SA==
+oauth4webapi@^3.8.2:
+  version "3.8.2"
+  resolved "https://registry.yarnpkg.com/oauth4webapi/-/oauth4webapi-3.8.2.tgz#500d1979038c14656f3f24ff1eb501ff3993115b"
+  integrity sha512-FzZZ+bht5X0FKe7Mwz3DAVAmlH1BV5blSak/lHMBKz0/EBMhX6B10GlQYI51+oRp8ObJaX0g6pXrAxZh5s8rjw==
 
 object-inspect@^1.13.3:
   version "1.13.4"
@@ -1731,13 +1731,13 @@ once@^1.3.1, once@^1.4.0:
   dependencies:
     wrappy "1"
 
-openid-client@6.8.0:
-  version "6.8.0"
-  resolved "https://registry.yarnpkg.com/openid-client/-/openid-client-6.8.0.tgz#ae60540fc1aaf595ee9100004ebda722e1d80e60"
-  integrity sha512-oG1d1nAVhIIE+JSjLS+7E9wY1QOJpZltkzlJdbZ7kEn7Hp3hqur2TEeQ8gLOHoHkhbRAGZJKoOnEQcLOQJuIyg==
+openid-client@6.8.1:
+  version "6.8.1"
+  resolved "https://registry.yarnpkg.com/openid-client/-/openid-client-6.8.1.tgz#0e6dd3c1e9c98771ebf387b793ce9f626791a924"
+  integrity sha512-VoYT6enBo6Vj2j3Q5Ec0AezS+9YGzQo1f5Xc42lreMGlfP4ljiXPKVDvCADh+XHCV/bqPu/wWSiCVXbJKvrODw==
   dependencies:
     jose "^6.1.0"
-    oauth4webapi "^3.8.1"
+    oauth4webapi "^3.8.2"
 
 optionator@^0.9.3:
   version "0.9.4"
