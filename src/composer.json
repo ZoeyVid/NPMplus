@@ -3,7 +3,7 @@
   "description": "WebUI for NPMplus, which manages nginx and acme.sh",
   "type": "project",
   "require": {
-    "phpmailer/phpmailer": "6.11.1",
+    "phpmailer/phpmailer": "7.0.0",
     "ext-sqlite3": "*"
   },
   "license": "AGPL-3.0",
