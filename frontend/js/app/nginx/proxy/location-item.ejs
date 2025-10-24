@@ -10,7 +10,7 @@
                                 <span class="input-group-prepend">
                                     <span class="input-group-text">location</span>
                                 </span>
-                                <input type="text" name="path" class="form-control model" value="<%- path %>" placeholder="<%- i18n('locations', 'path') %>" required>
+                                <input type="text" name="path" class="form-control model" value="<%- path %>" placeholder="<%- i18n('locations', 'path') %>" required pattern="^/.*">
                             </div>
                         </div>
                         <div class="col-auto">
@@ -48,7 +48,7 @@
             <div class="col-sm-3 col-md-2">
                 <div class="form-group">
                     <label class="form-label"><%- i18n('proxy-hosts', 'forward-path') %></label>
-                    <input type="text" name="forward_path" class="form-control text-monospace model" placeholder="/" value="<%- forward_path %>" autocomplete="off">
+                    <input type="text" name="forward_path" class="form-control text-monospace model" placeholder="/" value="<%- forward_path %>" autocomplete="off" pattern="^$|^/.*">
                     <span style="font-size: 9px;">Leave empty to preserve full path</span>
                 </div>
             </div>
