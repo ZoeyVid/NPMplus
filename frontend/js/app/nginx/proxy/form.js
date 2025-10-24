@@ -154,9 +154,10 @@ module.exports = Mn.View.extend({
                 data.locations.push(location.toJSON());
             });
 
-            // Serialize collects path from custom locations
-            // This field must be removed from root object
+            // Serialize collects path and forward_path from custom locations
+            // These fields must be removed from root object
             delete data.path;
+            delete data.forward_path;
 
             // Manipulate
             data.forward_port            = parseInt(data.forward_port, 10);

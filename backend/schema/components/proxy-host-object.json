@@ -127,6 +127,9 @@
 					"forward_port": {
 						"$ref": "#/properties/forward_port"
 					},
+					"forward_path": {
+						"type": "string"
+					},
 					"advanced_config": {
 						"type": "string"
 					}
