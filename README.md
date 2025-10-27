@@ -340,6 +340,7 @@ What are reason for cloudflare?
 - to gravatar for profile pictures
 - if used to pypi to download certbot plugins
 - if used to your dns provider for acme dns challenges
+- if used to www.site24x7.com for the reachability check
 - if enabled to cloudflare to download theier IPs
 - if enabled to the crowdsec (container) lapi
 - if you see more/others please report them
