@@ -101,6 +101,7 @@ services:
 #    environment:
 #      - "TZ=your-timezone" # needs to be changed
 #      - "COLLECTIONS=ZoeyVid/npmplus"
+#.     - "USE_WAL=true" # optional, enables write ahead logging for better performance, may cause higher disk usage, default false
 #    volumes:
 #      - "/opt/crowdsec/conf:/etc/crowdsec"
 #      - "/opt/crowdsec/data:/var/lib/crowdsec/data"
