@@ -10,12 +10,12 @@
     "@types/json-schema" "^7.0.15"
     js-yaml "^4.1.0"
 
-"@apidevtools/json-schema-ref-parser@15.1.1":
-  version "15.1.1"
-  resolved "https://registry.yarnpkg.com/@apidevtools/json-schema-ref-parser/-/json-schema-ref-parser-15.1.1.tgz#ea6e28d4dc1c4ec1b873add0d7957cfb2a9db574"
-  integrity sha512-Vfsai/2AvrAxh9k+JaN4wsaU88TMr1hKXN1TIEzhoBYrzH6DKGKVsVNkhDXyXhFOy1pL8tWf82rXr7EoKSmTnw==
+"@apidevtools/json-schema-ref-parser@15.1.2":
+  version "15.1.2"
+  resolved "https://registry.yarnpkg.com/@apidevtools/json-schema-ref-parser/-/json-schema-ref-parser-15.1.2.tgz#e8672f5126227358a952a67857edc00ea1c495e0"
+  integrity sha512-54vnqDyGsDAVM0LOIdGMnfVyCN1NlqoGnHEGpMfaDBLMvClfT4j2XbJgvfuF0Ca0kxT6Gb7xUgS5W1I14QqjiQ==
   dependencies:
-    js-yaml "^4.1.0"
+    js-yaml "^4.1.1"
 
 "@apidevtools/openapi-schemas@^2.1.0":
   version "2.1.0"
@@ -1123,7 +1123,7 @@ jose@^6.1.0:
   resolved "https://registry.yarnpkg.com/jose/-/jose-6.1.2.tgz#05f75a3bcdf352d07ebdffcfb11d4e835f6f95c6"
   integrity sha512-MpcPtHLE5EmztuFIqB0vzHAWJPpmN1E6L4oo+kze56LIs3MyXIj9ZHMDxqOvkP38gBR7K1v3jqd4WU2+nrfONQ==
 
-js-yaml@^4.1.0:
+js-yaml@^4.1.0, js-yaml@^4.1.1:
   version "4.1.1"
   resolved "https://registry.yarnpkg.com/js-yaml/-/js-yaml-4.1.1.tgz#854c292467705b699476e1a2decc0c8a3458806b"
   integrity sha512-qQKT4zQxXl8lLwBtHMWwaTcGfFOZviOJet3Oy/xmGk2gZH677CJM9EvtfdSkgWcATZhj/55JZ0rmy3myCT5lsA==
