@@ -1,7 +1,17 @@
 {
 	"type": "object",
 	"description": "Certificate object",
-	"required": ["id", "created_on", "modified_on", "owner_user_id", "provider", "nice_name", "domain_names", "expires_on", "meta"],
+	"required": [
+		"id",
+		"created_on",
+		"modified_on",
+		"owner_user_id",
+		"provider",
+		"nice_name",
+		"domain_names",
+		"expires_on",
+		"meta"
+	],
 	"additionalProperties": false,
 	"properties": {
 		"id": {
@@ -33,7 +43,10 @@
 				"type": "string",
 				"pattern": "^(([^.]+\\.)+[^.]+)|(\\[[0-9a-f:]+\\])$"
 			},
-			"example": ["example.com", "www.example.com"]
+			"example": [
+				"example.com",
+				"www.example.com"
+			]
 		},
 		"expires_on": {
 			"description": "Date and time of expiration",

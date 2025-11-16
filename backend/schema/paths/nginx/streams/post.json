@@ -1,7 +1,9 @@
 {
 	"operationId": "createStream",
 	"summary": "Create a Stream",
-	"tags": ["streams"],
+	"tags": [
+		"streams"
+	],
 	"security": [
 		{
 			"bearerAuth": [
@@ -46,9 +48,6 @@
 						},
 						"meta": {
 							"$ref": "../../../components/stream-object.json#/properties/meta"
-						},
-						"domain_names": {
-							"$ref": "../../../components/dead-host-object.json#/properties/domain_names"
 						}
 					}
 				},
@@ -57,7 +56,6 @@
 					"forwarding_host": "127.0.0.1",
 					"forwarding_port": 8080,
 					"tcp_forwarding": true,
-					"udp_forwarding": false,
 					"udp_forwarding": false,
 					"certificate_id": 0,
 					"meta": {}

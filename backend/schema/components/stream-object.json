@@ -11,6 +11,7 @@
 		"forwarding_port",
 		"tcp_forwarding",
 		"udp_forwarding",
+		"proxy_protocol_forwarding",
 		"enabled",
 		"meta"
 	],
@@ -30,7 +31,7 @@
 		},
 		"incoming_port": {
 			"type": "string",
-			"pattern": "^([0-9]{1,5}$|[0-9]{1,5}-[0-9]{1,5}$)",,
+			"pattern": "^([0-9]{1,5}$|[0-9]{1,5}-[0-9]{1,5}$)",
 			"maxLength": 11,
 			"example": 9090
 		},
@@ -40,7 +41,10 @@
 			"example": "127.0.0.1"
 		},
 		"forwarding_port": {
-			"type": ["string", "null"],
+			"type": [
+				"string",
+				"null"
+			],
 			"pattern": "^([0-9]{1,5}|\\$server_port)$",
 			"maxLength": 12,
 			"example": 80

@@ -19,8 +19,8 @@ jobs:
         run: |
           cd backend
           yarn
-          yarn biome lint
-          yarn formate --write
+          yarn biome lint --write
+          yarn biome format --write
       - name: nginxbeautifier
         run: |
           yarn global add nginxbeautifier

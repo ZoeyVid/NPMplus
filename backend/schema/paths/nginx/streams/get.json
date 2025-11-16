@@ -1,10 +1,14 @@
 {
 	"operationId": "getStreams",
 	"summary": "Get all streams",
-	"tags": ["streams"],
+	"tags": [
+		"streams"
+	],
 	"security": [
 		{
-			"bearerAuth": ["streams.view"]
+			"bearerAuth": [
+				"streams.view"
+			]
 		}
 	],
 	"parameters": [
@@ -14,7 +18,10 @@
 			"description": "Expansions",
 			"schema": {
 				"type": "string",
-				"enum": ["owner", "certificate"]
+				"enum": [
+					"owner",
+					"certificate"
+				]
 			}
 		}
 	],

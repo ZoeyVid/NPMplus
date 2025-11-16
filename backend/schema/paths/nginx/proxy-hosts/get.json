@@ -1,7 +1,9 @@
 {
 	"operationId": "getProxyHosts",
 	"summary": "Get all proxy hosts",
-	"tags": ["proxy-hosts"],
+	"tags": [
+		"proxy-hosts"
+	],
 	"security": [
 		{
 			"bearerAuth": [

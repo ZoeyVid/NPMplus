@@ -1,10 +1,14 @@
 {
 	"operationId": "renewCertificate",
 	"summary": "Renews a Certificate",
-	"tags": ["certificates"],
+	"tags": [
+		"certificates"
+	],
 	"security": [
 		{
-			"bearerAuth": ["certificates.manage"]
+			"bearerAuth": [
+				"certificates.manage"
+			]
 		}
 	],
 	"parameters": [
@@ -35,7 +39,9 @@
 								"owner_user_id": 1,
 								"provider": "letsencrypt",
 								"nice_name": "My Test Cert",
-								"domain_names": ["test.jc21.supernerd.pro"],
+								"domain_names": [
+									"test.jc21.supernerd.pro"
+								],
 								"meta": {
 									"dns_challenge": false
 								}

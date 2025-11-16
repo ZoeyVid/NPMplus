@@ -1,10 +1,14 @@
 {
 	"operationId": "downloadCertificate",
 	"summary": "Downloads a Certificate",
-	"tags": ["certificates"],
+	"tags": [
+		"certificates"
+	],
 	"security": [
 		{
-			"bearerAuth": ["certificates.manage"]
+			"bearerAuth": [
+				"certificates.manage"
+			]
 		}
 	],
 	"parameters": [
