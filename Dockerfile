@@ -20,7 +20,7 @@ ARG NODE_ENV=production \
 COPY backend /app
 WORKDIR /app
 RUN apk upgrade --no-cache -a && \
-    apk add --no-cache ca-certificates nodejs yarn file npm && \
+    apk add --no-cache ca-certificates nodejs yarn npm && \
     yarn global add clean-modules && \
     if [ "$TARGETARCH" = "amd64" ]; then npm_config_arch=x64 npm_config_target_arch=x64 yarn install; \
     elif [ "$TARGETARCH" = "arm64" ]; then npm_config_arch=arm64 npm_config_target_arch=arm64 yarn install; \
