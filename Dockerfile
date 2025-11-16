@@ -2,13 +2,13 @@
 FROM --platform="$BUILDPLATFORM" alpine:3.22.2 AS frontend-old
 SHELL ["/bin/ash", "-eo", "pipefail", "-c"]
 ARG NODE_ENV=production
-COPY frontend-old                    /app
-COPY global/certbot-dns-plugins.json /app/certbot-dns-plugins.json
+COPY frontend-old                     /app
+COPY backend/certbot/dns-plugins.json /app/certbot-dns-plugins.json
 WORKDIR /app/frontend
 RUN apk upgrade --no-cache -a && \
     apk add --no-cache ca-certificates nodejs yarn git && \
     yarn install && \
-    yarn build
+    yarn webpack --mode production
 COPY darkmode.css /app/dist/css/darkmode.css
 COPY security.txt /app/dist/.well-known/security.txt
 
@@ -17,8 +17,7 @@ FROM --platform="$BUILDPLATFORM" alpine:3.22.2 AS build-backend
 SHELL ["/bin/ash", "-eo", "pipefail", "-c"]
 ARG NODE_ENV=production \
     TARGETARCH
-COPY backend                         /app
-COPY global/certbot-dns-plugins.json /app/certbot-dns-plugins.json
+COPY backend /app
 WORKDIR /app
 RUN apk upgrade --no-cache -a && \
     apk add --no-cache ca-certificates nodejs yarn file npm && \

@@ -1,17 +1,7 @@
 {
 	"type": "object",
 	"description": "User object",
-	"required": [
-		"id",
-		"created_on",
-		"modified_on",
-		"is_disabled",
-		"email",
-		"name",
-		"nickname",
-		"avatar",
-		"roles"
-	],
+	"required": ["id", "created_on", "modified_on", "is_disabled", "email", "name", "nickname", "avatar", "roles"],
 	"additionalProperties": false,
 	"properties": {
 		"id": {
@@ -38,8 +28,8 @@
 		"email": {
 			"type": "string",
 			"description": "Email",
-			"minLength": 3,
 			"pattern": "@",
+			"minLength": 3,
 			"example": "jc@jc21.com"
 		},
 		"name": {
@@ -60,9 +50,7 @@
 		},
 		"roles": {
 			"description": "Roles applied",
-			"example": [
-				"admin"
-			],
+			"example": ["admin"],
 			"type": "array",
 			"items": {
 				"type": "string"

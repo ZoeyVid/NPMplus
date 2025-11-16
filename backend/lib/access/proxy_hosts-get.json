@@ -5,10 +5,7 @@
 		},
 		{
 			"type": "object",
-			"required": [
-				"permission_proxy_hosts",
-				"roles"
-			],
+			"required": ["permission_proxy_hosts", "roles"],
 			"properties": {
 				"permission_proxy_hosts": {
 					"$ref": "perms#/definitions/view"
@@ -17,9 +14,7 @@
 					"type": "array",
 					"items": {
 						"type": "string",
-						"enum": [
-							"user"
-						]
+						"enum": ["user"]
 					}
 				}
 			}

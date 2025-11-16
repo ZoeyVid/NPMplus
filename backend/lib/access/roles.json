@@ -3,10 +3,7 @@
 	"definitions": {
 		"admin": {
 			"type": "object",
-			"required": [
-				"scope",
-				"roles"
-			],
+			"required": ["scope", "roles"],
 			"properties": {
 				"scope": {
 					"type": "array",
@@ -26,9 +23,7 @@
 		},
 		"user": {
 			"type": "object",
-			"required": [
-				"scope"
-			],
+			"required": ["scope"],
 			"properties": {
 				"scope": {
 					"type": "array",

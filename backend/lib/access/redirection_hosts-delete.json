@@ -5,10 +5,7 @@
 		},
 		{
 			"type": "object",
-			"required": [
-				"permission_redirection_hosts",
-				"roles"
-			],
+			"required": ["permission_redirection_hosts", "roles"],
 			"properties": {
 				"permission_redirection_hosts": {
 					"$ref": "perms#/definitions/manage"
@@ -17,9 +14,7 @@
 					"type": "array",
 					"items": {
 						"type": "string",
-						"enum": [
-							"user"
-						]
+						"enum": ["user"]
 					}
 				}
 			}

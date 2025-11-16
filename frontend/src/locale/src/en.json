@@ -189,7 +189,7 @@
 		"defaultMessage": "Expires"
 	},
 	"column.http-code": {
-		"defaultMessage": "Access"
+		"defaultMessage": "HTTP Code"
 	},
 	"column.incoming-port": {
 		"defaultMessage": "Incoming Port"
@@ -592,6 +592,9 @@
 	},
 	"test": {
 		"defaultMessage": "Test"
+	},
+	"update-available": {
+		"defaultMessage": "Update Available: {latestVersion}"
 	},
 	"user": {
 		"defaultMessage": "User"
