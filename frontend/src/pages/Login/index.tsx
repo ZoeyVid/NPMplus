@@ -37,8 +37,7 @@ export default function Login() {
 		if (!health.data) {
 			return "";
 		}
-		const v = health.data.version;
-		return `v${v.major}.${v.minor}.${v.revision}`;
+		return health.data.version;
 	};
 
 	return (
@@ -52,7 +51,7 @@ export default function Login() {
 					<img
 						className={styles.logo}
 						src="/images/logo-text-horizontal-grey.png"
-						alt="Nginx Proxy Manager"
+						alt="NPMplus"
 					/>
 				</div>
 				<div className="card card-md">

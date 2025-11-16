@@ -1,15 +1,15 @@
 # syntax=docker/dockerfile:labs
-FROM --platform="$BUILDPLATFORM" alpine:3.22.2 AS frontend-old
+FROM --platform="$BUILDPLATFORM" alpine:3.22.2 AS frontend
 SHELL ["/bin/ash", "-eo", "pipefail", "-c"]
 ARG NODE_ENV=production
-COPY frontend-old                     /app
-COPY backend/certbot/dns-plugins.json /app/certbot-dns-plugins.json
+COPY frontend /app
 WORKDIR /app/frontend
 RUN apk upgrade --no-cache -a && \
-    apk add --no-cache ca-certificates nodejs yarn git && \
-    yarn install && \
-    yarn webpack --mode production
-COPY darkmode.css /app/dist/css/darkmode.css
+    apk add --no-cache ca-certificates nodejs yarn && \
+    yarn install --production=false && \
+    yarn formatjs compile-folder src/locale/src src/locale/lang && \
+    yarn tsc && \
+    yarn vite build
 COPY security.txt /app/dist/.well-known/security.txt
 
 
@@ -110,7 +110,7 @@ RUN apk upgrade --no-cache -a && \
     ln -s /app/index.js /usr/local/bin/index.js && \
     rm -r /tmp/*
 
-COPY --from=frontend-old /app/dist /html/frontend-old
+COPY --from=frontend /app/dist /html/frontend
 
 COPY --from=crowdsec /src/crowdsec-nginx-bouncer/nginx/crowdsec_nginx.conf      /usr/local/nginx/conf/conf.d/include/crowdsec_nginx.conf
 COPY --from=crowdsec /src/crowdsec-nginx-bouncer/lua-mod/config_example.conf    /usr/local/nginx/conf/conf.d/include/crowdsec.conf

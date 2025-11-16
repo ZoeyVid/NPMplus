@@ -1,5 +1,6 @@
 import express from "express";
 import errs from "../lib/error.js";
+import pjson from "../package.json" with { type: "json" };
 import { isSetup } from "../setup.js";
 import auditLogRoutes from "./audit-log.js";
 import accessListsRoutes from "./nginx/access_lists.js";
@@ -27,11 +28,13 @@ const router = express.Router({
  * GET /api
  */
 router.get("/", async (_, res /*, next*/) => {
+	const version = pjson.version;
 	const setup = await isSetup();
 
 	res.status(200).send({
 		status: "OK",
 		setup,
+		version,
 	});
 });
 

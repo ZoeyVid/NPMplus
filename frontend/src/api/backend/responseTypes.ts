@@ -1,8 +1,8 @@
-import type { AppVersion, User } from "./models";
+import type { User } from "./models";
 
 export interface HealthResponse {
 	status: string;
-	version: AppVersion;
+	version: string;
 	setup: boolean;
 }
 

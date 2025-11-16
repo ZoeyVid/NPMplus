@@ -1,22 +1,5 @@
 # Internationalisation support
 
-## Before you start
-
-It's highly recommended that you spin up a development instance of this project
-on your docker capable server. It's pretty easy:
-
-```bash
-git clone https://github.com/NginxProxyManager/nginx-proxy-manager.git
-cd nginx-proxy-manager
-./scripts/start-dev -f
-```
-
-Then after a while, you can access http://yourserverip:3081
-
-This stack will watch the file system for changes, especially to language files,
-and reload the site you have open in the browser.
-
-
 ## Adding new translations
 
 Modify the files in the `src` folder. Follow the conventions already there.
