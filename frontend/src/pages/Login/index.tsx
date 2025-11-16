@@ -52,7 +52,7 @@ export default function Login() {
 					<img
 						className={styles.logo}
 						src="/images/logo-text-horizontal-grey.png"
-						alt="Nginx Proxy Manager"
+						alt="NPMplus"
 					/>
 				</div>
 				<div className="card card-md">

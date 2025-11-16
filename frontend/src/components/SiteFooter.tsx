@@ -21,7 +21,7 @@ export function SiteFooter() {
 						<ul className="list-inline list-inline-dots mb-0">
 							<li className="list-inline-item">
 								<a
-									href="https://github.com/NginxProxyManager/nginx-proxy-manager"
+									href="https://github.com/ZoeyVid/NPMplus"
 									target="_blank"
 									className="link-secondary"
 									rel="noopener"
@@ -47,7 +47,7 @@ export function SiteFooter() {
 							</li>
 							<li className="list-inline-item">
 								<a
-									href={`https://github.com/NginxProxyManager/nginx-proxy-manager/releases/tag/${getVersion()}`}
+									href={`https://github.com/ZoeyVid/NPMplus/releases/tag/${getVersion()}`}
 									className="link-secondary"
 									target="_blank"
 									rel="noopener"
@@ -59,7 +59,7 @@ export function SiteFooter() {
 							{versionData?.updateAvailable && versionData?.latest && (
 								<li className="list-inline-item">
 									<a
-										href={`https://github.com/NginxProxyManager/nginx-proxy-manager/releases/tag/${versionData.latest}`}
+										href={`https://github.com/ZoeyVid/NPMplus/releases/tag/${versionData.latest}`}
 										className="link-warning fw-bold"
 										target="_blank"
 										rel="noopener"
