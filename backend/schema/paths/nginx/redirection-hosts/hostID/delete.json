@@ -1,10 +1,14 @@
 {
 	"operationId": "deleteRedirectionHost",
 	"summary": "Delete a Redirection Host",
-	"tags": ["redirection-hosts"],
+	"tags": [
+		"redirection-hosts"
+	],
 	"security": [
 		{
-			"bearerAuth": ["redirection_hosts.manage"]
+			"bearerAuth": [
+				"redirection_hosts.manage"
+			]
 		}
 	],
 	"parameters": [

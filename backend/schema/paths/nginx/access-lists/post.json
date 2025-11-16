@@ -1,7 +1,9 @@
 {
 	"operationId": "createAccessList",
 	"summary": "Create a Access List",
-	"tags": ["access-lists"],
+	"tags": [
+		"access-lists"
+	],
 	"security": [
 		{
 			"bearerAuth": [

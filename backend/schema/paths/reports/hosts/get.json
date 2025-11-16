@@ -1,7 +1,9 @@
 {
 	"operationId": "reportsHosts",
 	"summary": "Report on Host Statistics",
-	"tags": ["reports"],
+	"tags": [
+		"reports"
+	],
 	"security": [
 		{
 			"bearerAuth": []

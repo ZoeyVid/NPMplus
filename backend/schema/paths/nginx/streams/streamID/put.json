@@ -1,10 +1,14 @@
 {
 	"operationId": "updateStream",
 	"summary": "Update a Stream",
-	"tags": ["streams"],
+	"tags": [
+		"streams"
+	],
 	"security": [
 		{
-			"bearerAuth": ["streams.manage"]
+			"bearerAuth": [
+				"streams.manage"
+			]
 		}
 	],
 	"parameters": [
@@ -91,7 +95,9 @@
 									"name": "Administrator",
 									"nickname": "Admin",
 									"avatar": "",
-									"roles": ["admin"]
+									"roles": [
+										"admin"
+									]
 								},
 								"certificate_id": 0
 							}

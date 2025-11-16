@@ -1,7 +1,9 @@
 {
 	"operationId": "createProxyHost",
 	"summary": "Create a Proxy Host",
-	"tags": ["proxy-hosts"],
+	"tags": [
+		"proxy-hosts"
+	],
 	"security": [
 		{
 			"bearerAuth": [

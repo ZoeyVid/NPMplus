@@ -1,7 +1,9 @@
 {
 	"operationId": "getAccessLists",
 	"summary": "Get all access lists",
-	"tags": ["access-lists"],
+	"tags": [
+		"access-lists"
+	],
 	"security": [
 		{
 			"bearerAuth": [
