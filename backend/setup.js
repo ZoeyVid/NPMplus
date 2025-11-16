@@ -9,7 +9,7 @@ import userModel from "./models/user.js";
 import userPermissionModel from "./models/user_permission.js";
 
 import proxyModel from "./models/proxy_host.js";
-import redirectionModel from "'./models/redirection_host.js";
+import redirectionModel from "./models/redirection_host.js";
 import deadModel from "./models/dead_host.js";
 import streamModel from "./models/stream.js";
 import internalNginx from "./internal/nginx.js";

@@ -2,7 +2,6 @@ import bodyParser from "body-parser";
 import compression from "compression";
 import express from "express";
 import fileUpload from "express-fileupload";
-import cors from "./lib/express/cors.js";
 import jwt from "./lib/express/jwt.js";
 import { debug, express as logger } from "./logger.js";
 import mainRoutes from "./routes/main.js";
@@ -28,28 +27,6 @@ app.enable("strict routing");
 
 // pretty print JSON when not live
 app.set("json spaces", 2);
-
-// CORS for everything
-app.use(cors);
-
-// General security/cache related headers + server header
-app.use((_, res, next) => {
-	let x_frame_options = "DENY";
-
-	if (typeof process.env.X_FRAME_OPTIONS !== "undefined" && process.env.X_FRAME_OPTIONS) {
-		x_frame_options = process.env.X_FRAME_OPTIONS;
-	}
-
-	res.set({
-		"X-XSS-Protection": "1; mode=block",
-		"X-Content-Type-Options": "nosniff",
-		"X-Frame-Options": x_frame_options,
-		"Cache-Control": "no-cache, no-store, max-age=0, must-revalidate",
-		Pragma: "no-cache",
-		Expires: 0,
-	});
-	next();
-});
 
 app.use(jwt());
 app.use("/", mainRoutes);

@@ -1,7 +1,17 @@
 {
 	"type": "object",
 	"description": "Access List object",
-	"required": ["id", "created_on", "modified_on", "owner_user_id", "name", "meta", "satisfy_any", "pass_auth", "proxy_host_count"],
+	"required": [
+		"id",
+		"created_on",
+		"modified_on",
+		"owner_user_id",
+		"name",
+		"meta",
+		"satisfy_any",
+		"pass_auth",
+		"proxy_host_count"
+	],
 	"properties": {
 		"id": {
 			"$ref": "../common.json#/properties/id"

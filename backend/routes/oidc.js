@@ -1,7 +1,7 @@
 import * as client from "openid-client";
 import express from "express";
 import errs from "../lib/error.js";
-import internalToken from "./internal/token";
+import internalToken from "../internal/token.js";
 import jwtdecode from "../lib/express/jwt-decode.js";
 import { oidc as logger } from "../logger.js";
 import settingModel from "../models/setting.js";

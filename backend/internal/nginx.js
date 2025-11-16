@@ -185,10 +185,10 @@ const internalNginx = {
 						!locationCopy.forward_host.startsWith("/") &&
 						!locationCopy.forward_host.startsWith("unix")
 					) {
-						const splitted = locationCopy.forward_host.split("/");
+						const split = locationCopy.forward_host.split("/");
 
-						locationCopy.forward_host = splitted.shift();
-						locationCopy.forward_path = `/${splitted.join("/")}`;
+						locationCopy.forward_host = split.shift();
+						locationCopy.forward_path = `/${split.join("/")}`;
 					}
 					locationCopy.env = process.env;
 

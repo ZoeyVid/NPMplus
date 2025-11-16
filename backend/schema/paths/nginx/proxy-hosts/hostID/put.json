@@ -1,7 +1,9 @@
 {
 	"operationId": "updateProxyHost",
 	"summary": "Update a Proxy Host",
-	"tags": ["proxy-hosts"],
+	"tags": [
+		"proxy-hosts"
+	],
 	"security": [
 		{
 			"bearerAuth": [

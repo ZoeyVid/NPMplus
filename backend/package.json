@@ -31,10 +31,11 @@
 		"pg": "8.16.3",
 		"proxy-agent": "6.5.0",
 		"punycode.js": "2.3.1",
-		"signale": "1.4.0"
+		"signale": "1.4.0",
+		"temp-write": "6.0.0"
 	},
 	"devDependencies": {
 		"@apidevtools/swagger-parser": "12.1.0",
-		"@biomejs/biome": "2.3.2"
+		"@biomejs/biome": "2.3.5"
 	}
 }

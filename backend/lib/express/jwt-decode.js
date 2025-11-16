@@ -1,7 +1,7 @@
 import Access from "../access.js";
 
 export default () => {
-	return async (_, res, next) => {
+	return async (req, res, next) => {
 		try {
 			res.locals.access = null;
 			const access = new Access(res.locals.token || null);
