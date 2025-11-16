@@ -31,6 +31,9 @@ const internalNginx = {
 		return internalNginx
 			.test()
 			.then(() => {
+				return internalNginx.deleteConfig(host_type, host);
+			})
+			.then(() => {
 				return internalNginx.reload();
 			})
 			.then(() => {
@@ -52,7 +55,7 @@ const internalNginx = {
 						});
 					})
 					.catch((err) => {
-						debug(logger, "Nginx test failed:", err.message);
+						logger.error(err.message);
 
 						// config is bad, update meta and rename config
 						combined_meta = _.assign({}, host.meta, {
@@ -83,7 +86,6 @@ const internalNginx = {
 	 * @returns {Promise}
 	 */
 	test: () => {
-		debug(logger, "Testing Nginx configuration");
 		return utils.execFile("nginx", ["-tq"]);
 	},
 
@@ -125,7 +127,6 @@ const internalNginx = {
 
 		return Promise.all(promises).finally(() => {
 			return internalNginx.test().then(() => {
-				logger.info("Reloading Nginx");
 				return utils.execFile("nginx", ["-s", "reload"]);
 			});
 		});
@@ -153,7 +154,9 @@ const internalNginx = {
 			let template;
 
 			try {
-				template = fs.readFileSync(`${__dirname}/../templates/_location.conf`, { encoding: "utf8" });
+				template = fs.readFileSync(`${__dirname}/../templates/_proxy_host_custom_location.conf`, {
+					encoding: "utf8",
+				});
 			} catch (err) {
 				reject(new errs.ConfigurationError(err.message));
 				return;
@@ -372,7 +375,7 @@ const internalNginx = {
 	bulkGenerateConfigs: (model, hostType, hosts) => {
 		const promises = [];
 		hosts.map((host) => {
-			promises.push(internalNginx.generateConfig(model, hostType, host));
+			promises.push(internalNginx.configure(model, hostType, host));
 			return true;
 		});
 

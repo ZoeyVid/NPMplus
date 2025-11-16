@@ -72,7 +72,18 @@ export default () => {
 										reject(err);
 									}
 								} else {
-									resolve(result);
+									tokenData = result;
+
+									// Hack: some tokens out in the wild have a scope of 'all' instead of 'user'.
+									// For 30 days at least, we need to replace 'all' with user.
+									if (
+										typeof tokenData.scope !== "undefined" &&
+										_.indexOf(tokenData.scope, "all") !== -1
+									) {
+										tokenData.scope = ["user"];
+									}
+
+									resolve(tokenData);
 								}
 							},
 						);

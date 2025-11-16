@@ -14,11 +14,7 @@
 							"value": {
 								"status": "OK",
 								"setup": true,
-								"version": {
-									"major": 2,
-									"minor": 1,
-									"revision": 0
-								}
+								"version": "..."
 							}
 						}
 					},

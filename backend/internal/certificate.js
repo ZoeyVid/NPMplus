@@ -2,6 +2,7 @@ import fs from "node:fs";
 import https from "node:https";
 import path from "path";
 import archiver from "archiver";
+import punycode from "punycode.js";
 import _ from "lodash";
 import moment from "moment";
 import { ProxyAgent } from "proxy-agent";

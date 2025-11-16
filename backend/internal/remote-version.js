@@ -24,8 +24,6 @@ const internalRemoteVersion = {
 			const data = JSON.parse(raw);
 			internalRemoteVersion.last_result = data;
 			internalRemoteVersion.last_fetch_time = Date.now();
-		} else {
-			debug(logger, "Using cached remote version result");
 		}
 
 		const latestVersion = internalRemoteVersion.last_result.tag_name;
