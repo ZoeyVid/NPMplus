@@ -24,7 +24,6 @@
 		"hsts_enabled",
 		"hsts_subdomains"
 	],
-	"additionalProperties": false,
 	"properties": {
 		"id": {
 			"$ref": "../common.json#/properties/id"
@@ -43,15 +42,14 @@
 		},
 		"forward_host": {
 			"type": "string",
-			"minLength": 1
+			"minLength": 1,
+			"example": "127.0.0.1"
 		},
 		"forward_port": {
-			"type": [
-				"integer",
-				"null"
-			],
+			"type": ["integer", "null"],
 			"minimum": 1,
-			"maximum": 65535
+			"maximum": 65535,
+			"example": 8080
 		},
 		"access_list_id": {
 			"$ref": "../common.json#/properties/access_list_id"
@@ -69,28 +67,28 @@
 			"$ref": "../common.json#/properties/block_exploits"
 		},
 		"advanced_config": {
-			"type": "string"
+			"type": "string",
+			"example": ""
 		},
 		"meta": {
-			"type": "object"
+			"type": "object",
+			"example": {
+				"nginx_online": true,
+				"nginx_err": null
+			}
 		},
 		"allow_websocket_upgrade": {
 			"description": "Allow Websocket Upgrade for all paths",
-			"example": true,
-			"type": "boolean"
+			"type": "boolean",
+			"example": true
 		},
 		"http2_support": {
 			"$ref": "../common.json#/properties/http2_support"
 		},
 		"forward_scheme": {
 			"type": "string",
-			"enum": [
-				"http",
-				"https",
-				"path",
-				"grpc",
-				"grpcs"
-			]
+			"enum": ["http", "https", "path", "grpc", "grpcs"],
+			"example": "http"
 		},
 		"enabled": {
 			"$ref": "../common.json#/properties/enabled"
@@ -100,19 +98,11 @@
 			"minItems": 0,
 			"items": {
 				"type": "object",
-				"required": [
-					"forward_scheme",
-					"forward_host",
-					"forward_port",
-					"path"
-				],
+				"required": ["forward_scheme", "forward_host", "forward_port", "path"],
 				"additionalProperties": false,
 				"properties": {
 					"id": {
-						"type": [
-							"integer",
-							"null"
-						]
+						"type": ["integer", "null"]
 					},
 					"path": {
 						"type": "string",
@@ -131,7 +121,15 @@
 						"type": "string"
 					}
 				}
-			}
+			},
+			"example": [
+				{
+					"path": "/app",
+					"forward_scheme": "http",
+					"forward_host": "example.com",
+					"forward_port": 80
+				}
+			]
 		},
 		"hsts_enabled": {
 			"$ref": "../common.json#/properties/hsts_enabled"
@@ -142,12 +140,14 @@
 		"certificate": {
 			"oneOf": [
 				{
-					"type": "null"
+					"type": "null",
+					"example": null
 				},
 				{
 					"$ref": "./certificate-object.json"
 				}
-			]
+			],
+			"example": null
 		},
 		"owner": {
 			"$ref": "./user-object.json"
@@ -155,12 +155,14 @@
 		"access_list": {
 			"oneOf": [
 				{
-					"type": "null"
+					"type": "null",
+					"example": null
 				},
 				{
 					"$ref": "./access-list-object.json"
 				}
-			]
+			],
+			"example": null
 		}
 	}
 }

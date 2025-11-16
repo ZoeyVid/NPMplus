@@ -2,14 +2,17 @@
 	"type": "object",
 	"description": "Health object",
 	"additionalProperties": false,
-	"required": [
-		"status"
-	],
+	"required": ["status"],
 	"properties": {
 		"status": {
 			"type": "string",
 			"description": "Healthy",
 			"example": "OK"
+		},
+		"setup": {
+			"type": "boolean",
+			"description": "Whether the initial setup has been completed",
+			"example": true
 		}
 	}
 }

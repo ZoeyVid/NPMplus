@@ -1,14 +1,10 @@
 {
 	"operationId": "updateUserAuth",
 	"summary": "Update a User's Authentication",
-	"tags": [
-		"Users"
-	],
+	"tags": ["users"],
 	"security": [
 		{
-			"BearerAuth": [
-				"users"
-			]
+			"bearerAuth": ["admin"]
 		}
 	],
 	"parameters": [
@@ -39,10 +35,7 @@
 			"application/json": {
 				"schema": {
 					"type": "object",
-					"required": [
-						"type",
-						"secret"
-					],
+					"required": ["type", "secret"],
 					"properties": {
 						"type": {
 							"type": "string",

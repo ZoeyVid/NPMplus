@@ -1,14 +1,10 @@
 {
 	"operationId": "getUsers",
 	"summary": "Get all users",
-	"tags": [
-		"Users"
-	],
+	"tags": ["users"],
 	"security": [
 		{
-			"BearerAuth": [
-				"users"
-			]
+			"bearerAuth": ["admin"]
 		}
 	],
 	"parameters": [
@@ -18,9 +14,7 @@
 			"description": "Expansions",
 			"schema": {
 				"type": "string",
-				"enum": [
-					"permissions"
-				]
+				"enum": ["permissions"]
 			}
 		}
 	],
@@ -41,9 +35,7 @@
 									"name": "Jamie Curnow",
 									"nickname": "James",
 									"avatar": "//www.gravatar.com/avatar/6193176330f8d38747f038c170ddb193?default=mm",
-									"roles": [
-										"admin"
-									]
+									"roles": ["admin"]
 								}
 							]
 						},
@@ -58,9 +50,7 @@
 									"name": "Jamie Curnow",
 									"nickname": "James",
 									"avatar": "//www.gravatar.com/avatar/6193176330f8d38747f038c170ddb193?default=mm",
-									"roles": [
-										"admin"
-									],
+									"roles": ["admin"],
 									"permissions": {
 										"visibility": "all",
 										"proxy_hosts": "manage",

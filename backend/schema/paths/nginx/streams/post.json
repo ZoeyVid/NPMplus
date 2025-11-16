@@ -1,13 +1,11 @@
 {
 	"operationId": "createStream",
 	"summary": "Create a Stream",
-	"tags": [
-		"Streams"
-	],
+	"tags": ["streams"],
 	"security": [
 		{
-			"BearerAuth": [
-				"streams"
+			"bearerAuth": [
+				"streams.manage"
 			]
 		}
 	],
@@ -48,8 +46,21 @@
 						},
 						"meta": {
 							"$ref": "../../../components/stream-object.json#/properties/meta"
+						},
+						"domain_names": {
+							"$ref": "../../../components/dead-host-object.json#/properties/domain_names"
 						}
 					}
+				},
+				"example": {
+					"incoming_port": 8888,
+					"forwarding_host": "127.0.0.1",
+					"forwarding_port": 8080,
+					"tcp_forwarding": true,
+					"udp_forwarding": false,
+					"udp_forwarding": false,
+					"certificate_id": 0,
+					"meta": {}
 				}
 			}
 		}
@@ -81,7 +92,6 @@
 									"id": 1,
 									"created_on": "2024-10-09T02:33:16.000Z",
 									"modified_on": "2024-10-09T02:33:16.000Z",
-									"is_deleted": false,
 									"is_disabled": false,
 									"email": "admin@example.com",
 									"name": "Administrator",

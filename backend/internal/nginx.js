@@ -1,9 +1,14 @@
-const _ = require("lodash");
-const fs = require("node:fs");
-const logger = require("../logger").nginx;
-const utils = require("../lib/utils");
-const error = require("../lib/error");
-const punycode = require("punycode/");
+import fs from "node:fs";
+import { dirname } from "node:path";
+import { fileURLToPath } from "node:url";
+import punycode from "punycode.js";
+import _ from "lodash";
+import errs from "../lib/error.js";
+import utils from "../lib/utils.js";
+import { debug, nginx as logger } from "../logger.js";
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
 
 const internalNginx = {
 	/**
@@ -47,7 +52,7 @@ const internalNginx = {
 						});
 					})
 					.catch((err) => {
-						logger.error(err.message);
+						debug(logger, "Nginx test failed:", err.message);
 
 						// config is bad, update meta and rename config
 						combined_meta = _.assign({}, host.meta, {
@@ -78,13 +83,13 @@ const internalNginx = {
 	 * @returns {Promise}
 	 */
 	test: () => {
+		debug(logger, "Testing Nginx configuration");
 		return utils.execFile("nginx", ["-tq"]);
 	},
 
 	/**
 	 * @returns {Promise}
 	 */
-
 	reload: () => {
 		const promises = [];
 
@@ -148,9 +153,9 @@ const internalNginx = {
 			let template;
 
 			try {
-				template = fs.readFileSync("/app/templates/_proxy_host_custom_location.conf", { encoding: "utf8" });
+				template = fs.readFileSync(`${__dirname}/../templates/_location.conf`, { encoding: "utf8" });
 			} catch (err) {
-				reject(new error.ConfigurationError(err.message));
+				reject(new errs.ConfigurationError(err.message));
 				return;
 			}
 
@@ -180,9 +185,10 @@ const internalNginx = {
 						!locationCopy.forward_host.startsWith("/") &&
 						!locationCopy.forward_host.startsWith("unix")
 					) {
-						const split = locationCopy.forward_host.split("/");
-						locationCopy.forward_host = split.shift();
-						locationCopy.forward_path = `/${split.join("/")}`;
+						const splitted = locationCopy.forward_host.split("/");
+
+						locationCopy.forward_host = splitted.shift();
+						locationCopy.forward_path = `/${splitted.join("/")}`;
 					}
 					locationCopy.env = process.env;
 
@@ -211,9 +217,9 @@ const internalNginx = {
 			const filename = internalNginx.getConfigName(nice_host_type, host.id);
 
 			try {
-				template = fs.readFileSync(`/app/templates/${nice_host_type}.conf`, { encoding: "utf8" });
+				template = fs.readFileSync(`${__dirname}/../templates/${nice_host_type}.conf`, { encoding: "utf8" });
 			} catch (err) {
-				reject(new error.ConfigurationError(err.message));
+				reject(new errs.ConfigurationError(err.message));
 				return;
 			}
 
@@ -228,8 +234,16 @@ const internalNginx = {
 				}
 			}
 
+			// For redirection hosts, if the scheme is not http or https, set it to $scheme
+			if (
+				nice_host_type === "redirection_host" &&
+				["http", "https"].indexOf(host.forward_scheme.toLowerCase()) === -1
+			) {
+				host.forward_scheme = "$scheme";
+			}
+
 			if (host.locations) {
-				// logger.info ('host.locations = ' + JSON.stringify(host.locations, null, 2));
+				//logger.info ('host.locations = ' + JSON.stringify(host.locations, null, 2));
 				origLocations = [].concat(host.locations);
 				locationsPromise = internalNginx.renderLocations(host).then((renderedLocations) => {
 					host.locations = renderedLocations;
@@ -268,6 +282,7 @@ const internalNginx = {
 					.parseAndRender(template, host)
 					.then((config_text) => {
 						fs.writeFileSync(filename, config_text, { encoding: "utf8" });
+						debug(logger, "Wrote config:", filename);
 
 						// Restore locations array
 						host.locations = origLocations;
@@ -275,7 +290,8 @@ const internalNginx = {
 						resolve(true);
 					})
 					.catch((err) => {
-						reject(new error.ConfigurationError(err.message));
+						debug(logger, `Could not write ${filename}:`, err.message);
+						reject(new errs.ConfigurationError(err.message));
 					})
 					.then(() => {
 						if (process.env.DISABLE_NGINX_BEAUTIFIER === "false") {
@@ -284,6 +300,23 @@ const internalNginx = {
 					});
 			});
 		});
+	},
+
+	/**
+	 * A simple wrapper around unlinkSync that writes to the logger
+	 *
+	 * @param   {String}  filename
+	 */
+	deleteFile: (filename) => {
+		if (!fs.existsSync(filename)) {
+			return;
+		}
+		try {
+			debug(logger, `Deleting file: ${filename}`);
+			fs.unlinkSync(filename);
+		} catch (err) {
+			debug(logger, "Could not delete file:", JSON.stringify(err, null, 2));
+		}
 	},
 
 	/**
@@ -298,7 +331,6 @@ const internalNginx = {
 	/**
 	 * @param   {String}  host_type
 	 * @param   {Object}  [host]
-	 * @param   {Boolean} [delete_err_file]
 	 * @returns {Promise}
 	 */
 	deleteConfig: (host_type, host) => {
@@ -306,15 +338,11 @@ const internalNginx = {
 			internalNginx.getFileFriendlyHostType(host_type),
 			typeof host === "undefined" ? 0 : host.id,
 		);
-		const config_file_err = `${config_file}.err`;
 
-		return new Promise((resolve /*, reject */) => {
-			fs.rm(config_file, { force: true }, () => {
-				resolve();
-			});
-			fs.rm(config_file_err, { force: true }, () => {
-				resolve();
-			});
+		return new Promise((resolve /*, reject*/) => {
+			internalNginx.deleteFile(config_file);
+			internalNginx.deleteFile(`${config_file}.err`);
+			resolve();
 		});
 	},
 
@@ -328,24 +356,27 @@ const internalNginx = {
 			internalNginx.getFileFriendlyHostType(host_type),
 			typeof host === "undefined" ? 0 : host.id,
 		);
-		const config_file_err = `${config_file}.err`;
 
 		return new Promise((resolve /*, reject */) => {
-			fs.rename(config_file, config_file_err, () => {
+			fs.rename(config_file, `${config_file}.err`, () => {
 				resolve();
 			});
 		});
 	},
 
 	/**
-	 * @param   {String}  host_type
+	 * @param   {String}  hostType
 	 * @param   {Array}   hosts
 	 * @returns {Promise}
 	 */
-	bulkGenerateConfigs: (model, host_type, hosts) => {
-		return hosts.reduce((promise, host) => {
-			return promise.then(() => internalNginx.configure(model, host_type, host));
-		}, Promise.resolve());
+	bulkGenerateConfigs: (model, hostType, hosts) => {
+		const promises = [];
+		hosts.map((host) => {
+			promises.push(internalNginx.generateConfig(model, hostType, host));
+			return true;
+		});
+
+		return Promise.all(promises);
 	},
 
 	/**
@@ -355,4 +386,4 @@ const internalNginx = {
 	advancedConfigHasDefaultLocation: (cfg) => !!cfg.match(/^(?:.*;)?\s*?location\s*?\/\s*?{/im),
 };
 
-module.exports = internalNginx;
+export default internalNginx;

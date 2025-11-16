@@ -1,14 +1,10 @@
 {
 	"operationId": "getDeadHosts",
 	"summary": "Get all 404 hosts",
-	"tags": [
-		"404 Hosts"
-	],
+	"tags": ["404-hosts"],
 	"security": [
 		{
-			"BearerAuth": [
-				"dead_hosts"
-			]
+			"bearerAuth": ["dead_hosts.view"]
 		}
 	],
 	"parameters": [
@@ -18,10 +14,7 @@
 			"description": "Expansions",
 			"schema": {
 				"type": "string",
-				"enum": [
-					"owner",
-					"certificate"
-				]
+				"enum": ["owner", "certificate"]
 			}
 		}
 	],
@@ -38,9 +31,7 @@
 									"created_on": "2024-10-09T01:38:52.000Z",
 									"modified_on": "2024-10-09T01:38:52.000Z",
 									"owner_user_id": 1,
-									"domain_names": [
-										"test.example.com"
-									],
+									"domain_names": ["test.example.com"],
 									"certificate_id": 0,
 									"ssl_forced": false,
 									"advanced_config": "",

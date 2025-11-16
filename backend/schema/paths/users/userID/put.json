@@ -1,14 +1,10 @@
 {
 	"operationId": "updateUser",
 	"summary": "Update a User",
-	"tags": [
-		"Users"
-	],
+	"tags": ["users"],
 	"security": [
 		{
-			"BearerAuth": [
-				"users"
-			]
+			"bearerAuth": ["admin"]
 		}
 	],
 	"parameters": [
@@ -78,9 +74,7 @@
 								"name": "Jamie Curnow",
 								"nickname": "James",
 								"avatar": "//www.gravatar.com/avatar/6193176330f8d38747f038c170ddb193?default=mm",
-								"roles": [
-									"admin"
-								]
+								"roles": ["admin"]
 							}
 						}
 					},

@@ -3,6 +3,7 @@ frontend/certbot-dns-plugins.js
 
 # User-specific stuff
 .idea
+.qodo
 desktop.files.json
 package-lock.json
 desktop.ini
