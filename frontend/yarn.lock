@@ -1564,10 +1564,10 @@ find-root@^1.1.0:
   resolved "https://registry.yarnpkg.com/find-root/-/find-root-1.1.0.tgz#abcfc8ba76f708c42a97b3d685b7e9450bfb9ce4"
   integrity sha512-NKfW6bec6GfKc0SGx1e07QZY9PE99u0Bft/0rzSD5k3sO/vwkVUpDUKVm5Gpp5Ue3YfShPFTX2070tDs5kB9Ng==
 
-formik@2.4.6:
-  version "2.4.6"
-  resolved "https://registry.yarnpkg.com/formik/-/formik-2.4.6.tgz#4da75ca80f1a827ab35b08fd98d5a76e928c9686"
-  integrity sha512-A+2EI7U7aG296q2TLGvNapDNTZp1khVt5Vk0Q/fyfSROss0V/V6+txt2aJnwEos44IxTCW/LYAi/zgWzlevj+g==
+formik@2.4.9:
+  version "2.4.9"
+  resolved "https://registry.yarnpkg.com/formik/-/formik-2.4.9.tgz#7e5b81e9c9e215d0ce2ac8fed808cf7fba0cd204"
+  integrity sha512-5nI94BMnlFDdQRBY4Sz39WkhxajZJ57Fzs8wVbtsQlm5ScKIR1QLYqv/ultBnobObtlUyxpxoLodpixrsf36Og==
   dependencies:
     "@types/hoist-non-react-statics" "^3.3.1"
     deepmerge "^2.1.1"
