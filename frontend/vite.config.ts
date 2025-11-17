@@ -6,12 +6,12 @@ import "vitest/config";
 import { execFile } from "node:child_process";
 
 const runLocaleScripts = () => {
-	execFile("yarn", ["locale-compile"], (error, stdout, _stderr) => {
+	execFile("yarn", ["formatjs", "compile-folder", "src/locale/src", "src/locale/lang"], (error, stdout, _stderr) => {
 		if (error) {
 			throw error;
 		}
 		console.log(stdout);
-		execFile("yarn", ["locale-sort"], (error, stdout, _stderr) => {
+		execFile("./src/locale/scripts/locale-sort.sh", (error, stdout, _stderr) => {
 			if (error) {
 				throw error;
 			}
@@ -24,7 +24,7 @@ const runLocaleScripts = () => {
 export default defineConfig({
 	plugins: [
 		{
-			name: 'run-on-start',
+			name: "run-on-start",
 			configureServer(_server) {
 				runLocaleScripts();
 			},

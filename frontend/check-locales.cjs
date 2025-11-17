@@ -46,7 +46,7 @@ try {
 
 // get all translations used in frontend code
 const tmpobj = tmp.fileSync({ postfix: ".json" });
-spawnSync("yarn", ["locale-extract", "--out-file", tmpobj.name]);
+spawnSync("yarn", ["formatjs", "extract", "'src/**/*.tsx'", "--out-file", tmpobj.name]);
 
 const allLocalesInProject = require(tmpobj.name);
 

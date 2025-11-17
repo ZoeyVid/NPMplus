@@ -15,12 +15,20 @@ jobs:
       - uses: actions/setup-node@v6
         with:
           node-version: 24
-      - name: biome
+      - name: biome-backend
         run: |
           cd backend
-          yarn
+          yarn install --production=false
           yarn biome lint --write
           yarn biome format --write
+      - name: biome-frontend
+        run: |
+          cd frontend
+          yarn --production=false
+          yarn biome lint --write
+          yarn biome format --write
+          yarn vitest
+          ./src/locale/scripts/locale-sort.sh
       - name: nginxbeautifier
         run: |
           yarn global add nginxbeautifier
