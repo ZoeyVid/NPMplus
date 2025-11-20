@@ -1339,10 +1339,10 @@ cosmiconfig@^7.0.0:
     path-type "^4.0.0"
     yaml "^1.10.0"
 
-country-flag-icons@1.6.1:
-  version "1.6.1"
-  resolved "https://registry.yarnpkg.com/country-flag-icons/-/country-flag-icons-1.6.1.tgz#abf3e21534bfb1bdcc1776432f659be0cdb952be"
-  integrity sha512-Xz65n4sCUi1CEZ3miUfElcuYmPa2NKjSZCqVoLBuRqUSwXKs+FekBu8VJXRcDcdkPdsIDx55R+15a+Zx/SaBmQ==
+country-flag-icons@1.6.3:
+  version "1.6.3"
+  resolved "https://registry.yarnpkg.com/country-flag-icons/-/country-flag-icons-1.6.3.tgz#790e39f880425b5f194e09c2bf73848031b7663b"
+  integrity sha512-frltrKmvnWgq8vacW70ldyOi+p6M78lWB9LDoGma7B/Ca6WE6O2wclVPtjtm4oey77ihxOb9PqoJcaz/PSNGmA==
 
 css.escape@^1.5.1:
   version "1.5.1"
