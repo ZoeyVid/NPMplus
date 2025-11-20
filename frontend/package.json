@@ -45,7 +45,7 @@
 		"happy-dom": "20.0.10",
 		"postcss": "8.5.6",
 		"postcss-simple-vars": "7.0.1",
-		"sass": "1.94.1",
+		"sass": "1.94.2",
 		"tmp": "0.2.5",
 		"typescript": "5.9.3",
 		"vite": "7.2.2",
