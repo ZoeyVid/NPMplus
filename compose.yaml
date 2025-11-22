@@ -26,8 +26,8 @@ services:
       - "TZ=your-timezone" # set timezone, required, set it to one of the values from the "TZ identifier" https://en.wikipedia.org/wiki/List_of_tz_database_time_zones#List
       - "ACME_EMAIL=your-email" # email address which should be used for acme, currently optional, may be required in the future, so I recommend you to enter your email here, optional for letsencrypt, but required for zerossl and google public ca
 #      - "ACME_SERVER=https://dv.acme-v02.api.pki.goog/directory (google public ca) / https://acme.zerossl.com/v2/DV90 (zerossl)" # acme server used when requesting/renewing certs using certbot, default is set to: https://acme-v02.api.letsencrypt.org/directory (letsencrypt)
-#      - "ACME_EAB_KID=123456789abcdef" # Key Identifier for External Account Binding for the acme server, not supported by letsencrypt, optional for zerossl (Login on theier site => Developer), but required for google public ca: https://cloud.google.com/certificate-manager/docs/public-ca-tutorial?hl=de#request-key-hmac
-#      - "ACME_EAB_HMAC_KEY=123456789abcdef" # HMAC key for External Account Binding for the acme server, not supported by letsencrypt, optional for zerossl (Login on theier site => Developer), but required for google public ca: https://cloud.google.com/certificate-manager/docs/public-ca-tutorial?hl=de#request-key-hmac
+#      - "ACME_EAB_KID=123456789abcdef" # Key Identifier for External Account Binding for the acme server, not supported by letsencrypt, optional for zerossl (Login on their site => Developer), but required for google public ca: https://cloud.google.com/certificate-manager/docs/public-ca-tutorial?hl=de#request-key-hmac
+#      - "ACME_EAB_HMAC_KEY=123456789abcdef" # HMAC key for External Account Binding for the acme server, not supported by letsencrypt, optional for zerossl (Login on their site => Developer), but required for google public ca: https://cloud.google.com/certificate-manager/docs/public-ca-tutorial?hl=de#request-key-hmac
 #      - "ACME_MUST_STAPLE=true" # enables must-staple, default false, I recommend you to enable this if your CA supports it, supported by zerossl, google public ca ignores this, unsupported by letsencrypt (will fail), overrides ACME_OCSP_STAPLING to true
 #      - "ACME_OCSP_STAPLING=true" # enables ocsp stapling, default false, I recommend you to enable this if your CA supports it, supported by zerossl and google public ca
 #      - "ACME_PROFILE=shortlived" # sets the profile to be used from the acme server, default is "none" (so the default profile), supported by letsencrypt (https://letsencrypt.org/docs/profiles), if you use letsencrypt I would recommend the "shortlived" profile, until it is public you should use the "tlsserver" profile, note: both are limited to 25 domains per cert instead of 100 like the "classic" (default) profile
@@ -108,7 +108,7 @@ services:
 #      - "/opt/npmplus/nginx:/opt/npmplus/nginx:ro"
 #      - "/opt/openappsec/logs:/opt/openappsec/logs:ro" # only uncomment if you also use the openappsec-agent container
 
-# This can be used with GOA=true, to keep the geopip database updated, you need to change the envs to make it work
+# This can be used with GOA=true, to keep the geoip database updated, you need to change the envs to make it work
 #  geoipupdate:
 #    container_name: npmplus-geoipupdate
 #    image: ghcr.io/maxmind/geoipupdate:latest
@@ -140,7 +140,7 @@ services:
 #      - "TZ=your-timezone" # needs to be changed
 #      - "autoPolicyLoad=true"
 #      - "registered_server=NPMplus"
-#      - "user_email=your-email" # optional, from theier docs: "This allows the open-appsec team to provide you easy assistance in case of any issues you might have with your specific deployment in the future and also to provide you information proactively regarding open-appsec in general or regarding your specific deployment. [...] If we send automatic emails there will also be an opt-out option included for receiving similar communication in the future."
+#      - "user_email=your-email" # optional, from their docs: "This allows the open-appsec team to provide you easy assistance in case of any issues you might have with your specific deployment in the future and also to provide you information proactively regarding open-appsec in general or regarding your specific deployment. [...] If we send automatic emails there will also be an opt-out option included for receiving similar communication in the future."
 #      - "AGENT_TOKEN=" # optional, you can specify an openappsec deployment profile token for connecting to their central webinterface  at https://my.openappsec.io, if you leave this commented, make sure to uncomment all other openappsec containers below, see: https://docs.openappsec.io/getting-started/using-the-web-ui-saas/create-a-profile
 #      - "SHARED_STORAGE_HOST=openappsec-shared-storage" # uncomment if you don't set AGENT_TOKEN
 #      - "LEARNING_HOST=openappsec-smartsync" # uncomment if you don't set AGENT_TOKEN
