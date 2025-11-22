@@ -34,8 +34,8 @@ services:
 #      - "ACME_KEY_TYPE=rsa" # which key type to use ecdsa or rsa, default and recommended: ecdsa
 #      - "ACME_SERVER_TLS_VERIFY=false" # enables checking if ACME_SERVER has a valid TLS cert, default and recommended true
 #      - "CUSTOM_OCSP_STAPLING=true" # enables ocsp stapling for custom certs, default false, I recommend you to enable this if your custom certs support it
-#      - "PUID=1000" # set group id, needs to be a number greater or equal to 99, or equal to 0, default 0 (root)
-#      - "PGID=1000" # set user id, needs to be a number greater or equal to 99, or equal to 0, default 0 (root), requires PUID to be not 0
+#      - "PUID=1000" # set user id, needs to be a number greater or equal to 99, or equal to 0, default 0 (root)
+#      - "PGID=1000" # set group id, needs to be a number greater or equal to 99, or equal to 0, default 0 (root), requires PUID to be not 0
 #      - "NPM_PORT=82" # Port the NPM UI should be bound to, default 81, you need to change it, if you want to run multiple npm instances in network mode host
 #      - "GOA_PORT=92" # Port the goaccess should be bound to, default 91, you need to change it, if you want to run multiple npm with goaccess instances in network mode host
 #      - "IPV4_BINDING=127.0.0.1" # IPv4 address to bind, defaults to all
