@@ -11,9 +11,9 @@
     ),
     'versions' => array(
         'phpmailer/phpmailer' => array(
-            'pretty_version' => 'v7.0.0',
-            'version' => '7.0.0.0',
-            'reference' => 'c7111310c6116ba508a6a170a89eaaed2129bd42',
+            'pretty_version' => 'v7.0.1',
+            'version' => '7.0.1.0',
+            'reference' => '360ae911ce62e25e11249f6140fa58939f556ebe',
             'type' => 'library',
             'install_path' => __DIR__ . '/../phpmailer/phpmailer',
             'aliases' => array(),
