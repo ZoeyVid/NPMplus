@@ -10,8 +10,6 @@ RUN apk upgrade --no-cache -a && \
     yarn formatjs compile-folder src/locale/src src/locale/lang && \
     yarn tsc && \
     yarn vite build
-COPY security.txt /app/dist/.well-known/security.txt
-
 
 FROM alpine:3.22.2 AS backend
 SHELL ["/bin/ash", "-eo", "pipefail", "-c"]
