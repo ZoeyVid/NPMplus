@@ -29,7 +29,7 @@ const internalUser = {
 
 		data.avatar = data.avatar || "";
 		data.roles = data.roles || [];
-		
+
 		data.email = data.email.toLowerCase().trim();
 		internalUser.isEmailAvailable(data.email).then((available) => {
 			if (!available) {
