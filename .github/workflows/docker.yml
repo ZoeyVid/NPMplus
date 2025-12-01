@@ -111,7 +111,7 @@ jobs:
             FLAGS=-mbranch-protection=standard
           
   merge:
-    runs-on: ubuntu-24.04-arm
+    runs-on: ubuntu-latest
     needs: [build-x86_64, build-aarch64]
     if: ${{ github.repository_owner == 'ZoeyVid' }}
     steps:
@@ -132,9 +132,6 @@ jobs:
         run: |
           docker buildx imagetools create --tag zoeyvid/npmplus:${{ github.ref_name }} ghcr.io/zoeyvid/npmplus:${{ github.ref_name }}-x86_64 ghcr.io/zoeyvid/npmplus:${{ github.ref_name }}-aarch64
           docker buildx imagetools create --tag ghcr.io/zoeyvid/npmplus:${{ github.ref_name }} ghcr.io/zoeyvid/npmplus:${{ github.ref_name }}-x86_64 ghcr.io/zoeyvid/npmplus:${{ github.ref_name }}-aarch64
-      - name: show version
-        if: ${{ github.event_name != 'pull_request' }}
-        run: docker run --rm --entrypoint nginx ghcr.io/zoeyvid/npmplus:${{ github.ref_name }} -V
       - name: Set PR-Number (PR)
         if: ${{ github.event_name == 'pull_request' }}
         id: pr
@@ -142,9 +139,6 @@ jobs:
       - name: create multiarch (PR)
         if: ${{ github.event_name == 'pull_request' }}
         run: docker buildx imagetools create --tag ghcr.io/zoeyvid/npmplus:${{ steps.pr.outputs.pr }} ghcr.io/zoeyvid/npmplus:${{ steps.pr.outputs.pr }}-x86_64 ghcr.io/zoeyvid/npmplus:${{ steps.pr.outputs.pr }}-aarch64
-      - name: show version (PR)
-        if: ${{ github.event_name == 'pull_request' }}
-        run: docker run --rm --entrypoint nginx ghcr.io/zoeyvid/npmplus:${{ steps.pr.outputs.pr }} -V
       - name: add comment (PR)
         uses: mshick/add-pr-comment@v2
         if: ${{ github.event_name == 'pull_request' }}
