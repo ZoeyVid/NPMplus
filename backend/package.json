@@ -15,7 +15,7 @@
 		"better-sqlite3": "12.5.0",
 		"body-parser": "2.2.1",
 		"compression": "1.8.1",
-		"express": "5.1.0",
+		"express": "5.2.0",
 		"express-fileupload": "1.5.2",
 		"gravatar": "1.8.2",
 		"jsonwebtoken": "9.0.2",
