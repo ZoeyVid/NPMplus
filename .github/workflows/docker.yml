@@ -50,10 +50,6 @@ jobs:
           tags: ghcr.io/zoeyvid/npmplus:${{ github.ref_name }}-x86_64
           build-args: |
             FLAGS=-march=x86-64-v2 -mtune=generic -fcf-protection=full
-      - name: show version
-        if: ${{ github.event_name != 'pull_request' }}
-        run: |
-          docker run --rm --entrypoint nginx zoeyvid/npmplus:${{ github.ref_name }} -V
       - name: Set PR-Number (PR)
         if: ${{ github.event_name == 'pull_request' }}
         id: pr
@@ -138,8 +134,7 @@ jobs:
           docker buildx imagetools create --tag ghcr.io/zoeyvid/npmplus:${{ github.ref_name }} ghcr.io/zoeyvid/npmplus:${{ github.ref_name }}-x86_64 ghcr.io/zoeyvid/npmplus:${{ github.ref_name }}-aarch64
       - name: show version
         if: ${{ github.event_name != 'pull_request' }}
-        run: |
-          docker run --rm --entrypoint nginx zoeyvid/npmplus:${{ github.ref_name }} -V
+        run: docker run --rm --entrypoint nginx ghcr.io/zoeyvid/npmplus:${{ github.ref_name }} -V
       - name: Set PR-Number (PR)
         if: ${{ github.event_name == 'pull_request' }}
         id: pr
