@@ -139,7 +139,7 @@ jobs:
         if: ${{ github.event_name == 'pull_request' }}
         id: pr
         run: echo "pr=$(echo pr-${{ github.ref_name }} | sed "s|refs/pull/:||g" | sed "s|/merge||g")" >> $GITHUB_OUTPUT
-      - name: create multiarch
+      - name: create multiarch (PR)
         if: ${{ github.event_name == 'pull_request' }}
         run: docker buildx imagetools create --tag ghcr.io/zoeyvid/npmplus:${{ steps.pr.outputs.pr }} ghcr.io/zoeyvid/npmplus:${{ steps.pr.outputs.pr }}-x86_64 ghcr.io/zoeyvid/npmplus:${{ steps.pr.outputs.pr }}-aarch64
       - name: show version (PR)
