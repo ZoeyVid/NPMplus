@@ -760,10 +760,10 @@ express-fileupload@1.5.2:
   dependencies:
     busboy "^1.6.0"
 
-express@5.2.0:
-  version "5.2.0"
-  resolved "https://registry.yarnpkg.com/express/-/express-5.2.0.tgz#d4101c16807a1a061c6e9adc7ce617473b4afeb9"
-  integrity sha512-XdpJDLxfztVY59X0zPI6sibRiGcxhTPXRD3IhJmjKf2jwMvkRGV1j7loB8U+heeamoU3XvihAaGRTR4aXXUN3A==
+express@5.2.1:
+  version "5.2.1"
+  resolved "https://registry.yarnpkg.com/express/-/express-5.2.1.tgz#8f21d15b6d327f92b4794ecf8cb08a72f956ac04"
+  integrity sha512-hIS4idWWai69NezIdRt2xFVofaF4j+6INOpJlVOLDO8zXGpUVEVzIYk12UUi2JzjEzWL3IOAxcTubgz9Po0yXw==
   dependencies:
     accepts "^2.0.0"
     body-parser "^2.2.1"
