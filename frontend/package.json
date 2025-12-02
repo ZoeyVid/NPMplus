@@ -24,7 +24,7 @@
 		"react-dom": "19.2.0",
 		"react-intl": "7.1.14",
 		"react-markdown": "10.1.0",
-		"react-router-dom": "7.9.6",
+		"react-router-dom": "7.10.0",
 		"react-select": "5.10.2",
 		"react-toastify": "11.0.5",
 		"rooks": "9.3.0"
@@ -51,6 +51,6 @@
 		"vite": "7.2.6",
 		"vite-plugin-checker": "0.11.0",
 		"vite-tsconfig-paths": "5.1.4",
-		"vitest": "4.0.14"
+		"vitest": "4.0.15"
 	}
 }
