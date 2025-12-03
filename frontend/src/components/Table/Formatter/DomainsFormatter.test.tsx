@@ -12,9 +12,9 @@ const Wrapper = ({ children }: { children: React.ReactNode }) => (
 );
 
 describe("DomainsFormatter", () => {
-    afterEach(() => {
-        cleanup();
-    });
+	afterEach(() => {
+		cleanup();
+	});
 
 	it("renders domains as links", () => {
 		render(
@@ -46,27 +46,30 @@ describe("DomainsFormatter", () => {
 		const link = screen.getByText("example.com");
 		fireEvent.mouseOver(link);
 
-        // Check for popover content
-        await waitFor(() => {
-            const iframe = document.querySelector("iframe");
-            expect(iframe).toBeInTheDocument();
-            expect(iframe).toHaveAttribute("src", "http://example.com");
-        }, { timeout: 2000 });
+		// Check for popover content
+		await waitFor(
+			() => {
+				const iframe = document.querySelector("iframe");
+				expect(iframe).toBeInTheDocument();
+				expect(iframe).toHaveAttribute("src", "http://example.com");
+			},
+			{ timeout: 2000 },
+		);
 	});
 
-    it("does not show popover for wildcard domains", async () => {
-        render(
-            <Wrapper>
-                <DomainsFormatter domains={["*.example.com"]} />
-            </Wrapper>
-        );
-        const link = screen.getByText("*.example.com");
-        fireEvent.mouseOver(link);
+	it("does not show popover for wildcard domains", async () => {
+		render(
+			<Wrapper>
+				<DomainsFormatter domains={["*.example.com"]} />
+			</Wrapper>,
+		);
+		const link = screen.getByText("*.example.com");
+		fireEvent.mouseOver(link);
 
-        // Should not show iframe
-        // Wait a bit to be sure (longer than delay)
-        await new Promise((r) => setTimeout(r, 600));
-        const iframe = document.querySelector("iframe");
-        expect(iframe).not.toBeInTheDocument();
-    });
+		// Should not show iframe
+		// Wait a bit to be sure (longer than delay)
+		await new Promise((r) => setTimeout(r, 600));
+		const iframe = document.querySelector("iframe");
+		expect(iframe).not.toBeInTheDocument();
+	});
 });
