@@ -46,7 +46,7 @@ const DomainLink = ({ domain, color }: { domain?: string; color?: string }) => {
 				<Popover.Header as="h3">{domain}</Popover.Header>
 				<Popover.Body style={{ padding: 0 }}>
 					<iframe
-						src={`http://${domain}`}
+						src={`//${domain}`}
 						style={{ width: "500px", height: "400px", border: "none" }}
 						title={`Preview of ${domain}`}
 						loading="lazy"

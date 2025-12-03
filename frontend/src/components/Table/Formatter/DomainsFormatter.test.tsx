@@ -51,7 +51,7 @@ describe("DomainsFormatter", () => {
 			() => {
 				const iframe = document.querySelector("iframe");
 				expect(iframe).toBeInTheDocument();
-				expect(iframe).toHaveAttribute("src", "http://example.com");
+				expect(iframe).toHaveAttribute("src", "//example.com");
 			},
 			{ timeout: 2000 },
 		);
