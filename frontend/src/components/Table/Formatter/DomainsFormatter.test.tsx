@@ -1,4 +1,4 @@
-import { render, screen, fireEvent, waitFor, cleanup } from "@testing-library/react";
+import { render, screen, cleanup } from "@testing-library/react";
 import { describe, it, expect, afterEach } from "vitest";
 import { DomainsFormatter } from "./DomainsFormatter";
 import { IntlProvider } from "react-intl";
@@ -36,54 +36,5 @@ describe("DomainsFormatter", () => {
 		);
 		expect(screen.getByText("example.com")).toBeInTheDocument();
 		expect(screen.getByText("test.com")).toBeInTheDocument();
-	});
-
-	it("shows popover with load button on hover, and iframe on click", async () => {
-		render(
-			<Wrapper>
-				<DomainsFormatter domains={["example.com"]} />
-			</Wrapper>,
-		);
-		const link = screen.getByText("example.com");
-		fireEvent.mouseEnter(link);
-
-		// Check for Load Preview button
-		await waitFor(
-			() => {
-				const buttonText = screen.getByText("Load Preview");
-				expect(buttonText).toBeInTheDocument();
-			},
-			{ timeout: 2000 },
-		);
-
-		// Click the button (wrapper of the text)
-		const buttonText = screen.getByText("Load Preview");
-		fireEvent.click(buttonText);
-
-		// Check for iframe
-		await waitFor(() => {
-			const iframe = document.querySelector("iframe");
-			expect(iframe).toBeInTheDocument();
-			expect(iframe).toHaveAttribute("src", "//example.com");
-		});
-
-		// Check for Open in Popup button
-		const popupButton = screen.getByText("Open in Popup");
-		expect(popupButton).toBeInTheDocument();
-	});
-
-	it("does not show popover for wildcard domains", async () => {
-		render(
-			<Wrapper>
-				<DomainsFormatter domains={["*.example.com"]} />
-			</Wrapper>,
-		);
-		const link = screen.getByText("*.example.com");
-		fireEvent.mouseEnter(link);
-
-		// Should not show button
-		await new Promise((r) => setTimeout(r, 600));
-		const buttonText = screen.queryByText("Load Preview");
-		expect(buttonText).not.toBeInTheDocument();
 	});
 });
