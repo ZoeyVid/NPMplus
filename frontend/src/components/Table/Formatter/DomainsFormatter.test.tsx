@@ -13,9 +13,9 @@ const Wrapper = ({ children }: { children: React.ReactNode }) => (
 );
 
 describe("DomainsFormatter", () => {
-    afterEach(() => {
-        cleanup();
-    });
+	afterEach(() => {
+		cleanup();
+	});
 
 	it("renders domains as links", () => {
 		render(
@@ -47,36 +47,39 @@ describe("DomainsFormatter", () => {
 		const link = screen.getByText("example.com");
 		fireEvent.mouseOver(link);
 
-        // Check for Load Preview button
-        await waitFor(() => {
-            const buttonText = screen.getByText("Load Preview");
-            expect(buttonText).toBeInTheDocument();
-        }, { timeout: 2000 });
+		// Check for Load Preview button
+		await waitFor(
+			() => {
+				const buttonText = screen.getByText("Load Preview");
+				expect(buttonText).toBeInTheDocument();
+			},
+			{ timeout: 2000 },
+		);
 
-        // Click the button (wrapper of the text)
-        const buttonText = screen.getByText("Load Preview");
-        fireEvent.click(buttonText);
+		// Click the button (wrapper of the text)
+		const buttonText = screen.getByText("Load Preview");
+		fireEvent.click(buttonText);
 
-        // Check for iframe
-        await waitFor(() => {
-            const iframe = document.querySelector("iframe");
-            expect(iframe).toBeInTheDocument();
-            expect(iframe).toHaveAttribute("src", "//example.com");
-        });
+		// Check for iframe
+		await waitFor(() => {
+			const iframe = document.querySelector("iframe");
+			expect(iframe).toBeInTheDocument();
+			expect(iframe).toHaveAttribute("src", "//example.com");
+		});
 	});
 
-    it("does not show popover for wildcard domains", async () => {
-        render(
-            <Wrapper>
-                <DomainsFormatter domains={["*.example.com"]} />
-            </Wrapper>
-        );
-        const link = screen.getByText("*.example.com");
-        fireEvent.mouseOver(link);
+	it("does not show popover for wildcard domains", async () => {
+		render(
+			<Wrapper>
+				<DomainsFormatter domains={["*.example.com"]} />
+			</Wrapper>,
+		);
+		const link = screen.getByText("*.example.com");
+		fireEvent.mouseOver(link);
 
-        // Should not show button
-        await new Promise((r) => setTimeout(r, 600));
-        const buttonText = screen.queryByText("Load Preview");
-        expect(buttonText).not.toBeInTheDocument();
-    });
+		// Should not show button
+		await new Promise((r) => setTimeout(r, 600));
+		const buttonText = screen.queryByText("Load Preview");
+		expect(buttonText).not.toBeInTheDocument();
+	});
 });
