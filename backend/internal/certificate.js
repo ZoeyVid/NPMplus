@@ -4,7 +4,8 @@ import path from "path";
 import archiver from "archiver";
 import punycode from "punycode.js";
 import _ from "lodash";
-import moment from "moment";
+import dayjs from "dayjs";
+import customParseFormat from "dayjs/plugin/customParseFormat.js";
 import { ProxyAgent } from "proxy-agent";
 import tempWrite from "temp-write";
 import dnsPlugins from "../certbot/dns-plugins.json" with { type: "json" };
@@ -16,6 +17,8 @@ import certificateModel from "../models/certificate.js";
 import internalAuditLog from "./audit-log.js";
 import internalNginx from "./nginx.js";
 import pjson from "../package.json" with { type: "json" };
+
+dayjs.extend(customParseFormat);
 
 const omissions = () => {
 	return ["is_deleted", "owner.is_deleted", "meta.dns_provider_credentials"];
@@ -86,9 +89,9 @@ const internalCertificate = {
 													.where("id", certificate.id)
 													.andWhere("provider", "letsencrypt")
 													.patch({
-														expires_on: moment(cert_info.dates.to, "X").format(
-															"YYYY-MM-DD HH:mm:ss",
-														),
+														expires_on: dayjs
+															.unix(cert_info.dates.to)
+															.format("YYYY-MM-DD HH:mm:ss"),
 													});
 											})
 											.catch((err) => {
@@ -145,7 +148,7 @@ const internalCertificate = {
 					const savedRow = await certificateModel
 						.query()
 						.patchAndFetchById(certificate.id, {
-							expires_on: moment(certInfo.dates.to, "X").format("YYYY-MM-DD HH:mm:ss"),
+							expires_on: dayjs.unix(certInfo.dates.to).format("YYYY-MM-DD HH:mm:ss"),
 						})
 						.then(utils.omitRow(omissions()));
 
@@ -568,7 +571,7 @@ const internalCertificate = {
 
 		const certificate = await internalCertificate.update(access, {
 			id: data.id,
-			expires_on: moment(validations.certificate.dates.to, "X").format("YYYY-MM-DD HH:mm:ss"),
+			expires_on: dayjs.unix(validations.certificate.dates.to).format("YYYY-MM-DD HH:mm:ss"),
 			domain_names: [validations.certificate.cn],
 			meta: _.clone(row.meta), // Prevent the update method from changing this value that we'll use later
 		});
@@ -670,7 +673,8 @@ const internalCertificate = {
 				const match = regex.exec(str.trim());
 
 				if (match && typeof match[2] !== "undefined") {
-					const date = Number.parseInt(moment(match[2], "MMM DD HH:mm:ss YYYY z").format("X"), 10);
+					// Use dayjs to parse the date
+					const date = Number.parseInt(dayjs(match[2], "MMM DD HH:mm:ss YYYY z").format("X"), 10);
 
 					if (match[1].toLowerCase() === "notbefore") {
 						validFrom = date;
@@ -685,7 +689,7 @@ const internalCertificate = {
 				throw new error.ValidationError(`Could not determine dates from certificate: ${result}`);
 			}
 
-			if (throw_expired && validTo < Number.parseInt(moment().format("X"), 10)) {
+			if (throw_expired && validTo < dayjs().unix()) {
 				throw new error.ValidationError("Certificate has expired");
 			}
 
@@ -817,7 +821,7 @@ const internalCertificate = {
 			);
 
 			const updatedCertificate = await certificateModel.query().patchAndFetchById(certificate.id, {
-				expires_on: moment(certInfo.dates.to, "X").format("YYYY-MM-DD HH:mm:ss"),
+				expires_on: dayjs.unix(certInfo.dates.to).format("YYYY-MM-DD HH:mm:ss"),
 			});
 
 			// Add to audit log
