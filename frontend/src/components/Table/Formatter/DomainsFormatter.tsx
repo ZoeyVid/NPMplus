@@ -92,7 +92,12 @@ const DomainLink = ({ domain, color }: { domain?: string; color?: string }) => {
 						<div className="d-flex justify-content-between align-items-center">
 							<span>{domain}</span>
 							{pinned && (
-								<Button size="sm" variant="outline-secondary" onClick={handleOpenPopup} title="Open in Popup">
+								<Button
+									size="sm"
+									variant="outline-secondary"
+									onClick={handleOpenPopup}
+									title="Open in Popup"
+								>
 									<i className="ti ti-external-link" /> <T id="preview.open-popup" />
 								</Button>
 							)}
