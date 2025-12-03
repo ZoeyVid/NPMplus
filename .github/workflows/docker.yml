@@ -22,7 +22,7 @@ on:
 jobs:
   build-x86_64:
     runs-on: ubuntu-latest
-    if: ${{ github.repository_owner == 'ZoeyVid' }}
+    if: ${{ github.repository_owner == 'shedowe19' }}
     steps:
       - name: Checkout
         uses: actions/checkout@v6
@@ -34,7 +34,7 @@ jobs:
         uses: docker/login-action@v3
         with:
           registry: ghcr.io
-          username: zoeyvid
+          username: shedowe19
           password: ${{ github.token }}
       - name: version
         run: |
@@ -47,7 +47,7 @@ jobs:
           context: .
           file: ./Dockerfile
           push: true
-          tags: ghcr.io/zoeyvid/npmplus:${{ github.ref_name }}-x86_64
+          tags: ghcr.io/shedowe19/npmplus:${{ github.ref_name }}-x86_64
           build-args: |
             FLAGS=-march=x86-64-v2 -mtune=generic -fcf-protection=full
       - name: Set PR-Number (PR)
@@ -61,13 +61,13 @@ jobs:
           context: .
           file: ./Dockerfile
           push: true
-          tags: ghcr.io/zoeyvid/npmplus:${{ steps.pr.outputs.pr }}-x86_64
+          tags: ghcr.io/shedowe19/npmplus:${{ steps.pr.outputs.pr }}-x86_64
           build-args: |
             FLAGS=-march=x86-64-v2 -mtune=generic -fcf-protection=full
           
   build-aarch64:
     runs-on: ubuntu-24.04-arm
-    if: ${{ github.repository_owner == 'ZoeyVid' }}
+    if: ${{ github.repository_owner == 'shedowe19' }}
     steps:
       - name: Checkout
         uses: actions/checkout@v6
@@ -79,7 +79,7 @@ jobs:
         uses: docker/login-action@v3
         with:
           registry: ghcr.io
-          username: zoeyvid
+          username: shedowe19
           password: ${{ github.token }}
       - name: version
         run: |
@@ -92,7 +92,7 @@ jobs:
           context: .
           file: ./Dockerfile
           push: true
-          tags: ghcr.io/zoeyvid/npmplus:${{ github.ref_name }}-aarch64
+          tags: ghcr.io/shedowe19/npmplus:${{ github.ref_name }}-aarch64
           build-args: |
             FLAGS=-mbranch-protection=standard
       - name: Set PR-Number (PR)
@@ -106,14 +106,14 @@ jobs:
           context: .
           file: ./Dockerfile
           push: true
-          tags: ghcr.io/zoeyvid/npmplus:${{ steps.pr.outputs.pr }}-aarch64
+          tags: ghcr.io/shedowe19/npmplus:${{ steps.pr.outputs.pr }}-aarch64
           build-args: |
             FLAGS=-mbranch-protection=standard
           
   merge:
     runs-on: ubuntu-latest
     needs: [build-x86_64, build-aarch64]
-    if: ${{ github.repository_owner == 'ZoeyVid' }}
+    if: ${{ github.repository_owner == 'shedowe19' }}
     steps:
       - name: Login to DockerHub
         if: ${{ github.event_name != 'pull_request' }}
@@ -125,24 +125,24 @@ jobs:
         uses: docker/login-action@v3
         with:
           registry: ghcr.io
-          username: zoeyvid
+          username: shedowe19
           password: ${{ github.token }}
       - name: create multiarch
         if: ${{ github.event_name != 'pull_request' }}
         run: |
-          docker buildx imagetools create --tag zoeyvid/npmplus:${{ github.ref_name }} ghcr.io/zoeyvid/npmplus:${{ github.ref_name }}-x86_64 ghcr.io/zoeyvid/npmplus:${{ github.ref_name }}-aarch64
-          docker buildx imagetools create --tag ghcr.io/zoeyvid/npmplus:${{ github.ref_name }} ghcr.io/zoeyvid/npmplus:${{ github.ref_name }}-x86_64 ghcr.io/zoeyvid/npmplus:${{ github.ref_name }}-aarch64
+          docker buildx imagetools create --tag shedowe19/npmplus:${{ github.ref_name }} ghcr.io/shedowe19/npmplus:${{ github.ref_name }}-x86_64 ghcr.io/shedowe19/npmplus:${{ github.ref_name }}-aarch64
+          docker buildx imagetools create --tag ghcr.io/shedowe19/npmplus:${{ github.ref_name }} ghcr.io/shedowe19/npmplus:${{ github.ref_name }}-x86_64 ghcr.io/shedowe19/npmplus:${{ github.ref_name }}-aarch64
       - name: Set PR-Number (PR)
         if: ${{ github.event_name == 'pull_request' }}
         id: pr
         run: echo "pr=$(echo pr-${{ github.ref_name }} | sed "s|refs/pull/:||g" | sed "s|/merge||g")" >> $GITHUB_OUTPUT
       - name: create multiarch (PR)
         if: ${{ github.event_name == 'pull_request' }}
-        run: docker buildx imagetools create --tag ghcr.io/zoeyvid/npmplus:${{ steps.pr.outputs.pr }} ghcr.io/zoeyvid/npmplus:${{ steps.pr.outputs.pr }}-x86_64 ghcr.io/zoeyvid/npmplus:${{ steps.pr.outputs.pr }}-aarch64
+        run: docker buildx imagetools create --tag ghcr.io/shedowe19/npmplus:${{ steps.pr.outputs.pr }} ghcr.io/shedowe19/npmplus:${{ steps.pr.outputs.pr }}-x86_64 ghcr.io/shedowe19/npmplus:${{ steps.pr.outputs.pr }}-aarch64
       - name: add comment (PR)
         uses: mshick/add-pr-comment@v2
         if: ${{ github.event_name == 'pull_request' }}
         with:
-          message: "The Docker Image can now be found here: `ghcr.io/zoeyvid/npmplus:${{ steps.pr.outputs.pr }}`"
+          message: "The Docker Image can now be found here: `ghcr.io/shedowe19/npmplus:${{ steps.pr.outputs.pr }}`"
           repo-token: ${{ github.token }}
           refresh-message-position: true
