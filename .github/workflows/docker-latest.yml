@@ -72,7 +72,7 @@ jobs:
     needs: [build-x86_64, build-aarch64]
     if: ${{ github.repository_owner == 'shedowe19' }}
     steps:
-      - name: Login to DockerHub
+      - name: Login to GitHub Container Registry
         uses: docker/login-action@v3
         with:
           registry: ghcr.io
@@ -80,11 +80,7 @@ jobs:
           password: ${{ github.token }}
       - name: create multiarch
         run: |
-          docker buildx imagetools create --tag shedowe19/npmplus:latest ghcr.io/shedowe19/npmplus:latest-x86_64 ghcr.io/shedowe19/npmplus:latest-aarch64
           docker buildx imagetools create --tag ghcr.io/shedowe19/npmplus:latest ghcr.io/shedowe19/npmplus:latest-x86_64 ghcr.io/shedowe19/npmplus:latest-aarch64
-          docker buildx imagetools create --tag shedowe19/npmplus:${{ inputs.tag }} ghcr.io/shedowe19/npmplus:latest-x86_64 ghcr.io/shedowe19/npmplus:latest-aarch64
           docker buildx imagetools create --tag ghcr.io/shedowe19/npmplus:${{ inputs.tag }} ghcr.io/shedowe19/npmplus:latest-x86_64 ghcr.io/shedowe19/npmplus:latest-aarch64
-          docker buildx imagetools create --tag shedowe19/npmplus:${{ github.run_number }} ghcr.io/shedowe19/npmplus:latest-x86_64 ghcr.io/shedowe19/npmplus:latest-aarch64
           docker buildx imagetools create --tag ghcr.io/shedowe19/npmplus:${{ github.run_number }} ghcr.io/shedowe19/npmplus:latest-x86_64 ghcr.io/shedowe19/npmplus:latest-aarch64
-          docker buildx imagetools create --tag shedowe19/nginx-proxy-manager:latest ghcr.io/shedowe19/npmplus:latest-x86_64 ghcr.io/shedowe19/npmplus:latest-aarch64
           docker buildx imagetools create --tag ghcr.io/shedowe19/nginx-proxy-manager:latest ghcr.io/shedowe19/npmplus:latest-x86_64 ghcr.io/shedowe19/npmplus:latest-aarch64
