@@ -13,6 +13,47 @@ interface Props {
 	color?: string;
 }
 
+interface DomainPreviewProps {
+	domain: string;
+	[key: string]: any;
+}
+
+const DomainPreview = forwardRef<HTMLDivElement, DomainPreviewProps>(({ domain, style, ...props }, ref) => {
+	const [showPreview, setShowPreview] = useState(false);
+
+	return (
+		<Popover
+			ref={ref}
+			id={`popover-preview-${domain}`}
+			style={{ ...style, maxWidth: "520px" }}
+			onMouseEnter={() => {}} // Keep interactions
+			{...props}
+		>
+			<Popover.Header as="h3">{domain}</Popover.Header>
+			<Popover.Body style={{ padding: 0, minHeight: "50px", minWidth: "200px" }}>
+				{!showPreview ? (
+					<div className="p-3 text-center">
+						<p className="small mb-2">
+							<T id="preview.security-note" />
+						</p>
+						<Button size="sm" variant="primary" onClick={() => setShowPreview(true)}>
+							<T id="preview.load" />
+						</Button>
+					</div>
+				) : (
+					<iframe
+						src={`//${domain}`}
+						style={{ width: "500px", height: "400px", border: "none" }}
+						title={`Preview of ${domain}`}
+						loading="lazy"
+						sandbox="allow-same-origin allow-scripts allow-forms"
+					/>
+				)}
+			</Popover.Body>
+		</Popover>
+	);
+});
+
 const DomainLink = ({ domain, color }: { domain?: string; color?: string }) => {
 	const [show, setShow] = useState(false);
 	const [pinned, setPinned] = useState(false);
