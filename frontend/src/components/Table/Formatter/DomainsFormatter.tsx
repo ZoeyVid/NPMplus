@@ -1,5 +1,6 @@
 import cn from "classnames";
-import type { ReactNode } from "react";
+import { type ReactNode, useState } from "react";
+import Button from "react-bootstrap/Button";
 import OverlayTrigger from "react-bootstrap/OverlayTrigger";
 import Popover from "react-bootstrap/Popover";
 import { formatDateTime, T } from "src/locale";
@@ -12,10 +13,40 @@ interface Props {
 	color?: string;
 }
 
+const DomainPreview = ({ domain }: { domain: string }) => {
+	const [showPreview, setShowPreview] = useState(false);
+
+	return (
+		<Popover id={`popover-preview-${domain}`} style={{ maxWidth: "520px" }}>
+			<Popover.Header as="h3">{domain}</Popover.Header>
+			<Popover.Body style={{ padding: 0, minHeight: "50px", minWidth: "200px" }}>
+				{!showPreview ? (
+					<div className="p-3 text-center">
+						<p className="small text-muted mb-2">
+							<T
+								id="preview.security-note"
+								defaultMessage="Click to load preview. Some sites may block embedding."
+							/>
+						</p>
+						<Button size="sm" variant="primary" onClick={() => setShowPreview(true)}>
+							<T id="preview.load" defaultMessage="Load Preview" />
+						</Button>
+					</div>
+				) : (
+					<iframe
+						src={`//${domain}`}
+						style={{ width: "500px", height: "400px", border: "none" }}
+						title={`Preview of ${domain}`}
+						loading="lazy"
+						sandbox="allow-same-origin allow-scripts allow-forms"
+					/>
+				)}
+			</Popover.Body>
+		</Popover>
+	);
+};
+
 const DomainLink = ({ domain, color }: { domain?: string; color?: string }) => {
-	// when domain contains a wildcard, make the link go nowhere.
-	// Apparently the domain can be null or undefined sometimes.
-	// This try is just a safeguard to prevent the whole formatter from breaking.
 	if (!domain) return null;
 	try {
 		const isWildcard = domain.includes("*");
@@ -41,27 +72,12 @@ const DomainLink = ({ domain, color }: { domain?: string; color?: string }) => {
 			return link;
 		}
 
-		const popover = (
-			<Popover id={`popover-preview-${domain}`} style={{ maxWidth: "520px" }}>
-				<Popover.Header as="h3">{domain}</Popover.Header>
-				<Popover.Body style={{ padding: 0 }}>
-					<iframe
-						src={`//${domain}`}
-						style={{ width: "500px", height: "400px", border: "none" }}
-						title={`Preview of ${domain}`}
-						loading="lazy"
-						sandbox="allow-same-origin allow-scripts allow-forms"
-					/>
-				</Popover.Body>
-			</Popover>
-		);
-
 		return (
 			<OverlayTrigger
 				trigger={["hover", "focus"]}
 				placement="right"
-				overlay={popover}
-				delay={{ show: 500, hide: 250 }}
+				overlay={<DomainPreview domain={domain} />}
+				delay={{ show: 200, hide: 250 }}
 			>
 				{link}
 			</OverlayTrigger>

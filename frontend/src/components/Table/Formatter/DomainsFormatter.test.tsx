@@ -37,7 +37,7 @@ describe("DomainsFormatter", () => {
 		expect(screen.getByText("test.com")).toBeInTheDocument();
 	});
 
-	it("shows popover with iframe on hover", async () => {
+	it("shows popover with load button on hover, and iframe on click", async () => {
 		render(
 			<Wrapper>
 				<DomainsFormatter domains={["example.com"]} />
@@ -46,15 +46,27 @@ describe("DomainsFormatter", () => {
 		const link = screen.getByText("example.com");
 		fireEvent.mouseOver(link);
 
-		// Check for popover content
+		// Check for Load Preview button
+		// The mock translation renders the ID if translation is missing.
 		await waitFor(
 			() => {
-				const iframe = document.querySelector("iframe");
-				expect(iframe).toBeInTheDocument();
-				expect(iframe).toHaveAttribute("src", "//example.com");
+				// "preview.load" is the ID used in T component
+				const buttonText = screen.getByText("preview.load");
+				expect(buttonText).toBeInTheDocument();
 			},
 			{ timeout: 2000 },
 		);
+
+		// Click the button (wrapper of the text)
+		const buttonText = screen.getByText("preview.load");
+		fireEvent.click(buttonText);
+
+		// Check for iframe
+		await waitFor(() => {
+			const iframe = document.querySelector("iframe");
+			expect(iframe).toBeInTheDocument();
+			expect(iframe).toHaveAttribute("src", "//example.com");
+		});
 	});
 
 	it("does not show popover for wildcard domains", async () => {
@@ -66,10 +78,9 @@ describe("DomainsFormatter", () => {
 		const link = screen.getByText("*.example.com");
 		fireEvent.mouseOver(link);
 
-		// Should not show iframe
-		// Wait a bit to be sure (longer than delay)
+		// Should not show button
 		await new Promise((r) => setTimeout(r, 600));
-		const iframe = document.querySelector("iframe");
-		expect(iframe).not.toBeInTheDocument();
+		const buttonText = screen.queryByText("preview.load");
+		expect(buttonText).not.toBeInTheDocument();
 	});
 });
