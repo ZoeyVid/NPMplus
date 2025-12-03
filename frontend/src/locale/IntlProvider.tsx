@@ -119,6 +119,4 @@ const T = ({
 	);
 };
 
-console.log("L:", localeOptions);
-
 export { localeOptions, getFlagCodeForLocale, getLocale, createIntl, changeLocale, intl, T };

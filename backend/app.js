@@ -1,5 +1,3 @@
-import bodyParser from "body-parser";
-import compression from "compression";
 import express from "express";
 import fileUpload from "express-fileupload";
 import jwt from "./lib/express/jwt.js";
@@ -11,11 +9,8 @@ import mainRoutes from "./routes/main.js";
  */
 const app = express();
 app.use(fileUpload());
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: true }));
-
-// Gzip
-app.use(compression());
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 
 /**
  * General Logging, BEFORE routes
