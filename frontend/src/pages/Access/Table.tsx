@@ -19,9 +19,9 @@ export default function Table({ data, isFetching, isFiltered, onEdit, onDelete, 
 	const columnHelper = createColumnHelper<AccessList>();
 	const columns = useMemo(
 		() => [
-			columnHelper.accessor((row: any) => row.owner, {
+			columnHelper.accessor("owner", {
 				id: "owner",
-				cell: (info: any) => {
+				cell: (info) => {
 					const value = info.getValue();
 					return <GravatarFormatter url={value ? value.avatar : ""} name={value ? value.name : ""} />;
 				},
@@ -29,36 +29,36 @@ export default function Table({ data, isFetching, isFiltered, onEdit, onDelete, 
 					className: "w-1",
 				},
 			}),
-			columnHelper.accessor((row: any) => row, {
+			columnHelper.accessor((row) => row, {
 				id: "name",
 				header: intl.formatMessage({ id: "column.name" }),
-				cell: (info: any) => (
+				cell: (info) => (
 					<ValueWithDateFormatter value={info.getValue().name} createdOn={info.getValue().createdOn} />
 				),
 			}),
-			columnHelper.accessor((row: any) => row.items, {
+			columnHelper.accessor("items", {
 				id: "items",
 				header: intl.formatMessage({ id: "column.authorization" }),
-				cell: (info: any) => <T id="access-list.auth-count" data={{ count: info.getValue().length }} />,
+				cell: (info) => <T id="access-list.auth-count" data={{ count: info.getValue()?.length || 0 }} />,
 			}),
-			columnHelper.accessor((row: any) => row.clients, {
+			columnHelper.accessor("clients", {
 				id: "clients",
 				header: intl.formatMessage({ id: "column.access" }),
-				cell: (info: any) => <T id="access-list.access-count" data={{ count: info.getValue().length }} />,
+				cell: (info) => <T id="access-list.access-count" data={{ count: info.getValue()?.length || 0 }} />,
 			}),
-			columnHelper.accessor((row: any) => row.satisfyAny, {
+			columnHelper.accessor("satisfyAny", {
 				id: "satisfyAny",
 				header: intl.formatMessage({ id: "column.satisfy" }),
-				cell: (info: any) => <T id={info.getValue() ? "column.satisfy-any" : "column.satisfy-all"} />,
+				cell: (info) => <T id={info.getValue() ? "column.satisfy-any" : "column.satisfy-all"} />,
 			}),
-			columnHelper.accessor((row: any) => row.proxyHostCount, {
+			columnHelper.accessor("proxyHostCount", {
 				id: "proxyHostCount",
 				header: intl.formatMessage({ id: "proxy-hosts" }),
-				cell: (info: any) => <T id="proxy-hosts.count" data={{ count: info.getValue() }} />,
+				cell: (info) => <T id="proxy-hosts.count" data={{ count: info.getValue() || 0 }} />,
 			}),
 			columnHelper.display({
 				id: "id",
-				cell: (info: any) => {
+				cell: (info) => {
 					return (
 						<span className="dropdown">
 							<button
@@ -82,6 +82,7 @@ export default function Table({ data, isFetching, isFiltered, onEdit, onDelete, 
 									href="#"
 									onClick={(e) => {
 										e.preventDefault();
+										// @ts-expect-error id is optional in interface but required here
 										onEdit?.(info.row.original.id);
 									}}
 								>
@@ -95,6 +96,7 @@ export default function Table({ data, isFetching, isFiltered, onEdit, onDelete, 
 										href="#"
 										onClick={(e) => {
 											e.preventDefault();
+											// @ts-expect-error id is optional in interface but required here
 											onDelete?.(info.row.original.id);
 										}}
 									>

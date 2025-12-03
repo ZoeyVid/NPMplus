@@ -83,7 +83,9 @@ export default function TableWrapper() {
 											type="text"
 											className="form-control form-control-sm"
 											autoComplete="off"
-											onChange={(e: any) => setSearch(e.target.value.toLowerCase().trim())}
+											onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+												setSearch(e.target.value.toLowerCase().trim())
+											}
 										/>
 									</div>
 								) : null}
