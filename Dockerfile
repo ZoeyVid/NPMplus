@@ -57,7 +57,9 @@ SHELL ["/bin/ash", "-eo", "pipefail", "-c"]
 ENV NODE_ENV=production
 ARG CRS_VER=v4.21.0
 
-COPY rootfs /
+COPY rootfs/etc /etc
+COPY rootfs/usr /usr
+COPY rootfs/html /html
 COPY --from=backend /app /app
 WORKDIR /app
 
