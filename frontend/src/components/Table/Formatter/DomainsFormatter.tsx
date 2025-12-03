@@ -22,7 +22,7 @@ const DomainPreview = ({ domain }: { domain: string }) => {
 			<Popover.Body style={{ padding: 0, minHeight: "50px", minWidth: "200px" }}>
 				{!showPreview ? (
 					<div className="p-3 text-center">
-						<p className="small text-muted mb-2">
+						<p className="small mb-2">
 							<T id="preview.security-note" />
 						</p>
 						<Button size="sm" variant="primary" onClick={() => setShowPreview(true)}>
@@ -72,7 +72,7 @@ const DomainLink = ({ domain, color }: { domain?: string; color?: string }) => {
 		return (
 			<OverlayTrigger
 				trigger={["hover", "focus"]}
-				placement="right"
+				placement="auto"
 				overlay={<DomainPreview domain={domain} />}
 				delay={{ show: 200, hide: 250 }}
 			>
