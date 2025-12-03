@@ -503,6 +503,12 @@
 	"permissions.visibility.user": {
 		"defaultMessage": "Created Items Only"
 	},
+	"preview.load": {
+		"defaultMessage": "Load Preview"
+	},
+	"preview.security-note": {
+		"defaultMessage": "Click to load preview. Some sites may block embedding."
+	},
 	"proxy-host": {
 		"defaultMessage": "Proxy Host"
 	},
