@@ -22,12 +22,7 @@ const DomainPreview = forwardRef<HTMLDivElement, DomainPreviewProps>(({ domain, 
 	const [showPreview, setShowPreview] = useState(false);
 
 	return (
-		<Popover
-			ref={ref}
-			id={`popover-preview-${domain}`}
-			style={{ ...style, maxWidth: "520px" }}
-			{...props}
-		>
+		<Popover ref={ref} id={`popover-preview-${domain}`} style={{ ...style, maxWidth: "520px" }} {...props}>
 			<Popover.Header as="h3">{domain}</Popover.Header>
 			<Popover.Body style={{ padding: 0, minHeight: "50px", minWidth: "200px" }}>
 				{!showPreview ? (
