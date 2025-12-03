@@ -2,7 +2,6 @@ import { render, screen, fireEvent, waitFor, cleanup } from "@testing-library/re
 import { describe, it, expect, afterEach } from "vitest";
 import { DomainsFormatter } from "./DomainsFormatter";
 import { IntlProvider } from "react-intl";
-import "@testing-library/jest-dom/vitest";
 
 // Mock IntlProvider
 const Wrapper = ({ children }: { children: React.ReactNode }) => (
