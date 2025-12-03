@@ -1,4 +1,3 @@
-export * from "./AnimatedModalBody";
 export * from "./AnimatedPage";
 export * from "./Button";
 export * from "./EmptyData";
