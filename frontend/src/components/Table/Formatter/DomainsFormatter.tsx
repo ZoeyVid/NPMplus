@@ -1,5 +1,5 @@
 import cn from "classnames";
-import { type ReactNode, useState } from "react";
+import { type ReactNode, forwardRef, useState } from "react";
 import Button from "react-bootstrap/Button";
 import OverlayTrigger from "react-bootstrap/OverlayTrigger";
 import Popover from "react-bootstrap/Popover";
@@ -13,11 +13,16 @@ interface Props {
 	color?: string;
 }
 
-const DomainPreview = ({ domain }: { domain: string }) => {
+interface DomainPreviewProps {
+	domain: string;
+	[key: string]: any;
+}
+
+const DomainPreview = forwardRef<HTMLDivElement, DomainPreviewProps>(({ domain, style, ...props }, ref) => {
 	const [showPreview, setShowPreview] = useState(false);
 
 	return (
-		<Popover id={`popover-preview-${domain}`} style={{ maxWidth: "520px" }}>
+		<Popover ref={ref} id={`popover-preview-${domain}`} style={{ ...style, maxWidth: "520px" }} {...props}>
 			<Popover.Header as="h3">{domain}</Popover.Header>
 			<Popover.Body style={{ padding: 0, minHeight: "50px", minWidth: "200px" }}>
 				{!showPreview ? (
@@ -41,7 +46,7 @@ const DomainPreview = ({ domain }: { domain: string }) => {
 			</Popover.Body>
 		</Popover>
 	);
-};
+});
 
 const DomainLink = ({ domain, color }: { domain?: string; color?: string }) => {
 	if (!domain) return null;
