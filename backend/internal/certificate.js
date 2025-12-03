@@ -581,7 +581,7 @@ const internalCertificate = {
 		}, 10000);
 
 		try {
-			const result = await utils.File("openssl", ["pkey", "-in", filepath, "-check", "-noout"]);
+			const result = await utils.execFile("openssl", ["pkey", "-in", filepath, "-check", "-noout"]);
 			clearTimeout(failTimeout);
 			if (!result.toLowerCase().includes("key is valid")) {
 				throw new error.ValidationError(`Result Validation Error: ${result}`);
@@ -603,13 +603,16 @@ const internalCertificate = {
 	 * @param {Boolean} [throwExpired]  Throw when the certificate is out of date
 	 */
 	getCertificateInfo: async (certificate, throwExpired) => {
+		let filepath = null;
 		try {
-			const filepath = await tempWrite(certificate, "/tmp");
+			filepath = await tempWrite(certificate, "/tmp");
 			const certData = await internalCertificate.getCertificateInfoFromFile(filepath, throwExpired);
 			fs.unlinkSync(filepath);
 			return certData;
 		} catch (err) {
-			fs.unlinkSync(filepath);
+			if (filepath) {
+				fs.unlinkSync(filepath);
+			}
 			throw err;
 		}
 	},
