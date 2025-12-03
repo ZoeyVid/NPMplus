@@ -603,13 +603,16 @@ const internalCertificate = {
 	 * @param {Boolean} [throwExpired]  Throw when the certificate is out of date
 	 */
 	getCertificateInfo: async (certificate, throwExpired) => {
+		let filepath = null;
 		try {
-			const filepath = await tempWrite(certificate, "/tmp");
+			filepath = await tempWrite(certificate, "/tmp");
 			const certData = await internalCertificate.getCertificateInfoFromFile(filepath, throwExpired);
 			fs.unlinkSync(filepath);
 			return certData;
 		} catch (err) {
-			fs.unlinkSync(filepath);
+			if (filepath) {
+				fs.unlinkSync(filepath);
+			}
 			throw err;
 		}
 	},
