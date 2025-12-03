@@ -39,9 +39,9 @@
     ajv-draft-04 "^1.0.0"
     call-me-maybe "^1.0.2"
 
-"@biomejs/biome@^2.3.8":
+"@biomejs/biome@2.3.8":
   version "2.3.8"
-  resolved "https://registry.npmjs.org/@biomejs/biome/-/biome-2.3.8.tgz"
+  resolved "https://registry.yarnpkg.com/@biomejs/biome/-/biome-2.3.8.tgz#03f66a19ba7b287bc12ce493f69382f24f3076fa"
   integrity sha512-Qjsgoe6FEBxWAUzwFGFrB+1+M8y/y5kwmg5CHac+GSVOdmOIqsAiXM5QMVGZJ1eCUCLlPZtq4aFAQ0eawEUuUA==
   optionalDependencies:
     "@biomejs/cli-darwin-arm64" "2.3.8"
