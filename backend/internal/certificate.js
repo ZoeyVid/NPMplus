@@ -662,7 +662,8 @@ const internalCertificate = {
 
 				if (match && typeof match[2] !== "undefined") {
 					// Use dayjs to parse the date
-					const date = Number.parseInt(dayjs(match[2], "MMM DD HH:mm:ss YYYY z").format("X"), 10);
+					const dateString = match[2].replace(/\s+/g, " ");
+					const date = dayjs(dateString, "MMM D HH:mm:ss YYYY z").unix();
 
 					if (match[1].toLowerCase() === "notbefore") {
 						validFrom = date;
@@ -674,7 +675,7 @@ const internalCertificate = {
 			});
 
 			if (!validFrom || !validTo) {
-				throw new error.ValidationError(`Could not determine dates from certificate: ${result}`);
+				throw new error.ValidationError(`Could not determine dates from certificate: ${result3}`);
 			}
 
 			if (throw_expired && validTo < dayjs().unix()) {
