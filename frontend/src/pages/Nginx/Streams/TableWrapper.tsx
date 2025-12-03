@@ -22,7 +22,11 @@ export default function TableWrapper() {
 	}
 
 	if (isError) {
-		return <Alert variant="danger">{error?.message || "Unknown error"}</Alert>;
+		return (
+			<Alert variant="danger">
+				{error?.message || <T id="error.unknown" />}
+			</Alert>
+		);
 	}
 
 	const handleDelete = async (id: number) => {
@@ -74,7 +78,9 @@ export default function TableWrapper() {
 											type="text"
 											className="form-control form-control-sm"
 											autoComplete="off"
-											onChange={(e: any) => setSearch(e.target.value.toLowerCase().trim())}
+											onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+												setSearch(e.target.value.toLowerCase().trim())
+											}
 										/>
 									</div>
 								) : null}

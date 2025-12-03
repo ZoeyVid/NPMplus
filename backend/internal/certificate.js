@@ -43,74 +43,59 @@ const internalCertificate = {
 	/**
 	 * Triggered by a timer, this will check for expiring hosts and renew their tls certs if required
 	 */
-	processExpiringHosts: () => {
+	processExpiringHosts: async () => {
 		if (!internalCertificate.intervalProcessing) {
 			internalCertificate.intervalProcessing = true;
 			logger.info("Renewing Certbot TLS certs close to expiry...");
 
-			return utils
-				.execFile("certbot", [
+			try {
+				const result = await utils.execFile("certbot", [
 					"--config",
 					"/etc/certbot.ini",
 					"renew",
 					"--server",
 					process.env.ACME_SERVER,
 					"--quiet",
-				])
-				.then((result) => {
-					if (result) {
-						logger.info(`Renew Result: ${result}`);
-					}
+				]);
 
-					return internalNginx.reload().then(() => {
-						logger.info("Renew Complete");
-						return result;
-					});
-				})
-				.then(() => {
-					// Now go and fetch all the certbot certs from the db and query the files and update expiry times
-					return certificateModel
-						.query()
-						.where("is_deleted", 0)
-						.andWhere("provider", "letsencrypt")
-						.then((certificates) => {
-							if (certificates && certificates.length > 0) {
-								const promises = [];
+				if (result) {
+					logger.info(`Renew Result: ${result}`);
+				}
 
-								certificates.map((certificate) => {
-									promises.push(
-										internalCertificate
-											.getCertificateInfoFromFile(
-												`${internalCertificate.getLiveCertPath(certificate.id)}/fullchain.pem`,
-											)
-											.then((cert_info) => {
-												return certificateModel
-													.query()
-													.where("id", certificate.id)
-													.andWhere("provider", "letsencrypt")
-													.patch({
-														expires_on: dayjs
-															.unix(cert_info.dates.to)
-															.format("YYYY-MM-DD HH:mm:ss"),
-													});
-											})
-											.catch((err) => {
-												// Don't want to stop the train here, just log the error
-												logger.error(err.message);
-											}),
-									);
-									return Promise.all(promises);
+				await internalNginx.reload();
+				logger.info("Renew Complete");
+
+				// Now go and fetch all the certbot certs from the db and query the files and update expiry times
+				const certificates = await certificateModel
+					.query()
+					.where("is_deleted", 0)
+					.andWhere("provider", "letsencrypt");
+
+				if (certificates && certificates.length > 0) {
+					const promises = certificates.map(async (certificate) => {
+						try {
+							const certInfo = await internalCertificate.getCertificateInfoFromFile(
+								`${internalCertificate.getLiveCertPath(certificate.id)}/fullchain.pem`,
+							);
+							await certificateModel
+								.query()
+								.where("id", certificate.id)
+								.andWhere("provider", "letsencrypt")
+								.patch({
+									expires_on: dayjs.unix(certInfo.dates.to).format("YYYY-MM-DD HH:mm:ss"),
 								});
-							}
-						});
-				})
-				.then(() => {
-					internalCertificate.intervalProcessing = false;
-				})
-				.catch((err) => {
-					logger.error(err);
-					internalCertificate.intervalProcessing = false;
-				});
+						} catch (err) {
+							// Don't want to stop the train here, just log the error
+							logger.error(err.message);
+						}
+					});
+					await Promise.all(promises);
+				}
+			} catch (err) {
+				logger.error(err);
+			} finally {
+				internalCertificate.intervalProcessing = false;
+			}
 		}
 	},
 

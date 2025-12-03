@@ -1,9 +1,12 @@
 import { IconArrowsCross, IconBolt, IconBoltOff, IconDisc } from "@tabler/icons-react";
+import { motion } from "framer-motion";
 import { useNavigate } from "react-router-dom";
 import { HasPermission } from "src/components";
 import { useHostReport } from "src/hooks";
 import { T } from "src/locale";
 import { DEAD_HOSTS, PROXY_HOSTS, REDIRECTION_HOSTS, STREAMS, VIEW } from "src/modules/Permissions";
+
+const MotionLink = motion.a;
 
 const Dashboard = () => {
 	const { data: hostReport } = useHostReport();
@@ -19,13 +22,15 @@ const Dashboard = () => {
 					<div className="row row-cards">
 						<HasPermission section={PROXY_HOSTS} permission={VIEW} hideError>
 							<div className="col-sm-6 col-lg-3">
-								<a
+								<MotionLink
 									href="/nginx/proxy"
 									className="card card-sm card-link card-link-pop"
 									onClick={(e) => {
 										e.preventDefault();
 										navigate("/nginx/proxy");
 									}}
+									whileHover={{ scale: 1.05 }}
+									whileTap={{ scale: 0.95 }}
 								>
 									<div className="card-body">
 										<div className="row align-items-center">
@@ -41,18 +46,20 @@ const Dashboard = () => {
 											</div>
 										</div>
 									</div>
-								</a>
+								</MotionLink>
 							</div>
 						</HasPermission>
 						<HasPermission section={REDIRECTION_HOSTS} permission={VIEW} hideError>
 							<div className="col-sm-6 col-lg-3">
-								<a
+								<MotionLink
 									href="/nginx/redirection"
 									className="card card-sm card-link card-link-pop"
 									onClick={(e) => {
 										e.preventDefault();
 										navigate("/nginx/redirection");
 									}}
+									whileHover={{ scale: 1.05 }}
+									whileTap={{ scale: 0.95 }}
 								>
 									<div className="card-body">
 										<div className="row align-items-center">
@@ -69,18 +76,20 @@ const Dashboard = () => {
 											</div>
 										</div>
 									</div>
-								</a>
+								</MotionLink>
 							</div>
 						</HasPermission>
 						<HasPermission section={STREAMS} permission={VIEW} hideError>
 							<div className="col-sm-6 col-lg-3">
-								<a
+								<MotionLink
 									href="/nginx/stream"
 									className="card card-sm card-link card-link-pop"
 									onClick={(e) => {
 										e.preventDefault();
 										navigate("/nginx/stream");
 									}}
+									whileHover={{ scale: 1.05 }}
+									whileTap={{ scale: 0.95 }}
 								>
 									<div className="card-body">
 										<div className="row align-items-center">
@@ -94,18 +103,20 @@ const Dashboard = () => {
 											</div>
 										</div>
 									</div>
-								</a>
+								</MotionLink>
 							</div>
 						</HasPermission>
 						<HasPermission section={DEAD_HOSTS} permission={VIEW} hideError>
 							<div className="col-sm-6 col-lg-3">
-								<a
+								<MotionLink
 									href="/nginx/404"
 									className="card card-sm card-link card-link-pop"
 									onClick={(e) => {
 										e.preventDefault();
 										navigate("/nginx/404");
 									}}
+									whileHover={{ scale: 1.05 }}
+									whileTap={{ scale: 0.95 }}
 								>
 									<div className="card-body">
 										<div className="row align-items-center">
@@ -119,7 +130,7 @@ const Dashboard = () => {
 											</div>
 										</div>
 									</div>
-								</a>
+								</MotionLink>
 							</div>
 						</HasPermission>
 					</div>
