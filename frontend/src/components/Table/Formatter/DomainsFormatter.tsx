@@ -57,7 +57,12 @@ const DomainLink = ({ domain, color }: { domain?: string; color?: string }) => {
 		);
 
 		return (
-			<OverlayTrigger trigger={["hover", "focus"]} placement="right" overlay={popover} delay={{ show: 500, hide: 250 }}>
+			<OverlayTrigger
+				trigger={["hover", "focus"]}
+				placement="right"
+				overlay={popover}
+				delay={{ show: 500, hide: 250 }}
+			>
 				{link}
 			</OverlayTrigger>
 		);
