@@ -130,7 +130,6 @@ jobs:
       - name: create multiarch
         if: ${{ github.event_name != 'pull_request' }}
         run: |
-          docker buildx imagetools create --tag shedowe19/npmplus:${{ github.ref_name }} ghcr.io/shedowe19/npmplus:${{ github.ref_name }}-x86_64 ghcr.io/shedowe19/npmplus:${{ github.ref_name }}-aarch64
           docker buildx imagetools create --tag ghcr.io/shedowe19/npmplus:${{ github.ref_name }} ghcr.io/shedowe19/npmplus:${{ github.ref_name }}-x86_64 ghcr.io/shedowe19/npmplus:${{ github.ref_name }}-aarch64
       - name: Set PR-Number (PR)
         if: ${{ github.event_name == 'pull_request' }}
