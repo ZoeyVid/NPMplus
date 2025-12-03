@@ -22,7 +22,13 @@ const DomainPreview = forwardRef<HTMLDivElement, DomainPreviewProps>(({ domain, 
 	const [showPreview, setShowPreview] = useState(false);
 
 	return (
-		<Popover ref={ref} id={`popover-preview-${domain}`} style={{ ...style, maxWidth: "520px" }} {...props}>
+		<Popover
+			ref={ref}
+			id={`popover-preview-${domain}`}
+			style={{ ...style, maxWidth: "520px" }}
+			onMouseEnter={() => {}} // Keep interactions
+			{...props}
+		>
 			<Popover.Header as="h3">{domain}</Popover.Header>
 			<Popover.Body style={{ padding: 0, minHeight: "50px", minWidth: "200px" }}>
 				{!showPreview ? (
@@ -79,7 +85,7 @@ const DomainLink = ({ domain, color }: { domain?: string; color?: string }) => {
 				trigger={["hover", "focus"]}
 				placement="auto"
 				overlay={<DomainPreview domain={domain} />}
-				delay={{ show: 200, hide: 250 }}
+				delay={{ show: 200, hide: 1500 }}
 			>
 				{link}
 			</OverlayTrigger>
