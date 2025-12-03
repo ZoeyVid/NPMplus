@@ -1,5 +1,5 @@
 import cn from "classnames";
-import { type ReactNode } from "react";
+import type { ReactNode } from "react";
 import { formatDateTime, T } from "src/locale";
 
 interface Props {
