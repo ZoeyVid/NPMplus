@@ -45,12 +45,14 @@ export const CertificateExpiryWidget = () => {
 								<div key={cert.id} className="list-group-item">
 									<div className="row align-items-center">
 										<div className="col-auto">
-											<span className={`avatar ${isExpired ? "bg-red" : "bg-warning"} text-white`}>
+											<span
+												className={`avatar ${isExpired ? "bg-red" : "bg-warning"} text-white`}
+											>
 												{isExpired ? <IconAlertTriangle /> : <IconCertificate />}
 											</span>
 										</div>
 										<div className="col text-truncate">
-											<Link to={`/nginx/certificates`} className="text-reset d-block">
+											<Link to={"/nginx/certificates"} className="text-reset d-block">
 												{cert.niceName || cert.domainNames.join(", ")}
 											</Link>
 											<div className="d-block text-secondary text-truncate mt-n1">
