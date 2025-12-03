@@ -2,7 +2,7 @@
 	"name": "NPMplus",
 	"version": "0.0.0",
 	"description": "A beautiful interface for creating Nginx endpoints",
-	"author": "Jamie Curnow <jc@jc21.com> and ZoeyVid <zoeyvid@zvcdn.de>",
+	"author": "Jamie Curnow <jc@jc21.com>, ZoeyVid <zoeyvid@zvcdn.de> and shedowe19",
 	"license": "MIT",
 	"main": "index.js",
 	"type": "module",
