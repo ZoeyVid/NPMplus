@@ -5,6 +5,7 @@ import { HasPermission } from "src/components";
 import { useHostReport } from "src/hooks";
 import { T } from "src/locale";
 import { DEAD_HOSTS, PROXY_HOSTS, REDIRECTION_HOSTS, STREAMS, VIEW } from "src/modules/Permissions";
+import { CertificateExpiryWidget } from "./CertificateExpiryWidget";
 
 const MotionLink = motion.a;
 
@@ -134,6 +135,10 @@ const Dashboard = () => {
 							</div>
 						</HasPermission>
 					</div>
+				</div>
+
+				<div className="col-md-6 col-lg-4">
+					<CertificateExpiryWidget />
 				</div>
 			</div>
 		</div>
