@@ -56,7 +56,7 @@ export const CertificateExpiryWidget = () => {
 										</span>
 									</div>
 									<div className="col text-truncate">
-										<Link to={`/nginx/certificates`} className="text-reset d-block">
+										<Link to={"/nginx/certificates"} className="text-reset d-block">
 											{cert.niceName || cert.domainNames.join(", ")}
 										</Link>
 										<div className="d-block text-secondary text-truncate mt-n1">
