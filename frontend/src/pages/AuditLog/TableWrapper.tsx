@@ -13,11 +13,7 @@ export default function TableWrapper() {
 	}
 
 	if (isError) {
-		return (
-			<Alert variant="danger">
-				{error?.message || <T id="error.unknown" />}
-			</Alert>
-		);
+		return <Alert variant="danger">{error?.message || <T id="error.unknown" />}</Alert>;
 	}
 
 	return (
