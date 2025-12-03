@@ -50,9 +50,9 @@ export default function Table({
 	const columnHelper = createColumnHelper<User>();
 	const columns = useMemo(
 		() => [
-			columnHelper.accessor((row: any) => row, {
+			columnHelper.accessor((row) => row, {
 				id: "avatar",
-				cell: (info: any) => {
+				cell: (info) => {
 					const value = info.getValue();
 					return <GravatarFormatter url={value.avatar} name={value.name} />;
 				},
@@ -60,10 +60,10 @@ export default function Table({
 					className: "w-1",
 				},
 			}),
-			columnHelper.accessor((row: any) => row, {
+			columnHelper.accessor((row) => row, {
 				id: "name",
 				header: intl.formatMessage({ id: "column.name" }),
-				cell: (info: any) => {
+				cell: (info) => {
 					const value = info.getValue();
 					// Hack to reuse domains formatter
 					return (
@@ -75,30 +75,30 @@ export default function Table({
 					);
 				},
 			}),
-			columnHelper.accessor((row: any) => row.email, {
+			columnHelper.accessor("email", {
 				id: "email",
 				header: intl.formatMessage({ id: "column.email" }),
-				cell: (info: any) => {
+				cell: (info) => {
 					return <EmailFormatter email={info.getValue()} />;
 				},
 			}),
-			columnHelper.accessor((row: any) => row.roles, {
+			columnHelper.accessor("roles", {
 				id: "roles",
 				header: intl.formatMessage({ id: "column.roles" }),
-				cell: (info: any) => {
+				cell: (info) => {
 					return <RolesFormatter roles={info.getValue()} />;
 				},
 			}),
-			columnHelper.accessor((row: any) => row.isDisabled, {
+			columnHelper.accessor("isDisabled", {
 				id: "isDisabled",
 				header: intl.formatMessage({ id: "column.status" }),
-				cell: (info: any) => {
+				cell: (info) => {
 					return <TrueFalseFormatter value={!info.getValue()} />;
 				},
 			}),
 			columnHelper.display({
 				id: "id",
-				cell: (info: any) => {
+				cell: (info) => {
 					return (
 						<span className="dropdown">
 							<button

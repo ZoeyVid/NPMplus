@@ -7,6 +7,7 @@ import { Alert } from "react-bootstrap";
 import Modal from "react-bootstrap/Modal";
 import {
 	AccessField,
+	AnimatedModalBody,
 	Button,
 	DomainNamesField,
 	HasPermission,
@@ -102,7 +103,7 @@ const ProxyHostModal = EasyModal.create(({ id, visible, remove }: Props) => {
 									<T id={data?.id ? "object.edit" : "object.add"} tData={{ object: "proxy-host" }} />
 								</Modal.Title>
 							</Modal.Header>
-							<Modal.Body className="p-0">
+							<AnimatedModalBody className="p-0">
 								<Alert variant="danger" show={!!errorMsg} onClose={() => setErrorMsg(null)} dismissible>
 									{errorMsg}
 								</Alert>
@@ -349,7 +350,7 @@ const ProxyHostModal = EasyModal.create(({ id, visible, remove }: Props) => {
 										</div>
 									</div>
 								</div>
-							</Modal.Body>
+							</AnimatedModalBody>
 							<Modal.Footer>
 								<Button data-bs-dismiss="modal" onClick={remove} disabled={isSubmitting}>
 									<T id="cancel" />

@@ -1,7 +1,7 @@
 services:
   npmplus:
     container_name: npmplus
-    image: docker.io/zoeyvid/npmplus:latest # or ghcr.io/zoeyvid/npmplus:latest
+    image: ghcr.io/shedowe19/npmplus:latest
     restart: always
     network_mode: host
 #    ipc: host # required when you want to use the openappsec attachment module
@@ -196,7 +196,7 @@ services:
 # This can be used with DISABLE_HTTP=true, to force HTTPS redirects for every host
 #  npmplus-caddy:
 #    container_name: npmplus-caddy
-#    image: docker.io/zoeyvid/npmplus:caddy
+#    image: ghcr.io/shedowe19/npmplus:caddy
 #    restart: always
 #    network_mode: bridge
 #    ports:

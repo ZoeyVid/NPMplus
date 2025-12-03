@@ -1,4 +1,5 @@
 import { flexRender } from "@tanstack/react-table";
+import { AnimatePresence, motion } from "framer-motion";
 import type { TableLayoutProps } from "src/components";
 import { EmptyRow } from "./EmptyRow";
 
@@ -16,20 +17,30 @@ function TableBody<T>(props: TableLayoutProps<T>) {
 
 	return (
 		<tbody className="table-tbody">
-			{rows.map((row: any) => {
-				return (
-					<tr key={row.id} {...extraStyles?.row(row.original)}>
-						{row.getVisibleCells().map((cell: any) => {
-							const { className } = (cell.column.columnDef.meta as any) ?? {};
-							return (
-								<td key={cell.id} className={className}>
-									{flexRender(cell.column.columnDef.cell, cell.getContext())}
-								</td>
-							);
-						})}
-					</tr>
-				);
-			})}
+			<AnimatePresence mode="popLayout" initial={false}>
+				{rows.map((row) => {
+					return (
+						<motion.tr
+							key={row.id}
+							{...extraStyles?.row(row.original)}
+							initial={{ opacity: 0, x: -20 }}
+							animate={{ opacity: 1, x: 0 }}
+							exit={{ opacity: 0, x: 20 }}
+							transition={{ duration: 0.2 }}
+							layout
+						>
+							{row.getVisibleCells().map((cell) => {
+								const { className } = (cell.column.columnDef.meta as any) ?? {};
+								return (
+									<td key={cell.id} className={className}>
+										{flexRender(cell.column.columnDef.cell, cell.getContext())}
+									</td>
+								);
+							})}
+						</motion.tr>
+					);
+				})}
+			</AnimatePresence>
 		</tbody>
 	);
 }

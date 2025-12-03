@@ -1,4 +1,5 @@
 import cn from "classnames";
+import { motion } from "framer-motion";
 import type { ReactNode } from "react";
 
 interface Props {
@@ -55,9 +56,17 @@ function Button({
 	);
 
 	return (
-		<button type={type || "button"} className={cns} onClick={myOnClick} disabled={disabled}>
+		<motion.button
+			type={type || "button"}
+			className={cns}
+			onClick={myOnClick}
+			disabled={disabled}
+			whileHover={{ scale: 1.05 }}
+			whileTap={{ scale: 0.95 }}
+			transition={{ type: "spring", stiffness: 400, damping: 17 }}
+		>
 			{children}
-		</button>
+		</motion.button>
 	);
 }
 

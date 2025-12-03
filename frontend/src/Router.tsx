@@ -1,6 +1,8 @@
 import { lazy, Suspense } from "react";
-import { BrowserRouter, Route, Routes } from "react-router-dom";
+import { AnimatePresence } from "framer-motion";
+import { BrowserRouter, Route, Routes, useLocation } from "react-router-dom";
 import {
+	AnimatedPage,
 	ErrorNotFound,
 	LoadingPage,
 	Page,
@@ -25,6 +27,104 @@ const ProxyHosts = lazy(() => import("src/pages/Nginx/ProxyHosts"));
 const RedirectionHosts = lazy(() => import("src/pages/Nginx/RedirectionHosts"));
 const DeadHosts = lazy(() => import("src/pages/Nginx/DeadHosts"));
 const Streams = lazy(() => import("src/pages/Nginx/Streams"));
+
+function Content() {
+	const location = useLocation();
+	return (
+		<AnimatePresence mode="wait">
+			<Routes location={location} key={location.pathname}>
+				<Route
+					path="*"
+					element={
+						<AnimatedPage>
+							<ErrorNotFound />
+						</AnimatedPage>
+					}
+				/>
+				<Route
+					path="/certificates"
+					element={
+						<AnimatedPage>
+							<Certificates />
+						</AnimatedPage>
+					}
+				/>
+				<Route
+					path="/access"
+					element={
+						<AnimatedPage>
+							<Access />
+						</AnimatedPage>
+					}
+				/>
+				<Route
+					path="/audit-log"
+					element={
+						<AnimatedPage>
+							<AuditLog />
+						</AnimatedPage>
+					}
+				/>
+				<Route
+					path="/settings"
+					element={
+						<AnimatedPage>
+							<Settings />
+						</AnimatedPage>
+					}
+				/>
+				<Route
+					path="/users"
+					element={
+						<AnimatedPage>
+							<Users />
+						</AnimatedPage>
+					}
+				/>
+				<Route
+					path="/nginx/proxy"
+					element={
+						<AnimatedPage>
+							<ProxyHosts />
+						</AnimatedPage>
+					}
+				/>
+				<Route
+					path="/nginx/redirection"
+					element={
+						<AnimatedPage>
+							<RedirectionHosts />
+						</AnimatedPage>
+					}
+				/>
+				<Route
+					path="/nginx/404"
+					element={
+						<AnimatedPage>
+							<DeadHosts />
+						</AnimatedPage>
+					}
+				/>
+				<Route
+					path="/nginx/stream"
+					element={
+						<AnimatedPage>
+							<Streams />
+						</AnimatedPage>
+					}
+				/>
+				<Route
+					path="/"
+					element={
+						<AnimatedPage>
+							<Dashboard />
+						</AnimatedPage>
+					}
+				/>
+			</Routes>
+		</AnimatePresence>
+	);
+}
 
 function Router() {
 	const health = useHealth();
@@ -59,19 +159,7 @@ function Router() {
 				</div>
 				<SiteContainer>
 					<Suspense fallback={<LoadingPage noLogo />}>
-						<Routes>
-							<Route path="*" element={<ErrorNotFound />} />
-							<Route path="/certificates" element={<Certificates />} />
-							<Route path="/access" element={<Access />} />
-							<Route path="/audit-log" element={<AuditLog />} />
-							<Route path="/settings" element={<Settings />} />
-							<Route path="/users" element={<Users />} />
-							<Route path="/nginx/proxy" element={<ProxyHosts />} />
-							<Route path="/nginx/redirection" element={<RedirectionHosts />} />
-							<Route path="/nginx/404" element={<DeadHosts />} />
-							<Route path="/nginx/stream" element={<Streams />} />
-							<Route path="/" element={<Dashboard />} />
-						</Routes>
+						<Content />
 					</Suspense>
 				</SiteContainer>
 				<SiteFooter />
