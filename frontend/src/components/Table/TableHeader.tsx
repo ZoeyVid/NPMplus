@@ -6,9 +6,9 @@ function TableHeader<T>(props: TableLayoutProps<T>) {
 
 	return (
 		<thead>
-			{headerGroups.map((headerGroup: any) => (
+			{headerGroups.map((headerGroup) => (
 				<tr key={headerGroup.id}>
-					{headerGroup.headers.map((header: any) => {
+					{headerGroup.headers.map((header) => {
 						const { column } = header;
 						const { className } = (column.columnDef.meta as any) ?? {};
 						return (

@@ -14,9 +14,9 @@ export default function Table({ data, isFetching, onSelectItem }: Props) {
 	const columnHelper = createColumnHelper<AuditLog>();
 	const columns = useMemo(
 		() => [
-			columnHelper.accessor((row: AuditLog) => row.user, {
+			columnHelper.accessor("user", {
 				id: "user.avatar",
-				cell: (info: any) => {
+				cell: (info) => {
 					const value = info.getValue();
 					return <GravatarFormatter url={value ? value.avatar : ""} name={value ? value.name : ""} />;
 				},
@@ -24,16 +24,16 @@ export default function Table({ data, isFetching, onSelectItem }: Props) {
 					className: "w-1",
 				},
 			}),
-			columnHelper.accessor((row: AuditLog) => row, {
+			columnHelper.accessor((row) => row, {
 				id: "objectType",
 				header: intl.formatMessage({ id: "column.event" }),
-				cell: (info: any) => {
+				cell: (info) => {
 					return <EventFormatter row={info.getValue()} />;
 				},
 			}),
 			columnHelper.display({
 				id: "id",
-				cell: (info: any) => {
+				cell: (info) => {
 					return (
 						<button
 							type="button"

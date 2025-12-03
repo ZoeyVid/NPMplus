@@ -28,7 +28,36 @@ const internalStream = {
 		return access
 			.can("streams:create", data)
 			.then((/*access_data*/) => {
-				// TODO: At this point the existing ports should have been checked
+				// Check for port collision
+				return streamModel
+					.query()
+					.where("is_deleted", 0)
+					.andWhere("incoming_port", data.incoming_port)
+					.andWhere(function () {
+						this.where(function () {
+							if (data.tcp_forwarding) {
+								this.where("tcp_forwarding", 1);
+							} else {
+								this.where("tcp_forwarding", 2); // Impossible condition to skip
+							}
+						}).orWhere(function () {
+							if (data.udp_forwarding) {
+								this.where("udp_forwarding", 1);
+							} else {
+								this.where("udp_forwarding", 2); // Impossible condition to skip
+							}
+						});
+					})
+					.first()
+					.then((row) => {
+						if (row) {
+							throw new errs.ValidationError(
+								`Incoming port ${data.incoming_port} is already in use by another stream.`,
+							);
+						}
+					});
+			})
+			.then(() => {
 				data.owner_user_id = access.token.getUserId(1);
 
 				if (typeof data.meta === "undefined") {
@@ -103,8 +132,36 @@ const internalStream = {
 		return access
 			.can("streams:update", thisData.id)
 			.then((/*access_data*/) => {
-				// TODO: at this point the existing streams should have been checked
-				return internalStream.get(access, { id: thisData.id });
+				// Check for port collision (excluding self)
+				return streamModel
+					.query()
+					.where("is_deleted", 0)
+					.andWhere("incoming_port", thisData.incoming_port)
+					.andWhere(function () {
+						this.where(function () {
+							if (thisData.tcp_forwarding) {
+								this.where("tcp_forwarding", 1);
+							} else {
+								this.where("tcp_forwarding", 2); // Impossible condition to skip
+							}
+						}).orWhere(function () {
+							if (thisData.udp_forwarding) {
+								this.where("udp_forwarding", 1);
+							} else {
+								this.where("udp_forwarding", 2); // Impossible condition to skip
+							}
+						});
+					})
+					.andWhereNot("id", thisData.id)
+					.first()
+					.then((collision) => {
+						if (collision) {
+							throw new errs.ValidationError(
+								`Incoming port ${thisData.incoming_port} is already in use by another stream.`,
+							);
+						}
+						return internalStream.get(access, { id: thisData.id });
+					});
 			})
 			.then((row) => {
 				if (row.id !== thisData.id) {

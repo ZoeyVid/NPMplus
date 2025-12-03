@@ -16,10 +16,10 @@ function TableBody<T>(props: TableLayoutProps<T>) {
 
 	return (
 		<tbody className="table-tbody">
-			{rows.map((row: any) => {
+			{rows.map((row) => {
 				return (
 					<tr key={row.id} {...extraStyles?.row(row.original)}>
-						{row.getVisibleCells().map((cell: any) => {
+						{row.getVisibleCells().map((cell) => {
 							const { className } = (cell.column.columnDef.meta as any) ?? {};
 							return (
 								<td key={cell.id} className={className}>
