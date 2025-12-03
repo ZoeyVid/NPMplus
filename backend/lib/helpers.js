@@ -1,9 +1,12 @@
-import moment from "moment";
+import dayjs from "dayjs";
+import quarterOfYear from "dayjs/plugin/quarterOfYear.js";
 import { ref } from "objection";
 import { isPostgres } from "./config.js";
 
+dayjs.extend(quarterOfYear);
+
 /**
- * Takes an expression such as 30d and returns a moment object of that date in future
+ * Takes an expression such as 30d and returns a dayjs object of that date in future
  *
  * Key      Shorthand
  * ==================
@@ -23,7 +26,7 @@ import { isPostgres } from "./config.js";
 const parseDatePeriod = (expression) => {
 	const matches = expression.match(/^([0-9]+)(y|Q|M|w|d|h|m|s|ms)$/m);
 	if (matches) {
-		return moment().add(matches[1], matches[2]);
+		return dayjs().add(matches[1], matches[2]);
 	}
 
 	return null;

@@ -1,5 +1,5 @@
 import fs from "node:fs";
-import NodeRSA from "node-rsa";
+import crypto from "node:crypto";
 import { global as logger } from "../logger.js";
 
 const keysFile = "/data/npmplus/keys.json";
@@ -129,12 +129,21 @@ const getKeys = () => {
 const generateKeys = () => {
 	logger.info("Creating a new JWT key pair...");
 	// Now create the keys and save them in the config.
-	const key = new NodeRSA({ b: 2048 });
-	key.generateKeyPair();
+	const { privateKey, publicKey } = crypto.generateKeyPairSync("rsa", {
+		modulusLength: 2048,
+		publicKeyEncoding: {
+			type: "spki",
+			format: "pem",
+		},
+		privateKeyEncoding: {
+			type: "pkcs8",
+			format: "pem",
+		},
+	});
 
 	const keys = {
-		key: key.exportKey("private").toString(),
-		pub: key.exportKey("public").toString(),
+		key: privateKey,
+		pub: publicKey,
 	};
 
 	// Write keys config
