@@ -80,9 +80,6 @@ jobs:
           password: ${{ github.token }}
       - name: create multiarch
         run: |
-          docker buildx imagetools create --tag shedowe19/npmplus:latest ghcr.io/shedowe19/npmplus:latest-x86_64 ghcr.io/shedowe19/npmplus:latest-aarch64
           docker buildx imagetools create --tag ghcr.io/shedowe19/npmplus:latest ghcr.io/shedowe19/npmplus:latest-x86_64 ghcr.io/shedowe19/npmplus:latest-aarch64
-          docker buildx imagetools create --tag shedowe19/npmplus:${{ inputs.tag }} ghcr.io/shedowe19/npmplus:latest-x86_64 ghcr.io/shedowe19/npmplus:latest-aarch64
           docker buildx imagetools create --tag ghcr.io/shedowe19/npmplus:${{ inputs.tag }} ghcr.io/shedowe19/npmplus:latest-x86_64 ghcr.io/shedowe19/npmplus:latest-aarch64
-          docker buildx imagetools create --tag shedowe19/npmplus:${{ github.run_number }} ghcr.io/shedowe19/npmplus:latest-x86_64 ghcr.io/shedowe19/npmplus:latest-aarch64
           docker buildx imagetools create --tag ghcr.io/shedowe19/npmplus:${{ github.run_number }} ghcr.io/shedowe19/npmplus:latest-x86_64 ghcr.io/shedowe19/npmplus:latest-aarch64
