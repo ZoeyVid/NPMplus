@@ -23,7 +23,10 @@ const DomainPreview = ({ domain }: { domain: string }) => {
 				{!showPreview ? (
 					<div className="p-3 text-center">
 						<p className="small text-muted mb-2">
-							<T id="preview.security-note" defaultMessage="Click to load preview. Some sites may block embedding." />
+							<T
+								id="preview.security-note"
+								defaultMessage="Click to load preview. Some sites may block embedding."
+							/>
 						</p>
 						<Button size="sm" variant="primary" onClick={() => setShowPreview(true)}>
 							<T id="preview.load" defaultMessage="Load Preview" />
