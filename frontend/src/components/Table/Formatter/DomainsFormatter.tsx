@@ -1,7 +1,7 @@
 import cn from "classnames";
-import { type ReactNode, forwardRef, useState } from "react";
+import { type ReactNode, useRef, useState } from "react";
 import Button from "react-bootstrap/Button";
-import OverlayTrigger from "react-bootstrap/OverlayTrigger";
+import Overlay from "react-bootstrap/Overlay";
 import Popover from "react-bootstrap/Popover";
 import { formatDateTime, T } from "src/locale";
 
@@ -55,44 +55,119 @@ const DomainPreview = forwardRef<HTMLDivElement, DomainPreviewProps>(({ domain, 
 });
 
 const DomainLink = ({ domain, color }: { domain?: string; color?: string }) => {
+	const [show, setShow] = useState(false);
+	const [pinned, setPinned] = useState(false);
+	const target = useRef(null);
+	const containerRef = useRef(null);
+
 	if (!domain) return null;
-	try {
-		const isWildcard = domain.includes("*");
-		let onClick: ((e: React.MouseEvent) => void) | undefined;
-		if (isWildcard) {
-			onClick = (e: React.MouseEvent) => e.preventDefault();
-		}
 
-		const link = (
-			<a
-				key={domain}
-				href={`http://${domain}`}
-				target="_blank"
-				rel="noreferrer"
-				onClick={onClick}
-				className={cn("badge", color ? `bg-${color}-lt` : null, "domain-name", "me-2")}
-			>
-				{domain}
-			</a>
-		);
-
-		if (isWildcard) {
-			return link;
-		}
-
-		return (
-			<OverlayTrigger
-				trigger={["hover", "focus"]}
-				placement="auto"
-				overlay={<DomainPreview domain={domain} />}
-				delay={{ show: 200, hide: 1500 }}
-			>
-				{link}
-			</OverlayTrigger>
-		);
-	} catch {
-		return null;
+	const isWildcard = domain.includes("*");
+	let onClickLink: ((e: React.MouseEvent) => void) | undefined;
+	if (isWildcard) {
+		onClickLink = (e: React.MouseEvent) => e.preventDefault();
 	}
+
+	const handleMouseEnter = () => {
+		if (!pinned) {
+			setShow(true);
+		}
+	};
+
+	const handleMouseLeave = () => {
+		if (!pinned) {
+			setShow(false);
+		}
+	};
+
+	const handleLoadPreview = () => {
+		setPinned(true);
+		setShow(true); // Ensure it stays open
+	};
+
+	const handleOpenPopup = () => {
+		window.open(`//${domain}`, "_blank", "width=800,height=600,noopener,noreferrer");
+	};
+
+	const link = (
+		<a
+			ref={target}
+			key={domain}
+			href={`http://${domain}`}
+			target="_blank"
+			rel="noreferrer"
+			onClick={onClickLink}
+			onMouseEnter={handleMouseEnter}
+			onMouseLeave={handleMouseLeave}
+			className={cn("badge", color ? `bg-${color}-lt` : null, "domain-name", "me-2")}
+		>
+			{domain}
+		</a>
+	);
+
+	if (isWildcard) {
+		return link;
+	}
+
+	return (
+		<>
+			{link}
+			<Overlay
+				target={target.current}
+				show={show}
+				placement="auto"
+				container={containerRef.current}
+				rootClose={pinned}
+				onHide={() => {
+					setPinned(false);
+					setShow(false);
+				}}
+			>
+				<Popover
+					id={`popover-preview-${domain}`}
+					style={{ maxWidth: "520px" }}
+					onMouseEnter={handleMouseEnter}
+					onMouseLeave={handleMouseLeave}
+				>
+					<Popover.Header as="h3">
+						<div className="d-flex justify-content-between align-items-center">
+							<span>{domain}</span>
+							{pinned && (
+								<Button
+									size="sm"
+									variant="outline-secondary"
+									onClick={handleOpenPopup}
+									title="Open in Popup"
+								>
+									<i className="ti ti-external-link" /> <T id="preview.open-popup" />
+								</Button>
+							)}
+						</div>
+					</Popover.Header>
+					<Popover.Body style={{ padding: 0, minHeight: "50px", minWidth: "200px" }}>
+						{!pinned ? (
+							<div className="p-3 text-center">
+								<p className="small mb-2">
+									<T id="preview.security-note" />
+								</p>
+								<Button size="sm" variant="primary" onClick={handleLoadPreview}>
+									<T id="preview.load" />
+								</Button>
+							</div>
+						) : (
+							<iframe
+								src={`//${domain}`}
+								style={{ width: "500px", height: "400px", border: "none" }}
+								title={`Preview of ${domain}`}
+								loading="lazy"
+								sandbox="allow-same-origin allow-scripts allow-forms"
+							/>
+						)}
+					</Popover.Body>
+				</Popover>
+			</Overlay>
+		</>
+	);
 };
 
 export function DomainsFormatter({ domains, createdOn, niceName, provider, color }: Props) {

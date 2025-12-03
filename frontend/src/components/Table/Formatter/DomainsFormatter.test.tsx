@@ -45,7 +45,7 @@ describe("DomainsFormatter", () => {
 			</Wrapper>,
 		);
 		const link = screen.getByText("example.com");
-		fireEvent.mouseOver(link);
+		fireEvent.mouseEnter(link);
 
 		// Check for Load Preview button
 		await waitFor(
@@ -66,6 +66,10 @@ describe("DomainsFormatter", () => {
 			expect(iframe).toBeInTheDocument();
 			expect(iframe).toHaveAttribute("src", "//example.com");
 		});
+
+		// Check for Open in Popup button
+		const popupButton = screen.getByText("Open in Popup");
+		expect(popupButton).toBeInTheDocument();
 	});
 
 	it("does not show popover for wildcard domains", async () => {
@@ -75,7 +79,7 @@ describe("DomainsFormatter", () => {
 			</Wrapper>,
 		);
 		const link = screen.getByText("*.example.com");
-		fireEvent.mouseOver(link);
+		fireEvent.mouseEnter(link);
 
 		// Should not show button
 		await new Promise((r) => setTimeout(r, 600));

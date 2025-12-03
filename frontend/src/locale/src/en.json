@@ -506,6 +506,9 @@
 	"preview.load": {
 		"defaultMessage": "Load Preview"
 	},
+	"preview.open-popup": {
+		"defaultMessage": "Open in Popup"
+	},
 	"preview.security-note": {
 		"defaultMessage": "Click to load preview. Some sites may block embedding."
 	},
