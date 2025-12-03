@@ -27,9 +27,9 @@ export default function Table({ data, isFetching, isFiltered, onEdit, onDelete, 
 	const columnHelper = createColumnHelper<Stream>();
 	const columns = useMemo(
 		() => [
-			columnHelper.accessor((row: any) => row.owner, {
+			columnHelper.accessor("owner", {
 				id: "owner",
-				cell: (info: any) => {
+				cell: (info) => {
 					const value = info.getValue();
 					return <GravatarFormatter url={value ? value.avatar : ""} name={value ? value.name : ""} />;
 				},
@@ -37,26 +37,26 @@ export default function Table({ data, isFetching, isFiltered, onEdit, onDelete, 
 					className: "w-1",
 				},
 			}),
-			columnHelper.accessor((row: any) => row, {
+			columnHelper.accessor((row) => row, {
 				id: "incomingPort",
 				header: intl.formatMessage({ id: "column.incoming-port" }),
-				cell: (info: any) => {
+				cell: (info) => {
 					const value = info.getValue();
-					return <ValueWithDateFormatter value={value.incomingPort} createdOn={value.createdOn} />;
+					return <ValueWithDateFormatter value={value.incomingPort.toString()} createdOn={value.createdOn} />;
 				},
 			}),
-			columnHelper.accessor((row: any) => row, {
+			columnHelper.accessor((row) => row, {
 				id: "forwardHttpCode",
 				header: intl.formatMessage({ id: "column.destination" }),
-				cell: (info: any) => {
+				cell: (info) => {
 					const value = info.getValue();
 					return `${value.forwardingHost}:${value.forwardingPort}`;
 				},
 			}),
-			columnHelper.accessor((row: any) => row, {
+			columnHelper.accessor((row) => row, {
 				id: "tcpForwarding",
 				header: intl.formatMessage({ id: "column.protocol" }),
-				cell: (info: any) => {
+				cell: (info) => {
 					const value = info.getValue();
 					return (
 						<>
@@ -74,23 +74,23 @@ export default function Table({ data, isFetching, isFiltered, onEdit, onDelete, 
 					);
 				},
 			}),
-			columnHelper.accessor((row: any) => row.certificate, {
+			columnHelper.accessor("certificate", {
 				id: "certificate",
 				header: intl.formatMessage({ id: "column.ssl" }),
-				cell: (info: any) => {
+				cell: (info) => {
 					return <CertificateFormatter certificate={info.getValue()} />;
 				},
 			}),
-			columnHelper.accessor((row: any) => row.enabled, {
+			columnHelper.accessor("enabled", {
 				id: "enabled",
 				header: intl.formatMessage({ id: "column.status" }),
-				cell: (info: any) => {
+				cell: (info) => {
 					return <TrueFalseFormatter value={info.getValue()} trueLabel="online" falseLabel="offline" />;
 				},
 			}),
 			columnHelper.display({
 				id: "id",
-				cell: (info: any) => {
+				cell: (info) => {
 					return (
 						<span className="dropdown">
 							<button

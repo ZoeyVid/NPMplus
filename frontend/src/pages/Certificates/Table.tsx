@@ -27,9 +27,9 @@ export default function Table({ data, isFetching, onDelete, onRenew, onDownload,
 	const columnHelper = createColumnHelper<Certificate>();
 	const columns = useMemo(
 		() => [
-			columnHelper.accessor((row: any) => row.owner, {
+			columnHelper.accessor("owner", {
 				id: "owner",
-				cell: (info: any) => {
+				cell: (info) => {
 					const value = info.getValue();
 					return <GravatarFormatter url={value ? value.avatar : ""} name={value ? value.name : ""} />;
 				},
@@ -37,10 +37,10 @@ export default function Table({ data, isFetching, onDelete, onRenew, onDownload,
 					className: "w-1",
 				},
 			}),
-			columnHelper.accessor((row: any) => row, {
+			columnHelper.accessor((row) => row, {
 				id: "domainNames",
 				header: intl.formatMessage({ id: "column.name" }),
-				cell: (info: any) => {
+				cell: (info) => {
 					const value = info.getValue();
 					return (
 						<DomainsFormatter
@@ -52,10 +52,10 @@ export default function Table({ data, isFetching, onDelete, onRenew, onDownload,
 					);
 				},
 			}),
-			columnHelper.accessor((row: any) => row, {
+			columnHelper.accessor((row) => row, {
 				id: "provider",
 				header: intl.formatMessage({ id: "column.provider" }),
-				cell: (info: any) => {
+				cell: (info) => {
 					const r = info.getValue();
 					if (r.provider === "letsencrypt") {
 						if (r.meta?.dnsChallenge && r.meta?.dnsProvider) {
@@ -73,31 +73,31 @@ export default function Table({ data, isFetching, onDelete, onRenew, onDownload,
 					return <T id={r.provider} />;
 				},
 			}),
-			columnHelper.accessor((row: any) => row.expiresOn, {
+			columnHelper.accessor("expiresOn", {
 				id: "expiresOn",
 				header: intl.formatMessage({ id: "column.expires" }),
-				cell: (info: any) => {
+				cell: (info) => {
 					return <DateFormatter value={info.getValue()} highlightPast />;
 				},
 			}),
-			columnHelper.accessor((row: any) => row, {
+			columnHelper.accessor((row) => row, {
 				id: "proxyHosts",
 				header: intl.formatMessage({ id: "column.status" }),
-				cell: (info: any) => {
+				cell: (info) => {
 					const r = info.getValue();
 					return (
 						<CertificateInUseFormatter
-							proxyHosts={r.proxyHosts}
-							redirectionHosts={r.redirectionHosts}
-							deadHosts={r.deadHosts}
-							streams={r.streams}
+							proxyHosts={r.proxyHosts || []}
+							redirectionHosts={r.redirectionHosts || []}
+							deadHosts={r.deadHosts || []}
+							streams={r.streams || []}
 						/>
 					);
 				},
 			}),
 			columnHelper.display({
 				id: "id",
-				cell: (info: any) => {
+				cell: (info) => {
 					return (
 						<span className="dropdown">
 							<button
