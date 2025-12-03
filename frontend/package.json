@@ -2,7 +2,7 @@
 	"name": "NPMplus",
 	"version": "0.0.0",
 	"description": "A beautiful interface for creating Nginx endpoints",
-	"author": "Jamie Curnow <jc@jc21.com> and ZoeyVid <zoeyvid@zvcdn.de>",
+	"author": "Jamie Curnow <jc@jc21.com>, ZoeyVid <zoeyvid@zvcdn.de> and shedowe19",
 	"license": "MIT",
 	"type": "module",
 	"dependencies": {
@@ -17,6 +17,7 @@
 		"dayjs": "^1.11.19",
 		"ez-modal-react": "1.0.5",
 		"formik": "2.4.9",
+		"framer-motion": "^12.23.25",
 		"generate-password-browser": "1.1.0",
 		"humps": "2.0.1",
 		"query-string": "9.3.1",

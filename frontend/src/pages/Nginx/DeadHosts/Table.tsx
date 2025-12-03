@@ -27,9 +27,9 @@ export default function Table({ data, isFetching, onEdit, onDelete, onDisableTog
 	const columnHelper = createColumnHelper<DeadHost>();
 	const columns = useMemo(
 		() => [
-			columnHelper.accessor((row: any) => row.owner, {
+			columnHelper.accessor("owner", {
 				id: "owner",
-				cell: (info: any) => {
+				cell: (info) => {
 					const value = info.getValue();
 					return <GravatarFormatter url={value ? value.avatar : ""} name={value ? value.name : ""} />;
 				},
@@ -37,31 +37,31 @@ export default function Table({ data, isFetching, onEdit, onDelete, onDisableTog
 					className: "w-1",
 				},
 			}),
-			columnHelper.accessor((row: any) => row, {
+			columnHelper.accessor((row) => row, {
 				id: "domainNames",
 				header: intl.formatMessage({ id: "column.source" }),
-				cell: (info: any) => {
+				cell: (info) => {
 					const value = info.getValue();
 					return <DomainsFormatter domains={value.domainNames} createdOn={value.createdOn} />;
 				},
 			}),
-			columnHelper.accessor((row: any) => row.certificate, {
+			columnHelper.accessor("certificate", {
 				id: "certificate",
 				header: intl.formatMessage({ id: "column.ssl" }),
-				cell: (info: any) => {
+				cell: (info) => {
 					return <CertificateFormatter certificate={info.getValue()} />;
 				},
 			}),
-			columnHelper.accessor((row: any) => row.enabled, {
+			columnHelper.accessor("enabled", {
 				id: "enabled",
 				header: intl.formatMessage({ id: "column.status" }),
-				cell: (info: any) => {
+				cell: (info) => {
 					return <TrueFalseFormatter value={info.getValue()} trueLabel="online" falseLabel="offline" />;
 				},
 			}),
 			columnHelper.display({
 				id: "id",
-				cell: (info: any) => {
+				cell: (info) => {
 					return (
 						<span className="dropdown">
 							<button
