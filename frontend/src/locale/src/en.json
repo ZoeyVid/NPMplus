@@ -251,6 +251,18 @@
 	"dashboard": {
 		"defaultMessage": "Dashboard"
 	},
+	"dashboard.certificates-expiring": {
+		"defaultMessage": "Certificates Expiring Soon"
+	},
+	"dashboard.days-left": {
+		"defaultMessage": "{days} {days, plural, one {Day} other {Days}} Left"
+	},
+	"dashboard.expired": {
+		"defaultMessage": "Expired"
+	},
+	"dashboard.no-expiring-certificates": {
+		"defaultMessage": "No certificates expiring soon"
+	},
 	"dead-host": {
 		"defaultMessage": "404 Host"
 	},
