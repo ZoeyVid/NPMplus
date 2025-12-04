@@ -73,6 +73,11 @@ describe("CertificateExpiryWidget", () => {
 
 		// Check that valid certificate is NOT displayed
 		expect(screen.queryByText("Valid Long Term")).not.toBeInTheDocument();
+
+		// Check link to certificates page
+		const links = screen.getAllByRole("link");
+		expect(links.length).toBeGreaterThan(0);
+		expect(links[0]).toHaveAttribute("href", "/certificates");
 	});
 
 	it("renders empty state when no certificates are expiring", async () => {
