@@ -60,12 +60,13 @@ COPY rootfs /
 COPY --from=backend /app /app
 WORKDIR /app
 RUN apk upgrade --no-cache -a && \
-    apk add --no-cache ca-certificates tzdata tini curl util-linux-misc \
+    apk add --no-cache ca-certificates tzdata tini \
     nodejs \
     bash nano \
-    logrotate goaccess fcgi \
-    lua5.1-lzlib lua5.1-socket lua5.1-cjson lua-resty-http lua-resty-string lua-resty-openssl lua-resty-openidc lua-resty-session \
-    coreutils grep findutils jq shadow su-exec \
+    logrotate goaccess \
+    php83-cgi php84-cgi php85-cgi fcgi \
+    curl coreutils findutils grep jq shadow su-exec util-linux-misc \
+    lua5.1-lzlib lua5.1-socket lua5.1-cjson lua-resty-http lua-resty-string lua-resty-openssl lua-resty-openidc lua-resty-session && \
     wget -q https://raw.githubusercontent.com/tomwassenberg/certbot-ocsp-fetcher/refs/heads/main/certbot-ocsp-fetcher -O /usr/local/bin/certbot-ocsp-fetcher.sh && \
     sed -i "s|/live||g" /usr/local/bin/certbot-ocsp-fetcher.sh && \
     wget -q https://raw.githubusercontent.com/vasilevich/nginxbeautifier/master/index.js -O /usr/local/bin/nginxbeautifier && \
