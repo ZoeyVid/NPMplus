@@ -74,8 +74,7 @@ RUN apk upgrade --no-cache -a && \
     chmod +x /usr/local/bin/* && \
     ln -s /app/password-reset.js /usr/local/bin/password-reset.js && \
     ln -s /app/sqlite-vaccum.js /usr/local/bin/sqlite-vaccum.js && \
-    ln -s /app/index.js /usr/local/bin/index.js && \
-    rm -r /tmp/*
+    ln -s /app/index.js /usr/local/bin/index.js
 
 COPY --from=frontend /app/dist /html/frontend
 
