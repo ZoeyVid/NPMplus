@@ -66,10 +66,10 @@ RUN apk upgrade --no-cache -a && \
     logrotate goaccess fcgi \
     lua5.1-lzlib lua5.1-socket lua5.1-cjson lua-resty-http lua-resty-string lua-resty-openssl lua-resty-openidc lua-resty-session \
     coreutils grep findutils jq shadow su-exec \
-    wget https://raw.githubusercontent.com/tomwassenberg/certbot-ocsp-fetcher/refs/heads/main/certbot-ocsp-fetcher -O /usr/local/bin/certbot-ocsp-fetcher.sh && \
+    wget -q https://raw.githubusercontent.com/tomwassenberg/certbot-ocsp-fetcher/refs/heads/main/certbot-ocsp-fetcher -O /usr/local/bin/certbot-ocsp-fetcher.sh && \
     sed -i "s|/live||g" /usr/local/bin/certbot-ocsp-fetcher.sh && \
-    wget https://raw.githubusercontent.com/vasilevich/nginxbeautifier/master/index.js -O /usr/local/bin/nginxbeautifier && \
-    wget https://raw.githubusercontent.com/vasilevich/nginxbeautifier/master/nginxbeautifier.js -O /usr/local/bin/nginxbeautifier.js && \
+    wget -q https://raw.githubusercontent.com/vasilevich/nginxbeautifier/master/index.js -O /usr/local/bin/nginxbeautifier && \
+    wget -q https://raw.githubusercontent.com/vasilevich/nginxbeautifier/master/nginxbeautifier.js -O /usr/local/bin/nginxbeautifier.js && \
     chmod +x /usr/local/bin/* && \
     ln -s /app/password-reset.js /usr/local/bin/password-reset.js && \
     ln -s /app/sqlite-vaccum.js /usr/local/bin/sqlite-vaccum.js && \
