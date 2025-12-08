@@ -18,7 +18,7 @@ export class AuthStore {
 		return tokens;
 	}
 
-	// Get last token from stack
+	// Get last token object from stack
 	get token() {
 		const t = this.tokens;
 		if (t.length) {
@@ -39,11 +39,6 @@ export class AuthStore {
 		return null;
 	}
 
-	// Filter out invalid tokens and return true if we find one that is valid
-	// hasActiveToken() {
-	// 	const t = this.tokens;
-	// 	return t.length > 0;
-	// }
 	// Start from the END of the stack and work backwards
 	hasActiveToken() {
 		const t = this.tokens;
@@ -64,15 +59,15 @@ export class AuthStore {
 		return false;
 	}
 
-	// Set a single token on the stack
-	set({ token, expires }: TokenResponse) {
-		localStorage.setItem(TOKEN_KEY, JSON.stringify([{ token, expires }]));
+	// Set a single token on the stack (only saves expires)
+	set({ expires }: TokenResponse) {
+		localStorage.setItem(TOKEN_KEY, JSON.stringify([{ expires }]));
 	}
 
-	// Add a token to the END of the stack
-	add({ token, expires }: TokenResponse) {
+	// Add a token to the END of the stack (only saves expires)
+	add({ expires }: TokenResponse) {
 		const t = this.tokens;
-		t.push({ token, expires });
+		t.push({ expires });
 		localStorage.setItem(TOKEN_KEY, JSON.stringify(t));
 	}
 

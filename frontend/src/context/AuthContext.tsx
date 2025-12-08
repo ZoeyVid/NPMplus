@@ -10,7 +10,6 @@ export interface AuthContextType {
 	login: (username: string, password: string) => Promise<void>;
 	loginAs: (id: number) => Promise<void>;
 	logout: () => void;
-	token?: string;
 }
 
 const initalValue = null;
