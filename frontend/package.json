@@ -27,7 +27,7 @@
 		"react-router-dom": "7.10.1",
 		"react-select": "5.10.2",
 		"react-toastify": "11.0.5",
-		"rooks": "9.4.0"
+		"rooks": "9.4.1"
 	},
 	"devDependencies": {
 		"@biomejs/biome": "2.3.8",
