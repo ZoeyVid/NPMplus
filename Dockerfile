@@ -241,6 +241,7 @@ RUN apk upgrade --no-cache -a && \
     wget -q https://raw.githubusercontent.com/vasilevich/nginxbeautifier/master/index.js -O /usr/local/bin/nginxbeautifier && \
     wget -q https://raw.githubusercontent.com/vasilevich/nginxbeautifier/master/nginxbeautifier.js -O /usr/local/bin/nginxbeautifier.js && \
     \
+    ln -s /usr/local/nginx/sbin/nginx /usr/local/bin/nginx && \
     ln -s /app/password-reset.js /usr/local/bin/password-reset.js && \
     ln -s /app/sqlite-vaccum.js /usr/local/bin/sqlite-vaccum.js && \
     ln -s /app/index.js /usr/local/bin/index.js && \
