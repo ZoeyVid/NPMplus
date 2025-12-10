@@ -1,7 +1,7 @@
-import { render, screen, cleanup } from "@testing-library/react";
-import { describe, it, expect, afterEach } from "vitest";
-import { DomainsFormatter } from "./DomainsFormatter";
+import { cleanup, render, screen } from "@testing-library/react";
 import { IntlProvider } from "react-intl";
+import { afterEach, describe, expect, it } from "vitest";
+import { DomainsFormatter } from "./DomainsFormatter";
 import "@testing-library/jest-dom/vitest";
 import enMessages from "src/locale/lang/en.json";
 
