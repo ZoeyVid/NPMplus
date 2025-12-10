@@ -1,8 +1,8 @@
 import cn from "classnames";
-import { motion } from "framer-motion";
+import { type HTMLMotionProps, motion } from "framer-motion";
 import type { ReactNode } from "react";
 
-interface Props {
+interface Props extends Omit<HTMLMotionProps<"button">, "ref"> {
 	children: ReactNode;
 	className?: string;
 	type?: "button" | "submit";
@@ -27,6 +27,7 @@ interface Props {
 		| "cyan";
 	onClick?: () => void;
 }
+
 function Button({
 	children,
 	className,
@@ -39,9 +40,12 @@ function Button({
 	fullWidth,
 	isLoading,
 	disabled,
+	...rest
 }: Props) {
-	const myOnClick = () => {
-		!isLoading && onClick && onClick();
+	const myOnClick = (_e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+		if (!isLoading && onClick) {
+			onClick();
+		}
 	};
 
 	const cns = cn(
@@ -64,6 +68,7 @@ function Button({
 			whileHover={{ scale: 1.05 }}
 			whileTap={{ scale: 0.95 }}
 			transition={{ type: "spring", stiffness: 400, damping: 17 }}
+			{...rest}
 		>
 			{children}
 		</motion.button>
