@@ -1,10 +1,10 @@
 import { IconAlertTriangle, IconCertificate, IconCheck } from "@tabler/icons-react";
 import dayjs from "dayjs";
 import { Link } from "react-router-dom";
+import { HasPermission } from "src/components";
 import { useCertificates } from "src/hooks";
 import { T } from "src/locale";
 import { CERTIFICATES, VIEW } from "src/modules/Permissions";
-import { HasPermission } from "src/components";
 
 export const CertificateExpiryWidget = () => {
 	const { data: certificates } = useCertificates();

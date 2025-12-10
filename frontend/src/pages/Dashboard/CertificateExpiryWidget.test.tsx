@@ -1,7 +1,7 @@
-import { render, screen, cleanup } from "@testing-library/react";
+import { cleanup, render, screen } from "@testing-library/react";
 import dayjs from "dayjs";
 import { MemoryRouter } from "react-router-dom";
-import { describe, expect, it, vi, afterEach } from "vitest";
+import { afterEach, describe, expect, it, vi } from "vitest";
 import { CertificateExpiryWidget } from "./CertificateExpiryWidget";
 
 // Mock dependencies
