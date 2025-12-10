@@ -1,5 +1,6 @@
 import express from "express";
 import fileUpload from "express-fileupload";
+import helmet from "helmet";
 import jwt from "./lib/express/jwt.js";
 import { debug, express as logger } from "./logger.js";
 import mainRoutes from "./routes/main.js";
@@ -8,6 +9,25 @@ import mainRoutes from "./routes/main.js";
  * App
  */
 const app = express();
+app.use(
+	helmet({
+		contentSecurityPolicy: {
+			directives: {
+				defaultSrc: ["'self'"],
+				baseUri: ["'self'"],
+				fontSrc: ["'self'", "https:", "data:"],
+				formAction: ["'self'"],
+				frameAncestors: ["'self'"],
+				imgSrc: ["'self'", "data:", "https:"],
+				objectSrc: ["'none'"],
+				scriptSrc: ["'self'", "'unsafe-inline'"],
+				scriptSrcAttr: ["'none'"],
+				styleSrc: ["'self'", "https:", "'unsafe-inline'"],
+				upgradeInsecureRequests: [],
+			},
+		},
+	}),
+);
 app.use(fileUpload());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
