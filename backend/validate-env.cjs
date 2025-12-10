@@ -1,5 +1,5 @@
 const fs = require('node:fs');
-const { execSync } = require('node:child_process');
+const { execFileSync } = require('node:child_process');
 
 // Utility to read env vars with defaults
 const getEnv = (key, defaultVal) => process.env[key] || defaultVal;
@@ -127,7 +127,7 @@ if (process.env.ACME_KEY_TYPE && !['ecdsa', 'rsa'].includes(process.env.ACME_KEY
 const acmeProfile = getEnv('ACME_PROFILE', 'none');
 if (acmeProfile !== 'none') {
     try {
-        const res = execSync(`curl -sSL "${acmeServer}"`, { encoding: 'utf8' });
+        const res = execFileSync('curl', ['-sSL', acmeServer], { encoding: 'utf8' });
         const json = JSON.parse(res);
         if (!json.meta || !json.meta.profiles || !json.meta.profiles[acmeProfile]) {
             fatal('The ACME_PROFILE seems to be not supported by the ACME_SERVER.');
