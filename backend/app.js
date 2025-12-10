@@ -48,7 +48,7 @@ app.use("/", mainRoutes);
 
 // production error handler
 // no stacktraces leaked to user
-app.use((err, req, res, _) => {
+app.use((err, _req, res, _) => {
 	const payload = {
 		error: {
 			code: err.status,
@@ -58,13 +58,6 @@ app.use((err, req, res, _) => {
 
 	if (typeof err.message_i18n !== "undefined") {
 		payload.error.message_i18n = err.message_i18n;
-	}
-
-	if ((req.baseUrl + req.path).includes("nginx/certificates")) {
-		payload.debug = {
-			stack: typeof err.stack !== "undefined" && err.stack ? err.stack.split("\n") : null,
-			previous: err.previous,
-		};
 	}
 
 	// Not every error is worth logging - but this is good for now until it gets annoying.
