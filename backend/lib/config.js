@@ -1,5 +1,5 @@
-import fs from "node:fs";
 import crypto from "node:crypto";
+import fs from "node:fs";
 import { global as logger } from "../logger.js";
 
 const keysFile = "/data/npmplus/keys.json";
@@ -222,11 +222,14 @@ const isPostgres = () => {
 };
 
 /**
- * Are we running in CI?
+ * Are we running in Destructive Test Mode?
+ * This is used for CI/Testing to enable endpoints that can delete all data.
+ * Requires both CI and explicit opt-in env var.
  *
  * @returns {boolean}
  */
-const isCI = () => process.env.CI === "true" && process.env.DEBUG === "true";
+const isDestructiveTestMode = () =>
+	process.env.CI === "true" && process.env.NPM_CI_ENABLE_DESTRUCTIVE_TEST_MODE === "true";
 
 /**
  * Returns a public key
@@ -248,4 +251,4 @@ const getPrivateKey = () => {
 	return instance.keys.key;
 };
 
-export { isCI, configHas, configGet, isSqlite, isMysql, isPostgres, getPrivateKey, getPublicKey };
+export { isDestructiveTestMode, configHas, configGet, isSqlite, isMysql, isPostgres, getPrivateKey, getPublicKey };

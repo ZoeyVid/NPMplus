@@ -1,7 +1,7 @@
-import { describe, it, expect } from "vitest";
-import { parseDatePeriod } from "../../lib/helpers.js";
 import dayjs from "dayjs";
 import quarterOfYear from "dayjs/plugin/quarterOfYear.js";
+import { describe, expect, it } from "vitest";
+import { parseDatePeriod } from "../../lib/helpers.js";
 
 dayjs.extend(quarterOfYear);
 

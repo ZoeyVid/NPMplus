@@ -1,7 +1,7 @@
 import express from "express";
 import internalUser from "../internal/user.js";
 import Access from "../lib/access.js";
-import { isCI } from "../lib/config.js";
+import { isDestructiveTestMode } from "../lib/config.js";
 import errs from "../lib/error.js";
 import jwtdecode from "../lib/express/jwt-decode.js";
 import userIdFromMe from "../lib/express/user-id-from-me.js";
@@ -103,14 +103,14 @@ router
 	 * (!) It is NOT an authenticated endpoint.
 	 * (!) Only CI should be able to call this endpoint. As a result,
 	 *
-	 * it will only work when the env vars DEBUG=true and CI=true
+	 * it will only work when the env vars CI=true AND NPM_CI_ENABLE_DESTRUCTIVE_TEST_MODE=true
 	 *
 	 * Do NOT set those env vars in a production environment!
 	 */
 	.delete(async (_, res, next) => {
-		if (isCI()) {
+		if (isDestructiveTestMode()) {
 			try {
-				logger.warn("Deleting all users - CI environment detected, allowing this operation");
+				logger.warn("Deleting all users - Destructive Test Mode enabled, allowing this operation");
 				await internalUser.deleteAll();
 				res.status(200).send(true);
 			} catch (err) {
