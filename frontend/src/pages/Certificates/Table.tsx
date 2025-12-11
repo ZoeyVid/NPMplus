@@ -98,6 +98,14 @@ export default function Table({ data, isFetching, onDelete, onRenew, onDownload,
 			columnHelper.display({
 				id: "id",
 				cell: (info: any) => {
+					const r = info.row.original;
+					const inUse =
+						(r.proxyHosts?.length || 0) +
+							(r.redirectionHosts?.length || 0) +
+							(r.deadHosts?.length || 0) +
+							(r.streams?.length || 0) >
+						0;
+
 					return (
 						<span className="dropdown">
 							<button
@@ -139,18 +147,22 @@ export default function Table({ data, isFetching, onDelete, onRenew, onDownload,
 										<IconDownload size={16} />
 										<T id="action.download" />
 									</a>
-									<div className="dropdown-divider" />
-									<a
-										className="dropdown-item"
-										href="#"
-										onClick={(e) => {
-											e.preventDefault();
-											onDelete?.(info.row.original.id);
-										}}
-									>
-										<IconTrash size={16} />
-										<T id="action.delete" />
-									</a>
+									{!inUse && (
+										<>
+											<div className="dropdown-divider" />
+											<a
+												className="dropdown-item"
+												href="#"
+												onClick={(e) => {
+													e.preventDefault();
+													onDelete?.(info.row.original.id);
+												}}
+											>
+												<IconTrash size={16} />
+												<T id="action.delete" />
+											</a>
+										</>
+									)}
 								</HasPermission>
 							</div>
 						</span>
