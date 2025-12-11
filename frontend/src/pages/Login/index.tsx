@@ -9,7 +9,7 @@ import { validateEmail, validateString } from "src/modules/Validations";
 import styles from "./index.module.css";
 
 export default function Login() {
-	const emailRef = useRef(null);
+	const emailRef = useRef<HTMLInputElement>(null);
 	const [formErr, setFormErr] = useState("");
 	const { login } = useAuthState();
 
@@ -26,8 +26,7 @@ export default function Login() {
 	};
 
 	useEffect(() => {
-		// @ts-expect-error ts-migrate(2531) FIXME: Object is possibly 'null'.
-		emailRef.current.focus();
+		emailRef.current?.focus();
 	}, []);
 
 	const health = useHealth();
