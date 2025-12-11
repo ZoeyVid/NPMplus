@@ -2430,10 +2430,10 @@ react-bootstrap@2.10.10:
     uncontrollable "^7.2.1"
     warning "^4.0.3"
 
-react-dom@19.2.2:
-  version "19.2.2"
-  resolved "https://registry.yarnpkg.com/react-dom/-/react-dom-19.2.2.tgz#c62579e8949964e2f9d76d9f7b097be1462e15eb"
-  integrity sha512-fhyD2BLrew6qYf4NNtHff1rLXvzR25rq49p+FeqByOazc6TcSi2n8EYulo5C1PbH+1uBW++5S1SG7FcUU6mlDg==
+react-dom@19.2.3:
+  version "19.2.3"
+  resolved "https://registry.yarnpkg.com/react-dom/-/react-dom-19.2.3.tgz#f0b61d7e5c4a86773889fcc1853af3ed5f215b17"
+  integrity sha512-yELu4WmLPw5Mr/lmeEpox5rw3RETacE++JgHqQzd2dg+YbJuat3jH4ingc+WPZhxaoFzdv9y33G+F7Nl5O0GBg==
   dependencies:
     scheduler "^0.27.0"
 
