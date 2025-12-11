@@ -7,3 +7,8 @@
 **Vulnerability:** The `/tokens` (login) endpoint lacked rate limiting, allowing brute force attacks.
 **Learning:** Even with secure password hashing (bcrypt), unlimited attempts can eventually succeed or cause DoS. Express endpoints need explicit rate limiting.
 **Prevention:** Implemented an in-memory rate limiter (Token Bucket / Counter) on the authentication route to block IPs after repeated failures.
+
+## 2025-02-17 - Unsafe Backdoor in User Management
+**Vulnerability:** The `DELETE /api/users` endpoint allowed deleting all users if `CI=true` and `DEBUG=true` environment variables were set.
+**Learning:** Generic environment variables like `CI` and `DEBUG` are often used for other purposes and can be accidentally enabled in production, exposing dangerous administrative actions without authentication.
+**Prevention:** Introduced a dedicated, explicit opt-in variable `NPM_CI_ENABLE_DESTRUCTIVE_TEST_MODE` that must be set to `true` alongside `CI=true` to enable such destructive endpoints.

@@ -2,11 +2,11 @@ import fs from "node:fs";
 import https from "node:https";
 import path from "path";
 import archiver from "archiver";
-import punycode from "punycode.js";
-import _ from "lodash";
 import dayjs from "dayjs";
 import customParseFormat from "dayjs/plugin/customParseFormat.js";
+import _ from "lodash";
 import { ProxyAgent } from "proxy-agent";
+import punycode from "punycode.js";
 import tempWrite from "temp-write";
 import dnsPlugins from "../certbot/dns-plugins.json" with { type: "json" };
 import { installPlugin } from "../lib/certbot.js";
@@ -14,9 +14,9 @@ import error from "../lib/error.js";
 import utils from "../lib/utils.js";
 import { debug, ssl as logger } from "../logger.js";
 import certificateModel from "../models/certificate.js";
+import pjson from "../package.json" with { type: "json" };
 import internalAuditLog from "./audit-log.js";
 import internalNginx from "./nginx.js";
-import pjson from "../package.json" with { type: "json" };
 
 dayjs.extend(customParseFormat);
 

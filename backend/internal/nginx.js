@@ -1,8 +1,8 @@
 import fs from "node:fs";
 import { dirname } from "node:path";
 import { fileURLToPath } from "node:url";
-import punycode from "punycode.js";
 import _ from "lodash";
+import punycode from "punycode.js";
 import errs from "../lib/error.js";
 import utils from "../lib/utils.js";
 import { debug, nginx as logger } from "../logger.js";
