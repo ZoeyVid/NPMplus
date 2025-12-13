@@ -468,7 +468,7 @@ if [ "$NGINX_LOAD_GEOIP2_MODULE" = "true" ]; then
 
     sed -i "s|#\s*\(auto_reload 5m;\)|\1|g" /usr/local/nginx/conf/nginx.conf
 
-    sed -i "s|#\s*\(.*\$geoip2_country_code default=XX source=\$remote_addr country iso_code;\)|\1|g" /usr/local/nginx/conf/nginx.conf
+    sed -i "s|#\s*,'\"geoip_country_code\": \"\$geoip2_country_code\"'|,\"geoip_country_code\": \"\$geoip2_country_code\"|g" /usr/local/nginx/conf/nginx.conf
 
     sed -i "s|#\s*\(}\)|\1|g" /usr/local/nginx/conf/nginx.conf
 
