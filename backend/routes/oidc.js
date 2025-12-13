@@ -1,10 +1,18 @@
 import express from "express";
+import rateLimit from "express-rate-limit";
 import * as client from "openid-client";
 import internalToken from "../internal/token.js";
 import errs from "../lib/error.js";
 import jwtdecode from "../lib/express/jwt-decode.js";
 import { oidc as logger } from "../logger.js";
 import settingModel from "../models/setting.js";
+
+// Set up rate limiter: for example, 100 requests per 15 minutes per IP
+const oidcRateLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 100, // limit each IP to 100 requests per windowMs
+  message: { error: "Too many authorization requests from this IP, please try again later." }
+});
 
 const router = express.Router({
 	caseSensitive: true,
@@ -17,6 +25,7 @@ router
 	.options((_, res) => {
 		res.sendStatus(204);
 	})
+	.all(oidcRateLimiter)
 	.all(jwtdecode())
 
 	/**
