@@ -22,7 +22,8 @@
 		"enabled",
 		"locations",
 		"hsts_enabled",
-		"hsts_subdomains"
+		"hsts_subdomains",
+		"bandwidth_limit"
 	],
 	"properties": {
 		"id": {
@@ -71,6 +72,10 @@
 		},
 		"advanced_config": {
 			"type": "string",
+			"example": ""
+		},
+		"bandwidth_limit": {
+			"type": ["string", "null"],
 			"example": ""
 		},
 		"meta": {
