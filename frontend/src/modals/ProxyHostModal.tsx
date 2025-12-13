@@ -262,7 +262,10 @@ const ProxyHostModal = EasyModal.create(({ id, visible, remove }: Props) => {
 														<Field name="bandwidthLimit">
 															{({ field, form }: any) => (
 																<div className="mb-3">
-																	<label className="form-label" htmlFor="bandwidthLimit">
+																	<label
+																		className="form-label"
+																		htmlFor="bandwidthLimit"
+																	>
 																		Bandwidth Limit (e.g. 100k, 1m)
 																	</label>
 																	<input
@@ -288,7 +291,10 @@ const ProxyHostModal = EasyModal.create(({ id, visible, remove }: Props) => {
 														<Field name="forwardQuery">
 															{({ field, form }: any) => (
 																<div className="mb-3">
-																	<label className="form-label" htmlFor="forwardQuery">
+																	<label
+																		className="form-label"
+																		htmlFor="forwardQuery"
+																	>
 																		Forward Query (Hidden)
 																	</label>
 																	<input
