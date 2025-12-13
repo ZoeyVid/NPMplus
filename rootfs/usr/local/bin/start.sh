@@ -476,7 +476,7 @@ if [ "$NGINX_LOAD_GEOIP2_MODULE" = "true" ]; then
 
     sed -i "s|#\s*\(.*\$geoip2_city_name default=Unknown source=\$remote_addr city names en;\)|\1|g" /usr/local/nginx/conf/nginx.conf
 
-    sed -i "s|#\s*,'\"geoip_country_code\": \"\$geoip2_country_code\"'|,'\"geoip_country_code\": \"\$geoip2_country_code\"'|g" /usr/local/nginx/conf/nginx.conf
+    sed -i "s|#\s*\(\$geoip2_country_code.\+country iso_code;\)|\1|g" /usr/local/nginx/conf/nginx.conf
 fi
 if [ "$NGINX_LOAD_NJS_MODULE" = "true" ]; then
     sed -i "s|#\(load_module.\+js_module.so;\)|\1|g" /usr/local/nginx/conf/nginx.conf
