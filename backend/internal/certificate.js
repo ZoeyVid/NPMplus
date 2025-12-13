@@ -497,7 +497,7 @@ const internalCertificate = {
 	validate: (data) => {
 		// Put file contents into an object
 		const files = {};
-		_.map(data.files, (file, name) => {
+		Object.entries(data.files).forEach(([name, file]) => {
 			if (internalCertificate.allowedSslFiles.indexOf(name) !== -1) {
 				files[name] = file.data.toString();
 			}
@@ -506,7 +506,7 @@ const internalCertificate = {
 		// For each file, create a temp file and write the contents to it
 		// Then test it depending on the file type
 		const promises = [];
-		_.map(files, (content, type) => {
+		Object.entries(files).forEach(([type, content]) => {
 			promises.push(
 				new Promise((resolve) => {
 					if (type === "certificate_key") {
