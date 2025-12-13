@@ -461,32 +461,23 @@ if [ "$NGINX_LOAD_OPENTELEMETRY_MODULE" = "true" ]; then
     sed -i "s|#\(load_module.\+otel_ngx_module.so;\)|\1|g" /usr/local/nginx/conf/nginx.conf
 fi
 if [ "$NGINX_LOAD_GEOIP2_MODULE" = "true" ]; then
-    # 1. Modul laden (flexiblerer Space-Match)
+
     sed -i "s|#\s*\(load_module.\+geoip2_module.so;\)|\1|g" /usr/local/nginx/conf/nginx.conf
 
-    # 2. Country DB Start
     sed -i "s|#\s*\(geoip2 /data/nginx/GeoLite2-Country.mmdb {\)|\1|g" /usr/local/nginx/conf/nginx.conf
 
-    # 3. auto_reload (gilt für beide Blöcke, wenn global ersetzt wird)
     sed -i "s|#\s*\(auto_reload 5m;\)|\1|g" /usr/local/nginx/conf/nginx.conf
 
-    # 4. Country Variable
     sed -i "s|#\s*\(.*\$geoip2_country_code default=XX source=\$remote_addr country iso_code;\)|\1|g" /usr/local/nginx/conf/nginx.conf
 
-    # 5. Schließende Klammer (HIER WAR DER FEHLER)
-    # \s* erlaubt 0 bis unendlich Leerzeichen zwischen # und }
     sed -i "s|#\s*\(}\)|\1|g" /usr/local/nginx/conf/nginx.conf
 
-    # 6. Kommentar für Städte-Datenbank (nur Kosmetik)
     sed -i "s|# \(Lade die Städte-Datenbank\)| \1|g" /usr/local/nginx/conf/nginx.conf
 
-    # 7. City DB Start
     sed -i "s|#\s*\(geoip2 /data/nginx/GeoLite2-City.mmdb {\)|\1|g" /usr/local/nginx/conf/nginx.conf
 
-    # 8. City Variable
     sed -i "s|#\s*\(.*\$geoip2_city_name default=Unknown source=\$remote_addr city names en;\)|\1|g" /usr/local/nginx/conf/nginx.conf
 
-    # 9. Log Format Zeile
     sed -i "s|#\s*,'\"geoip_country_code\": \"\$geoip2_country_code\"'|,'\"geoip_country_code\": \"\$geoip2_country_code\"'|g" /usr/local/nginx/conf/nginx.conf
 fi
 if [ "$NGINX_LOAD_NJS_MODULE" = "true" ]; then
