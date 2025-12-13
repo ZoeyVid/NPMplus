@@ -57,7 +57,7 @@ export default () => {
 			}
 			return new Promise((resolve, reject) => {
 				try {
-					if (!token || token === null || token === "null") {
+					if (!token || typeof token !== "string" || token === "null") {
 						reject(new errs.AuthError("Empty token"));
 					} else {
 						jwt.verify(
@@ -66,7 +66,7 @@ export default () => {
 							{ ignoreExpiration: false, algorithms: [ALGO] },
 							(err, result) => {
 								if (err) {
-									if (err.name === "TokenExpiredError") {
+									if (err instanceof jwt.TokenExpiredError) {
 										reject(new errs.AuthError("Token has expired", err));
 									} else {
 										reject(err);

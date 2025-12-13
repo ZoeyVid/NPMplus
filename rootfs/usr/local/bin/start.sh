@@ -113,7 +113,7 @@ if [ "$FULLCLEAN" = "true" ] && [ "$PHP82" = "false" ] && [ "$PHP83" = "false" ]
 fi
 
 
-mkdir -p /tmp/acme-challenge \
+mkdir -p /data/acme-challenge \
          /tmp/npmhome \
          /tmp/goa \
          /tmp/certbot-log \
@@ -240,7 +240,7 @@ rm -vrf /data/letsencrypt-acme-challenge \
 
 touch /data/modsecurity/modsecurity-extra.conf \
       /data/html/index.html \
-      /tmp/ip_ranges.conf \
+      /data/nginx/ip_ranges.conf \
       /data/custom_nginx/events.conf \
       /data/custom_nginx/http.conf \
       /data/custom_nginx/http_top.conf \
