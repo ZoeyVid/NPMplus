@@ -146,37 +146,37 @@ export function LocationsFields({ initialValues, name = "locations" }: Props) {
 						</div>
 						{advVisible.includes(idx) && (
 							<>
-							<div className="mb-3">
-								<label className="form-label" htmlFor="forwardQuery">
-									Forward Query (Hidden)
-								</label>
-								<input
-									id="forwardQuery"
-									type="text"
-									className="form-control"
-									placeholder="e.g. api_key=123"
-									value={item.forwardQuery}
-									onChange={(e) => handleChange(idx, "forwardQuery", e.target.value)}
-								/>
-							</div>
-							<div className="">
-								<CodeEditor
-									language="nginx"
-									placeholder={intl.formatMessage({ id: "nginx-config.placeholder" })}
-									padding={15}
-									data-color-mode="dark"
-									minHeight={170}
-									indentWidth={2}
-									value={item.advancedConfig}
-									onChange={(e) => handleChange(idx, "advancedConfig", e.target.value)}
-									style={{
-										fontFamily:
-											"ui-monospace,SFMono-Regular,SF Mono,Consolas,Liberation Mono,Menlo,monospace",
-										borderRadius: "0.3rem",
-										minHeight: "170px",
-									}}
-								/>
-							</div>
+								<div className="mb-3">
+									<label className="form-label" htmlFor="forwardQuery">
+										Forward Query (Hidden)
+									</label>
+									<input
+										id="forwardQuery"
+										type="text"
+										className="form-control"
+										placeholder="e.g. api_key=123"
+										value={item.forwardQuery}
+										onChange={(e) => handleChange(idx, "forwardQuery", e.target.value)}
+									/>
+								</div>
+								<div className="">
+									<CodeEditor
+										language="nginx"
+										placeholder={intl.formatMessage({ id: "nginx-config.placeholder" })}
+										padding={15}
+										data-color-mode="dark"
+										minHeight={170}
+										indentWidth={2}
+										value={item.advancedConfig}
+										onChange={(e) => handleChange(idx, "advancedConfig", e.target.value)}
+										style={{
+											fontFamily:
+												"ui-monospace,SFMono-Regular,SF Mono,Consolas,Liberation Mono,Menlo,monospace",
+											borderRadius: "0.3rem",
+											minHeight: "170px",
+										}}
+									/>
+								</div>
 							</>
 						)}
 						<div className="mt-1">
