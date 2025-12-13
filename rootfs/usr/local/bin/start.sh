@@ -472,8 +472,6 @@ if [ "$NGINX_LOAD_GEOIP2_MODULE" = "true" ]; then
 
     sed -i "s|#\s*\(}\)|\1|g" /usr/local/nginx/conf/nginx.conf
 
-    sed -i "s|# \(Lade die Städte-Datenbank\)| \1|g" /usr/local/nginx/conf/nginx.conf
-
     sed -i "s|#\s*\(geoip2 /data/nginx/GeoLite2-City.mmdb {\)|\1|g" /usr/local/nginx/conf/nginx.conf
 
     sed -i "s|#\s*\(.*\$geoip2_city_name default=Unknown source=\$remote_addr city names en;\)|\1|g" /usr/local/nginx/conf/nginx.conf
