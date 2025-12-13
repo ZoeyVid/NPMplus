@@ -1,4 +1,5 @@
 export * from "./checkVersion";
+export * from "./claimOidcToken";
 export * from "./createAccessList";
 export * from "./createCertificate";
 export * from "./createDeadHost";

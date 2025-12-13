@@ -2,6 +2,7 @@ import express from "express";
 import rateLimit from "express-rate-limit";
 import * as client from "openid-client";
 import internalToken from "../internal/token.js";
+import { decrypt, encrypt } from "../lib/encryption.js";
 import errs from "../lib/error.js";
 import jwtdecode from "../lib/express/jwt-decode.js";
 import { oidc as logger } from "../logger.js";
@@ -62,6 +63,52 @@ router
 			redirectWithJwtToken(res, token);
 		} catch (err) {
 			redirectWithError(res, err);
+		}
+	});
+
+router
+	.route("/claim")
+	.options((_, res) => {
+		res.sendStatus(204);
+	})
+	.all(oidcRateLimiter)
+	.post(async (req, res) => {
+		try {
+			if (!req.headers || !req.headers.cookie) {
+				throw new errs.AuthError("No cookie provided");
+			}
+
+			let encryptedToken;
+			const cookies = req.headers.cookie.split(";");
+			for (const cookie of cookies) {
+				const [name, value] = cookie.split("=");
+				if (name.trim() === "npmplus_oidc") {
+					encryptedToken = value;
+					break;
+				}
+			}
+
+			if (!encryptedToken) {
+				throw new errs.AuthError("No OIDC cookie found");
+			}
+
+			let decrypted;
+			try {
+				decrypted = decrypt(encryptedToken);
+			} catch (e) {
+				throw new errs.AuthError("Invalid OIDC cookie");
+			}
+
+			const [token, expires] = decrypted.split("---");
+
+			if (!token || !expires) {
+				throw new errs.AuthError("Invalid token data in cookie");
+			}
+
+			res.clearCookie("npmplus_oidc", { secure: true, sameSite: "Strict" });
+			res.status(200).send({ token, expires });
+		} catch (err) {
+			res.status(400).send({ error: { message: err.message } });
 		}
 	});
 
@@ -155,7 +202,9 @@ const redirectToAuthorizationURL = (res, params) => {
 };
 
 const redirectWithJwtToken = (res, token) => {
-	res.cookie("npmplus_oidc", `${token.token}---${token.expires}`, { secure: true, sameSite: "Strict" });
+	const payload = `${token.token}---${token.expires}`;
+	const encrypted = encrypt(payload);
+	res.cookie("npmplus_oidc", encrypted, { secure: true, sameSite: "Strict" });
 	res.redirect("/login");
 };
 
