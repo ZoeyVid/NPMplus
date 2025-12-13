@@ -76,6 +76,9 @@
 						"advanced_config": {
 							"$ref": "../../../../components/proxy-host-object.json#/properties/advanced_config"
 						},
+						"bandwidth_limit": {
+							"$ref": "../../../../components/proxy-host-object.json#/properties/bandwidth_limit"
+						},
 						"enabled": {
 							"$ref": "../../../../components/proxy-host-object.json#/properties/enabled"
 						},

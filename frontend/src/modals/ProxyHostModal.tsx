@@ -91,6 +91,7 @@ const ProxyHostModal = EasyModal.create(({ id, visible, remove }: Props) => {
 							hstsSubdomains: data?.hstsSubdomains || false,
 							// Advanced tab
 							advancedConfig: data?.advancedConfig || "",
+							bandwidthLimit: data?.bandwidthLimit || "",
 							meta: data?.meta || {},
 						} as any
 					}
@@ -247,6 +248,34 @@ const ProxyHostModal = EasyModal.create(({ id, visible, remove }: Props) => {
 																			{form.errors.forwardPort &&
 																			form.touched.forwardPort
 																				? form.errors.forwardPort
+																				: null}
+																		</div>
+																	) : null}
+																</div>
+															)}
+														</Field>
+													</div>
+												</div>
+												<div className="row">
+													<div className="col-md-12">
+														<Field name="bandwidthLimit">
+															{({ field, form }: any) => (
+																<div className="mb-3">
+																	<label className="form-label" htmlFor="bandwidthLimit">
+																		Bandwidth Limit (e.g. 100k, 1m)
+																	</label>
+																	<input
+																		id="bandwidthLimit"
+																		type="text"
+																		className={`form-control ${form.errors.bandwidthLimit && form.touched.bandwidthLimit ? "is-invalid" : ""}`}
+																		placeholder="0 = Unlimited"
+																		{...field}
+																	/>
+																	{form.errors.bandwidthLimit ? (
+																		<div className="invalid-feedback">
+																			{form.errors.bandwidthLimit &&
+																			form.touched.bandwidthLimit
+																				? form.errors.bandwidthLimit
 																				: null}
 																		</div>
 																	) : null}
