@@ -462,6 +462,14 @@ if [ "$NGINX_LOAD_OPENTELEMETRY_MODULE" = "true" ]; then
 fi
 if [ "$NGINX_LOAD_GEOIP2_MODULE" = "true" ]; then
     sed -i "s|#\(load_module.\+geoip2_module.so;\)|\1|g" /usr/local/nginx/conf/nginx.conf
+    sed -i "s|#\(geoip2 /data/nginx/GeoLite2-Country.mmdb {\)|\1|g" /usr/local/nginx/conf/nginx.conf
+    sed -i "s|#\(    auto_reload 5m;\)|\1|g" /usr/local/nginx/conf/nginx.conf
+    sed -i "s|#\(    \$geoip2_country_code default=XX source=\$remote_addr country iso_code;\)|\1|g" /usr/local/nginx/conf/nginx.conf
+    sed -i "s|#\(    }\)|\1|g" /usr/local/nginx/conf/nginx.conf
+    sed -i "s|# \(Lade die Städte-Datenbank\)| \1|g" /usr/local/nginx/conf/nginx.conf
+    sed -i "s|#\(geoip2 /data/nginx/GeoLite2-City.mmdb {\)|\1|g" /usr/local/nginx/conf/nginx.conf
+    sed -i "s|#\(    \$geoip2_city_name default=Unknown source=\$remote_addr city names en;\)|\1|g" /usr/local/nginx/conf/nginx.conf
+    sed -i "s|#\s*,'\"geoip_country_code\": \"\$geoip2_country_code\"'|,'\"geoip_country_code\": \"\$geoip2_country_code\"'|g" /usr/local/nginx/conf/nginx.conf
 fi
 if [ "$NGINX_LOAD_NJS_MODULE" = "true" ]; then
     sed -i "s|#\(load_module.\+js_module.so;\)|\1|g" /usr/local/nginx/conf/nginx.conf
