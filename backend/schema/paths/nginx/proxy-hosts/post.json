@@ -71,6 +71,9 @@
 						"bandwidth_limit": {
 							"$ref": "../../../components/proxy-host-object.json#/properties/bandwidth_limit"
 						},
+						"forward_query": {
+							"$ref": "../../../components/proxy-host-object.json#/properties/forward_query"
+						},
 						"enabled": {
 							"$ref": "../../../components/proxy-host-object.json#/properties/enabled"
 						},

@@ -19,6 +19,7 @@ export function LocationsFields({ initialValues, name = "locations" }: Props) {
 	const blankItem: ProxyLocation = {
 		path: "",
 		advancedConfig: "",
+		forwardQuery: "",
 		forwardScheme: "http",
 		forwardHost: "",
 		forwardPort: 80,
@@ -144,6 +145,20 @@ export function LocationsFields({ initialValues, name = "locations" }: Props) {
 							</div>
 						</div>
 						{advVisible.includes(idx) && (
+							<>
+							<div className="mb-3">
+								<label className="form-label" htmlFor="forwardQuery">
+									Forward Query (Hidden)
+								</label>
+								<input
+									id="forwardQuery"
+									type="text"
+									className="form-control"
+									placeholder="e.g. api_key=123"
+									value={item.forwardQuery}
+									onChange={(e) => handleChange(idx, "forwardQuery", e.target.value)}
+								/>
+							</div>
 							<div className="">
 								<CodeEditor
 									language="nginx"
@@ -162,6 +177,7 @@ export function LocationsFields({ initialValues, name = "locations" }: Props) {
 									}}
 								/>
 							</div>
+							</>
 						)}
 						<div className="mt-1">
 							<a
