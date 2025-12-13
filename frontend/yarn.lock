@@ -2674,10 +2674,10 @@ rollup@^4.43.0:
     "@rollup/rollup-win32-x64-msvc" "4.53.3"
     fsevents "~2.3.2"
 
-rooks@9.4.2:
-  version "9.4.2"
-  resolved "https://registry.yarnpkg.com/rooks/-/rooks-9.4.2.tgz#52e122cbf27fd0e143389240fc0c873ff4a33a77"
-  integrity sha512-RjVCQadZ86kN9UzWDa/qglBpQ6ANwsbJSNq4mTlHhttjsV+OvsVTJBxRqQJo6Z+qwIhoYaRm9wywJGcNgwHhNA==
+rooks@9.5.0:
+  version "9.5.0"
+  resolved "https://registry.yarnpkg.com/rooks/-/rooks-9.5.0.tgz#bbe15fdf64fff44b9a1750cc913de3401572f012"
+  integrity sha512-AtmaX8yjQkJAW7EXW+UU481bpGwuk455hjD/aEUuy7N7VjvXlNmO8BErQ+jEUQp1DRA/PTWonv+Dq1nEkJdgkw==
   dependencies:
     fast-deep-equal "^3.1.3"
     lodash.debounce "^4.0.8"
