@@ -1,10 +1,12 @@
 import { Field, Form, Formik } from "formik";
 import { useEffect, useRef, useState } from "react";
 import Alert from "react-bootstrap/Alert";
+import { claimOidcToken } from "src/api/backend";
 import { Button, LocalePicker, Page, ThemeSwitcher } from "src/components";
 import { useAuthState } from "src/context";
 import { useHealth } from "src/hooks";
 import { intl, T } from "src/locale";
+import AuthStore from "src/modules/AuthStore";
 import { validateEmail, validateString } from "src/modules/Validations";
 import styles from "./index.module.css";
 
@@ -27,6 +29,15 @@ export default function Login() {
 
 	useEffect(() => {
 		emailRef.current?.focus();
+		// Try to claim OIDC token if available
+		claimOidcToken()
+			.then((response) => {
+				AuthStore.add(response);
+				window.location.reload();
+			})
+			.catch(() => {
+				// Ignore errors, no pending OIDC login
+			});
 	}, []);
 
 	const health = useHealth();
