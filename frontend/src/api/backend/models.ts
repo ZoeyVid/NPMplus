@@ -98,6 +98,7 @@ export interface ProxyLocation {
 	forwardScheme: string;
 	forwardHost: string;
 	forwardPort: number;
+	forwardQuery?: string;
 }
 
 export interface ProxyHost {
@@ -109,6 +110,7 @@ export interface ProxyHost {
 	forwardScheme: string;
 	forwardHost: string;
 	forwardPort: number;
+	forwardQuery?: string;
 	accessListId: number;
 	certificateId: number;
 	sslForced: boolean;

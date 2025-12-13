@@ -92,6 +92,7 @@ const ProxyHostModal = EasyModal.create(({ id, visible, remove }: Props) => {
 							// Advanced tab
 							advancedConfig: data?.advancedConfig || "",
 							bandwidthLimit: data?.bandwidthLimit || "",
+							forwardQuery: data?.forwardQuery || "",
 							meta: data?.meta || {},
 						} as any
 					}
@@ -279,6 +280,35 @@ const ProxyHostModal = EasyModal.create(({ id, visible, remove }: Props) => {
 																			{form.errors.bandwidthLimit &&
 																			form.touched.bandwidthLimit
 																				? form.errors.bandwidthLimit
+																				: null}
+																		</div>
+																	) : null}
+																</div>
+															)}
+														</Field>
+													</div>
+													<div className="col-md-12">
+														<Field name="forwardQuery">
+															{({ field, form }: any) => (
+																<div className="mb-3">
+																	<label
+																		className="form-label"
+																		htmlFor="forwardQuery"
+																	>
+																		Forward Query (Hidden)
+																	</label>
+																	<input
+																		id="forwardQuery"
+																		type="text"
+																		className={`form-control ${form.errors.forwardQuery && form.touched.forwardQuery ? "is-invalid" : ""}`}
+																		placeholder="e.g. api_key=123"
+																		{...field}
+																	/>
+																	{form.errors.forwardQuery ? (
+																		<div className="invalid-feedback">
+																			{form.errors.forwardQuery &&
+																			form.touched.forwardQuery
+																				? form.errors.forwardQuery
 																				: null}
 																		</div>
 																	) : null}
