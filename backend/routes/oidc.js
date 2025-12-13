@@ -9,9 +9,9 @@ import settingModel from "../models/setting.js";
 
 // Set up rate limiter: for example, 100 requests per 15 minutes per IP
 const oidcRateLimiter = rateLimit({
-  windowMs: 15 * 60 * 1000, // 15 minutes
-  max: 100, // limit each IP to 100 requests per windowMs
-  message: { error: "Too many authorization requests from this IP, please try again later." }
+	windowMs: 15 * 60 * 1000, // 15 minutes
+	max: 100, // limit each IP to 100 requests per windowMs
+	message: { error: "Too many authorization requests from this IP, please try again later." },
 });
 
 const router = express.Router({
