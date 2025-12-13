@@ -1,4 +1,5 @@
 import express from "express";
+import rateLimit from "express-rate-limit";
 import internalUser from "../internal/user.js";
 import Access from "../lib/access.js";
 import { isDestructiveTestMode } from "../lib/config.js";
@@ -10,6 +11,15 @@ import validator from "../lib/validator/index.js";
 import { debug, express as logger } from "../logger.js";
 import { getValidationSchema } from "../schema/index.js";
 import { isSetup } from "../setup.js";
+
+// Rate limiter for loginAs endpoint
+const loginAsRateLimiter = rateLimit({
+    windowMs: 1 * 60 * 1000, // 1 minute
+    max: 5, // limit each IP to 5 requests per windowMs
+    message: { error: "Too many login attempts, please try again later." },
+    standardHeaders: true, // Return rate limit info in the RateLimit-* headers
+    legacyHeaders: false, // Disable the X-RateLimit-* headers
+});
 
 const router = express.Router({
 	caseSensitive: true,
@@ -279,22 +289,16 @@ router
 		res.sendStatus(204);
 	})
 	.all(jwtdecode())
-
-	/**
-	 * POST /api/users/123/login
-	 *
-	 * Log in as a user
-	 */
-	.post(async (req, res, next) => {
-		try {
-			const result = await internalUser.loginAs(res.locals.access, {
-				id: Number.parseInt(req.params.user_id, 10),
-			});
-			res.status(200).send(result);
-		} catch (err) {
-			debug(logger, `${req.method.toUpperCase()} ${req.path}: ${err}`);
-			next(err);
-		}
-	});
+    .post(loginAsRateLimiter, async (req, res, next) => {
+        try {
+            const result = await internalUser.loginAs(res.locals.access, {
+                id: Number.parseInt(req.params.user_id, 10),
+            });
+            res.status(200).send(result);
+        } catch (err) {
+            debug(logger, `${req.method.toUpperCase()} ${req.path}: ${err}`);
+            next(err);
+        }
+    });
 
 export default router;
