@@ -1,6 +1,6 @@
 import express from "express";
+import rateLimit from "express-rate-limit";
 import dnsPlugins from "../../certbot/dns-plugins.json" with { type: "json" };
-import internalCertificate from "../../internal/certificate.js";
 import errs from "../../lib/error.js";
 import jwtdecode from "../../lib/express/jwt-decode.js";
 import apiValidator from "../../lib/validator/api.js";
@@ -13,6 +13,15 @@ const router = express.Router({
 	strict: true,
 	mergeParams: true,
 });
+// Rate limiter for certificate downloads: max 10 downloads per 15 minutes per IP
+const downloadLimiter = rateLimit({
+	windowMs: 15 * 60 * 1000, // 15 minutes
+	max: 10, // limit each IP to 10 download requests per windowMs
+	standardHeaders: true, // Return rate limit info in the `RateLimit-*` headers
+	legacyHeaders: false, // Disable the `X-RateLimit-*` headers
+	message: { error: "Too many download requests from this IP, please try again later." }
+});
+
 
 /**
  * /api/nginx/certificates
@@ -329,6 +338,7 @@ router
 	.options((_req, res) => {
 		res.sendStatus(204);
 	})
+	.all(downloadLimiter)
 	.all(jwtdecode())
 
 	/**
