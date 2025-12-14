@@ -960,15 +960,25 @@ const internalCertificate = {
 		fs.mkdirSync(testChallengeDir, { recursive: true });
 		fs.writeFileSync(testChallengeFile, "Success", { encoding: "utf8" });
 
-		const results = Object.create(null);
+		const results = new Map();
 		for (const domain of payload.domains) {
-			results[domain] = await internalCertificate.performTestForDomain(domain);
+			results.set(domain, await internalCertificate.performTestForDomain(domain));
 		}
 
 		// Remove the test challenge file
 		fs.unlinkSync(testChallengeFile);
 
-		return results;
+		const finalResult = Object.create(null);
+		for (const [domain, result] of results) {
+			Object.defineProperty(finalResult, domain, {
+				value: result,
+				enumerable: true,
+				writable: true,
+				configurable: true,
+			});
+		}
+
+		return finalResult;
 	},
 
 	performTestForDomain: async (domain) => {
