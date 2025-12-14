@@ -116,9 +116,9 @@ fi
 mkdir -p /data/acme-challenge \
          /tmp/npmhome \
          /tmp/goa \
-         /tmp/certbot-log \
-         /tmp/certbot-work \
-         /tmp/certbot-credentials
+         /data/certbot-log \
+         /data/certbot-work \
+         /data/certbot-credentials
 mkdir -vp /data/tls/certbot/renewal \
           /data/tls/custom \
           /data/npmplus \
