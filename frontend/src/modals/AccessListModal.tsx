@@ -63,9 +63,11 @@ const AccessListModal = EasyModal.create(({ id, visible, remove }: Props) => {
 		setIsSubmitting(true);
 		setErrorMsg(null);
 
-		const { ...payload } = {
+		const payload: any = {
 			id: id === "new" ? undefined : id,
-			...values,
+			name: values.name,
+			satisfy_any: values.satisfyAny,
+			pass_auth: values.passAuth,
 			meta: {
 				...data?.meta,
 				auth_type: values.authType,
