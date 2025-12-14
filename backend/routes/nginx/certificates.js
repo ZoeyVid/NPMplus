@@ -1,5 +1,6 @@
 import express from "express";
 import rateLimit from "express-rate-limit";
+import internalCertificate from "../../internal/certificate.js";
 import dnsPlugins from "../../certbot/dns-plugins.json" with { type: "json" };
 import errs from "../../lib/error.js";
 import jwtdecode from "../../lib/express/jwt-decode.js";
