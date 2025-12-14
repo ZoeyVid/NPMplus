@@ -14,7 +14,8 @@ post:
             - id
           properties:
             id:
-              $ref: '#/components/schemas/certificateId'
+              type: integer
+              minimum: 1
   responses:
     "200":
       description: Certificate Downloaded
