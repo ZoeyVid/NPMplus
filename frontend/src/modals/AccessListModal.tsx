@@ -106,6 +106,13 @@ const AccessListModal = EasyModal.create(({ id, visible, remove }: Props) => {
 	const toggleClasses = "form-check-input";
 	const toggleEnabled = cn(toggleClasses, "bg-cyan");
 
+	// Robustly parse meta (handle stringified JSON if necessary)
+	const meta = data && (data as any).meta 
+		? (typeof (data as any).meta === 'string' ? JSON.parse((data as any).meta) : (data as any).meta) 
+		: {};
+	
+	const initialAuthType = meta.auth_type || (meta.authentik_host ? "authentik_proxy" : "");
+
 	return (
 		<Modal show={visible} onHide={remove}>
 			{!isLoading && error && (
@@ -125,11 +132,11 @@ const AccessListModal = EasyModal.create(({ id, visible, remove }: Props) => {
 							items: data?.items || [],
 							clients: data?.clients || [],
 							// Determine initial authType
-							authType: (data as any)?.meta?.auth_type || ((data as any)?.meta?.authentik_host ? "authentik_proxy" : ""),
-							authentikHost: (data as any)?.meta?.authentik_host || "",
-							oidcDiscoveryUrl: (data as any)?.meta?.oidc_discovery_url || "",
-							oidcClientId: (data as any)?.meta?.oidc_client_id || "",
-							oidcClientSecret: (data as any)?.meta?.oidc_client_secret || "",
+							authType: initialAuthType,
+							authentikHost: meta.authentik_host || "",
+							oidcDiscoveryUrl: meta.oidc_discovery_url || "",
+							oidcClientId: meta.oidc_client_id || "",
+							oidcClientSecret: meta.oidc_client_secret || "",
 						} as AccessList & {
 							authType: string;
 							authentikHost: string;
