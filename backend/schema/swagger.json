@@ -134,9 +134,9 @@
 				"$ref": "./paths/nginx/certificates/certID/delete.json"
 			}
 		},
-		"/nginx/certificates/{certID}/download": {
-			"get": {
-				"$ref": "./paths/nginx/certificates/certID/download/get.json"
+		"/nginx/certificates/download": {
+			"post": {
+				"$ref": "./paths/nginx/certificates/{certificateId}/download.yaml"
 			}
 		},
 		"/nginx/certificates/{certID}/renew": {

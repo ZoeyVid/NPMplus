@@ -1,0 +1,50 @@
+tags:
+  - Nginx Certificates
+summary: Download a certificate
+operationId: downloadNginxCertificate
+security:
+  - AccessToken: []
+requestBody:
+  content:
+    application/json:
+      schema:
+        type: object
+        required:
+          - id
+        properties:
+          id:
+            type: integer
+            minimum: 1
+responses:
+  "200":
+    description: Certificate Downloaded
+  "400":
+    description: Bad Request
+    content:
+      application/json:
+        schema:
+          $ref: '../../../../components/error.json'
+  "401":
+    description: Unauthorized
+    content:
+      application/json:
+        schema:
+          $ref: '../../../../components/error.json'
+  "403":
+    description: Forbidden
+    content:
+      application/json:
+        schema:
+          $ref: '../../../../components/error.json'
+  "404":
+    description: Not Found
+    content:
+      application/json:
+        schema:
+          $ref: '../../../../components/error.json'
+  "500":
+    description: Internal Server Error
+    content:
+      application/json:
+        schema:
+          $ref: '../../../../components/error.json'

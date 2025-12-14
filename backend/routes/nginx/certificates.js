@@ -21,6 +21,9 @@ const downloadLimiter = rateLimit({
 	standardHeaders: true, // Return rate limit info in the `RateLimit-*` headers
 	legacyHeaders: false, // Disable the `X-RateLimit-*` headers
 	message: { error: "Too many download requests from this IP, please try again later." },
+	validate: {
+		trustProxy: false,
+	},
 });
 
 /**
@@ -331,10 +334,10 @@ router
 /**
  * Download certbot Certs
  *
- * /api/nginx/certificates/123/download
+ * /api/nginx/certificates/download
  */
 router
-	.route("/:certificate_id/download")
+	.route("/download")
 	.options((_req, res) => {
 		res.sendStatus(204);
 	})
@@ -342,14 +345,15 @@ router
 	.all(jwtdecode())
 
 	/**
-	 * GET /api/nginx/certificates/123/download
+	 * POST /api/nginx/certificates/download
 	 *
-	 * Renew certificate
+	 * Download certificate
 	 */
-	.get(async (req, res, next) => {
+	.post(async (req, res, next) => {
 		try {
+			const payload = await apiValidator(getValidationSchema("/nginx/certificates/download", "post"), req.body);
 			const result = await internalCertificate.download(res.locals.access, {
-				id: Number.parseInt(req.params.certificate_id, 10),
+				id: Number.parseInt(payload.id, 10),
 			});
 			res.status(200).download(result.fileName);
 		} catch (err) {
