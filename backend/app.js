@@ -37,7 +37,7 @@ app.use(express.urlencoded({ extended: true }));
  */
 
 app.disable("x-powered-by");
-app.enable("trust proxy", ["loopback", "linklocal", "uniquelocal"]);
+app.set("trust proxy", ["loopback", "linklocal", "uniquelocal"]);
 app.enable("strict routing");
 
 // pretty print JSON when not live

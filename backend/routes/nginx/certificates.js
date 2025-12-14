@@ -348,10 +348,7 @@ router
 	 */
 	.post(async (req, res, next) => {
 		try {
-			const payload = await apiValidator(
-				getValidationSchema("/nginx/certificates/{certificateId}/download", "post"),
-				req.body,
-			);
+			const payload = await apiValidator(getValidationSchema("/nginx/certificates/download", "post"), req.body);
 			const result = await internalCertificate.download(res.locals.access, {
 				id: Number.parseInt(payload.id, 10),
 			});
