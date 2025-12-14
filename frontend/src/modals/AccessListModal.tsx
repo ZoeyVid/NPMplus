@@ -295,8 +295,9 @@ const AccessListModal = EasyModal.create(({ id, visible, remove }: Props) => {
 																	className="form-control"
 																/>
 																<div className="form-hint mt-2">
-																	Full URL to your Authentik instance (e.g. http://10.0.0.1:9000).
-																	Leaving this empty disables Authentik integration for this list.
+																	Full URL to your Authentik instance (e.g.
+																	http://10.0.0.1:9000). Leaving this empty disables
+																	Authentik integration for this list.
 																</div>
 															</div>
 														)}
