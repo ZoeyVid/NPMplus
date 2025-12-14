@@ -126,7 +126,7 @@ const setupCertbotPlugins = async () => {
 				}
 
 				fs.writeFileSync(
-					`/tmp/certbot-credentials/credentials-${certificate.id}`,
+					`/data/certbot-credentials/credentials-${certificate.id}`,
 					certificate.meta.dns_provider_credentials,
 					{ mode: 0o600 },
 				);
