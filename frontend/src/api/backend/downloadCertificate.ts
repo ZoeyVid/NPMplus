@@ -1,9 +1,10 @@
 import * as api from "./base";
 
 export async function downloadCertificate(id: number): Promise<void> {
-	await api.download(
+	await api.downloadPost(
 		{
-			url: `/nginx/certificates/${id}/download`,
+			url: "/nginx/certificates/download",
+			data: { id },
 		},
 		`certificate-${id}.zip`,
 	);

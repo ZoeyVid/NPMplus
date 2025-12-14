@@ -92,6 +92,41 @@ export async function download({ url, params }: GetArgs, filename = "download.fi
 	window.URL.revokeObjectURL(url);
 }
 
+export async function downloadPost({ url, params, data, noAuth }: PostArgs, filename = "download.file") {
+	const apiUrl = buildUrl({ url, params });
+	const method = "POST";
+
+	let headers: Record<string, string> = {};
+	if (!noAuth) {
+		headers = {
+			...buildAuthHeader(),
+		};
+	}
+
+	let body: string | FormData | undefined;
+	// Check if the data is an instance of FormData
+	// If data is FormData, let the browser set the Content-Type header
+	if (data instanceof FormData) {
+		body = data;
+	} else {
+		// If data is JSON, set the Content-Type header to 'application/json'
+		headers = {
+			...headers,
+			[contentTypeHeader]: "application/json",
+		};
+		body = buildBody(data);
+	}
+
+	const res = await fetch(apiUrl, { method, headers, body });
+	const bl = await res.blob();
+	const u = window.URL.createObjectURL(bl);
+	const a = document.createElement("a");
+	a.href = u;
+	a.download = filename;
+	a.click();
+	window.URL.revokeObjectURL(u);
+}
+
 interface PostArgs {
 	url: string;
 	params?: queryString.StringifiableRecord;
