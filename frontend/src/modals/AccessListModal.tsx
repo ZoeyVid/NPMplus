@@ -20,10 +20,6 @@ interface Props extends InnerModalProps {
 }
 const AccessListModal = EasyModal.create(({ id, visible, remove }: Props) => {
 	const { data, isLoading, error } = useAccessList(id, ["items", "clients"]);
-	if (data) {
-		console.log("AccessListModal Loaded Data:", data);
-		console.log("AccessListModal Loaded Meta:", (data as any).meta);
-	}
 	const { mutate: setAccessList } = useSetAccessList();
 	const [errorMsg, setErrorMsg] = useState<ReactNode | null>(null);
 	const [isSubmitting, setIsSubmitting] = useState(false);
@@ -144,7 +140,9 @@ const AccessListModal = EasyModal.create(({ id, visible, remove }: Props) => {
 					}
 					onSubmit={onSubmit}
 				>
-					{({ values, setFieldValue }: any) => (
+					{({ values, setFieldValue }: any) => {
+						const isSsoEnabled = !!values.authType;
+						return (
 						<Form>
 							<Modal.Header closeButton>
 								<Modal.Title>
@@ -307,10 +305,16 @@ const AccessListModal = EasyModal.create(({ id, visible, remove }: Props) => {
 												</div>
 											</div>
 											<div className="tab-pane" id="tab-auth" role="tabpanel">
-												<BasicAuthFields initialValues={data?.items || []} />
+												<fieldset disabled={isSsoEnabled}>
+													{isSsoEnabled && <Alert variant="warning" className="mb-3">Authentication handled by SSO Provider.</Alert>}
+													<BasicAuthFields initialValues={data?.items || []} />
+												</fieldset>
 											</div>
 											<div className="tab-pane" id="tab-rules" role="tabpanel">
-												<AccessClientFields initialValues={data?.clients || []} />
+												<fieldset disabled={isSsoEnabled}>
+													{isSsoEnabled && <Alert variant="warning" className="mb-3">Access Rules handled by SSO Provider.</Alert>}
+													<AccessClientFields initialValues={data?.clients || []} />
+												</fieldset>
 											</div>
 											<div className="tab-pane" id="tab-sso" role="tabpanel">
 												<div className="p-3">
@@ -417,7 +421,8 @@ const AccessListModal = EasyModal.create(({ id, visible, remove }: Props) => {
 								</Button>
 							</Modal.Footer>
 						</Form>
-					)}
+						);
+					}}
 				</Formik>
 			)}
 		</Modal>
