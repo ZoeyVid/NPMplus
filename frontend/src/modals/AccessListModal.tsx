@@ -128,7 +128,9 @@ const AccessListModal = EasyModal.create(({ id, visible, remove }: Props) => {
 							items: data?.items || [],
 							clients: data?.clients || [],
 							// Determine initial authType
-							authType: (data as any)?.meta?.auth_type || ((data as any)?.meta?.authentik_host ? "authentik_proxy" : ""),
+							authType:
+								(data as any)?.meta?.auth_type ||
+								((data as any)?.meta?.authentik_host ? "authentik_proxy" : ""),
 							authentikHost: (data as any)?.meta?.authentik_host || "",
 							oidcDiscoveryUrl: (data as any)?.meta?.oidc_discovery_url || "",
 							oidcClientId: (data as any)?.meta?.oidc_client_id || "",
@@ -314,10 +316,19 @@ const AccessListModal = EasyModal.create(({ id, visible, remove }: Props) => {
 											<div className="tab-pane" id="tab-sso" role="tabpanel">
 												<div className="p-3">
 													<div className="mb-3">
-														<label htmlFor="authType" className="form-label">Provider Type</label>
-														<Field id="authType" name="authType" as="select" className="form-select">
+														<label htmlFor="authType" className="form-label">
+															Provider Type
+														</label>
+														<Field
+															id="authType"
+															name="authType"
+															as="select"
+															className="form-select"
+														>
 															<option value="">None / Basic Auth</option>
-															<option value="authentik_proxy">Authentik Proxy (Forward Auth)</option>
+															<option value="authentik_proxy">
+																Authentik Proxy (Forward Auth)
+															</option>
 															<option value="oidc">OIDC (OpenID Connect)</option>
 														</Field>
 													</div>
@@ -326,7 +337,10 @@ const AccessListModal = EasyModal.create(({ id, visible, remove }: Props) => {
 														<Field name="authentikHost">
 															{({ field }: any) => (
 																<div className="mb-3">
-																	<label htmlFor="authentikHost" className="form-label">
+																	<label
+																		htmlFor="authentikHost"
+																		className="form-label"
+																	>
 																		Authentik Host URL
 																	</label>
 																	<input
@@ -337,7 +351,8 @@ const AccessListModal = EasyModal.create(({ id, visible, remove }: Props) => {
 																		className="form-control"
 																	/>
 																	<div className="form-hint">
-																		Full URL to your Authentik instance. Uses Nginx `auth_request` to the Outpost.
+																		Full URL to your Authentik instance. Uses Nginx
+																		`auth_request` to the Outpost.
 																	</div>
 																</div>
 															)}
@@ -349,7 +364,10 @@ const AccessListModal = EasyModal.create(({ id, visible, remove }: Props) => {
 															<Field name="oidcDiscoveryUrl">
 																{({ field }: any) => (
 																	<div className="mb-3">
-																		<label htmlFor="oidcDiscoveryUrl" className="form-label">
+																		<label
+																			htmlFor="oidcDiscoveryUrl"
+																			className="form-label"
+																		>
 																			Discovery URL
 																		</label>
 																		<input
@@ -365,7 +383,10 @@ const AccessListModal = EasyModal.create(({ id, visible, remove }: Props) => {
 															<Field name="oidcClientId">
 																{({ field }: any) => (
 																	<div className="mb-3">
-																		<label htmlFor="oidcClientId" className="form-label">
+																		<label
+																			htmlFor="oidcClientId"
+																			className="form-label"
+																		>
 																			Client ID
 																		</label>
 																		<input
@@ -380,7 +401,10 @@ const AccessListModal = EasyModal.create(({ id, visible, remove }: Props) => {
 															<Field name="oidcClientSecret">
 																{({ field }: any) => (
 																	<div className="mb-3">
-																		<label htmlFor="oidcClientSecret" className="form-label">
+																		<label
+																			htmlFor="oidcClientSecret"
+																			className="form-label"
+																		>
 																			Client Secret
 																		</label>
 																		<input
