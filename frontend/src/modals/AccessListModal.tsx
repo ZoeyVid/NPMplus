@@ -25,9 +25,20 @@ const AccessListModal = EasyModal.create(({ id, visible, remove }: Props) => {
 	const [isSubmitting, setIsSubmitting] = useState(false);
 
 	const validate = (values: any): string | null => {
-		// either Auths or Clients or Authentik must be defined
-		if (values.items?.length === 0 && values.clients?.length === 0 && !values.authentikHost) {
+		// either Auths or Clients or SSO must be defined
+		if (
+			values.items?.length === 0 &&
+			values.clients?.length === 0 &&
+			!values.authentikHost &&
+			values.authType !== "oidc"
+		) {
 			return intl.formatMessage({ id: "error.access.at-least-one" });
+		}
+
+		if (values.authType === "oidc") {
+			if (!values.oidcClientId) return "Client ID is required";
+			if (!values.oidcClientSecret) return "Client Secret is required";
+			if (!values.oidcDiscoveryUrl) return "Discovery URL is required";
 		}
 
 		// ensure the items don't contain the same username twice
@@ -57,7 +68,11 @@ const AccessListModal = EasyModal.create(({ id, visible, remove }: Props) => {
 			...values,
 			meta: {
 				...data?.meta,
-				authentik_host: values.authentikHost,
+				auth_type: values.authType,
+				authentik_host: values.authType === "authentik_proxy" ? values.authentikHost : undefined,
+				oidc_discovery_url: values.authType === "oidc" ? values.oidcDiscoveryUrl : undefined,
+				oidc_client_id: values.authType === "oidc" ? values.oidcClientId : undefined,
+				oidc_client_secret: values.authType === "oidc" ? values.oidcClientSecret : undefined,
 			},
 		};
 
@@ -106,12 +121,25 @@ const AccessListModal = EasyModal.create(({ id, visible, remove }: Props) => {
 							passAuth: data?.passAuth,
 							items: data?.items || [],
 							clients: data?.clients || [],
+							// Determine initial authType
+							authType:
+								(data as any)?.meta?.auth_type ||
+								((data as any)?.meta?.authentik_host ? "authentik_proxy" : ""),
 							authentikHost: (data as any)?.meta?.authentik_host || "",
-						} as AccessList & { authentikHost: string }
+							oidcDiscoveryUrl: (data as any)?.meta?.oidc_discovery_url || "",
+							oidcClientId: (data as any)?.meta?.oidc_client_id || "",
+							oidcClientSecret: (data as any)?.meta?.oidc_client_secret || "",
+						} as AccessList & {
+							authType: string;
+							authentikHost: string;
+							oidcDiscoveryUrl: string;
+							oidcClientId: string;
+							oidcClientSecret: string;
+						}
 					}
 					onSubmit={onSubmit}
 				>
-					{({ setFieldValue }: any) => (
+					{({ values, setFieldValue }: any) => (
 						<Form>
 							<Modal.Header closeButton>
 								<Modal.Title>
@@ -162,14 +190,14 @@ const AccessListModal = EasyModal.create(({ id, visible, remove }: Props) => {
 											</li>
 											<li className="nav-item" role="presentation">
 												<a
-													href="#tab-authentik"
+													href="#tab-sso"
 													className="nav-link"
 													data-bs-toggle="tab"
 													aria-selected="false"
 													tabIndex={-1}
 													role="tab"
 												>
-													Authentik
+													<T id="SSO / OIDC" />
 												</a>
 											</li>
 										</ul>
@@ -279,29 +307,111 @@ const AccessListModal = EasyModal.create(({ id, visible, remove }: Props) => {
 											<div className="tab-pane" id="tab-rules" role="tabpanel">
 												<AccessClientFields initialValues={data?.clients || []} />
 											</div>
-											<div className="tab-pane" id="tab-authentik" role="tabpanel">
+											<div className="tab-pane" id="tab-sso" role="tabpanel">
 												<div className="p-3">
-													<Field name="authentikHost">
-														{({ field }: any) => (
-															<div>
-																<label htmlFor="authentikHost" className="form-label">
-																	Authentik Host
-																</label>
-																<input
-																	{...field}
-																	id="authentikHost"
-																	type="text"
-																	placeholder="http://authentik:9000"
-																	className="form-control"
-																/>
-																<div className="form-hint mt-2">
-																	Full URL to your Authentik instance (e.g.
-																	http://10.0.0.1:9000). Leaving this empty disables
-																	Authentik integration for this list.
+													<div className="mb-3">
+														<label htmlFor="authType" className="form-label">
+															Provider Type
+														</label>
+														<Field
+															id="authType"
+															name="authType"
+															as="select"
+															className="form-select"
+														>
+															<option value="">None / Basic Auth</option>
+															<option value="authentik_proxy">
+																Authentik Proxy (Forward Auth)
+															</option>
+															<option value="oidc">OIDC (OpenID Connect)</option>
+														</Field>
+													</div>
+
+													{values.authType === "authentik_proxy" && (
+														<Field name="authentikHost">
+															{({ field }: any) => (
+																<div className="mb-3">
+																	<label
+																		htmlFor="authentikHost"
+																		className="form-label"
+																	>
+																		Authentik Host URL
+																	</label>
+																	<input
+																		{...field}
+																		id="authentikHost"
+																		type="text"
+																		placeholder="http://authentik:9000"
+																		className="form-control"
+																	/>
+																	<div className="form-hint">
+																		Full URL to your Authentik instance. Uses Nginx
+																		`auth_request` to the Outpost.
+																	</div>
 																</div>
-															</div>
-														)}
-													</Field>
+															)}
+														</Field>
+													)}
+
+													{values.authType === "oidc" && (
+														<>
+															<Field name="oidcDiscoveryUrl">
+																{({ field }: any) => (
+																	<div className="mb-3">
+																		<label
+																			htmlFor="oidcDiscoveryUrl"
+																			className="form-label"
+																		>
+																			Discovery URL
+																		</label>
+																		<input
+																			{...field}
+																			id="oidcDiscoveryUrl"
+																			type="text"
+																			placeholder="https://authentik.company/.well-known/openid-configuration"
+																			className="form-control"
+																		/>
+																	</div>
+																)}
+															</Field>
+															<Field name="oidcClientId">
+																{({ field }: any) => (
+																	<div className="mb-3">
+																		<label
+																			htmlFor="oidcClientId"
+																			className="form-label"
+																		>
+																			Client ID
+																		</label>
+																		<input
+																			{...field}
+																			id="oidcClientId"
+																			type="text"
+																			className="form-control"
+																		/>
+																	</div>
+																)}
+															</Field>
+															<Field name="oidcClientSecret">
+																{({ field }: any) => (
+																	<div className="mb-3">
+																		<label
+																			htmlFor="oidcClientSecret"
+																			className="form-label"
+																		>
+																			Client Secret
+																		</label>
+																		<input
+																			{...field}
+																			id="oidcClientSecret"
+																			type="password"
+																			className="form-control"
+																		/>
+																	</div>
+																)}
+															</Field>
+														</>
+													)}
 												</div>
 											</div>
 										</div>
