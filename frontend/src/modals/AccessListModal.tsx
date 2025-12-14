@@ -25,8 +25,8 @@ const AccessListModal = EasyModal.create(({ id, visible, remove }: Props) => {
 	const [isSubmitting, setIsSubmitting] = useState(false);
 
 	const validate = (values: any): string | null => {
-		// either Auths or Clients must be defined
-		if (values.items?.length === 0 && values.clients?.length === 0) {
+		// either Auths or Clients or Authentik must be defined
+		if (values.items?.length === 0 && values.clients?.length === 0 && !values.authentikHost) {
 			return intl.formatMessage({ id: "error.access.at-least-one" });
 		}
 
@@ -55,6 +55,10 @@ const AccessListModal = EasyModal.create(({ id, visible, remove }: Props) => {
 		const { ...payload } = {
 			id: id === "new" ? undefined : id,
 			...values,
+			meta: {
+				...data?.meta,
+				authentik_host: values.authentikHost,
+			},
 		};
 
 		// Filter out "items" to only use the "username" and "password" fields
@@ -102,7 +106,8 @@ const AccessListModal = EasyModal.create(({ id, visible, remove }: Props) => {
 							passAuth: data?.passAuth,
 							items: data?.items || [],
 							clients: data?.clients || [],
-						} as AccessList
+							authentikHost: (data as any)?.meta?.authentik_host || "",
+						} as AccessList & { authentikHost: string }
 					}
 					onSubmit={onSubmit}
 				>
@@ -153,6 +158,18 @@ const AccessListModal = EasyModal.create(({ id, visible, remove }: Props) => {
 													role="tab"
 												>
 													<T id="column.rules" />
+												</a>
+											</li>
+											<li className="nav-item" role="presentation">
+												<a
+													href="#tab-authentik"
+													className="nav-link"
+													data-bs-toggle="tab"
+													aria-selected="false"
+													tabIndex={-1}
+													role="tab"
+												>
+													Authentik
 												</a>
 											</li>
 										</ul>
@@ -261,6 +278,30 @@ const AccessListModal = EasyModal.create(({ id, visible, remove }: Props) => {
 											</div>
 											<div className="tab-pane" id="tab-rules" role="tabpanel">
 												<AccessClientFields initialValues={data?.clients || []} />
+											</div>
+											<div className="tab-pane" id="tab-authentik" role="tabpanel">
+												<div className="p-3">
+													<Field name="authentikHost">
+														{({ field }: any) => (
+															<div>
+																<label htmlFor="authentikHost" className="form-label">
+																	Authentik Host
+																</label>
+																<input
+																	{...field}
+																	id="authentikHost"
+																	type="text"
+																	placeholder="http://authentik:9000"
+																	className="form-control"
+																/>
+																<div className="form-hint mt-2">
+																	Full URL to your Authentik instance (e.g. http://10.0.0.1:9000).
+																	Leaving this empty disables Authentik integration for this list.
+																</div>
+															</div>
+														)}
+													</Field>
+												</div>
 											</div>
 										</div>
 									</div>

@@ -30,6 +30,7 @@ const internalAccessList = {
 				name: data.name,
 				satisfy_any: data.satisfy_any,
 				pass_auth: data.pass_auth,
+				meta: data.meta,
 				owner_user_id: access.token.getUserId(1),
 			})
 			.then(utils.omitRow(omissions()));
@@ -116,6 +117,7 @@ const internalAccessList = {
 				name: data.name,
 				satisfy_any: data.satisfy_any,
 				pass_auth: data.pass_auth,
+				meta: data.meta,
 			});
 		}
 
