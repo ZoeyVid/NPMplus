@@ -21,6 +21,9 @@ const downloadLimiter = rateLimit({
 	standardHeaders: true, // Return rate limit info in the `RateLimit-*` headers
 	legacyHeaders: false, // Disable the `X-RateLimit-*` headers
 	message: { error: "Too many download requests from this IP, please try again later." },
+	validate: {
+		trustProxy: false,
+	},
 });
 
 /**
