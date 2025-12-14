@@ -107,11 +107,15 @@ const AccessListModal = EasyModal.create(({ id, visible, remove }: Props) => {
 	const toggleEnabled = cn(toggleClasses, "bg-cyan");
 
 	// Robustly parse meta (handle stringified JSON if necessary)
-	const meta = data && (data as any).meta 
-		? (typeof (data as any).meta === 'string' ? JSON.parse((data as any).meta) : (data as any).meta) 
-		: {};
-	
-	const initialAuthType = meta.auth_type || meta.authType || ((meta.authentik_host || meta.authentikHost) ? "authentik_proxy" : "");
+	const meta =
+		data && (data as any).meta
+			? typeof (data as any).meta === "string"
+				? JSON.parse((data as any).meta)
+				: (data as any).meta
+			: {};
+
+	const initialAuthType =
+		meta.auth_type || meta.authType || (meta.authentik_host || meta.authentikHost ? "authentik_proxy" : "");
 
 	if (data) {
 		console.log("DEBUG AccessListModal:", {
