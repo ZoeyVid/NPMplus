@@ -20,6 +20,10 @@ interface Props extends InnerModalProps {
 }
 const AccessListModal = EasyModal.create(({ id, visible, remove }: Props) => {
 	const { data, isLoading, error } = useAccessList(id, ["items", "clients"]);
+	if (data) {
+		console.log("AccessListModal Loaded Data:", data);
+		console.log("AccessListModal Loaded Meta:", (data as any).meta);
+	}
 	const { mutate: setAccessList } = useSetAccessList();
 	const [errorMsg, setErrorMsg] = useState<ReactNode | null>(null);
 	const [isSubmitting, setIsSubmitting] = useState(false);
