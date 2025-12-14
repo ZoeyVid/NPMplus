@@ -7,7 +7,7 @@ on:
 #    - cron: "0 */6 * * *"
   workflow_dispatch:
 permissions:
-  contents: read
+  contents: write
 jobs:
   lint-and-format:
     runs-on: ubuntu-latest
