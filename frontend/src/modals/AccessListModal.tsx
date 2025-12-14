@@ -107,17 +107,21 @@ const AccessListModal = EasyModal.create(({ id, visible, remove }: Props) => {
 	const toggleEnabled = cn(toggleClasses, "bg-cyan");
 
 	// Robustly parse meta (handle stringified JSON if necessary)
-	const meta = data && (data as any).meta 
-		? (typeof (data as any).meta === 'string' ? JSON.parse((data as any).meta) : (data as any).meta) 
-		: {};
-	
-	const initialAuthType = meta.auth_type || meta.authType || ((meta.authentik_host || meta.authentikHost) ? "authentik_proxy" : "");
+	const meta =
+		data && (data as any).meta
+			? typeof (data as any).meta === "string"
+				? JSON.parse((data as any).meta)
+				: (data as any).meta
+			: {};
+
+	const initialAuthType =
+		meta.auth_type || meta.authType || (meta.authentik_host || meta.authentikHost ? "authentik_proxy" : "");
 
 	if (data) {
-		console.log("DEBUG AccessListModal:", { 
-			rawMeta: (data as any).meta, 
-			parsedMeta: meta, 
-			initialAuthType 
+		console.log("DEBUG AccessListModal:", {
+			rawMeta: (data as any).meta,
+			parsedMeta: meta,
+			initialAuthType,
 		});
 	}
 
@@ -158,284 +162,322 @@ const AccessListModal = EasyModal.create(({ id, visible, remove }: Props) => {
 					{({ values, setFieldValue }: any) => {
 						const isSsoEnabled = !!values.authType;
 						return (
-						<Form>
-							<Modal.Header closeButton>
-								<Modal.Title>
-									<T id={data?.id ? "object.edit" : "object.add"} tData={{ object: "access-list" }} />
-								</Modal.Title>
-							</Modal.Header>
-							<Modal.Body className="p-0">
-								<Alert variant="danger" show={!!errorMsg} onClose={() => setErrorMsg(null)} dismissible>
-									{errorMsg}
-								</Alert>
-								<div className="card m-0 border-0">
-									<div className="card-header">
-										<ul className="nav nav-tabs card-header-tabs" data-bs-toggle="tabs">
-											<li className="nav-item" role="presentation">
-												<a
-													href="#tab-details"
-													className="nav-link active"
-													data-bs-toggle="tab"
-													aria-selected="true"
-													role="tab"
-												>
-													<T id="column.details" />
-												</a>
-											</li>
-											<li className="nav-item" role="presentation">
-												<a
-													href="#tab-auth"
-													className="nav-link"
-													data-bs-toggle="tab"
-													aria-selected="false"
-													tabIndex={-1}
-													role="tab"
-												>
-													<T id="column.authorizations" />
-												</a>
-											</li>
-											<li className="nav-item" role="presentation">
-												<a
-													href="#tab-rules"
-													className="nav-link"
-													data-bs-toggle="tab"
-													aria-selected="false"
-													tabIndex={-1}
-													role="tab"
-												>
-													<T id="column.rules" />
-												</a>
-											</li>
-											<li className="nav-item" role="presentation">
-												<a
-													href="#tab-sso"
-													className="nav-link"
-													data-bs-toggle="tab"
-													aria-selected="false"
-													tabIndex={-1}
-													role="tab"
-												>
-													<T id="SSO / OIDC" />
-												</a>
-											</li>
-										</ul>
-									</div>
-									<div className="card-body">
-										<div className="tab-content">
-											<div className="tab-pane active show" id="tab-details" role="tabpanel">
-												<Field name="name" validate={validateString(1, 255)}>
-													{({ field, form }: any) => (
-														<div>
-															<label htmlFor="name" className="form-label">
-																<T id="column.name" />
-															</label>
-															<input
-																id="name"
-																type="text"
-																required
-																autoComplete="off"
-																className="form-control"
-																{...field}
-															/>
-															{form.errors.name ? (
-																<div className="invalid-feedback">
-																	{form.errors.name && form.touched.name
-																		? form.errors.name
-																		: null}
-																</div>
-															) : null}
-														</div>
-													)}
-												</Field>
-												<div className="my-3">
-													<h3 className="py-2">
-														<T id="options" />
-													</h3>
-													<div className="divide-y">
-														<div>
-															<label className="row" htmlFor="satisfyAny">
-																<span className="col">
-																	<T id="access-list.satisfy-any" />
-																</span>
-																<span className="col-auto">
-																	<Field name="satisfyAny" type="checkbox">
-																		{({ field }: any) => (
-																			<label className="form-check form-check-single form-switch">
-																				<input
-																					id="satisfyAny"
-																					className={
-																						field.value
-																							? toggleEnabled
-																							: toggleClasses
-																					}
-																					type="checkbox"
-																					name={field.name}
-																					checked={field.value}
-																					onChange={(e: any) => {
-																						setFieldValue(
-																							field.name,
-																							e.target.checked,
-																						);
-																					}}
-																				/>
-																			</label>
-																		)}
-																	</Field>
-																</span>
-															</label>
-														</div>
-														<div>
-															<label className="row" htmlFor="passAuth">
-																<span className="col">
-																	<T id="access-list.pass-auth" />
-																</span>
-																<span className="col-auto">
-																	<Field name="passAuth" type="checkbox">
-																		{({ field }: any) => (
-																			<label className="form-check form-check-single form-switch">
-																				<input
-																					id="passAuth"
-																					className={
-																						field.value
-																							? toggleEnabled
-																							: toggleClasses
-																					}
-																					type="checkbox"
-																					name={field.name}
-																					checked={field.value}
-																					onChange={(e: any) => {
-																						setFieldValue(
-																							field.name,
-																							e.target.checked,
-																						);
-																					}}
-																				/>
-																			</label>
-																		)}
-																	</Field>
-																</span>
-															</label>
+							<Form>
+								<Modal.Header closeButton>
+									<Modal.Title>
+										<T
+											id={data?.id ? "object.edit" : "object.add"}
+											tData={{ object: "access-list" }}
+										/>
+									</Modal.Title>
+								</Modal.Header>
+								<Modal.Body className="p-0">
+									<Alert
+										variant="danger"
+										show={!!errorMsg}
+										onClose={() => setErrorMsg(null)}
+										dismissible
+									>
+										{errorMsg}
+									</Alert>
+									<div className="card m-0 border-0">
+										<div className="card-header">
+											<ul className="nav nav-tabs card-header-tabs" data-bs-toggle="tabs">
+												<li className="nav-item" role="presentation">
+													<a
+														href="#tab-details"
+														className="nav-link active"
+														data-bs-toggle="tab"
+														aria-selected="true"
+														role="tab"
+													>
+														<T id="column.details" />
+													</a>
+												</li>
+												<li className="nav-item" role="presentation">
+													<a
+														href="#tab-auth"
+														className="nav-link"
+														data-bs-toggle="tab"
+														aria-selected="false"
+														tabIndex={-1}
+														role="tab"
+													>
+														<T id="column.authorizations" />
+													</a>
+												</li>
+												<li className="nav-item" role="presentation">
+													<a
+														href="#tab-rules"
+														className="nav-link"
+														data-bs-toggle="tab"
+														aria-selected="false"
+														tabIndex={-1}
+														role="tab"
+													>
+														<T id="column.rules" />
+													</a>
+												</li>
+												<li className="nav-item" role="presentation">
+													<a
+														href="#tab-sso"
+														className="nav-link"
+														data-bs-toggle="tab"
+														aria-selected="false"
+														tabIndex={-1}
+														role="tab"
+													>
+														<T id="SSO / OIDC" />
+													</a>
+												</li>
+											</ul>
+										</div>
+										<div className="card-body">
+											<div className="tab-content">
+												<div className="tab-pane active show" id="tab-details" role="tabpanel">
+													<Field name="name" validate={validateString(1, 255)}>
+														{({ field, form }: any) => (
+															<div>
+																<label htmlFor="name" className="form-label">
+																	<T id="column.name" />
+																</label>
+																<input
+																	id="name"
+																	type="text"
+																	required
+																	autoComplete="off"
+																	className="form-control"
+																	{...field}
+																/>
+																{form.errors.name ? (
+																	<div className="invalid-feedback">
+																		{form.errors.name && form.touched.name
+																			? form.errors.name
+																			: null}
+																	</div>
+																) : null}
+															</div>
+														)}
+													</Field>
+													<div className="my-3">
+														<h3 className="py-2">
+															<T id="options" />
+														</h3>
+														<div className="divide-y">
+															<div>
+																<label className="row" htmlFor="satisfyAny">
+																	<span className="col">
+																		<T id="access-list.satisfy-any" />
+																	</span>
+																	<span className="col-auto">
+																		<Field name="satisfyAny" type="checkbox">
+																			{({ field }: any) => (
+																				<label className="form-check form-check-single form-switch">
+																					<input
+																						id="satisfyAny"
+																						className={
+																							field.value
+																								? toggleEnabled
+																								: toggleClasses
+																						}
+																						type="checkbox"
+																						name={field.name}
+																						checked={field.value}
+																						onChange={(e: any) => {
+																							setFieldValue(
+																								field.name,
+																								e.target.checked,
+																							);
+																						}}
+																					/>
+																				</label>
+																			)}
+																		</Field>
+																	</span>
+																</label>
+															</div>
+															<div>
+																<label className="row" htmlFor="passAuth">
+																	<span className="col">
+																		<T id="access-list.pass-auth" />
+																	</span>
+																	<span className="col-auto">
+																		<Field name="passAuth" type="checkbox">
+																			{({ field }: any) => (
+																				<label className="form-check form-check-single form-switch">
+																					<input
+																						id="passAuth"
+																						className={
+																							field.value
+																								? toggleEnabled
+																								: toggleClasses
+																						}
+																						type="checkbox"
+																						name={field.name}
+																						checked={field.value}
+																						onChange={(e: any) => {
+																							setFieldValue(
+																								field.name,
+																								e.target.checked,
+																							);
+																						}}
+																					/>
+																				</label>
+																			)}
+																		</Field>
+																	</span>
+																</label>
+															</div>
 														</div>
 													</div>
 												</div>
-											</div>
-											<div className="tab-pane" id="tab-auth" role="tabpanel">
-												<fieldset disabled={isSsoEnabled}>
-													{isSsoEnabled && <Alert variant="warning" className="mb-3">Authentication handled by SSO Provider.</Alert>}
-													<BasicAuthFields initialValues={data?.items || []} />
-												</fieldset>
-											</div>
-											<div className="tab-pane" id="tab-rules" role="tabpanel">
-												<fieldset disabled={isSsoEnabled}>
-													{isSsoEnabled && <Alert variant="warning" className="mb-3">Access Rules handled by SSO Provider.</Alert>}
-													<AccessClientFields initialValues={data?.clients || []} />
-												</fieldset>
-											</div>
-											<div className="tab-pane" id="tab-sso" role="tabpanel">
-												<div className="p-3">
-													<div className="mb-3">
-														<label htmlFor="authType" className="form-label">Provider Type</label>
-														<Field id="authType" name="authType" as="select" className="form-select">
-															<option value="">None / Basic Auth</option>
-															<option value="authentik_proxy">Authentik Proxy (Forward Auth)</option>
-															<option value="oidc">OIDC (OpenID Connect)</option>
-														</Field>
+												<div className="tab-pane" id="tab-auth" role="tabpanel">
+													<fieldset disabled={isSsoEnabled}>
+														{isSsoEnabled && (
+															<Alert variant="warning" className="mb-3">
+																Authentication handled by SSO Provider.
+															</Alert>
+														)}
+														<BasicAuthFields initialValues={data?.items || []} />
+													</fieldset>
+												</div>
+												<div className="tab-pane" id="tab-rules" role="tabpanel">
+													<fieldset disabled={isSsoEnabled}>
+														{isSsoEnabled && (
+															<Alert variant="warning" className="mb-3">
+																Access Rules handled by SSO Provider.
+															</Alert>
+														)}
+														<AccessClientFields initialValues={data?.clients || []} />
+													</fieldset>
+												</div>
+												<div className="tab-pane" id="tab-sso" role="tabpanel">
+													<div className="p-3">
+														<div className="mb-3">
+															<label htmlFor="authType" className="form-label">
+																Provider Type
+															</label>
+															<Field
+																id="authType"
+																name="authType"
+																as="select"
+																className="form-select"
+															>
+																<option value="">None / Basic Auth</option>
+																<option value="authentik_proxy">
+																	Authentik Proxy (Forward Auth)
+																</option>
+																<option value="oidc">OIDC (OpenID Connect)</option>
+															</Field>
+														</div>
+
+														{values.authType === "authentik_proxy" && (
+															<Field name="authentikHost">
+																{({ field }: any) => (
+																	<div className="mb-3">
+																		<label
+																			htmlFor="authentikHost"
+																			className="form-label"
+																		>
+																			Authentik Host URL
+																		</label>
+																		<input
+																			{...field}
+																			id="authentikHost"
+																			type="text"
+																			placeholder="http://authentik:9000"
+																			className="form-control"
+																		/>
+																		<div className="form-hint">
+																			Full URL to your Authentik instance. Uses
+																			Nginx `auth_request` to the Outpost.
+																		</div>
+																	</div>
+																)}
+															</Field>
+														)}
+
+														{values.authType === "oidc" && (
+															<>
+																<Field name="oidcDiscoveryUrl">
+																	{({ field }: any) => (
+																		<div className="mb-3">
+																			<label
+																				htmlFor="oidcDiscoveryUrl"
+																				className="form-label"
+																			>
+																				Discovery URL
+																			</label>
+																			<input
+																				{...field}
+																				id="oidcDiscoveryUrl"
+																				type="text"
+																				placeholder="https://authentik.company/.well-known/openid-configuration"
+																				className="form-control"
+																			/>
+																		</div>
+																	)}
+																</Field>
+																<Field name="oidcClientId">
+																	{({ field }: any) => (
+																		<div className="mb-3">
+																			<label
+																				htmlFor="oidcClientId"
+																				className="form-label"
+																			>
+																				Client ID
+																			</label>
+																			<input
+																				{...field}
+																				id="oidcClientId"
+																				type="text"
+																				className="form-control"
+																			/>
+																		</div>
+																	)}
+																</Field>
+																<Field name="oidcClientSecret">
+																	{({ field }: any) => (
+																		<div className="mb-3">
+																			<label
+																				htmlFor="oidcClientSecret"
+																				className="form-label"
+																			>
+																				Client Secret
+																			</label>
+																			<input
+																				{...field}
+																				id="oidcClientSecret"
+																				type="password"
+																				className="form-control"
+																			/>
+																		</div>
+																	)}
+																</Field>
+															</>
+														)}
 													</div>
-
-													{values.authType === "authentik_proxy" && (
-														<Field name="authentikHost">
-															{({ field }: any) => (
-																<div className="mb-3">
-																	<label htmlFor="authentikHost" className="form-label">
-																		Authentik Host URL
-																	</label>
-																	<input
-																		{...field}
-																		id="authentikHost"
-																		type="text"
-																		placeholder="http://authentik:9000"
-																		className="form-control"
-																	/>
-																	<div className="form-hint">
-																		Full URL to your Authentik instance. Uses Nginx `auth_request` to the Outpost.
-																	</div>
-																</div>
-															)}
-														</Field>
-													)}
-
-													{values.authType === "oidc" && (
-														<>
-															<Field name="oidcDiscoveryUrl">
-																{({ field }: any) => (
-																	<div className="mb-3">
-																		<label htmlFor="oidcDiscoveryUrl" className="form-label">
-																			Discovery URL
-																		</label>
-																		<input
-																			{...field}
-																			id="oidcDiscoveryUrl"
-																			type="text"
-																			placeholder="https://authentik.company/.well-known/openid-configuration"
-																			className="form-control"
-																		/>
-																	</div>
-																)}
-															</Field>
-															<Field name="oidcClientId">
-																{({ field }: any) => (
-																	<div className="mb-3">
-																		<label htmlFor="oidcClientId" className="form-label">
-																			Client ID
-																		</label>
-																		<input
-																			{...field}
-																			id="oidcClientId"
-																			type="text"
-																			className="form-control"
-																		/>
-																	</div>
-																)}
-															</Field>
-															<Field name="oidcClientSecret">
-																{({ field }: any) => (
-																	<div className="mb-3">
-																		<label htmlFor="oidcClientSecret" className="form-label">
-																			Client Secret
-																		</label>
-																		<input
-																			{...field}
-																			id="oidcClientSecret"
-																			type="password"
-																			className="form-control"
-																		/>
-																	</div>
-																)}
-															</Field>
-														</>
-													)}
 												</div>
 											</div>
 										</div>
 									</div>
-								</div>
-							</Modal.Body>
-							<Modal.Footer>
-								<Button data-bs-dismiss="modal" onClick={remove} disabled={isSubmitting}>
-									<T id="cancel" />
-								</Button>
-								<Button
-									type="submit"
-									actionType="primary"
-									className="ms-auto bg-cyan"
-									data-bs-dismiss="modal"
-									isLoading={isSubmitting}
-									disabled={isSubmitting}
-								>
-									<T id="save" />
-								</Button>
-							</Modal.Footer>
-						</Form>
+								</Modal.Body>
+								<Modal.Footer>
+									<Button data-bs-dismiss="modal" onClick={remove} disabled={isSubmitting}>
+										<T id="cancel" />
+									</Button>
+									<Button
+										type="submit"
+										actionType="primary"
+										className="ms-auto bg-cyan"
+										data-bs-dismiss="modal"
+										isLoading={isSubmitting}
+										disabled={isSubmitting}
+									>
+										<T id="save" />
+									</Button>
+								</Modal.Footer>
+							</Form>
 						);
 					}}
 				</Formik>
