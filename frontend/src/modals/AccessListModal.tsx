@@ -114,7 +114,8 @@ const AccessListModal = EasyModal.create(({ id, visible, remove }: Props) => {
 				: (data as any).meta
 			: {};
 
-	const initialAuthType = meta.auth_type || (meta.authentik_host ? "authentik_proxy" : "");
+	const initialAuthType =
+		meta.auth_type || meta.authType || (meta.authentik_host || meta.authentikHost ? "authentik_proxy" : "");
 
 	if (data) {
 		console.log("DEBUG AccessListModal:", {
@@ -144,10 +145,10 @@ const AccessListModal = EasyModal.create(({ id, visible, remove }: Props) => {
 							clients: data?.clients || [],
 							// Determine initial authType
 							authType: initialAuthType,
-							authentikHost: meta.authentik_host || "",
-							oidcDiscoveryUrl: meta.oidc_discovery_url || "",
-							oidcClientId: meta.oidc_client_id || "",
-							oidcClientSecret: meta.oidc_client_secret || "",
+							authentikHost: meta.authentik_host || meta.authentikHost || "",
+							oidcDiscoveryUrl: meta.oidc_discovery_url || meta.oidcDiscoveryUrl || "",
+							oidcClientId: meta.oidc_client_id || meta.oidcClientId || "",
+							oidcClientSecret: meta.oidc_client_secret || meta.oidcClientSecret || "",
 						} as AccessList & {
 							authType: string;
 							authentikHost: string;
