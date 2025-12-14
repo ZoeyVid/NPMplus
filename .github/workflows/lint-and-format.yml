@@ -6,6 +6,8 @@ on:
 #  schedule:
 #    - cron: "0 */6 * * *"
   workflow_dispatch:
+permissions:
+  contents: read
 jobs:
   lint-and-format:
     runs-on: ubuntu-latest
