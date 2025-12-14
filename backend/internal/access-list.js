@@ -113,6 +113,7 @@ const internalAccessList = {
 
 		// patch name if specified
 		if (typeof data.name !== "undefined" && data.name) {
+			logger.info(`[Update] Access List #${data.id} meta: ${JSON.stringify(data.meta)}`);
 			await accessListModel.query().where({ id: data.id }).patch({
 				name: data.name,
 				satisfy_any: data.satisfy_any,
