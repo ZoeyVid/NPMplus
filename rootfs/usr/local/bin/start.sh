@@ -194,7 +194,7 @@ fi
 
 #tmp move to mointpoint if block
 find /data/tls/certbot/renewal -type f -name '*.conf' -exec sed -i "s|/etc/letsencrypt|/data/tls/certbot|g" {} \;
-find /data/tls/certbot/renewal -type f -name '*.conf' -exec sed -i "s|/data/tls/certbot/credentials|/tmp/certbot-credentials|g" {} \;
+find /data/tls/certbot/renewal -type f -name '*.conf' -exec sed -i "s|/data/tls/certbot/credentials|/data/certbot-credentials|g" {} \;
 
 if [ -d /data/tls/certbot/live ] && [ -d /data/tls/certbot/archive ]; then
   find /data/tls/certbot/live ! -name "$(printf "*\n*")" -type f -name "*.pem" > tmp
