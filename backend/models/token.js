@@ -57,37 +57,39 @@ export default () => {
 			}
 			return new Promise((resolve, reject) => {
 				try {
-					if (!token || typeof token !== "string") {
-						reject(new errs.AuthError("Empty token"));
-					} else {
-						jwt.verify(
-							token,
-							getPublicKey(),
-							{ ignoreExpiration: false, algorithms: [ALGO] },
-							(err, result) => {
-								if (err) {
-									if (err instanceof jwt.TokenExpiredError) {
-										reject(new errs.AuthError("Token has expired", err));
+					jwt.verify(
+						token,
+						getPublicKey(),
+						{ ignoreExpiration: false, algorithms: [ALGO] },
+						(err, result) => {
+							if (err) {
+								if (err instanceof jwt.TokenExpiredError) {
+									reject(new errs.AuthError("Token has expired", err));
+								} else if (err instanceof jwt.JsonWebTokenError) {
+									if (err.message === "jwt must be provided") {
+										reject(new errs.AuthError("Empty token", null, err));
 									} else {
-										reject(err);
+										reject(new errs.AuthError(err.message, null, err));
 									}
 								} else {
-									tokenData = result;
-
-									// Hack: some tokens out in the wild have a scope of 'all' instead of 'user'.
-									// For 30 days at least, we need to replace 'all' with user.
-									if (
-										typeof tokenData.scope !== "undefined" &&
-										_.indexOf(tokenData.scope, "all") !== -1
-									) {
-										tokenData.scope = ["user"];
-									}
-
-									resolve(tokenData);
+									reject(err);
 								}
-							},
-						);
-					}
+							} else {
+								tokenData = result;
+
+								// Hack: some tokens out in the wild have a scope of 'all' instead of 'user'.
+								// For 30 days at least, we need to replace 'all' with user.
+								if (
+									typeof tokenData.scope !== "undefined" &&
+									_.indexOf(tokenData.scope, "all") !== -1
+								) {
+									tokenData.scope = ["user"];
+								}
+
+								resolve(tokenData);
+							}
+						},
+					);
 				} catch (err) {
 					reject(err);
 				}
