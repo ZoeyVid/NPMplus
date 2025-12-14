@@ -20,12 +20,32 @@ post:
     "200":
       description: Certificate Downloaded
     "400":
-      $ref: '#/components/responses/BadRequest'
+      description: Bad Request
+      content:
+        application/json:
+          schema:
+            $ref: '../../../../components/error.json'
     "401":
-      $ref: '#/components/responses/Unauthorized'
+      description: Unauthorized
+      content:
+        application/json:
+          schema:
+            $ref: '../../../../components/error.json'
     "403":
-      $ref: '#/components/responses/Forbidden'
+      description: Forbidden
+      content:
+        application/json:
+          schema:
+            $ref: '../../../../components/error.json'
     "404":
-      $ref: '#/components/responses/NotFound'
+      description: Not Found
+      content:
+        application/json:
+          schema:
+            $ref: '../../../../components/error.json'
     "500":
-      $ref: '#/components/responses/InternalServerError'
+      description: Internal Server Error
+      content:
+        application/json:
+          schema:
+            $ref: '../../../../components/error.json'
