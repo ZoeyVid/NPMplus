@@ -113,6 +113,14 @@ const AccessListModal = EasyModal.create(({ id, visible, remove }: Props) => {
 	
 	const initialAuthType = meta.auth_type || (meta.authentik_host ? "authentik_proxy" : "");
 
+	if (data) {
+		console.log("DEBUG AccessListModal:", { 
+			rawMeta: (data as any).meta, 
+			parsedMeta: meta, 
+			initialAuthType 
+		});
+	}
+
 	return (
 		<Modal show={visible} onHide={remove}>
 			{!isLoading && error && (
