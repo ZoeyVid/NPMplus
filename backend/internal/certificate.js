@@ -757,7 +757,7 @@ const internalCertificate = {
 			`Requesting LetsEncrypt certificates via ${dnsPlugin.name} for Cert #${certificate.id}: ${certificate.domain_names.join(", ")}`,
 		);
 
-		const credentialsLocation = `/tmp/certbot-credentials/credentials-${certificate.id}`;
+		const credentialsLocation = `/data/certbot-credentials/credentials-${certificate.id}`;
 		fs.writeFileSync(credentialsLocation, certificate.meta.dns_provider_credentials, { mode: 0o600 });
 
 		try {
