@@ -120,6 +120,7 @@ const AccessListModal = EasyModal.create(({ id, visible, remove }: Props) => {
 			{isLoading && <Loading noLogo />}
 			{!isLoading && data && (
 				<Formik
+					enableReinitialize
 					initialValues={
 						{
 							name: data?.name,
