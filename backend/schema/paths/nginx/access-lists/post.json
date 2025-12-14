@@ -37,6 +37,10 @@
 						},
 						"clients": {
 							"$ref": "../../../common.json#/properties/access_clients"
+						},
+						"meta": {
+							"type": "object",
+							"additionalProperties": true
 						}
 					}
 				},
