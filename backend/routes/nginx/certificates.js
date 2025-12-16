@@ -202,32 +202,19 @@ router
 	 */
 	.get(async (req, res, next) => {
 		try {
+			const certificateId = Number.parseInt(req.params.certificate_id, 10); // lgtm[js/sensitive-get-query]
+			if (Number.isNaN(certificateId) || certificateId < 1) {
+				throw new errs.ValidationError("certificate_id must be an integer greater than 0");
+			}
+
 			let expand = null;
 			if (typeof req.query.expand === "string") {
 				expand = req.query.expand.split(",");
 			}
 
-			const data = await validator(
-				{
-					required: ["certificate_id"],
-					additionalProperties: false,
-					properties: {
-						certificate_id: {
-							$ref: "common#/properties/id",
-						},
-						expand: {
-							$ref: "common#/properties/expand",
-						},
-					},
-				},
-				{
-					certificate_id: req.params.certificate_id,
-					expand,
-				},
-			);
 			const row = await internalCertificate.get(res.locals.access, {
-				id: Number.parseInt(data.certificate_id, 10),
-				expand: data.expand,
+				id: certificateId,
+				expand: expand,
 			});
 			res.status(200).send(row);
 		} catch (err) {
