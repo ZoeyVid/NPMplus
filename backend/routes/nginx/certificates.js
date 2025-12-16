@@ -184,6 +184,30 @@ router
 	});
 
 /**
+ * Retrieve a specific certificate (POST to avoid sensitive query params)
+ *
+ * /api/nginx/certificates/retrieve
+ */
+router.post("/retrieve", jwtdecode(), async (req, res, next) => {
+	try {
+		const { id, expand } = req.body;
+		const certificateId = Number.parseInt(id, 10);
+		if (Number.isNaN(certificateId) || certificateId < 1) {
+			throw new errs.ValidationError("id must be an integer greater than 0");
+		}
+
+		const row = await internalCertificate.get(res.locals.access, {
+			id: certificateId,
+			expand: expand,
+		});
+		res.status(200).send(row);
+	} catch (err) {
+		debug(logger, `${req.method.toUpperCase()} ${req.path}: ${err}`);
+		next(err);
+	}
+});
+
+/**
  * Specific certificate
  *
  * /api/nginx/certificates/123
@@ -194,34 +218,6 @@ router
 		res.sendStatus(204);
 	})
 	.all(jwtdecode())
-
-	/**
-	 * GET /api/nginx/certificates/123
-	 *
-	 * Retrieve a specific certificate
-	 */
-	.get(async (req, res, next) => {
-		try {
-			const certificateId = Number.parseInt(req.params.certificate_id, 10); // lgtm[js/sensitive-get-query]
-			if (Number.isNaN(certificateId) || certificateId < 1) {
-				throw new errs.ValidationError("certificate_id must be an integer greater than 0");
-			}
-
-			let expand = null;
-			if (typeof req.query.expand === "string") {
-				expand = req.query.expand.split(",");
-			}
-
-			const row = await internalCertificate.get(res.locals.access, {
-				id: certificateId,
-				expand: expand,
-			});
-			res.status(200).send(row);
-		} catch (err) {
-			debug(logger, `${req.method.toUpperCase()} ${req.path}: ${err}`);
-			next(err);
-		}
-	})
 
 	/**
 	 * PUT /api/nginx/certificates/123
