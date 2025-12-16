@@ -45,7 +45,5 @@ jobs:
           platforms: linux/amd64,linux/arm64
           push: true
           tags: |
-            shedowe19/npmplus:caddy
             ghcr.io/shedowe19/npmplus:caddy
-            shedowe19/npmplus:caddy-${{ github.run_number }}
             ghcr.io/shedowe19/npmplus:caddy-${{ github.run_number }}
