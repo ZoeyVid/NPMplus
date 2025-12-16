@@ -32,7 +32,18 @@ const HTTPCertificateModal = EasyModal.create(({ visible, remove }: InnerModalPr
 			showObjectSuccess("certificate", "saved");
 			remove();
 		} catch (err: any) {
-			setErrorMsg(<T id={err.message} />);
+			if (err.payload?.data?.debug?.stack) {
+				setErrorMsg(
+					<>
+						<T id={err.message} />
+						<pre>
+							<code>{err.payload.data.debug.stack.join("\n")}</code>
+						</pre>
+					</>,
+				);
+			} else {
+				setErrorMsg(<T id={err.message} />);
+			}
 		}
 		queryClient.invalidateQueries({ queryKey: ["certificates"] });
 		setIsSubmitting(false);
