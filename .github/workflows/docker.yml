@@ -19,6 +19,11 @@ on:
       - backend/**
       - rootfs/**
   workflow_dispatch:
+
+permissions:
+  contents: read
+  packages: write
+
 jobs:
   build-x86_64:
     runs-on: ubuntu-latest
