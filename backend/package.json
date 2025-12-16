@@ -35,8 +35,8 @@
 	},
 	"devDependencies": {
 		"@apidevtools/swagger-parser": "12.1.0",
-		"@biomejs/biome": "2.3.8",
-		"vitest": "4.0.15"
+		"@biomejs/biome": "2.3.9",
+		"vitest": "^4.0.15"
 	},
 	"scripts": {
 		"test": "vitest"
