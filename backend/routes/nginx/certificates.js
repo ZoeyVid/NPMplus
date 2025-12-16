@@ -202,6 +202,11 @@ router
 	 */
 	.get(async (req, res, next) => {
 		try {
+			let expand = null;
+			if (typeof req.query.expand === "string") {
+				expand = req.query.expand.split(",");
+			}
+
 			const data = await validator(
 				{
 					required: ["certificate_id"],
@@ -217,7 +222,7 @@ router
 				},
 				{
 					certificate_id: req.params.certificate_id,
-					expand: typeof req.query.expand === "string" ? req.query.expand.split(",") : null,
+					expand,
 				},
 			);
 			const row = await internalCertificate.get(res.locals.access, {
