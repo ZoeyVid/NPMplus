@@ -462,10 +462,10 @@
   resolved "https://registry.yarnpkg.com/@floating-ui/utils/-/utils-0.2.10.tgz#a2a1e3812d14525f725d011a73eceb41fef5bc1c"
   integrity sha512-aGTxbpbg8/b5JfU1HXSrbH3wXZuLPJcNEcZQFMxLs3oSzgtVu6nFPkbbGGUvBcUjKV2YyB9Wxxabo+HEH9tcRQ==
 
-"@formatjs/cli@6.7.4":
-  version "6.7.4"
-  resolved "https://registry.yarnpkg.com/@formatjs/cli/-/cli-6.7.4.tgz#21fdab4e215763034682abf148b64b4f8d9d4a5c"
-  integrity sha512-k6uqdeZDAjDd7iKKQ8yFYizFpbi5Y9H9NkV+hoIhmxaMSGvWRnRusQJaIQ+2rI14MH6knW6fx7tnO15C+ijDiw==
+"@formatjs/cli@6.8.1":
+  version "6.8.1"
+  resolved "https://registry.yarnpkg.com/@formatjs/cli/-/cli-6.8.1.tgz#3fbafc59560284272af95d78da235866efdc9121"
+  integrity sha512-N5Nu4FpqPl5dKwfbqNOvqNpI0+Ev+tRxMv1YTG7IIWG6j8B3d0h09u8sxYqfhGJHXmSL0plk0HPBerAp2AiFXQ==
 
 "@formatjs/ecma402-abstract@2.3.6":
   version "2.3.6"
