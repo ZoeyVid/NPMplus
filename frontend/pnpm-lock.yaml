@@ -100,7 +100,7 @@ importers:
         specifier: 2.0.6
         version: 2.0.6
       '@types/node':
-        specifier: ^25.0.3
+        specifier: 25.0.3
         version: 25.0.3
       '@types/react':
         specifier: 19.2.7
