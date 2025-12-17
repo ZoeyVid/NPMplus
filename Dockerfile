@@ -127,7 +127,8 @@ RUN find /usr/local/nginx/modules -name "*.so" -exec strip -s {} \; && \
     file /usr/local/nginx/sbin/nginx && \
     file /src/attachment/core/shmem_ipc/libosrc_shmem_ipc.so && \
     file /src/attachment/core/compression/libosrc_compression_utils.so && \
-    file /src/attachment/attachments/nginx/nginx_attachment_util/libosrc_nginx_attachment_util.so
+    file /src/attachment/attachments/nginx/nginx_attachment_util/libosrc_nginx_attachment_util.so && \
+    /usr/local/nginx/sbin/nginx -V
 
 
 FROM --platform="$BUILDPLATFORM" alpine:3.23.0 AS crowdsec
@@ -162,11 +163,11 @@ ARG NODE_ENV=production
 COPY frontend /app
 WORKDIR /app/frontend
 RUN apk upgrade --no-cache -a && \
-    apk add --no-cache nodejs yarn && \
-    yarn install --production=false && \
-    yarn formatjs compile-folder src/locale/src src/locale/lang && \
-    yarn tsc && \
-    yarn vite build
+    apk add --no-cache nodejs pnpm && \
+    pnpm install --frozen-lockfile && \
+    pnpm formatjs compile-folder src/locale/src src/locale/lang && \
+    pnpm tsc && \
+    pnpm vite build
 
 FROM alpine:3.23.0 AS backend
 SHELL ["/bin/ash", "-eo", "pipefail", "-c"]
@@ -174,11 +175,11 @@ ARG NODE_ENV=production
 COPY backend /app
 WORKDIR /app
 RUN apk upgrade --no-cache -a && \
-    apk add --no-cache nodejs yarn npm binutils file && \
-    yarn install && \
-    yarn cache clean && \
-    find node_modules -name "*.map" -delete && \
-    rm -r node_modules/better-sqlite3/deps/sqlite3/sqlite3.c && \
+    apk add --no-cache nodejs pnpm binutils file && \
+    pnpm install --frozen-lockfile --prod && \
+    pnpm cache delete && \
+#    find node_modules -name "*.map" -delete && \
+    rm -r node_modules/better-sqlite3/deps/sqlite3 && \
     find /app/node_modules -name "*.node" -type f -exec strip -s {} \; && \
     find /app/node_modules -name "*.node" -type f -exec file {} \;
 
