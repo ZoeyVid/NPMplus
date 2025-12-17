@@ -3161,10 +3161,10 @@ vite-plugin-checker@0.12.0:
     tinyglobby "^0.2.15"
     vscode-uri "^3.1.0"
 
-vite-tsconfig-paths@6.0.1:
-  version "6.0.1"
-  resolved "https://registry.yarnpkg.com/vite-tsconfig-paths/-/vite-tsconfig-paths-6.0.1.tgz#ae82dd094eb8cf6ef23417bc3698275785ebe04a"
-  integrity sha512-OQuYkfCQhc2T+n//0N7/oogTosgiSyZQ7dydrpUlH5SbnFTtplpekdY4GMi6jDwEpiwWlqeUJMyPfC2ePM1+2A==
+vite-tsconfig-paths@6.0.2:
+  version "6.0.2"
+  resolved "https://registry.yarnpkg.com/vite-tsconfig-paths/-/vite-tsconfig-paths-6.0.2.tgz#a7d4bfa32994416beb63c7a17f50c20b14ada61a"
+  integrity sha512-c06LOO8fWB5RuEPpEIHXU9t7Dt4DoiPIljnKws9UygIaQo6PoFKawTftz5/QVcO+6pOs/HHWycnq4UrZkWVYnQ==
   dependencies:
     debug "^4.1.1"
     globrex "^0.1.2"
