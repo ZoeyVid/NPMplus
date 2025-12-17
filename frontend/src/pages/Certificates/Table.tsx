@@ -105,6 +105,7 @@ export default function Table({ data, isFetching, onDelete, onRenew, onDownload,
 								className="btn dropdown-toggle btn-action btn-sm px-1"
 								data-bs-boundary="viewport"
 								data-bs-toggle="dropdown"
+								data-bs-popper-config='{"strategy":"fixed"}'
 							>
 								<IconDotsVertical />
 							</button>
