@@ -1,4 +1,16 @@
 .page {
+	display: flex;
+	flex-direction: row;
 	min-height: 100vh;
-    /* Removed grid layout to support Sidebar */
+}
+
+:global(.page-wrapper) {
+	display: flex;
+	flex-direction: column;
+	flex: 1;
+	min-width: 0;
+}
+
+:global(.footer) {
+	margin-top: auto;
 }
