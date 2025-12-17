@@ -1,5 +1,16 @@
 .page {
-	display: grid;
-	grid-template-rows: auto 1fr auto; /* Header, Main Content, Footer */
+	display: flex;
+	flex-direction: row;
 	min-height: 100vh;
+}
+
+:global(.page-wrapper) {
+	display: flex;
+	flex-direction: column;
+	flex: 1;
+	min-width: 0;
+}
+
+:global(.footer) {
+	margin-top: auto;
 }

@@ -6,10 +6,10 @@ import {
 	ErrorNotFound,
 	LoadingPage,
 	Page,
+	Sidebar,
 	SiteContainer,
 	SiteFooter,
 	SiteHeader,
-	SiteMenu,
 	Unhealthy,
 } from "src/components";
 import { useAuthState } from "src/context";
@@ -153,16 +153,16 @@ function Router() {
 	return (
 		<BrowserRouter>
 			<Page>
-				<div>
+				<Sidebar />
+				<div className="page-wrapper">
 					<SiteHeader />
-					<SiteMenu />
+					<SiteContainer>
+						<Suspense fallback={<LoadingPage noLogo />}>
+							<Content />
+						</Suspense>
+					</SiteContainer>
+					<SiteFooter />
 				</div>
-				<SiteContainer>
-					<Suspense fallback={<LoadingPage noLogo />}>
-						<Content />
-					</Suspense>
-				</SiteContainer>
-				<SiteFooter />
 			</Page>
 		</BrowserRouter>
 	);

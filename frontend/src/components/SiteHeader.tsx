@@ -1,10 +1,9 @@
 import { IconLock, IconLogout, IconUser } from "@tabler/icons-react";
-import { LocalePicker, NavLink, ThemeSwitcher } from "src/components";
+import { LocalePicker, ThemeSwitcher } from "src/components";
 import { useAuthState } from "src/context";
 import { useUser } from "src/hooks";
 import { T } from "src/locale";
 import { showChangePasswordModal, showUserModal } from "src/modals";
-import styles from "./SiteHeader.module.css";
 
 export function SiteHeader() {
 	const { data: currentUser } = useUser("me");
@@ -18,28 +17,14 @@ export function SiteHeader() {
 					className="navbar-toggler"
 					type="button"
 					data-bs-toggle="collapse"
-					data-bs-target="#navbar-menu"
-					aria-controls="navbar-menu"
+					data-bs-target="#sidebar-menu"
+					aria-controls="sidebar-menu"
 					aria-expanded="false"
 					aria-label="Toggle navigation"
 				>
 					<span className="navbar-toggler-icon" />
 				</button>
-				<div className="navbar-brand navbar-brand-autodark pe-0 pe-md-3">
-					<NavLink to="/">
-						<div className={styles.logo}>
-							<img
-								src="/images/logo-no-text.svg"
-								width={40}
-								height={40}
-								className="navbar-brand-image"
-								alt="Logo"
-							/>
-						</div>
-						NPMplus
-					</NavLink>
-				</div>
-				<div className="navbar-nav flex-row order-md-last">
+				<div className="navbar-nav flex-row order-md-last ms-auto">
 					<div className="d-none d-md-flex">
 						<div className="nav-item">
 							<LocalePicker />
