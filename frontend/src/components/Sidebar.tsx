@@ -219,9 +219,7 @@ export function Sidebar() {
 					</NavLink>
 				</h1>
 				<div className="collapse navbar-collapse" id="sidebar-menu">
-					<ul className="navbar-nav pt-lg-3">
-						{menuItems.map((item) => getMenuItem(item, closeMenu))}
-					</ul>
+					<ul className="navbar-nav pt-lg-3">{menuItems.map((item) => getMenuItem(item, closeMenu))}</ul>
 				</div>
 			</div>
 		</aside>
