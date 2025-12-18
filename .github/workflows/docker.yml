@@ -1,4 +1,5 @@
 name: Build Docker Image
+
 on:
   push:
     branches:
@@ -20,108 +21,119 @@ on:
       - rootfs/**
   workflow_dispatch:
 
+env:
+  IMAGE_NAME: ghcr.io/shedowe19/npmplus
+
 permissions:
   contents: read
   packages: write
+  pull-requests: write
 
 jobs:
-  build-x86_64:
-    runs-on: ubuntu-latest
+  build:
+    name: 🏗️ Build ${{ matrix.arch }}
+    runs-on: ${{ matrix.runner }}
     if: ${{ github.repository_owner == 'shedowe19' }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - arch: x86_64
+            runner: ubuntu-latest
+            flags: "FLAGS=-march=x86-64-v2 -mtune=generic -fcf-protection=full"
+          - arch: aarch64
+            runner: ubuntu-24.04-arm
+            flags: "FLAGS=-mbranch-protection=standard"
+
     steps:
       - name: Checkout
-        uses: actions/checkout@v6
+        uses: actions/checkout@v4
+
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
         with:
           driver-opts: env.BUILDKIT_STEP_LOG_MAX_SIZE=-1
+
       - name: Login to GitHub Container Registry
         uses: docker/login-action@v3
         with:
           registry: ghcr.io
-          username: shedowe19
-          password: ${{ github.token }}
-      - name: version
+          username: ${{ github.repository_owner }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Generate Versions & Tags
+        id: meta
         run: |
-          sed -i "s|\"0.0.0\"|\"$(git rev-parse --short HEAD)\"|g" frontend/package.json
-          sed -i "s|\"0.0.0\"|\"$(git rev-parse --short HEAD)\"|g" backend/package.json
-      - name: Build
-        uses: docker/build-push-action@v6
-        if: ${{ github.event_name != 'pull_request' }}
-        with:
-          context: .
-          file: ./Dockerfile
-          push: true
-          tags: ghcr.io/shedowe19/npmplus:${{ github.ref_name }}-x86_64
-          build-args: |
-            FLAGS=-march=x86-64-v2 -mtune=generic -fcf-protection=full
-      - name: Set PR-Number (PR)
-        if: ${{ github.event_name == 'pull_request' }}
-        id: pr
-        run: echo "pr=$(echo pr-${{ github.ref_name }} | sed "s|refs/pull/:||g" | sed "s|/merge||g")" >> $GITHUB_OUTPUT
-      - name: Build (PR)
-        uses: docker/build-push-action@v6
-        if: ${{ github.event_name == 'pull_request' }}
-        with:
-          context: .
-          file: ./Dockerfile
-          push: true
-          tags: ghcr.io/shedowe19/npmplus:${{ steps.pr.outputs.pr }}-x86_64
-          build-args: |
-            FLAGS=-march=x86-64-v2 -mtune=generic -fcf-protection=full
+          # 1. Version in package.json setzen
+          SHORT_SHA=$(git rev-parse --short HEAD)
+          sed -i "s|\"0.0.0\"|\"$SHORT_SHA\"|g" frontend/package.json
+          sed -i "s|\"0.0.0\"|\"$SHORT_SHA\"|g" backend/package.json
           
-  build-aarch64:
-    runs-on: ubuntu-24.04-arm
-    if: ${{ github.repository_owner == 'shedowe19' }}
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v6
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v3
-        with:
-          driver-opts: env.BUILDKIT_STEP_LOG_MAX_SIZE=-1
-      - name: Login to GitHub Container Registry
-        uses: docker/login-action@v3
-        with:
-          registry: ghcr.io
-          username: shedowe19
-          password: ${{ github.token }}
-      - name: version
-        run: |
-          sed -i "s|\"0.0.0\"|\"$(git rev-parse --short HEAD)\"|g" frontend/package.json
-          sed -i "s|\"0.0.0\"|\"$(git rev-parse --short HEAD)\"|g" backend/package.json
-      - name: Build
+          # 2. Tags berechnen
+          if [ "${{ github.event_name }}" == "pull_request" ]; then
+            CLEAN_PR=$(echo pr-${{ github.ref_name }} | sed "s|refs/pull/:||g" | sed "s|/merge||g")
+            echo "TAG=${{ env.IMAGE_NAME }}:${CLEAN_PR}-${{ matrix.arch }}" >> $GITHUB_OUTPUT
+          else
+            echo "TAG=${{ env.IMAGE_NAME }}:${{ github.ref_name }}-${{ matrix.arch }}" >> $GITHUB_OUTPUT
+          fi
+
+      # ----------------------------------------------------------------
+      # HIER IST DIE AUFTEILUNG IN EINZELNE SCHRITTE FÜR DIE ÜBERSICHT
+      # ----------------------------------------------------------------
+
+      - name: 📦 Build Stage: Frontend
         uses: docker/build-push-action@v6
-        if: ${{ github.event_name != 'pull_request' }}
+        with:
+          context: .
+          file: ./Dockerfile
+          target: frontend
+          push: false
+          build-args: ${{ matrix.flags }}
+          cache-from: type=gha,scope=${{ matrix.arch }}-frontend
+          cache-to: type=gha,mode=max,scope=${{ matrix.arch }}-frontend
+
+      - name: 📦 Build Stage: Backend
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          file: ./Dockerfile
+          target: backend
+          push: false
+          build-args: ${{ matrix.flags }}
+          cache-from: type=gha,scope=${{ matrix.arch }}-backend
+          cache-to: type=gha,mode=max,scope=${{ matrix.arch }}-backend
+
+      - name: 📦 Build Stage: Crowdsec
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          file: ./Dockerfile
+          target: crowdsec
+          push: false
+          build-args: ${{ matrix.flags }}
+          cache-from: type=gha,scope=${{ matrix.arch }}-crowdsec
+          cache-to: type=gha,mode=max,scope=${{ matrix.arch }}-crowdsec
+
+      - name: 🚀 Build Final & Push
+        uses: docker/build-push-action@v6
         with:
           context: .
           file: ./Dockerfile
           push: true
-          tags: ghcr.io/shedowe19/npmplus:${{ github.ref_name }}-aarch64
-          build-args: |
-            FLAGS=-mbranch-protection=standard
-      - name: Set PR-Number (PR)
-        if: ${{ github.event_name == 'pull_request' }}
-        id: pr
-        run: echo "pr=$(echo pr-${{ github.ref_name }} | sed "s|refs/pull/:||g" | sed "s|/merge||g")" >> $GITHUB_OUTPUT
-      - name: Build (PR)
-        uses: docker/build-push-action@v6
-        if: ${{ github.event_name == 'pull_request' }}
-        with:
-          context: .
-          file: ./Dockerfile
-          push: true
-          tags: ghcr.io/shedowe19/npmplus:${{ steps.pr.outputs.pr }}-aarch64
-          build-args: |
-            FLAGS=-mbranch-protection=standard
-          
+          tags: ${{ steps.meta.outputs.TAG }}
+          build-args: ${{ matrix.flags }}
+          # Hier laden wir ALLE Caches, damit der finale Build superschnell geht
+          cache-from: |
+            type=gha,scope=${{ matrix.arch }}-frontend
+            type=gha,scope=${{ matrix.arch }}-backend
+            type=gha,scope=${{ matrix.arch }}-crowdsec
+            type=gha,scope=${{ matrix.arch }}-final
+          cache-to: type=gha,mode=max,scope=${{ matrix.arch }}-final
+
   merge:
-    permissions:
-      contents: read
-      packages: write
-      pull-requests: write
+    name: 🔗 Merge Multiarch Image
     runs-on: ubuntu-latest
-    needs: [build-x86_64, build-aarch64]
+    needs: build
     if: ${{ github.repository_owner == 'shedowe19' }}
     steps:
       - name: Login to DockerHub
@@ -130,27 +142,35 @@ jobs:
         with:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
+
       - name: Login to GitHub Container Registry
         uses: docker/login-action@v3
         with:
           registry: ghcr.io
-          username: shedowe19
-          password: ${{ github.token }}
-      - name: create multiarch
-        if: ${{ github.event_name != 'pull_request' }}
+          username: ${{ github.repository_owner }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Determine Tags
+        id: tags
         run: |
-          docker buildx imagetools create --tag ghcr.io/shedowe19/npmplus:${{ github.ref_name }} ghcr.io/shedowe19/npmplus:${{ github.ref_name }}-x86_64 ghcr.io/shedowe19/npmplus:${{ github.ref_name }}-aarch64
-      - name: Set PR-Number (PR)
-        if: ${{ github.event_name == 'pull_request' }}
-        id: pr
-        run: echo "pr=$(echo pr-${{ github.ref_name }} | sed "s|refs/pull/:||g" | sed "s|/merge||g")" >> $GITHUB_OUTPUT
-      - name: create multiarch (PR)
-        if: ${{ github.event_name == 'pull_request' }}
-        run: docker buildx imagetools create --tag ghcr.io/shedowe19/npmplus:${{ steps.pr.outputs.pr }} ghcr.io/shedowe19/npmplus:${{ steps.pr.outputs.pr }}-x86_64 ghcr.io/shedowe19/npmplus:${{ steps.pr.outputs.pr }}-aarch64
-      - name: add comment (PR)
+          if [ "${{ github.event_name }}" == "pull_request" ]; then
+            CLEAN_PR=$(echo pr-${{ github.ref_name }} | sed "s|refs/pull/:||g" | sed "s|/merge||g")
+            echo "FINAL_TAG=${{ env.IMAGE_NAME }}:${CLEAN_PR}" >> $GITHUB_OUTPUT
+          else
+            echo "FINAL_TAG=${{ env.IMAGE_NAME }}:${{ github.ref_name }}" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Create Manifest
+        run: |
+          TAG="${{ steps.tags.outputs.FINAL_TAG }}"
+          docker buildx imagetools create --tag "${TAG}" \
+            "${TAG}-x86_64" \
+            "${TAG}-aarch64"
+
+      - name: Add PR Comment
         uses: mshick/add-pr-comment@v2
         if: ${{ github.event_name == 'pull_request' }}
         with:
-          message: "The Docker Image can now be found here: `ghcr.io/shedowe19/npmplus:${{ steps.pr.outputs.pr }}`"
-          repo-token: ${{ github.token }}
+          message: "The Docker Image can now be found here: `${{ steps.tags.outputs.FINAL_TAG }}`"
+          repo-token: ${{ secrets.GITHUB_TOKEN }}
           refresh-message-position: true
