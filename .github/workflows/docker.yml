@@ -31,7 +31,7 @@ permissions:
 
 jobs:
   # ---------------------------------------------------------
-  # PHASE 1: VORBEREITUNG (Version & Tags berechnen)
+  # PHASE 1: VORBEREITUNG (Version & Base-Tag berechnen)
   # ---------------------------------------------------------
   prepare:
     name: ⚙️ Prepare & Version
@@ -39,26 +39,26 @@ jobs:
     if: ${{ github.repository_owner == 'shedowe19' }}
     outputs:
       version_hash: ${{ steps.calc.outputs.hash }}
-      docker_tag: ${{ steps.calc.outputs.tag }}
+      docker_tag_base: ${{ steps.calc.outputs.tag_base }}
       is_pr: ${{ steps.calc.outputs.is_pr }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
 
       - name: Calculate Version & Tags
-        id: calc # Hier war der Fehler (hieß vorher meta)
+        id: calc
         run: |
-          # 1. Short Hash für package.json berechnen
+          # 1. Short Hash für package.json
           SHORT_SHA=$(git rev-parse --short HEAD)
           echo "hash=${SHORT_SHA}" >> $GITHUB_OUTPUT
 
-          # 2. Docker Tag berechnen (PR oder Branch)
+          # 2. Basis-Tag berechnen (OHNE Arch-Suffix)
           if [ "${{ github.event_name }}" == "pull_request" ]; then
             CLEAN_PR=$(echo pr-${{ github.ref_name }} | sed "s|refs/pull/:||g" | sed "s|/merge||g")
-            echo "tag=${CLEAN_PR}" >> $GITHUB_OUTPUT
+            echo "tag_base=${CLEAN_PR}" >> $GITHUB_OUTPUT
             echo "is_pr=true" >> $GITHUB_OUTPUT
           else
-            echo "tag=${{ github.ref_name }}" >> $GITHUB_OUTPUT
+            echo "tag_base=${{ github.ref_name }}" >> $GITHUB_OUTPUT
             echo "is_pr=false" >> $GITHUB_OUTPUT
           fi
 
@@ -101,7 +101,7 @@ jobs:
           sed -i "s|\"0.0.0\"|\"$VER\"|g" frontend/package.json
           sed -i "s|\"0.0.0\"|\"$VER\"|g" backend/package.json
 
-      # --- Build Steps ---
+      # --- Build Steps (Unterteilt für bessere Übersicht) ---
 
       - name: 📦 Build Stage: Frontend
         uses: docker/build-push-action@v6
@@ -110,8 +110,7 @@ jobs:
           file: ./Dockerfile
           target: frontend
           push: false
-          build-args: |
-            ${{ matrix.flags }}
+          build-args: ${{ matrix.flags }}
           cache-from: type=gha,scope=${{ matrix.arch }}-frontend
           cache-to: type=gha,mode=max,scope=${{ matrix.arch }}-frontend
 
@@ -122,8 +121,7 @@ jobs:
           file: ./Dockerfile
           target: backend
           push: false
-          build-args: |
-            ${{ matrix.flags }}
+          build-args: ${{ matrix.flags }}
           cache-from: type=gha,scope=${{ matrix.arch }}-backend
           cache-to: type=gha,mode=max,scope=${{ matrix.arch }}-backend
 
@@ -134,8 +132,7 @@ jobs:
           file: ./Dockerfile
           target: crowdsec
           push: false
-          build-args: |
-            ${{ matrix.flags }}
+          build-args: ${{ matrix.flags }}
           cache-from: type=gha,scope=${{ matrix.arch }}-crowdsec
           cache-to: type=gha,mode=max,scope=${{ matrix.arch }}-crowdsec
 
@@ -145,9 +142,9 @@ jobs:
           context: .
           file: ./Dockerfile
           push: true
-          tags: ${{ env.IMAGE_NAME }}:${{ needs.prepare.outputs.docker_tag }}-${{ matrix.arch }}
-          build-args: |
-            ${{ matrix.flags }}
+          # Hier setzen wir den Tag zusammen: BASE + ARCH
+          tags: ${{ env.IMAGE_NAME }}:${{ needs.prepare.outputs.docker_tag_base }}-${{ matrix.arch }}
+          build-args: ${{ matrix.flags }}
           cache-from: |
             type=gha,scope=${{ matrix.arch }}-frontend
             type=gha,scope=${{ matrix.arch }}-backend
@@ -162,6 +159,7 @@ jobs:
     name: 🔗 Merge Multiarch Image
     needs: [prepare, build]
     runs-on: ubuntu-latest
+    if: ${{ github.repository_owner == 'shedowe19' }}
     steps:
       - name: Login to DockerHub
         if: ${{ needs.prepare.outputs.is_pr == 'false' }}
@@ -179,16 +177,18 @@ jobs:
 
       - name: Create Multiarch Manifest
         run: |
-          TAG="${{ env.IMAGE_NAME }}:${{ needs.prepare.outputs.docker_tag }}"
+          # Wir holen uns den Basis-Tag (z.B. 'develop' oder 'pr-123')
+          TAG_BASE="${{ env.IMAGE_NAME }}:${{ needs.prepare.outputs.docker_tag_base }}"
           
-          docker buildx imagetools create --tag "${TAG}" \
-            "${TAG}-x86_64" \
-            "${TAG}-aarch64"
+          # Wir verknüpfen die x86 und arm Varianten zu einem Manifest
+          docker buildx imagetools create --tag "${TAG_BASE}" \
+            "${TAG_BASE}-x86_64" \
+            "${TAG_BASE}-aarch64"
 
       - name: Add PR Comment
         uses: mshick/add-pr-comment@v2
         if: ${{ needs.prepare.outputs.is_pr == 'true' }}
         with:
-          message: "The Docker Image can now be found here: `${{ env.IMAGE_NAME }}:${{ needs.prepare.outputs.docker_tag }}`"
+          message: "The Docker Image can now be found here: `${{ env.IMAGE_NAME }}:${{ needs.prepare.outputs.docker_tag_base }}`"
           repo-token: ${{ secrets.GITHUB_TOKEN }}
           refresh-message-position: true
