@@ -34,7 +34,7 @@ jobs:
   # PHASE 1: VORBEREITUNG (Version & Base-Tag berechnen)
   # ---------------------------------------------------------
   prepare:
-    name: ⚙️ Prepare & Version
+    name: "⚙️ Prepare & Version"
     runs-on: ubuntu-latest
     if: ${{ github.repository_owner == 'shedowe19' }}
     outputs:
@@ -45,7 +45,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Calculate Version & Tags
+      - name: "Calculate Version & Tags"
         id: calc
         run: |
           SHORT_SHA=$(git rev-parse --short HEAD)
@@ -64,7 +64,7 @@ jobs:
   # PHASE 2: BAUEN (Matrix für x86 und ARM)
   # ---------------------------------------------------------
   build:
-    name: 🏗️ Build ${{ matrix.arch }}
+    name: "🏗️ Build ${{ matrix.arch }}"
     needs: prepare
     runs-on: ${{ matrix.runner }}
     strategy:
@@ -99,9 +99,9 @@ jobs:
           sed -i "s|\"0.0.0\"|\"$VER\"|g" frontend/package.json
           sed -i "s|\"0.0.0\"|\"$VER\"|g" backend/package.json
 
-      # --- Build Steps (Unterteilt für bessere Übersicht) ---
+      # --- Build Steps (Jetzt mit Anführungszeichen!) ---
 
-      - name: 📦 Build Stage: Frontend
+      - name: "📦 Build Stage: Frontend"
         uses: docker/build-push-action@v6
         with:
           context: .
@@ -113,7 +113,7 @@ jobs:
           cache-from: type=gha,scope=${{ matrix.arch }}-frontend
           cache-to: type=gha,mode=max,scope=${{ matrix.arch }}-frontend
 
-      - name: 📦 Build Stage: Backend
+      - name: "📦 Build Stage: Backend"
         uses: docker/build-push-action@v6
         with:
           context: .
@@ -125,7 +125,7 @@ jobs:
           cache-from: type=gha,scope=${{ matrix.arch }}-backend
           cache-to: type=gha,mode=max,scope=${{ matrix.arch }}-backend
 
-      - name: 📦 Build Stage: Crowdsec
+      - name: "📦 Build Stage: Crowdsec"
         uses: docker/build-push-action@v6
         with:
           context: .
@@ -137,7 +137,7 @@ jobs:
           cache-from: type=gha,scope=${{ matrix.arch }}-crowdsec
           cache-to: type=gha,mode=max,scope=${{ matrix.arch }}-crowdsec
 
-      - name: 🚀 Build Final & Push
+      - name: "🚀 Build Final & Push"
         uses: docker/build-push-action@v6
         with:
           context: .
@@ -157,7 +157,7 @@ jobs:
   # PHASE 3: ZUSAMMENFÜGEN (Manifest erstellen)
   # ---------------------------------------------------------
   merge:
-    name: 🔗 Merge Multiarch Image
+    name: "🔗 Merge Multiarch Image"
     needs: [prepare, build]
     runs-on: ubuntu-latest
     if: ${{ github.repository_owner == 'shedowe19' }}
@@ -184,7 +184,7 @@ jobs:
             "${TAG_BASE}-x86_64" \
             "${TAG_BASE}-aarch64"
 
-      - name: Add PR Comment
+      - name: "Add PR Comment"
         uses: mshick/add-pr-comment@v2
         if: ${{ needs.prepare.outputs.is_pr == 'true' }}
         with:
