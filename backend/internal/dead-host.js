@@ -121,7 +121,7 @@ const internalDeadHost = {
 				return true;
 			});
 		}
-		let row = await internalDeadHost.get(access, { id: data.id });
+		const row = await internalDeadHost.get(access, { id: data.id });
 
 		if (row.id !== data.id) {
 			// Sanity check that something crazy hasn't happened
@@ -199,13 +199,13 @@ const internalDeadHost = {
 		}
 
 		let row = await query;
-		
+
 		if (!row || !row.id) {
 			throw new errs.ItemNotFoundError(data.id);
 		}
-		
+
 		row = utils.omitRow(omissions())(row);
-		
+
 		// Custom omissions
 		if (typeof data.omit !== "undefined" && data.omit !== null) {
 			return _.omit(row, data.omit);
@@ -355,7 +355,7 @@ const internalDeadHost = {
 
 		let rows = await query;
 		rows = utils.omitRows(omissions())(rows);
-		
+
 		if (typeof expand !== "undefined" && expand !== null && expand.indexOf("certificate") !== -1) {
 			internalHost.cleanAllRowsCertificateMeta(rows);
 		}

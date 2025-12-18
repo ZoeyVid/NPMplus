@@ -23,16 +23,14 @@ const internalAccessList = {
 	 */
 	create: async (access, data) => {
 		await access.can("access_lists:create", data);
-		const row = await accessListModel
-			.query()
-			.insertAndFetch({
-				name: data.name,
-				satisfy_any: data.satisfy_any,
-				pass_auth: data.pass_auth,
-				meta: data.meta,
-				owner_user_id: access.token.getUserId(1),
-			});
-		
+		const row = await accessListModel.query().insertAndFetch({
+			name: data.name,
+			satisfy_any: data.satisfy_any,
+			pass_auth: data.pass_auth,
+			meta: data.meta,
+			owner_user_id: access.token.getUserId(1),
+		});
+
 		const omittedRow = utils.omitRow(omissions())(row);
 
 		data.id = omittedRow.id;
@@ -242,11 +240,11 @@ const internalAccessList = {
 		}
 
 		let row = await query;
-		
+
 		if (!row || !row.id) {
 			throw new errs.ItemNotFoundError(thisData.id);
 		}
-		
+
 		row = utils.omitRow(omissions())(row);
 
 		if (!skipMasking && typeof row.items !== "undefined" && row.items) {
@@ -359,7 +357,7 @@ const internalAccessList = {
 
 		let rows = await query;
 		rows = utils.omitRows(omissions())(rows);
-		
+
 		if (rows) {
 			rows.map((row, idx) => {
 				if (typeof row.items !== "undefined" && row.items) {
