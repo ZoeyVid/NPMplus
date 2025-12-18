@@ -30,10 +30,45 @@ permissions:
   pull-requests: write
 
 jobs:
+  # ---------------------------------------------------------
+  # PHASE 1: VORBEREITUNG (Version & Tags berechnen)
+  # ---------------------------------------------------------
+  prepare:
+    name: ⚙️ Prepare & Version
+    runs-on: ubuntu-latest
+    if: ${{ github.repository_owner == 'shedowe19' }}
+    outputs:
+      version_hash: ${{ steps.calc.outputs.hash }}
+      docker_tag: ${{ steps.calc.outputs.tag }}
+      is_pr: ${{ steps.calc.outputs.is_pr }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Calculate Version & Tags
+        id: calc # Hier war der Fehler (hieß vorher meta)
+        run: |
+          # 1. Short Hash für package.json berechnen
+          SHORT_SHA=$(git rev-parse --short HEAD)
+          echo "hash=${SHORT_SHA}" >> $GITHUB_OUTPUT
+
+          # 2. Docker Tag berechnen (PR oder Branch)
+          if [ "${{ github.event_name }}" == "pull_request" ]; then
+            CLEAN_PR=$(echo pr-${{ github.ref_name }} | sed "s|refs/pull/:||g" | sed "s|/merge||g")
+            echo "tag=${CLEAN_PR}" >> $GITHUB_OUTPUT
+            echo "is_pr=true" >> $GITHUB_OUTPUT
+          else
+            echo "tag=${{ github.ref_name }}" >> $GITHUB_OUTPUT
+            echo "is_pr=false" >> $GITHUB_OUTPUT
+          fi
+
+  # ---------------------------------------------------------
+  # PHASE 2: BAUEN (Matrix für x86 und ARM)
+  # ---------------------------------------------------------
   build:
     name: 🏗️ Build ${{ matrix.arch }}
+    needs: prepare
     runs-on: ${{ matrix.runner }}
-    if: ${{ github.repository_owner == 'shedowe19' }}
     strategy:
       fail-fast: false
       matrix:
@@ -44,7 +79,6 @@ jobs:
           - arch: aarch64
             runner: ubuntu-24.04-arm
             flags: "FLAGS=-mbranch-protection=standard"
-
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -61,25 +95,13 @@ jobs:
           username: ${{ github.repository_owner }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Generate Versions & Tags
-        id: meta
+      - name: Apply Version to package.json
         run: |
-          # 1. Version in package.json setzen
-          SHORT_SHA=$(git rev-parse --short HEAD)
-          sed -i "s|\"0.0.0\"|\"$SHORT_SHA\"|g" frontend/package.json
-          sed -i "s|\"0.0.0\"|\"$SHORT_SHA\"|g" backend/package.json
-          
-          # 2. Tags berechnen
-          if [ "${{ github.event_name }}" == "pull_request" ]; then
-            CLEAN_PR=$(echo pr-${{ github.ref_name }} | sed "s|refs/pull/:||g" | sed "s|/merge||g")
-            echo "TAG=${{ env.IMAGE_NAME }}:${CLEAN_PR}-${{ matrix.arch }}" >> $GITHUB_OUTPUT
-          else
-            echo "TAG=${{ env.IMAGE_NAME }}:${{ github.ref_name }}-${{ matrix.arch }}" >> $GITHUB_OUTPUT
-          fi
+          VER="${{ needs.prepare.outputs.version_hash }}"
+          sed -i "s|\"0.0.0\"|\"$VER\"|g" frontend/package.json
+          sed -i "s|\"0.0.0\"|\"$VER\"|g" backend/package.json
 
-      # ----------------------------------------------------------------
-      # HIER IST DIE AUFTEILUNG IN EINZELNE SCHRITTE FÜR DIE ÜBERSICHT
-      # ----------------------------------------------------------------
+      # --- Build Steps ---
 
       - name: 📦 Build Stage: Frontend
         uses: docker/build-push-action@v6
@@ -88,7 +110,8 @@ jobs:
           file: ./Dockerfile
           target: frontend
           push: false
-          build-args: ${{ matrix.flags }}
+          build-args: |
+            ${{ matrix.flags }}
           cache-from: type=gha,scope=${{ matrix.arch }}-frontend
           cache-to: type=gha,mode=max,scope=${{ matrix.arch }}-frontend
 
@@ -99,7 +122,8 @@ jobs:
           file: ./Dockerfile
           target: backend
           push: false
-          build-args: ${{ matrix.flags }}
+          build-args: |
+            ${{ matrix.flags }}
           cache-from: type=gha,scope=${{ matrix.arch }}-backend
           cache-to: type=gha,mode=max,scope=${{ matrix.arch }}-backend
 
@@ -110,7 +134,8 @@ jobs:
           file: ./Dockerfile
           target: crowdsec
           push: false
-          build-args: ${{ matrix.flags }}
+          build-args: |
+            ${{ matrix.flags }}
           cache-from: type=gha,scope=${{ matrix.arch }}-crowdsec
           cache-to: type=gha,mode=max,scope=${{ matrix.arch }}-crowdsec
 
@@ -120,9 +145,9 @@ jobs:
           context: .
           file: ./Dockerfile
           push: true
-          tags: ${{ steps.meta.outputs.TAG }}
-          build-args: ${{ matrix.flags }}
-          # Hier laden wir ALLE Caches, damit der finale Build superschnell geht
+          tags: ${{ env.IMAGE_NAME }}:${{ needs.prepare.outputs.docker_tag }}-${{ matrix.arch }}
+          build-args: |
+            ${{ matrix.flags }}
           cache-from: |
             type=gha,scope=${{ matrix.arch }}-frontend
             type=gha,scope=${{ matrix.arch }}-backend
@@ -130,14 +155,16 @@ jobs:
             type=gha,scope=${{ matrix.arch }}-final
           cache-to: type=gha,mode=max,scope=${{ matrix.arch }}-final
 
+  # ---------------------------------------------------------
+  # PHASE 3: ZUSAMMENFÜGEN (Manifest erstellen)
+  # ---------------------------------------------------------
   merge:
     name: 🔗 Merge Multiarch Image
+    needs: [prepare, build]
     runs-on: ubuntu-latest
-    needs: build
-    if: ${{ github.repository_owner == 'shedowe19' }}
     steps:
       - name: Login to DockerHub
-        if: ${{ github.event_name != 'pull_request' }}
+        if: ${{ needs.prepare.outputs.is_pr == 'false' }}
         uses: docker/login-action@v3
         with:
           username: ${{ secrets.DOCKER_USERNAME }}
@@ -150,27 +177,18 @@ jobs:
           username: ${{ github.repository_owner }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Determine Tags
-        id: tags
+      - name: Create Multiarch Manifest
         run: |
-          if [ "${{ github.event_name }}" == "pull_request" ]; then
-            CLEAN_PR=$(echo pr-${{ github.ref_name }} | sed "s|refs/pull/:||g" | sed "s|/merge||g")
-            echo "FINAL_TAG=${{ env.IMAGE_NAME }}:${CLEAN_PR}" >> $GITHUB_OUTPUT
-          else
-            echo "FINAL_TAG=${{ env.IMAGE_NAME }}:${{ github.ref_name }}" >> $GITHUB_OUTPUT
-          fi
-
-      - name: Create Manifest
-        run: |
-          TAG="${{ steps.tags.outputs.FINAL_TAG }}"
+          TAG="${{ env.IMAGE_NAME }}:${{ needs.prepare.outputs.docker_tag }}"
+          
           docker buildx imagetools create --tag "${TAG}" \
             "${TAG}-x86_64" \
             "${TAG}-aarch64"
 
       - name: Add PR Comment
         uses: mshick/add-pr-comment@v2
-        if: ${{ github.event_name == 'pull_request' }}
+        if: ${{ needs.prepare.outputs.is_pr == 'true' }}
         with:
-          message: "The Docker Image can now be found here: `${{ steps.tags.outputs.FINAL_TAG }}`"
+          message: "The Docker Image can now be found here: `${{ env.IMAGE_NAME }}:${{ needs.prepare.outputs.docker_tag }}`"
           repo-token: ${{ secrets.GITHUB_TOKEN }}
           refresh-message-position: true
