@@ -98,7 +98,7 @@ const internalHost = {
 	 * @param   {Integer}  [ignore_id]     Must be supplied if type was also supplied
 	 * @returns {Promise}
 	 */
-	isHostnameTaken: (hostname, ignore_type, ignore_id) => {
+	isHostnameTaken: async (hostname, ignore_type, ignore_id) => {
 		const promises = [
 			proxyHostModel
 				.query()
@@ -114,53 +114,52 @@ const internalHost = {
 				.andWhere(castJsonIfNeed("domain_names"), "like", `%${hostname}%`),
 		];
 
-		return Promise.all(promises).then((promises_results) => {
-			let is_taken = false;
+		const promises_results = await Promise.all(promises);
+		let is_taken = false;
 
-			if (promises_results[0]) {
-				// Proxy Hosts
-				if (
-					internalHost._checkHostnameRecordsTaken(
-						hostname,
-						promises_results[0],
-						ignore_type === "proxy" && ignore_id ? ignore_id : 0,
-					)
-				) {
-					is_taken = true;
-				}
+		if (promises_results[0]) {
+			// Proxy Hosts
+			if (
+				internalHost._checkHostnameRecordsTaken(
+					hostname,
+					promises_results[0],
+					ignore_type === "proxy" && ignore_id ? ignore_id : 0,
+				)
+			) {
+				is_taken = true;
 			}
+		}
 
-			if (promises_results[1]) {
-				// Redirection Hosts
-				if (
-					internalHost._checkHostnameRecordsTaken(
-						hostname,
-						promises_results[1],
-						ignore_type === "redirection" && ignore_id ? ignore_id : 0,
-					)
-				) {
-					is_taken = true;
-				}
+		if (promises_results[1]) {
+			// Redirection Hosts
+			if (
+				internalHost._checkHostnameRecordsTaken(
+					hostname,
+					promises_results[1],
+					ignore_type === "redirection" && ignore_id ? ignore_id : 0,
+				)
+			) {
+				is_taken = true;
 			}
+		}
 
-			if (promises_results[2]) {
-				// Dead Hosts
-				if (
-					internalHost._checkHostnameRecordsTaken(
-						hostname,
-						promises_results[2],
-						ignore_type === "dead" && ignore_id ? ignore_id : 0,
-					)
-				) {
-					is_taken = true;
-				}
+		if (promises_results[2]) {
+			// Dead Hosts
+			if (
+				internalHost._checkHostnameRecordsTaken(
+					hostname,
+					promises_results[2],
+					ignore_type === "dead" && ignore_id ? ignore_id : 0,
+				)
+			) {
+				is_taken = true;
 			}
+		}
 
-			return {
-				hostname: hostname,
-				is_taken: is_taken,
-			};
-		});
+		return {
+			hostname: hostname,
+			is_taken: is_taken,
+		};
 	},
 
 	/**

@@ -25,74 +25,58 @@ const internalNginx = {
 	 * @param   {Object}         host
 	 * @returns {Promise}
 	 */
-	configure: (model, host_type, host) => {
+	configure: async (model, host_type, host) => {
 		let combined_meta = {};
 
-		return internalNginx
-			.test()
-			.then(() => {
-				return internalNginx.deleteConfig(host_type, host);
-			})
-			.then(() => {
-				return internalNginx.reload();
-			})
-			.then(() => {
-				return internalNginx.generateConfig(host_type, host);
-			})
-			.then(() => {
-				// Test nginx again and update meta with result
-				return internalNginx
-					.test()
-					.then(() => {
-						// nginx is ok
-						combined_meta = _.assign({}, host.meta, {
-							nginx_online: true,
-							nginx_err: null,
-						});
+		await internalNginx.test();
+		await internalNginx.deleteConfig(host_type, host);
+		await internalNginx.reload();
+		await internalNginx.generateConfig(host_type, host);
 
-						return model.query().where("id", host.id).patch({
-							meta: combined_meta,
-						});
-					})
-					.catch((err) => {
-						logger.error(err.message);
-
-						// config is bad, update meta and rename config
-						combined_meta = _.assign({}, host.meta, {
-							nginx_online: false,
-							nginx_err: err.message,
-						});
-
-						return model
-							.query()
-							.where("id", host.id)
-							.patch({
-								meta: combined_meta,
-							})
-							.then(() => {
-								internalNginx.renameConfigAsError(host_type, host);
-							});
-					});
-			})
-			.then(() => {
-				return internalNginx.reload();
-			})
-			.then(() => {
-				return combined_meta;
+		try {
+			// Test nginx again and update meta with result
+			await internalNginx.test();
+			
+			// nginx is ok
+			combined_meta = _.assign({}, host.meta, {
+				nginx_online: true,
+				nginx_err: null,
 			});
+
+			await model.query().where("id", host.id).patch({
+				meta: combined_meta,
+			});
+		} catch (err) {
+			logger.error(err.message);
+
+			// config is bad, update meta and rename config
+			combined_meta = _.assign({}, host.meta, {
+				nginx_online: false,
+				nginx_err: err.message,
+			});
+
+			await model.query().where("id", host.id).patch({
+				meta: combined_meta,
+			});
+			
+			await internalNginx.renameConfigAsError(host_type, host);
+		}
+
+		await internalNginx.reload();
+		return combined_meta;
 	},
 
 	/**
 	 * @returns {Promise}
 	 */
-	test: () => {
+	test: async () => {
 		return utils.execFile("nginx", ["-tq"]);
 	},
 
 	/**
 	 * @returns {Promise}
 	 */
-	reload: () => {
+	reload: async () => {
 		const promises = [];
 
 		if (process.env.ACME_OCSP_STAPLING === "true") {
@@ -125,11 +109,16 @@ const internalNginx = {
 			);
 		}
 
-		return Promise.all(promises).finally(() => {
-			return internalNginx.test().then(() => {
-				return utils.execFile("nginx", ["-s", "reload"]);
-			});
-		});
+		await Promise.all(promises);
+		
+		try {
+			await internalNginx.test();
+			await utils.execFile("nginx", ["-s", "reload"]);
+		} catch (err) {
+			// ignore reload errors if test passed? No, if test failed, we shouldn't reload.
+			// The original code was: test().then(() => execFile(...))
+			throw err;
+		}
 	},
 
 	/**
@@ -149,58 +138,52 @@ const internalNginx = {
 	 * @param   {Object}  host
 	 * @returns {Promise}
 	 */
-	renderLocations: (host) => {
-		return new Promise((resolve, reject) => {
-			let template;
+	renderLocations: async (host) => {
+		let template;
 
-			try {
-				template = fs.readFileSync(`${__dirname}/../templates/_proxy_host_custom_location.conf`, {
-					encoding: "utf8",
-				});
-			} catch (err) {
-				reject(new errs.ConfigurationError(err.message));
-				return;
+		try {
+			template = await fs.promises.readFile(`${__dirname}/../templates/_proxy_host_custom_location.conf`, {
+				encoding: "utf8",
+			});
+		} catch (err) {
+			throw new errs.ConfigurationError(err.message);
+		}
+
+		const renderEngine = utils.getRenderEngine();
+		let renderedLocations = "";
+
+		for (let i = 0; i < host.locations.length; i++) {
+			const locationCopy = Object.assign(
+				{},
+				{ access_list_id: host.access_list_id },
+				{ certificate_id: host.certificate_id },
+				{ ssl_forced: host.ssl_forced },
+				{ caching_enabled: host.caching_enabled },
+				{ block_exploits: host.block_exploits },
+				{ allow_websocket_upgrade: host.allow_websocket_upgrade },
+				{ http2_support: host.http2_support },
+				{ hsts_enabled: host.hsts_enabled },
+				{ hsts_subdomains: host.hsts_subdomains },
+				{ access_list: host.access_list },
+				{ certificate: host.certificate },
+				host.locations[i],
+			);
+
+			if (
+				locationCopy.forward_host.indexOf("/") > -1 &&
+				!locationCopy.forward_host.startsWith("/") &&
+				!locationCopy.forward_host.startsWith("unix")
+			) {
+				const split = locationCopy.forward_host.split("/");
+
+				locationCopy.forward_host = split.shift();
+				locationCopy.forward_path = `/${split.join("/")}`;
 			}
+			locationCopy.env = process.env;
 
-			const renderEngine = utils.getRenderEngine();
-			let renderedLocations = "";
-
-			const locationRendering = async () => {
-				for (let i = 0; i < host.locations.length; i++) {
-					const locationCopy = Object.assign(
-						{},
-						{ access_list_id: host.access_list_id },
-						{ certificate_id: host.certificate_id },
-						{ ssl_forced: host.ssl_forced },
-						{ caching_enabled: host.caching_enabled },
-						{ block_exploits: host.block_exploits },
-						{ allow_websocket_upgrade: host.allow_websocket_upgrade },
-						{ http2_support: host.http2_support },
-						{ hsts_enabled: host.hsts_enabled },
-						{ hsts_subdomains: host.hsts_subdomains },
-						{ access_list: host.access_list },
-						{ certificate: host.certificate },
-						host.locations[i],
-					);
-
-					if (
-						locationCopy.forward_host.indexOf("/") > -1 &&
-						!locationCopy.forward_host.startsWith("/") &&
-						!locationCopy.forward_host.startsWith("unix")
-					) {
-						const split = locationCopy.forward_host.split("/");
-
-						locationCopy.forward_host = split.shift();
-						locationCopy.forward_path = `/${split.join("/")}`;
-					}
-					locationCopy.env = process.env;
-
-					renderedLocations += await renderEngine.parseAndRender(template, locationCopy);
-				}
-			};
-
-			locationRendering().then(() => resolve(renderedLocations));
-		});
+			renderedLocations += await renderEngine.parseAndRender(template, locationCopy);
+		}
+		return renderedLocations;
 	},
 
 	/**
@@ -208,101 +191,92 @@ const internalNginx = {
 	 * @param   {Object}  host
 	 * @returns {Promise}
 	 */
-	generateConfig: (host_type, host_row) => {
+	generateConfig: async (host_type, host_row) => {
 		// Prevent modifying the original object:
 		const host = JSON.parse(JSON.stringify(host_row));
 		const nice_host_type = internalNginx.getFileFriendlyHostType(host_type);
 
 		const renderEngine = utils.getRenderEngine();
 
-		return new Promise((resolve, reject) => {
-			let template = null;
-			const filename = internalNginx.getConfigName(nice_host_type, host.id);
+		let template = null;
+		const filename = internalNginx.getConfigName(nice_host_type, host.id);
 
-			try {
-				template = fs.readFileSync(`${__dirname}/../templates/${nice_host_type}.conf`, { encoding: "utf8" });
-			} catch (err) {
-				reject(new errs.ConfigurationError(err.message));
-				return;
+		try {
+			template = await fs.promises.readFile(`${__dirname}/../templates/${nice_host_type}.conf`, { encoding: "utf8" });
+		} catch (err) {
+			throw new errs.ConfigurationError(err.message);
+		}
+
+		let origLocations;
+
+		// Manipulate the data a bit before sending it to the template
+		if (nice_host_type !== "default") {
+			host.use_default_location = true;
+			if (typeof host.advanced_config !== "undefined" && host.advanced_config) {
+				host.use_default_location = !internalNginx.advancedConfigHasDefaultLocation(host.advanced_config);
 			}
+		}
 
-			let locationsPromise;
-			let origLocations;
+		// For redirection hosts, if the scheme is not http or https, set it to $scheme
+		if (
+			nice_host_type === "redirection_host" &&
+			["http", "https"].indexOf(host.forward_scheme.toLowerCase()) === -1
+		) {
+			host.forward_scheme = "$scheme";
+		}
 
-			// Manipulate the data a bit before sending it to the template
-			if (nice_host_type !== "default") {
-				host.use_default_location = true;
-				if (typeof host.advanced_config !== "undefined" && host.advanced_config) {
-					host.use_default_location = !internalNginx.advancedConfigHasDefaultLocation(host.advanced_config);
+		if (host.locations) {
+			origLocations = [].concat(host.locations);
+			const renderedLocations = await internalNginx.renderLocations(host);
+			host.locations = renderedLocations;
+
+			// Allow someone who is using / custom location path to use it, and skip the default / location
+			_.map(host.locations, (location) => {
+				if (location.path === "/") {
+					host.use_default_location = false;
 				}
-			}
-
-			// For redirection hosts, if the scheme is not http or https, set it to $scheme
-			if (
-				nice_host_type === "redirection_host" &&
-				["http", "https"].indexOf(host.forward_scheme.toLowerCase()) === -1
-			) {
-				host.forward_scheme = "$scheme";
-			}
-
-			if (host.locations) {
-				//logger.info ('host.locations = ' + JSON.stringify(host.locations, null, 2));
-				origLocations = [].concat(host.locations);
-				locationsPromise = internalNginx.renderLocations(host).then((renderedLocations) => {
-					host.locations = renderedLocations;
-				});
-
-				// Allow someone who is using / custom location path to use it, and skip the default / location
-				_.map(host.locations, (location) => {
-					if (location.path === "/") {
-						host.use_default_location = false;
-					}
-				});
-			} else {
-				locationsPromise = Promise.resolve();
-			}
-
-			if (
-				host.forward_host &&
-				host.forward_host.indexOf("/") > -1 &&
-				!host.forward_host.startsWith("/") &&
-				!host.forward_host.startsWith("unix")
-			) {
-				const split = host.forward_host.split("/");
-
-				host.forward_host = split.shift();
-				host.forward_path = `/${split.join("/")}`;
-			}
-
-			if (host.domain_names) {
-				host.server_names = host.domain_names.map((domain_name) => punycode.toASCII(domain_name));
-			}
-
-			host.env = process.env;
-
-			locationsPromise.then(() => {
-				renderEngine
-					.parseAndRender(template, host)
-					.then((config_text) => {
-						fs.writeFileSync(filename, config_text, { encoding: "utf8" });
-						debug(logger, "Wrote config:", filename);
-
-						// Restore locations array
-						host.locations = origLocations;
-
-						resolve(true);
-					})
-					.catch((err) => {
-						debug(logger, `Could not write ${filename}:`, err.message);
-						reject(new errs.ConfigurationError(err.message));
-					})
-					.then(() => {
-						if (process.env.DISABLE_NGINX_BEAUTIFIER === "false") {
-							utils.execFile("nginxbeautifier", ["-s", "4", filename]).catch(() => {});
-						}
-					});
 			});
-		});
+		}
+
+		if (
+			host.forward_host &&
+			host.forward_host.indexOf("/") > -1 &&
+			!host.forward_host.startsWith("/") &&
+			!host.forward_host.startsWith("unix")
+		) {
+			const split = host.forward_host.split("/");
+
+			host.forward_host = split.shift();
+			host.forward_path = `/${split.join("/")}`;
+		}
+
+		if (host.domain_names) {
+			host.server_names = host.domain_names.map((domain_name) => punycode.toASCII(domain_name));
+		}
+
+		host.env = process.env;
+
+		try {
+			const config_text = await renderEngine.parseAndRender(template, host);
+			await fs.promises.writeFile(filename, config_text, { encoding: "utf8" });
+			debug(logger, "Wrote config:", filename);
+
+			// Restore locations array
+			host.locations = origLocations;
+		} catch (err) {
+			debug(logger, `Could not write ${filename}:`, err.message);
+			throw new errs.ConfigurationError(err.message);
+		}
+
+		if (process.env.DISABLE_NGINX_BEAUTIFIER === "false") {
+			try {
+				await utils.execFile("nginxbeautifier", ["-s", "4", filename]);
+			} catch {
+				// ignore beautifier errors
+			}
+		}
+		
+		return true;
 	},
 
 	/**
@@ -310,13 +284,16 @@ const internalNginx = {
 	 *
 	 * @param   {String}  filename
 	 */
-	deleteFile: (filename) => {
-		if (!fs.existsSync(filename)) {
-			return;
+	deleteFile: async (filename) => {
+		try {
+			await fs.promises.access(filename);
+		} catch {
+			return; // file doesn't exist
 		}
+		
 		try {
 			debug(logger, `Deleting file: ${filename}`);
-			fs.unlinkSync(filename);
+			await fs.promises.unlink(filename);
 		} catch (err) {
 			debug(logger, "Could not delete file:", JSON.stringify(err, null, 2));
 		}
@@ -336,17 +313,14 @@ const internalNginx = {
 	 * @param   {Object}  [host]
 	 * @returns {Promise}
 	 */
-	deleteConfig: (host_type, host) => {
+	deleteConfig: async (host_type, host) => {
 		const config_file = internalNginx.getConfigName(
 			internalNginx.getFileFriendlyHostType(host_type),
 			typeof host === "undefined" ? 0 : host.id,
 		);
 
-		return new Promise((resolve /*, reject*/) => {
-			internalNginx.deleteFile(config_file);
-			internalNginx.deleteFile(`${config_file}.err`);
-			resolve();
-		});
+		await internalNginx.deleteFile(config_file);
+		await internalNginx.deleteFile(`${config_file}.err`);
 	},
 
 	/**
@@ -354,17 +328,13 @@ const internalNginx = {
 	 * @param   {Object}  [host]
 	 * @returns {Promise}
 	 */
-	renameConfigAsError: (host_type, host) => {
+	renameConfigAsError: async (host_type, host) => {
 		const config_file = internalNginx.getConfigName(
 			internalNginx.getFileFriendlyHostType(host_type),
 			typeof host === "undefined" ? 0 : host.id,
 		);
 
-		return new Promise((resolve /*, reject */) => {
-			fs.rename(config_file, `${config_file}.err`, () => {
-				resolve();
-			});
-		});
+		await fs.promises.rename(config_file, `${config_file}.err`);
 	},
 
 	/**
@@ -372,14 +342,14 @@ const internalNginx = {
 	 * @param   {Array}   hosts
 	 * @returns {Promise}
 	 */
-	bulkGenerateConfigs: (model, hostType, hosts) => {
+	bulkGenerateConfigs: async (model, hostType, hosts) => {
 		const promises = [];
 		hosts.map((host) => {
 			promises.push(internalNginx.configure(model, hostType, host));
 			return true;
 		});
 
-		return Promise.all(promises);
+		await Promise.all(promises);
 	},
 
 	/**

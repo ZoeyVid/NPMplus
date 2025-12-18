@@ -15,7 +15,7 @@ const CLOUDFARE_V4_URL = "https://www.cloudflare.com/ips-v4";
 const CLOUDFARE_V6_URL = "https://www.cloudflare.com/ips-v6";
 
 const regIpV4 = /^(\d+\.?){4}\/\d+/;
-const regIpV6 = /^(([\da-fA-F]+)?:)+\/\d+/;
+const regIpV6 = /^(([\\da-fA-F]+)?:)+\/\\d+/;
 
 const internalIpRanges = {
 	interval_timeout: 1000 * 60 * 60 * 6 * Number.parseInt(process.env.IPRT, 10),
@@ -53,50 +53,37 @@ const internalIpRanges = {
 	/**
 	 * Triggered at startup and then later by a timer, this will fetch the ip ranges from services and apply them to nginx.
 	 */
-	fetch: () => {
+	fetch: async () => {
 		if (!internalIpRanges.interval_processing) {
 			internalIpRanges.interval_processing = true;
 			logger.info("Fetching IP Ranges from online services...");
 
 			let ip_ranges = [];
 
-			return internalIpRanges
-				.fetchUrl(CLOUDFARE_V4_URL)
-				.then((cloudfare_data) => {
-					const items = cloudfare_data.split("\n").filter((line) => regIpV4.test(line));
-					ip_ranges = [...ip_ranges, ...items];
-				})
-				.then(() => {
-					return internalIpRanges.fetchUrl(CLOUDFARE_V6_URL);
-				})
-				.then((cloudfare_data) => {
-					const items = cloudfare_data.split("\n").filter((line) => regIpV6.test(line));
-					ip_ranges = [...ip_ranges, ...items];
-				})
-				.then(() => {
-					const clean_ip_ranges = [];
-					ip_ranges.map((range) => {
-						if (range) {
-							clean_ip_ranges.push(range);
-						}
-						return true;
-					});
+			try {
+				const cloudflare_v4_data = await internalIpRanges.fetchUrl(CLOUDFARE_V4_URL);
+				const items_v4 = cloudflare_v4_data.split("\n").filter((line) => regIpV4.test(line));
+				ip_ranges = [...ip_ranges, ...items_v4];
 
-					return internalIpRanges.generateConfig(clean_ip_ranges).then(() => {
-						if (internalIpRanges.iteration_count) {
-							// Reload nginx
-							return internalNginx.reload();
-						}
-					});
-				})
-				.then(() => {
-					internalIpRanges.interval_processing = false;
-					internalIpRanges.iteration_count++;
-				})
-				.catch((err) => {
-					logger.fatal(err.message);
-					internalIpRanges.interval_processing = false;
-				});
+				const cloudflare_v6_data = await internalIpRanges.fetchUrl(CLOUDFARE_V6_URL);
+				const items_v6 = cloudflare_v6_data.split("\n").filter((line) => regIpV6.test(line));
+				ip_ranges = [...ip_ranges, ...items_v6];
+
+				const clean_ip_ranges = ip_ranges.filter((range) => !!range);
+
+				await internalIpRanges.generateConfig(clean_ip_ranges);
+
+				if (internalIpRanges.iteration_count) {
+					// Reload nginx
+					await internalNginx.reload();
+				}
+
+				internalIpRanges.iteration_count++;
+			} catch (err) {
+				logger.fatal(err.message);
+			} finally {
+				internalIpRanges.interval_processing = false;
+			}
 		}
 	},
 
@@ -104,29 +91,25 @@ const internalIpRanges = {
 	 * @param   {Array}  ip_ranges
 	 * @returns {Promise}
 	 */
-	generateConfig: (ip_ranges) => {
+	generateConfig: async (ip_ranges) => {
 		const renderEngine = utils.getRenderEngine();
-		return new Promise((resolve, reject) => {
-			let template = null;
-			const filename = "/data/nginx/ip_ranges.conf";
-			try {
-				template = fs.readFileSync(`${__dirname}/../templates/ip_ranges.conf`, { encoding: "utf8" });
-			} catch (err) {
-				reject(new errs.ConfigurationError(err.message));
-				return;
-			}
+		const filename = "/data/nginx/ip_ranges.conf";
+		
+		let template = null;
+		try {
+			template = await fs.promises.readFile(`${__dirname}/../templates/ip_ranges.conf`, { encoding: "utf8" });
+		} catch (err) {
+			throw new errs.ConfigurationError(err.message);
+		}
 
-			renderEngine
-				.parseAndRender(template, { ip_ranges: ip_ranges })
-				.then((config_text) => {
-					fs.writeFileSync(filename, config_text, { encoding: "utf8" });
-					resolve(true);
-				})
-				.catch((err) => {
-					logger.warn(`Could not write ${filename}: ${err.message}`);
-					reject(new errs.ConfigurationError(err.message));
-				});
-		});
+		try {
+			const config_text = await renderEngine.parseAndRender(template, { ip_ranges: ip_ranges });
+			await fs.promises.writeFile(filename, config_text, { encoding: "utf8" });
+			return true;
+		} catch (err) {
+			logger.warn(`Could not write ${filename}: ${err.message}`);
+			throw new errs.ConfigurationError(err.message);
+		}
 	},
 };
 
