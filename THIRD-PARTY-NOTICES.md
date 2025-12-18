@@ -1,0 +1,93 @@
+# Third-Party Notices
+
+This project (NPMplus) incorporates the following third-party components. The licenses are extracted directly from the NPM Registry API for the specified versions. This list includes both production dependencies and development dependencies from the backend and frontend package.json files.
+
+For verification, each entry links to the NPM package page (e.g., https://www.npmjs.com/package/<package>/v/<version>), where the license can be confirmed in the package metadata. Note: Transitive dependencies (dependencies of dependencies) are not included, as this focuses on direct dependencies.
+
+## Backend Dependencies (from backend/package.json)
+
+### Production Dependencies
+- @apidevtools/json-schema-ref-parser@15.1.3 - MIT[](https://www.npmjs.com/package/@apidevtools/json-schema-ref-parser/v/15.1.3)
+- ajv@8.17.1 - MIT[](https://www.npmjs.com/package/ajv/v/8.17.1)
+- archiver@7.0.1 - MIT[](https://www.npmjs.com/package/archiver/v/7.0.1)
+- batchflow@0.4.0 - MIT[](https://www.npmjs.com/package/batchflow/v/0.4.0)
+- bcryptjs@3.0.3 - BSD-3-Clause[](https://www.npmjs.com/package/bcryptjs/v/3.0.3)
+- better-sqlite3@12.5.0 - MIT[](https://www.npmjs.com/package/better-sqlite3/v/12.5.0)
+- dayjs@1.11.19 - MIT[](https://www.npmjs.com/package/dayjs/v/1.11.19)
+- express@5.2.1 - MIT[](https://www.npmjs.com/package/express/v/5.2.1)
+- express-fileupload@1.5.2 - MIT[](https://www.npmjs.com/package/express-fileupload/v/1.5.2)
+- gravatar@1.8.2 - MIT[](https://www.npmjs.com/package/gravatar/v/1.8.2)
+- helmet@8.1.0 - MIT[](https://www.npmjs.com/package/helmet/v/8.1.0)
+- jsonwebtoken@9.0.3 - MIT[](https://www.npmjs.com/package/jsonwebtoken/v/9.0.3)
+- knex@3.1.0 - MIT[](https://www.npmjs.com/package/knex/v/3.1.0)
+- liquidjs@10.24.0 - MIT[](https://www.npmjs.com/package/liquidjs/v/10.24.0)
+- lodash@4.17.21 - MIT[](https://www.npmjs.com/package/lodash/v/4.17.21)
+- mysql2@3.16.0 - MIT[](https://www.npmjs.com/package/mysql2/v/3.16.0)
+- objection@3.1.5 - MIT[](https://www.npmjs.com/package/objection/v/3.1.5)
+- openid-client@6.8.1 - MIT[](https://www.npmjs.com/package/openid-client/v/6.8.1)
+- path@0.12.7 - MIT[](https://www.npmjs.com/package/path/v/0.12.7)
+- pg@8.16.3 - MIT[](https://www.npmjs.com/package/pg/v/8.16.3)
+- proxy-agent@6.5.0 - MIT[](https://www.npmjs.com/package/proxy-agent/v/6.5.0)
+- punycode.js@2.3.1 - MIT[](https://www.npmjs.com/package/punycode.js/v/2.3.1)
+- signale@1.4.0 - MIT[](https://www.npmjs.com/package/signale/v/1.4.0)
+- temp-write@6.0.0 - MIT[](https://www.npmjs.com/package/temp-write/v/6.0.0)
+- express-rate-limit@8.2.1 - MIT[](https://www.npmjs.com/package/express-rate-limit/v/8.2.1)
+
+### Development Dependencies
+- @apidevtools/swagger-parser@12.1.0 - MIT[](https://www.npmjs.com/package/@apidevtools/swagger-parser/v/12.1.0)
+- @biomejs/biome@2.3.10 - MIT OR Apache-2.0[](https://www.npmjs.com/package/@biomejs/biome/v/2.3.10)
+- vitest@4.0.16 - MIT[](https://www.npmjs.com/package/vitest/v/4.0.16)
+
+## Frontend Dependencies (from frontend/package.json)
+
+### Production Dependencies
+- @tabler/core@1.4.0 - MIT[](https://www.npmjs.com/package/@tabler/core/v/1.4.0)
+- @tabler/icons-react@3.36.0 - MIT[](https://www.npmjs.com/package/@tabler/icons-react/v/3.36.0)
+- @tanstack/react-query@5.90.12 - MIT[](https://www.npmjs.com/package/@tanstack/react-query/v/5.90.12)
+- @tanstack/react-table@8.21.3 - MIT[](https://www.npmjs.com/package/@tanstack/react-table/v/8.21.3)
+- @uiw/react-textarea-code-editor@3.1.1 - MIT[](https://www.npmjs.com/package/@uiw/react-textarea-code-editor/v/3.1.1)
+- classnames@2.5.1 - MIT[](https://www.npmjs.com/package/classnames/v/2.5.1)
+- country-flag-icons@1.6.4 - MIT[](https://www.npmjs.com/package/country-flag-icons/v/1.6.4)
+- date-fns@4.1.0 - MIT[](https://www.npmjs.com/package/date-fns/v/4.1.0)
+- dayjs@1.11.19 - MIT[](https://www.npmjs.com/package/dayjs/v/1.11.19)
+- ez-modal-react@1.0.5 - MIT[](https://www.npmjs.com/package/ez-modal-react/v/1.0.5)
+- formik@2.4.9 - Apache-2.0[](https://www.npmjs.com/package/formik/v/2.4.9)
+- framer-motion@12.23.26 - MIT[](https://www.npmjs.com/package/framer-motion/v/12.23.26)
+- generate-password-browser@1.1.0 - MIT[](https://www.npmjs.com/package/generate-password-browser/v/1.1.0)
+- humps@2.0.1 - MIT[](https://www.npmjs.com/package/humps/v/2.0.1)
+- query-string@9.3.1 - MIT[](https://www.npmjs.com/package/query-string/v/9.3.1)
+- react@19.2.3 - MIT[](https://www.npmjs.com/package/react/v/19.2.3)
+- react-bootstrap@2.10.10 - MIT[](https://www.npmjs.com/package/react-bootstrap/v/2.10.10)
+- react-dom@19.2.3 - MIT[](https://www.npmjs.com/package/react-dom/v/19.2.3)
+- react-intl@8.0.4 - BSD-3-Clause[](https://www.npmjs.com/package/react-intl/v/8.0.4)
+- react-markdown@10.1.0 - MIT[](https://www.npmjs.com/package/react-markdown/v/10.1.0)
+- react-router-dom@7.11.0 - MIT[](https://www.npmjs.com/package/react-router-dom/v/7.11.0)
+- react-select@5.10.2 - MIT[](https://www.npmjs.com/package/react-select/v/5.10.2)
+- react-toastify@11.0.5 - MIT[](https://www.npmjs.com/package/react-toastify/v/11.0.5)
+- rooks@9.5.0 - MIT[](https://www.npmjs.com/package/rooks/v/9.5.0)
+
+### Development Dependencies
+- @biomejs/biome@2.3.10 - MIT OR Apache-2.0[](https://www.npmjs.com/package/@biomejs/biome/v/2.3.10)
+- @formatjs/cli@6.8.1 - MIT[](https://www.npmjs.com/package/@formatjs/cli/v/6.8.1)
+- @tanstack/react-query-devtools@5.91.1 - MIT[](https://www.npmjs.com/package/@tanstack/react-query-devtools/v/5.91.1)
+- @testing-library/dom@10.4.1 - MIT[](https://www.npmjs.com/package/@testing-library/dom/v/10.4.1)
+- @testing-library/jest-dom@6.9.1 - MIT[](https://www.npmjs.com/package/@testing-library/jest-dom/v/6.9.1)
+- @testing-library/react@16.3.1 - MIT[](https://www.npmjs.com/package/@testing-library/react/v/16.3.1)
+- @types/country-flag-icons@1.2.2 - MIT[](https://www.npmjs.com/package/@types/country-flag-icons/v/1.2.2)
+- @types/humps@2.0.6 - MIT[](https://www.npmjs.com/package/@types/humps/v/2.0.6)
+- @types/react@19.2.7 - MIT[](https://www.npmjs.com/package/@types/react/v/19.2.7)
+- @types/react-dom@19.2.3 - MIT[](https://www.npmjs.com/package/@types/react-dom/v/19.2.3)
+- @types/react-table@7.7.20 - MIT[](https://www.npmjs.com/package/@types/react-table/v/7.7.20)
+- @vitejs/plugin-react@5.1.2 - MIT[](https://www.npmjs.com/package/@vitejs/plugin-react/v/5.1.2)
+- happy-dom@20.0.11 - MIT[](https://www.npmjs.com/package/happy-dom/v/20.0.11)
+- postcss@8.5.6 - MIT[](https://www.npmjs.com/package/postcss/v/8.5.6)
+- postcss-simple-vars@7.0.1 - MIT[](https://www.npmjs.com/package/postcss-simple-vars/v/7.0.1)
+- sass@1.97.0 - MIT[](https://www.npmjs.com/package/sass/v/1.97.0)
+- tmp@0.2.5 - MIT[](https://www.npmjs.com/package/tmp/v/0.2.5)
+- typescript@5.9.3 - Apache-2.0[](https://www.npmjs.com/package/typescript/v/5.9.3)
+- vite@7.3.0 - MIT[](https://www.npmjs.com/package/vite/v/7.3.0)
+- vite-plugin-checker@0.12.0 - MIT[](https://www.npmjs.com/package/vite-plugin-checker/v/0.12.0)
+- vite-tsconfig-paths@6.0.2 - MIT[](https://www.npmjs.com/package/vite-tsconfig-paths/v/6.0.2)
+- vitest@4.0.15 - MIT[](https://www.npmjs.com/package/vitest/v/4.0.15)
+
+The above information is based solely on the NPM Registry data as of December 18, 2025. For full license texts, refer to the respective package repositories or the NPM links provided.
