@@ -80,8 +80,8 @@ if [ "$PHP83" = "true" ]; then while true; do PHP_INI_SCAN_DIR=/data/php/83/conf
 if [ "$PHP84" = "true" ]; then while true; do PHP_INI_SCAN_DIR=/data/php/84/conf.d php-fpm84 -c /data/php/84 -y /data/php/84/php-fpm.conf -FOR; done; fi &
 if [ "$LOGROTATE" = "true" ]; then while true; do logrotate --verbose --state /data/logrotate.state /etc/logrotate; sleep 25h; done; fi &
 # shellcheck disable=SC2086
-if [ "$GOA" = "true" ]; then while true; do if [ -f /data/nginx/access.log ]; then goaccess --no-global-config --num-tests=0 --tz="$TZ" --time-format="%H:%M:%S" \
-                    --date-format="%d/%b/%Y" --log-format='[%d:%t %^] %v %h %T "%r" %s %b %b %R %u' --unix-socket=/run/goaccess.sock --log-file=/data/nginx/access.log \
+if [ "$GOA" = "true" ]; then while true; do if [ -f /data/nginx/json_access.log ]; then tail -F /data/nginx/json_access.log | jq --unbuffered -r 'try ("[" + .time_local + "] " + .http_host + " " + .remote_addr + " " + .request_time + " \"" + (.request | gsub("\""; "\\\"")) + "\" " + .status + " " + .body_bytes_sent + " " + .bytes_sent + " \"" + (.http_referer | gsub("\""; "\\\"")) + "\" \"" + (.http_user_agent | gsub("\""; "\\\"")) + "\"") catch empty' | goaccess --no-global-config --num-tests=0 --tz="$TZ" --time-format="%H:%M:%S" \
+                    --date-format="%d/%b/%Y" --log-format='[%d:%t %^] %v %h %T "%r" %s %b %b "%R" "%u"' --unix-socket=/run/goaccess.sock --log-file=- \
                     --real-time-html --output=/tmp/goa/index.html --persist --restore --db-path=/data/goaccess/data \
                     --browsers-file=/etc/goaccess/browsers.list --browsers-file=/etc/goaccess/podcast.list $GOACLA; else sleep 10s; fi; done; fi &
 while true; do nginx -e stderr; done &
