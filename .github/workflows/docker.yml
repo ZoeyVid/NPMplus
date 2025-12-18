@@ -48,11 +48,9 @@ jobs:
       - name: Calculate Version & Tags
         id: calc
         run: |
-          # 1. Short Hash für package.json
           SHORT_SHA=$(git rev-parse --short HEAD)
           echo "hash=${SHORT_SHA}" >> $GITHUB_OUTPUT
 
-          # 2. Basis-Tag berechnen (OHNE Arch-Suffix)
           if [ "${{ github.event_name }}" == "pull_request" ]; then
             CLEAN_PR=$(echo pr-${{ github.ref_name }} | sed "s|refs/pull/:||g" | sed "s|/merge||g")
             echo "tag_base=${CLEAN_PR}" >> $GITHUB_OUTPUT
@@ -110,7 +108,8 @@ jobs:
           file: ./Dockerfile
           target: frontend
           push: false
-          build-args: ${{ matrix.flags }}
+          build-args: |
+            ${{ matrix.flags }}
           cache-from: type=gha,scope=${{ matrix.arch }}-frontend
           cache-to: type=gha,mode=max,scope=${{ matrix.arch }}-frontend
 
@@ -121,7 +120,8 @@ jobs:
           file: ./Dockerfile
           target: backend
           push: false
-          build-args: ${{ matrix.flags }}
+          build-args: |
+            ${{ matrix.flags }}
           cache-from: type=gha,scope=${{ matrix.arch }}-backend
           cache-to: type=gha,mode=max,scope=${{ matrix.arch }}-backend
 
@@ -132,7 +132,8 @@ jobs:
           file: ./Dockerfile
           target: crowdsec
           push: false
-          build-args: ${{ matrix.flags }}
+          build-args: |
+            ${{ matrix.flags }}
           cache-from: type=gha,scope=${{ matrix.arch }}-crowdsec
           cache-to: type=gha,mode=max,scope=${{ matrix.arch }}-crowdsec
 
@@ -142,9 +143,9 @@ jobs:
           context: .
           file: ./Dockerfile
           push: true
-          # Hier setzen wir den Tag zusammen: BASE + ARCH
           tags: ${{ env.IMAGE_NAME }}:${{ needs.prepare.outputs.docker_tag_base }}-${{ matrix.arch }}
-          build-args: ${{ matrix.flags }}
+          build-args: |
+            ${{ matrix.flags }}
           cache-from: |
             type=gha,scope=${{ matrix.arch }}-frontend
             type=gha,scope=${{ matrix.arch }}-backend
@@ -177,10 +178,8 @@ jobs:
 
       - name: Create Multiarch Manifest
         run: |
-          # Wir holen uns den Basis-Tag (z.B. 'develop' oder 'pr-123')
           TAG_BASE="${{ env.IMAGE_NAME }}:${{ needs.prepare.outputs.docker_tag_base }}"
           
-          # Wir verknüpfen die x86 und arm Varianten zu einem Manifest
           docker buildx imagetools create --tag "${TAG_BASE}" \
             "${TAG_BASE}-x86_64" \
             "${TAG_BASE}-aarch64"
