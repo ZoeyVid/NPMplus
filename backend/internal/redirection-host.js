@@ -109,9 +109,7 @@ const internalRedirectionHost = {
 
 		if (typeof thisData.domain_names !== "undefined") {
 			thisData.domain_names.map((domain_name) => {
-				domain_name_check_promises.push(
-					internalHost.isHostnameTaken(domain_name, "redirection", thisData.id),
-				);
+				domain_name_check_promises.push(internalHost.isHostnameTaken(domain_name, "redirection", thisData.id));
 				return true;
 			});
 
@@ -174,7 +172,7 @@ const internalRedirectionHost = {
 		// Configure nginx
 		const new_meta = await internalNginx.configure(redirectionHostModel, "redirection_host", row);
 		row.meta = new_meta;
-		
+
 		return _.omit(internalHost.cleanRowCertificateMeta(row), omissions());
 	},
 

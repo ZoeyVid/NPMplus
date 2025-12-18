@@ -36,7 +36,7 @@ const internalNginx = {
 		try {
 			// Test nginx again and update meta with result
 			await internalNginx.test();
-			
+
 			// nginx is ok
 			combined_meta = _.assign({}, host.meta, {
 				nginx_online: true,
@@ -58,7 +58,7 @@ const internalNginx = {
 			await model.query().where("id", host.id).patch({
 				meta: combined_meta,
 			});
-			
+
 			await internalNginx.renameConfigAsError(host_type, host);
 		}
 
@@ -110,7 +110,7 @@ const internalNginx = {
 		}
 
 		await Promise.all(promises);
-		
+
 		try {
 			await internalNginx.test();
 			await utils.execFile("nginx", ["-s", "reload"]);
@@ -202,7 +202,9 @@ const internalNginx = {
 		const filename = internalNginx.getConfigName(nice_host_type, host.id);
 
 		try {
-			template = await fs.promises.readFile(`${__dirname}/../templates/${nice_host_type}.conf`, { encoding: "utf8" });
+			template = await fs.promises.readFile(`${__dirname}/../templates/${nice_host_type}.conf`, {
+				encoding: "utf8",
+			});
 		} catch (err) {
 			throw new errs.ConfigurationError(err.message);
 		}
@@ -275,7 +277,7 @@ const internalNginx = {
 				// ignore beautifier errors
 			}
 		}
-		
+
 		return true;
 	},
 
@@ -290,7 +292,7 @@ const internalNginx = {
 		} catch {
 			return; // file doesn't exist
 		}
-		
+
 		try {
 			debug(logger, `Deleting file: ${filename}`);
 			await fs.promises.unlink(filename);

@@ -50,9 +50,7 @@ const internalStream = {
 			.first();
 
 		if (collision) {
-			throw new errs.ValidationError(
-				`Incoming port ${data.incoming_port} is already in use by another stream.`,
-			);
+			throw new errs.ValidationError(`Incoming port ${data.incoming_port} is already in use by another stream.`);
 		}
 
 		data.owner_user_id = access.token.getUserId(1);
@@ -169,10 +167,8 @@ const internalStream = {
 			data,
 		);
 
-		let saved_row = await streamModel
-			.query()
-			.patchAndFetchById(row.id, thisData);
-		
+		let saved_row = await streamModel.query().patchAndFetchById(row.id, thisData);
+
 		saved_row = utils.omitRow(omissions())(saved_row);
 
 		// Add to audit log
@@ -184,7 +180,7 @@ const internalStream = {
 		});
 
 		row = await internalStream.get(access, { id: thisData.id, expand: ["owner", "certificate"] });
-		
+
 		const new_meta = await internalNginx.configure(streamModel, "stream", row);
 		row.meta = new_meta;
 		return _.omit(internalHost.cleanRowCertificateMeta(row), omissions());
