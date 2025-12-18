@@ -1,5 +1,4 @@
 import fs from "node:fs";
-import batchflow from "batchflow";
 import bcrypt from "bcryptjs";
 import _ from "lodash";
 import errs from "../lib/error.js";
@@ -32,17 +31,18 @@ const internalAccessList = {
 				pass_auth: data.pass_auth,
 				meta: data.meta,
 				owner_user_id: access.token.getUserId(1),
-			})
-			.then(utils.omitRow(omissions()));
+			});
+		
+		const omittedRow = utils.omitRow(omissions())(row);
 
-		data.id = row.id;
+		data.id = omittedRow.id;
 
 		const promises = [];
 		// Items
 		data.items.map((item) => {
 			promises.push(
 				accessListAuthModel.query().insert({
-					access_list_id: row.id,
+					access_list_id: omittedRow.id,
 					username: item.username,
 					password: item.password,
 				}),
@@ -54,7 +54,7 @@ const internalAccessList = {
 		data.clients?.map((client) => {
 			promises.push(
 				accessListClientModel.query().insert({
-					access_list_id: row.id,
+					access_list_id: omittedRow.id,
 					address: client.address,
 					directive: client.directive,
 				}),
@@ -219,7 +219,7 @@ const internalAccessList = {
 	 */
 	get: async (access, data, skipMasking) => {
 		const thisData = data || {};
-		const accessData = await access.can("access_lists:get", thisData.id);
+		await access.can("access_lists:get", thisData.id);
 
 		const query = accessListModel
 			.query()
@@ -241,11 +241,14 @@ const internalAccessList = {
 			query.withGraphFetched(`[${thisData.expand.join(", ")}]`);
 		}
 
-		let row = await query.then(utils.omitRow(omissions()));
-
+		let row = await query;
+		
 		if (!row || !row.id) {
 			throw new errs.ItemNotFoundError(thisData.id);
 		}
+		
+		row = utils.omitRow(omissions())(row);
+
 		if (!skipMasking && typeof row.items !== "undefined" && row.items) {
 			row = internalAccessList.maskItems(row);
 		}
@@ -302,7 +305,7 @@ const internalAccessList = {
 
 		// delete the htpasswd file
 		try {
-			fs.unlinkSync(internalAccessList.getFilename(row));
+			await fs.promises.unlink(internalAccessList.getFilename(row));
 		} catch (_err) {
 			// do nothing
 		}
@@ -354,7 +357,9 @@ const internalAccessList = {
 			query.withGraphFetched(`[${expand.join(", ")}]`);
 		}
 
-		const rows = await query.then(utils.omitRows(omissions()));
+		let rows = await query;
+		rows = utils.omitRows(omissions())(rows);
+		
 		if (rows) {
 			rows.map((row, idx) => {
 				if (typeof row.items !== "undefined" && row.items) {
@@ -430,50 +435,31 @@ const internalAccessList = {
 
 		// 1. remove any existing access file
 		try {
-			fs.unlinkSync(htpasswdFile);
+			await fs.promises.unlink(htpasswdFile);
 		} catch (_err) {
 			// do nothing
 		}
 
 		// 2. create empty access file
-		fs.writeFileSync(htpasswdFile, "", { encoding: "utf8" });
+		await fs.promises.writeFile(htpasswdFile, "", { encoding: "utf8" });
 
 		// 3. generate password for each user
 		if (list.items.length) {
-			await new Promise((resolve, reject) => {
-				batchflow(list.items)
-					.sequential()
-					.each((_i, item, next) => {
-						if (item.password?.length) {
-							logger.info(`Adding: ${item.username}`);
-
-							bcrypt
-								.hash(item.password, 13)
-								.then((res) => {
-									try {
-										fs.appendFileSync(htpasswdFile, `${item.username}:${res}\n`, {
-											encoding: "utf8",
-										});
-									} catch (err) {
-										reject(err);
-									}
-									next();
-								})
-								.catch((err) => {
-									logger.error(err);
-									next(err);
-								});
-						}
-					})
-					.error((err) => {
+			for (const item of list.items) {
+				if (item.password?.length) {
+					logger.info(`Adding: ${item.username}`);
+					try {
+						const res = await bcrypt.hash(item.password, 13);
+						await fs.promises.appendFile(htpasswdFile, `${item.username}:${res}\n`, {
+							encoding: "utf8",
+						});
+					} catch (err) {
 						logger.error(err);
-						reject(err);
-					})
-					.end((results) => {
-						logger.success(`Built Access file #${list.id} for: ${list.name}`);
-						resolve(results);
-					});
-			});
+						throw err;
+					}
+				}
+			}
+			logger.success(`Built Access file #${list.id} for: ${list.name}`);
 		}
 	},
 };

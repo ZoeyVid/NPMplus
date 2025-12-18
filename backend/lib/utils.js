@@ -3,10 +3,13 @@ import crypto from "node:crypto";
 import fs from "node:fs";
 import { dirname } from "node:path";
 import { fileURLToPath } from "node:url";
+import { promisify } from "node:util";
 import { Liquid } from "liquidjs";
 import _ from "lodash";
 import { debug, global as logger } from "../logger.js";
 import errs from "./error.js";
+
+const nodeExecFilePromise = promisify(nodeExecFile);
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -29,20 +32,17 @@ const writeHash = () => {
 /**
  * @param   {String} cmd
  * @param   {Array}  args
- * @returns {Promise}
+ * @returns {Promise<string>}
  */
-const execFile = (cmd, args) => {
+const execFile = async (cmd, args) => {
 	debug(logger, `CMD: ${cmd} ${args ? args.join(" ") : ""}`);
 
-	return new Promise((resolve, reject) => {
-		nodeExecFile(cmd, args, (err, stdout, stderr) => {
-			if (err && typeof err === "object") {
-				reject(new errs.CommandError((stdout + stderr).trim(), 1, err));
-			} else {
-				resolve((stdout + stderr).trim());
-			}
-		});
-	});
+	try {
+		const { stdout, stderr } = await nodeExecFilePromise(cmd, args);
+		return (stdout + stderr).trim();
+	} catch (err) {
+		throw new errs.CommandError((err.stdout + err.stderr).trim(), 1, err);
+	}
 };
 
 /**

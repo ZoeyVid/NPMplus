@@ -21,7 +21,7 @@ export const isSetup = async () => {
 /**
  * Creates a default admin users if one doesn't already exist in the database
  *
- * @returns {Promise}
+ * @returns {Promise<void>}
  */
 const setupDefaultUser = async () => {
 	const initialAdminEmail = process.env.INITIAL_ADMIN_EMAIL;
@@ -33,7 +33,7 @@ const setupDefaultUser = async () => {
 	// I'm keeping this legacy behavior in case some people are automating deployments.
 
 	if (!initialAdminEmail || !initialAdminPassword) {
-		return Promise.resolve();
+		return;
 	}
 
 	const userIsetup = await isSetup();
@@ -76,7 +76,7 @@ const setupDefaultUser = async () => {
 /**
  * Creates default settings if they don't already exist in the database
  *
- * @returns {Promise}
+ * @returns {Promise<void>}
  */
 const setupDefaultSettings = async () => {
 	let rowds = await settingModel.query().select("id").where({ id: "default-site" }).first();
@@ -104,40 +104,36 @@ const setupDefaultSettings = async () => {
 		logger.info("Added oidc-config setting");
 	}
 
-	internalNginx.generateConfig("default", rowds);
+	await internalNginx.generateConfig("default", rowds);
 };
 
 /**
  * Installs all Certbot plugins which are required for an installed certificate
  *
- * @returns {Promise}
+ * @returns {Promise<void>}
  */
 const setupCertbotPlugins = async () => {
 	const certificates = await certificateModel.query().where("is_deleted", 0).andWhere("provider", "letsencrypt");
 
 	if (certificates?.length) {
 		const plugins = [];
-		const promises = [];
 
-		certificates.map((certificate) => {
+		for (const certificate of certificates) {
 			if (certificate.meta && certificate.meta.dns_challenge === true) {
 				if (plugins.indexOf(certificate.meta.dns_provider) === -1) {
 					plugins.push(certificate.meta.dns_provider);
 				}
 
-				fs.writeFileSync(
+				await fs.promises.writeFile(
 					`/data/certbot-credentials/credentials-${certificate.id}`,
 					certificate.meta.dns_provider_credentials,
 					{ mode: 0o600 },
 				);
 			}
-			return true;
-		});
+		}
 
-		await installPlugins(plugins);
-
-		if (promises.length) {
-			await Promise.all(promises);
+		if (plugins.length) {
+			await installPlugins(plugins);
 			logger.info(`Added Certbot plugins ${plugins.join(", ")}`);
 		}
 	}
@@ -146,7 +142,7 @@ const setupCertbotPlugins = async () => {
 /**
  * regenerate all hosts if needed
  *
- * @returns {Promise}
+ * @returns {Promise<void>}
  */
 const regenerateAllHosts = async () => {
 	if (process.env.REGENERATE_ALL === "true") {
@@ -157,7 +153,7 @@ const regenerateAllHosts = async () => {
 			.withGraphFetched("[certificate, access_list.[clients,items]]");
 
 		if (proxy_hosts?.length) {
-			internalNginx.bulkGenerateConfigs(proxyModel, "proxy_host", proxy_hosts);
+			await internalNginx.bulkGenerateConfigs(proxyModel, "proxy_host", proxy_hosts);
 		}
 
 		const redirection_hosts = await redirectionModel
@@ -167,7 +163,7 @@ const regenerateAllHosts = async () => {
 			.withGraphFetched("[certificate]");
 
 		if (redirection_hosts?.length) {
-			internalNginx.bulkGenerateConfigs(redirectionModel, "redirection_host", redirection_hosts);
+			await internalNginx.bulkGenerateConfigs(redirectionModel, "redirection_host", redirection_hosts);
 		}
 
 		const dead_hosts = await deadModel
@@ -177,7 +173,7 @@ const regenerateAllHosts = async () => {
 			.withGraphFetched("[certificate]");
 
 		if (dead_hosts?.length) {
-			internalNginx.bulkGenerateConfigs(deadModel, "proxy_host", dead_hosts);
+			await internalNginx.bulkGenerateConfigs(deadModel, "proxy_host", dead_hosts);
 		}
 
 		const streams = await streamModel
@@ -187,11 +183,16 @@ const regenerateAllHosts = async () => {
 			.withGraphFetched("[certificate]");
 
 		if (streams?.length) {
-			internalNginx.bulkGenerateConfigs(streamModel, "stream", streams);
+			await internalNginx.bulkGenerateConfigs(streamModel, "stream", streams);
 		}
 
 		utils.writeHash();
 	}
 };
 
-export default () => setupDefaultUser().then(setupDefaultSettings).then(setupCertbotPlugins).then(regenerateAllHosts);
+export default async () => {
+	await setupDefaultUser();
+	await setupDefaultSettings();
+	await setupCertbotPlugins();
+	await regenerateAllHosts();
+};
