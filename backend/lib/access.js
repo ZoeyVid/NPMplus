@@ -6,7 +6,7 @@
  * the "role" which could be "user" or "admin". The scope in fact, could be "worker" or anything else.
  */
 
-import fs from "node:fs";
+import fs from "node:fs/promises";
 import { dirname } from "node:path";
 import { fileURLToPath } from "node:url";
 import Ajv from "ajv/dist/2020.js";
@@ -21,6 +21,8 @@ import errs from "./error.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
+
+const permissionSchemaCache = {};
 
 export default function (tokenString) {
 	const Token = TokenModel();
@@ -249,10 +251,15 @@ export default function (tokenString) {
 					properties: {},
 				};
 
-				const rawData = fs.readFileSync(`${__dirname}/access/${permission.replace(/:/gim, "-")}.json`, {
-					encoding: "utf8",
-				});
-				permissionSchema.properties[permission] = JSON.parse(rawData);
+				if (!permissionSchemaCache[permission]) {
+					const rawData = await fs.readFile(
+						`${__dirname}/access/${permission.replace(/:/gim, "-")}.json`,
+						"utf8",
+					);
+					permissionSchemaCache[permission] = JSON.parse(rawData);
+				}
+
+				permissionSchema.properties[permission] = permissionSchemaCache[permission];
 
 				const ajv = new Ajv({
 					verbose: true,

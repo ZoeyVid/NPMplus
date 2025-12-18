@@ -12,40 +12,41 @@ import setup from "./setup.js";
 const IP_RANGES_FETCH_ENABLED = process.env.SKIP_IP_RANGES === "false";
 
 async function appStart() {
-	return migrateUp()
-		.then(setup)
-		.then(getCompiledSchema)
-		.then(() => {
-			if (!IP_RANGES_FETCH_ENABLED) {
-				logger.info("IP Ranges fetch is disabled by environment variable");
-				return;
-			}
+	try {
+		await migrateUp();
+		await setup();
+		await getCompiledSchema();
+
+		if (!IP_RANGES_FETCH_ENABLED) {
+			logger.info("IP Ranges fetch is disabled by environment variable");
+		} else {
 			logger.info("IP Ranges fetch is enabled");
 			internalIpRanges.initTimer();
-			return internalIpRanges.fetch().catch((err) => {
+			try {
+				await internalIpRanges.fetch();
+			} catch (err) {
 				logger.error("IP Ranges fetch failed, continuing anyway:", err.message);
-			});
-		})
-		.then(() => {
-			internalCertificate.initTimer();
-			internalNginx.reload();
+			}
+		}
 
-			const server = app.listen("/run/npmplus.sock", () => {
-				logger.info(`Backend PID ${process.pid} listening on unix socket...`);
+		internalCertificate.initTimer();
+		internalNginx.reload();
 
-				process.on("SIGTERM", () => {
-					logger.info(`PID ${process.pid} received SIGTERM`);
-					server.close(() => {
-						logger.info("Stopping.");
-						process.exit(0);
-					});
+		const server = app.listen("/run/npmplus.sock", () => {
+			logger.info(`Backend PID ${process.pid} listening on unix socket...`);
+
+			process.on("SIGTERM", () => {
+				logger.info(`PID ${process.pid} received SIGTERM`);
+				server.close(() => {
+					logger.info("Stopping.");
+					process.exit(0);
 				});
 			});
-		})
-		.catch((err) => {
-			logger.error(`Startup Error: ${err.message}`, err);
-			setTimeout(appStart, 1000);
 		});
+	} catch (err) {
+		logger.error(`Startup Error: ${err.message}`, err);
+		setTimeout(appStart, 1000);
+	}
 }
 
 try {
