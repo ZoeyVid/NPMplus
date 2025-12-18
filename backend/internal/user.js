@@ -120,7 +120,7 @@ const internalUser = {
 		}
 
 		data.avatar = gravatar.url(data.email || user.email, { default: "mm" });
-		
+
 		await userModel.query().patchAndFetchById(user.id, data);
 		user = await internalUser.get(access, { id: data.id });
 
@@ -254,11 +254,7 @@ const internalUser = {
 		// Query is used for searching
 		if (typeof search_query === "string") {
 			query.where(function () {
-				this.where("user.name", "like", `%${search_query}%`).orWhere(
-					"user.email",
-					"like",
-					`%${search_query}%`,
-				);
+				this.where("user.name", "like", `%${search_query}%`).orWhere("user.email", "like", `%${search_query}%`);
 			});
 		}
 
@@ -323,7 +319,7 @@ const internalUser = {
 	 */
 	setPassword: async (access, data) => {
 		await access.can("users:password", data.id);
-		let user = await internalUser.get(access, { id: data.id });
+		const user = await internalUser.get(access, { id: data.id });
 
 		if (user.id !== data.id) {
 			// Sanity check that something crazy hasn't happened
@@ -345,11 +341,7 @@ const internalUser = {
 		}
 
 		// Get auth, patch if it exists
-		const existing_auth = await authModel
-			.query()
-			.where("user_id", user.id)
-			.andWhere("type", data.type)
-			.first();
+		const existing_auth = await authModel.query().where("user_id", user.id).andWhere("type", data.type).first();
 
 		if (existing_auth) {
 			// patch
@@ -399,10 +391,7 @@ const internalUser = {
 		}
 
 		// Get perms row, patch if it exists
-		let existing_auth = await userPermissionModel
-			.query()
-			.where("user_id", user.id)
-			.first();
+		const existing_auth = await userPermissionModel.query().where("user_id", user.id).first();
 
 		let permissions;
 		if (existing_auth) {
