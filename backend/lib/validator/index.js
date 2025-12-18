@@ -18,28 +18,26 @@ const ajv = new Ajv({
  *
  * @param   {Object} schema
  * @param   {Object} payload
- * @returns {Promise}
+ * @returns {Promise<Object>}
  */
-const validator = (schema, payload) => {
-	return new Promise((resolve, reject) => {
-		if (!payload) {
-			reject(new errs.InternalValidationError("Payload is falsy"));
-		} else {
-			try {
-				const validate = ajv.compile(schema);
-				const valid = validate(payload);
+const validator = async (schema, payload) => {
+	if (!payload) {
+		throw new errs.InternalValidationError("Payload is falsy");
+	}
 
-				if (valid && !validate.errors) {
-					resolve(_.cloneDeep(payload));
-				} else {
-					const message = ajv.errorsText(validate.errors);
-					reject(new errs.InternalValidationError(message));
-				}
-			} catch (err) {
-				reject(err);
-			}
+	try {
+		const validate = ajv.compile(schema);
+		const valid = validate(payload);
+
+		if (valid && !validate.errors) {
+			return _.cloneDeep(payload);
 		}
-	});
+
+		const message = ajv.errorsText(validate.errors);
+		throw new errs.InternalValidationError(message);
+	} catch (err) {
+		throw err;
+	}
 };
 
 export default validator;

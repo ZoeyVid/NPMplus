@@ -1,103 +1,125 @@
-import _ from "lodash";
-
-const errs = {
-	PermissionError: function (_, previous) {
-		Error.captureStackTrace(this, this.constructor);
-		this.name = this.constructor.name;
+class PermissionError extends Error {
+	constructor(message, previous) {
+		super(message || "Permission Denied");
+		this.name = "PermissionError";
 		this.previous = previous;
-		this.message = "Permission Denied";
 		this.public = true;
 		this.status = 403;
-	},
-
-	ItemNotFoundError: function (id, previous) {
 		Error.captureStackTrace(this, this.constructor);
-		this.name = this.constructor.name;
+	}
+}
+
+class ItemNotFoundError extends Error {
+	constructor(id, previous) {
+		super(id ? `Not Found - ${id}` : "Not Found");
+		this.name = "ItemNotFoundError";
 		this.previous = previous;
-		this.message = "Not Found";
-		if (id) {
-			this.message = `Not Found - ${id}`;
-		}
 		this.public = true;
 		this.status = 404;
-	},
-
-	AuthError: function (message, messageI18n, previous) {
 		Error.captureStackTrace(this, this.constructor);
-		this.name = this.constructor.name;
+	}
+}
+
+class AuthError extends Error {
+	constructor(message, messageI18n, previous) {
+		super(message);
+		this.name = "AuthError";
 		this.previous = previous;
-		this.message = message;
 		this.message_i18n = messageI18n;
 		this.public = true;
 		this.status = 400;
-	},
-
-	InternalError: function (message, previous) {
 		Error.captureStackTrace(this, this.constructor);
-		this.name = this.constructor.name;
-		this.previous = previous;
-		this.message = message;
-		this.status = 500;
-		this.public = false;
-	},
+	}
+}
 
-	InternalValidationError: function (message, previous) {
-		Error.captureStackTrace(this, this.constructor);
-		this.name = this.constructor.name;
-		this.previous = previous;
-		this.message = message;
-		this.status = 400;
-		this.public = false;
-	},
-
-	ConfigurationError: function (message, previous) {
-		Error.captureStackTrace(this, this.constructor);
-		this.name = this.constructor.name;
-		this.previous = previous;
-		this.message = message;
-		this.status = 400;
-		this.public = true;
-	},
-
-	CacheError: function (message, previous) {
-		Error.captureStackTrace(this, this.constructor);
-		this.name = this.constructor.name;
-		this.message = message;
+class InternalError extends Error {
+	constructor(message, previous) {
+		super(message);
+		this.name = "InternalError";
 		this.previous = previous;
 		this.status = 500;
 		this.public = false;
-	},
-
-	ValidationError: function (message, previous) {
 		Error.captureStackTrace(this, this.constructor);
-		this.name = this.constructor.name;
+	}
+}
+
+class InternalValidationError extends Error {
+	constructor(message, previous) {
+		super(message);
+		this.name = "InternalValidationError";
 		this.previous = previous;
-		this.message = message;
+		this.status = 400;
+		this.public = false;
+		Error.captureStackTrace(this, this.constructor);
+	}
+}
+
+class ConfigurationError extends Error {
+	constructor(message, previous) {
+		super(message);
+		this.name = "ConfigurationError";
+		this.previous = previous;
+		this.status = 400;
+		this.public = true;
+		Error.captureStackTrace(this, this.constructor);
+	}
+}
+
+class CacheError extends Error {
+	constructor(message, previous) {
+		super(message);
+		this.name = "CacheError";
+		this.previous = previous;
+		this.status = 500;
+		this.public = false;
+		Error.captureStackTrace(this, this.constructor);
+	}
+}
+
+class ValidationError extends Error {
+	constructor(message, previous) {
+		super(message);
+		this.name = "ValidationError";
+		this.previous = previous;
 		this.public = true;
 		this.status = 400;
-	},
-
-	AssertionFailedError: function (message, previous) {
 		Error.captureStackTrace(this, this.constructor);
-		this.name = this.constructor.name;
+	}
+}
+
+class AssertionFailedError extends Error {
+	constructor(message, previous) {
+		super(message);
+		this.name = "AssertionFailedError";
 		this.previous = previous;
-		this.message = message;
 		this.public = false;
 		this.status = 400;
-	},
-
-	CommandError: function (stdErr, code, previous) {
 		Error.captureStackTrace(this, this.constructor);
-		this.name = this.constructor.name;
+	}
+}
+
+class CommandError extends Error {
+	constructor(stdErr, code, previous) {
+		super(stdErr);
+		this.name = "CommandError";
 		this.previous = previous;
-		this.message = stdErr;
 		this.code = code;
 		this.public = false;
-	},
-};
+		Error.captureStackTrace(this, this.constructor);
+	}
+}
 
-_.forEach(errs, (err) => {
-	err.prototype = Object.create(Error.prototype);
-});
+const errs = {
+	PermissionError,
+	ItemNotFoundError,
+	AuthError,
+	InternalError,
+	InternalValidationError,
+	ConfigurationError,
+	CacheError,
+	ValidationError,
+	AssertionFailedError,
+	CommandError,
+};
 
 export default errs;

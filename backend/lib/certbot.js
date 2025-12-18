@@ -1,71 +1,55 @@
-import batchflow from "batchflow";
 import dnsPlugins from "../certbot/dns-plugins.json" with { type: "json" };
 import { certbot as logger } from "../logger.js";
 import errs from "./error.js";
 import utils from "./utils.js";
 
 /**
- * Installs a cerbot plugin given the key for the object from
+ * Installs a certbot plugin given the key for the object from
  * ../certbot/dns-plugins.json
  *
  * @param   {string}  pluginKey
- * @returns {Object}
+ * @returns {Promise<Object>}
  */
 const installPlugin = async (pluginKey) => {
 	if (typeof dnsPlugins[pluginKey] === "undefined") {
-		// throw Error(`Certbot plugin ${pluginKey} not found`);
 		throw new errs.ItemNotFoundError(pluginKey);
 	}
 
 	const plugin = dnsPlugins[pluginKey];
 	logger.start(`Installing ${pluginKey}...`);
 
-	return utils
-		.execFile("pip", ["install", "--upgrade", "--no-cache-dir", plugin.package_name])
-		.then((result) => {
-			logger.complete(`Installed ${pluginKey}`);
-			return result;
-		})
-		.catch((err) => {
-			throw err;
-		});
+	try {
+		const result = await utils.execFile("pip", ["install", "--upgrade", "--no-cache-dir", plugin.package_name]);
+		logger.complete(`Installed ${pluginKey}`);
+		return result;
+	} catch (err) {
+		throw err;
+	}
 };
 
 /**
- * @param {array} pluginKeys
+ * @param {Array<string>} pluginKeys
+ * @returns {Promise<void>}
  */
 const installPlugins = async (pluginKeys) => {
+	if (pluginKeys.length === 0) {
+		return;
+	}
+
 	let hasErrors = false;
 
-	return new Promise((resolve, reject) => {
-		if (pluginKeys.length === 0) {
-			resolve();
-			return;
+	for (const pluginKey of pluginKeys) {
+		try {
+			await installPlugin(pluginKey);
+		} catch (err) {
+			logger.error(err.message);
+			hasErrors = true;
 		}
+	}
 
-		batchflow(pluginKeys)
-			.sequential()
-			.each((_i, pluginKey, next) => {
-				installPlugin(pluginKey)
-					.then(() => {
-						next();
-					})
-					.catch((err) => {
-						hasErrors = true;
-						next(err);
-					});
-			})
-			.error((err) => {
-				logger.error(err.message);
-			})
-			.end(() => {
-				if (hasErrors) {
-					reject(new errs.CommandError("Some plugins failed to install. Please check the logs above", 1));
-				} else {
-					resolve();
-				}
-			});
-	});
+	if (hasErrors) {
+		throw new errs.CommandError("Some plugins failed to install. Please check the logs above", 1);
+	}
 };
 
 export { installPlugins, installPlugin };

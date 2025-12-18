@@ -37,41 +37,40 @@ if (!PASSWORD) {
 	usage();
 }
 
-if (fs.existsSync("/data/npmplus/database.sqlite")) {
-	bcrypt.hash(PASSWORD, 13, (err, PASSWORD_HASH) => {
-		if (err) {
-			console.error(err);
-			process.exit(1);
-		}
-		const db = new Database("/data/npmplus/database.sqlite");
-
+async function run() {
+	if (fs.existsSync("/data/npmplus/database.sqlite")) {
 		try {
-			const stmt = db.prepare(`
-                UPDATE auth
-                SET secret = ?
-                WHERE EXISTS (
-                    SELECT *
-                    FROM user
-                    WHERE user.id = auth.user_id AND user.email = ?
-                )`);
+			const PASSWORD_HASH = await bcrypt.hash(PASSWORD, 13);
+			const db = new Database("/data/npmplus/database.sqlite");
 
-			const result = stmt.run(PASSWORD_HASH, USER_EMAIL);
+			try {
+				const stmt = db.prepare(`
+					UPDATE auth
+					SET secret = ?
+					WHERE EXISTS (
+						SELECT *
+						FROM user
+						WHERE user.id = auth.user_id AND user.email = ?
+					)`);
 
-			if (result.changes > 0) {
-				console.log(`Password for user ${USER_EMAIL} has been reset.`);
-			} else {
-				console.log(`No user found with email ${USER_EMAIL}.`);
+				const result = stmt.run(PASSWORD_HASH, USER_EMAIL);
+
+				if (result.changes > 0) {
+					console.log(`Password for user ${USER_EMAIL} has been reset.`);
+				} else {
+					console.log(`No user found with email ${USER_EMAIL}.`);
+				}
+			} finally {
+				db.close();
 			}
 		} catch (error) {
 			console.error(error);
 			process.exit(1);
-		} finally {
-			db.close();
 		}
-
-		process.exit(0);
-	});
-} else {
-	console.error("ERROR: Cannot connect to the sqlite database.");
-	process.exit(1);
+	} else {
+		console.error("ERROR: Cannot connect to the sqlite database.");
+		process.exit(1);
+	}
 }
+
+run();

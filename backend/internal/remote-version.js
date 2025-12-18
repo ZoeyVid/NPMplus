@@ -43,20 +43,20 @@ const internalRemoteVersion = {
 
 		return new Promise((resolve, reject) => {
 			logger.info(`Fetching ${url}`);
-			return https
-				.get(url, { agent, headers }, (res) => {
-					res.setEncoding("utf8");
-					let raw_data = "";
-					res.on("data", (chunk) => {
-						raw_data += chunk;
-					});
-					res.on("end", () => {
-						resolve(raw_data);
-					});
-				})
-				.on("error", (err) => {
-					reject(err);
+			const req = https.get(url, { agent, headers }, (res) => {
+				res.setEncoding("utf8");
+				let raw_data = "";
+				res.on("data", (chunk) => {
+					raw_data += chunk;
 				});
+				res.on("end", () => {
+					resolve(raw_data);
+				});
+			});
+
+			req.on("error", (err) => {
+				reject(err);
+			});
 		});
 	},
 };

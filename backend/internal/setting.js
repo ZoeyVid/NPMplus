@@ -10,66 +10,43 @@ const internalSetting = {
 	 * @param  {String}  data.id
 	 * @return {Promise}
 	 */
-	update: (access, data) => {
-		return access
-			.can("settings:update", data.id)
-			.then((/*access_data*/) => {
-				return internalSetting.get(access, { id: data.id });
-			})
-			.then((row) => {
-				if (row.id !== data.id) {
-					// Sanity check that something crazy hasn't happened
-					throw new errs.InternalValidationError(
-						`Setting could not be updated, IDs do not match: ${row.id} !== ${data.id}`,
-					);
-				}
+	update: async (access, data) => {
+		await access.can("settings:update", data.id);
+		const row = await internalSetting.get(access, { id: data.id });
 
-				return settingModel.query().where({ id: data.id }).patch(data);
-			})
-			.then(() => {
-				return internalSetting.get(access, {
-					id: data.id,
-				});
-			})
-			.then((row) => {
-				if (row.id === "default-site") {
-					// write the html if we need to
-					if (row.value === "html") {
-						fs.writeFileSync("/data/html/index.html", row.meta.html, { encoding: "utf8" });
-					}
+		if (row.id !== data.id) {
+			// Sanity check that something crazy hasn't happened
+			throw new errs.InternalValidationError(
+				`Setting could not be updated, IDs do not match: ${row.id} !== ${data.id}`,
+			);
+		}
 
-					// Configure nginx
-					return internalNginx
-						.deleteConfig("default")
-						.then(() => {
-							return internalNginx.generateConfig("default", row);
-						})
-						.then(() => {
-							return internalNginx.test();
-						})
-						.then(() => {
-							return internalNginx.reload();
-						})
-						.then(() => {
-							return row;
-						})
-						.catch((/*err*/) => {
-							internalNginx
-								.deleteConfig("default")
-								.then(() => {
-									return internalNginx.test();
-								})
-								.then(() => {
-									return internalNginx.reload();
-								})
-								.then(() => {
-									// I'm being slack here I know..
-									throw new errs.ValidationError("Could not reconfigure Nginx. Please check logs.");
-								});
-						});
-				}
-				return row;
-			});
+		await settingModel.query().where({ id: data.id }).patch(data);
+		const updatedRow = await internalSetting.get(access, {
+			id: data.id,
+		});
+
+		if (updatedRow.id === "default-site") {
+			// write the html if we need to
+			if (updatedRow.value === "html") {
+				fs.writeFileSync("/data/html/index.html", updatedRow.meta.html, { encoding: "utf8" });
+			}
+
+			// Configure nginx
+			try {
+				await internalNginx.deleteConfig("default");
+				await internalNginx.generateConfig("default", updatedRow);
+				await internalNginx.test();
+				await internalNginx.reload();
+			} catch (err) {
+				await internalNginx.deleteConfig("default");
+				await internalNginx.test();
+				await internalNginx.reload();
+				// I'm being slack here I know..
+				throw new errs.ValidationError("Could not reconfigure Nginx. Please check logs.");
+			}
+		}
+		return updatedRow;
 	},
 
 	/**
@@ -78,18 +55,13 @@ const internalSetting = {
 	 * @param  {String}   data.id
 	 * @return {Promise}
 	 */
-	get: (access, data) => {
-		return access
-			.can("settings:get", data.id)
-			.then(() => {
-				return settingModel.query().where("id", data.id).first();
-			})
-			.then((row) => {
-				if (row) {
-					return row;
-				}
-				throw new errs.ItemNotFoundError(data.id);
-			});
+	get: async (access, data) => {
+		await access.can("settings:get", data.id);
+		const row = await settingModel.query().where("id", data.id).first();
+		if (row) {
+			return row;
+		}
+		throw new errs.ItemNotFoundError(data.id);
 	},
 
 	/**
@@ -98,15 +70,10 @@ const internalSetting = {
 	 * @param   {Access}  access
 	 * @returns {*}
 	 */
-	getCount: (access) => {
-		return access
-			.can("settings:list")
-			.then(() => {
-				return settingModel.query().count("id as count").first();
-			})
-			.then((row) => {
-				return Number.parseInt(row.count, 10);
-			});
+	getCount: async (access) => {
+		await access.can("settings:list");
+		const row = await settingModel.query().count("id as count").first();
+		return Number.parseInt(row.count, 10);
 	},
 
 	/**
@@ -115,10 +82,9 @@ const internalSetting = {
 	 * @param   {Access}  access
 	 * @returns {Promise}
 	 */
-	getAll: (access) => {
-		return access.can("settings:list").then(() => {
-			return settingModel.query().orderBy("description", "ASC");
-		});
+	getAll: async (access) => {
+		await access.can("settings:list");
+		return settingModel.query().orderBy("description", "ASC");
 	},
 };
 

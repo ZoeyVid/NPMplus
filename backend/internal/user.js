@@ -31,11 +31,10 @@ const internalUser = {
 		data.roles = data.roles || [];
 
 		data.email = data.email.toLowerCase().trim();
-		internalUser.isEmailAvailable(data.email).then((available) => {
-			if (!available) {
-				throw new errs.ValidationError(`Email address already in use - ${data.email}`);
-			}
-		});
+		const available = await internalUser.isEmailAvailable(data.email);
+		if (!available) {
+			throw new errs.ValidationError(`Email address already in use - ${data.email}`);
+		}
 
 		if (typeof data.is_disabled !== "undefined") {
 			data.is_disabled = data.is_disabled ? 1 : 0;
@@ -44,9 +43,11 @@ const internalUser = {
 		await access.can("users:create", data);
 		data.avatar = gravatar.url(data.email, { default: "mm" });
 
-		let user = await userModel.query().insertAndFetch(data).then(utils.omitRow(omissions()));
+		let user = await userModel.query().insertAndFetch(data);
+		user = _.omit(user, omissions());
+
 		if (auth) {
-			user = await authModel.query().insert({
+			await authModel.query().insert({
 				user_id: user.id,
 				type: auth.type,
 				secret: auth.secret,
@@ -88,62 +89,50 @@ const internalUser = {
 	 * @param  {String}  [data.name]
 	 * @return {Promise}
 	 */
-	update: (access, data) => {
+	update: async (access, data) => {
 		if (typeof data.is_disabled !== "undefined") {
 			data.is_disabled = data.is_disabled ? 1 : 0;
 		}
 
-		return access
-			.can("users:update", data.id)
-			.then(() => {
-				// Make sure that the user being updated doesn't change their email to another user that is already using it
-				// 1. get user we want to update
-				return internalUser.get(access, { id: data.id }).then((user) => {
-					// 2. if email is to be changed, find other users with that email
-					if (typeof data.email !== "undefined") {
-						data.email = data.email.toLowerCase().trim();
+		await access.can("users:update", data.id);
 
-						if (user.email !== data.email) {
-							return internalUser.isEmailAvailable(data.email, data.id).then((available) => {
-								if (!available) {
-									throw new errs.ValidationError(`Email address already in use - ${data.email}`);
-								}
-								return user;
-							});
-						}
-					}
+		// Make sure that the user being updated doesn't change their email to another user that is already using it
+		// 1. get user we want to update
+		let user = await internalUser.get(access, { id: data.id });
 
-					// No change to email:
-					return user;
-				});
-			})
-			.then((user) => {
-				if (user.id !== data.id) {
-					// Sanity check that something crazy hasn't happened
-					throw new errs.InternalValidationError(
-						`User could not be updated, IDs do not match: ${user.id} !== ${data.id}`,
-					);
+		// 2. if email is to be changed, find other users with that email
+		if (typeof data.email !== "undefined") {
+			data.email = data.email.toLowerCase().trim();
+
+			if (user.email !== data.email) {
+				const available = await internalUser.isEmailAvailable(data.email, data.id);
+				if (!available) {
+					throw new errs.ValidationError(`Email address already in use - ${data.email}`);
 				}
+			}
+		}
 
-				data.avatar = gravatar.url(data.email || user.email, { default: "mm" });
-				return userModel.query().patchAndFetchById(user.id, data).then(utils.omitRow(omissions()));
-			})
-			.then(() => {
-				return internalUser.get(access, { id: data.id });
-			})
-			.then((user) => {
-				// Add to audit log
-				return internalAuditLog
-					.add(access, {
-						action: "updated",
-						object_type: "user",
-						object_id: user.id,
-						meta: { ...data, id: user.id, name: user.name },
-					})
-					.then(() => {
-						return user;
-					});
-			});
+		if (user.id !== data.id) {
+			// Sanity check that something crazy hasn't happened
+			throw new errs.InternalValidationError(
+				`User could not be updated, IDs do not match: ${user.id} !== ${data.id}`,
+			);
+		}
+
+		data.avatar = gravatar.url(data.email || user.email, { default: "mm" });
+
+		await userModel.query().patchAndFetchById(user.id, data);
+		user = await internalUser.get(access, { id: data.id });
+
+		// Add to audit log
+		await internalAuditLog.add(access, {
+			action: "updated",
+			object_type: "user",
+			object_id: user.id,
+			meta: { ...data, id: user.id, name: user.name },
+		});
+
+		return user;
 	},
 
 	/**
@@ -154,44 +143,42 @@ const internalUser = {
 	 * @param  {Array}    [data.omit]
 	 * @return {Promise}
 	 */
-	get: (access, data) => {
+	get: async (access, data) => {
 		const thisData = data || {};
 
 		if (typeof thisData.id === "undefined" || !thisData.id) {
 			thisData.id = access.token.getUserId(0);
 		}
 
-		return access
-			.can("users:get", thisData.id)
-			.then(() => {
-				const query = userModel
-					.query()
-					.where("is_deleted", 0)
-					.andWhere("id", thisData.id)
-					.allowGraph("[permissions]")
-					.first();
+		await access.can("users:get", thisData.id);
 
-				if (typeof thisData.expand !== "undefined" && thisData.expand !== null) {
-					query.withGraphFetched(`[${thisData.expand.join(", ")}]`);
-				}
+		const query = userModel
+			.query()
+			.where("is_deleted", 0)
+			.andWhere("id", thisData.id)
+			.allowGraph("[permissions]")
+			.first();
 
-				return query.then(utils.omitRow(omissions()));
-			})
-			.then((row) => {
-				if (!row || !row.id) {
-					throw new errs.ItemNotFoundError(thisData.id);
-				}
-				// Custom omissions
-				if (typeof thisData.omit !== "undefined" && thisData.omit !== null) {
-					return _.omit(row, thisData.omit);
-				}
+		if (typeof thisData.expand !== "undefined" && thisData.expand !== null) {
+			query.withGraphFetched(`[${thisData.expand.join(", ")}]`);
+		}
 
-				if (row.avatar === "") {
-					row.avatar = DEFAULT_AVATAR;
-				}
+		let row = await query;
+		row = _.omit(row, omissions());
 
-				return row;
-			});
+		if (!row || !row.id) {
+			throw new errs.ItemNotFoundError(thisData.id);
+		}
+		// Custom omissions
+		if (typeof thisData.omit !== "undefined" && thisData.omit !== null) {
+			return _.omit(row, thisData.omit);
+		}
+
+		if (row.avatar === "") {
+			row.avatar = DEFAULT_AVATAR;
+		}
+
+		return row;
 	},
 
 	/**
@@ -201,16 +188,15 @@ const internalUser = {
 	 * @param email
 	 * @param user_id
 	 */
-	isEmailAvailable: (email, user_id) => {
+	isEmailAvailable: async (email, user_id) => {
 		const query = userModel.query().where("email", "=", email.toLowerCase().trim()).where("is_deleted", 0).first();
 
 		if (typeof user_id !== "undefined") {
 			query.where("id", "!=", user_id);
 		}
 
-		return query.then((user) => {
-			return !user;
-		});
+		const user = await query;
+		return !user;
 	},
 
 	/**
@@ -220,41 +206,32 @@ const internalUser = {
 	 * @param {String}  [data.reason]
 	 * @returns {Promise}
 	 */
-	delete: (access, data) => {
-		return access
-			.can("users:delete", data.id)
-			.then(() => {
-				return internalUser.get(access, { id: data.id });
-			})
-			.then((user) => {
-				if (!user) {
-					throw new errs.ItemNotFoundError(data.id);
-				}
+	delete: async (access, data) => {
+		await access.can("users:delete", data.id);
+		const user = await internalUser.get(access, { id: data.id });
 
-				// Make sure user can't delete themselves
-				if (user.id === access.token.getUserId(0)) {
-					throw new errs.PermissionError("You cannot delete yourself.");
-				}
+		if (!user) {
+			throw new errs.ItemNotFoundError(data.id);
+		}
 
-				return userModel
-					.query()
-					.where("id", user.id)
-					.patch({
-						is_deleted: 1,
-					})
-					.then(() => {
-						// Add to audit log
-						return internalAuditLog.add(access, {
-							action: "deleted",
-							object_type: "user",
-							object_id: user.id,
-							meta: _.omit(user, omissions()),
-						});
-					});
-			})
-			.then(() => {
-				return true;
-			});
+		// Make sure user can't delete themselves
+		if (user.id === access.token.getUserId(0)) {
+			throw new errs.PermissionError("You cannot delete yourself.");
+		}
+
+		await userModel.query().where("id", user.id).patch({
+			is_deleted: 1,
+		});
+
+		// Add to audit log
+		await internalAuditLog.add(access, {
+			action: "deleted",
+			object_type: "user",
+			object_id: user.id,
+			meta: _.omit(user, omissions()),
+		});
+
+		return true;
 	},
 
 	deleteAll: async () => {
@@ -270,28 +247,19 @@ const internalUser = {
 	 * @param   {String}  [search_query]
 	 * @returns {*}
 	 */
-	getCount: (access, search_query) => {
-		return access
-			.can("users:list")
-			.then(() => {
-				const query = userModel.query().count("id as count").where("is_deleted", 0).first();
+	getCount: async (access, search_query) => {
+		await access.can("users:list");
+		const query = userModel.query().count("id as count").where("is_deleted", 0).first();
 
-				// Query is used for searching
-				if (typeof search_query === "string") {
-					query.where(function () {
-						this.where("user.name", "like", `%${search_query}%`).orWhere(
-							"user.email",
-							"like",
-							`%${search_query}%`,
-						);
-					});
-				}
-
-				return query;
-			})
-			.then((row) => {
-				return Number.parseInt(row.count, 10);
+		// Query is used for searching
+		if (typeof search_query === "string") {
+			query.where(function () {
+				this.where("user.name", "like", `%${search_query}%`).orWhere("user.email", "like", `%${search_query}%`);
 			});
+		}
+
+		const row = await query;
+		return Number.parseInt(row.count, 10);
 	},
 
 	/**
@@ -349,78 +317,61 @@ const internalUser = {
 	 * @param  {String}  data.secret
 	 * @return {Promise}
 	 */
-	setPassword: (access, data) => {
-		return access
-			.can("users:password", data.id)
-			.then(() => {
-				return internalUser.get(access, { id: data.id });
-			})
-			.then((user) => {
-				if (user.id !== data.id) {
-					// Sanity check that something crazy hasn't happened
-					throw new errs.InternalValidationError(
-						`User could not be updated, IDs do not match: ${user.id} !== ${data.id}`,
-					);
-				}
+	setPassword: async (access, data) => {
+		await access.can("users:password", data.id);
+		const user = await internalUser.get(access, { id: data.id });
 
-				if (user.id === access.token.getUserId(0)) {
-					// they're setting their own password. Make sure their current password is correct
-					if (typeof data.current === "undefined" || !data.current) {
-						throw new errs.ValidationError("Current password was not supplied");
-					}
+		if (user.id !== data.id) {
+			// Sanity check that something crazy hasn't happened
+			throw new errs.InternalValidationError(
+				`User could not be updated, IDs do not match: ${user.id} !== ${data.id}`,
+			);
+		}
 
-					return internalToken
-						.getTokenFromEmail({
-							identity: user.email,
-							secret: data.current,
-						})
-						.then(() => {
-							return user;
-						});
-				}
+		if (user.id === access.token.getUserId(0)) {
+			// they're setting their own password. Make sure their current password is correct
+			if (typeof data.current === "undefined" || !data.current) {
+				throw new errs.ValidationError("Current password was not supplied");
+			}
 
-				return user;
-			})
-			.then((user) => {
-				// Get auth, patch if it exists
-				return authModel
-					.query()
-					.where("user_id", user.id)
-					.andWhere("type", data.type)
-					.first()
-					.then((existing_auth) => {
-						if (existing_auth) {
-							// patch
-							return authModel.query().where("user_id", user.id).andWhere("type", data.type).patch({
-								type: data.type, // This is required for the model to encrypt on save
-								secret: data.secret,
-							});
-						}
-						// insert
-						return authModel.query().insert({
-							user_id: user.id,
-							type: data.type,
-							secret: data.secret,
-							meta: {},
-						});
-					})
-					.then(() => {
-						// Add to Audit Log
-						return internalAuditLog.add(access, {
-							action: "updated",
-							object_type: "user",
-							object_id: user.id,
-							meta: {
-								name: user.name,
-								password_changed: true,
-								auth_type: data.type,
-							},
-						});
-					});
-			})
-			.then(() => {
-				return true;
+			await internalToken.getTokenFromEmail({
+				identity: user.email,
+				secret: data.current,
 			});
+		}
+
+		// Get auth, patch if it exists
+		const existing_auth = await authModel.query().where("user_id", user.id).andWhere("type", data.type).first();
+
+		if (existing_auth) {
+			// patch
+			await authModel.query().where("user_id", user.id).andWhere("type", data.type).patch({
+				type: data.type, // This is required for the model to encrypt on save
+				secret: data.secret,
+			});
+		} else {
+			// insert
+			await authModel.query().insert({
+				user_id: user.id,
+				type: data.type,
+				secret: data.secret,
+				meta: {},
+			});
+		}
+
+		// Add to Audit Log
+		await internalAuditLog.add(access, {
+			action: "updated",
+			object_type: "user",
+			object_id: user.id,
+			meta: {
+				name: user.name,
+				password_changed: true,
+				auth_type: data.type,
+			},
+		});
+
+		return true;
 	},
 
 	/**
@@ -428,55 +379,44 @@ const internalUser = {
 	 * @param  {Object}  data
 	 * @return {Promise}
 	 */
-	setPermissions: (access, data) => {
-		return access
-			.can("users:permissions", data.id)
-			.then(() => {
-				return internalUser.get(access, { id: data.id });
-			})
-			.then((user) => {
-				if (user.id !== data.id) {
-					// Sanity check that something crazy hasn't happened
-					throw new errs.InternalValidationError(
-						`User could not be updated, IDs do not match: ${user.id} !== ${data.id}`,
-					);
-				}
+	setPermissions: async (access, data) => {
+		await access.can("users:permissions", data.id);
+		const user = await internalUser.get(access, { id: data.id });
 
-				return user;
-			})
-			.then((user) => {
-				// Get perms row, patch if it exists
-				return userPermissionModel
-					.query()
-					.where("user_id", user.id)
-					.first()
-					.then((existing_auth) => {
-						if (existing_auth) {
-							// patch
-							return userPermissionModel
-								.query()
-								.where("user_id", user.id)
-								.patchAndFetchById(existing_auth.id, _.assign({ user_id: user.id }, data));
-						}
-						// insert
-						return userPermissionModel.query().insertAndFetch(_.assign({ user_id: user.id }, data));
-					})
-					.then((permissions) => {
-						// Add to Audit Log
-						return internalAuditLog.add(access, {
-							action: "updated",
-							object_type: "user",
-							object_id: user.id,
-							meta: {
-								name: user.name,
-								permissions: permissions,
-							},
-						});
-					});
-			})
-			.then(() => {
-				return true;
-			});
+		if (user.id !== data.id) {
+			// Sanity check that something crazy hasn't happened
+			throw new errs.InternalValidationError(
+				`User could not be updated, IDs do not match: ${user.id} !== ${data.id}`,
+			);
+		}
+
+		// Get perms row, patch if it exists
+		const existing_auth = await userPermissionModel.query().where("user_id", user.id).first();
+
+		let permissions;
+		if (existing_auth) {
+			// patch
+			permissions = await userPermissionModel
+				.query()
+				.where("user_id", user.id)
+				.patchAndFetchById(existing_auth.id, _.assign({ user_id: user.id }, data));
+		} else {
+			// insert
+			permissions = await userPermissionModel.query().insertAndFetch(_.assign({ user_id: user.id }, data));
+		}
+
+		// Add to Audit Log
+		await internalAuditLog.add(access, {
+			action: "updated",
+			object_type: "user",
+			object_id: user.id,
+			meta: {
+				name: user.name,
+				permissions: permissions,
+			},
+		});
+
+		return true;
 	},
 
 	/**
@@ -484,15 +424,10 @@ const internalUser = {
 	 * @param {Object}   data
 	 * @param {Integer}  data.id
 	 */
-	loginAs: (access, data) => {
-		return access
-			.can("users:loginas", data.id)
-			.then(() => {
-				return internalUser.get(access, data);
-			})
-			.then((user) => {
-				return internalToken.getTokenFromUser(user);
-			});
+	loginAs: async (access, data) => {
+		await access.can("users:loginas", data.id);
+		const user = await internalUser.get(access, data);
+		return internalToken.getTokenFromUser(user);
 	},
 };
 

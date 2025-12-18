@@ -35,13 +35,12 @@ const internalDeadHost = {
 			return true;
 		});
 
-		await Promise.all(domainNameCheckPromises).then((check_results) => {
-			check_results.map((result) => {
-				if (result.is_taken) {
-					throw new errs.ValidationError(`${result.hostname} is already in use`);
-				}
-				return true;
-			});
+		const check_results = await Promise.all(domainNameCheckPromises);
+		check_results.map((result) => {
+			if (result.is_taken) {
+				throw new errs.ValidationError(`${result.hostname} is already in use`);
+			}
+			return true;
 		});
 
 		// At this point the domains should have been checked
@@ -54,7 +53,8 @@ const internalDeadHost = {
 			thisData.advanced_config = "";
 		}
 
-		const row = await deadHostModel.query().insertAndFetch(thisData).then(utils.omitRow(omissions()));
+		let row = await deadHostModel.query().insertAndFetch(thisData);
+		row = utils.omitRow(omissions())(row);
 
 		// Add to audit log
 		await internalAuditLog.add(access, {
@@ -198,10 +198,14 @@ const internalDeadHost = {
 			query.withGraphFetched(`[${data.expand.join(", ")}]`);
 		}
 
-		const row = await query.then(utils.omitRow(omissions()));
+		let row = await query;
+
 		if (!row || !row.id) {
 			throw new errs.ItemNotFoundError(data.id);
 		}
+
+		row = utils.omitRow(omissions())(row);
+
 		// Custom omissions
 		if (typeof data.omit !== "undefined" && data.omit !== null) {
 			return _.omit(row, data.omit);
@@ -349,7 +353,9 @@ const internalDeadHost = {
 			query.withGraphFetched(`[${expand.join(", ")}]`);
 		}
 
-		const rows = await query.then(utils.omitRows(omissions()));
+		let rows = await query;
+		rows = utils.omitRows(omissions())(rows);
+
 		if (typeof expand !== "undefined" && expand !== null && expand.indexOf("certificate") !== -1) {
 			internalHost.cleanAllRowsCertificateMeta(rows);
 		}

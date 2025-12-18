@@ -899,7 +899,7 @@ const internalCertificate = {
 			// do nothing
 		}
 
-		const renewResult = utils.execFile("certbot", [
+		const renewResult = await utils.execFile("certbot", [
 			"--config",
 			"/etc/certbot.ini",
 			"renew",
