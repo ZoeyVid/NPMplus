@@ -110,9 +110,7 @@ const internalProxyHost = {
 
 		if (typeof thisData.domain_names !== "undefined") {
 			thisData.domain_names.map((domain_name) => {
-				return domain_name_check_promises.push(
-					internalHost.isHostnameTaken(domain_name, "proxy", thisData.id),
-				);
+				return domain_name_check_promises.push(internalHost.isHostnameTaken(domain_name, "proxy", thisData.id));
 			});
 
 			const check_results = await Promise.all(domain_name_check_promises);
@@ -153,11 +151,8 @@ const internalProxyHost = {
 
 		thisData = internalHost.cleanSslHstsData(create_certificate, thisData, row);
 
-		let saved_row = await proxyHostModel
-			.query()
-			.where({ id: thisData.id })
-			.patch(thisData);
-			
+		let saved_row = await proxyHostModel.query().where({ id: thisData.id }).patch(thisData);
+
 		// fetch updated row to be safe and consistent with previous logic if patch returns count
 		// wait, patch returns count. We need to fetch it or rely on logic.
 		// The original code was: .patch(thisData).then(utils.omitRow(omissions()))
@@ -169,19 +164,19 @@ const internalProxyHost = {
 		// Ah, `utils.omitRow` does `_.omit(row, omissions)`. If row is a number, `_.omit` returns `{}`.
 		// So the previous code might have been returning `{}` which is WRONG.
 		// UNLESS `patchAndFetchById` was used? No, it was `patch`.
-		
+
 		// Let's double check `backend/internal/proxy-host.js` old content.
 		// `.patch(thisData).then(utils.omitRow(omissions())).then((saved_row) => { ... })`
 		// If `saved_row` was `{}`, then `return saved_row` at the end would return empty object.
-		
+
 		// Actually, I should use `patchAndFetchById` if I want the row, or just `patch` and then `get`.
 		// But since we are updating by ID, `patchAndFetchById` is best.
 		// But wait, the original code used `proxyHostModel.query().where({ id: thisData.id }).patch(thisData)`.
 		// This is definitely returning a count in SQLite/MySQL.
-		
+
 		// Let's assume I should fetch the row again or return `row` with merged data.
 		// But for safety, I will use `patchAndFetchById`.
-		
+
 		saved_row = await proxyHostModel.query().patchAndFetchById(thisData.id, thisData);
 		saved_row = utils.omitRow(omissions())(saved_row);
 
@@ -399,7 +394,7 @@ const internalProxyHost = {
 
 		let rows = await query;
 		rows = utils.omitRows(omissions())(rows);
-		
+
 		if (typeof expand !== "undefined" && expand !== null && expand.indexOf("certificate") !== -1) {
 			return internalHost.cleanAllRowsCertificateMeta(rows);
 		}
