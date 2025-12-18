@@ -12,18 +12,14 @@ Model.knex(db());
 
 const boolFields = ["is_deleted"];
 
-function encryptPassword() {
+async function encryptPassword() {
 	if (this.type === "password" && this.secret) {
-		return bcrypt.hash(this.secret, 13).then((hash) => {
-			this.secret = hash;
-		});
+		this.secret = await bcrypt.hash(this.secret, 13);
 	}
-
-	return null;
 }
 
 class Auth extends Model {
-	$beforeInsert(queryContext) {
+	async $beforeInsert(queryContext) {
 		this.created_on = now();
 		this.modified_on = now();
 
@@ -32,12 +28,12 @@ class Auth extends Model {
 			this.meta = {};
 		}
 
-		return encryptPassword.apply(this, queryContext);
+		await encryptPassword.apply(this, queryContext);
 	}
 
-	$beforeUpdate(queryContext) {
+	async $beforeUpdate(queryContext) {
 		this.modified_on = now();
-		return encryptPassword.apply(this, queryContext);
+		await encryptPassword.apply(this, queryContext);
 	}
 
 	$parseDatabaseJson(json) {

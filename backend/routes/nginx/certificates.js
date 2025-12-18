@@ -229,7 +229,7 @@ router
 			const data = { id: req.params.certificate_id, ...req.body };
 			const payload = await apiValidator(getValidationSchema("/nginx/certificates/test-http", "post"), data);
 
-			const result = internalCertificate.update(res.locals.access, payload);
+			const result = await internalCertificate.update(res.locals.access, payload);
 			res.status(201).send(result);
 		} catch (err) {
 			debug(logger, `${req.method.toUpperCase()} ${req.path}: ${err}`);
