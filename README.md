@@ -61,6 +61,78 @@ When your docker container is running, connect to the admin interface using `htt
 Default Admin User Email: `admin@example.org` <br>
 The initial unique admin password will be logged to the NPMplus docker logs, you should change it
 
+## Setting Up Geolocation Blocking (Optional) 
+
+NPMplus includes built-in support for GeoIP2, but it requires a few manual steps to activate the databases and define your rules. 
+1. Sign up for a free account at [MaxMind](https://www.maxmind.com/en/geolite2/signup). 
+2. Navigate to **Manage License Keys** and generate a new key. 
+3. Enable the GeoIP2 module in your docker compose for the `npmplus` container
+```yaml
+services: 
+  npmplus: 
+    container_name: npmplus
+[...]
+- "NGINX_LOAD_GEOIP2_MODULE=true"
+[...]
+```
+4. Enable the `npmplus-geoipupdate` container in your `docker-compose.yaml` file and add your **Account ID** and **License Key** to your environment variables:
+```yaml
+[...]
+ geoipupdate:
+    container_name: npmplus-geoipupdate
+    image: docker.io/maxmindinc/geoipupdate:latest
+    restart: always
+    network_mode: bridge
+    environment:
+      - "TZ=XXXXXXXXXXX" # needs to be changed, see https://en.wikipedia.org/wiki/List_of_tz_database_time_zones for tz identifiers
+      - "GEOIPUPDATE_EDITION_IDS=GeoLite2-Country GeoLite2-City GeoLite2-ASN"
+      - "GEOIPUPDATE_ACCOUNT_ID=XXXXXXXXXXX" # needs to be changed to the account id created in the first step
+      - "GEOIPUPDATE_LICENSE_KEY=XXXXXXXXXXX" # needs to be changed  to the license key created in the first step
+[...]
+``` 
+5. Restart the `npmplus` and `npmplus-geoipupdate` docker container
+6. Edit `/opt/npmplus/custom_nginx/http_top.conf` on your docker host
+```yaml
+geoip2 /data/goaccess/geoip/GeoLite2-Country.mmdb { 
+        auto_reload 60m; 
+        $geoip2_data_country_code default=US country iso_code;  #choose your country code, see https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2 for country codes
+        } 
+map $geoip2_data_country_code $allowed_country { 
+        default no; 
+        US yes;        #add as many countries to the list below
+        DE yes; 
+        AU yes; 
+        }
+# Optionally default to allow and block only certain countries
+#map $geoip2_data_country_code $allowed_country { 
+#        default yes; 
+#        MX no;        #add as many countries to the list below
+#        DE no; 
+#        AU no; 
+#        } 
+geo $lan-ip {          #add your lan networks to allow access from lan (avoid lockouts)
+        default no; 
+        192.168.0.0/16 yes; 
+        172.16.0.0/12 yes; 
+        10.0.0.0/8 yes; 
+        }
+map $http_upgrade $connection_upgrade_keepalive { 
+        default upgrade; 
+        '' ''; 
+        } 
+```  
+7. Restart the `npmplus` container 
+8. Add Advanced Configuration to Proxy Hosts. For Each Host you would like to enable the Geo-Blocking, go to the Advanced tab of the host and enter code below; 
+```yaml
+if ($lan-ip = yes) { 
+    set $allowed_country yes; 
+} 
+if ($allowed_country = no) { 
+    return 444; 
+} 
+```
+This configuration keeps your allowed list updated in `http_top.conf` without enforcing it globally. You can then choose exactly which hosts require GeoIP protection and which should remain accessible to everyone. TYou can find a detailed version of instructions at [Checkpoint-IT](https://checkpoint-it.net/npmplus-geoip-blocking-einrichten/) tutorial on setting up GeoIP blocking for NPMplus.
+
 ## Migration from upstream/vanilla nginx-proxy-manager
 - **NOTE: Migrating back to the original version is not possible.** Please make a **backup** before migrating, so you have the option to revert if needed
 1. Please read [this](#compatibility-to-upstream) first
