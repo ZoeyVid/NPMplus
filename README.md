@@ -61,78 +61,6 @@ When your docker container is running, connect to the admin interface using `htt
 Default Admin User Email: `admin@example.org` <br>
 The initial unique admin password will be logged to the NPMplus docker logs, you should change it
 
-## Setting Up Geolocation Blocking (Optional) 
-
-NPMplus includes built-in support for GeoIP2, but it requires a few manual steps to activate the databases and define your rules. 
-1. Sign up for a free account at [MaxMind](https://www.maxmind.com/en/geolite2/signup). 
-2. Navigate to **Manage License Keys** and generate a new key. 
-3. Enable the GeoIP2 module in your docker compose for the `npmplus` container
-```yaml
-services: 
-  npmplus: 
-    container_name: npmplus
-[...]
-- "NGINX_LOAD_GEOIP2_MODULE=true"
-[...]
-```
-4. Enable the `npmplus-geoipupdate` container in your `docker-compose.yaml` file and add your **Account ID** and **License Key** to your environment variables:
-```yaml
-[...]
- geoipupdate:
-    container_name: npmplus-geoipupdate
-    image: docker.io/maxmindinc/geoipupdate:latest
-    restart: always
-    network_mode: bridge
-    environment:
-      - "TZ=XXXXXXXXXXX" # needs to be changed, see https://en.wikipedia.org/wiki/List_of_tz_database_time_zones for tz identifiers
-      - "GEOIPUPDATE_EDITION_IDS=GeoLite2-Country GeoLite2-City GeoLite2-ASN"
-      - "GEOIPUPDATE_ACCOUNT_ID=XXXXXXXXXXX" # needs to be changed to the account id created in the first step
-      - "GEOIPUPDATE_LICENSE_KEY=XXXXXXXXXXX" # needs to be changed  to the license key created in the first step
-[...]
-``` 
-5. Restart the `npmplus` and `npmplus-geoipupdate` docker container
-6. Edit `/opt/npmplus/custom_nginx/http_top.conf` on your docker host
-```yaml
-geoip2 /data/goaccess/geoip/GeoLite2-Country.mmdb { 
-        auto_reload 60m; 
-        $geoip2_data_country_code default=US country iso_code;  #choose your country code, see https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2 for country codes
-        } 
-map $geoip2_data_country_code $allowed_country { 
-        default no; 
-        US yes;        #add as many countries to the list below
-        DE yes; 
-        AU yes; 
-        }
-# Optionally default to allow and block only certain countries
-#map $geoip2_data_country_code $allowed_country { 
-#        default yes; 
-#        MX no;        #add as many countries to the list below
-#        DE no; 
-#        AU no; 
-#        } 
-geo $lan-ip {          #add your lan networks to allow access from lan (avoid lockouts)
-        default no; 
-        192.168.0.0/16 yes; 
-        172.16.0.0/12 yes; 
-        10.0.0.0/8 yes; 
-        }
-map $http_upgrade $connection_upgrade_keepalive { 
-        default upgrade; 
-        '' ''; 
-        } 
-```  
-7. Restart the `npmplus` container 
-8. Add Advanced Configuration to Proxy Hosts. For Each Host you would like to enable the Geo-Blocking, go to the Advanced tab of the host and enter code below; 
-```yaml
-if ($lan-ip = yes) { 
-    set $allowed_country yes; 
-} 
-if ($allowed_country = no) { 
-    return 444; 
-} 
-```
-This configuration keeps your allowed list updated in `http_top.conf` without enforcing it globally. You can then choose exactly which hosts require GeoIP protection and which should remain accessible to everyone. TYou can find a detailed version of instructions at [Checkpoint-IT](https://checkpoint-it.net/npmplus-geoip-blocking-einrichten/) tutorial on setting up GeoIP blocking for NPMplus.
-
 ## Migration from upstream/vanilla nginx-proxy-manager
 - **NOTE: Migrating back to the original version is not possible.** Please make a **backup** before migrating, so you have the option to revert if needed
 1. Please read [this](#compatibility-to-upstream) first
@@ -205,30 +133,6 @@ location ~* \.php(?:$|/) {
 - Forward Port (optional): port of upstream or php version if scheme is `path`
 - Enable fancyindex/compression by upstream: for scheme set to `path` this will enabled fancyindex, which shows a index of all files in the folder if there is no index file, for proxy hosts this will allow the backend to compress files, I recommend you to keep this disabled
 - Reuse Key: this will make the new cert always keep its key unless you force renew it, I recommend you to keep this disabled (not to keep the keep), a reason to keep the key would be TLSA/pubkey pinning
-
-## Load Balancing
-1. Open and edit this file: `/opt/npmplus/custom_nginx/http_top.conf` (or `/opt/npmplus/custom_nginx/stream_top.conf` for streams), if you changed /opt/npmplus to a different path make sure to change the path to fit
-2. Set the upstream directive(s) with your servers which should be load balanced (https://nginx.org/en/docs/http/ngx_http_upstream_module.html / https://nginx.org/en/docs/stream/ngx_stream_upstream_module.html), they need to run the same protocol (either http(s) or grpc(s) for proxy hosts or tcp/udp/proxy protocol for streams), like this for example:
-```
-# a) at least one backend uses a different port, optionally the one external server is marked as backup
-upstream server1 {
-    server 127.0.0.1:44;
-    server 127.0.0.1:33;
-    server 127.0.0.1:22;
-    server 192.158.168.11:44 backup;
-}
-# b) all services use the same port
-upstream service2 {
-    server 192.158.168.14;
-    server 192.158.168.13;
-    server 192.158.168.12;
-    server 192.158.168.11;
-}
-```
-3. Configure your proxy host/stream like always in the UI, but set the hostname to service1 (or service2 or however you named it), if you followed example a) you need to keep the forward port field empty (since you set the ports within the upstream directive), for b) you need to set it
-
-## Prerun scripts (EXPERT option) - if you don't know what this is, ignore it
-If you need to run scripts before NPMplus launches put them under: `/opt/npmplus/prerun/*.sh` (please add `#!/usr/bin/env sh` / `#!/usr/bin/env bash` to the top of the script) you need to create this folder yourself, also set the `ENABLE_PRERUN` env to `true`
 
 ## Examples of implementing some services using auth_request
 
@@ -341,6 +245,82 @@ return 302 /outpost.goauthentik.io/start?rd=$request_uri;
 ## For domain level, use the below error_page to redirect to your authentik server with the full redirect path
 #return 302 https://authentik.company/outpost.goauthentik.io/start?rd=$scheme://$host$is_request_port$request_port$request_uri;
 ```
+
+## Load Balancing
+1. Open and edit this file: `/opt/npmplus/custom_nginx/http_top.conf` (or `/opt/npmplus/custom_nginx/stream_top.conf` for streams), if you changed /opt/npmplus to a different path make sure to change the path to fit
+2. Set the upstream directive(s) with your servers which should be load balanced (https://nginx.org/en/docs/http/ngx_http_upstream_module.html / https://nginx.org/en/docs/stream/ngx_stream_upstream_module.html), they need to run the same protocol (either http(s) or grpc(s) for proxy hosts or tcp/udp/proxy protocol for streams), like this for example:
+```
+# a) at least one backend uses a different port, optionally the one external server is marked as backup
+upstream server1 {
+  server 127.0.0.1:44;
+  server 127.0.0.1:33;
+  server 127.0.0.1:22;
+  server 192.158.168.11:44 backup;
+}
+# b) all services use the same port
+upstream service2 {
+  server 192.158.168.14;
+  server 192.158.168.13;
+  server 192.158.168.12;
+  server 192.158.168.11;
+}
+```
+3. Configure your proxy host/stream like always in the UI, but set the hostname to service1 (or service2 or however you named it), if you followed example a) you need to keep the forward port field empty (since you set the ports within the upstream directive), for b) you need to set it
+
+## Geoblocking example (mainly community support) 
+
+1. set the `NGINX_LOAD_GEOIP2_MODULE` env to true and redeploy NPMplus
+2. deploy a geoipupdate container (see the compose.yaml for an example, create credentials [here](https://www.maxmind.com/en/geolite2/signup))
+3. open and edit this file: `/opt/npmplus/custom_nginx/http_top.conf`, if you changed /opt/npmplus to a different path make sure to change the path to fit
+```yaml
+geoip2 /data/goaccess/geoip/GeoLite2-Country.mmdb {
+  auto_reload 60m;
+  $geoip2_country_iso_code country iso_code;
+}
+
+# whitelist example, you can add as many country codes as you want, country code list: https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2#XY
+#map $geoip2_country_iso_code $geoip2_country_rule {
+#  default no;
+#  AA yes;
+#  XY yes;
+#  '' yes; # if you want to allow IPs with unknown country codes, if you don't do this make sure to allow private IPs
+#}
+
+# blacklist example, you can add as many country codes as you want, country code list: https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2#XY
+#map $geoip2_country_iso_code $geoip2_country_rule {
+#  default yes;
+#  AA no;
+#  XY no;
+#  '' no; # if you want to block IPs with unknown country codes, if you do this make sure to allow private IPs
+#}
+
+# uncomment if you block/don't allow IPs with unknown country codes
+#geo $geo_is_private_ip {
+#  default no;
+#  127.0.0.0/8 yes;
+#  10.0.0.0/8 yes;
+#  172.16.0.0/12 yes;
+#  192.168.0.0/16 yes;
+#  169.254.0.0/16 yes;
+#  ::1/128 yes;
+#  fc00::/7 yes;
+#  fec0::/10 yes;
+#}
+```  
+4. create a custom location / (or the location you want to use), set your proxy settings, then press the gear button and paste the following in the new text field, you may want to adjust the last lines (do not use the advanced tab as it may break cert renewals):
+```yaml
+# uncomment if you block/don't allow IPs with unknwon country codes
+#if ($geo_is_private_ip = yes) { 
+#  set $geoip2_country_rule yes; 
+#} 
+if ($geoip2_country_rule = no) { 
+  return 444; # this rejects the connection, but you can also return 403 to tell the client that it was denied
+} 
+```
+5. you can create multiple rule lists by adding multiple map directive, but you need to use a unique name instead of `$geoip2_country_rule` for each rule list (you need the unique name also in the custom locations)
+
+## Prerun scripts (EXPERT option) - if you don't know what this is, ignore it
+If you need to run scripts before NPMplus launches put them under: `/opt/npmplus/prerun/*.sh` (please add `#!/usr/bin/env sh` / `#!/usr/bin/env bash` to the top of the script) you need to create this folder yourself, also set the `ENABLE_PRERUN` env to `true`
 
 ## Notes on Cloudflare
 - I strongly advise against using cloudflare proxy/tunnel before NPMplus (so between the users and NPMplus `users <=> cloudflare <=> NPMplus`)
