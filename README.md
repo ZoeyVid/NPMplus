@@ -137,7 +137,7 @@ location ~* \.php(?:$|/) {
 ## Examples of implementing some services using auth_request
 
 ### Anubis config (supported)
-1. start anubis/deploy an anubis container (see the compose.yaml for an example and information)
+1. deploy an anubis container (see the compose.yaml for an example and information)
 2. In the mounted anubis bot policy file the "status_codes" should be set to 401 and 403, like this:
 ```yaml
 status_codes:
