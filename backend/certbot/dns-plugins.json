@@ -233,6 +233,12 @@
 		"credentials": "dns_hetzner_api_token = 0123456789abcdef0123456789abcdef",
 		"full_plugin_name": "dns-hetzner"
 	},
+	"hcloud": {
+		"name": "Hetzner Cloud",
+		"package_name": "certbot-dns-hetzner-cloud",
+		"credentials": "dns_hetzner_cloud_api_token = 0123456789abcdef0123456789abcdef",
+		"full_plugin_name": "dns-hetzner-cloud"
+	},
 	"hostingnl": {
 		"name": "Hosting.nl",
 		"package_name": "certbot-dns-hostingnl",
