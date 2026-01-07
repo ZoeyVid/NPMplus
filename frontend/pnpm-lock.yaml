@@ -115,8 +115,8 @@ importers:
         specifier: 5.1.2
         version: 5.1.2(vite@7.3.0(@types/node@25.0.3)(sass@1.97.2))
       happy-dom:
-        specifier: 20.0.11
-        version: 20.0.11
+        specifier: 20.1.0
+        version: 20.1.0
       postcss:
         specifier: 8.5.6
         version: 8.5.6
@@ -143,7 +143,7 @@ importers:
         version: 6.0.3(typescript@5.9.3)(vite@7.3.0(@types/node@25.0.3)(sass@1.97.2))
       vitest:
         specifier: 4.0.16
-        version: 4.0.16(@types/node@25.0.3)(happy-dom@20.0.11)(sass@1.97.2)
+        version: 4.0.16(@types/node@25.0.3)(happy-dom@20.1.0)(sass@1.97.2)
 
 packages:
 
@@ -951,6 +951,9 @@ packages:
   '@types/whatwg-mimetype@3.0.2':
     resolution: {integrity: sha512-c2AKvDT8ToxLIOUlN51gTiHXflsfIFisS4pO7pDPoKouJCESkhZnEy623gwP9laCy5lnLDAw1vAzu2vM2YLOrA==}
 
+  '@types/ws@8.18.1':
+    resolution: {integrity: sha512-ThVF6DCVhA8kUGy+aazFQ4kXQ7E1Ty7A3ypFOe0IcJV8O/M511G99AW24irKrW56Wt44yG9+ij8FaqoBGkuBXg==}
+
   '@uiw/react-textarea-code-editor@3.1.1':
     resolution: {integrity: sha512-AERRbp/d85vWR+UPgsB5hEgerNXuyszdmhWl2fV2H2jN63jgOobwEnjIpb76Vwy8SaGa/AdehaoJX2XZgNXtJA==}
     peerDependencies:
@@ -1248,8 +1251,8 @@ packages:
   globrex@0.1.2:
     resolution: {integrity: sha512-uHJgbwAMwNFf5mLst7IWLNg14x1CkeqglJb/K3doi4dw6q2IvAAmM/Y81kevy83wP+Sst+nutFTYOGg3d1lsxg==}
 
-  happy-dom@20.0.11:
-    resolution: {integrity: sha512-QsCdAUHAmiDeKeaNojb1OHOPF7NjcWPBR7obdu3NwH2a/oyQaLg5d0aaCy/9My6CdPChYF07dvz5chaXBGaD4g==}
+  happy-dom@20.1.0:
+    resolution: {integrity: sha512-ebvqjBqzenBk2LjzNEAzoj7yhw7rW/R2/wVevMu6Mrq3MXtcI/RUz4+ozpcOcqVLEWPqLfg2v9EAU7fFXZUUJw==}
     engines: {node: '>=20.0.0'}
 
   hasown@2.0.2:
@@ -2065,6 +2068,18 @@ packages:
     engines: {node: '>=8'}
     hasBin: true
 
+  ws@8.19.0:
+    resolution: {integrity: sha512-blAT2mjOEIi0ZzruJfIhb3nps74PRWTCz1IjglWEEpQl5XS/UNama6u2/rjFkDDouqr4L67ry+1aGIALViWjDg==}
+    engines: {node: '>=10.0.0'}
+    peerDependencies:
+      bufferutil: ^4.0.1
+      utf-8-validate: '>=5.0.2'
+    peerDependenciesMeta:
+      bufferutil:
+        optional: true
+      utf-8-validate:
+        optional: true
+
   yallist@3.1.1:
     resolution: {integrity: sha512-a4UGQaWPH59mOXUYnAG2ewncQS4i4F43Tv3JoAM+s2VDAmS9NsK8GpDMLrCHPksFT7h3K6TOoUNn2pb7RoXx4g==}
 
@@ -2771,6 +2786,10 @@ snapshots:
 
   '@types/whatwg-mimetype@3.0.2': {}
 
+  '@types/ws@8.18.1':
+    dependencies:
+      '@types/node': 25.0.3
+
   '@uiw/react-textarea-code-editor@3.1.1(@babel/runtime@7.28.4)(react-dom@19.2.3(react@19.2.3))(react@19.2.3)':
     dependencies:
       '@babel/runtime': 7.28.4
@@ -3060,11 +3079,16 @@ snapshots:
 
   globrex@0.1.2: {}
 
-  happy-dom@20.0.11:
+  happy-dom@20.1.0:
     dependencies:
       '@types/node': 20.19.27
       '@types/whatwg-mimetype': 3.0.2
+      '@types/ws': 8.18.1
       whatwg-mimetype: 3.0.0
+      ws: 8.19.0
+    transitivePeerDependencies:
+      - bufferutil
+      - utf-8-validate
 
   hasown@2.0.2:
     dependencies:
@@ -4023,7 +4047,7 @@ snapshots:
       fsevents: 2.3.3
       sass: 1.97.2
 
-  vitest@4.0.16(@types/node@25.0.3)(happy-dom@20.0.11)(sass@1.97.2):
+  vitest@4.0.16(@types/node@25.0.3)(happy-dom@20.1.0)(sass@1.97.2):
     dependencies:
       '@vitest/expect': 4.0.16
       '@vitest/mocker': 4.0.16(vite@7.3.0(@types/node@25.0.3)(sass@1.97.2))
@@ -4047,7 +4071,7 @@ snapshots:
       why-is-node-running: 2.3.0
     optionalDependencies:
       '@types/node': 25.0.3
-      happy-dom: 20.0.11
+      happy-dom: 20.1.0
     transitivePeerDependencies:
       - jiti
       - less
@@ -4075,6 +4099,8 @@ snapshots:
     dependencies:
       siginfo: 2.0.0
       stackback: 0.0.2
+
+  ws@8.19.0: {}
 
   yallist@3.1.1: {}
 
