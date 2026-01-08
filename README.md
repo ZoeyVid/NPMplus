@@ -1,6 +1,6 @@
 # NPMplus
 
-This is an improved fork of the nginx-proxy-manager, see below for some changes <br>
+This is a fork of the nginx-proxy-manager, see below for some changes <br>
 If you don't need the web GUI of NPMplus, you may also have a look at caddy: https://caddyserver.com
 
 - [Compatibility (to Upstream)](#compatibility-to-upstream)
@@ -12,7 +12,7 @@ If you don't need the web GUI of NPMplus, you may also have a look at caddy: htt
 **Note: remember to add your domain to the [hsts preload list](https://hstspreload.org) if you enabled hsts for your domain.** <br>
 **Note: please report issues first to this fork before reporting them to the upstream repository.** <br>
 
-## List of new features
+## List of some changes
 
 - Supports HTTP/3 (QUIC), requires you to expose https with udp
 - Support for crowdsec and openappsec
