@@ -1,91 +1,124 @@
-const _ = require('lodash');
-const error = require('../lib/error');
-const utils = require('../lib/utils');
-const userModel = require('../models/user');
-const userPermissionModel = require('../models/user_permission');
-const authModel = require('../models/auth');
-const gravatar = require('gravatar');
-const internalToken = require('./token');
-const internalAuditLog = require('./audit-log');
+import _ from "lodash";
+import crypto from "node:crypto";
+import fs from "node:fs";
+import { pipeline } from "node:stream/promises";
+import errs from "../lib/error.js";
+import utils from "../lib/utils.js";
+import { gravatar as logger } from "../logger.js";
+import authModel from "../models/auth.js";
+import userModel from "../models/user.js";
+import userPermissionModel from "../models/user_permission.js";
+import internalAuditLog from "./audit-log.js";
+import internalToken from "./token.js";
+import pjson from "../package.json" with { type: "json" };
 
-function omissions() {
-	return ['is_deleted'];
-}
+const omissions = () => {
+	return ["is_deleted", "permissions.id", "permissions.user_id", "permissions.created_on", "permissions.modified_on"];
+};
 
 const internalUser = {
 	/**
+	 * Create a user can happen unauthenticated only once and only when no active users exist.
+	 * Otherwise, a valid auth method is required.
+	 *
 	 * @param   {Access}  access
 	 * @param   {Object}  data
 	 * @returns {Promise}
 	 */
-	create: (access, data) => {
+	create: async (access, data) => {
 		const auth = data.auth || null;
 		delete data.auth;
 
-		data.avatar = data.avatar || '';
+		data.avatar = data.avatar || "";
 		data.roles = data.roles || [];
 
-		if (typeof data.is_disabled !== 'undefined') {
+		data.email = data.email.toLowerCase().trim();
+		internalUser.isEmailAvailable(data.email).then((available) => {
+			if (!available) {
+				throw new errs.ValidationError(`Email address already in use - ${data.email}`);
+			}
+		});
+
+		if (typeof data.is_disabled !== "undefined") {
 			data.is_disabled = data.is_disabled ? 1 : 0;
 		}
 
-		return access
-			.can('users:create', data)
-			.then(() => {
-				data.avatar = gravatar.url(data.email, { default: 'mm' });
+		await access.can("users:create", data);
 
-				return userModel.query().insertAndFetch(data).then(utils.omitRow(omissions()));
-			})
-			.then((user) => {
-				if (auth) {
-					return authModel
-						.query()
-						.insert({
-							user_id: user.id,
-							type: auth.type,
-							secret: auth.secret,
-							meta: {},
-						})
-						.then(() => {
-							return user;
-						});
-				} else {
-					return user;
+		if (process.env.DISABLE_GRAVATAR === "true") {
+			data.avatar = "/images/default-avatar.jpg";
+		} else {
+			try {
+				const hash = crypto.createHash("sha256").update(data.email.trim().toLowerCase()).digest("hex");
+				const response = await fetch(
+					`https://www.gravatar.com/avatar/${hash}?s=64&default=initials&name=${encodeURIComponent(data.name)}`,
+					{
+						headers: {
+							"User-Agent": `NPMplus/${pjson.version}`,
+						},
+					},
+				);
+
+				if (!response.ok) throw new Error(`Status code: ${response.status}`);
+
+				let ext;
+				switch (response.headers.get("content-type")) {
+					case "image/png":
+						ext = "png";
+						break;
+					case "image/jpeg":
+						ext = "jpeg";
+						break;
+					case "image/gif":
+						ext = "gif";
+						break;
+					default:
+						throw new Error();
 				}
-			})
-			.then((user) => {
-				// Create permissions row as well
-				const is_admin = data.roles.indexOf('admin') !== -1;
 
-				return userPermissionModel
-					.query()
-					.insert({
-						user_id: user.id,
-						visibility: is_admin ? 'all' : 'user',
-						proxy_hosts: 'manage',
-						redirection_hosts: 'manage',
-						dead_hosts: 'manage',
-						streams: 'manage',
-						access_lists: 'manage',
-						certificates: 'manage',
-					})
-					.then(() => {
-						return internalUser.get(access, { id: user.id, expand: ['permissions'] });
-					});
-			})
-			.then((user) => {
-				// Add to audit log
-				return internalAuditLog
-					.add(access, {
-						action: 'created',
-						object_type: 'user',
-						object_id: user.id,
-						meta: user,
-					})
-					.then(() => {
-						return user;
-					});
+				await pipeline(response.body, fs.createWriteStream(`/data/npmplus/gravatar/${hash}.${ext}`));
+
+				data.avatar = `/images/gravatar/${hash}.${ext}`;
+			} catch (err) {
+				logger.error(`Error downloading gravatar: ${err.message}`);
+				data.avatar = "/images/default-avatar.jpg";
+			}
+		}
+
+		let user = await userModel.query().insertAndFetch(data).then(utils.omitRow(omissions()));
+		if (auth) {
+			user = await authModel.query().insert({
+				user_id: user.id,
+				type: auth.type,
+				secret: auth.secret,
+				meta: {},
 			});
+		}
+
+		// Create permissions row as well
+		const isAdmin = data.roles.indexOf("admin") !== -1;
+
+		await userPermissionModel.query().insert({
+			user_id: user.id,
+			visibility: isAdmin ? "all" : "user",
+			proxy_hosts: "manage",
+			redirection_hosts: "manage",
+			dead_hosts: "manage",
+			streams: "manage",
+			access_lists: "manage",
+			certificates: "manage",
+		});
+
+		user = await internalUser.get(access, { id: user.id, expand: ["permissions"] });
+
+		await internalAuditLog.add(access, {
+			action: "created",
+			object_type: "user",
+			object_id: user.id,
+			meta: user,
+		});
+
+		return user;
 	},
 
 	/**
@@ -97,26 +130,25 @@ const internalUser = {
 	 * @return {Promise}
 	 */
 	update: (access, data) => {
-		if (typeof data.is_disabled !== 'undefined') {
+		if (typeof data.is_disabled !== "undefined") {
 			data.is_disabled = data.is_disabled ? 1 : 0;
 		}
 
 		return access
-			.can('users:update', data.id)
+			.can("users:update", data.id)
 			.then(() => {
 				// Make sure that the user being updated doesn't change their email to another user that is already using it
 				// 1. get user we want to update
 				return internalUser.get(access, { id: data.id }).then((user) => {
 					// 2. if email is to be changed, find other users with that email
-					if (typeof data.email !== 'undefined') {
+					if (typeof data.email !== "undefined") {
 						data.email = data.email.toLowerCase().trim();
 
 						if (user.email !== data.email) {
 							return internalUser.isEmailAvailable(data.email, data.id).then((available) => {
 								if (!available) {
-									throw new error.ValidationError('Email address already in use - ' + data.email);
+									throw new errs.ValidationError(`Email address already in use - ${data.email}`);
 								}
-
 								return user;
 							});
 						}
@@ -126,13 +158,56 @@ const internalUser = {
 					return user;
 				});
 			})
-			.then((user) => {
+			.then(async (user) => {
 				if (user.id !== data.id) {
 					// Sanity check that something crazy hasn't happened
-					throw new error.InternalValidationError('User could not be updated, IDs do not match: ' + user.id + ' !== ' + data.id);
+					throw new errs.InternalValidationError(
+						`User could not be updated, IDs do not match: ${user.id} !== ${data.id}`,
+					);
 				}
 
-				data.avatar = gravatar.url(data.email || user.email, { default: 'mm' });
+				if (process.env.DISABLE_GRAVATAR === "true") {
+					data.avatar = "/images/default-avatar.jpg";
+				} else {
+					try {
+						const hash = crypto
+							.createHash("sha256")
+							.update((data.email || user.email).trim().toLowerCase())
+							.digest("hex");
+						const response = await fetch(
+							`https://www.gravatar.com/avatar/${hash}?s=64&default=initials&name=${encodeURIComponent(data.name || user.name)}`,
+							{
+								headers: {
+									"User-Agent": `NPMplus/${pjson.version}`,
+								},
+							},
+						);
+
+						if (!response.ok) throw new Error(`Status code: ${response.status}`);
+
+						let ext;
+						switch (response.headers.get("content-type")) {
+							case "image/png":
+								ext = "png";
+								break;
+							case "image/jpeg":
+								ext = "jpg";
+								break;
+							case "image/gif":
+								ext = "gif";
+								break;
+							default:
+								throw new Error();
+						}
+
+						await pipeline(response.body, fs.createWriteStream(`/data/npmplus/gravatar/${hash}.${ext}`));
+
+						data.avatar = `/images/gravatar/${hash}.${ext}`;
+					} catch (err) {
+						logger.error(`Error downloading gravatar: ${err.message}`);
+						data.avatar = "/images/default-avatar.jpg";
+					}
+				}
 
 				return userModel.query().patchAndFetchById(user.id, data).then(utils.omitRow(omissions()));
 			})
@@ -143,10 +218,10 @@ const internalUser = {
 				// Add to audit log
 				return internalAuditLog
 					.add(access, {
-						action: 'updated',
-						object_type: 'user',
+						action: "updated",
+						object_type: "user",
 						object_id: user.id,
-						meta: data,
+						meta: { ...data, id: user.id, name: user.name },
 					})
 					.then(() => {
 						return user;
@@ -163,33 +238,41 @@ const internalUser = {
 	 * @return {Promise}
 	 */
 	get: (access, data) => {
-		if (typeof data === 'undefined') {
-			data = {};
-		}
+		const thisData = data || {};
 
-		if (typeof data.id === 'undefined' || !data.id) {
-			data.id = access.token.getUserId(0);
+		if (typeof thisData.id === "undefined" || !thisData.id) {
+			thisData.id = access.token.getUserId(0);
 		}
 
 		return access
-			.can('users:get', data.id)
+			.can("users:get", thisData.id)
 			.then(() => {
-				const query = userModel.query().where('is_deleted', 0).andWhere('id', data.id).allowGraph('[permissions]').first();
+				const query = userModel
+					.query()
+					.where("is_deleted", 0)
+					.andWhere("id", thisData.id)
+					.allowGraph("[permissions]")
+					.first();
 
-				if (typeof data.expand !== 'undefined' && data.expand !== null) {
-					query.withGraphFetched('[' + data.expand.join(', ') + ']');
+				if (typeof thisData.expand !== "undefined" && thisData.expand !== null) {
+					query.withGraphFetched(`[${thisData.expand.join(", ")}]`);
 				}
 
 				return query.then(utils.omitRow(omissions()));
 			})
 			.then((row) => {
 				if (!row || !row.id) {
-					throw new error.ItemNotFoundError(data.id);
+					throw new errs.ItemNotFoundError(thisData.id);
 				}
 				// Custom omissions
-				if (typeof data.omit !== 'undefined' && data.omit !== null) {
-					row = _.omit(row, data.omit);
+				if (typeof thisData.omit !== "undefined" && thisData.omit !== null) {
+					return _.omit(row, thisData.omit);
 				}
+
+				if (row.avatar === "") {
+					row.avatar = "/images/default-avatar.jpg";
+				}
+
 				return row;
 			});
 	},
@@ -202,10 +285,10 @@ const internalUser = {
 	 * @param user_id
 	 */
 	isEmailAvailable: (email, user_id) => {
-		const query = userModel.query().where('email', '=', email.toLowerCase().trim()).where('is_deleted', 0).first();
+		const query = userModel.query().where("email", "=", email.toLowerCase().trim()).where("is_deleted", 0).first();
 
-		if (typeof user_id !== 'undefined') {
-			query.where('id', '!=', user_id);
+		if (typeof user_id !== "undefined") {
+			query.where("id", "!=", user_id);
 		}
 
 		return query.then((user) => {
@@ -222,31 +305,31 @@ const internalUser = {
 	 */
 	delete: (access, data) => {
 		return access
-			.can('users:delete', data.id)
+			.can("users:delete", data.id)
 			.then(() => {
 				return internalUser.get(access, { id: data.id });
 			})
 			.then((user) => {
 				if (!user) {
-					throw new error.ItemNotFoundError(data.id);
+					throw new errs.ItemNotFoundError(data.id);
 				}
 
 				// Make sure user can't delete themselves
 				if (user.id === access.token.getUserId(0)) {
-					throw new error.PermissionError('You cannot delete yourself.');
+					throw new errs.PermissionError("You cannot delete yourself.");
 				}
 
 				return userModel
 					.query()
-					.where('id', user.id)
+					.where("id", user.id)
 					.patch({
 						is_deleted: 1,
 					})
 					.then(() => {
 						// Add to audit log
 						return internalAuditLog.add(access, {
-							action: 'deleted',
-							object_type: 'user',
+							action: "deleted",
+							object_type: "user",
 							object_id: user.id,
 							meta: _.omit(user, omissions()),
 						});
@@ -255,6 +338,12 @@ const internalUser = {
 			.then(() => {
 				return true;
 			});
+	},
+
+	deleteAll: async () => {
+		await userModel.query().patch({
+			is_deleted: 1,
+		});
 	},
 
 	/**
@@ -266,21 +355,25 @@ const internalUser = {
 	 */
 	getCount: (access, search_query) => {
 		return access
-			.can('users:list')
+			.can("users:list")
 			.then(() => {
-				const query = userModel.query().count('id as count').where('is_deleted', 0).first();
+				const query = userModel.query().count("id as count").where("is_deleted", 0).first();
 
 				// Query is used for searching
-				if (typeof search_query === 'string') {
+				if (typeof search_query === "string") {
 					query.where(function () {
-						this.where('user.name', 'like', '%' + search_query + '%').orWhere('user.email', 'like', '%' + search_query + '%');
+						this.where("user.name", "like", `%${search_query}%`).orWhere(
+							"user.email",
+							"like",
+							`%${search_query}%`,
+						);
 					});
 				}
 
 				return query;
 			})
 			.then((row) => {
-				return parseInt(row.count, 10);
+				return Number.parseInt(row.count, 10);
 			});
 	},
 
@@ -292,23 +385,28 @@ const internalUser = {
 	 * @param   {String}  [search_query]
 	 * @returns {Promise}
 	 */
-	getAll: (access, expand, search_query) => {
-		return access.can('users:list').then(() => {
-			const query = userModel.query().where('is_deleted', 0).groupBy('id').allowGraph('[permissions]').orderBy('name', 'ASC');
+	getAll: async (access, expand, search_query) => {
+		await access.can("users:list");
+		const query = userModel
+			.query()
+			.where("is_deleted", 0)
+			.groupBy("id")
+			.allowGraph("[permissions]")
+			.orderBy("name", "ASC");
 
-			// Query is used for searching
-			if (typeof search_query === 'string') {
-				query.where(function () {
-					this.where('name', 'like', '%' + search_query + '%').orWhere('email', 'like', '%' + search_query + '%');
-				});
-			}
+		// Query is used for searching
+		if (typeof search_query === "string") {
+			query.where(function () {
+				this.where("name", "like", `%${search_query}%`).orWhere("email", "like", `%${search_query}%`);
+			});
+		}
 
-			if (typeof expand !== 'undefined' && expand !== null) {
-				query.withGraphFetched('[' + expand.join(', ') + ']');
-			}
+		if (typeof expand !== "undefined" && expand !== null) {
+			query.withGraphFetched(`[${expand.join(", ")}]`);
+		}
 
-			return query.then(utils.omitRows(omissions()));
-		});
+		const res = await query;
+		return utils.omitRows(omissions())(res);
 	},
 
 	/**
@@ -316,11 +414,11 @@ const internalUser = {
 	 * @param   {Integer} [id_requested]
 	 * @returns {[String]}
 	 */
-	getUserOmisionsByAccess: (access, id_requested) => {
+	getUserOmisionsByAccess: (access, idRequested) => {
 		let response = []; // Admin response
 
-		if (!access.token.hasScope('admin') && access.token.getUserId(0) !== id_requested) {
-			response = ['roles', 'is_deleted']; // Restricted response
+		if (!access.token.hasScope("admin") && access.token.getUserId(0) !== idRequested) {
+			response = ["is_deleted"]; // Restricted response
 		}
 
 		return response;
@@ -336,20 +434,22 @@ const internalUser = {
 	 */
 	setPassword: (access, data) => {
 		return access
-			.can('users:password', data.id)
+			.can("users:password", data.id)
 			.then(() => {
 				return internalUser.get(access, { id: data.id });
 			})
 			.then((user) => {
 				if (user.id !== data.id) {
 					// Sanity check that something crazy hasn't happened
-					throw new error.InternalValidationError('User could not be updated, IDs do not match: ' + user.id + ' !== ' + data.id);
+					throw new errs.InternalValidationError(
+						`User could not be updated, IDs do not match: ${user.id} !== ${data.id}`,
+					);
 				}
 
 				if (user.id === access.token.getUserId(0)) {
 					// they're setting their own password. Make sure their current password is correct
-					if (typeof data.current === 'undefined' || !data.current) {
-						throw new error.ValidationError('Current password was not supplied');
+					if (typeof data.current === "undefined" || !data.current) {
+						throw new errs.ValidationError("Current password was not supplied");
 					}
 
 					return internalToken
@@ -368,31 +468,30 @@ const internalUser = {
 				// Get auth, patch if it exists
 				return authModel
 					.query()
-					.where('user_id', user.id)
-					.andWhere('type', data.type)
+					.where("user_id", user.id)
+					.andWhere("type", data.type)
 					.first()
 					.then((existing_auth) => {
 						if (existing_auth) {
 							// patch
-							return authModel.query().where('user_id', user.id).andWhere('type', data.type).patch({
+							return authModel.query().where("user_id", user.id).andWhere("type", data.type).patch({
 								type: data.type, // This is required for the model to encrypt on save
 								secret: data.secret,
 							});
-						} else {
-							// insert
-							return authModel.query().insert({
-								user_id: user.id,
-								type: data.type,
-								secret: data.secret,
-								meta: {},
-							});
 						}
+						// insert
+						return authModel.query().insert({
+							user_id: user.id,
+							type: data.type,
+							secret: data.secret,
+							meta: {},
+						});
 					})
 					.then(() => {
 						// Add to Audit Log
 						return internalAuditLog.add(access, {
-							action: 'updated',
-							object_type: 'user',
+							action: "updated",
+							object_type: "user",
 							object_id: user.id,
 							meta: {
 								name: user.name,
@@ -414,14 +513,16 @@ const internalUser = {
 	 */
 	setPermissions: (access, data) => {
 		return access
-			.can('users:permissions', data.id)
+			.can("users:permissions", data.id)
 			.then(() => {
 				return internalUser.get(access, { id: data.id });
 			})
 			.then((user) => {
 				if (user.id !== data.id) {
 					// Sanity check that something crazy hasn't happened
-					throw new error.InternalValidationError('User could not be updated, IDs do not match: ' + user.id + ' !== ' + data.id);
+					throw new errs.InternalValidationError(
+						`User could not be updated, IDs do not match: ${user.id} !== ${data.id}`,
+					);
 				}
 
 				return user;
@@ -430,29 +531,28 @@ const internalUser = {
 				// Get perms row, patch if it exists
 				return userPermissionModel
 					.query()
-					.where('user_id', user.id)
+					.where("user_id", user.id)
 					.first()
 					.then((existing_auth) => {
 						if (existing_auth) {
 							// patch
 							return userPermissionModel
 								.query()
-								.where('user_id', user.id)
+								.where("user_id", user.id)
 								.patchAndFetchById(existing_auth.id, _.assign({ user_id: user.id }, data));
-						} else {
-							// insert
-							return userPermissionModel.query().insertAndFetch(_.assign({ user_id: user.id }, data));
 						}
+						// insert
+						return userPermissionModel.query().insertAndFetch(_.assign({ user_id: user.id }, data));
 					})
 					.then((permissions) => {
 						// Add to Audit Log
 						return internalAuditLog.add(access, {
-							action: 'updated',
-							object_type: 'user',
+							action: "updated",
+							object_type: "user",
 							object_id: user.id,
 							meta: {
 								name: user.name,
-								permissions,
+								permissions: permissions,
 							},
 						});
 					});
@@ -469,7 +569,7 @@ const internalUser = {
 	 */
 	loginAs: (access, data) => {
 		return access
-			.can('users:loginas', data.id)
+			.can("users:loginas", data.id)
 			.then(() => {
 				return internalUser.get(access, data);
 			})
@@ -479,4 +579,4 @@ const internalUser = {
 	},
 };
 
-module.exports = internalUser;
+export default internalUser;

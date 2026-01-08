@@ -1,6 +1,6 @@
-const _ = require('lodash');
+import _ from "lodash";
 
-module.exports = function (default_sort, default_offset, default_limit, max_limit) {
+export default (default_sort, default_offset, default_limit, max_limit) => {
 	/**
 	 * This will setup the req query params with filtered data and defaults
 	 *
@@ -10,21 +10,23 @@ module.exports = function (default_sort, default_offset, default_limit, max_limi
 	 *
 	 */
 
-	return function (req, res, next) {
-		req.query.offset = typeof req.query.limit === 'undefined' ? default_offset || 0 : parseInt(req.query.offset, 10);
-		req.query.limit = typeof req.query.limit === 'undefined' ? default_limit || 50 : parseInt(req.query.limit, 10);
+	return (req, _res, next) => {
+		req.query.offset =
+			typeof req.query.limit === "undefined" ? default_offset || 0 : Number.parseInt(req.query.offset, 10);
+		req.query.limit =
+			typeof req.query.limit === "undefined" ? default_limit || 50 : Number.parseInt(req.query.limit, 10);
 
 		if (max_limit && req.query.limit > max_limit) {
 			req.query.limit = max_limit;
 		}
 
 		// Sorting
-		let sort = typeof req.query.sort === 'undefined' ? default_sort : req.query.sort;
+		let sort = typeof req.query.sort === "undefined" ? default_sort : req.query.sort;
 		const myRegexp = /.*\.(asc|desc)$/gi;
 		const sort_array = [];
 
-		sort = sort.split(',');
-		_.map(sort, function (val) {
+		sort = sort.split(",");
+		_.map(sort, (val) => {
 			const matches = myRegexp.exec(val);
 
 			if (matches !== null) {
@@ -36,7 +38,7 @@ module.exports = function (default_sort, default_offset, default_limit, max_limi
 			} else {
 				sort_array.push({
 					field: val,
-					dir: 'asc',
+					dir: "asc",
 				});
 			}
 		});

@@ -1,30 +1,30 @@
 // Objection Docs:
 // http://vincit.github.io/objection.js/
 
-const db = require('../db');
-const Model = require('objection').Model;
+import { Model } from "objection";
+import db from "../db.js";
 
-Model.knex(db);
+Model.knex(db());
 
 class Setting extends Model {
 	$beforeInsert() {
 		// Default for meta
-		if (typeof this.meta === 'undefined') {
+		if (typeof this.meta === "undefined") {
 			this.meta = {};
 		}
 	}
 
 	static get name() {
-		return 'Setting';
+		return "Setting";
 	}
 
 	static get tableName() {
-		return 'setting';
+		return "setting";
 	}
 
 	static get jsonAttributes() {
-		return ['meta'];
+		return ["meta"];
 	}
 }
 
-module.exports = Setting;
+export default Setting;

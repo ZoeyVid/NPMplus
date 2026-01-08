@@ -1,16 +1,25 @@
 // Objection Docs:
 // http://vincit.github.io/objection.js/
 
-const db = require('../db');
-const helpers = require('../lib/helpers');
-const Model = require('objection').Model;
-const User = require('./user');
-const Certificate = require('./certificate');
-const now = require('./now_helper');
+import { Model } from "objection";
+import db from "../db.js";
+import { convertBoolFieldsToInt, convertIntFieldsToBool } from "../lib/helpers.js";
+import Certificate from "./certificate.js";
+import now from "./now_helper.js";
+import User from "./user.js";
 
-Model.knex(db);
+Model.knex(db());
 
-const boolFields = ['is_deleted', 'enabled', 'preserve_path', 'ssl_forced', 'block_exploits', 'hsts_enabled', 'hsts_subdomains', 'http2_support'];
+const boolFields = [
+	"is_deleted",
+	"enabled",
+	"preserve_path",
+	"ssl_forced",
+	"block_exploits",
+	"hsts_enabled",
+	"hsts_subdomains",
+	"http2_support",
+];
 
 class RedirectionHost extends Model {
 	$beforeInsert() {
@@ -18,12 +27,12 @@ class RedirectionHost extends Model {
 		this.modified_on = now();
 
 		// Default for domain_names
-		if (typeof this.domain_names === 'undefined') {
+		if (typeof this.domain_names === "undefined") {
 			this.domain_names = [];
 		}
 
 		// Default for meta
-		if (typeof this.meta === 'undefined') {
+		if (typeof this.meta === "undefined") {
 			this.meta = {};
 		}
 	}
@@ -33,25 +42,25 @@ class RedirectionHost extends Model {
 	}
 
 	$parseDatabaseJson(json) {
-		json = super.$parseDatabaseJson(json);
-		return helpers.convertIntFieldsToBool(json, boolFields);
+		const thisJson = super.$parseDatabaseJson(json);
+		return convertIntFieldsToBool(thisJson, boolFields);
 	}
 
 	$formatDatabaseJson(json) {
-		json = helpers.convertBoolFieldsToInt(json, boolFields);
-		return super.$formatDatabaseJson(json);
+		const thisJson = convertBoolFieldsToInt(json, boolFields);
+		return super.$formatDatabaseJson(thisJson);
 	}
 
 	static get name() {
-		return 'RedirectionHost';
+		return "RedirectionHost";
 	}
 
 	static get tableName() {
-		return 'redirection_host';
+		return "redirection_host";
 	}
 
 	static get jsonAttributes() {
-		return ['domain_names', 'meta'];
+		return ["domain_names", "meta"];
 	}
 
 	static get relationMappings() {
@@ -60,26 +69,26 @@ class RedirectionHost extends Model {
 				relation: Model.HasOneRelation,
 				modelClass: User,
 				join: {
-					from: 'redirection_host.owner_user_id',
-					to: 'user.id',
+					from: "redirection_host.owner_user_id",
+					to: "user.id",
 				},
-				modify: function (qb) {
-					qb.where('user.is_deleted', 0);
+				modify: (qb) => {
+					qb.where("user.is_deleted", 0);
 				},
 			},
 			certificate: {
 				relation: Model.HasOneRelation,
 				modelClass: Certificate,
 				join: {
-					from: 'redirection_host.certificate_id',
-					to: 'certificate.id',
+					from: "redirection_host.certificate_id",
+					to: "certificate.id",
 				},
-				modify: function (qb) {
-					qb.where('certificate.is_deleted', 0);
+				modify: (qb) => {
+					qb.where("certificate.is_deleted", 0);
 				},
 			},
 		};
 	}
 }
 
-module.exports = RedirectionHost;
+export default RedirectionHost;

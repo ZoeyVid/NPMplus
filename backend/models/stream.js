@@ -1,13 +1,13 @@
-const Model = require('objection').Model;
-const db = require('../db');
-const helpers = require('../lib/helpers');
-const User = require('./user');
-const Certificate = require('./certificate');
-const now = require('./now_helper');
+import { Model } from "objection";
+import db from "../db.js";
+import { convertBoolFieldsToInt, convertIntFieldsToBool } from "../lib/helpers.js";
+import Certificate from "./certificate.js";
+import now from "./now_helper.js";
+import User from "./user.js";
 
-Model.knex(db);
+Model.knex(db());
 
-const boolFields = ['is_deleted', 'enabled', 'tcp_forwarding', 'udp_forwarding', 'proxy_protocol_forwarding'];
+const boolFields = ["is_deleted", "enabled", "tcp_forwarding", "udp_forwarding", "proxy_protocol_forwarding"];
 
 class Stream extends Model {
 	$beforeInsert() {
@@ -15,7 +15,7 @@ class Stream extends Model {
 		this.modified_on = now();
 
 		// Default for meta
-		if (typeof this.meta === 'undefined') {
+		if (typeof this.meta === "undefined") {
 			this.meta = {};
 		}
 	}
@@ -25,25 +25,25 @@ class Stream extends Model {
 	}
 
 	$parseDatabaseJson(json) {
-		json = super.$parseDatabaseJson(json);
-		return helpers.convertIntFieldsToBool(json, boolFields);
+		const thisJson = super.$parseDatabaseJson(json);
+		return convertIntFieldsToBool(thisJson, boolFields);
 	}
 
 	$formatDatabaseJson(json) {
-		json = helpers.convertBoolFieldsToInt(json, boolFields);
-		return super.$formatDatabaseJson(json);
+		const thisJson = convertBoolFieldsToInt(json, boolFields);
+		return super.$formatDatabaseJson(thisJson);
 	}
 
 	static get name() {
-		return 'Stream';
+		return "Stream";
 	}
 
 	static get tableName() {
-		return 'stream';
+		return "stream";
 	}
 
 	static get jsonAttributes() {
-		return ['meta'];
+		return ["meta"];
 	}
 
 	static get relationMappings() {
@@ -52,26 +52,26 @@ class Stream extends Model {
 				relation: Model.HasOneRelation,
 				modelClass: User,
 				join: {
-					from: 'stream.owner_user_id',
-					to: 'user.id',
+					from: "stream.owner_user_id",
+					to: "user.id",
 				},
-				modify: function (qb) {
-					qb.where('user.is_deleted', 0);
+				modify: (qb) => {
+					qb.where("user.is_deleted", 0);
 				},
 			},
 			certificate: {
 				relation: Model.HasOneRelation,
 				modelClass: Certificate,
 				join: {
-					from: 'stream.certificate_id',
-					to: 'certificate.id',
+					from: "stream.certificate_id",
+					to: "certificate.id",
 				},
-				modify: function (qb) {
-					qb.where('certificate.is_deleted', 0);
+				modify: (qb) => {
+					qb.where("certificate.is_deleted", 0);
 				},
 			},
 		};
 	}
 }
 
-module.exports = Stream;
+export default Stream;

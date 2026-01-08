@@ -1,13 +1,15 @@
 name: JSON check
 on:
   push:
+    branches:
+      - develop
   pull_request:
   workflow_dispatch:
 jobs:
   test-json:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
       - name: json-syntax-check
         uses: limitusus/json-syntax-check@v2
         with:

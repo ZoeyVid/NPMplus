@@ -2,9 +2,9 @@
 
 // based on: https://github.com/jlesage/docker-nginx-proxy-manager/blob/796734a3f9a87e0b1561b47fd418f82216359634/rootfs/opt/nginx-proxy-manager/bin/reset-password
 
-const fs = require('fs');
-const bcrypt = require('bcrypt');
-const Database = require('better-sqlite3');
+import fs from "node:fs";
+import bcrypt from "bcryptjs";
+import Database from "better-sqlite3";
 
 function usage() {
 	console.log(`usage: node ${process.argv[1]} USER_EMAIL PASSWORD
@@ -22,36 +22,36 @@ const USER_EMAIL = args[0];
 const PASSWORD = args[1];
 
 if (!USER_EMAIL && !PASSWORD) {
-	console.error('ERROR: User email address must be set.');
-	console.error('ERROR: Password must be set.');
+	console.error("ERROR: User email address must be set.");
+	console.error("ERROR: Password must be set.");
 	usage();
 }
 
 if (!USER_EMAIL) {
-	console.error('ERROR: User email address must be set.');
+	console.error("ERROR: User email address must be set.");
 	usage();
 }
 
 if (!PASSWORD) {
-	console.error('ERROR: Password must be set.');
+	console.error("ERROR: Password must be set.");
 	usage();
 }
 
-if (fs.existsSync('/data/npmplus/database.sqlite')) {
+if (fs.existsSync("/data/npmplus/database.sqlite")) {
 	bcrypt.hash(PASSWORD, 13, (err, PASSWORD_HASH) => {
 		if (err) {
 			console.error(err);
 			process.exit(1);
 		}
-		const db = new Database('/data/npmplus/database.sqlite');
+		const db = new Database("/data/npmplus/database.sqlite");
 
 		try {
 			const stmt = db.prepare(`
-                UPDATE auth 
-                SET secret = ? 
+                UPDATE auth
+                SET secret = ?
                 WHERE EXISTS (
-                    SELECT * 
-                    FROM user 
+                    SELECT *
+                    FROM user
                     WHERE user.id = auth.user_id AND user.email = ?
                 )`);
 
@@ -72,6 +72,6 @@ if (fs.existsSync('/data/npmplus/database.sqlite')) {
 		process.exit(0);
 	});
 } else {
-	console.error('ERROR: Cannot connect to the sqlite database.');
+	console.error("ERROR: Cannot connect to the sqlite database.");
 	process.exit(1);
 }

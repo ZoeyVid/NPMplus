@@ -1,6 +1,8 @@
 name: spellcheck
 on:
   push:
+    branches:
+      - develop
   pull_request:
   workflow_dispatch:
 jobs:
@@ -9,11 +11,11 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Check out code.
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
       - name: Check spelling
         uses: codespell-project/actions-codespell@v2
         with:
           check_filenames: true
           check_hidden: true
-          skip: .git,.gitignore,yarn.lock,de-lang.json,it-lang.json,zh-lang.json,showdown.min.js,jquery.min.js,xregexp-all.js
-          ignore_words_list: alog,hasTable
+          skip: pnpm-lock.yaml,./frontend/src/locale/src
+          ignore_words_list: afterAll,alog

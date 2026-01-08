@@ -1,72 +1,59 @@
 #!/usr/bin/env node
 
-const schema = require('./schema');
-const logger = require('./logger').global;
+import app from "./app.js";
+import internalNginx from "./internal/nginx.js";
+import internalCertificate from "./internal/certificate.js";
+import internalIpRanges from "./internal/ip_ranges.js";
+import { global as logger } from "./logger.js";
+import { migrateUp } from "./migrate.js";
+import { getCompiledSchema } from "./schema/index.js";
+import setup from "./setup.js";
+
+const IP_RANGES_FETCH_ENABLED = process.env.SKIP_IP_RANGES === "false";
 
 async function appStart() {
-	const migrate = require('./migrate');
-	const setup = require('./setup');
-	const app = require('./app');
-	const internalNginx = require('./internal/nginx');
-	const internalCertificate = require('./internal/certificate');
-	const internalIpRanges = require('./internal/ip_ranges');
-	const internalDomainLog = require('./internal/domain-log');
-
-	return migrate
-		.latest()
-		.then((result) => {
-			logger.info('Migration completed:', result);
-			return setup;
-		})
-		.then((setupFunction) => {
-			return setupFunction();
-		})
-		.then(schema.getCompiledSchema)
-		.then(async () => {
-			// Verify all required tables exist before proceeding
-			try {
-				const db = require('./db');
-				await db.raw('SELECT 1 FROM certificate LIMIT 1').catch(() => {
-					// Table might be empty, that's fine
-				});
-				await db.raw('SELECT 1 FROM acme_server LIMIT 1').catch(() => {
-					// Table might be empty, that's fine
-				});
-				logger.info('Database tables verified successfully');
-			} catch (err) {
-				logger.error('Required database tables not available:', err.message);
-				throw new Error('Database not ready: ' + err.message);
-			}
-		})
-		.then(internalIpRanges.fetch)
+	return migrateUp()
+		.then(setup)
+		.then(getCompiledSchema)
 		.then(async () => {
 			// Initialize log directories for all existing proxy hosts
 			try {
-				await internalDomainLog.initializeAllLogDirectories();
+				const internalDomainLog = await import('./internal/domain-log.js');
+				await internalDomainLog.default.initializeAllLogDirectories();
 				logger.info('Log directories initialized for all proxy hosts');
 			} catch (err) {
 				logger.warn('Failed to initialize log directories:', err.message);
 			}
 		})
 		.then(() => {
-			internalNginx.reload();
-			internalCertificate.initTimer();
+			if (!IP_RANGES_FETCH_ENABLED) {
+				logger.info("IP Ranges fetch is disabled by environment variable");
+				return;
+			}
+			logger.info("IP Ranges fetch is enabled");
 			internalIpRanges.initTimer();
+			return internalIpRanges.fetch().catch((err) => {
+				logger.error("IP Ranges fetch failed, continuing anyway:", err.message);
+			});
+		})
+		.then(() => {
+			internalCertificate.initTimer();
+			internalNginx.reload();
 
-			const server = app.listen('/run/npmplus.sock', () => {
-				logger.info('Backend PID ' + process.pid + ' listening on unix socket');
+			const server = app.listen("/run/npmplus.sock", () => {
+				logger.info(`Backend PID ${process.pid} listening on unix socket...`);
 
-				process.on('SIGTERM', () => {
-					logger.info('PID ' + process.pid + ' received SIGTERM');
+				process.on("SIGTERM", () => {
+					logger.info(`PID ${process.pid} received SIGTERM`);
 					server.close(() => {
-						logger.info('Stopping.');
+						logger.info("Stopping.");
 						process.exit(0);
 					});
 				});
 			});
 		})
 		.catch((err) => {
-			logger.error(err.message, err);
+			logger.error(`Startup Error: ${err.message}`, err);
 			setTimeout(appStart, 1000);
 		});
 }
@@ -74,6 +61,6 @@ async function appStart() {
 try {
 	appStart();
 } catch (err) {
-	logger.error(err.message, err);
+	logger.fatal(err);
 	process.exit(1);
 }

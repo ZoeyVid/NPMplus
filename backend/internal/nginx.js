@@ -1,9 +1,13 @@
-const _ = require('lodash');
-const fs = require('fs');
-const logger = require('../logger').nginx;
-const utils = require('../lib/utils');
-const error = require('../lib/error');
-const punycode = require('punycode/');
+import fs from "node:fs";
+import { dirname } from "node:path";
+import { domainToASCII, fileURLToPath } from "node:url";
+import _ from "lodash";
+import errs from "../lib/error.js";
+import utils from "../lib/utils.js";
+import { debug, nginx as logger } from "../logger.js";
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
 
 const internalNginx = {
 	/**
@@ -26,6 +30,9 @@ const internalNginx = {
 		return internalNginx
 			.test()
 			.then(() => {
+				return internalNginx.deleteConfig(host_type, host);
+			})
+			.then(() => {
 				return internalNginx.reload();
 			})
 			.then(() => {
@@ -42,7 +49,7 @@ const internalNginx = {
 							nginx_err: null,
 						});
 
-						return model.query().where('id', host.id).patch({
+						return model.query().where("id", host.id).patch({
 							meta: combined_meta,
 						});
 					})
@@ -57,7 +64,7 @@ const internalNginx = {
 
 						return model
 							.query()
-							.where('id', host.id)
+							.where("id", host.id)
 							.patch({
 								meta: combined_meta,
 							})
@@ -78,28 +85,48 @@ const internalNginx = {
 	 * @returns {Promise}
 	 */
 	test: () => {
-		return utils.execFile('nginx', ['-tq']);
+		return utils.execFile("nginx", ["-tq"]);
 	},
 
 	/**
 	 * @returns {Promise}
 	 */
-
 	reload: () => {
 		const promises = [];
 
-		if (process.env.ACME_OCSP_STAPLING === 'true') {
-			promises.push(utils.execFile('certbot-ocsp-fetcher.sh', ['-c', '/data/tls/certbot/live', '-o', '/data/tls/certbot/live', '--no-reload-webserver', '--quiet']).catch(() => {}));
+		if (process.env.ACME_OCSP_STAPLING === "true") {
+			promises.push(
+				utils
+					.execFile("certbot-ocsp-fetcher.sh", [
+						"-c",
+						"/data/tls/certbot/live",
+						"-o",
+						"/data/tls/certbot/live",
+						"--no-reload-webserver",
+						"--quiet",
+					])
+					.catch(() => {}),
+			);
 		}
 
-		if (process.env.CUSTOM_OCSP_STAPLING === 'true') {
-			promises.push(utils.execFile('certbot-ocsp-fetcher.sh', ['-c', '/data/tls/custom', '-o', '/data/tls/custom', '--no-reload-webserver', '--quiet']).catch(() => {}));
+		if (process.env.CUSTOM_OCSP_STAPLING === "true") {
+			promises.push(
+				utils
+					.execFile("certbot-ocsp-fetcher.sh", [
+						"-c",
+						"/data/tls/custom",
+						"-o",
+						"/data/tls/custom",
+						"--no-reload-webserver",
+						"--quiet",
+					])
+					.catch(() => {}),
+			);
 		}
 
 		return Promise.all(promises).finally(() => {
 			return internalNginx.test().then(() => {
-				logger.info('Reloading Nginx');
-				return utils.execFile('nginx', ['-s', 'reload']);
+				return utils.execFile("nginx", ["-s", "reload"]);
 			});
 		});
 	},
@@ -110,10 +137,10 @@ const internalNginx = {
 	 * @returns {String}
 	 */
 	getConfigName: (host_type, host_id) => {
-		if (host_type === 'default') {
-			return '/usr/local/nginx/conf/conf.d/default.conf';
+		if (host_type === "default") {
+			return "/usr/local/nginx/conf/conf.d/default.conf";
 		}
-		return '/data/nginx/' + internalNginx.getFileFriendlyHostType(host_type) + '/' + host_id + '.conf';
+		return `/data/nginx/${internalNginx.getFileFriendlyHostType(host_type)}/${host_id}.conf`;
 	},
 
 	/**
@@ -126,27 +153,31 @@ const internalNginx = {
 			let template;
 
 			try {
-				template = fs.readFileSync('/app/templates/_proxy_host_custom_location.conf', { encoding: 'utf8' });
+				template = fs.readFileSync(`${__dirname}/../templates/_proxy_host_custom_location.conf`, {
+					encoding: "utf8",
+				});
 			} catch (err) {
-				reject(new error.ConfigurationError(err.message));
+				reject(new errs.ConfigurationError(err.message));
 				return;
 			}
 
 			const renderEngine = utils.getRenderEngine();
-			let renderedLocations = '';
+			let renderedLocations = "";
 
 			const locationRendering = async () => {
 				for (let i = 0; i < host.locations.length; i++) {
-					const locationCopy = Object.assign({}, { access_list_id: host.access_list_id }, { certificate_id: host.certificate_id }, { ssl_forced: host.ssl_forced }, { caching_enabled: host.caching_enabled }, { block_exploits: host.block_exploits }, { allow_websocket_upgrade: host.allow_websocket_upgrade }, { http2_support: host.http2_support }, { hsts_enabled: host.hsts_enabled }, { hsts_subdomains: host.hsts_subdomains }, { access_list: host.access_list }, { certificate: host.certificate }, host.locations[i]);
+					if (
+						host.locations[i].forward_host.indexOf("/") > -1 &&
+						!host.locations[i].forward_host.startsWith("/") &&
+						!host.locations[i].forward_host.startsWith("unix")
+					) {
+						const split = host.locations[i].forward_host.split("/");
 
-					if (locationCopy.forward_host.indexOf('/') > -1 && !locationCopy.forward_host.startsWith('/') && !locationCopy.forward_host.startsWith('unix')) {
-						const split = locationCopy.forward_host.split('/');
-						locationCopy.forward_host = split.shift();
-						locationCopy.forward_path = `/${split.join('/')}`;
+						host.locations[i].forward_host = split.shift();
+						host.locations[i].forward_path = `/${split.join("/")}`;
 					}
-					locationCopy.env = process.env;
 
-					renderedLocations += await renderEngine.parseAndRender(template, locationCopy);
+					renderedLocations += await renderEngine.parseAndRender(template, host.locations[i]);
 				}
 			};
 
@@ -161,7 +192,7 @@ const internalNginx = {
 	 */
 	generateConfig: (host_type, host_row) => {
 		// Prevent modifying the original object:
-		let host = JSON.parse(JSON.stringify(host_row));
+		const host = JSON.parse(JSON.stringify(host_row));
 		const nice_host_type = internalNginx.getFileFriendlyHostType(host_type);
 
 		const renderEngine = utils.getRenderEngine();
@@ -171,9 +202,9 @@ const internalNginx = {
 			const filename = internalNginx.getConfigName(nice_host_type, host.id);
 
 			try {
-				template = fs.readFileSync('/app/templates/' + nice_host_type + '.conf', { encoding: 'utf8' });
+				template = fs.readFileSync(`${__dirname}/../templates/${nice_host_type}.conf`, { encoding: "utf8" });
 			} catch (err) {
-				reject(new error.ConfigurationError(err.message));
+				reject(new errs.ConfigurationError(err.message));
 				return;
 			}
 
@@ -181,15 +212,23 @@ const internalNginx = {
 			let origLocations;
 
 			// Manipulate the data a bit before sending it to the template
-			if (nice_host_type !== 'default') {
+			if (nice_host_type !== "default") {
 				host.use_default_location = true;
-				if (typeof host.advanced_config !== 'undefined' && host.advanced_config) {
+				if (typeof host.advanced_config !== "undefined" && host.advanced_config) {
 					host.use_default_location = !internalNginx.advancedConfigHasDefaultLocation(host.advanced_config);
 				}
 			}
 
+			// For redirection hosts, if the scheme is not http or https, set it to $scheme
+			if (
+				nice_host_type === "redirection_host" &&
+				["http", "https"].indexOf(host.forward_scheme.toLowerCase()) === -1
+			) {
+				host.forward_scheme = "$scheme";
+			}
+
 			if (host.locations) {
-				// logger.info ('host.locations = ' + JSON.stringify(host.locations, null, 2));
+				//logger.info ('host.locations = ' + JSON.stringify(host.locations, null, 2));
 				origLocations = [].concat(host.locations);
 				locationsPromise = internalNginx.renderLocations(host).then((renderedLocations) => {
 					host.locations = renderedLocations;
@@ -197,7 +236,7 @@ const internalNginx = {
 
 				// Allow someone who is using / custom location path to use it, and skip the default / location
 				_.map(host.locations, (location) => {
-					if (location.path === '/') {
+					if (location.path === "/" && location.location_type !== "= ") {
 						host.use_default_location = false;
 					}
 				});
@@ -205,72 +244,99 @@ const internalNginx = {
 				locationsPromise = Promise.resolve();
 			}
 
-			if (host.forward_host && host.forward_host.indexOf('/') > -1 && !host.forward_host.startsWith('/') && !host.forward_host.startsWith('unix')) {
-				const split = host.forward_host.split('/');
+			if (
+				host.forward_host &&
+				host.forward_host.indexOf("/") > -1 &&
+				!host.forward_host.startsWith("/") &&
+				!host.forward_host.startsWith("unix")
+			) {
+				const split = host.forward_host.split("/");
 
 				host.forward_host = split.shift();
-				host.forward_path = `/${split.join('/')}`;
+				host.forward_path = `/${split.join("/")}`;
 			}
 
 			if (host.domain_names) {
-				host.server_names = host.domain_names.map((domain_name) => punycode.toASCII(domain_name));
+		host.server_names = host.domain_names.map((domain_name) => domainToASCII(domain_name) || domain_name);
+	}
+
+	host.env = process.env;
+
+	// Add CrowdSec information to the host object
+	const internalSetting = require('./setting');
+	host.crowdsec_enabled = internalSetting.isCrowdSecEnabled();
+	
+	// For proxy hosts, check if CrowdSec should be disabled for this specific host
+	if (nice_host_type === 'proxy_host' && host.crowdsec_enabled) {
+		host.crowdsec_disabled_for_host = host.crowdsec_disabled || false;
+	} else {
+		host.crowdsec_disabled_for_host = false;
+	}
+
+	// Get Default Site setting for proxy hosts with default page enabled
+	let defaultSitePromise = Promise.resolve();
+	if (nice_host_type === 'proxy_host' && host.use_default_page) {
+		const settingModel = require('../models/setting');
+		defaultSitePromise = settingModel
+			.query()
+			.where('id', 'default-site')
+			.first()
+			.then((defaultSiteSetting) => {
+				if (defaultSiteSetting) {
+					host.default_site_setting = defaultSiteSetting;
+				}
+			})
+			.catch(() => {
+				// If default site setting is not found, use fallback
+				host.default_site_setting = { value: 'fallback' };
+			});
+	}
+
+	// Ensure log directory exists for proxy hosts
+	let logDirectoryPromise = Promise.resolve();
+	if (nice_host_type === 'proxy_host' && host.enable_logs !== false && host.id) {
+		const internalDomainLog = require('./domain-log');
+		logDirectoryPromise = internalDomainLog.ensureLogDirectory(host.id);
+	}
+
+	Promise.all([locationsPromise, logDirectoryPromise, defaultSitePromise])
+		.then(() => {
+			return renderEngine.parseAndRender(template, host);
+		})
+		.then((config_text) => {
+			fs.writeFileSync(filename, config_text, { encoding: "utf8" });
+			debug(logger, "Wrote config:", filename);
+
+			// Restore locations array
+			host.locations = origLocations;
+
+			resolve(true);
+		})
+		.catch((err) => {
+			debug(logger, `Could not write ${filename}:`, err.message);
+			reject(new errs.ConfigurationError(err.message));
+		})
+		.then(() => {
+			if (process.env.DISABLE_NGINX_BEAUTIFIER === "false") {
+				utils.execFile("nginxbeautifier", ["-s", "4", filename]).catch(() => {});
 			}
-
-			host.env = process.env;
-
-			// Add CrowdSec information to the host object
-			const internalSetting = require('./setting');
-			host.crowdsec_enabled = internalSetting.isCrowdSecEnabled();
-			
-			// For proxy hosts, check if CrowdSec should be disabled for this specific host
-			if (nice_host_type === 'proxy_host' && host.crowdsec_enabled) {
-				host.crowdsec_disabled_for_host = host.crowdsec_disabled || false;
-			} else {
-				host.crowdsec_disabled_for_host = false;
-			}
-
-			// Get Default Site setting for proxy hosts with default page enabled
-			let defaultSitePromise = Promise.resolve();
-			if (nice_host_type === 'proxy_host' && host.use_default_page) {
-				const settingModel = require('../models/setting');
-				defaultSitePromise = settingModel
-					.query()
-					.where('id', 'default-site')
-					.first()
-					.then((defaultSiteSetting) => {
-						if (defaultSiteSetting) {
-							host.default_site_setting = defaultSiteSetting;
-						}
-					})
-					.catch(() => {
-						// If default site setting is not found, use fallback
-						host.default_site_setting = { value: 'fallback' };
-					});
-			}
-
-			// Ensure log directory exists for proxy hosts
-			let logDirectoryPromise = Promise.resolve();
-			if (nice_host_type === 'proxy_host' && host.enable_logs !== false && host.id) {
-				const internalDomainLog = require('./domain-log');
-				logDirectoryPromise = internalDomainLog.ensureLogDirectory(host.id);
-			}
-
-			Promise.all([locationsPromise, logDirectoryPromise, defaultSitePromise])
-				.then(() => {
-					return renderEngine.parseAndRender(template, host);
-				})
-				.then((config_text) => {
-					fs.writeFileSync(filename, config_text, { encoding: 'utf8' });
-
-					// Restore locations array
-					host.locations = origLocations;
-
-					resolve(true);
-				})
-				.catch((err) => {
-					reject(new error.ConfigurationError(err.message));
-				});
 		});
+	});
+},	/**
+	 * A simple wrapper around unlinkSync that writes to the logger
+	 *
+	 * @param   {String}  filename
+	 */
+	deleteFile: (filename) => {
+		if (!fs.existsSync(filename)) {
+			return;
+		}
+		try {
+			debug(logger, `Deleting file: ${filename}`);
+			fs.unlinkSync(filename);
+		} catch (err) {
+			debug(logger, "Could not delete file:", JSON.stringify(err, null, 2));
+		}
 	},
 
 	/**
@@ -279,26 +345,24 @@ const internalNginx = {
 	 * @returns String
 	 */
 	getFileFriendlyHostType: (host_type) => {
-		return host_type.replace(new RegExp('-', 'g'), '_');
+		return host_type.replace(/-/g, "_");
 	},
 
 	/**
 	 * @param   {String}  host_type
 	 * @param   {Object}  [host]
-	 * @param   {Boolean} [delete_err_file]
 	 * @returns {Promise}
 	 */
 	deleteConfig: (host_type, host) => {
-		const config_file = internalNginx.getConfigName(internalNginx.getFileFriendlyHostType(host_type), typeof host === 'undefined' ? 0 : host.id);
-		const config_file_err = config_file + '.err';
+		const config_file = internalNginx.getConfigName(
+			internalNginx.getFileFriendlyHostType(host_type),
+			typeof host === "undefined" ? 0 : host.id,
+		);
 
-		return new Promise((resolve /*, reject */) => {
-			fs.rm(config_file, { force: true }, () => {
-				resolve();
-			});
-			fs.rm(config_file_err, { force: true }, () => {
-				resolve();
-			});
+		return new Promise((resolve /*, reject*/) => {
+			internalNginx.deleteFile(config_file);
+			internalNginx.deleteFile(`${config_file}.err`);
+			resolve();
 		});
 	},
 
@@ -308,34 +372,38 @@ const internalNginx = {
 	 * @returns {Promise}
 	 */
 	renameConfigAsError: (host_type, host) => {
-		const config_file = internalNginx.getConfigName(internalNginx.getFileFriendlyHostType(host_type), typeof host === 'undefined' ? 0 : host.id);
-		const config_file_err = config_file + '.err';
+		const config_file = internalNginx.getConfigName(
+			internalNginx.getFileFriendlyHostType(host_type),
+			typeof host === "undefined" ? 0 : host.id,
+		);
 
 		return new Promise((resolve /*, reject */) => {
-			fs.rename(config_file, config_file_err, () => {
+			fs.rename(config_file, `${config_file}.err`, () => {
 				resolve();
 			});
 		});
 	},
 
 	/**
-	 * @param   {String}  host_type
+	 * @param   {String}  hostType
 	 * @param   {Array}   hosts
 	 * @returns {Promise}
 	 */
-	bulkGenerateConfigs: (model, host_type, hosts) => {
-		return hosts.reduce((promise, host) => {
-			return promise.then(() => internalNginx.configure(model, host_type, host));
-		}, Promise.resolve());
+	bulkGenerateConfigs: (model, hostType, hosts) => {
+		const promises = [];
+		hosts.map((host) => {
+			promises.push(internalNginx.configure(model, hostType, host));
+			return true;
+		});
+
+		return Promise.all(promises);
 	},
 
 	/**
 	 * @param   {string}  config
 	 * @returns {boolean}
 	 */
-	advancedConfigHasDefaultLocation: function (cfg) {
-		return !!cfg.match(/^(?:.*;)?\s*?location\s*?\/\s*?{/im);
-	},
+	advancedConfigHasDefaultLocation: (cfg) => !!cfg.match(/^(?:.*;)?\s*?location\s*?\/\s*?{/im),
 };
 
-module.exports = internalNginx;
+export default internalNginx;

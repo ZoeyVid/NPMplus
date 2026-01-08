@@ -1,0 +1,91 @@
+name: Build beta Docker Image
+on:
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: 'name of the beta'
+        required: true
+        type: string
+jobs:
+  build-x86_64:
+    runs-on: ubuntu-latest
+    if: ${{ github.repository_owner == 'ZoeyVid' }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+        with:
+          driver-opts: env.BUILDKIT_STEP_LOG_MAX_SIZE=-1
+      - name: Login to GitHub Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: zoeyvid
+          password: ${{ github.token }}
+      - name: version
+        run: |
+          sed -i "s|\"0.0.0\"|\"${{ inputs.tag }}-$(git rev-parse --short HEAD)-$(cat .version)\"|g" frontend/package.json
+          sed -i "s|\"0.0.0\"|\"${{ inputs.tag }}-$(git rev-parse --short HEAD)-$(cat .version)\"|g" backend/package.json
+      - name: Build
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          file: ./Dockerfile
+          push: true
+          tags: ghcr.io/zoeyvid/npmplus:beta-x86_64
+          build-args: |
+            FLAGS=-march=x86-64-v2 -mtune=generic -fcf-protection=full
+          
+  build-aarch64:
+    runs-on: ubuntu-24.04-arm
+    if: ${{ github.repository_owner == 'ZoeyVid' }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+        with:
+          driver-opts: env.BUILDKIT_STEP_LOG_MAX_SIZE=-1
+      - name: Login to GitHub Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: zoeyvid
+          password: ${{ github.token }}
+      - name: version
+        run: |
+          sed -i "s|\"0.0.0\"|\"${{ inputs.tag }}-$(git rev-parse --short HEAD)-$(cat .version)\"|g" frontend/package.json
+          sed -i "s|\"0.0.0\"|\"${{ inputs.tag }}-$(git rev-parse --short HEAD)-$(cat .version)\"|g" backend/package.json
+      - name: Build
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          file: ./Dockerfile
+          push: true
+          tags: ghcr.io/zoeyvid/npmplus:beta-aarch64
+          build-args: |
+            FLAGS=-mbranch-protection=standard
+          
+  merge:
+    runs-on: ubuntu-latest
+    needs: [build-x86_64, build-aarch64]
+    if: ${{ github.repository_owner == 'ZoeyVid' }}
+    steps:
+      - name: Login to DockerHub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+      - name: Login to GitHub Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: zoeyvid
+          password: ${{ github.token }}
+      - name: create multiarch
+        run: |
+          docker buildx imagetools create --tag zoeyvid/npmplus:beta ghcr.io/zoeyvid/npmplus:beta-x86_64 ghcr.io/zoeyvid/npmplus:beta-aarch64
+          docker buildx imagetools create --tag ghcr.io/zoeyvid/npmplus:beta ghcr.io/zoeyvid/npmplus:beta-x86_64 ghcr.io/zoeyvid/npmplus:beta-aarch64
+          docker buildx imagetools create --tag zoeyvid/npmplus:${{ inputs.tag }} ghcr.io/zoeyvid/npmplus:beta-x86_64 ghcr.io/zoeyvid/npmplus:beta-aarch64
+          docker buildx imagetools create --tag ghcr.io/zoeyvid/npmplus:${{ inputs.tag }} ghcr.io/zoeyvid/npmplus:beta-x86_64 ghcr.io/zoeyvid/npmplus:beta-aarch64

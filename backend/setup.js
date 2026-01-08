@@ -1,77 +1,77 @@
-const fs = require('fs');
-const logger = require('./logger').setup;
-const certificateModel = require('./models/certificate');
-const userModel = require('./models/user');
-const userPermissionModel = require('./models/user_permission');
-const authModel = require('./models/auth');
-const settingModel = require('./models/setting');
-const certbot = require('./lib/certbot');
+import fs from "node:fs";
+import { installPlugins } from "./lib/certbot.js";
+import utils from "./lib/utils.js";
+import { setup as logger } from "./logger.js";
+import authModel from "./models/auth.js";
+import certificateModel from "./models/certificate.js";
+import settingModel from "./models/setting.js";
+import userModel from "./models/user.js";
+import userPermissionModel from "./models/user_permission.js";
 
-const proxyModel = require('./models/proxy_host');
-const redirectModel = require('./models/redirection_host');
-const deadModel = require('./models/dead_host');
-const streamModel = require('./models/stream');
-const internalNginx = require('./internal/nginx');
-const utils = require('./lib/utils');
+import proxyModel from "./models/proxy_host.js";
+import redirectionModel from "./models/redirection_host.js";
+import deadModel from "./models/dead_host.js";
+import streamModel from "./models/stream.js";
+import internalNginx from "./internal/nginx.js";
+
+export const isSetup = async () => {
+	const row = await userModel.query().select("id").where("is_deleted", 0).first();
+	return row?.id > 0;
+};
 
 /**
  * Creates a default admin users if one doesn't already exist in the database
  *
  * @returns {Promise}
  */
-const setupDefaultUser = () => {
-	return userModel
-		.query()
-		.select('id')
-		.where('is_deleted', 0)
-		.first()
-		.then((row) => {
-			if (!row || !row.id) {
-				// Create a new user and set password
-				let email = process.env.INITIAL_ADMIN_EMAIL;
-				let password = process.env.INITIAL_ADMIN_PASSWORD;
+const setupDefaultUser = async () => {
+	const initialAdminEmail = process.env.INITIAL_ADMIN_EMAIL;
+	const initialAdminPassword = process.env.INITIAL_ADMIN_PASSWORD;
 
-				logger.info('Creating a new user: ' + email + ' with password: ' + password);
+	// This will only create a new user when there are no active users in the database
+	// and the INITIAL_ADMIN_EMAIL and INITIAL_ADMIN_PASSWORD environment variables are set.
+	// Otherwise, users should be shown the setup wizard in the frontend.
+	// I'm keeping this legacy behavior in case some people are automating deployments.
 
-				const data = {
-					is_deleted: 0,
-					email: email,
-					name: 'Administrator',
-					nickname: 'Admin',
-					avatar: '',
-					roles: ['admin'],
-				};
+	if (!initialAdminEmail || !initialAdminPassword) {
+		return Promise.resolve();
+	}
 
-				return userModel
-					.query()
-					.insertAndFetch(data)
-					.then((user) => {
-						return authModel
-							.query()
-							.insert({
-								user_id: user.id,
-								type: 'password',
-								secret: password,
-								meta: {},
-							})
-							.then(() => {
-								return userPermissionModel.query().insert({
-									user_id: user.id,
-									visibility: 'all',
-									proxy_hosts: 'manage',
-									redirection_hosts: 'manage',
-									dead_hosts: 'manage',
-									streams: 'manage',
-									access_lists: 'manage',
-									certificates: 'manage',
-								});
-							});
-					})
-					.then(() => {
-						logger.info('Initial admin setup completed');
-					});
-			}
+	const userIsetup = await isSetup();
+	if (!userIsetup) {
+		// Create a new user and set password
+		logger.info(`Creating a new user: ${initialAdminEmail} with password: ${initialAdminPassword}`);
+
+		const data = {
+			is_deleted: 0,
+			email: initialAdminEmail,
+			name: "Administrator",
+			nickname: "Admin",
+			avatar: "",
+			roles: ["admin"],
+		};
+
+		const user = await userModel.query().insertAndFetch(data);
+
+		await authModel.query().insert({
+			user_id: user.id,
+			type: "password",
+			secret: initialAdminPassword,
+			meta: {},
 		});
+
+		await userPermissionModel.query().insert({
+			user_id: user.id,
+			visibility: "all",
+			proxy_hosts: "manage",
+			redirection_hosts: "manage",
+			dead_hosts: "manage",
+			streams: "manage",
+			access_lists: "manage",
+			certificates: "manage",
+		});
+		logger.info("Initial admin setup completed");
+	}
 };
 
 /**
@@ -79,60 +79,23 @@ const setupDefaultUser = () => {
  *
  * @returns {Promise}
  */
-const setupDefaultSettings = () => {
-	return Promise.all([
-		settingModel
-			.query()
-			.select('id')
-			.where({ id: 'default-site' })
-			.first()
-			.then((row) => {
-				if (!row || !row.id) {
-					settingModel
-						.query()
-						.insert({
-							id: 'default-site',
-							name: 'Default Site',
-							description: 'What to show when Nginx is hit with an unknown Host',
-							value: process.env.INITIAL_DEFAULT_PAGE,
-							meta: {},
-						})
-						.then(() => {
-							logger.info('Default settings added');
-						});
-				}
-			})
-			.then(() => {
-				settingModel
-					.query()
-					.where('id', 'default-site')
-					.first()
-					.then((row) => {
-						internalNginx.generateConfig('default', row);
-					});
-			}),
-		settingModel
-			.query()
-			.select('id')
-			.where({ id: 'oidc-config' })
-			.first()
-			.then((row) => {
-				if (!row || !row.id) {
-					settingModel
-						.query()
-						.insert({
-							id: 'oidc-config',
-							name: 'Open ID Connect',
-							description: 'Sign in to NPMplus with an external Identity Provider',
-							value: 'metadata',
-							meta: {},
-						})
-						.then(() => {
-							logger.info('Added oidc-config setting');
-						});
-				}
-			}),
-	]);
+const setupDefaultSettings = async () => {
+	if (!(await settingModel.query().select("id").where({ id: "default-site" }).first())?.id) {
+		await settingModel.query().insert({
+			id: "default-site",
+			name: "Default Site",
+			description: "What to show when Nginx is hit with an unknown Host",
+			value: process.env.INITIAL_DEFAULT_PAGE,
+			meta: {},
+		});
+		logger.info("Default settings added");
+	}
+
+	if ((await settingModel.query().select("id").where({ id: "oidc-config" }).first())?.id) {
+		await settingModel.query().deleteById("oidc-config");
+	}
+
+	await internalNginx.generateConfig("default", await settingModel.query().where({ id: "default-site" }).first());
 };
 
 /**
@@ -140,46 +103,35 @@ const setupDefaultSettings = () => {
  *
  * @returns {Promise}
  */
-const setupCertbotPlugins = () => {
-	// Check if certificate table exists first
-	return certificateModel
-		.knex()
-		.schema.hasTable('certificate')
-		.then((exists) => {
-			if (!exists) {
-				logger.info('Certificate table does not exist yet, skipping certbot plugins setup');
-				return Promise.resolve();
+const setupCertbotPlugins = async () => {
+	const certificates = await certificateModel.query().where("is_deleted", 0).andWhere("provider", "letsencrypt");
+
+	if (certificates?.length) {
+		const plugins = [];
+		const promises = [];
+
+		certificates.map((certificate) => {
+			if (certificate.meta && certificate.meta.dns_challenge === true) {
+				if (plugins.indexOf(certificate.meta.dns_provider) === -1) {
+					plugins.push(certificate.meta.dns_provider);
+				}
+
+				fs.writeFileSync(
+					`/tmp/certbot-credentials/credentials-${certificate.id}`,
+					certificate.meta.dns_provider_credentials,
+					{ mode: 0o600 },
+				);
 			}
-			
-			logger.info('Certificate table exists, proceeding with certbot plugins setup');
-			return certificateModel
-				.query()
-				.where('is_deleted', 0)
-				.andWhere('certificate_type', 'acme')
-				.then((certificates) => {
-					if (certificates && certificates.length > 0) {
-						const plugins = [];
-						const promises = [];
-
-						certificates.map(function (certificate) {
-							if (certificate.meta && certificate.meta.dns_challenge === true) {
-								if (plugins.indexOf(certificate.meta.dns_provider) === -1) {
-									plugins.push(certificate.meta.dns_provider);
-								}
-								fs.writeFileSync('/tmp/certbot-credentials/credentials-' + certificate.id, certificate.meta.dns_provider_credentials, { mode: 0o600 });
-							}
-						});
-
-						return certbot.installPlugins(plugins).then(() => {
-							if (promises.length > 0) {
-								return Promise.all(promises).then(() => {
-									logger.info('Added Certbot plugins ' + plugins.join(', '));
-								});
-							}
-						});
-					}
-				});
+			return true;
 		});
+
+		await installPlugins(plugins);
+
+		if (promises.length) {
+			await Promise.all(promises);
+			logger.info(`Added Certbot plugins ${plugins.join(", ")}`);
+		}
+	}
 };
 
 /**
@@ -187,59 +139,50 @@ const setupCertbotPlugins = () => {
  *
  * @returns {Promise}
  */
-const regenerateAllHosts = () => {
-	if (process.env.REGENERATE_ALL === 'true') {
-		return proxyModel
+const regenerateAllHosts = async () => {
+	if (process.env.REGENERATE_ALL === "true") {
+		const proxy_hosts = await proxyModel
 			.query()
-			.where('is_deleted', 0)
-			.andWhere('enabled', 1)
-			.withGraphFetched('[access_list.[clients, items], certificate]')
-			.then((rows) => {
-				if (rows && rows.length > 0) {
-					internalNginx.bulkGenerateConfigs(proxyModel, 'proxy_host', rows);
-				}
-			})
-			.then(() => {
-				return redirectModel
-					.query()
-					.where('is_deleted', 0)
-					.andWhere('enabled', 1)
-					.withGraphFetched('[certificate]')
-					.then((rows) => {
-						if (rows && rows.length > 0) {
-							internalNginx.bulkGenerateConfigs(redirectModel, 'redirection_host', rows);
-						}
-					});
-			})
-			.then(() => {
-				return deadModel
-					.query()
-					.where('is_deleted', 0)
-					.andWhere('enabled', 1)
-					.withGraphFetched('[certificate]')
-					.then((rows) => {
-						if (rows && rows.length > 0) {
-							internalNginx.bulkGenerateConfigs(deadModel, 'dead_host', rows);
-						}
-					});
-			})
-			.then(() => {
-				return streamModel
-					.query()
-					.where('is_deleted', 0)
-					.andWhere('enabled', 1)
-					.then((rows) => {
-						if (rows && rows.length > 0) {
-							internalNginx.bulkGenerateConfigs(streamModel, 'stream', rows);
-						}
-					});
-			})
-			.then(() => {
-				utils.writeHash();
-			});
+			.where("is_deleted", 0)
+			.andWhere("enabled", 1)
+			.withGraphFetched("[certificate, access_list.[clients,items]]");
+
+		if (proxy_hosts?.length) {
+			await internalNginx.bulkGenerateConfigs(proxyModel, "proxy_host", proxy_hosts);
+		}
+
+		const redirection_hosts = await redirectionModel
+			.query()
+			.where("is_deleted", 0)
+			.andWhere("enabled", 1)
+			.withGraphFetched("[certificate]");
+
+		if (redirection_hosts?.length) {
+			await internalNginx.bulkGenerateConfigs(redirectionModel, "redirection_host", redirection_hosts);
+		}
+
+		const dead_hosts = await deadModel
+			.query()
+			.where("is_deleted", 0)
+			.andWhere("enabled", 1)
+			.withGraphFetched("[certificate]");
+
+		if (dead_hosts?.length) {
+			await internalNginx.bulkGenerateConfigs(deadModel, "dead_host", dead_hosts);
+		}
+
+		const streams = await streamModel
+			.query()
+			.where("is_deleted", 0)
+			.andWhere("enabled", 1)
+			.withGraphFetched("[certificate]");
+
+		if (streams?.length) {
+			await internalNginx.bulkGenerateConfigs(streamModel, "stream", streams);
+		}
+
+		utils.writeHash();
 	}
 };
 
-module.exports = function () {
-	return setupDefaultUser().then(setupDefaultSettings).then(setupCertbotPlugins).then(regenerateAllHosts);
-};
+export default () => setupDefaultUser().then(setupDefaultSettings).then(setupCertbotPlugins).then(regenerateAllHosts);

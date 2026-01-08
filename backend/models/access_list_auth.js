@@ -1,11 +1,12 @@
 // Objection Docs:
 // http://vincit.github.io/objection.js/
 
-const db = require('../db');
-const Model = require('objection').Model;
-const now = require('./now_helper');
+import { Model } from "objection";
+import db from "../db.js";
+import accessListModel from "./access_list.js";
+import now from "./now_helper.js";
 
-Model.knex(db);
+Model.knex(db());
 
 class AccessListAuth extends Model {
 	$beforeInsert() {
@@ -13,7 +14,7 @@ class AccessListAuth extends Model {
 		this.modified_on = now();
 
 		// Default for meta
-		if (typeof this.meta === 'undefined') {
+		if (typeof this.meta === "undefined") {
 			this.meta = {};
 		}
 	}
@@ -23,32 +24,32 @@ class AccessListAuth extends Model {
 	}
 
 	static get name() {
-		return 'AccessListAuth';
+		return "AccessListAuth";
 	}
 
 	static get tableName() {
-		return 'access_list_auth';
+		return "access_list_auth";
 	}
 
 	static get jsonAttributes() {
-		return ['meta'];
+		return ["meta"];
 	}
 
 	static get relationMappings() {
 		return {
 			access_list: {
 				relation: Model.HasOneRelation,
-				modelClass: require('./access_list'),
+				modelClass: accessListModel,
 				join: {
-					from: 'access_list_auth.access_list_id',
-					to: 'access_list.id',
+					from: "access_list_auth.access_list_id",
+					to: "access_list.id",
 				},
-				modify: function (qb) {
-					qb.where('access_list.is_deleted', 0);
+				modify: (qb) => {
+					qb.where("access_list.is_deleted", 0);
 				},
 			},
 		};
 	}
 }
 
-module.exports = AccessListAuth;
+export default AccessListAuth;
