@@ -34,7 +34,7 @@ const formatDateTime = (value: string | number, locale = "en-US"): string => {
 			{
 				dateStyle: "medium",
 				timeStyle: "medium",
-				hourCycle: "h24",
+				hourCycle: "h23",
 			} as IntlFormatFormatOptions,
 			{ locale },
 		);
