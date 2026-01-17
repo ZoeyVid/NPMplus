@@ -17,6 +17,7 @@ ARG HMNM_VER=v0.39
 ARG NDK_VER=v0.3.4
 ARG LNM_VER=v0.10.29R2
 
+ARG NJS_VER=0.9.5
 ARG NAL_VER=master
 ARG VTS_VER=v0.2.5
 ARG NNTLM_VER=master
@@ -68,6 +69,7 @@ RUN git clone --depth 1 https://github.com/nginx/nginx --branch "$NGINX_VER" /sr
     git clone --depth 1 https://github.com/vision5/ngx_devel_kit --branch "$NDK_VER" /src/ngx_devel_kit && \
     git clone --depth 1 https://github.com/openresty/lua-nginx-module --branch "$LNM_VER" /src/lua-nginx-module && \
     \
+    git clone --depth 1 https://github.com/nginx/njs --branch "$NJS_VER" /src/njs && \
     git clone --depth 1 https://github.com/kvspb/nginx-auth-ldap --branch "$NAL_VER" /src/nginx-auth-ldap && \
     git clone --depth 1 https://github.com/vozlt/nginx-module-vts --branch "$VTS_VER" /src/nginx-module-vts && \
     git clone --depth 1 https://github.com/gabihodoroaga/nginx-ntlm-module --branch "$NNTLM_VER" /src/nginx-ntlm-module && \
@@ -108,6 +110,7 @@ RUN cd /src/nginx && \
     --add-module=/src/lua-nginx-module \
     --with-http_geoip_module=dynamic \
     --with-stream_geoip_module=dynamic \
+    --add-dynamic-module=/src/njs/nginx \
     --add-dynamic-module=/src/nginx-auth-ldap \
     --add-dynamic-module=/src/nginx-module-vts \
     --add-dynamic-module=/src/nginx-ntlm-module \
