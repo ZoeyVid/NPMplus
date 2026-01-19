@@ -3,7 +3,7 @@ import { Field, Form, Formik } from "formik";
 import { type ReactNode, useState } from "react";
 import { Alert } from "react-bootstrap";
 import Modal from "react-bootstrap/Modal";
-import { Button, Loading, SSLCertificateField, SSLOptionsFields } from "src/components";
+import { Button, Loading, SSLCertificateField } from "src/components";
 import { useSetStream, useStream } from "src/hooks";
 import { intl, T } from "src/locale";
 import { validateString } from "src/modules/Validations";
@@ -256,6 +256,10 @@ const StreamModal = EasyModal.create(({ id, visible, remove }: Props) => {
 																								"proxySsl",
 																								false,
 																							);
+																							setFieldValue(
+																								"certificateId",
+																								0,
+																							);
 																						}
 																					}}
 																				/>
@@ -294,26 +298,6 @@ const StreamModal = EasyModal.create(({ id, visible, remove }: Props) => {
 																							setFieldValue(
 																								"proxySsl",
 																								false,
-																							);
-																							setFieldValue(
-																								"reuseKey",
-																								undefined,
-																							);
-																							setFieldValue(
-																								"dnsChallenge",
-																								undefined,
-																							);
-																							setFieldValue(
-																								"dnsProvider",
-																								undefined,
-																							);
-																							setFieldValue(
-																								"dnsProviderCredentials",
-																								undefined,
-																							);
-																							setFieldValue(
-																								"propagationSeconds",
-																								undefined,
 																							);
 																							setFieldValue(
 																								"certificateId",
@@ -396,34 +380,6 @@ const StreamModal = EasyModal.create(({ id, visible, remove }: Props) => {
 																</span>
 															</label>
 														</div>
-														<div>
-															<label className="row" htmlFor="proxySsl">
-																<span className="col">
-																	<T id="streams.ssl" />
-																</span>
-																<span className="col-auto">
-																	<Field name="proxySsl" type="checkbox">
-																		{({ field }: any) => (
-																			<label className="form-check form-check-single form-switch">
-																				<input
-																					id="proxySsl"
-																					className="form-check-input"
-																					type="checkbox"
-																					name={field.name}
-																					checked={field.value}
-																					onChange={(e: any) => {
-																						setFieldValue(
-																							field.name,
-																							e.target.checked,
-																						);
-																					}}
-																				/>
-																			</label>
-																		)}
-																	</Field>
-																</span>
-															</label>
-														</div>
 													</div>
 												</div>
 											</div>
@@ -431,14 +387,8 @@ const StreamModal = EasyModal.create(({ id, visible, remove }: Props) => {
 												<SSLCertificateField
 													name="certificateId"
 													label="ssl-certificate"
-													allowNew
+													allowNew={false}
 													forHttp={false}
-												/>
-												<SSLOptionsFields
-													color="bg-blue"
-													forHttp={false}
-													forceDNSForNew
-													requireDomainNames
 												/>
 											</div>
 										</div>
