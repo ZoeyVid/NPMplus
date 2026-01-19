@@ -328,10 +328,7 @@ const StreamModal = EasyModal.create(({ id, visible, remove }: Props) => {
 																	<T id="streams.ssl" />
 																</span>
 																<span className="col-auto">
-																	<Field
-																		name="proxySsl"
-																		type="checkbox"
-																	>
+																	<Field name="proxySsl" type="checkbox">
 																		{({ field }: any) => (
 																			<label className="form-check form-check-single form-switch">
 																				<input

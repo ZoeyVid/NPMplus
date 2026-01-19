@@ -89,11 +89,11 @@ function LoginForm() {
 
 	useEffect(() => {
 		const alreadyTried = sessionStorage.getItem("oidc_redirected");
-        if (!alreadyTried && !health.data?.password && health.data?.oidc) {
+		if (!alreadyTried && !health.data?.password && health.data?.oidc) {
 			sessionStorage.setItem("oidc_redirected", "true");
-        	redirectToOIDC();
-        }
-    });
+			redirectToOIDC();
+		}
+	});
 
 	const onSubmit = async (values: any, { setSubmitting }: any) => {
 		setFormErr("");
