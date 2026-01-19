@@ -88,7 +88,9 @@ function LoginForm() {
 	};
 
 	useEffect(() => {
-        if (!health.data?.password && health.data?.oidc) {
+		const alreadyTried = sessionStorage.getItem("oidc_redirected");
+        if (!alreadyTried && !health.data?.password && health.data?.oidc) {
+			sessionStorage.setItem("oidc_redirected", "true");
         	redirectToOIDC();
         }
     }, [health.data?.password, health.data?.oidc]);
