@@ -47,6 +47,7 @@ If you don't need the web GUI of NPMplus, you may also have a look at caddy: htt
 - route53 is not supported as dns-challenge provider and Amazon CloudFront IPs can't be automatically trusted in NPMplus, even if you set SKIP_IP_RANGES env to false.
 - The following certbot dns plugins have been replaced, which means that certs using one of these proivder will not renew and need to be recreated (not renewed): `certbot-dns-he`, `certbot-dns-dnspod`, `certbot-dns-online`, `certbot-dns-powerdns` and `certbot-dns-do` (`certbot-dns-do` was replaced in upstream with v2.12.4 and then merged into NPMplus)
 - many forms have changed behavior, see [Comments on some buttons](#comments-on-some-buttons)
+- X-Frame-Options header is set/overridden to "sameorigin" as a secure default.  This can be overridden see sample compose.yaml
 
 ## Quick Setup
 1. Install Docker and Docker Compose (podman or docker rootless may also work)
@@ -128,7 +129,7 @@ location ~* \.php(?:$|/) {
 2. Set the forwarding port to the php version you want to use and is supported by NPMplus (like 83/84/85)
 
 ## Comments on some buttons
-- Forward Hostname / IP / Path: if the scheme is set to path you can just put here a path in and nginx works as a file server, otherwise you need to input ip/domain, you can also append a path to the ip/domain like `127.0.0.1/path` to proxy to a subpath. For custom locations a path which ends with `/` will strip the path of the location. So a request `GET /cdf/abc` to a custom location `/cdf` which proxies to `127.0.0.1/abc` will proxy to `127.0.0.1/abc/abc` and a custom location `/cdf` which proxies to `127.0.0.1/abc/` will proxy to `127.0.0.1/abc` (same stripping applies to `path`).  Note: If you use a `rewrite x y break;` style rule you need to put a `/` on the end of the hostname.  If you use `auth_request /location` and require the `/location` to be passed to the auth backend then add the location to the end of the backend hostname.
+- Forward Hostname / IP / Path: if the scheme is set to path you can just put here a path in and nginx works as a file server, otherwise you need to input ip/domain, you can also append a path to the ip/domain like `127.0.0.1/path` to proxy to a subpath. For custom locations a path which ends with `/` will strip the path of the location. So a request `GET /cdf/abc` to a custom location `/cdf` which proxies to `127.0.0.1/abc` will proxy to `127.0.0.1/abc/abc` and a custom location `/cdf` which proxies to `127.0.0.1/abc/` will proxy to `127.0.0.1/abc` (same stripping applies to `path`).  Note: If you use a `rewrite x y break;` style rule you need to put a `/` on the end of the forward hostname.  If you use `auth_request /location` and require the `/location` to be passed to the auth backend then add the location to the end of the forward hostname.
 - Forward Port (optional): port of upstream or php version if scheme is `path`
 - Enable fancyindex/compression by upstream:
   - for scheme set to `path` this will enabled fancyindex, which shows a index of all files in the folder if there is no index file, only enable this if you know what you are doing and you need the index
@@ -136,6 +137,8 @@ location ~* \.php(?:$|/) {
 - Disable Request/Response Buffering: Most time you want keep buffering enabled, you may want to disable this if you for example want to stream videos and have a fast and stable connection to the upstream server
 - Send noindex header and block some user agents: This does what is says, it appends a header to all responses which says that the site should not be indexed while blocking requests of crawlers based on the user agent sent with the request
 - Wbesockets: this button was removed, websockets are now always enabled
+- Block Common Exploits: this button was removed, it may give a feeling of security, which it does not provide, crowdsec does this way better
+- Cache Assets: this button was removed, the caching implementation used could be a security issue, and also cause issues since it would statically cache some file types without knowing if it makes sense to cache them
 - Reuse Key: this will make the new cert always keep its key unless you force renew it, I recommend you to keep this disabled (not to keep the key), a reason to keep the key would be TLSA/pubkey pinning
 - TLS to upstream (for Streams): This can be used if your stream target already uses tls but you want to override it with a NPMplus cert
 
