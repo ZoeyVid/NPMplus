@@ -12,7 +12,7 @@
 		"tcp_forwarding",
 		"udp_forwarding",
 		"proxy_protocol_forwarding",
-                "proxy_ssl",
+		"proxy_ssl",
 		"enabled",
 		"meta"
 	],
@@ -62,10 +62,10 @@
 			"type": "boolean",
 			"example": false
 		},
-                "proxy_ssl": {
-                        "type": "boolean",
-                        "example": false
-                },
+		"proxy_ssl": {
+			"type": "boolean",
+			"example": false
+		},
 		"enabled": {
 			"$ref": "../common.json#/properties/enabled"
 		},

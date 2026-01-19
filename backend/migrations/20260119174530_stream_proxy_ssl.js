@@ -15,7 +15,7 @@ const up = (knex) => {
 
 	return knex.schema
 		.table("stream", (stream) => {
-			stream.integer("proxy_proxy_ssl").notNull().unsigned().defaultTo(0);
+			stream.integer("proxy_ssl").notNull().unsigned().defaultTo(0);
 		})
 		.then(() => {
 			logger.info(`[${migrateName}] stream Table altered`);
