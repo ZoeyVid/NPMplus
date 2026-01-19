@@ -82,6 +82,7 @@ function AuthProvider({ children, tokenRefreshInterval = 5 * 60 * 1000 }: Props)
 			AuthStore.drop();
 			queryClient.clear();
 			window.location.reload();
+			sessionStorage.removeItem("oidc_redirected");
 			return;
 		}
 		AuthStore.clear();
