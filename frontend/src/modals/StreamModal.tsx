@@ -84,7 +84,7 @@ const StreamModal = EasyModal.create(({ id, visible, remove }: Props) => {
 					}
 					onSubmit={onSubmit}
 				>
-					{({ setFieldValue }: any) => (
+					{({ values, setFieldValue }: any) => (
 						<Form>
 							<Modal.Header closeButton>
 								<Modal.Title>
@@ -248,6 +248,14 @@ const StreamModal = EasyModal.create(({ id, visible, remove }: Props) => {
 																								"udpForwarding",
 																								true,
 																							);
+																							setFieldValue(
+																								"proxyProtocolForwarding",
+																								false,
+																							);
+																							setFieldValue(
+																								"proxySsl",
+																								false,
+																							);
 																						}
 																					}}
 																				/>
@@ -277,6 +285,42 @@ const StreamModal = EasyModal.create(({ id, visible, remove }: Props) => {
 																							field.name,
 																							e.target.checked,
 																						);
+
+																						if (e.target.checked) {
+																							setFieldValue(
+																								"proxyProtocolForwarding",
+																								false,
+																							);
+																							setFieldValue(
+																								"proxySsl",
+																								false,
+																							);
+																							setFieldValue(
+																								"reuseKey",
+																								undefined,
+																							);
+																							setFieldValue(
+																								"dnsChallenge",
+																								undefined,
+																							);
+																							setFieldValue(
+																								"dnsProvider",
+																								undefined,
+																							);
+																							setFieldValue(
+																								"dnsProviderCredentials",
+																								undefined,
+																							);
+																							setFieldValue(
+																								"propagationSeconds",
+																								undefined,
+																							);
+																							setFieldValue(
+																								"certificateId",
+																								0,
+																							);
+																						}
+
 																						if (!e.target.checked) {
 																							setFieldValue(
 																								"tcpForwarding",
@@ -309,6 +353,7 @@ const StreamModal = EasyModal.create(({ id, visible, remove }: Props) => {
 																					type="checkbox"
 																					name={field.name}
 																					checked={field.value}
+																					disabled={values.udpForwarding}
 																					onChange={(e: any) => {
 																						setFieldValue(
 																							field.name,
@@ -337,6 +382,7 @@ const StreamModal = EasyModal.create(({ id, visible, remove }: Props) => {
 																					type="checkbox"
 																					name={field.name}
 																					checked={field.value}
+																					disabled={values.udpForwarding}
 																					onChange={(e: any) => {
 																						setFieldValue(
 																							field.name,

@@ -128,6 +128,7 @@ export function SSLCertificateField({
 								}),
 							}}
 							onChange={handleChange}
+							isDisabled={v?.udpForwarding}
 						/>
 					) : null}
 					{form.errors[field.name] ? (
