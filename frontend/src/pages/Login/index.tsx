@@ -93,7 +93,7 @@ function LoginForm() {
 			sessionStorage.setItem("oidc_redirected", "true");
         	redirectToOIDC();
         }
-    }, [health.data?.password, health.data?.oidc,·redirectToOIDC]);
+    }, [health.data?.password, health.data?.oidc, redirectToOIDC]);
 
 	const onSubmit = async (values: any, { setSubmitting }: any) => {
 		setFormErr("");
