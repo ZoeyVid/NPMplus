@@ -100,7 +100,21 @@ function LoginForm() {
 	};
 
 	useEffect(() => {
-		emailRef.current?.focus();
+		if (health.data?.password === false) {
+			const getCookie = (name: string): string | undefined => {
+				const value = `; ${document.cookie}`;
+				const parts = value.split(`; ${name}=`);
+				if (parts.length === 2) return parts.pop()?.split(";").shift();
+				return undefined;
+			};
+
+			if (getCookie("npmplus_oidc_error") !== "noredirect") {
+				redirectToOIDC();
+			}
+		} else {
+			emailRef.current?.focus();
+		}
+		document.cookie = "npmplus_oidc_error=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
 	});
 
 	return (

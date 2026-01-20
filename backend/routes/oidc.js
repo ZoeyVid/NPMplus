@@ -118,12 +118,14 @@ router
 				expires: new Date(data.expires),
 			});
 
+			res.clearCookie("npmplus_oidc_error");
 			res.clearCookie("npmplus_oidc_state", { path: "/api/oidc" });
 			res.clearCookie("npmplus_oidc_nonce", { path: "/api/oidc" });
 			res.clearCookie("npmplus_oidc_code_verifier", { path: "/api/oidc" });
 			res.redirect("/");
 		} catch (err) {
 			logger.error(`Callback error: ${err.message}`);
+			res.cookie("npmplus_oidc_error", "noredirect", { secure: true, sameSite: "lax" });
 			res.clearCookie("npmplus_oidc_state", { path: "/api/oidc" });
 			res.clearCookie("npmplus_oidc_nonce", { path: "/api/oidc" });
 			res.clearCookie("npmplus_oidc_code_verifier", { path: "/api/oidc" });
