@@ -118,8 +118,8 @@ importers:
         specifier: 5.1.2
         version: 5.1.2(vite@7.3.1(@types/node@25.0.9)(sass@1.97.2))
       happy-dom:
-        specifier: 20.3.3
-        version: 20.3.3
+        specifier: 20.3.4
+        version: 20.3.4
       postcss:
         specifier: 8.5.6
         version: 8.5.6
@@ -146,7 +146,7 @@ importers:
         version: 6.0.4(typescript@5.9.3)(vite@7.3.1(@types/node@25.0.9)(sass@1.97.2))
       vitest:
         specifier: 4.0.17
-        version: 4.0.17(@types/node@25.0.9)(happy-dom@20.3.3)(sass@1.97.2)
+        version: 4.0.17(@types/node@25.0.9)(happy-dom@20.3.4)(sass@1.97.2)
 
 packages:
 
@@ -1258,8 +1258,8 @@ packages:
   globrex@0.1.2:
     resolution: {integrity: sha512-uHJgbwAMwNFf5mLst7IWLNg14x1CkeqglJb/K3doi4dw6q2IvAAmM/Y81kevy83wP+Sst+nutFTYOGg3d1lsxg==}
 
-  happy-dom@20.3.3:
-    resolution: {integrity: sha512-hM9gltmtQLfmWPqoPreUtRdP3nZCSzQEw7l/JC+up5CxquDykhYFKzIzoFFeVev3AGFEULNvsbE8fpZPgxUYEQ==}
+  happy-dom@20.3.4:
+    resolution: {integrity: sha512-rfbiwB6OKxZFIFQ7SRnCPB2WL9WhyXsFoTfecYgeCeFSOBxvkWLaXsdv5ehzJrfqwXQmDephAKWLRQoFoJwrew==}
     engines: {node: '>=20.0.0'}
 
   hasown@2.0.2:
@@ -3069,7 +3069,7 @@ snapshots:
 
   globrex@0.1.2: {}
 
-  happy-dom@20.3.3:
+  happy-dom@20.3.4:
     dependencies:
       '@types/node': 25.0.9
       '@types/whatwg-mimetype': 3.0.2
@@ -4026,7 +4026,7 @@ snapshots:
       fsevents: 2.3.3
       sass: 1.97.2
 
-  vitest@4.0.17(@types/node@25.0.9)(happy-dom@20.3.3)(sass@1.97.2):
+  vitest@4.0.17(@types/node@25.0.9)(happy-dom@20.3.4)(sass@1.97.2):
     dependencies:
       '@vitest/expect': 4.0.17
       '@vitest/mocker': 4.0.17(vite@7.3.1(@types/node@25.0.9)(sass@1.97.2))
@@ -4050,7 +4050,7 @@ snapshots:
       why-is-node-running: 2.3.0
     optionalDependencies:
       '@types/node': 25.0.9
-      happy-dom: 20.3.3
+      happy-dom: 20.3.4
     transitivePeerDependencies:
       - jiti
       - less
