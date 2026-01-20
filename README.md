@@ -137,8 +137,6 @@ location ~* \.php(?:$|/) {
 - Disable Request/Response Buffering: Most time you want keep buffering enabled, you may want to disable this if you for example want to stream videos and have a fast and stable connection to the upstream server
 - Send noindex header and block some user agents: This does what is says, it appends a header to all responses which says that the site should not be indexed while blocking requests of crawlers based on the user agent sent with the request
 - Wbesockets: this button was removed, websockets are now always enabled
-- Block Common Exploits: this button was removed, it may give a feeling of security, which it does not provide, crowdsec does this way better
-- Cache Assets: this button was removed, the caching implementation used could be a security issue, and also cause issues since it would statically cache some file types without knowing if it makes sense to cache them
 - Reuse Key: this will make the new cert always keep its key unless you force renew it, I recommend you to keep this disabled (not to keep the key), a reason to keep the key would be TLSA/pubkey pinning
 - TLS to upstream (for Streams): This can be used if your stream target already uses tls but you want to override it with a NPMplus cert
 
