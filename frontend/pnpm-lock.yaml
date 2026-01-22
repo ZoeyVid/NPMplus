@@ -103,8 +103,8 @@ importers:
         specifier: 2.0.6
         version: 2.0.6
       '@types/node':
-        specifier: 25.0.9
-        version: 25.0.9
+        specifier: 25.0.10
+        version: 25.0.10
       '@types/react':
         specifier: 19.2.9
         version: 19.2.9
@@ -116,7 +116,7 @@ importers:
         version: 7.7.20
       '@vitejs/plugin-react':
         specifier: 5.1.2
-        version: 5.1.2(vite@7.3.1(@types/node@25.0.9)(sass@1.97.2))
+        version: 5.1.2(vite@7.3.1(@types/node@25.0.10)(sass@1.97.2))
       happy-dom:
         specifier: 20.3.4
         version: 20.3.4
@@ -137,16 +137,16 @@ importers:
         version: 5.9.3
       vite:
         specifier: 7.3.1
-        version: 7.3.1(@types/node@25.0.9)(sass@1.97.2)
+        version: 7.3.1(@types/node@25.0.10)(sass@1.97.2)
       vite-plugin-checker:
         specifier: 0.12.0
-        version: 0.12.0(@biomejs/biome@2.3.11)(typescript@5.9.3)(vite@7.3.1(@types/node@25.0.9)(sass@1.97.2))
+        version: 0.12.0(@biomejs/biome@2.3.11)(typescript@5.9.3)(vite@7.3.1(@types/node@25.0.10)(sass@1.97.2))
       vite-tsconfig-paths:
         specifier: 6.0.4
-        version: 6.0.4(typescript@5.9.3)(vite@7.3.1(@types/node@25.0.9)(sass@1.97.2))
+        version: 6.0.4(typescript@5.9.3)(vite@7.3.1(@types/node@25.0.10)(sass@1.97.2))
       vitest:
         specifier: 4.0.17
-        version: 4.0.17(@types/node@25.0.9)(happy-dom@20.3.4)(sass@1.97.2)
+        version: 4.0.17(@types/node@25.0.10)(happy-dom@20.3.4)(sass@1.97.2)
 
 packages:
 
@@ -923,8 +923,8 @@ packages:
   '@types/ms@2.1.0':
     resolution: {integrity: sha512-GsCCIZDE/p3i96vtEqx+7dBUGXrc7zeSK3wwPHIaRThS+9OhWIXRqzs4d6k1SVU8g91DrNRWxWUGhp5KXQb2VA==}
 
-  '@types/node@25.0.9':
-    resolution: {integrity: sha512-/rpCXHlCWeqClNBwUhDcusJxXYDjZTyE8v5oTO7WbL8eij2nKhUeU89/6xgjU7N4/Vh3He0BtyhJdQbDyhiXAw==}
+  '@types/node@25.0.10':
+    resolution: {integrity: sha512-zWW5KPngR/yvakJgGOmZ5vTBemDoSqF3AcV/LrO5u5wTWyEAVVh+IT39G4gtyAkh3CtTZs8aX/yRM82OfzHJRg==}
 
   '@types/parse-json@4.0.2':
     resolution: {integrity: sha512-dISoDXWWQwUquiKsyZ4Ng+HX2KsPL7LyHKHQwgGFEA3IaKac4Obd+h2a/a6waisAoepJlBcx9paWqjA8/HVjCw==}
@@ -2750,7 +2750,7 @@ snapshots:
 
   '@types/ms@2.1.0': {}
 
-  '@types/node@25.0.9':
+  '@types/node@25.0.10':
     dependencies:
       undici-types: 7.16.0
 
@@ -2786,7 +2786,7 @@ snapshots:
 
   '@types/ws@8.18.1':
     dependencies:
-      '@types/node': 25.0.9
+      '@types/node': 25.0.10
 
   '@uiw/react-textarea-code-editor@3.1.1(@babel/runtime@7.28.6)(react-dom@19.2.3(react@19.2.3))(react@19.2.3)':
     dependencies:
@@ -2798,7 +2798,7 @@ snapshots:
 
   '@ungap/structured-clone@1.3.0': {}
 
-  '@vitejs/plugin-react@5.1.2(vite@7.3.1(@types/node@25.0.9)(sass@1.97.2))':
+  '@vitejs/plugin-react@5.1.2(vite@7.3.1(@types/node@25.0.10)(sass@1.97.2))':
     dependencies:
       '@babel/core': 7.28.6
       '@babel/plugin-transform-react-jsx-self': 7.27.1(@babel/core@7.28.6)
@@ -2806,7 +2806,7 @@ snapshots:
       '@rolldown/pluginutils': 1.0.0-beta.53
       '@types/babel__core': 7.20.5
       react-refresh: 0.18.0
-      vite: 7.3.1(@types/node@25.0.9)(sass@1.97.2)
+      vite: 7.3.1(@types/node@25.0.10)(sass@1.97.2)
     transitivePeerDependencies:
       - supports-color
 
@@ -2819,13 +2819,13 @@ snapshots:
       chai: 6.2.2
       tinyrainbow: 3.0.3
 
-  '@vitest/mocker@4.0.17(vite@7.3.1(@types/node@25.0.9)(sass@1.97.2))':
+  '@vitest/mocker@4.0.17(vite@7.3.1(@types/node@25.0.10)(sass@1.97.2))':
     dependencies:
       '@vitest/spy': 4.0.17
       estree-walker: 3.0.3
       magic-string: 0.30.21
     optionalDependencies:
-      vite: 7.3.1(@types/node@25.0.9)(sass@1.97.2)
+      vite: 7.3.1(@types/node@25.0.10)(sass@1.97.2)
 
   '@vitest/pretty-format@4.0.17':
     dependencies:
@@ -3071,7 +3071,7 @@ snapshots:
 
   happy-dom@20.3.4:
     dependencies:
-      '@types/node': 25.0.9
+      '@types/node': 25.0.10
       '@types/whatwg-mimetype': 3.0.2
       '@types/ws': 8.18.1
       entities: 4.5.0
@@ -3987,7 +3987,7 @@ snapshots:
       '@types/unist': 3.0.3
       vfile-message: 4.0.3
 
-  vite-plugin-checker@0.12.0(@biomejs/biome@2.3.11)(typescript@5.9.3)(vite@7.3.1(@types/node@25.0.9)(sass@1.97.2)):
+  vite-plugin-checker@0.12.0(@biomejs/biome@2.3.11)(typescript@5.9.3)(vite@7.3.1(@types/node@25.0.10)(sass@1.97.2)):
     dependencies:
       '@babel/code-frame': 7.28.6
       chokidar: 4.0.3
@@ -3996,24 +3996,24 @@ snapshots:
       picomatch: 4.0.3
       tiny-invariant: 1.3.3
       tinyglobby: 0.2.15
-      vite: 7.3.1(@types/node@25.0.9)(sass@1.97.2)
+      vite: 7.3.1(@types/node@25.0.10)(sass@1.97.2)
       vscode-uri: 3.1.0
     optionalDependencies:
       '@biomejs/biome': 2.3.11
       typescript: 5.9.3
 
-  vite-tsconfig-paths@6.0.4(typescript@5.9.3)(vite@7.3.1(@types/node@25.0.9)(sass@1.97.2)):
+  vite-tsconfig-paths@6.0.4(typescript@5.9.3)(vite@7.3.1(@types/node@25.0.10)(sass@1.97.2)):
     dependencies:
       debug: 4.4.3
       globrex: 0.1.2
       tsconfck: 3.1.6(typescript@5.9.3)
     optionalDependencies:
-      vite: 7.3.1(@types/node@25.0.9)(sass@1.97.2)
+      vite: 7.3.1(@types/node@25.0.10)(sass@1.97.2)
     transitivePeerDependencies:
       - supports-color
       - typescript
 
-  vite@7.3.1(@types/node@25.0.9)(sass@1.97.2):
+  vite@7.3.1(@types/node@25.0.10)(sass@1.97.2):
     dependencies:
       esbuild: 0.27.2
       fdir: 6.5.0(picomatch@4.0.3)
@@ -4022,14 +4022,14 @@ snapshots:
       rollup: 4.55.1
       tinyglobby: 0.2.15
     optionalDependencies:
-      '@types/node': 25.0.9
+      '@types/node': 25.0.10
       fsevents: 2.3.3
       sass: 1.97.2
 
-  vitest@4.0.17(@types/node@25.0.9)(happy-dom@20.3.4)(sass@1.97.2):
+  vitest@4.0.17(@types/node@25.0.10)(happy-dom@20.3.4)(sass@1.97.2):
     dependencies:
       '@vitest/expect': 4.0.17
-      '@vitest/mocker': 4.0.17(vite@7.3.1(@types/node@25.0.9)(sass@1.97.2))
+      '@vitest/mocker': 4.0.17(vite@7.3.1(@types/node@25.0.10)(sass@1.97.2))
       '@vitest/pretty-format': 4.0.17
       '@vitest/runner': 4.0.17
       '@vitest/snapshot': 4.0.17
@@ -4046,10 +4046,10 @@ snapshots:
       tinyexec: 1.0.2
       tinyglobby: 0.2.15
       tinyrainbow: 3.0.3
-      vite: 7.3.1(@types/node@25.0.9)(sass@1.97.2)
+      vite: 7.3.1(@types/node@25.0.10)(sass@1.97.2)
       why-is-node-running: 2.3.0
     optionalDependencies:
-      '@types/node': 25.0.9
+      '@types/node': 25.0.10
       happy-dom: 20.3.4
     transitivePeerDependencies:
       - jiti
