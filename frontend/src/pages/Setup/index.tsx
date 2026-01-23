@@ -174,7 +174,6 @@ export default function Setup() {
 									<Button
 										type="submit"
 										actionType="primary"
-										data-bs-dismiss="modal"
 										isLoading={isSubmitting}
 										disabled={isSubmitting}
 										className="w-100"
