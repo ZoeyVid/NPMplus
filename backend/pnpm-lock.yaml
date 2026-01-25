@@ -66,8 +66,8 @@ importers:
         specifier: 1.4.0
         version: 1.4.0
       temp-write:
-        specifier: 6.0.0
-        version: 6.0.0
+        specifier: 6.0.1
+        version: 6.0.1
     devDependencies:
       '@apidevtools/swagger-parser':
         specifier: 12.1.0
@@ -1186,8 +1186,8 @@ packages:
     resolution: {integrity: sha512-nHc6S/bwIilKHNRgK/3jlhDoIHcp45YgyiwcAk46Tr0LfEqGBVpmiAyuiuxeVE44m3mXnEeVhaipLOEWmH+Njw==}
     engines: {node: '>=14.16'}
 
-  temp-write@6.0.0:
-    resolution: {integrity: sha512-vr6XxpRGvmOXBxybIqTBmKy54TqjcXB/ocwv4iagx/2v/F73RiKHtTC/MU59hi6QaIE9hINn4Nez90gtNePhKw==}
+  temp-write@6.0.1:
+    resolution: {integrity: sha512-6bj9LlNld+knzEOQvnZK6YxiPF+foOUjvG/WoWj1/Mt9c6f2kQCPsh8KZ+NyTk0AejubTQSPpx2alcswE1bF8g==}
     engines: {node: '>=18'}
 
   text-decoder@1.2.3:
@@ -2358,7 +2358,7 @@ snapshots:
 
   temp-dir@3.0.0: {}
 
-  temp-write@6.0.0:
+  temp-write@6.0.1:
     dependencies:
       graceful-fs: 4.2.11
       is-stream: 4.0.1

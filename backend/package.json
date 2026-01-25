@@ -26,7 +26,7 @@
 		"openid-client": "6.8.1",
 		"pg": "8.17.2",
 		"signale": "1.4.0",
-		"temp-write": "6.0.0"
+		"temp-write": "6.0.1"
 	},
 	"devDependencies": {
 		"@apidevtools/swagger-parser": "12.1.0",
