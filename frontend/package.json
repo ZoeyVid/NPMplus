@@ -23,7 +23,7 @@
 		"react": "19.2.4",
 		"react-bootstrap": "2.10.10",
 		"react-dom": "19.2.4",
-		"react-intl": "8.1.1",
+		"react-intl": "8.1.2",
 		"react-markdown": "10.1.0",
 		"react-router-dom": "7.13.0",
 		"react-select": "5.10.2",
@@ -32,7 +32,7 @@
 	},
 	"devDependencies": {
 		"@biomejs/biome": "2.3.13",
-		"@formatjs/cli": "6.12.0",
+		"@formatjs/cli": "6.12.1",
 		"@tanstack/react-query-devtools": "5.91.3",
 		"@testing-library/dom": "10.4.1",
 		"@testing-library/jest-dom": "6.9.1",
