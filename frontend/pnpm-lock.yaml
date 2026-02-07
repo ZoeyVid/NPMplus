@@ -142,8 +142,8 @@ importers:
         specifier: 0.12.0
         version: 0.12.0(@biomejs/biome@2.3.14)(typescript@5.9.3)(vite@7.3.1(@types/node@25.2.1)(sass@1.97.3))
       vite-tsconfig-paths:
-        specifier: 6.0.5
-        version: 6.0.5(typescript@5.9.3)(vite@7.3.1(@types/node@25.2.1)(sass@1.97.3))
+        specifier: 6.1.0
+        version: 6.1.0(typescript@5.9.3)(vite@7.3.1(@types/node@25.2.1)(sass@1.97.3))
       vitest:
         specifier: 4.0.18
         version: 4.0.18(@types/node@25.2.1)(happy-dom@20.5.0)(sass@1.97.3)
@@ -1984,8 +1984,8 @@ packages:
       vue-tsc:
         optional: true
 
-  vite-tsconfig-paths@6.0.5:
-    resolution: {integrity: sha512-f/WvY6ekHykUF1rWJUAbCU7iS/5QYDIugwpqJA+ttwKbxSbzNlqlE8vZSrsnxNQciUW+z6lvhlXMaEyZn9MSig==}
+  vite-tsconfig-paths@6.1.0:
+    resolution: {integrity: sha512-kpd3sY9glHIDaq4V/Tlc1Y8WaKtutoc3B525GHxEVKWX42FKfQsXvjFOemu1I8VIN8pNbrMLWVTbW79JaRUxKg==}
     peerDependencies:
       vite: '*'
 
@@ -4022,7 +4022,7 @@ snapshots:
       '@biomejs/biome': 2.3.14
       typescript: 5.9.3
 
-  vite-tsconfig-paths@6.0.5(typescript@5.9.3)(vite@7.3.1(@types/node@25.2.1)(sass@1.97.3)):
+  vite-tsconfig-paths@6.1.0(typescript@5.9.3)(vite@7.3.1(@types/node@25.2.1)(sass@1.97.3)):
     dependencies:
       debug: 4.4.3
       globrex: 0.1.2
