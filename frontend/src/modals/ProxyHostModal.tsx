@@ -212,7 +212,7 @@ const ProxyHostModal = EasyModal.create(({ id, isClone = false, visible, remove 
 																				);
 																				form.setFieldValue(
 																					"npmplusProxyResponseBuffering",
-									   false,
+																					false,
 																				);
 																			}
 																		}}
