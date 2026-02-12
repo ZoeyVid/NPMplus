@@ -30,6 +30,6 @@
 	},
 	"devDependencies": {
 		"@apidevtools/swagger-parser": "12.1.0",
-		"@biomejs/biome": "2.3.14"
+		"@biomejs/biome": "2.3.15"
 	}
 }
