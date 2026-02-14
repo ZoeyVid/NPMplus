@@ -8,7 +8,7 @@
 	"type": "module",
 	"dependencies": {
 		"@apidevtools/json-schema-ref-parser": "15.2.2",
-		"ajv": "8.17.1",
+		"ajv": "8.18.0",
 		"archiver": "7.0.1",
 		"bcryptjs": "3.0.3",
 		"better-sqlite3": "12.6.2",

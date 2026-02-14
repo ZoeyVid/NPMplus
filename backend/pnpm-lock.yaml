@@ -12,8 +12,8 @@ importers:
         specifier: 15.2.2
         version: 15.2.2(@types/json-schema@7.0.15)
       ajv:
-        specifier: 8.17.1
-        version: 8.17.1
+        specifier: 8.18.0
+        version: 8.18.0
       archiver:
         specifier: 7.0.1
         version: 7.0.1
@@ -217,8 +217,8 @@ packages:
       ajv:
         optional: true
 
-  ajv@8.17.1:
-    resolution: {integrity: sha512-B/gBuNg5SiMTrPkC+A2+cW0RszwxYmn6VYxB/inlBStS5nx6xHIt/ehKRhIMhqusl7a8LjQoZnjCs5vhwxOQ1g==}
+  ajv@8.18.0:
+    resolution: {integrity: sha512-PlXPeEWMXMZ7sPYOHqmDyCJzcfNrUr3fGNKtezX14ykXOEIvyK81d+qydx89KY5O71FKMPaQ2vBfBFI5NHR63A==}
 
   ansi-regex@5.0.1:
     resolution: {integrity: sha512-quJQXlTSUGL2LH9SUXo8VwsY4soanhgo6LNSm84E1LBcE8s3O0wpdiRzyR9z/ZZJMlMWv37qOOb9pdJlMUEKFQ==}
@@ -1269,8 +1269,8 @@ snapshots:
       '@apidevtools/json-schema-ref-parser': 14.0.1
       '@apidevtools/openapi-schemas': 2.1.0
       '@apidevtools/swagger-methods': 3.0.2
-      ajv: 8.17.1
-      ajv-draft-04: 1.0.0(ajv@8.17.1)
+      ajv: 8.18.0
+      ajv-draft-04: 1.0.0(ajv@8.18.0)
       call-me-maybe: 1.0.2
       openapi-types: 12.1.3
 
@@ -1363,15 +1363,15 @@ snapshots:
       mime-types: 3.0.2
       negotiator: 1.0.0
 
-  ajv-draft-04@1.0.0(ajv@8.17.1):
+  ajv-draft-04@1.0.0(ajv@8.18.0):
     optionalDependencies:
-      ajv: 8.17.1
+      ajv: 8.18.0
 
-  ajv-formats@2.1.1(ajv@8.17.1):
+  ajv-formats@2.1.1(ajv@8.18.0):
     optionalDependencies:
-      ajv: 8.17.1
+      ajv: 8.18.0
 
-  ajv@8.17.1:
+  ajv@8.18.0:
     dependencies:
       fast-deep-equal: 3.1.3
       fast-uri: 3.1.0
@@ -1977,8 +1977,8 @@ snapshots:
 
   objection@3.1.5(knex@3.1.0(better-sqlite3@12.6.2)(mysql2@3.17.1)(pg@8.18.0)):
     dependencies:
-      ajv: 8.17.1
-      ajv-formats: 2.1.1(ajv@8.17.1)
+      ajv: 8.18.0
+      ajv-formats: 2.1.1(ajv@8.18.0)
       db-errors: 0.2.3
       knex: 3.1.0(better-sqlite3@12.6.2)(mysql2@3.17.1)(pg@8.18.0)
 
