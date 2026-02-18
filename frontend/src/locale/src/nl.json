@@ -191,6 +191,9 @@
 	"column.destination": {
 		"defaultMessage": "Doel"
 	},
+	"column.description": {
+		"defaultMessage": "Beschrijving"
+	},
 	"column.details": {
 		"defaultMessage": "Details"
 	},
@@ -589,6 +592,12 @@
 	},
 	"stream.forward-host": {
 		"defaultMessage": "Doorgestuurde Host"
+	},
+	"stream.description": {
+		"defaultMessage": "Beschrijving"
+	},
+	"stream.description.placeholder": {
+		"defaultMessage": "Optionele beschrijving om deze stream te identificeren"
 	},
 	"stream.incoming-port": {
 		"defaultMessage": "Inkomende Poort"

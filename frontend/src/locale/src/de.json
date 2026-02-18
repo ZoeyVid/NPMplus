@@ -191,6 +191,9 @@
 	"column.destination": {
 		"defaultMessage": "Ziel"
 	},
+	"column.description": {
+		"defaultMessage": "Beschreibung"
+	},
 	"column.details": {
 		"defaultMessage": "Details"
 	},
@@ -613,6 +616,12 @@
 	},
 	"stream.forward-host": {
 		"defaultMessage": "Forward Host"
+	},
+	"stream.description": {
+		"defaultMessage": "Beschreibung"
+	},
+	"stream.description.placeholder": {
+		"defaultMessage": "Optionale Beschreibung zur Identifizierung dieses Streams"
 	},
 	"stream.incoming-port": {
 		"defaultMessage": "Incoming Port"

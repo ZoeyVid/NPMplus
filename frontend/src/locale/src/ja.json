@@ -191,6 +191,9 @@
 	"column.destination": {
 		"defaultMessage": "宛先"
 	},
+	"column.description": {
+		"defaultMessage": "説明"
+	},
 	"column.details": {
 		"defaultMessage": "詳細"
 	},
@@ -586,6 +589,12 @@
 	},
 	"stream.forward-host": {
 		"defaultMessage": "転送ホスト"
+	},
+	"stream.description": {
+		"defaultMessage": "説明"
+	},
+	"stream.description.placeholder": {
+		"defaultMessage": "このストリームを識別するための任意の説明"
 	},
 	"stream.incoming-port": {
 		"defaultMessage": "受信ポート"

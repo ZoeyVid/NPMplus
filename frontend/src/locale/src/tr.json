@@ -191,6 +191,9 @@
 	"column.destination": {
 		"defaultMessage": "Hedef"
 	},
+	"column.description": {
+		"defaultMessage": "Açıklama"
+	},
 	"column.details": {
 		"defaultMessage": "Detaylar"
 	},
@@ -610,6 +613,12 @@
 	},
 	"stream.forward-host.placeholder": {
 		"defaultMessage": "example.com veya 10.0.0.1 veya 2001:db8:3333:4444:5555:6666:7777:8888"
+	},
+	"stream.description": {
+		"defaultMessage": "Açıklama"
+	},
+	"stream.description.placeholder": {
+		"defaultMessage": "Bu akışı tanımlamak için isteğe bağlı açıklama"
 	},
 	"stream.incoming-port": {
 		"defaultMessage": "Gelen Port"

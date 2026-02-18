@@ -191,6 +191,9 @@
 	"column.destination": {
 		"defaultMessage": "目标"
 	},
+	"column.description": {
+		"defaultMessage": "描述"
+	},
 	"column.details": {
 		"defaultMessage": "详情"
 	},
@@ -595,6 +598,12 @@
 	},
 	"stream.forward-host": {
 		"defaultMessage": "转发主机"
+	},
+	"stream.description": {
+		"defaultMessage": "描述"
+	},
+	"stream.description.placeholder": {
+		"defaultMessage": "可选描述，用于识别此流"
 	},
 	"stream.incoming-port": {
 		"defaultMessage": "入站端口"

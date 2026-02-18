@@ -191,6 +191,9 @@
 	"column.destination": {
 		"defaultMessage": "Destino"
 	},
+	"column.description": {
+		"defaultMessage": "Descrição"
+	},
 	"column.details": {
 		"defaultMessage": "Detalhes"
 	},
@@ -610,6 +613,12 @@
 	},
 	"stream.forward-host.placeholder": {
 		"defaultMessage": "example.com ou 10.0.0.1 ou 2001:db8:3333:4444:5555:6666:7777:8888"
+	},
+	"stream.description": {
+		"defaultMessage": "Descrição"
+	},
+	"stream.description.placeholder": {
+		"defaultMessage": "Descrição opcional para identificar este stream"
 	},
 	"stream.incoming-port": {
 		"defaultMessage": "Porta de Entrada"

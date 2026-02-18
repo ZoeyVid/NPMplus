@@ -191,6 +191,9 @@
 	"column.destination": {
 		"defaultMessage": "Назначение"
 	},
+	"column.description": {
+		"defaultMessage": "Описание"
+	},
 	"column.details": {
 		"defaultMessage": "Сведения"
 	},
@@ -589,6 +592,12 @@
 	},
 	"stream.forward-host": {
 		"defaultMessage": "Хост перенаправления"
+	},
+	"stream.description": {
+		"defaultMessage": "Описание"
+	},
+	"stream.description.placeholder": {
+		"defaultMessage": "Необязательное описание для идентификации этого потока"
 	},
 	"stream.incoming-port": {
 		"defaultMessage": "Входящий порт"

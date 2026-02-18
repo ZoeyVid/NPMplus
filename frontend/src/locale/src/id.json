@@ -191,6 +191,9 @@
 	"column.destination": {
 		"defaultMessage": "Tujuan"
 	},
+	"column.description": {
+		"defaultMessage": "Deskripsi"
+	},
 	"column.details": {
 		"defaultMessage": "Detail"
 	},
@@ -610,6 +613,12 @@
 	},
 	"stream.forward-host.placeholder": {
 		"defaultMessage": "example.com atau 10.0.0.1 atau 2001:db8:3333:4444:5555:6666:7777:8888"
+	},
+	"stream.description": {
+		"defaultMessage": "Deskripsi"
+	},
+	"stream.description.placeholder": {
+		"defaultMessage": "Deskripsi opsional untuk mengidentifikasi stream ini"
 	},
 	"stream.incoming-port": {
 		"defaultMessage": "Port Masuk"

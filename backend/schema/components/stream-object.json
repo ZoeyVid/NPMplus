@@ -1,94 +1,102 @@
 {
-	"type": "object",
-	"description": "Stream object",
-	"required": [
-		"id",
-		"created_on",
-		"modified_on",
-		"owner_user_id",
-		"incoming_port",
-		"forwarding_host",
-		"forwarding_port",
-		"tcp_forwarding",
-		"udp_forwarding",
-		"npmplus_proxy_protocol_forwarding",
-		"npmplus_proxy_tls",
-		"enabled",
-		"meta"
-	],
-	"additionalProperties": false,
-	"properties": {
-		"id": {
-			"$ref": "../common.json#/properties/id"
-		},
-		"created_on": {
-			"$ref": "../common.json#/properties/created_on"
-		},
-		"modified_on": {
-			"$ref": "../common.json#/properties/modified_on"
-		},
-		"owner_user_id": {
-			"$ref": "../common.json#/properties/user_id"
-		},
-		"incoming_port": {
-			"type": "string",
-			"pattern": "^([0-9]{1,5}$|[0-9]{1,5}-[0-9]{1,5}$)",
-			"maxLength": 11,
-			"example": 9090
-		},
-		"forwarding_host": {
-			"type": "string",
-			"minLength": 1,
-			"example": "127.0.0.1"
-		},
-		"forwarding_port": {
-			"type": [
-				"string",
-				"null"
-			],
-			"pattern": "^([0-9]{0,5}|\\$server_port)$",
-			"maxLength": 12,
-			"example": 80
-		},
-		"tcp_forwarding": {
-			"type": "boolean",
-			"example": true
-		},
-		"udp_forwarding": {
-			"type": "boolean",
-			"example": false
-		},
-		"npmplus_proxy_protocol_forwarding": {
-			"type": "boolean",
-			"example": false
-		},
-		"npmplus_proxy_tls": {
-			"type": "boolean",
-			"example": false
-		},
-		"enabled": {
-			"$ref": "../common.json#/properties/enabled"
-		},
-		"certificate_id": {
-			"$ref": "../common.json#/properties/certificate_id"
-		},
-		"meta": {
-			"type": "object",
-			"example": {}
-		},
-		"certificate": {
-			"oneOf": [
-				{
-					"type": "null"
-				},
-				{
-					"$ref": "./certificate-object.json"
-				}
-			],
-			"example": null
-		},
-		"owner": {
-			"$ref": "./user-object.json"
-		}
-	}
+    "type": "object",
+    "description": "Stream object",
+    "required": [
+        "id",
+        "created_on",
+        "modified_on",
+        "owner_user_id",
+        "incoming_port",
+        "forwarding_host",
+        "forwarding_port",
+        "tcp_forwarding",
+        "udp_forwarding",
+        "npmplus_proxy_protocol_forwarding",
+        "npmplus_proxy_tls",
+        "enabled",
+        "meta"
+    ],
+    "additionalProperties": false,
+    "properties": {
+        "id": {
+            "$ref": "../common.json#/properties/id"
+        },
+        "created_on": {
+            "$ref": "../common.json#/properties/created_on"
+        },
+        "modified_on": {
+            "$ref": "../common.json#/properties/modified_on"
+        },
+        "owner_user_id": {
+            "$ref": "../common.json#/properties/user_id"
+        },
+        "incoming_port": {
+            "type": "string",
+            "pattern": "^([0-9]{1,5}$|[0-9]{1,5}-[0-9]{1,5}$)",
+            "maxLength": 11,
+            "example": 9090
+        },
+        "forwarding_host": {
+            "type": "string",
+            "minLength": 1,
+            "example": "127.0.0.1"
+        },
+        "forwarding_port": {
+            "type": [
+                "string",
+                "null"
+            ],
+            "pattern": "^([0-9]{0,5}|\\$server_port)$",
+            "maxLength": 12,
+            "example": 80
+        },
+        "tcp_forwarding": {
+            "type": "boolean",
+            "example": true
+        },
+        "udp_forwarding": {
+            "type": "boolean",
+            "example": false
+        },
+        "npmplus_proxy_protocol_forwarding": {
+            "type": "boolean",
+            "example": false
+        },
+        "npmplus_proxy_tls": {
+            "type": "boolean",
+            "example": false
+        },
+        "enabled": {
+            "$ref": "../common.json#/properties/enabled"
+        },
+        "certificate_id": {
+            "$ref": "../common.json#/properties/certificate_id"
+        },
+        "meta": {
+            "type": "object",
+            "example": {}
+        },
+        "description": {
+            "type": [
+                "string",
+                "null"
+            ],
+            "maxLength": 255,
+            "example": "MySQL database connection"
+        },
+        "certificate": {
+            "oneOf": [
+                {
+                    "type": "null"
+                },
+                {
+                    "$ref": "./certificate-object.json"
+                }
+            ],
+            "example": null
+        },
+        "owner": {
+            "$ref": "./user-object.json"
+        }
+    }
 }

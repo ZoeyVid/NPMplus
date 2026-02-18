@@ -260,6 +260,9 @@
 	"column.destination": {
 		"defaultMessage": "Cél"
 	},
+	"column.description": {
+		"defaultMessage": "Leírás"
+	},
 	"column.details": {
 		"defaultMessage": "Részletek"
 	},
@@ -694,6 +697,12 @@
 	},
 	"stream.forward-host.placeholder": {
 		"defaultMessage": "example.com vagy 10.0.0.1 vagy 2001:db8:3333:4444:5555:6666:7777:8888"
+	},
+	"stream.description": {
+		"defaultMessage": "Leírás"
+	},
+	"stream.description.placeholder": {
+		"defaultMessage": "Opcionális leírás a stream azonosításához"
 	},
 	"stream.incoming-port": {
 		"defaultMessage": "Bejövő port"

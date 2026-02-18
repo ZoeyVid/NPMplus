@@ -197,6 +197,9 @@
 	"column.destination": {
 		"defaultMessage": "Cel"
 	},
+	"column.description": {
+		"defaultMessage": "Opis"
+	},
 	"column.details": {
 		"defaultMessage": "Szczegóły"
 	},
@@ -595,6 +598,12 @@
 	},
 	"stream.forward-host": {
 		"defaultMessage": "Host docelowy"
+	},
+	"stream.description": {
+		"defaultMessage": "Opis"
+	},
+	"stream.description.placeholder": {
+		"defaultMessage": "Opcjonalny opis do identyfikacji tego strumienia"
 	},
 	"stream.incoming-port": {
 		"defaultMessage": "Port przychodzący"

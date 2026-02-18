@@ -203,6 +203,9 @@
 	"column.destination": {
 		"defaultMessage": "전달 대상"
 	},
+	"column.description": {
+		"defaultMessage": "설명"
+	},
 	"column.details": {
 		"defaultMessage": "기본 설정"
 	},
@@ -622,6 +625,12 @@
 	},
 	"stream.forward-host.placeholder": {
 		"defaultMessage": "example.com / 10.0.0.1 / IPv6"
+	},
+	"stream.description": {
+		"defaultMessage": "설명"
+	},
+	"stream.description.placeholder": {
+		"defaultMessage": "이 스트림을 식별하기 위한 선택적 설명"
 	},
 	"stream.incoming-port": {
 		"defaultMessage": "수신 포트"
