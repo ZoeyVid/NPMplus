@@ -191,9 +191,6 @@
 	"column.destination": {
 		"defaultMessage": "Mục tiêu"
 	},
-	"column.description": {
-		"defaultMessage": "Mô tả"
-	},
 	"column.details": {
 		"defaultMessage": "Chi tiết"
 	},
@@ -592,12 +589,6 @@
 	},
 	"stream.forward-host": {
 		"defaultMessage": "Chuyển tiếp Host"
-	},
-	"stream.description": {
-		"defaultMessage": "Mô tả"
-	},
-	"stream.description.placeholder": {
-		"defaultMessage": "Mô tả tùy chọn để xác định luồng này"
 	},
 	"stream.incoming-port": {
 		"defaultMessage": "Cổng vào"

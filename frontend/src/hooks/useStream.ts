@@ -15,7 +15,7 @@ const fetchStream = (id: number | "new") => {
 			meta: {},
 			enabled: true,
 			certificateId: 0,
-			description: "",
+			npmplusDescription: "",
 		} as Stream);
 	}
 	return getStream(id, ["owner"]);

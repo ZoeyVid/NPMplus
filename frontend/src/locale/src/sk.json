@@ -263,9 +263,6 @@
 	"column.destination": {
 		"defaultMessage": "Cieľ"
 	},
-	"column.description": {
-		"defaultMessage": "Popis"
-	},
 	"column.details": {
 		"defaultMessage": "Podrobnosti"
 	},
@@ -700,12 +697,6 @@
 	},
 	"stream.forward-host.placeholder": {
 		"defaultMessage": "napriklad.sk alebo 10.0.0.1 alebo 2001:db8:3333:4444:5555:6666:7777:8888"
-	},
-	"stream.description": {
-		"defaultMessage": "Popis"
-	},
-	"stream.description.placeholder": {
-		"defaultMessage": "Voliteľný popis na identifikáciu tohto streamu"
 	},
 	"stream.incoming-port": {
 		"defaultMessage": "Vstupný port"

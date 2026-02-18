@@ -61,8 +61,8 @@
 						"meta": {
 							"$ref": "../../../../components/stream-object.json#/properties/meta"
 						},
-						"description": {
-							"$ref": "../../../../components/stream-object.json#/properties/description"
+						"npmplus_description": {
+							"$ref": "../../../../components/stream-object.json#/properties/npmplus_description"
 						}
 					}
 				}

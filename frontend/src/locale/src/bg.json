@@ -203,9 +203,6 @@
 	"column.destination": {
 		"defaultMessage": "Дестинация"
 	},
-	"column.description": {
-		"defaultMessage": "Описание"
-	},
 	"column.details": {
 		"defaultMessage": "Детайли"
 	},
@@ -625,12 +622,6 @@
 	},
 	"stream.forward-host.placeholder": {
 		"defaultMessage": "example.com или 10.0.0.1 или 2001:db8:3333:4444:5555:6666:7777:8888"
-	},
-	"stream.description": {
-		"defaultMessage": "Описание"
-	},
-	"stream.description.placeholder": {
-		"defaultMessage": "Незадължително описание за идентифициране на този поток"
 	},
 	"stream.incoming-port": {
 		"defaultMessage": "Входящ порт"

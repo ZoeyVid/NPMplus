@@ -44,7 +44,7 @@ export default function TableWrapper() {
 				`${item.incomingPort}`.includes(search) ||
 				`${item.forwardingPort}`.includes(search) ||
 				item.forwardingHost.includes(search) ||
-				(item.description != null && item.description.includes(search))
+				(item.npmplusDescription != null && item.npmplusDescription.includes(search))
 			);
 		});
 	} else if (search !== "") {

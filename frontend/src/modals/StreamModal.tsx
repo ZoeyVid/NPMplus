@@ -80,7 +80,7 @@ const StreamModal = EasyModal.create(({ id, visible, remove }: Props) => {
 							npmplusProxyTls: data?.npmplusProxyTls,
 							certificateId: data?.certificateId,
 							meta: data?.meta || {},
-							description: data?.description ?? "",
+							npmplusDescription: data?.npmplusDescription ?? "",
 						} as any
 					}
 					onSubmit={onSubmit}
@@ -155,24 +155,24 @@ const StreamModal = EasyModal.create(({ id, visible, remove }: Props) => {
 														</div>
 													)}
 												</Field>
-												<Field name="description" validate={validateString(0, 255)}>
+												<Field name="npmplusDescription" validate={validateString(0, 255)}>
 													{({ field, form }: any) => (
 														<div className="mb-3">
-															<label className="form-label" htmlFor="description">
+															<label className="form-label" htmlFor="npmplusDescription">
 																<T id="stream.description" />
 															</label>
 															<input
-																id="description"
+																id="npmplusDescription"
 																type="text"
 																maxLength={255}
-																className={`form-control ${form.errors.description && form.touched.description ? "is-invalid" : ""}`}
+																className={`form-control ${form.errors.npmplusDescription && form.touched.npmplusDescription ? "is-invalid" : ""}`}
 																placeholder={intl.formatMessage({ id: "stream.description.placeholder" })}
 																{...field}
 															/>
-															{form.errors.description ? (
+															{form.errors.npmplusDescription ? (
 																<div className="invalid-feedback">
-																	{form.errors.description && form.touched.description
-																		? form.errors.description
+																	{form.errors.npmplusDescription && form.touched.npmplusDescription
+																		? form.errors.npmplusDescription
 																		: null}
 																</div>
 															) : null}

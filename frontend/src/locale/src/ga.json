@@ -191,9 +191,6 @@
 	"column.destination": {
 		"defaultMessage": "Ceann Scríbe"
 	},
-	"column.description": {
-		"defaultMessage": "Cur Síos"
-	},
 	"column.details": {
 		"defaultMessage": "Sonraí"
 	},
@@ -613,12 +610,6 @@
 	},
 	"stream.forward-host.placeholder": {
 		"defaultMessage": "example.com nó 10.0.0.1 nó 2001:db8:3333:4444:5555:6666:7777:8888"
-	},
-	"stream.description": {
-		"defaultMessage": "Cur Síos"
-	},
-	"stream.description.placeholder": {
-		"defaultMessage": "Cur síos roghnach chun an sruth seo a aithint"
 	},
 	"stream.incoming-port": {
 		"defaultMessage": "Port Isteach"

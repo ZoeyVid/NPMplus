@@ -1,6 +1,6 @@
 import { migrate as logger } from "../logger.js";
 
-const migrateName = "add_stream_description";
+const migrateName = "add_stream_npmplus_description";
 
 /**
  * Migrate
@@ -15,7 +15,7 @@ const up = (knex) => {
 
 	return knex.schema
 		.alterTable("stream", (table) => {
-			table.string("description", 255).nullable();
+			table.string("npmplus_description", 255).nullable();
 		})
 		.then(() => {
 			logger.info(`[${migrateName}] stream Table altered`);
@@ -33,7 +33,7 @@ const down = (knex) => {
 
 	return knex.schema
 		.alterTable("stream", (table) => {
-			table.dropColumn("description");
+			table.dropColumn("npmplus_description");
 		})
 		.then(() => {
 			logger.info(`[${migrateName}] stream Table altered`);
