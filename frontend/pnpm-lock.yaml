@@ -82,8 +82,8 @@ importers:
         specifier: 2.4.2
         version: 2.4.2
       '@formatjs/cli':
-        specifier: 6.12.2
-        version: 6.12.2
+        specifier: 6.13.0
+        version: 6.13.0
       '@tanstack/react-query-devtools':
         specifier: 5.91.3
         version: 5.91.3(@tanstack/react-query@5.90.21(react@19.2.4))(react@19.2.4)
@@ -503,9 +503,9 @@ packages:
   '@floating-ui/utils@0.2.10':
     resolution: {integrity: sha512-aGTxbpbg8/b5JfU1HXSrbH3wXZuLPJcNEcZQFMxLs3oSzgtVu6nFPkbbGGUvBcUjKV2YyB9Wxxabo+HEH9tcRQ==}
 
-  '@formatjs/cli@6.12.2':
-    resolution: {integrity: sha512-y215aarLZXei3u1WDRAiet/VajgvUXzvz4ifPENDSPXfIog0aBJKtFvIU7EWbcFWy7rstbn5GcwwQW4F1G3TJg==}
-    engines: {node: '>= 16'}
+  '@formatjs/cli@6.13.0':
+    resolution: {integrity: sha512-bl4+FNg7S6RPNa9cSAE8HqdXu84n7LpzDdkDAPqS0sk58XNbY/1Le6GdWqCKzELWX+FhI58gyZtZecmWsZ+Bhg==}
+    engines: {node: '>= 20.12.0'}
     hasBin: true
     peerDependencies:
       '@glimmer/env': '*'
@@ -2409,7 +2409,7 @@ snapshots:
 
   '@floating-ui/utils@0.2.10': {}
 
-  '@formatjs/cli@6.12.2': {}
+  '@formatjs/cli@6.13.0': {}
 
   '@formatjs/ecma402-abstract@3.1.1':
     dependencies:
