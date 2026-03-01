@@ -116,6 +116,7 @@ mkdir -vp /data/npmplus/gravatar \
           /data/tls/custom \
           /data/html \
           /data/access \
+          /data/anubis \
           /data/crowdsec \
           /data/nginx/redirection_host \
           /data/nginx/proxy_host \
@@ -229,6 +230,9 @@ rm -vrf /data/letsencrypt-acme-challenge \
         /data/logs
 
 touch /data/html/index.html \
+      /data/anubis/happy.webp \
+      /data/anubis/reject.webp \
+      /data/anubis/pensive.webp \
       /data/custom_nginx/events.conf \
       /data/custom_nginx/http.conf \
       /data/custom_nginx/http_top.conf \
