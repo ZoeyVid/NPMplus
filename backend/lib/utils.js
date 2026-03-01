@@ -1,4 +1,4 @@
-import { execFile as nodeExecFile } from "node:child_process/promises";
+import { execFile as nodeExecFile } from "node:child_process";
 import { dirname } from "node:path";
 import { fileURLToPath } from "node:url";
 import { Liquid } from "liquidjs";
