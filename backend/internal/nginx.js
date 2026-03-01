@@ -283,7 +283,7 @@ const internalNginx = {
 
 		for (const filename of filesToDelete) {
 			try {
-				debug(logger, `Deleting file: ${file}`);
+				debug(logger, `Deleting file: ${filename}`);
 				await rm(filename, { force: true });
 			} catch (err) {
 				debug(logger, "Could not delete file:", JSON.stringify(err, null, 2));
