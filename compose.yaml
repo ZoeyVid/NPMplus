@@ -2,7 +2,7 @@ name: npmplus
 services:
   npmplus:
     container_name: npmplus
-    image: docker.io/zoeyvid/npmplus:latest@sha256:40f7cfb4ed21a03397138acbf9eee5458ea365632bc9507db21ccd0963323eb7 # or ghcr.io/zoeyvid/npmplus:latest
+    image: docker.io/zoeyvid/npmplus:latest # or ghcr.io/zoeyvid/npmplus:latest
     restart: unless-stopped
     network_mode: host
 #    ipc: host # required when you want to use the openappsec attachment module
