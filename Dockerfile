@@ -1,4 +1,4 @@
-# syntax=docker/dockerfile:labs
+# syntax=docker/dockerfile:1.20.0
 FROM alpine:3.23.3 AS nginx
 SHELL ["/bin/ash", "-eo", "pipefail", "-c"]
 
