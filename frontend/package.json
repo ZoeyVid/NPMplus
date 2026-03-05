@@ -7,7 +7,7 @@
 	"type": "module",
 	"dependencies": {
 		"@tabler/core": "1.4.0",
-		"@tabler/icons-react": "3.38.0",
+		"@tabler/icons-react": "3.40.0",
 		"@tanstack/react-query": "5.90.21",
 		"@tanstack/react-table": "8.21.3",
 		"@uiw/react-textarea-code-editor": "3.1.1",
@@ -31,7 +31,7 @@
 		"rooks": "9.5.0"
 	},
 	"devDependencies": {
-		"@biomejs/biome": "2.4.5",
+		"@biomejs/biome": "2.4.6",
 		"@formatjs/cli": "6.13.0",
 		"@tanstack/react-query-devtools": "5.91.3",
 		"@testing-library/dom": "10.4.1",
@@ -39,7 +39,7 @@
 		"@testing-library/react": "16.3.2",
 		"@types/country-flag-icons": "1.2.2",
 		"@types/humps": "2.0.6",
-		"@types/node": "25.3.3",
+		"@types/node": "25.3.5",
 		"@types/react": "19.2.14",
 		"@types/react-dom": "19.2.3",
 		"@types/react-table": "7.7.20",
