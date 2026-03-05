@@ -16,7 +16,7 @@
 		"dayjs": "1.11.19",
 		"express": "5.2.1",
 		"express-fileupload": "1.5.2",
-		"express-rate-limit": "8.2.1",
+		"express-rate-limit": "8.3.0",
 		"jsonwebtoken": "9.0.3",
 		"knex": "3.1.0",
 		"liquidjs": "10.24.0",
@@ -31,6 +31,6 @@
 	},
 	"devDependencies": {
 		"@apidevtools/swagger-parser": "12.1.0",
-		"@biomejs/biome": "2.4.5"
+		"@biomejs/biome": "2.4.6"
 	}
 }
