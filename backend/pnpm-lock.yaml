@@ -27,8 +27,8 @@ importers:
         specifier: 1.4.7
         version: 1.4.7
       dayjs:
-        specifier: 1.11.19
-        version: 1.11.19
+        specifier: 1.11.20
+        version: 1.11.20
       express:
         specifier: 5.2.1
         version: 5.2.1
@@ -36,26 +36,26 @@ importers:
         specifier: 1.5.2
         version: 1.5.2
       express-rate-limit:
-        specifier: 8.2.1
-        version: 8.2.1(express@5.2.1)
+        specifier: 8.3.1
+        version: 8.3.1(express@5.2.1)
       jsonwebtoken:
         specifier: 9.0.3
         version: 9.0.3
       knex:
         specifier: 3.1.0
-        version: 3.1.0(better-sqlite3@12.6.2)(mysql2@3.18.2(@types/node@25.3.3))(pg@8.19.0)
+        version: 3.1.0(better-sqlite3@12.6.2)(mysql2@3.19.1(@types/node@25.3.3))(pg@8.20.0)
       liquidjs:
-        specifier: 10.24.0
-        version: 10.24.0
+        specifier: 10.25.0
+        version: 10.25.0
       lodash:
         specifier: 4.17.23
         version: 4.17.23
       mysql2:
-        specifier: 3.18.2
-        version: 3.18.2(@types/node@25.3.3)
+        specifier: 3.19.1
+        version: 3.19.1(@types/node@25.3.3)
       objection:
         specifier: 3.1.5
-        version: 3.1.5(knex@3.1.0(better-sqlite3@12.6.2)(mysql2@3.18.2(@types/node@25.3.3))(pg@8.19.0))
+        version: 3.1.5(knex@3.1.0(better-sqlite3@12.6.2)(mysql2@3.19.1(@types/node@25.3.3))(pg@8.20.0))
       openid-client:
         specifier: 6.8.2
         version: 6.8.2
@@ -63,8 +63,8 @@ importers:
         specifier: 13.3.0
         version: 13.3.0
       pg:
-        specifier: 8.19.0
-        version: 8.19.0
+        specifier: 8.20.0
+        version: 8.20.0
       signale:
         specifier: 1.4.0
         version: 1.4.0
@@ -76,8 +76,8 @@ importers:
         specifier: 12.1.0
         version: 12.1.0(openapi-types@12.1.3)
       '@biomejs/biome':
-        specifier: 2.4.5
-        version: 2.4.5
+        specifier: 2.4.6
+        version: 2.4.6
 
 packages:
 
@@ -103,59 +103,59 @@ packages:
     peerDependencies:
       openapi-types: '>=7'
 
-  '@biomejs/biome@2.4.5':
-    resolution: {integrity: sha512-OWNCyMS0Q011R6YifXNOg6qsOg64IVc7XX6SqGsrGszPbkVCoaO7Sr/lISFnXZ9hjQhDewwZ40789QmrG0GYgQ==}
+  '@biomejs/biome@2.4.6':
+    resolution: {integrity: sha512-QnHe81PMslpy3mnpL8DnO2M4S4ZnYPkjlGCLWBZT/3R9M6b5daArWMMtEfP52/n174RKnwRIf3oT8+wc9ihSfQ==}
     engines: {node: '>=14.21.3'}
     hasBin: true
 
-  '@biomejs/cli-darwin-arm64@2.4.5':
-    resolution: {integrity: sha512-lGS4Nd5O3KQJ6TeWv10mElnx1phERhBxqGP/IKq0SvZl78kcWDFMaTtVK+w3v3lusRFxJY78n07PbKplirsU5g==}
+  '@biomejs/cli-darwin-arm64@2.4.6':
+    resolution: {integrity: sha512-NW18GSyxr+8sJIqgoGwVp5Zqm4SALH4b4gftIA0n62PTuBs6G2tHlwNAOj0Vq0KKSs7Sf88VjjmHh0O36EnzrQ==}
     engines: {node: '>=14.21.3'}
     cpu: [arm64]
     os: [darwin]
 
-  '@biomejs/cli-darwin-x64@2.4.5':
-    resolution: {integrity: sha512-6MoH4tyISIBNkZ2Q5T1R7dLd5BsITb2yhhhrU9jHZxnNSNMWl+s2Mxu7NBF8Y3a7JJcqq9nsk8i637z4gqkJxQ==}
+  '@biomejs/cli-darwin-x64@2.4.6':
+    resolution: {integrity: sha512-4uiE/9tuI7cnjtY9b07RgS7gGyYOAfIAGeVJWEfeCnAarOAS7qVmuRyX6d7JTKw28/mt+rUzMasYeZ+0R/U1Mw==}
     engines: {node: '>=14.21.3'}
     cpu: [x64]
     os: [darwin]
 
-  '@biomejs/cli-linux-arm64-musl@2.4.5':
-    resolution: {integrity: sha512-iqLDgpzobG7gpBF0fwEVS/LT8kmN7+S0E2YKFDtqliJfzNLnAiV2Nnyb+ehCDCJgAZBASkYHR2o60VQWikpqIg==}
+  '@biomejs/cli-linux-arm64-musl@2.4.6':
+    resolution: {integrity: sha512-F/JdB7eN22txiTqHM5KhIVt0jVkzZwVYrdTR1O3Y4auBOQcXxHK4dxULf4z43QyZI5tsnQJrRBHZy7wwtL+B3A==}
     engines: {node: '>=14.21.3'}
     cpu: [arm64]
     os: [linux]
     libc: [musl]
 
-  '@biomejs/cli-linux-arm64@2.4.5':
-    resolution: {integrity: sha512-U1GAG6FTjhAO04MyH4xn23wRNBkT6H7NentHh+8UxD6ShXKBm5SY4RedKJzkUThANxb9rUKIPc7B8ew9Xo/cWg==}
+  '@biomejs/cli-linux-arm64@2.4.6':
+    resolution: {integrity: sha512-kMLaI7OF5GN1Q8Doymjro1P8rVEoy7BKQALNz6fiR8IC1WKduoNyteBtJlHT7ASIL0Cx2jR6VUOBIbcB1B8pew==}
     engines: {node: '>=14.21.3'}
     cpu: [arm64]
     os: [linux]
     libc: [glibc]
 
-  '@biomejs/cli-linux-x64-musl@2.4.5':
-    resolution: {integrity: sha512-NlKa7GpbQmNhZf9kakQeddqZyT7itN7jjWdakELeXyTU3pg/83fTysRRDPJD0akTfKDl6vZYNT9Zqn4MYZVBOA==}
+  '@biomejs/cli-linux-x64-musl@2.4.6':
+    resolution: {integrity: sha512-C9s98IPDu7DYarjlZNuzJKTjVHN03RUnmHV5htvqsx6vEUXCDSJ59DNwjKVD5XYoSS4N+BYhq3RTBAL8X6svEg==}
     engines: {node: '>=14.21.3'}
     cpu: [x64]
     os: [linux]
     libc: [musl]
 
-  '@biomejs/cli-linux-x64@2.4.5':
-    resolution: {integrity: sha512-NdODlSugMzTlENPTa4z0xB82dTUlCpsrOxc43///aNkTLblIYH4XpYflBbf5ySlQuP8AA4AZd1qXhV07IdrHdQ==}
+  '@biomejs/cli-linux-x64@2.4.6':
+    resolution: {integrity: sha512-oHXmUFEoH8Lql1xfc3QkFLiC1hGR7qedv5eKNlC185or+o4/4HiaU7vYODAH3peRCfsuLr1g6v2fK9dFFOYdyw==}
     engines: {node: '>=14.21.3'}
     cpu: [x64]
     os: [linux]
     libc: [glibc]
 
-  '@biomejs/cli-win32-arm64@2.4.5':
-    resolution: {integrity: sha512-EBfrTqRIWOFSd7CQb/0ttjHMR88zm3hGravnDwUA9wHAaCAYsULKDebWcN5RmrEo1KBtl/gDVJMrFjNR0pdGUw==}
+  '@biomejs/cli-win32-arm64@2.4.6':
+    resolution: {integrity: sha512-xzThn87Pf3YrOGTEODFGONmqXpTwUNxovQb72iaUOdcw8sBSY3+3WD8Hm9IhMYLnPi0n32s3L3NWU6+eSjfqFg==}
     engines: {node: '>=14.21.3'}
     cpu: [arm64]
     os: [win32]
 
-  '@biomejs/cli-win32-x64@2.4.5':
-    resolution: {integrity: sha512-Pmhv9zT95YzECfjEHNl3mN9Vhusw9VA5KHY0ZvlGsxsjwS5cb7vpRnHzJIv0vG7jB0JI7xEaMH9ddfZm/RozBw==}
+  '@biomejs/cli-win32-x64@2.4.6':
+    resolution: {integrity: sha512-7++XhnsPlr1HDbor5amovPjOH6vsrFOCdp93iKXhFn6bcMUI6soodj3WWKfgEO6JosKU1W5n3uky3WW9RlRjTg==}
     engines: {node: '>=14.21.3'}
     cpu: [x64]
     os: [win32]
@@ -442,8 +442,8 @@ packages:
     resolution: {integrity: sha512-uV2QOWP2nWzsy2aMp8aRibhi9dlzF5Hgh5SHaB9OiTGEyDTiJJyx0uy51QXdyWbtAHNua4XJzUKca3OzKUd3vA==}
     engines: {node: '>= 8'}
 
-  dayjs@1.11.19:
-    resolution: {integrity: sha512-t5EcLVS6QPBNqM2z8fakk/NKel+Xzshgt8FFKAn+qwlD1pzZWxh0nVCrvFK7ZDb6XucZeF9z8C7CBWTRIVApAw==}
+  dayjs@1.11.20:
+    resolution: {integrity: sha512-YbwwqR/uYpeoP4pu043q+LTDLFBLApUP6VxRihdfNTqu4ubqMlGDLd6ErXhEgsyvY0K6nCs7nggYumAN+9uEuQ==}
 
   db-errors@0.2.3:
     resolution: {integrity: sha512-OOgqgDuCavHXjYSJoV2yGhv6SeG8nk42aoCSoyXLZUH7VwFG27rxbavU1z+VrZbZjphw5UkDQwUlD21MwZpUng==}
@@ -565,8 +565,8 @@ packages:
     resolution: {integrity: sha512-wxUJn2vTHvj/kZCVmc5/bJO15C7aSMyHeuXYY3geKpeKibaAoQGcEv5+sM6nHS2T7VF+QHS4hTWPiY2mKofEdg==}
     engines: {node: '>=12.0.0'}
 
-  express-rate-limit@8.2.1:
-    resolution: {integrity: sha512-PCZEIEIxqwhzw4KF0n7QF4QqruVTcF73O5kFKUnGOyjbCCgizBBiFaYpd/fnBLUMPw/BWw9OsiN7GgrNYr7j6g==}
+  express-rate-limit@8.3.1:
+    resolution: {integrity: sha512-D1dKN+cmyPWuvB+G2SREQDzPY1agpBIcTa9sJxOPMCNeH3gwzhqJRDWCXW3gg0y//+LQ/8j52JbMROWyrKdMdw==}
     engines: {node: '>= 16'}
     peerDependencies:
       express: '>= 4.11'
@@ -683,8 +683,8 @@ packages:
     resolution: {integrity: sha512-Ju0Bz/cEia55xDwUWEa8+olFpCiQoypjnQySseKtmjNrnps3P+xfpUmGr90T7yjlVJmOtybRvPXhKMbHr+fWnw==}
     engines: {node: '>= 0.10'}
 
-  ip-address@10.0.1:
-    resolution: {integrity: sha512-NWv9YLW4PoW2B7xtzaS3NCot75m6nK7Icdv0o3lfMceJVRfSoQwqD4wEH5rLwoKJwUiZ/rfpiVBhnaF0FK4HoA==}
+  ip-address@10.1.0:
+    resolution: {integrity: sha512-XXADHxXmvT9+CRxhXg56LJovE+bmWnEWB78LB83VZTprKTmaC5QfruXocxzTZ2Kl0DNwKuBdlIhjL8LeY8Sf8Q==}
     engines: {node: '>= 12'}
 
   ipaddr.js@1.9.1:
@@ -776,8 +776,8 @@ packages:
     resolution: {integrity: sha512-b94GiNHQNy6JNTrt5w6zNyffMrNkXZb3KTkCZJb2V1xaEGCk093vkZ2jk3tpaeP33/OiXC+WvK9AxUebnf5nbw==}
     engines: {node: '>= 0.6.3'}
 
-  liquidjs@10.24.0:
-    resolution: {integrity: sha512-TAUNAdgwaAXjjcUFuYVJm9kOVH7zc0mTKxsG9t9Lu4qdWjB2BEblyVIYpjWcmJLMGgiYqnGNJjpNMHx0gp/46A==}
+  liquidjs@10.25.0:
+    resolution: {integrity: sha512-XpO7AiGULTG4xcTlwkcTI5JreFG7b6esLCLp+aUSh7YuQErJZEoUXre9u9rbdb0057pfWG4l0VursvLd5Q/eAw==}
     engines: {node: '>=16'}
     hasBin: true
 
@@ -871,8 +871,8 @@ packages:
   ms@2.1.3:
     resolution: {integrity: sha512-6FlzubTLZG3J2a/NVCAleEhjzq5oxgHyaCU9yYXvcLsvoVaHJq/s5xXI6/XXP6tz7R9xAOtHnSO/tXtF3WRTlA==}
 
-  mysql2@3.18.2:
-    resolution: {integrity: sha512-UfEShBFAZZEAKjySnTUuE7BgqkYT4mx+RjoJ5aqtmwSSvNcJ/QxQPXz/y3jSxNiVRedPfgccmuBtiPCSiEEytw==}
+  mysql2@3.19.1:
+    resolution: {integrity: sha512-yn4zh+Uxu5J3Zvi6Ao96lJ7BSBRkspHflWQAmOPND+htbpIKDQw99TTvPzgihKO/QyMickZopO4OsnixnpcUwA==}
     engines: {node: '>= 8.0'}
     peerDependencies:
       '@types/node': '>= 8'
@@ -969,8 +969,8 @@ packages:
   pg-cloudflare@1.3.0:
     resolution: {integrity: sha512-6lswVVSztmHiRtD6I8hw4qP/nDm1EJbKMRhf3HCYaqud7frGysPv7FYJ5noZQdhQtN2xJnimfMtvQq21pdbzyQ==}
 
-  pg-connection-string@2.11.0:
-    resolution: {integrity: sha512-kecgoJwhOpxYU21rZjULrmrBJ698U2RxXofKVzOn5UDj61BPj/qMb7diYUR1nLScCDbrztQFl1TaQZT0t1EtzQ==}
+  pg-connection-string@2.12.0:
+    resolution: {integrity: sha512-U7qg+bpswf3Cs5xLzRqbXbQl85ng0mfSV/J0nnA31MCLgvEaAo7CIhmeyrmJpOr7o+zm0rXK+hNnT5l9RHkCkQ==}
 
   pg-connection-string@2.6.2:
     resolution: {integrity: sha512-ch6OwaeaPYcova4kKZ15sbJ2hKb/VP48ZD2gE7i1J+L4MspCtBMAx8nMgz7bksc7IojCIIWuEhHibSMFH8m8oA==}
@@ -979,20 +979,20 @@ packages:
     resolution: {integrity: sha512-WCtabS6t3c8SkpDBUlb1kjOs7l66xsGdKpIPZsg4wR+B3+u9UAum2odSsF9tnvxg80h4ZxLWMy4pRjOsFIqQpw==}
     engines: {node: '>=4.0.0'}
 
-  pg-pool@3.12.0:
-    resolution: {integrity: sha512-eIJ0DES8BLaziFHW7VgJEBPi5hg3Nyng5iKpYtj3wbcAUV9A1wLgWiY7ajf/f/oO1wfxt83phXPY8Emztg7ITg==}
+  pg-pool@3.13.0:
+    resolution: {integrity: sha512-gB+R+Xud1gLFuRD/QgOIgGOBE2KCQPaPwkzBBGC9oG69pHTkhQeIuejVIk3/cnDyX39av2AxomQiyPT13WKHQA==}
     peerDependencies:
       pg: '>=8.0'
 
-  pg-protocol@1.12.0:
-    resolution: {integrity: sha512-uOANXNRACNdElMXJ0tPz6RBM0XQ61nONGAwlt8da5zs/iUOOCLBQOHSXnrC6fMsvtjxbOJrZZl5IScGv+7mpbg==}
+  pg-protocol@1.13.0:
+    resolution: {integrity: sha512-zzdvXfS6v89r6v7OcFCHfHlyG/wvry1ALxZo4LqgUoy7W9xhBDMaqOuMiF3qEV45VqsN6rdlcehHrfDtlCPc8w==}
 
   pg-types@2.2.0:
     resolution: {integrity: sha512-qTAAlrEsl8s4OiEQY69wDvcMIdQN6wdz5ojQiOy6YRMuynxenON0O5oCpJI6lshc6scgAY8qvJ2On/p+CXY0GA==}
     engines: {node: '>=4'}
 
-  pg@8.19.0:
-    resolution: {integrity: sha512-QIcLGi508BAHkQ3pJNptsFz5WQMlpGbuBGBaIaXsWK8mel2kQ/rThYI+DbgjUvZrIr7MiuEuc9LcChJoEZK1xQ==}
+  pg@8.20.0:
+    resolution: {integrity: sha512-ldhMxz2r8fl/6QkXnBD3CR9/xg694oT6DZQ2s6c/RI28OjtSOpxnPrUCGOBJ46RCUxcWdx3p6kw/xnDHjKvaRA==}
     engines: {node: '>= 16.0.0'}
     peerDependencies:
       pg-native: '>=3.0.1'
@@ -1326,39 +1326,39 @@ snapshots:
       call-me-maybe: 1.0.2
       openapi-types: 12.1.3
 
-  '@biomejs/biome@2.4.5':
+  '@biomejs/biome@2.4.6':
     optionalDependencies:
-      '@biomejs/cli-darwin-arm64': 2.4.5
-      '@biomejs/cli-darwin-x64': 2.4.5
-      '@biomejs/cli-linux-arm64': 2.4.5
-      '@biomejs/cli-linux-arm64-musl': 2.4.5
-      '@biomejs/cli-linux-x64': 2.4.5
-      '@biomejs/cli-linux-x64-musl': 2.4.5
-      '@biomejs/cli-win32-arm64': 2.4.5
-      '@biomejs/cli-win32-x64': 2.4.5
+      '@biomejs/cli-darwin-arm64': 2.4.6
+      '@biomejs/cli-darwin-x64': 2.4.6
+      '@biomejs/cli-linux-arm64': 2.4.6
+      '@biomejs/cli-linux-arm64-musl': 2.4.6
+      '@biomejs/cli-linux-x64': 2.4.6
+      '@biomejs/cli-linux-x64-musl': 2.4.6
+      '@biomejs/cli-win32-arm64': 2.4.6
+      '@biomejs/cli-win32-x64': 2.4.6
 
-  '@biomejs/cli-darwin-arm64@2.4.5':
+  '@biomejs/cli-darwin-arm64@2.4.6':
     optional: true
 
-  '@biomejs/cli-darwin-x64@2.4.5':
+  '@biomejs/cli-darwin-x64@2.4.6':
     optional: true
 
-  '@biomejs/cli-linux-arm64-musl@2.4.5':
+  '@biomejs/cli-linux-arm64-musl@2.4.6':
     optional: true
 
-  '@biomejs/cli-linux-arm64@2.4.5':
+  '@biomejs/cli-linux-arm64@2.4.6':
     optional: true
 
-  '@biomejs/cli-linux-x64-musl@2.4.5':
+  '@biomejs/cli-linux-x64-musl@2.4.6':
     optional: true
 
-  '@biomejs/cli-linux-x64@2.4.5':
+  '@biomejs/cli-linux-x64@2.4.6':
     optional: true
 
-  '@biomejs/cli-win32-arm64@2.4.5':
+  '@biomejs/cli-win32-arm64@2.4.6':
     optional: true
 
-  '@biomejs/cli-win32-x64@2.4.5':
+  '@biomejs/cli-win32-x64@2.4.6':
     optional: true
 
   '@isaacs/cliui@8.0.2':
@@ -1648,7 +1648,7 @@ snapshots:
       shebang-command: 2.0.0
       which: 2.0.2
 
-  dayjs@1.11.19: {}
+  dayjs@1.11.20: {}
 
   db-errors@0.2.3: {}
 
@@ -1734,10 +1734,10 @@ snapshots:
     dependencies:
       busboy: 1.6.0
 
-  express-rate-limit@8.2.1(express@5.2.1):
+  express-rate-limit@8.3.1(express@5.2.1):
     dependencies:
       express: 5.2.1
-      ip-address: 10.0.1
+      ip-address: 10.1.0
 
   express@5.2.1:
     dependencies:
@@ -1881,7 +1881,7 @@ snapshots:
 
   interpret@2.2.0: {}
 
-  ip-address@10.0.1: {}
+  ip-address@10.1.0: {}
 
   ipaddr.js@1.9.1: {}
 
@@ -1943,7 +1943,7 @@ snapshots:
       jwa: 2.0.1
       safe-buffer: 5.2.1
 
-  knex@3.1.0(better-sqlite3@12.6.2)(mysql2@3.18.2(@types/node@25.3.3))(pg@8.19.0):
+  knex@3.1.0(better-sqlite3@12.6.2)(mysql2@3.19.1(@types/node@25.3.3))(pg@8.20.0):
     dependencies:
       colorette: 2.0.19
       commander: 10.0.1
@@ -1961,8 +1961,8 @@ snapshots:
       tildify: 2.0.0
     optionalDependencies:
       better-sqlite3: 12.6.2
-      mysql2: 3.18.2(@types/node@25.3.3)
-      pg: 8.19.0
+      mysql2: 3.19.1(@types/node@25.3.3)
+      pg: 8.20.0
     transitivePeerDependencies:
       - supports-color
 
@@ -1970,7 +1970,7 @@ snapshots:
     dependencies:
       readable-stream: 2.3.8
 
-  liquidjs@10.24.0:
+  liquidjs@10.25.0:
     dependencies:
       commander: 10.0.1
 
@@ -2040,7 +2040,7 @@ snapshots:
 
   ms@2.1.3: {}
 
-  mysql2@3.18.2(@types/node@25.3.3):
+  mysql2@3.19.1(@types/node@25.3.3):
     dependencies:
       '@types/node': 25.3.3
       aws-ssl-profiles: 1.1.2
@@ -2070,12 +2070,12 @@ snapshots:
 
   object-inspect@1.13.4: {}
 
-  objection@3.1.5(knex@3.1.0(better-sqlite3@12.6.2)(mysql2@3.18.2(@types/node@25.3.3))(pg@8.19.0)):
+  objection@3.1.5(knex@3.1.0(better-sqlite3@12.6.2)(mysql2@3.19.1(@types/node@25.3.3))(pg@8.20.0)):
     dependencies:
       ajv: 8.18.0
       ajv-formats: 2.1.1(ajv@8.18.0)
       db-errors: 0.2.3
-      knex: 3.1.0(better-sqlite3@12.6.2)(mysql2@3.18.2(@types/node@25.3.3))(pg@8.19.0)
+      knex: 3.1.0(better-sqlite3@12.6.2)(mysql2@3.19.1(@types/node@25.3.3))(pg@8.20.0)
 
   on-finished@2.4.1:
     dependencies:
@@ -2136,17 +2136,17 @@ snapshots:
   pg-cloudflare@1.3.0:
     optional: true
 
-  pg-connection-string@2.11.0: {}
+  pg-connection-string@2.12.0: {}
 
   pg-connection-string@2.6.2: {}
 
   pg-int8@1.0.1: {}
 
-  pg-pool@3.12.0(pg@8.19.0):
+  pg-pool@3.13.0(pg@8.20.0):
     dependencies:
-      pg: 8.19.0
+      pg: 8.20.0
 
-  pg-protocol@1.12.0: {}
+  pg-protocol@1.13.0: {}
 
   pg-types@2.2.0:
     dependencies:
@@ -2156,11 +2156,11 @@ snapshots:
       postgres-date: 1.0.7
       postgres-interval: 1.2.0
 
-  pg@8.19.0:
+  pg@8.20.0:
     dependencies:
-      pg-connection-string: 2.11.0
-      pg-pool: 3.12.0(pg@8.19.0)
-      pg-protocol: 1.12.0
+      pg-connection-string: 2.12.0
+      pg-pool: 3.13.0(pg@8.20.0)
+      pg-protocol: 1.13.0
       pg-types: 2.2.0
       pgpass: 1.0.5
     optionalDependencies:
