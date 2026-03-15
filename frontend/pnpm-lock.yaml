@@ -115,8 +115,8 @@ importers:
         specifier: 7.7.20
         version: 7.7.20
       '@vitejs/plugin-react':
-        specifier: 5.1.4
-        version: 5.1.4(vite@8.0.0(@types/node@25.4.0)(esbuild@0.27.3)(sass@1.98.0))
+        specifier: 5.2.0
+        version: 5.2.0(vite@8.0.0(@types/node@25.4.0)(esbuild@0.27.3)(sass@1.98.0))
       happy-dom:
         specifier: 20.8.3
         version: 20.8.3
@@ -981,11 +981,11 @@ packages:
   '@ungap/structured-clone@1.3.0':
     resolution: {integrity: sha512-WmoN8qaIAo7WTYWbAZuG8PYEhn5fkz7dZrqTBZ7dtt//lL2Gwms1IcnQ5yHqjDfX8Ft5j4YzDM23f87zBfDe9g==}
 
-  '@vitejs/plugin-react@5.1.4':
-    resolution: {integrity: sha512-VIcFLdRi/VYRU8OL/puL7QXMYafHmqOnwTZY50U1JPlCNj30PxCMx65c494b1K9be9hX83KVt0+gTEwTWLqToA==}
+  '@vitejs/plugin-react@5.2.0':
+    resolution: {integrity: sha512-YmKkfhOAi3wsB1PhJq5Scj3GXMn3WvtQ/JC0xoopuHoXSdmtdStOpFrYaT1kie2YgFBcIe64ROzMYRjCrYOdYw==}
     engines: {node: ^20.19.0 || >=22.12.0}
     peerDependencies:
-      vite: ^4.2.0 || ^5.0.0 || ^6.0.0 || ^7.0.0
+      vite: ^4.2.0 || ^5.0.0 || ^6.0.0 || ^7.0.0 || ^8.0.0
 
   '@vitest/expect@4.1.0':
     resolution: {integrity: sha512-EIxG7k4wlWweuCLG9Y5InKFwpMEOyrMb6ZJ1ihYu02LVj/bzUwn2VMU+13PinsjRW75XnITeFrQBMH5+dLvCDA==}
@@ -2885,7 +2885,7 @@ snapshots:
 
   '@ungap/structured-clone@1.3.0': {}
 
-  '@vitejs/plugin-react@5.1.4(vite@8.0.0(@types/node@25.4.0)(esbuild@0.27.3)(sass@1.98.0))':
+  '@vitejs/plugin-react@5.2.0(vite@8.0.0(@types/node@25.4.0)(esbuild@0.27.3)(sass@1.98.0))':
     dependencies:
       '@babel/core': 7.29.0
       '@babel/plugin-transform-react-jsx-self': 7.27.1(@babel/core@7.29.0)
