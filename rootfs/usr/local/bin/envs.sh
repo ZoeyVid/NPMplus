@@ -58,7 +58,7 @@ export ACME_SERVER="${ACME_SERVER:-https://acme-v02.api.letsencrypt.org/director
 
 case "$ACME_SERVER" in
     "https://acme-v02.api.letsencrypt.org/directory")
-        export ACME_PROFILE="${ACME_PROFILE:-shortlived}"
+        export ACME_PROFILE="${ACME_PROFILE:-classic}"
         ;;
 
     "https://dv.acme-v02.api.pki.goog/directory")
