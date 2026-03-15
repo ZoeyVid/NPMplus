@@ -202,6 +202,10 @@ RUN apk upgrade --no-cache -a && \
                        luarocks5.1 git make \
                        nodejs python3 && \
     \
+    apk fetch --no-cache aws-lc-tools && \
+    tar -xf aws-lc-tools-*.apk -C /usr/local --strip-components=1 usr/bin/bssl && \
+    rm -v aws-lc-tools-*.apk && \
+    \
     luarocks-5.1 install lua-resty-http && \
     luarocks-5.1 install lua-resty-string && \
     luarocks-5.1 install lua-resty-openssl && \

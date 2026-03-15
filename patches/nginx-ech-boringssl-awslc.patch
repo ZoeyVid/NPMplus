@@ -1,5 +1,5 @@
 diff --git a/src/event/ngx_event_openssl.c b/src/event/ngx_event_openssl.c
-index e41289efb..2376cd20f 100644
+index e41289efb..b08bffb75 100644
 --- a/src/event/ngx_event_openssl.c
 +++ b/src/event/ngx_event_openssl.c
 @@ -23,6 +23,27 @@
@@ -30,15 +30,11 @@ index e41289efb..2376cd20f 100644
  #define NGX_SSL_PASSWORD_BUFFER_SIZE  4096
  
  
-@@ -1789,26 +1810,157 @@ ngx_ssl_dhparam(ngx_conf_t *cf, ngx_ssl_t *ssl, ngx_str_t *file)
+@@ -1789,26 +1810,153 @@ ngx_ssl_dhparam(ngx_conf_t *cf, ngx_ssl_t *ssl, ngx_str_t *file)
  }
  
  
 +#ifdef NGX_ECH
-+
-+#ifndef PEM_STRING_ECHCONFIG
-+#define PEM_STRING_ECHCONFIG "ECHCONFIG"
-+#endif
 +
 +#if (defined OPENSSL_IS_BORINGSSL || defined OPENSSL_IS_AWSLC)
 +static int
@@ -113,7 +109,7 @@ index e41289efb..2376cd20f 100644
 +
 +    if (PEM_read_bio(fbio, &pname, &pheader, &b64, &b64len) != 1
 +        || pname == NULL
-+        || strcmp(pname, PEM_STRING_ECHCONFIG) != 0)
++        || strcmp(pname, "ECHCONFIG") != 0)
 +    {
 +        ngx_ssl_error(NGX_LOG_EMERG, ssl->log, 0,
 +                      "PEM_read_bio(\"%s\") failed or not ECHCONFIG", fname);
@@ -192,7 +188,7 @@ index e41289efb..2376cd20f 100644
  
      rc = NGX_ERROR;
      filename = filenames->elts;
-@@ -1819,36 +1971,114 @@ ngx_ssl_ech_files(ngx_conf_t *cf, ngx_ssl_t *ssl, ngx_array_t *filenames)
+@@ -1819,36 +1967,114 @@ ngx_ssl_ech_files(ngx_conf_t *cf, ngx_ssl_t *ssl, ngx_array_t *filenames)
              goto cleanup;
          }
  
@@ -331,7 +327,7 @@ index e41289efb..2376cd20f 100644
      }
  
      /*
-@@ -1857,9 +2087,10 @@ ngx_ssl_ech_files(ngx_conf_t *cf, ngx_ssl_t *ssl, ngx_array_t *filenames)
+@@ -1857,9 +2083,10 @@ ngx_ssl_ech_files(ngx_conf_t *cf, ngx_ssl_t *ssl, ngx_array_t *filenames)
       * private key per file)
       */
  
@@ -343,7 +339,7 @@ index e41289efb..2376cd20f 100644
          goto cleanup;
      }
  
-@@ -1868,12 +2099,23 @@ ngx_ssl_ech_files(ngx_conf_t *cf, ngx_ssl_t *ssl, ngx_array_t *filenames)
+@@ -1868,12 +2095,23 @@ ngx_ssl_ech_files(ngx_conf_t *cf, ngx_ssl_t *ssl, ngx_array_t *filenames)
                        "SSL_CTX_set1_echstore() failed");
          goto cleanup;
      }
@@ -367,7 +363,7 @@ index e41289efb..2376cd20f 100644
      return rc;
  
  #else
-@@ -5993,7 +6235,8 @@ ngx_ssl_get_alpn_protocol(ngx_connection_t *c, ngx_pool_t *pool, ngx_str_t *s)
+@@ -5993,7 +6231,8 @@ ngx_ssl_get_alpn_protocol(ngx_connection_t *c, ngx_pool_t *pool, ngx_str_t *s)
  ngx_int_t
  ngx_ssl_get_ech_status(ngx_connection_t *c, ngx_pool_t *pool, ngx_str_t *s)
  {
@@ -377,7 +373,7 @@ index e41289efb..2376cd20f 100644
      int    echrv;
      char  *inner_sni, *outer_sni;
  
-@@ -6022,6 +6265,13 @@ ngx_ssl_get_ech_status(ngx_connection_t *c, ngx_pool_t *pool, ngx_str_t *s)
+@@ -6022,6 +6261,13 @@ ngx_ssl_get_ech_status(ngx_connection_t *c, ngx_pool_t *pool, ngx_str_t *s)
  
      OPENSSL_free(inner_sni);
      OPENSSL_free(outer_sni);
