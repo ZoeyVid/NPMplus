@@ -8,6 +8,11 @@ import mainRoutes from "./routes/main.js";
  * App
  */
 const app = express();
+
+app.disable("x-powered-by");
+app.set("json spaces", 2);
+app.set("trust proxy", ["loopback", "linklocal", "uniquelocal"]);
+
 app.use(
 	fileUpload({
 		limits: { fileSize: 1024 * 1024 },
@@ -21,12 +26,8 @@ app.use(express.urlencoded({ extended: true }));
  * General Logging, BEFORE routes
  */
 
-app.disable("x-powered-by");
-app.enable("trust proxy", ["loopback", "linklocal", "uniquelocal"]);
-app.enable("strict routing");
-
 app.use((req, res, next) => {
-	if (["same-origin", undefined, "none"].includes(req.get("sec-fetch-site"))) {
+	if (["same-origin", "none"].includes(req.get("sec-fetch-site"))) {
 		return next();
 	}
 
@@ -39,13 +40,20 @@ app.use((req, res, next) => {
 		return next();
 	}
 
+	if (req.get("origin") && req.get("origin") !== `${req.protocol}://${req.host}`) {
+		return res.status(403).json({
+			error: { message: "Rejected Origin." },
+		});
+	}
+
+	if (req.get("sec-fetch-site") === undefined) {
+		return next();
+	}
+
 	res.status(403).json({
 		error: { message: "Rejected Sec-Fetch-Site Value." },
 	});
 });
-
-// pretty print JSON when not live
-app.set("json spaces", 2);
 
 app.use("/", mainRoutes);
 

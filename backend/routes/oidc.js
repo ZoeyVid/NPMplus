@@ -104,7 +104,7 @@ router
 
 			const tokens = await client.authorizationCodeGrant(
 				config,
-				new URL(`${req.protocol}://${req.get("host")}${req.originalUrl}`),
+				new URL(`${req.protocol}://${req.host}${req.originalUrl}`),
 				{
 					pkceCodeVerifier: req.cookies?.npmplus_oidc_code_verifier,
 					expectedState: req.cookies?.npmplus_oidc_state,
