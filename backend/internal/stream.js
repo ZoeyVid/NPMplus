@@ -386,7 +386,8 @@ const internalStream = {
 					query.where(function () {
 						this.where(castJsonIfNeed("incoming_port"), "like", `%${search_query}%`)
 							.orWhere("npmplus_description", "like", `%${search_query}%`)
-							.orWhere("forwarding_host", "like", `%${search_query}%`);
+							.orWhere("forwarding_host", "like", `%${search_query}%`)
+							.orWhere(castJsonIfNeed("forwarding_port"), "like", `%${search_query}%`);
 					});
 				}
 

@@ -79,7 +79,7 @@
 		"npmplus_description": {
 			"type": ["string", "null"],
 			"maxLength": 255,
-			"example": "MySQL database connection"
+			"example": "MariaDB database connection"
 		},
 		"certificate": {
 			"oneOf": [
