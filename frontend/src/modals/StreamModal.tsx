@@ -80,7 +80,7 @@ const StreamModal = EasyModal.create(({ id, visible, remove }: Props) => {
 							npmplusProxyTls: data?.npmplusProxyTls,
 							certificateId: data?.certificateId,
 							meta: data?.meta || {},
-							npmplusDescription: data?.npmplusDescription ?? "",
+							npmplusDescription: data?.npmplusDescription || "",
 						} as any
 					}
 					onSubmit={onSubmit}
