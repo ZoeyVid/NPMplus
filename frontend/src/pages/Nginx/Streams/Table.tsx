@@ -50,7 +50,7 @@ export default function Table({ data, isFetching, isFiltered, onEdit, onDelete, 
 				header: intl.formatMessage({ id: "column.description" }),
 				cell: (info: any) => {
 					const value = info.row.original.npmplusDescription;
-					return value ?? <span className="text-muted">—</span>;
+					return value || <span className="text-muted">—</span>;
 				},
 			}),
 			columnHelper.accessor(
