@@ -45,7 +45,7 @@ export default function Table({ data, isFetching, isFiltered, onEdit, onDelete, 
 					return <ValueWithDateFormatter value={value.incomingPort} createdOn={value.createdOn} />;
 				},
 			}),
-			columnHelper.accessor((row: any) => row.npmplusDescription ?? "", {
+			columnHelper.accessor((row: any) => row.npmplusDescription || "", {
 				id: "npmplusDescription",
 				header: intl.formatMessage({ id: "column.description" }),
 				cell: (info: any) => {
