@@ -82,8 +82,8 @@ importers:
         specifier: 2.4.8
         version: 2.4.8
       '@formatjs/cli':
-        specifier: 6.13.4
-        version: 6.13.4
+        specifier: 6.14.0
+        version: 6.14.0
       '@tanstack/react-query-devtools':
         specifier: 5.91.3
         version: 5.91.3(@tanstack/react-query@5.91.3(react@19.2.4))(react@19.2.4)
@@ -317,8 +317,8 @@ packages:
   '@formatjs/bigdecimal@0.2.0':
     resolution: {integrity: sha512-GeaxHZbUoYvHL9tC5eltHLs+1zU70aPw0s7LwqgktIzF5oMhNY4o4deEtusJMsq7WFJF3Ye2zQEzdG8beVk73w==}
 
-  '@formatjs/cli@6.13.4':
-    resolution: {integrity: sha512-RdzqWzLu6j4zKzGdN4f3WHlyq3PbJrDrtGnVoXsBiJ5p9iUz/YlMaFee9nRMxp4QIztRy9s9mzmJcTAxS60nUA==}
+  '@formatjs/cli@6.14.0':
+    resolution: {integrity: sha512-5lqzAyAObZ8J8Ljtua8s4e5GKrPBu/lmuYN5ok5GgKUe+u+QwBPNlR3d2aYJpUbhgYuV8PXPHFXVPOwyhSR1uw==}
     engines: {node: '>= 20.12.0'}
     hasBin: true
     peerDependencies:
@@ -2092,7 +2092,7 @@ snapshots:
 
   '@formatjs/bigdecimal@0.2.0': {}
 
-  '@formatjs/cli@6.13.4': {}
+  '@formatjs/cli@6.14.0': {}
 
   '@formatjs/ecma402-abstract@3.2.0':
     dependencies:
