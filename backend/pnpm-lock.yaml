@@ -42,8 +42,8 @@ importers:
         specifier: 9.0.3
         version: 9.0.3
       knex:
-        specifier: 3.1.0
-        version: 3.1.0(better-sqlite3@12.8.0)(mysql2@3.20.0(@types/node@25.5.0))(pg@8.20.0)
+        specifier: 3.2.0
+        version: 3.2.0(better-sqlite3@12.8.0)(mysql2@3.20.0(@types/node@25.5.0))(pg@8.20.0)
       liquidjs:
         specifier: 10.25.1
         version: 10.25.1
@@ -55,7 +55,7 @@ importers:
         version: 3.20.0(@types/node@25.5.0)
       objection:
         specifier: 3.1.5
-        version: 3.1.5(knex@3.1.0(better-sqlite3@12.8.0)(mysql2@3.20.0(@types/node@25.5.0))(pg@8.20.0))
+        version: 3.1.5(knex@3.2.0(better-sqlite3@12.8.0)(mysql2@3.20.0(@types/node@25.5.0))(pg@8.20.0))
       openid-client:
         specifier: 6.8.2
         version: 6.8.2
@@ -744,8 +744,8 @@ packages:
   jws@4.0.1:
     resolution: {integrity: sha512-EKI/M/yqPncGUUh44xz0PxSidXFr/+r0pA70+gIYhjv+et7yxM+s29Y+VGDkovRofQem0fs7Uvf4+YmAdyRduA==}
 
-  knex@3.1.0:
-    resolution: {integrity: sha512-GLoII6hR0c4ti243gMs5/1Rb3B+AjwMOfjYm97pu0FOQa7JH56hgBxYf5WK2525ceSbBY1cjeZ9yk99GPMB6Kw==}
+  knex@3.2.0:
+    resolution: {integrity: sha512-0f4aSC0Hp6+hadAnaKh7nh++zaqbz1imF6pnuTlGvkx4N2dEq00CvDCFWkpyVv4OJjhlwrejUF7opwvbJJPh6g==}
     engines: {node: '>=16'}
     hasBin: true
     peerDependencies:
@@ -754,6 +754,7 @@ packages:
       mysql2: '*'
       pg: '*'
       pg-native: '*'
+      pg-query-stream: ^4.14.0
       sqlite3: '*'
       tedious: '*'
     peerDependenciesMeta:
@@ -766,6 +767,8 @@ packages:
       pg:
         optional: true
       pg-native:
+        optional: true
+      pg-query-stream:
         optional: true
       sqlite3:
         optional: true
@@ -1943,7 +1946,7 @@ snapshots:
       jwa: 2.0.1
       safe-buffer: 5.2.1
 
-  knex@3.1.0(better-sqlite3@12.8.0)(mysql2@3.20.0(@types/node@25.5.0))(pg@8.20.0):
+  knex@3.2.0(better-sqlite3@12.8.0)(mysql2@3.20.0(@types/node@25.5.0))(pg@8.20.0):
     dependencies:
       colorette: 2.0.19
       commander: 10.0.1
@@ -2070,12 +2073,12 @@ snapshots:
 
   object-inspect@1.13.4: {}
 
-  objection@3.1.5(knex@3.1.0(better-sqlite3@12.8.0)(mysql2@3.20.0(@types/node@25.5.0))(pg@8.20.0)):
+  objection@3.1.5(knex@3.2.0(better-sqlite3@12.8.0)(mysql2@3.20.0(@types/node@25.5.0))(pg@8.20.0)):
     dependencies:
       ajv: 8.18.0
       ajv-formats: 2.1.1(ajv@8.18.0)
       db-errors: 0.2.3
-      knex: 3.1.0(better-sqlite3@12.8.0)(mysql2@3.20.0(@types/node@25.5.0))(pg@8.20.0)
+      knex: 3.2.0(better-sqlite3@12.8.0)(mysql2@3.20.0(@types/node@25.5.0))(pg@8.20.0)
 
   on-finished@2.4.1:
     dependencies:
