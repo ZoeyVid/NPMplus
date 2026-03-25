@@ -9,7 +9,6 @@
 		],
 		"module": "ESNext",
 		"skipLibCheck": true,
-		"baseUrl": ".",
 		/* Bundler mode */
 		"moduleResolution": "bundler",
 		"allowImportingTsExtensions": true,
