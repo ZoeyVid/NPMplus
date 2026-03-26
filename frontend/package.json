@@ -25,7 +25,7 @@
 		"react-dom": "19.2.4",
 		"react-intl": "10.1.0",
 		"react-markdown": "10.1.0",
-		"react-router-dom": "7.13.1",
+		"react-router-dom": "7.13.2",
 		"react-select": "5.10.2",
 		"react-toastify": "11.0.5",
 		"rooks": "9.7.0"
