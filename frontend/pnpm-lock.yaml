@@ -12,8 +12,8 @@ importers:
         specifier: 1.4.0
         version: 1.4.0
       '@tabler/icons-react':
-        specifier: 3.40.0
-        version: 3.40.0(react@19.2.4)
+        specifier: 3.41.0
+        version: 3.41.0(react@19.2.4)
       '@tanstack/react-query':
         specifier: 5.95.2
         version: 5.95.2(react@19.2.4)
@@ -612,13 +612,13 @@ packages:
     resolution: {integrity: sha512-5BigzOlbOH9N0Is4u0rYNRCiwtnUXWO57K9zwuscygcicAa8UV9MGaS4zTgQsZEtZ9tsNANhN/YD8gCBGKYCiw==}
     engines: {node: '>=20'}
 
-  '@tabler/icons-react@3.40.0':
-    resolution: {integrity: sha512-oO5+6QCnna4a//mYubx4euZfECtzQZFDGsDMIdzZUhbdyBCT+3bRVFBPueGIcemWld4Vb/0UQ39C/cmGfGylAg==}
+  '@tabler/icons-react@3.41.0':
+    resolution: {integrity: sha512-8XKc3wZKf1icxqwIPSOO61M+dtf8yJPwAE/rtFAVzc5Ros+OjCqowfcoI5IpKK09RSo8s0hHrWvydGgnXqYILg==}
     peerDependencies:
       react: '>= 16'
 
-  '@tabler/icons@3.40.0':
-    resolution: {integrity: sha512-V/Q4VgNPKubRTiLdmWjV/zscYcj5IIk+euicUtaVVqF6luSC9rDngYWgST5/yh3Mrg/mYUwRv1YVTk71Jp0twQ==}
+  '@tabler/icons@3.41.0':
+    resolution: {integrity: sha512-arlig0nkaC9UGqTZuT1MMZepX29t3Ysx5HSy2UvmR+CZrhlNxZrCM6Z4qYBoaIO+2ICZykttjBCSpf+p/t0H3w==}
 
   '@tanstack/query-core@5.95.2':
     resolution: {integrity: sha512-o4T8vZHZET4Bib3jZ/tCW9/7080urD4c+0/AUaYVpIqOsr7y0reBc1oX3ttNaSW5mYyvZHctiQ/UOP2PfdmFEQ==}
@@ -2297,12 +2297,12 @@ snapshots:
       '@popperjs/core': 2.11.8
       bootstrap: 5.3.7(@popperjs/core@2.11.8)
 
-  '@tabler/icons-react@3.40.0(react@19.2.4)':
+  '@tabler/icons-react@3.41.0(react@19.2.4)':
     dependencies:
-      '@tabler/icons': 3.40.0
+      '@tabler/icons': 3.41.0
       react: 19.2.4
 
-  '@tabler/icons@3.40.0': {}
+  '@tabler/icons@3.41.0': {}
 
   '@tanstack/query-core@5.95.2': {}
 
