@@ -60,8 +60,8 @@ importers:
         specifier: 19.2.4
         version: 19.2.4(react@19.2.4)
       react-intl:
-        specifier: 10.1.0
-        version: 10.1.0(@types/react@19.2.14)(react@19.2.4)(typescript@6.0.2)
+        specifier: 10.1.1
+        version: 10.1.1(@types/react@19.2.14)(react@19.2.4)
       react-markdown:
         specifier: 10.1.0
         version: 10.1.0(@types/react@19.2.14)(react@19.2.4)
@@ -82,8 +82,8 @@ importers:
         specifier: 2.4.9
         version: 2.4.9
       '@formatjs/cli':
-        specifier: 6.14.0
-        version: 6.14.0
+        specifier: 6.14.1
+        version: 6.14.1
       '@tanstack/react-query-devtools':
         specifier: 5.95.2
         version: 5.95.2(@tanstack/react-query@5.95.2(react@19.2.4))(react@19.2.4)
@@ -314,8 +314,8 @@ packages:
   '@formatjs/bigdecimal@0.2.0':
     resolution: {integrity: sha512-GeaxHZbUoYvHL9tC5eltHLs+1zU70aPw0s7LwqgktIzF5oMhNY4o4deEtusJMsq7WFJF3Ye2zQEzdG8beVk73w==}
 
-  '@formatjs/cli@6.14.0':
-    resolution: {integrity: sha512-5lqzAyAObZ8J8Ljtua8s4e5GKrPBu/lmuYN5ok5GgKUe+u+QwBPNlR3d2aYJpUbhgYuV8PXPHFXVPOwyhSR1uw==}
+  '@formatjs/cli@6.14.1':
+    resolution: {integrity: sha512-afBgzduP4lrOEm1FxMAVMXKi2FNE7KDOWJ7SyhvEI7zRbHhA7qVkb2DbxpPUhtDg0BrdHjdp8ppVyVVNYaFaaA==}
     engines: {node: '>= 20.12.0'}
     hasBin: true
     peerDependencies:
@@ -357,13 +357,8 @@ packages:
   '@formatjs/intl-localematcher@0.8.2':
     resolution: {integrity: sha512-q05KMYGJLyqFNFtIb8NhWLF5X3aK/k0wYt7dnRFuy6aLQL+vUwQ1cg5cO4qawEiINybeCPXAWlprY2mSBjSXAQ==}
 
-  '@formatjs/intl@4.1.4':
-    resolution: {integrity: sha512-y5aZ5p5zO74mZPdQMe9gq8SR1P6rlPQkaYOVFHyRzWrViif4sRKIQX01GYbKJvaGanupVVX+0WoKJqLVsP+X3Q==}
-    peerDependencies:
-      typescript: ^5.6.0
-    peerDependenciesMeta:
-      typescript:
-        optional: true
+  '@formatjs/intl@4.1.5':
+    resolution: {integrity: sha512-ybF/NIB/sIgP2oAq6KdJD6TQgUEJQL7F/ry4d4AbJ6zV0dfkwpQqycnIgpvChM9wRQ6IMr3XEdFevNjMNlC4WA==}
 
   '@jridgewell/gen-mapping@0.3.13':
     resolution: {integrity: sha512-2kkt/7niJ6MgEPxF0bYdQ6etZaA+fQvDcLKckhy1yIQOzaoKjBBjSj63/aLVjYE3qhRt5dvM+uUyfCg6UKCBbA==}
@@ -1456,15 +1451,11 @@ packages:
   react-fast-compare@2.0.4:
     resolution: {integrity: sha512-suNP+J1VU1MWFKcyt7RtjiSWUjvidmQSlqu+eHslq+342xCbGTYmC0mEhPCOHxlW0CywylOC1u2DFAT+bv4dBw==}
 
-  react-intl@10.1.0:
-    resolution: {integrity: sha512-SNF5gKE25E7Kw5vGGOQErXsLcDLYksbOkBCdVynHU+bLfCKCGBZef7tI13WarpSYm3D0Kx9tDBOOIVymaLHuSg==}
+  react-intl@10.1.1:
+    resolution: {integrity: sha512-B4rVLYxYHNE8NgPF6eoNbXQZ9uk2KLN7cCVSz1UaEIVeMp2aCstYTOyN3zNY5K3dF5iReDNiCrPaGA6lNpoZxQ==}
     peerDependencies:
       '@types/react': '19'
       react: '19'
-      typescript: ^5.6.0
-    peerDependenciesMeta:
-      typescript:
-        optional: true
 
   react-is@16.13.1:
     resolution: {integrity: sha512-24e6ynE2H+OKt4kqsOvNd8kBpV65zoxbA4BVsEOB3ARVWQki/DHzaUoC5KuON/BiccDaCCTZBuOcfZs70kR8bQ==}
@@ -2083,7 +2074,7 @@ snapshots:
 
   '@formatjs/bigdecimal@0.2.0': {}
 
-  '@formatjs/cli@6.14.0': {}
+  '@formatjs/cli@6.14.1': {}
 
   '@formatjs/ecma402-abstract@3.2.0':
     dependencies:
@@ -2106,14 +2097,12 @@ snapshots:
     dependencies:
       '@formatjs/fast-memoize': 3.1.1
 
-  '@formatjs/intl@4.1.4(typescript@6.0.2)':
+  '@formatjs/intl@4.1.5':
     dependencies:
       '@formatjs/ecma402-abstract': 3.2.0
       '@formatjs/fast-memoize': 3.1.1
       '@formatjs/icu-messageformat-parser': 3.5.3
       intl-messageformat: 11.2.0
-    optionalDependencies:
-      typescript: 6.0.2
 
   '@jridgewell/gen-mapping@0.3.13':
     dependencies:
@@ -3264,16 +3253,14 @@ snapshots:
 
   react-fast-compare@2.0.4: {}
 
-  react-intl@10.1.0(@types/react@19.2.14)(react@19.2.4)(typescript@6.0.2):
+  react-intl@10.1.1(@types/react@19.2.14)(react@19.2.4):
     dependencies:
       '@formatjs/ecma402-abstract': 3.2.0
       '@formatjs/icu-messageformat-parser': 3.5.3
-      '@formatjs/intl': 4.1.4(typescript@6.0.2)
+      '@formatjs/intl': 4.1.5
       '@types/react': 19.2.14
       intl-messageformat: 11.2.0
       react: 19.2.4
-    optionalDependencies:
-      typescript: 6.0.2
 
   react-is@16.13.1: {}
 
