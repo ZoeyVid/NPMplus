@@ -45,8 +45,8 @@ importers:
         specifier: 3.2.9
         version: 3.2.9(better-sqlite3@12.8.0)(mysql2@3.20.0(@types/node@25.5.0))(pg@8.20.0)
       liquidjs:
-        specifier: 10.25.2
-        version: 10.25.2
+        specifier: 10.25.3
+        version: 10.25.3
       lodash:
         specifier: 4.18.1
         version: 4.18.1
@@ -782,8 +782,8 @@ packages:
     resolution: {integrity: sha512-b94GiNHQNy6JNTrt5w6zNyffMrNkXZb3KTkCZJb2V1xaEGCk093vkZ2jk3tpaeP33/OiXC+WvK9AxUebnf5nbw==}
     engines: {node: '>= 0.6.3'}
 
-  liquidjs@10.25.2:
-    resolution: {integrity: sha512-ZbgcjEjGNlAIjqhuMzymO3lCpHgmVMftKfrq4/YLLxmKaFFeQMXRGrJTqKX7OXX1hKVPUDpTIrvL7lxt3X/hmw==}
+  liquidjs@10.25.3:
+    resolution: {integrity: sha512-csoJtC6yTfkUlwy+QKm0tRbFoz5cnzly1ugFvBBDWXA4Oo8ul31hOHDEZVzG93q8YaxRIQ909GFuow8d/q1v2Q==}
     engines: {node: '>=16'}
     hasBin: true
 
@@ -1975,7 +1975,7 @@ snapshots:
     dependencies:
       readable-stream: 2.3.8
 
-  liquidjs@10.25.2:
+  liquidjs@10.25.3:
     dependencies:
       commander: 10.0.1
 
