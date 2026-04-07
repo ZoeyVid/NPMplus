@@ -1224,8 +1224,8 @@ packages:
     resolution: {integrity: sha512-ot0WnXS9fgdkgIcePe6RHNk1WA8+muPa6cSjeR3V8K27q9BB1rTE3R1p7Hv0z1ZyAc8s6Vvv8DIyWf681MAt0w==}
     engines: {node: '>= 0.4'}
 
-  swagger-ui-dist@5.32.1:
-    resolution: {integrity: sha512-6HQoo7+j8PA2QqP5kgAb9dl1uxUjvR0SAoL/WUp1sTEvm0F6D5npgU2OGCLwl++bIInqGlEUQ2mpuZRZYtyCzQ==}
+  swagger-ui-dist@5.32.2:
+    resolution: {integrity: sha512-t6Ns52nS8LU2hqi0+rezMjFO1ZrCsCrnommXrU7Nfrg2va2dWahdvM6TuSwzdHpG29v6BHJyU1c/UWFhgVZzVQ==}
 
   swagger-ui-express@5.0.1:
     resolution: {integrity: sha512-SrNU3RiBGTLLmFU8GIJdOdanJTl4TOmT27tt3bWWHppqYmAZ6IDuEuBvMU6nZq0zLEe6b/1rACXCgLZqO6ZfrA==}
@@ -2433,14 +2433,14 @@ snapshots:
 
   supports-preserve-symlinks-flag@1.0.0: {}
 
-  swagger-ui-dist@5.32.1:
+  swagger-ui-dist@5.32.2:
     dependencies:
       '@scarf/scarf': 1.4.0
 
   swagger-ui-express@5.0.1(express@5.2.1):
     dependencies:
       express: 5.2.1
-      swagger-ui-dist: 5.32.1
+      swagger-ui-dist: 5.32.2
 
   tar-fs@2.1.4:
     dependencies:
