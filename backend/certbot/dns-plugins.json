@@ -108,7 +108,7 @@
 		"package_name": "certbot-dns-digitalocean"
 	},
 	"directadmin": {
-		"credentials": "directadmin_url = https://my.directadminserver.com:2222\ndirectadmin_username = username\ndirectadmin_password = aSuperStrongPassword",
+		"credentials": "dns_directadmin_url = https://my.directadminserver.com:2222\ndns_directadmin_username = username\ndns_directadmin_password = aSuperStrongPassword",
 		"full_plugin_name": "dns-directadmin",
 		"name": "DirectAdmin",
 		"package_name": "certbot-dns-directadmin"
