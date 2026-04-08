@@ -13,16 +13,16 @@ importers:
         version: 1.4.0
       '@tabler/icons-react':
         specifier: 3.41.1
-        version: 3.41.1(react@19.2.4)
+        version: 3.41.1(react@19.2.5)
       '@tanstack/react-query':
         specifier: 5.96.2
-        version: 5.96.2(react@19.2.4)
+        version: 5.96.2(react@19.2.5)
       '@tanstack/react-table':
         specifier: 8.21.3
-        version: 8.21.3(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
+        version: 8.21.3(react-dom@19.2.5(react@19.2.5))(react@19.2.5)
       '@uiw/react-textarea-code-editor':
         specifier: 3.1.1
-        version: 3.1.1(@babel/runtime@7.29.2)(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
+        version: 3.1.1(@babel/runtime@7.29.2)(react-dom@19.2.5(react@19.2.5))(react@19.2.5)
       classnames:
         specifier: 2.5.1
         version: 2.5.1
@@ -34,10 +34,10 @@ importers:
         version: 4.1.0
       ez-modal-react:
         specifier: 1.0.5
-        version: 1.0.5(react-dom@19.2.4(react@19.2.4))(react@19.2.4)(typescript@6.0.2)
+        version: 1.0.5(react-dom@19.2.5(react@19.2.5))(react@19.2.5)(typescript@6.0.2)
       formik:
         specifier: 2.4.9
-        version: 2.4.9(@types/react@19.2.14)(react@19.2.4)
+        version: 2.4.9(@types/react@19.2.14)(react@19.2.5)
       generate-password-browser:
         specifier: 1.1.0
         version: 1.1.0
@@ -46,37 +46,37 @@ importers:
         version: 2.0.1
       qrcode.react:
         specifier: 4.2.0
-        version: 4.2.0(react@19.2.4)
+        version: 4.2.0(react@19.2.5)
       query-string:
         specifier: 9.3.1
         version: 9.3.1
       react:
-        specifier: 19.2.4
-        version: 19.2.4
+        specifier: 19.2.5
+        version: 19.2.5
       react-bootstrap:
         specifier: 2.10.10
-        version: 2.10.10(@types/react@19.2.14)(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
+        version: 2.10.10(@types/react@19.2.14)(react-dom@19.2.5(react@19.2.5))(react@19.2.5)
       react-dom:
-        specifier: 19.2.4
-        version: 19.2.4(react@19.2.4)
+        specifier: 19.2.5
+        version: 19.2.5(react@19.2.5)
       react-intl:
         specifier: 10.1.1
-        version: 10.1.1(@types/react@19.2.14)(react@19.2.4)
+        version: 10.1.1(@types/react@19.2.14)(react@19.2.5)
       react-markdown:
         specifier: 10.1.0
-        version: 10.1.0(@types/react@19.2.14)(react@19.2.4)
+        version: 10.1.0(@types/react@19.2.14)(react@19.2.5)
       react-router-dom:
         specifier: 7.14.0
-        version: 7.14.0(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
+        version: 7.14.0(react-dom@19.2.5(react@19.2.5))(react@19.2.5)
       react-select:
         specifier: 5.10.2
-        version: 5.10.2(@types/react@19.2.14)(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
+        version: 5.10.2(@types/react@19.2.14)(react-dom@19.2.5(react@19.2.5))(react@19.2.5)
       react-toastify:
         specifier: 11.0.5
-        version: 11.0.5(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
+        version: 11.0.5(react-dom@19.2.5(react@19.2.5))(react@19.2.5)
       rooks:
         specifier: 9.8.0
-        version: 9.8.0(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
+        version: 9.8.0(react-dom@19.2.5(react@19.2.5))(react@19.2.5)
     devDependencies:
       '@biomejs/biome':
         specifier: 2.4.10
@@ -86,7 +86,7 @@ importers:
         version: 6.14.1
       '@tanstack/react-query-devtools':
         specifier: 5.96.2
-        version: 5.96.2(@tanstack/react-query@5.96.2(react@19.2.4))(react@19.2.4)
+        version: 5.96.2(@tanstack/react-query@5.96.2(react@19.2.5))(react@19.2.5)
       '@testing-library/dom':
         specifier: 10.4.1
         version: 10.4.1
@@ -95,7 +95,7 @@ importers:
         version: 6.9.1
       '@testing-library/react':
         specifier: 16.3.2
-        version: 16.3.2(@testing-library/dom@10.4.1)(@types/react-dom@19.2.3(@types/react@19.2.14))(@types/react@19.2.14)(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
+        version: 16.3.2(@testing-library/dom@10.4.1)(@types/react-dom@19.2.3(@types/react@19.2.14))(@types/react@19.2.14)(react-dom@19.2.5(react@19.2.5))(react@19.2.5)
       '@types/country-flag-icons':
         specifier: 1.2.2
         version: 1.2.2
@@ -1446,10 +1446,10 @@ packages:
       '@types/react':
         optional: true
 
-  react-dom@19.2.4:
-    resolution: {integrity: sha512-AXJdLo8kgMbimY95O2aKQqsz2iWi9jMgKJhRBAxECE4IFxfcazB2LmzloIoibJI3C12IlY20+KFaLv+71bUJeQ==}
+  react-dom@19.2.5:
+    resolution: {integrity: sha512-J5bAZz+DXMMwW/wV3xzKke59Af6CHY7G4uYLN1OvBcKEsWOs4pQExj86BBKamxl/Ik5bx9whOrvBlSDfWzgSag==}
     peerDependencies:
-      react: ^19.2.4
+      react: ^19.2.5
 
   react-fast-compare@2.0.4:
     resolution: {integrity: sha512-suNP+J1VU1MWFKcyt7RtjiSWUjvidmQSlqu+eHslq+342xCbGTYmC0mEhPCOHxlW0CywylOC1u2DFAT+bv4dBw==}
@@ -1510,8 +1510,8 @@ packages:
       react: '>=16.6.0'
       react-dom: '>=16.6.0'
 
-  react@19.2.4:
-    resolution: {integrity: sha512-9nfp2hYpCwOjAN+8TZFGhtWEwgvWHXqESH8qT89AT/lWklpLON22Lc8pEtnpsZz7VmawabSU0gCjnj8aC0euHQ==}
+  react@19.2.5:
+    resolution: {integrity: sha512-llUJLzz1zTUBrskt2pwZgLq59AemifIftw4aB7JxOqf1HY2FDaGDxgwpAPVzHU1kdWabH7FauP4i1oEeer2WCA==}
     engines: {node: '>=0.10.0'}
 
   readdirp@4.1.2:
@@ -2034,17 +2034,17 @@ snapshots:
 
   '@emotion/memoize@0.9.0': {}
 
-  '@emotion/react@11.14.0(@types/react@19.2.14)(react@19.2.4)':
+  '@emotion/react@11.14.0(@types/react@19.2.14)(react@19.2.5)':
     dependencies:
       '@babel/runtime': 7.29.2
       '@emotion/babel-plugin': 11.13.5
       '@emotion/cache': 11.14.0
       '@emotion/serialize': 1.3.3
-      '@emotion/use-insertion-effect-with-fallbacks': 1.2.0(react@19.2.4)
+      '@emotion/use-insertion-effect-with-fallbacks': 1.2.0(react@19.2.5)
       '@emotion/utils': 1.4.2
       '@emotion/weak-memoize': 0.4.0
       hoist-non-react-statics: 3.3.2
-      react: 19.2.4
+      react: 19.2.5
     optionalDependencies:
       '@types/react': 19.2.14
     transitivePeerDependencies:
@@ -2062,9 +2062,9 @@ snapshots:
 
   '@emotion/unitless@0.10.0': {}
 
-  '@emotion/use-insertion-effect-with-fallbacks@1.2.0(react@19.2.4)':
+  '@emotion/use-insertion-effect-with-fallbacks@1.2.0(react@19.2.5)':
     dependencies:
-      react: 19.2.4
+      react: 19.2.5
 
   '@emotion/utils@1.4.2': {}
 
@@ -2204,33 +2204,33 @@ snapshots:
 
   '@popperjs/core@2.11.8': {}
 
-  '@react-aria/ssr@3.9.10(react@19.2.4)':
+  '@react-aria/ssr@3.9.10(react@19.2.5)':
     dependencies:
       '@swc/helpers': 0.5.21
-      react: 19.2.4
+      react: 19.2.5
 
-  '@restart/hooks@0.4.16(react@19.2.4)':
+  '@restart/hooks@0.4.16(react@19.2.5)':
     dependencies:
       dequal: 2.0.3
-      react: 19.2.4
+      react: 19.2.5
 
-  '@restart/hooks@0.5.1(react@19.2.4)':
+  '@restart/hooks@0.5.1(react@19.2.5)':
     dependencies:
       dequal: 2.0.3
-      react: 19.2.4
+      react: 19.2.5
 
-  '@restart/ui@1.9.4(react-dom@19.2.4(react@19.2.4))(react@19.2.4)':
+  '@restart/ui@1.9.4(react-dom@19.2.5(react@19.2.5))(react@19.2.5)':
     dependencies:
       '@babel/runtime': 7.29.2
       '@popperjs/core': 2.11.8
-      '@react-aria/ssr': 3.9.10(react@19.2.4)
-      '@restart/hooks': 0.5.1(react@19.2.4)
+      '@react-aria/ssr': 3.9.10(react@19.2.5)
+      '@restart/hooks': 0.5.1(react@19.2.5)
       '@types/warning': 3.0.4
       dequal: 2.0.3
       dom-helpers: 5.2.1
-      react: 19.2.4
-      react-dom: 19.2.4(react@19.2.4)
-      uncontrollable: 8.0.4(react@19.2.4)
+      react: 19.2.5
+      react-dom: 19.2.5(react@19.2.5)
+      uncontrollable: 8.0.4(react@19.2.5)
       warning: 4.0.3
 
   '@rolldown/binding-android-arm64@1.0.0-rc.13':
@@ -2297,10 +2297,10 @@ snapshots:
       '@popperjs/core': 2.11.8
       bootstrap: 5.3.7(@popperjs/core@2.11.8)
 
-  '@tabler/icons-react@3.41.1(react@19.2.4)':
+  '@tabler/icons-react@3.41.1(react@19.2.5)':
     dependencies:
       '@tabler/icons': 3.41.1
-      react: 19.2.4
+      react: 19.2.5
 
   '@tabler/icons@3.41.1': {}
 
@@ -2308,22 +2308,22 @@ snapshots:
 
   '@tanstack/query-devtools@5.96.2': {}
 
-  '@tanstack/react-query-devtools@5.96.2(@tanstack/react-query@5.96.2(react@19.2.4))(react@19.2.4)':
+  '@tanstack/react-query-devtools@5.96.2(@tanstack/react-query@5.96.2(react@19.2.5))(react@19.2.5)':
     dependencies:
       '@tanstack/query-devtools': 5.96.2
-      '@tanstack/react-query': 5.96.2(react@19.2.4)
-      react: 19.2.4
+      '@tanstack/react-query': 5.96.2(react@19.2.5)
+      react: 19.2.5
 
-  '@tanstack/react-query@5.96.2(react@19.2.4)':
+  '@tanstack/react-query@5.96.2(react@19.2.5)':
     dependencies:
       '@tanstack/query-core': 5.96.2
-      react: 19.2.4
+      react: 19.2.5
 
-  '@tanstack/react-table@8.21.3(react-dom@19.2.4(react@19.2.4))(react@19.2.4)':
+  '@tanstack/react-table@8.21.3(react-dom@19.2.5(react@19.2.5))(react@19.2.5)':
     dependencies:
       '@tanstack/table-core': 8.21.3
-      react: 19.2.4
-      react-dom: 19.2.4(react@19.2.4)
+      react: 19.2.5
+      react-dom: 19.2.5(react@19.2.5)
 
   '@tanstack/table-core@8.21.3': {}
 
@@ -2347,12 +2347,12 @@ snapshots:
       picocolors: 1.1.1
       redent: 3.0.0
 
-  '@testing-library/react@16.3.2(@testing-library/dom@10.4.1)(@types/react-dom@19.2.3(@types/react@19.2.14))(@types/react@19.2.14)(react-dom@19.2.4(react@19.2.4))(react@19.2.4)':
+  '@testing-library/react@16.3.2(@testing-library/dom@10.4.1)(@types/react-dom@19.2.3(@types/react@19.2.14))(@types/react@19.2.14)(react-dom@19.2.5(react@19.2.5))(react@19.2.5)':
     dependencies:
       '@babel/runtime': 7.29.2
       '@testing-library/dom': 10.4.1
-      react: 19.2.4
-      react-dom: 19.2.4(react@19.2.4)
+      react: 19.2.5
+      react-dom: 19.2.5(react@19.2.5)
     optionalDependencies:
       '@types/react': 19.2.14
       '@types/react-dom': 19.2.3(@types/react@19.2.14)
@@ -2442,11 +2442,11 @@ snapshots:
     dependencies:
       '@types/node': 25.5.2
 
-  '@uiw/react-textarea-code-editor@3.1.1(@babel/runtime@7.29.2)(react-dom@19.2.4(react@19.2.4))(react@19.2.4)':
+  '@uiw/react-textarea-code-editor@3.1.1(@babel/runtime@7.29.2)(react-dom@19.2.5(react@19.2.5))(react@19.2.5)':
     dependencies:
       '@babel/runtime': 7.29.2
-      react: 19.2.4
-      react-dom: 19.2.4(react@19.2.4)
+      react: 19.2.5
+      react-dom: 19.2.5(react@19.2.5)
       rehype: 13.0.2
       rehype-prism-plus: 2.0.0
 
@@ -2626,10 +2626,10 @@ snapshots:
 
   extend@3.0.2: {}
 
-  ez-modal-react@1.0.5(react-dom@19.2.4(react@19.2.4))(react@19.2.4)(typescript@6.0.2):
+  ez-modal-react@1.0.5(react-dom@19.2.5(react@19.2.5))(react@19.2.5)(typescript@6.0.2):
     dependencies:
-      react: 19.2.4
-      react-dom: 19.2.4(react@19.2.4)
+      react: 19.2.5
+      react-dom: 19.2.5(react@19.2.5)
       typescript: 6.0.2
 
   fast-deep-equal@3.1.3: {}
@@ -2642,14 +2642,14 @@ snapshots:
 
   find-root@1.1.0: {}
 
-  formik@2.4.9(@types/react@19.2.14)(react@19.2.4):
+  formik@2.4.9(@types/react@19.2.14)(react@19.2.5):
     dependencies:
       '@types/hoist-non-react-statics': 3.3.7(@types/react@19.2.14)
       deepmerge: 2.2.1
       hoist-non-react-statics: 3.3.2
       lodash: 4.18.1
       lodash-es: 4.18.1
-      react: 19.2.4
+      react: 19.2.5
       react-fast-compare: 2.0.4
       tiny-warning: 1.0.3
       tslib: 2.8.1
@@ -3203,9 +3203,9 @@ snapshots:
       ansi-styles: 5.2.0
       react-is: 17.0.2
 
-  prop-types-extra@1.1.1(react@19.2.4):
+  prop-types-extra@1.1.1(react@19.2.5):
     dependencies:
-      react: 19.2.4
+      react: 19.2.5
       react-is: 16.13.1
       warning: 4.0.3
 
@@ -3219,9 +3219,9 @@ snapshots:
 
   property-information@7.1.0: {}
 
-  qrcode.react@4.2.0(react@19.2.4):
+  qrcode.react@4.2.0(react@19.2.5):
     dependencies:
-      react: 19.2.4
+      react: 19.2.5
 
   query-string@9.3.1:
     dependencies:
@@ -3237,41 +3237,41 @@ snapshots:
     dependencies:
       safe-buffer: 5.2.1
 
-  react-bootstrap@2.10.10(@types/react@19.2.14)(react-dom@19.2.4(react@19.2.4))(react@19.2.4):
+  react-bootstrap@2.10.10(@types/react@19.2.14)(react-dom@19.2.5(react@19.2.5))(react@19.2.5):
     dependencies:
       '@babel/runtime': 7.29.2
-      '@restart/hooks': 0.4.16(react@19.2.4)
-      '@restart/ui': 1.9.4(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
+      '@restart/hooks': 0.4.16(react@19.2.5)
+      '@restart/ui': 1.9.4(react-dom@19.2.5(react@19.2.5))(react@19.2.5)
       '@types/prop-types': 15.7.15
       '@types/react-transition-group': 4.4.12(@types/react@19.2.14)
       classnames: 2.5.1
       dom-helpers: 5.2.1
       invariant: 2.2.4
       prop-types: 15.8.1
-      prop-types-extra: 1.1.1(react@19.2.4)
-      react: 19.2.4
-      react-dom: 19.2.4(react@19.2.4)
-      react-transition-group: 4.4.5(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
-      uncontrollable: 7.2.1(react@19.2.4)
+      prop-types-extra: 1.1.1(react@19.2.5)
+      react: 19.2.5
+      react-dom: 19.2.5(react@19.2.5)
+      react-transition-group: 4.4.5(react-dom@19.2.5(react@19.2.5))(react@19.2.5)
+      uncontrollable: 7.2.1(react@19.2.5)
       warning: 4.0.3
     optionalDependencies:
       '@types/react': 19.2.14
 
-  react-dom@19.2.4(react@19.2.4):
+  react-dom@19.2.5(react@19.2.5):
     dependencies:
-      react: 19.2.4
+      react: 19.2.5
       scheduler: 0.27.0
 
   react-fast-compare@2.0.4: {}
 
-  react-intl@10.1.1(@types/react@19.2.14)(react@19.2.4):
+  react-intl@10.1.1(@types/react@19.2.14)(react@19.2.5):
     dependencies:
       '@formatjs/ecma402-abstract': 3.2.0
       '@formatjs/icu-messageformat-parser': 3.5.3
       '@formatjs/intl': 4.1.5
       '@types/react': 19.2.14
       intl-messageformat: 11.2.0
-      react: 19.2.4
+      react: 19.2.5
 
   react-is@16.13.1: {}
 
@@ -3279,7 +3279,7 @@ snapshots:
 
   react-lifecycles-compat@3.0.4: {}
 
-  react-markdown@10.1.0(@types/react@19.2.14)(react@19.2.4):
+  react-markdown@10.1.0(@types/react@19.2.14)(react@19.2.5):
     dependencies:
       '@types/hast': 3.0.4
       '@types/mdast': 4.0.4
@@ -3288,7 +3288,7 @@ snapshots:
       hast-util-to-jsx-runtime: 2.3.6
       html-url-attributes: 3.0.1
       mdast-util-to-hast: 13.2.1
-      react: 19.2.4
+      react: 19.2.5
       remark-parse: 11.0.0
       remark-rehype: 11.1.2
       unified: 11.0.5
@@ -3297,53 +3297,53 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  react-router-dom@7.14.0(react-dom@19.2.4(react@19.2.4))(react@19.2.4):
+  react-router-dom@7.14.0(react-dom@19.2.5(react@19.2.5))(react@19.2.5):
     dependencies:
-      react: 19.2.4
-      react-dom: 19.2.4(react@19.2.4)
-      react-router: 7.14.0(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
+      react: 19.2.5
+      react-dom: 19.2.5(react@19.2.5)
+      react-router: 7.14.0(react-dom@19.2.5(react@19.2.5))(react@19.2.5)
 
-  react-router@7.14.0(react-dom@19.2.4(react@19.2.4))(react@19.2.4):
+  react-router@7.14.0(react-dom@19.2.5(react@19.2.5))(react@19.2.5):
     dependencies:
       cookie: 1.1.1
-      react: 19.2.4
+      react: 19.2.5
       set-cookie-parser: 2.7.2
     optionalDependencies:
-      react-dom: 19.2.4(react@19.2.4)
+      react-dom: 19.2.5(react@19.2.5)
 
-  react-select@5.10.2(@types/react@19.2.14)(react-dom@19.2.4(react@19.2.4))(react@19.2.4):
+  react-select@5.10.2(@types/react@19.2.14)(react-dom@19.2.5(react@19.2.5))(react@19.2.5):
     dependencies:
       '@babel/runtime': 7.29.2
       '@emotion/cache': 11.14.0
-      '@emotion/react': 11.14.0(@types/react@19.2.14)(react@19.2.4)
+      '@emotion/react': 11.14.0(@types/react@19.2.14)(react@19.2.5)
       '@floating-ui/dom': 1.7.6
       '@types/react-transition-group': 4.4.12(@types/react@19.2.14)
       memoize-one: 6.0.0
       prop-types: 15.8.1
-      react: 19.2.4
-      react-dom: 19.2.4(react@19.2.4)
-      react-transition-group: 4.4.5(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
-      use-isomorphic-layout-effect: 1.2.1(@types/react@19.2.14)(react@19.2.4)
+      react: 19.2.5
+      react-dom: 19.2.5(react@19.2.5)
+      react-transition-group: 4.4.5(react-dom@19.2.5(react@19.2.5))(react@19.2.5)
+      use-isomorphic-layout-effect: 1.2.1(@types/react@19.2.14)(react@19.2.5)
     transitivePeerDependencies:
       - '@types/react'
       - supports-color
 
-  react-toastify@11.0.5(react-dom@19.2.4(react@19.2.4))(react@19.2.4):
+  react-toastify@11.0.5(react-dom@19.2.5(react@19.2.5))(react@19.2.5):
     dependencies:
       clsx: 2.1.1
-      react: 19.2.4
-      react-dom: 19.2.4(react@19.2.4)
+      react: 19.2.5
+      react-dom: 19.2.5(react@19.2.5)
 
-  react-transition-group@4.4.5(react-dom@19.2.4(react@19.2.4))(react@19.2.4):
+  react-transition-group@4.4.5(react-dom@19.2.5(react@19.2.5))(react@19.2.5):
     dependencies:
       '@babel/runtime': 7.29.2
       dom-helpers: 5.2.1
       loose-envify: 1.4.0
       prop-types: 15.8.1
-      react: 19.2.4
-      react-dom: 19.2.4(react@19.2.4)
+      react: 19.2.5
+      react-dom: 19.2.5(react@19.2.5)
 
-  react@19.2.4: {}
+  react@19.2.5: {}
 
   readdirp@4.1.2: {}
 
@@ -3433,14 +3433,14 @@ snapshots:
       '@rolldown/binding-win32-arm64-msvc': 1.0.0-rc.13
       '@rolldown/binding-win32-x64-msvc': 1.0.0-rc.13
 
-  rooks@9.8.0(react-dom@19.2.4(react@19.2.4))(react@19.2.4):
+  rooks@9.8.0(react-dom@19.2.5(react@19.2.5))(react@19.2.5):
     dependencies:
       fast-deep-equal: 3.1.3
       lodash.debounce: 4.0.8
       raf: 3.4.1
-      react: 19.2.4
-      react-dom: 19.2.4(react@19.2.4)
-      use-sync-external-store: 1.6.0(react@19.2.4)
+      react: 19.2.5
+      react-dom: 19.2.5(react@19.2.5)
+      use-sync-external-store: 1.6.0(react@19.2.5)
     optionalDependencies:
       '@js-temporal/polyfill': 0.5.1
 
@@ -3522,17 +3522,17 @@ snapshots:
 
   typescript@6.0.2: {}
 
-  uncontrollable@7.2.1(react@19.2.4):
+  uncontrollable@7.2.1(react@19.2.5):
     dependencies:
       '@babel/runtime': 7.29.2
       '@types/react': 19.2.14
       invariant: 2.2.4
-      react: 19.2.4
+      react: 19.2.5
       react-lifecycles-compat: 3.0.4
 
-  uncontrollable@8.0.4(react@19.2.4):
+  uncontrollable@8.0.4(react@19.2.5):
     dependencies:
-      react: 19.2.4
+      react: 19.2.5
 
   undici-types@7.18.2: {}
 
@@ -3577,15 +3577,15 @@ snapshots:
       unist-util-is: 6.0.1
       unist-util-visit-parents: 6.0.2
 
-  use-isomorphic-layout-effect@1.2.1(@types/react@19.2.14)(react@19.2.4):
+  use-isomorphic-layout-effect@1.2.1(@types/react@19.2.14)(react@19.2.5):
     dependencies:
-      react: 19.2.4
+      react: 19.2.5
     optionalDependencies:
       '@types/react': 19.2.14
 
-  use-sync-external-store@1.6.0(react@19.2.4):
+  use-sync-external-store@1.6.0(react@19.2.5):
     dependencies:
-      react: 19.2.4
+      react: 19.2.5
 
   vfile-location@5.0.3:
     dependencies:
