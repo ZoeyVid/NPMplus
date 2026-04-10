@@ -1,2 +1,5 @@
+allowBuilds:
+  '@scarf/scarf': false
+  better-sqlite3: true
 onlyBuiltDependencies:
   - better-sqlite3

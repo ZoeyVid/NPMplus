@@ -169,7 +169,8 @@ ARG NODE_ENV=production
 COPY frontend /app
 WORKDIR /app/frontend
 RUN apk upgrade --no-cache -a && \
-    apk add --no-cache nodejs pnpm && \
+    apk add --no-cache nodejs yarn && \
+    yarn global add pnpm && \
     pnpm install --frozen-lockfile && \
     pnpm formatjs compile-folder src/locale/src src/locale/lang && \
     pnpm tsc && \
@@ -181,7 +182,8 @@ ARG NODE_ENV=production
 COPY backend /app
 WORKDIR /app
 RUN apk upgrade --no-cache -a && \
-    apk add --no-cache nodejs pnpm binutils file && \
+    apk add --no-cache nodejs yarn binutils file && \
+    yarn global add pnpm && \
     pnpm install --frozen-lockfile --prod && \
     pnpm cache delete && \
     find node_modules -name "*.map" -delete && \
