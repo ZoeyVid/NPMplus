@@ -1,6 +1,5 @@
 upstream goaccess {
-  zone upstream_goaccess 64k;
-  server unix:/run/goaccess.sock resolve;
+  server unix:/run/goaccess.sock;
 }
 
 server {
