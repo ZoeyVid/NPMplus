@@ -394,6 +394,7 @@ export function LocationsFields({ initialValues, name = "locations" }: Props) {
 														<option value="anubis">anubis</option>
 														<option value="tinyauth">tinyauth</option>
 														<option value="oauth2proxy">oauth2proxy</option>
+														<option value="voidauth">voidauth</option>
 														<option value="authelia">authelia (modern)</option>
 														<option value="authentik">authentik</option>
 														<option value="authentik-send-basic-auth">
