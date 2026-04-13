@@ -164,10 +164,13 @@ status_codes:
 4. You can override the "allow", "checking" and "blocked" images used by default by putting put your custom images as happy.webp, pensive.webp and reject.webp to /opt/npmplus/anubis and restarting NPMplus
 
 ### Tinyauth
-1. Set the AUTH_REQUEST_TINYAUTH_UPSTREAM and AUTH_REQUEST_TINYAUTH_DOMAIN env in the NPMplus compose.yaml and select tinyauth in the Auth Request selection, no custom/advanced config/locations needed
+1. Set the AUTH_REQUEST_TINYAUTH_UPSTREAM env in the NPMplus compose.yaml and select tinyauth in the Auth Request selection, no custom/advanced config/locations needed
 
 ### OAuth2Proxy
 1. Set the AUTH_REQUEST_OAUTH2PROXY_UPSTREAM env in the NPMplus compose.yaml and select oauth2proxy in the Auth Request selection, no custom/advanced config/locations needed
+
+### VoidAuth
+1. Set the AUTH_REQUEST_VOIDAUTH_UPSTREAM env in the NPMplus compose.yaml and select voidauth in the Auth Request selection, no custom/advanced config/locations needed
 
 ### Authelia (modern)
 1. Set the AUTH_REQUEST_AUTHELIA_UPSTREAM env in the NPMplus compose.yaml and select authelia (modern) in the Auth Request selection, no custom/advanced config/locations needed
@@ -175,6 +178,7 @@ status_codes:
 ### Authentik (single application)
 1. Set the AUTH_REQUEST_AUTHENTIK_UPSTREAM env in the NPMplus compose.yaml and select authentik/authentik-send-basic-auth in the Auth Request selection, no custom/advanced config/locations needed
 
+<!--
 ## Load Balancing
 1. Open and edit this file: `/opt/npmplus/custom_nginx/http_top.conf` (or `/opt/npmplus/custom_nginx/stream_top.conf` for streams), if you changed /opt/npmplus to a different path make sure to change the path to fit
 2. Set the upstream directive(s) with your servers which should be load balanced (https://nginx.org/en/docs/http/ngx_http_upstream_module.html / https://nginx.org/en/docs/stream/ngx_stream_upstream_module.html), they need to run the same protocol (either http(s) or grpc(s) for proxy hosts or tcp/udp/proxy protocol for streams), like this for example:
@@ -187,6 +191,7 @@ upstream server1 {
 }
 ```
 3. Configure your proxy host/stream like always in the UI, but set the hostname to service1 (or service2 or however you named it) and keep the forward port field empty (since you set the ports within the upstream directive)
+-->
 
 ## Encrypted Client Hello (ECH)
 
