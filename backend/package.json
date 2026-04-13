@@ -23,7 +23,7 @@
 		"lodash": "4.18.1",
 		"mysql2": "3.22.0",
 		"objection": "3.1.5",
-		"openid-client": "6.8.2",
+		"openid-client": "6.8.3",
 		"otplib": "13.4.0",
 		"pg": "8.20.0",
 		"signale": "1.4.0",
