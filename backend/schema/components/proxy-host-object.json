@@ -117,6 +117,7 @@
 				"anubis",
 				"tinyauth",
 				"oauth2proxy",
+				"voidauth",
 				"authelia",
 				"authentik",
 				"authentik-send-basic-auth"
