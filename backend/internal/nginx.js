@@ -269,6 +269,9 @@ const internalNginx = {
 				if (location.npmplus_auth_request === "oauth2proxy") {
 					host.create_oauth2proxy_locations = true;
 				}
+				if (location.npmplus_auth_request === "voidauth") {
+					host.create_voidauth_locations = true;
+				}
 				if (location.npmplus_auth_request === "authelia") {
 					host.create_authelia_locations = true;
 				}
