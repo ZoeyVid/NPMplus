@@ -76,6 +76,11 @@ services:
 #      - "NGINX_FORCE_X25519MLKEM768=true" # forces usage of X25519MLKEM768 by disabling everything else (including TLS1.2), default false (overrides NGINX_DISABLE_TLS12 to true and NGINX_TRUST_SECPR1 to false), please note that browsers most browsers support it, but other application may not support this
 #      - "NGINX_DISABLE_TLS12=true" # disabled TLS1.2, default false, TLS1.2 can still be assumed to be secure with the settings NPMplus uses, but if you know all your clients support TLS1.3 this allows you to disable it
 #      - "NGINX_TRUST_SECPR1=false" # enables secp521r1:secp384r1:secp256r1, default true, disable if all your clients support X25519MLKEM768 or x25519
+#      - "TLS_PROFILE=bsi-tr03116" # preset that sets TLS_CIPHERS, TLS_ECDH_CURVES, TLS_CIPHERSUITES_TLS13 and TLS_SIGNATURE_ALGORITHMS to BSI TR-03116-4 compliant values (no ChaCha20, no SHA1 sig algs, no X25519/MLKEM). Individual TLS_* vars below override the preset.
+#      - "TLS_CIPHERS=ECDHE-ECDSA-AES256-GCM-SHA384:..." # full override of the ssl_ciphers directive (TLS 1.2 cipher suites). Empty = keep built-in default.
+#      - "TLS_ECDH_CURVES=secp384r1:prime256v1" # full override of ssl_ecdh_curve (TLS 1.2/1.3 ECDHE groups). Empty = keep built-in default.
+#      - "TLS_CIPHERSUITES_TLS13=TLS_AES_256_GCM_SHA384:TLS_AES_128_GCM_SHA256" # TLS 1.3 cipher suite restriction. Uses the NPMplus ssl_ciphersuites_tls13 directive (patches/nginx-awslc-tls13-sigalgs.patch) which calls AWS-LC SSL_CTX_set_ciphersuites directly (nginx's ssl_conf_command is not supported on AWS-LC/BoringSSL). Empty = keep AWS-LC default.
+#      - "TLS_SIGNATURE_ALGORITHMS=ECDSA+SHA384:ECDSA+SHA256:RSA-PSS+SHA384:RSA+SHA256" # signature_algorithms restriction (removes SHA1/MD5 from TLS handshake offer). Uses the NPMplus ssl_signature_algorithms directive from the same patch. Empty = keep AWS-LC default.
 #      - "DISABLE_NGINX_BEAUTIFIER=true" # disables nginxbeautifier, useful when it fails parsing non-standard custom/advanced configs, default false
 #      - "LOGROTATE=true" # Enables writing http access logs to /opt/npmplus/nginx/logs/access.log, stream access logs to /opt/npmplus/nginx/logs/stream.log and enables daily logrotation, default false
 #      - "LOGROTATIONS=7" # Set how often the access.log should be rotated until it is deleted, default 3

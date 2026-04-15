@@ -1,0 +1,90 @@
+Add ssl_ciphersuites_tls13 and ssl_signature_algorithms directives.
+
+nginx's built-in ssl_conf_command uses SSL_CONF_cmd(), an API that
+AWS-LC/BoringSSL do not implement ("directive is not supported on this
+platform"). AWS-LC does, however, expose SSL_CTX_set_ciphersuites() and
+SSL_CTX_set1_sigalgs_list() directly. This patch wires two new directives
+to those APIs so the same capabilities are available on AWS-LC builds.
+
+  ssl_ciphersuites_tls13 <list>;     # TLS 1.3 cipher suite restriction
+  ssl_signature_algorithms <list>;   # TLS signature_algorithms restriction
+
+Both directives are also valid on OpenSSL (the underlying functions exist
+there too), so the patch does not need to be conditional on AWS-LC.
+
+--- a/src/http/modules/ngx_http_ssl_module.h
++++ b/src/http/modules/ngx_http_ssl_module.h
+@@ -48,6 +48,8 @@
+     ngx_str_t                       crl;
+
+     ngx_str_t                       ciphers;
++    ngx_str_t                       ciphersuites_tls13;
++    ngx_str_t                       signature_algorithms;
+
+     ngx_array_t                    *ech_files;
+     ngx_array_t                    *passwords;
+--- a/src/http/modules/ngx_http_ssl_module.c
++++ b/src/http/modules/ngx_http_ssl_module.c
+@@ -166,6 +166,20 @@ static ngx_command_t  ngx_http_ssl_commands[] = {
+       offsetof(ngx_http_ssl_srv_conf_t, ciphers),
+       NULL },
+
++    { ngx_string("ssl_ciphersuites_tls13"),
++      NGX_HTTP_MAIN_CONF|NGX_HTTP_SRV_CONF|NGX_CONF_TAKE1,
++      ngx_conf_set_str_slot,
++      NGX_HTTP_SRV_CONF_OFFSET,
++      offsetof(ngx_http_ssl_srv_conf_t, ciphersuites_tls13),
++      NULL },
++
++    { ngx_string("ssl_signature_algorithms"),
++      NGX_HTTP_MAIN_CONF|NGX_HTTP_SRV_CONF|NGX_CONF_TAKE1,
++      ngx_conf_set_str_slot,
++      NGX_HTTP_SRV_CONF_OFFSET,
++      offsetof(ngx_http_ssl_srv_conf_t, signature_algorithms),
++      NULL },
++
+     { ngx_string("ssl_buffer_size"),
+       NGX_HTTP_MAIN_CONF|NGX_HTTP_SRV_CONF|NGX_CONF_TAKE1,
+       ngx_conf_set_size_slot,
+@@ -725,6 +739,10 @@ ngx_http_ssl_merge_srv_conf(ngx_conf_t *cf, void *parent, void *child)
+                          NGX_DEFAULT_ECDH_CURVE);
+
+     ngx_conf_merge_str_value(conf->ciphers, prev->ciphers, NGX_DEFAULT_CIPHERS);
++    ngx_conf_merge_str_value(conf->ciphersuites_tls13,
++                         prev->ciphersuites_tls13, "");
++    ngx_conf_merge_str_value(conf->signature_algorithms,
++                         prev->signature_algorithms, "");
+
+     ngx_conf_merge_ptr_value(conf->conf_commands, prev->conf_commands, NULL);
+
+@@ -803,6 +821,26 @@ ngx_http_ssl_merge_srv_conf(ngx_conf_t *cf, void *parent, void *child)
+         return NGX_CONF_ERROR;
+     }
+
++    if (conf->ciphersuites_tls13.len) {
++        if (SSL_CTX_set_ciphersuites(conf->ssl.ctx,
++                                     (char *) conf->ciphersuites_tls13.data)
++            == 0)
++        {
++            ngx_ssl_error(NGX_LOG_EMERG, cf->log, 0,
++                          "SSL_CTX_set_ciphersuites(\"%V\") failed",
++                          &conf->ciphersuites_tls13);
++            return NGX_CONF_ERROR;
++        }
++    }
++
++    if (conf->signature_algorithms.len) {
++        if (SSL_CTX_set1_sigalgs_list(conf->ssl.ctx,
++                                      (char *) conf->signature_algorithms.data)
++            == 0)
++        {
++            ngx_ssl_error(NGX_LOG_EMERG, cf->log, 0,
++                          "SSL_CTX_set1_sigalgs_list(\"%V\") failed",
++                          &conf->signature_algorithms);
++            return NGX_CONF_ERROR;
++        }
++    }
++
+     if (ngx_http_ssl_compile_certificates(cf, conf) != NGX_OK) {
+         return NGX_CONF_ERROR;
+     }

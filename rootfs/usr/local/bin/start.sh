@@ -428,6 +428,29 @@ if [ "$NGINX_TRUST_SECPR1" = "false" ]; then
     sed -i "s|X25519MLKEM768:x25519:secp521r1:secp384r1:prime256v1;|X25519MLKEM768:x25519;|g" /usr/local/nginx/conf/nginx.conf
 fi
 
+# TLS hardening via env vars (AWS-LC compatible).
+# Full override of ssl_ciphers line (TLS 1.2 cipher suites).
+if [ -n "$TLS_CIPHERS" ]; then
+    sed -i "s|^\(\s*\)ssl_ciphers .*|\1ssl_ciphers \"$TLS_CIPHERS\";|g" /usr/local/nginx/conf/nginx.conf
+fi
+# Full override of ssl_ecdh_curve (TLS 1.2/1.3 ECDHE groups).
+if [ -n "$TLS_ECDH_CURVES" ]; then
+    sed -i "s|^\(\s*\)ssl_ecdh_curve .*|\1ssl_ecdh_curve $TLS_ECDH_CURVES;|g" /usr/local/nginx/conf/nginx.conf
+fi
+# TLS 1.3 ciphersuite restriction via patched nginx directive.
+# Requires patches/nginx-awslc-tls13-sigalgs.patch (calls AWS-LC
+# SSL_CTX_set_ciphersuites directly; nginx's ssl_conf_command is not
+# supported on AWS-LC/BoringSSL).
+if [ -n "$TLS_CIPHERSUITES_TLS13" ]; then
+    sed -i "s|^\(\s*\)ssl_prefer_server_ciphers on;|\1ssl_prefer_server_ciphers on;\n\1ssl_ciphersuites_tls13 \"$TLS_CIPHERSUITES_TLS13\";|" /usr/local/nginx/conf/nginx.conf
+fi
+# Signature algorithms restriction via patched nginx directive.
+# Requires patches/nginx-awslc-tls13-sigalgs.patch (calls AWS-LC
+# SSL_CTX_set1_sigalgs_list directly).
+if [ -n "$TLS_SIGNATURE_ALGORITHMS" ]; then
+    sed -i "s|^\(\s*\)ssl_prefer_server_ciphers on;|\1ssl_prefer_server_ciphers on;\n\1ssl_signature_algorithms \"$TLS_SIGNATURE_ALGORITHMS\";|" /usr/local/nginx/conf/nginx.conf
+fi
+
 if [ "$NGINX_LOAD_OPENAPPSEC_ATTACHMENT_MODULE" = "true" ]; then
     sed -i "s|#\(load_module.\+libngx_module.so;\)|\1|g" /usr/local/nginx/conf/nginx.conf
     sed -i "s|zstd on;|zstd off;|g" /usr/local/nginx/conf/nginx.conf
