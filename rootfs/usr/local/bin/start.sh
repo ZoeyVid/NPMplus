@@ -441,14 +441,30 @@ fi
 # Requires patches/nginx-awslc-tls13-sigalgs.patch (calls AWS-LC
 # SSL_CTX_set_ciphersuites directly; nginx's ssl_conf_command is not
 # supported on AWS-LC/BoringSSL).
+# The two directives below are only registered for http{} (not stream{}),
+# so inject only at the first ssl_prefer_server_ciphers match (http block).
+# BusyBox sed lacks 0,/addr/s||, so use awk for first-match-only injection.
 if [ -n "$TLS_CIPHERSUITES_TLS13" ]; then
-    sed -i "s|^\(\s*\)ssl_prefer_server_ciphers on;|\1ssl_prefer_server_ciphers on;\n\1ssl_ciphersuites_tls13 \"$TLS_CIPHERSUITES_TLS13\";|" /usr/local/nginx/conf/nginx.conf
+    awk -v v="$TLS_CIPHERSUITES_TLS13" '
+        !done && /^[[:space:]]*ssl_prefer_server_ciphers on;/ {
+            print
+            match($0, /^[[:space:]]*/)
+            printf "%sssl_ciphersuites_tls13 \"%s\";\n", substr($0, 1, RLENGTH), v
+            done=1; next
+        } { print }
+    ' /usr/local/nginx/conf/nginx.conf > /usr/local/nginx/conf/nginx.conf.new && \
+        mv /usr/local/nginx/conf/nginx.conf.new /usr/local/nginx/conf/nginx.conf
 fi
-# Signature algorithms restriction via patched nginx directive.
-# Requires patches/nginx-awslc-tls13-sigalgs.patch (calls AWS-LC
-# SSL_CTX_set1_sigalgs_list directly).
 if [ -n "$TLS_SIGNATURE_ALGORITHMS" ]; then
-    sed -i "s|^\(\s*\)ssl_prefer_server_ciphers on;|\1ssl_prefer_server_ciphers on;\n\1ssl_signature_algorithms \"$TLS_SIGNATURE_ALGORITHMS\";|" /usr/local/nginx/conf/nginx.conf
+    awk -v v="$TLS_SIGNATURE_ALGORITHMS" '
+        !done && /^[[:space:]]*ssl_prefer_server_ciphers on;/ {
+            print
+            match($0, /^[[:space:]]*/)
+            printf "%sssl_signature_algorithms \"%s\";\n", substr($0, 1, RLENGTH), v
+            done=1; next
+        } { print }
+    ' /usr/local/nginx/conf/nginx.conf > /usr/local/nginx/conf/nginx.conf.new && \
+        mv /usr/local/nginx/conf/nginx.conf.new /usr/local/nginx/conf/nginx.conf
 fi
 
 if [ "$NGINX_LOAD_OPENAPPSEC_ATTACHMENT_MODULE" = "true" ]; then
