@@ -40,9 +40,9 @@ router
 	 * for services like Job board and Worker.
 	 */
 	.get(jwtdecode(), async (req, res, next) => {
-		if (!req.signedCookies?.token) {
-			res.clearCookie("token", { path: "/api" });
-			res.cookie("npmplus_oidc_no_redirect", "true", { secure: true, sameSite: "Strict" });
+		if (!req.signedCookies?.["__Host-Http-token"]) {
+			res.clearCookie("__Host-Http-token");
+			res.cookie("__Host-npmplus_oidc_no_redirect", "true", { secure: true, sameSite: "Strict" });
 			return res.status(401).send({ expires: new Date(0).toISOString() });
 		}
 
@@ -52,18 +52,17 @@ router
 				scope: typeof req.query.scope !== "undefined" ? req.query.scope : null,
 			});
 
-			res.cookie("token", data.token, {
+			res.cookie("__Host-Http-token", data.token, {
 				signed: true,
 				httpOnly: true,
 				secure: true,
 				sameSite: "Strict",
-				path: "/api",
 				expires: new Date(data.expires),
 			});
 
 			res.status(200).send({ expires: data.expires });
 		} catch (err) {
-			res.clearCookie("token", { path: "/api" });
+			res.clearCookie("__Host-Http-token");
 			debug(logger, `${req.method.toUpperCase()} ${req.originalUrl}: ${err}`);
 			next(err);
 		}
@@ -85,12 +84,11 @@ router
 			const { token, ...responseBody } = result;
 
 			if (result.token && result.expires) {
-				res.cookie("token", result.token, {
+				res.cookie("__Host-Http-token", result.token, {
 					signed: true,
 					httpOnly: true,
 					secure: true,
 					sameSite: "Strict",
-					path: "/api",
 					expires: new Date(result.expires),
 				});
 			}
@@ -109,8 +107,8 @@ router
 	 */
 	.delete(async (req, res, next) => {
 		try {
-			res.clearCookie("token", { path: "/api" });
-			res.cookie("npmplus_oidc_no_redirect", "true", { secure: true, sameSite: "Strict" });
+			res.clearCookie("__Host-Http-token");
+			res.cookie("__Host-npmplus_oidc_no_redirect", "true", { secure: true, sameSite: "Strict" });
 			res.status(200).send({ expires: new Date(0).toISOString() });
 		} catch (err) {
 			debug(logger, `${req.method.toUpperCase()} ${req.originalUrl}: ${err}`);
@@ -140,12 +138,11 @@ router
 			const { token, ...responseBody } = result;
 
 			if (result.token && result.expires) {
-				res.cookie("token", result.token, {
+				res.cookie("__Host-Http-token", result.token, {
 					signed: true,
 					httpOnly: true,
 					secure: true,
-					sameSite: "lax",
-					path: "/api",
+					sameSite: "Strict",
 					expires: new Date(result.expires),
 				});
 			}
