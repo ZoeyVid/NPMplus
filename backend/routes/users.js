@@ -294,12 +294,11 @@ router
 			const { token, ...responseBody } = result;
 
 			if (result.token && result.expires) {
-				res.cookie("token", result.token, {
+				res.cookie("__Host-Http-token", result.token, {
 					signed: true,
 					httpOnly: true,
 					secure: true,
 					sameSite: "Strict",
-					path: "/api",
 					expires: new Date(result.expires),
 				});
 			}
