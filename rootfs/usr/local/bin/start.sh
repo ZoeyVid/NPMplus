@@ -384,6 +384,14 @@ fi
 sed -i "s|#\?listen 0.0.0.0:81 |listen $NPM_IPV4_BINDING:$NPM_PORT |g" /usr/local/nginx/conf/conf.d/npmplus.conf
 sed -i "s|#\?listen 0.0.0.0:91 |listen $GOA_IPV4_BINDING:$GOA_PORT |g" /usr/local/nginx/conf/conf.d/goaccess.conf.disabled
 
+# Strip Cross-Origin-Embedder-Policy from the admin UI so password manager
+# browser extensions can inject their autofill overlays on the login form.
+# Only affects npmplus.conf; proxy_host / redirection_host / goaccess configs
+# are untouched.
+if [ "$ADMIN_UI_DISABLE_COEP" = "true" ]; then
+    sed -i '/Cross-Origin-Embedder-Policy/d' /usr/local/nginx/conf/conf.d/npmplus.conf
+fi
+
 if [ "$DISABLE_IPV6" = "true" ]; then
     sed -i "s|ipv6=on;|ipv6=off;|g" /usr/local/nginx/conf/nginx.conf
     sed -i "s|#\?listen \[::\]:81 |#listen $NPM_IPV6_BINDING:$NPM_PORT |g" /usr/local/nginx/conf/conf.d/npmplus.conf

@@ -120,6 +120,14 @@ export NGINX_FORCE_X25519MLKEM768="${NGINX_FORCE_X25519MLKEM768:-false}"
 export NGINX_DISABLE_TLS12="${NGINX_DISABLE_TLS12:-false}"
 export NGINX_TRUST_SECPR1="${NGINX_TRUST_SECPR1:-true}"
 export DISABLE_NGINX_BEAUTIFIER="${DISABLE_NGINX_BEAUTIFIER:-false}"
+# When true, strip the Cross-Origin-Embedder-Policy: require-corp header from
+# the NPMplus admin UI (npmplus.conf). COEP require-corp blocks password
+# manager browser extensions (Bitwarden, 1Password, ...) from injecting
+# their autofill overlays on the login form. The admin UI is typically
+# reached from a LAN / reverse-proxy context where the extra cross-origin
+# hardening offers little benefit compared to the usability loss. CSP and
+# CORP stay intact. Default false (upstream hardening preserved).
+export ADMIN_UI_DISABLE_COEP="${ADMIN_UI_DISABLE_COEP:-false}"
 export TRUST_CLOUDFLARE="${TRUST_CLOUDFLARE:-false}"
 export LOGROTATE="${LOGROTATE:-false}"
 export LOGROTATIONS="${LOGROTATIONS:-3}"
@@ -540,6 +548,11 @@ fi
 
 if ! echo "$DISABLE_NGINX_BEAUTIFIER" | grep -q "^true$\|^false$"; then
     echo "DISABLE_NGINX_BEAUTIFIER needs to be true or false."
+    sleep inf
+fi
+
+if ! echo "$ADMIN_UI_DISABLE_COEP" | grep -q "^true$\|^false$"; then
+    echo "ADMIN_UI_DISABLE_COEP needs to be true or false."
     sleep inf
 fi
 
