@@ -12,23 +12,14 @@ to those APIs so the same capabilities are available on AWS-LC builds.
 Both directives are also valid on OpenSSL (the underlying functions exist
 there too), so the patch does not need to be conditional on AWS-LC.
 
---- a/src/http/modules/ngx_http_ssl_module.h
-+++ b/src/http/modules/ngx_http_ssl_module.h
-@@ -48,6 +48,8 @@
-     ngx_str_t                       crl;
-
-     ngx_str_t                       ciphers;
-+    ngx_str_t                       ciphersuites_tls13;
-+    ngx_str_t                       signature_algorithms;
-
-     ngx_array_t                    *ech_files;
-     ngx_array_t                    *passwords;
+diff --git a/src/http/modules/ngx_http_ssl_module.c b/src/http/modules/ngx_http_ssl_module.c
+index 43fcafd..ad2c65b 100644
 --- a/src/http/modules/ngx_http_ssl_module.c
 +++ b/src/http/modules/ngx_http_ssl_module.c
 @@ -166,6 +166,20 @@ static ngx_command_t  ngx_http_ssl_commands[] = {
        offsetof(ngx_http_ssl_srv_conf_t, ciphers),
        NULL },
-
+ 
 +    { ngx_string("ssl_ciphersuites_tls13"),
 +      NGX_HTTP_MAIN_CONF|NGX_HTTP_SRV_CONF|NGX_CONF_TAKE1,
 +      ngx_conf_set_str_slot,
@@ -48,19 +39,19 @@ there too), so the patch does not need to be conditional on AWS-LC.
        ngx_conf_set_size_slot,
 @@ -725,6 +739,10 @@ ngx_http_ssl_merge_srv_conf(ngx_conf_t *cf, void *parent, void *child)
                           NGX_DEFAULT_ECDH_CURVE);
-
+ 
      ngx_conf_merge_str_value(conf->ciphers, prev->ciphers, NGX_DEFAULT_CIPHERS);
 +    ngx_conf_merge_str_value(conf->ciphersuites_tls13,
 +                         prev->ciphersuites_tls13, "");
 +    ngx_conf_merge_str_value(conf->signature_algorithms,
 +                         prev->signature_algorithms, "");
-
+ 
      ngx_conf_merge_ptr_value(conf->conf_commands, prev->conf_commands, NULL);
-
-@@ -803,6 +821,26 @@ ngx_http_ssl_merge_srv_conf(ngx_conf_t *cf, void *parent, void *child)
+ 
+@@ -802,6 +820,30 @@ ngx_http_ssl_merge_srv_conf(ngx_conf_t *cf, void *parent, void *child)
          return NGX_CONF_ERROR;
      }
-
+ 
 +    if (conf->ciphersuites_tls13.len) {
 +        if (SSL_CTX_set_ciphersuites(conf->ssl.ctx,
 +                                     (char *) conf->ciphersuites_tls13.data)
@@ -88,3 +79,16 @@ there too), so the patch does not need to be conditional on AWS-LC.
      if (ngx_http_ssl_compile_certificates(cf, conf) != NGX_OK) {
          return NGX_CONF_ERROR;
      }
+diff --git a/src/http/modules/ngx_http_ssl_module.h b/src/http/modules/ngx_http_ssl_module.h
+index a078d44..00e9b2a 100644
+--- a/src/http/modules/ngx_http_ssl_module.h
++++ b/src/http/modules/ngx_http_ssl_module.h
+@@ -48,6 +48,8 @@ typedef struct {
+     ngx_str_t                       crl;
+ 
+     ngx_str_t                       ciphers;
++    ngx_str_t                       ciphersuites_tls13;
++    ngx_str_t                       signature_algorithms;
+ 
+     ngx_array_t                    *ech_files;
+     ngx_array_t                    *passwords;
