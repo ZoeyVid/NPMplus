@@ -107,13 +107,13 @@ function LoginForm() {
 				return undefined;
 			};
 
-			if (getCookie("npmplus_oidc_no_redirect") !== "true") {
+			if (getCookie("__Host-npmplus_oidc_no_redirect") !== "true") {
 				redirectToOIDC();
 			}
 		} else {
 			emailRef.current?.focus();
 		}
-		window.cookieStore.delete("npmplus_oidc_no_redirect");
+		window.cookieStore.delete("__Host-npmplus_oidc_no_redirect");
 	});
 
 	return (
