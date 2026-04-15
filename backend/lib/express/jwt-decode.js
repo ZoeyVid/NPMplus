@@ -2,7 +2,7 @@ import Access from "../access.js";
 
 export default () => {
 	return async (req, res, next) => {
-		const token = req.signedCookies?.token || null;
+		const token = req.signedCookies?.["__Host-Http-token"] || null;
 
 		//if (!token) {
 		//	return res.status(401).json({
@@ -19,7 +19,7 @@ export default () => {
 			res.locals.access = access;
 			next();
 		} catch {
-			res.clearCookie("token", { path: "/api" });
+			res.clearCookie("__Host-Http-token");
 			return res.status(403).json({
 				error: {
 					message: "Invalid or expired token",
