@@ -121,9 +121,7 @@ labels:
 12. Note that when using crowdsec requests will always be buffered, so setting `proxy_(request_)buffering` to off will not work
 
 ## Use of external php-fpm (recommended)
-1. Create a new Proxy Host with some dummy data in the details tab (since these get fully ignored)
-2. Make other settings (like TLS)
-3. Create a custom location `/` set the scheme to `path`, put in the path, the press the gear button and fill this in (edit the last line):
+2. to set it per location: press the gear button (on the tab itself, not the tab selection) on the details tab (or on the custom location you want to use), set the scheme to `path`, put in the path and paste the following in the new text field at the bottom, you need to adjust the last line (or use the advanced tab to apply it to all locations):
 ```
 location ~* [^/]\.php(?:$|/) {
   fastcgi_split_path_info ^(.*\.php)(/.*)$;
@@ -244,7 +242,7 @@ geoip2 /data/goaccess/geoip/GeoLite2-Country.mmdb {
 #  fec0::/10 yes;
 #}
 ```  
-4a. to set it per location: create a custom location / (or the location you want to use), set your proxy settings, then press the gear button and paste the following in the new text field, you may want to adjust the last lines (do not use the advanced tab with this example as it may break cert renewals):
+4a. to set it per location: press the gear button (on the tab itself, not the tab selection) on the details tab (or on the custom location you want to use), set your proxy settings and paste the following in the new text field at the bottom, you may want to adjust the last lines (do not use the advanced tab with this example as it may break cert renewals):
 ```yaml
 # uncomment if you block/don't allow IPs with unknown country codes
 #if ($is_private_ip = yes) { 
