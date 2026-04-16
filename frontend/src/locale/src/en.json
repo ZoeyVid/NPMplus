@@ -360,10 +360,10 @@
 		"defaultMessage": "Force HTTPS"
 	},
 	"domains.hsts-enabled": {
-		"defaultMessage": "HSTS Enabled"
+		"defaultMessage": "HSTS Enabled (2 Years)"
 	},
 	"domains.hsts-subdomains": {
-		"defaultMessage": "HSTS Sub-domains"
+		"defaultMessage": "HSTS Subdomains+Preload"
 	},
 	"domains.http2-support": {
 		"defaultMessage": "HTTP/2 Support"
