@@ -1,4 +1,3 @@
-import { IconSettings } from "@tabler/icons-react";
 import EasyModal, { type InnerModalProps } from "ez-modal-react";
 import { Form, Formik } from "formik";
 import { type ReactNode, useState } from "react";
@@ -137,7 +136,7 @@ const DeadHostModal = EasyModal.create(({ id, visible, remove }: Props) => {
 													tabIndex={-1}
 													role="tab"
 												>
-													{<IconSettings size={20} />}
+													<T id="domains.advanced" />
 													{values?.advancedConfig?.trim() ? " *" : ""}
 												</a>
 											</li>
