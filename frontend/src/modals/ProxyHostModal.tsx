@@ -183,7 +183,7 @@ const ProxyHostModal = EasyModal.create(({ id, isClone = false, visible, remove 
 													tabIndex={-1}
 													role="tab"
 												>
-													{<IconSettings size={20} />}
+													<T id="domains.advanced" />
 													{values?.advancedConfig?.trim() ? " *" : ""}
 												</a>
 											</li>
