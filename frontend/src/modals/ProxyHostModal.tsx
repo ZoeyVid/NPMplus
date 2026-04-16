@@ -1,4 +1,3 @@
-import { IconSettings } from "@tabler/icons-react";
 import CodeEditor from "@uiw/react-textarea-code-editor";
 import cn from "classnames";
 import EasyModal, { type InnerModalProps } from "ez-modal-react";
@@ -183,7 +182,7 @@ const ProxyHostModal = EasyModal.create(({ id, isClone = false, visible, remove 
 													tabIndex={-1}
 													role="tab"
 												>
-													{<IconSettings size={20} />}
+													<T id="domains.advanced" />
 													{values?.advancedConfig?.trim() ? " *" : ""}
 												</a>
 											</li>

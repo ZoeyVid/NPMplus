@@ -1,4 +1,3 @@
-import { IconSettings } from "@tabler/icons-react";
 import cn from "classnames";
 import EasyModal, { type InnerModalProps } from "ez-modal-react";
 import { Field, Form, Formik } from "formik";
@@ -150,7 +149,7 @@ const RedirectionHostModal = EasyModal.create(({ id, visible, remove }: Props) =
 													tabIndex={-1}
 													role="tab"
 												>
-													{<IconSettings size={20} />}
+													<T id="domains.advanced" />
 													{values?.advancedConfig?.trim() ? " *" : ""}
 												</a>
 											</li>
