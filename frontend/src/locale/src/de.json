@@ -282,10 +282,10 @@
 		"defaultMessage": "Erzwinge HTTPS"
 	},
 	"domains.hsts-enabled": {
-		"defaultMessage": "HSTS aktiviert"
+		"defaultMessage": "HSTS aktiviert (2 Jahre)"
 	},
 	"domains.hsts-subdomains": {
-		"defaultMessage": "HSTS Sub-domains"
+		"defaultMessage": "HSTS Subdomains+Preload"
 	},
 	"domains.http2-support": {
 		"defaultMessage": "HTTP/2 Support"
