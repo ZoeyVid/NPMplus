@@ -48,7 +48,7 @@
 		"postcss": "8.5.10",
 		"sass": "1.99.0",
 		"tmp": "0.2.5",
-		"typescript": "6.0.2",
+		"typescript": "6.0.3",
 		"vite": "8.0.8",
 		"vite-plugin-checker": "0.13.0",
 		"vite-tsconfig-paths": "6.1.1",
