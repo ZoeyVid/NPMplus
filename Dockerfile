@@ -1,13 +1,13 @@
 # syntax=docker/dockerfile:1.23.0@sha256:2780b5c3bab67f1f76c781860de469442999ed1a0d7992a5efdf2cffc0e3d769
-FROM alpine:3.23.3@sha256:25109184c71bdad752c8312a8623239686a9a2071e8825f20acb8f2198c3f659 AS nginx
+FROM alpine:3.23.4@sha256:5b10f432ef3da1b8d4c7eb6c487f2f5a8f096bc91145e68878dd4a5019afde11 AS nginx
 SHELL ["/bin/ash", "-eo", "pipefail", "-c"]
 
 ARG LUAJIT_INC=/usr/include/luajit-2.1
 ARG LUAJIT_LIB=/usr/lib
 
-ARG AWSLC_VER=v1.71.0
+ARG AWSLC_VER=v1.72.0
 
-ARG NGINX_VER=release-1.29.8
+ARG NGINX_VER=release-1.30.0
 ARG DTR_VER=1.29.2
 ARG RCP_VER=1.29.5
 ARG ZNP_VER=1.26.3
@@ -148,7 +148,7 @@ RUN find /usr/local/nginx/modules -name "*.so" -exec strip -s {} \; && \
     strip -s /usr/local/lib/libcrypto.so && \
     strip -s /usr/local/lib/libssl.so && \
     strip -s /usr/local/bin/bssl && \
-    strip -s /src/attachment/core/shmem_ipc/libosrc_shmem_ipc.so && \
+    strip -s /src/attachment/core/shmem_ipc_2/libshmem_ipc_2.so && \
     strip -s /src/attachment/core/compression/libosrc_compression_utils.so && \
     strip -s /src/attachment/attachments/nginx/nginx_attachment_util/libosrc_nginx_attachment_util.so && \
     \
@@ -157,13 +157,13 @@ RUN find /usr/local/nginx/modules -name "*.so" -exec strip -s {} \; && \
     file /usr/local/lib/libcrypto.so && \
     file /usr/local/lib/libssl.so && \
     file /usr/local/bin/bssl && \
-    file /src/attachment/core/shmem_ipc/libosrc_shmem_ipc.so && \
+    file /src/attachment/core/shmem_ipc_2/libshmem_ipc_2.so && \
     file /src/attachment/core/compression/libosrc_compression_utils.so && \
     file /src/attachment/attachments/nginx/nginx_attachment_util/libosrc_nginx_attachment_util.so && \
     /usr/local/nginx/sbin/nginx -V
 
 
-FROM --platform="$BUILDPLATFORM" alpine:3.23.3@sha256:25109184c71bdad752c8312a8623239686a9a2071e8825f20acb8f2198c3f659 AS frontend
+FROM --platform="$BUILDPLATFORM" alpine:3.23.4@sha256:5b10f432ef3da1b8d4c7eb6c487f2f5a8f096bc91145e68878dd4a5019afde11 AS frontend
 SHELL ["/bin/ash", "-eo", "pipefail", "-c"]
 ARG NODE_ENV=production
 COPY frontend /app
@@ -175,7 +175,7 @@ RUN apk upgrade --no-cache -a && \
     pnpm tsc && \
     pnpm vite build
 
-FROM alpine:3.23.3@sha256:25109184c71bdad752c8312a8623239686a9a2071e8825f20acb8f2198c3f659 AS backend
+FROM alpine:3.23.4@sha256:5b10f432ef3da1b8d4c7eb6c487f2f5a8f096bc91145e68878dd4a5019afde11 AS backend
 SHELL ["/bin/ash", "-eo", "pipefail", "-c"]
 ARG NODE_ENV=production
 COPY backend /app
@@ -190,7 +190,7 @@ RUN apk upgrade --no-cache -a && \
     find /app/node_modules -name "*.node" -type f -exec file {} \;
 
 
-FROM alpine:3.23.3@sha256:25109184c71bdad752c8312a8623239686a9a2071e8825f20acb8f2198c3f659
+FROM alpine:3.23.4@sha256:5b10f432ef3da1b8d4c7eb6c487f2f5a8f096bc91145e68878dd4a5019afde11
 SHELL ["/bin/ash", "-eo", "pipefail", "-c"]
 ENV NODE_ENV=production
 ARG LRC_VER=v0.1.32R1
@@ -201,7 +201,7 @@ COPY --from=nginx /usr/local/nginx                                              
 COPY --from=nginx /usr/local/bin/bssl                                                                      /usr/local/bin/bssl
 COPY --from=nginx /usr/local/lib/libssl.so                                                                 /usr/local/lib/libssl.so
 COPY --from=nginx /usr/local/lib/libcrypto.so                                                              /usr/local/lib/libcrypto.so
-COPY --from=nginx /src/attachment/core/shmem_ipc/libosrc_shmem_ipc.so                                      /usr/local/lib/libosrc_shmem_ipc.so
+COPY --from=nginx /src/attachment/core/shmem_ipc_2/libshmem_ipc_2.so                                       /usr/local/lib/libshmem_ipc_2.so
 COPY --from=nginx /src/attachment/core/compression/libosrc_compression_utils.so                            /usr/local/lib/libosrc_compression_utils.so
 COPY --from=nginx /src/attachment/attachments/nginx/nginx_attachment_util/libosrc_nginx_attachment_util.so /usr/local/lib/libosrc_nginx_attachment_util.so
 
