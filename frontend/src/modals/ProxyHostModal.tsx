@@ -158,7 +158,7 @@ const ProxyHostModal = EasyModal.create(({ id, isClone = false, visible, remove 
 													role="tab"
 												>
 													{<T id="column.custom-locations" />}
-													{values?.locations?.length > 0 ? " *" : ""}
+													{values?.locations?.length > 0 ? "*" : ""}
 												</a>
 											</li>
 											<li className="nav-item" role="presentation">
@@ -293,6 +293,7 @@ const ProxyHostModal = EasyModal.create(({ id, isClone = false, visible, remove 
 																onClick={() => setAdvVisible((prev) => !prev)}
 															>
 																<IconSettings size={20} />
+																{values?.npmplusLocationConfig?.trim() ? "*" : ""}
 															</button>
 														</div>
 													</div>

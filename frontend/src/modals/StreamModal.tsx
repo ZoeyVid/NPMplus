@@ -136,7 +136,7 @@ const StreamModal = EasyModal.create(({ id, visible, remove }: Props) => {
 													role="tab"
 												>
 													<T id="domains.advanced" />
-													{values?.npmplusAdvancedConfig?.trim() ? " *" : ""}
+													{values?.npmplusAdvancedConfig?.trim() ? "*" : ""}
 												</a>
 											</li>
 										</ul>

@@ -145,6 +145,7 @@ export function LocationsFields({ initialValues, name = "locations" }: Props) {
 									onClick={() => toggleAdvVisible(idx)}
 								>
 									<IconSettings size={20} />
+									{item?.advancedConfig?.trim() ? "*" : ""}
 								</button>
 							</div>
 						</div>
