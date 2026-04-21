@@ -8,7 +8,7 @@
 	"type": "module",
 	"dependencies": {
 		"@apidevtools/json-schema-ref-parser": "15.3.5",
-		"ajv": "8.18.0",
+		"ajv": "8.20.0",
 		"archiver": "7.0.1",
 		"bcryptjs": "3.0.3",
 		"better-sqlite3": "12.9.0",
@@ -16,10 +16,10 @@
 		"dayjs": "1.11.20",
 		"express": "5.2.1",
 		"express-fileupload": "1.5.2",
-		"express-rate-limit": "8.3.2",
+		"express-rate-limit": "8.4.1",
 		"jsonwebtoken": "9.0.3",
 		"knex": "3.2.9",
-		"liquidjs": "10.25.6",
+		"liquidjs": "10.25.7",
 		"lodash": "4.18.1",
 		"mysql2": "3.22.2",
 		"objection": "3.1.5",
@@ -31,6 +31,6 @@
 	},
 	"devDependencies": {
 		"@apidevtools/swagger-parser": "12.1.0",
-		"@biomejs/biome": "2.4.12"
+		"@biomejs/biome": "2.4.13"
 	}
 }
