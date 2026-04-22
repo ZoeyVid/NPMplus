@@ -1,4 +1,4 @@
-import { writeFile } from "node:fs/promises";
+import { readFile, writeFile } from "node:fs/promises";
 import { installPlugins } from "./lib/certbot.js";
 import utils from "./lib/utils.js";
 import { setup as logger } from "./logger.js";
@@ -140,6 +140,15 @@ const setupCertbotPlugins = async () => {
  */
 const regenerateAllHosts = async () => {
 	if (process.env.REGENERATE_ALL === "true") {
+		if (process.env.NGINX_LOAD_OPENAPPSEC_ATTACHMENT_MODULE === "true") {
+			const conf = await readFile("/usr/local/nginx/conf/nginx.conf", "utf-8");
+			await writeFile(
+				"/usr/local/nginx/conf/nginx.conf",
+				conf.replace(/(load_module.+libngx_module\.so;)/gm, "#$1"),
+			);
+			await internalNginx.reload();
+		}
+
 		const proxyHosts = await proxyModel
 			.query()
 			.where("is_deleted", 0)
@@ -178,6 +187,15 @@ const regenerateAllHosts = async () => {
 
 		if (streamHosts?.length) {
 			await internalNginx.bulkGenerateConfigs(streamModel, "stream", streamHosts);
+		}
+
+		if (process.env.NGINX_LOAD_OPENAPPSEC_ATTACHMENT_MODULE === "true") {
+			const conf = await readFile("/usr/local/nginx/conf/nginx.conf", "utf-8");
+			await writeFile(
+				"/usr/local/nginx/conf/nginx.conf",
+				conf.replace(/#(load_module.+libngx_module\.so;)/gm, "$1"),
+			);
+			await internalNginx.reload();
 		}
 
 		await utils.writeHash();
