@@ -32,10 +32,11 @@ server {
   client_max_body_size 1m;
   more_set_headers "X-Frame-Options: DENY";
   more_set_headers "Referrer-Policy: no-referrer";
-  more_set_headers "Content-Security-Policy: default-src 'none'; script-src 'unsafe-eval'; script-src-elem 'unsafe-inline'; style-src-elem 'unsafe-inline'; style-src-attr 'unsafe-inline'; connect-src 'self'; font-src 'self' data:; img-src data:; base-uri 'none'; form-action 'none'; frame-ancestors 'none'; upgrade-insecure-requests;";
   more_set_headers "Cross-Origin-Opener-Policy: same-origin";
-  more_set_headers "Cross-Origin-Embedder-Policy: require-corp";
   more_set_headers "Cross-Origin-Resource-Policy: same-origin";
+  more_set_headers "Cross-Origin-Embedder-Policy: require-corp";
+  more_set_headers "Content-Security-Policy: default-src 'none'; script-src 'unsafe-eval'; script-src-elem 'unsafe-inline'; style-src-elem 'unsafe-inline'; style-src-attr 'unsafe-inline'; connect-src 'self'; font-src 'self' data:; img-src data:; base-uri 'none'; form-action 'none'; frame-ancestors 'none'; upgrade-insecure-requests;";
+  more_set_headers "Permissions-Policy: accelerometer=(), ambient-light-sensor=(), aria-notify=(), attribution-reporting=(), autoplay=(), bluetooth=(), browsing-topics=(), camera=(), captured-surface-control=(), ch-ua-high-entropy-values=(), compute-pressure=(), cross-origin-isolated=(), deferred-fetch=(), deferred-fetch-minimal=(), display-capture=(), encrypted-media=(), fullscreen=(), gamepad=(), geolocation=(), gyroscope=(), hid=(), identity-credentials-get=(), idle-detection=(), local-fonts=(), local-network=(), local-network-access=(), loopback-network=(), magnetometer=(), microphone=(), midi=(), on-device-speech-recognition=(), otp-credentials=(), payment=(), picture-in-picture=(), private-state-token-issuance=(), private-state-token-redemption=(), publickey-credentials-create=(), publickey-credentials-get=(), screen-wake-lock=(), serial=(), storage-access=(), summarizer=(), usb=(), web-share=(), window-management=(), xr-spatial-tracking=()";
 
   # based on https://github.com/xavier-hernandez/goaccess-for-nginxproxymanager/blob/main/resources/nginx/nginx.conf
   location / {
