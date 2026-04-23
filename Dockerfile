@@ -148,7 +148,7 @@ RUN find /usr/local/nginx/modules -name "*.so" -exec strip -s {} \; && \
     strip -s /usr/local/lib/libcrypto.so && \
     strip -s /usr/local/lib/libssl.so && \
     strip -s /usr/local/bin/bssl && \
-    strip -s /src/attachment/core/shmem_ipc_2/libshmem_ipc_2.so && \
+    strip -s /src/attachment/core/shmem_ipc/libosrc_shmem_ipc.so && \
     strip -s /src/attachment/core/compression/libosrc_compression_utils.so && \
     strip -s /src/attachment/attachments/nginx/nginx_attachment_util/libosrc_nginx_attachment_util.so && \
     \
@@ -157,7 +157,7 @@ RUN find /usr/local/nginx/modules -name "*.so" -exec strip -s {} \; && \
     file /usr/local/lib/libcrypto.so && \
     file /usr/local/lib/libssl.so && \
     file /usr/local/bin/bssl && \
-    file /src/attachment/core/shmem_ipc_2/libshmem_ipc_2.so && \
+    file /src/attachment/core/shmem_ipc/libosrc_shmem_ipc.so && \
     file /src/attachment/core/compression/libosrc_compression_utils.so && \
     file /src/attachment/attachments/nginx/nginx_attachment_util/libosrc_nginx_attachment_util.so && \
     /usr/local/nginx/sbin/nginx -V
@@ -201,7 +201,7 @@ COPY --from=nginx /usr/local/nginx                                              
 COPY --from=nginx /usr/local/bin/bssl                                                                      /usr/local/bin/bssl
 COPY --from=nginx /usr/local/lib/libssl.so                                                                 /usr/local/lib/libssl.so
 COPY --from=nginx /usr/local/lib/libcrypto.so                                                              /usr/local/lib/libcrypto.so
-COPY --from=nginx /src/attachment/core/shmem_ipc_2/libshmem_ipc_2.so                                       /usr/local/lib/libshmem_ipc_2.so
+COPY --from=nginx /src/attachment/core/shmem_ipc/libosrc_shmem_ipc.so                                      /usr/local/lib/libosrc_shmem_ipc.so
 COPY --from=nginx /src/attachment/core/compression/libosrc_compression_utils.so                            /usr/local/lib/libosrc_compression_utils.so
 COPY --from=nginx /src/attachment/attachments/nginx/nginx_attachment_util/libosrc_nginx_attachment_util.so /usr/local/lib/libosrc_nginx_attachment_util.so
 
