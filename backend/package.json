@@ -16,7 +16,7 @@
 		"dayjs": "1.11.20",
 		"express": "5.2.1",
 		"express-fileupload": "1.5.2",
-		"express-rate-limit": "8.4.0",
+		"express-rate-limit": "8.4.1",
 		"jsonwebtoken": "9.0.3",
 		"knex": "3.2.9",
 		"liquidjs": "10.25.7",
