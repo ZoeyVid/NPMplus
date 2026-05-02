@@ -233,7 +233,6 @@ export function AccessFields({ initialAccessListType, location, initialAccessLis
 								<button
 									type="button"
  									aria-label="Move up"
-									role="button"
 									className="btn mb-1 ms-1"
 									onClick={() => {
 										handleMoveUp(idx);
