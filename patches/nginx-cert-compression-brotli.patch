@@ -1,28 +1,19 @@
 diff --git a/src/event/ngx_event_openssl.c b/src/event/ngx_event_openssl.c
-index d1386d3a6..1f6c30048 100644
+index 6069869a2..4ca36b266 100644
 --- a/src/event/ngx_event_openssl.c
 +++ b/src/event/ngx_event_openssl.c
-@@ -9,8 +9,17 @@
- #include <ngx_core.h>
- #include <ngx_event.h>
- 
--#if (NGX_ZLIB && defined TLSEXT_cert_compression_zlib)
--#include <zlib.h>
-+#if (NGX_ZLIB_NG && defined TLSEXT_cert_compression_zlib)
-+# include <zlib-ng.h>
-+# define ZPREFIX(x) zng_ ## x
-+# define z_stream zng_stream
-+#elif (NGX_ZLIB && defined TLSEXT_cert_compression_zlib)
-+# include <zlib.h>
-+# define ZPREFIX(x) x
-+#endif
-+
-+#ifdef TLSEXT_cert_compression_brotli
-+#include <brotli/encode.h>
+@@ -13,6 +13,10 @@
+ #include <zlib-ng-compat.h>
  #endif
  
++#ifdef TLSEXT_cert_compression_brotli
++#include <brotli/encode.h>
++#endif
++
  
-@@ -26,6 +35,12 @@ static ngx_inline ngx_int_t ngx_ssl_cert_already_in_hash(void);
+ /* check defines from <openssl/ssl.h> for OpenSSL ECH support */
+ #if !defined(OPENSSL_NO_ECH) && defined(SSL_OP_ECH_GREASE)
+@@ -47,6 +51,12 @@ static ngx_inline ngx_int_t ngx_ssl_cert_already_in_hash(void);
  #if (NGX_ZLIB && defined TLSEXT_cert_compression_zlib)
  static int ngx_ssl_cert_compression_callback(ngx_ssl_conn_t *ssl_conn,
      CBB *out, const uint8_t *in, size_t in_len);
@@ -35,7 +26,7 @@ index d1386d3a6..1f6c30048 100644
  static void *ngx_ssl_cert_compression_alloc(void *opaque, u_int items,
      u_int size);
  static void ngx_ssl_cert_compression_free(void *opaque, void *address);
-@@ -140,6 +155,7 @@ int  ngx_ssl_ocsp_index;
+@@ -161,6 +171,7 @@ int  ngx_ssl_ocsp_index;
  int  ngx_ssl_index;
  int  ngx_ssl_certificate_name_index;
  int  ngx_ssl_certificate_comp_index;
@@ -43,7 +34,7 @@ index d1386d3a6..1f6c30048 100644
  int  ngx_ssl_client_hello_arg_index;
  
  
-@@ -290,6 +306,13 @@ ngx_ssl_init(ngx_log_t *log)
+@@ -311,6 +322,13 @@ ngx_ssl_init(ngx_log_t *log)
          return NGX_ERROR;
      }
  
@@ -57,7 +48,7 @@ index d1386d3a6..1f6c30048 100644
      ngx_ssl_client_hello_arg_index = SSL_CTX_get_ex_new_index(0, NULL, NULL,
                                                                NULL, NULL);
      if (ngx_ssl_client_hello_arg_index == -1) {
-@@ -748,7 +771,9 @@ ngx_ssl_certificate_compression(ngx_conf_t *cf, ngx_ssl_t *ssl,
+@@ -769,7 +787,9 @@ ngx_ssl_certificate_compression(ngx_conf_t *cf, ngx_ssl_t *ssl,
  
      SSL_CTX_clear_options(ssl->ctx, SSL_OP_NO_TX_CERTIFICATE_COMPRESSION);
  
@@ -68,65 +59,35 @@ index d1386d3a6..1f6c30048 100644
  
      if (SSL_CTX_add_cert_compression_alg(ssl->ctx, TLSEXT_cert_compression_zlib,
                                           ngx_ssl_cert_compression_callback,
-@@ -760,6 +785,22 @@ ngx_ssl_certificate_compression(ngx_conf_t *cf, ngx_ssl_t *ssl,
-         return NGX_ERROR;
-     }
- 
-+#endif
-+
-+#ifdef TLSEXT_cert_compression_brotli
-+
-+    if (SSL_CTX_add_cert_compression_alg(ssl->ctx, TLSEXT_cert_compression_brotli,
-+        ngx_ssl_cert_compression_brotli_callback,
-+        NULL)
-+        == 0)
-+    {
-+        ngx_ssl_error(NGX_LOG_EMERG, ssl->log, 0,
-+                      "SSL_CTX_add_cert_compression_alg() for brotli failed");
+@@ -777,10 +797,26 @@ ngx_ssl_certificate_compression(ngx_conf_t *cf, ngx_ssl_t *ssl,
+         == 0)
+     {
+         ngx_ssl_error(NGX_LOG_EMERG, ssl->log, 0,
+-                      "SSL_CTX_add_cert_compression_alg() failed");
++                      "SSL_CTX_add_cert_compression_alg() for zlib-ng failed");
 +        return NGX_ERROR;
 +    }
 +
 +#endif
 +
++#ifdef TLSEXT_cert_compression_brotli
++
++    if (SSL_CTX_add_cert_compression_alg(ssl->ctx, TLSEXT_cert_compression_brotli,
++                                         ngx_ssl_cert_compression_brotli_callback,
++                                         NULL)
++        == 0)
++    {
++        ngx_ssl_error(NGX_LOG_EMERG, ssl->log, 0,
++                      "SSL_CTX_add_cert_compression_alg() for brotli failed");
+         return NGX_ERROR;
+     }
+ 
++#endif
++
  #else
  
      ngx_log_error(NGX_LOG_WARN, ssl->log, 0,
-@@ -829,14 +870,14 @@ ngx_ssl_cert_compression_callback(ngx_ssl_conn_t *ssl_conn, CBB *out,
-     zstream.zfree = ngx_ssl_cert_compression_free;
-     zstream.opaque = pool;
- 
--    rc = deflateInit(&zstream, Z_DEFAULT_COMPRESSION);
-+    rc = ZPREFIX(deflateInit)(&zstream, Z_BEST_COMPRESSION);
- 
-     if (rc != Z_OK) {
-         ngx_log_error(NGX_LOG_ALERT, c->log, 0, "deflateInit() failed: %d", rc);
-         goto error;
-     }
- 
--    tmp.len = deflateBound(&zstream, in_len);
-+    tmp.len = ZPREFIX(deflateBound)(&zstream, in_len);
-     tmp.data = ngx_palloc(pool, tmp.len);
-     if (tmp.data == NULL) {
-         goto error;
-@@ -847,7 +888,7 @@ ngx_ssl_cert_compression_callback(ngx_ssl_conn_t *ssl_conn, CBB *out,
-     zstream.next_out = tmp.data;
-     zstream.avail_out = tmp.len;
- 
--    rc = deflate(&zstream, Z_FINISH);
-+    rc = ZPREFIX(deflate)(&zstream, Z_FINISH);
- 
-     if (rc != Z_STREAM_END) {
-         ngx_log_error(NGX_LOG_ALERT, c->log, 0,
-@@ -857,7 +898,7 @@ ngx_ssl_cert_compression_callback(ngx_ssl_conn_t *ssl_conn, CBB *out,
- 
-     tmp.len -= zstream.avail_out;
- 
--    rc = deflateEnd(&zstream);
-+    rc = ZPREFIX(deflateEnd)(&zstream);
- 
-     if (rc != Z_OK) {
-         ngx_log_error(NGX_LOG_ALERT, c->log, 0, "deflateEnd() failed: %d", rc);
-@@ -894,6 +935,101 @@ error:
+@@ -915,6 +951,102 @@ error:
      return 0;
  }
  
@@ -225,10 +186,11 @@ index d1386d3a6..1f6c30048 100644
 +
 +
 +#if (NGX_ZLIB && defined TLSEXT_cert_compression_zlib) || defined TLSEXT_cert_compression_brotli
++
  
  static void *
  ngx_ssl_cert_compression_alloc(void *opaque, u_int items, u_int size)
-@@ -5257,6 +5393,13 @@ ngx_ssl_cleanup_ctx(void *data)
+@@ -5524,6 +5656,13 @@ ngx_ssl_cleanup_ctx(void *data)
              X509_set_ex_data(cert, ngx_ssl_certificate_comp_index, NULL);
          }
  
@@ -243,10 +205,10 @@ index d1386d3a6..1f6c30048 100644
      }
  
 diff --git a/src/event/ngx_event_openssl.h b/src/event/ngx_event_openssl.h
-index d86ffb8da..fb1bae4bd 100644
+index b14c7d10e..b7c39f0ff 100644
 --- a/src/event/ngx_event_openssl.h
 +++ b/src/event/ngx_event_openssl.h
-@@ -402,6 +402,7 @@ extern int  ngx_ssl_ocsp_index;
+@@ -420,6 +420,7 @@ extern int  ngx_ssl_ocsp_index;
  extern int  ngx_ssl_index;
  extern int  ngx_ssl_certificate_name_index;
  extern int  ngx_ssl_certificate_comp_index;
