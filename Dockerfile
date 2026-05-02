@@ -5,12 +5,12 @@ SHELL ["/bin/ash", "-eo", "pipefail", "-c"]
 ARG LUAJIT_INC=/usr/include/luajit-2.1
 ARG LUAJIT_LIB=/usr/lib
 
-ARG AWSLC_VER=v1.72.1
+ARG AWSLC_VER=v1.73.0
 
 ARG NGINX_VER=release-1.30.0
 ARG DTR_VER=1.29.2
-ARG RCP_VER=1.29.5
-ARG ZNP_VER=1.26.3
+ARG RCP_VER=1.29.8
+ARG ZNP_VER=1.30.0
 
 ARG NB_VER=master
 ARG NUB_VER=main
@@ -61,8 +61,8 @@ RUN git clone --depth 1 https://github.com/nginx/nginx --branch "$NGINX_VER" /sr
     git apply /src/nginx-footer.patch && \
     git apply /src/nginx-ip-sni.patch && \
     git apply /src/nginx-buffer-log.patch && \
-    git apply /src/nginx-cert-compression-brotli-zlib-ng.patch && \
     git apply /src/nginx-ech-boringssl-awslc.patch && \
+    git apply /src/nginx-cert-compression-brotli.patch && \
     \
     git clone --depth 1 https://github.com/google/ngx_brotli --branch "$NB_VER" /src/ngx_brotli && \
     cd /src/ngx_brotli && \
@@ -195,7 +195,7 @@ SHELL ["/bin/ash", "-eo", "pipefail", "-c"]
 ENV NODE_ENV=production
 ARG LRC_VER=v0.1.32R1
 ARG LRL_VER=v0.15
-ARG LCSB_VER=v1.0.13
+ARG LCSB_VER=v1.0.14
 
 COPY --from=nginx /usr/local/nginx                                                                         /usr/local/nginx
 COPY --from=nginx /usr/local/bin/bssl                                                                      /usr/local/bin/bssl
