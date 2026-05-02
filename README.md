@@ -40,6 +40,8 @@ If you don't need the web GUI of NPMplus, you may also have a look at caddy: htt
 - Password reset (only sqlite) using `docker exec -it npmplus password-reset.js USER_EMAIL PASSWORD`
 - Swagger UI under /api/docs
 - many other things, see this README.md and the compose.yaml
+- Proxy Locations can have access lists different to their host
+- Proxy Hosts and Proxy Locations can use multiple access lists
 
 ## Compatibility (to Upstream)
 - Supported architectures: x86_64-v2/amd64v2 (check with `/lib/ld-linux-x86-64.so.2 --help`, plain x86-64 is not supported only v2 and up) and aarch64/arm64 (other archs (including 64-bit ones) and any 32-bit arch (like armhf/armv7 (dropped), armel/armv6) are not supported, because of the duration to compile).
@@ -352,6 +354,10 @@ If you need to run scripts before NPMplus launches put them under: `/opt/npmplus
 - if enabled to cloudflare to download their IPs
 - if enabled to the crowdsec (container) lapi
 - if you see more/others please report them
+
+## Access Lists
+When using multiple Access Lists on a Proxy Host or a Proxy Location, they are evaluated in a top-down order from the UI. 
+The `Satisfy Any` or `Pass Auth to Upstream` only get applied if they are set on the first Access List assigned to a proxy host/location
 
 ## Contributing
 All are welcome to create pull requests for this project, but this does not mean that they will be merged, so better ask if your PR would be merged before creating one (via Discussion), typos and translations are excluded from this.
