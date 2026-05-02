@@ -39,4 +39,6 @@ APPSEC_CONNECT_TIMEOUT=
 APPSEC_SEND_TIMEOUT=1000
 APPSEC_PROCESS_TIMEOUT=30000
 ALWAYS_SEND_TO_APPSEC=false
+# When true, drop requests whose body cannot be read (e.g. HTTP/2 or HTTP/3 requests without a content-length header) instead of forwarding them to AppSec without a body.
+APPSEC_DROP_UNREADABLE_BODY=true
 SSL_VERIFY=true
