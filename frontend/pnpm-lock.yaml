@@ -27,8 +27,8 @@ importers:
         specifier: 2.5.1
         version: 2.5.1
       country-flag-icons:
-        specifier: 1.6.16
-        version: 1.6.16
+        specifier: 1.6.17
+        version: 1.6.17
       date-fns:
         specifier: 4.1.0
         version: 4.1.0
@@ -906,8 +906,8 @@ packages:
     resolution: {integrity: sha512-AdmX6xUzdNASswsFtmwSt7Vj8po9IuqXm0UXz7QKPuEUmPB4XyjGfaAr2PSuELMwkRMVH1EpIkX5bTZGRB3eCA==}
     engines: {node: '>=10'}
 
-  country-flag-icons@1.6.16:
-    resolution: {integrity: sha512-HxJVoE/aaZGcUMx1vK/u9430uKGB3ODZDDZJJOqVJQzoHk5v42c0fSp1rk4tDfyr1dVOJjwxRiaBPliBMo2Liw==}
+  country-flag-icons@1.6.17:
+    resolution: {integrity: sha512-Nmik0289ZVZSI3c7mJR/amg6DyY7Z59b0sTFSKayeX72mHfPzCPJygwJs2pYgQULzuAyWeCUgwAJ+Dq8OR+JFw==}
 
   css.escape@1.5.1:
     resolution: {integrity: sha512-YUifsXXuknHlUsmlgyY0PKzgPOr7/FjCePfHNt0jxm83wHZi44VDMQ7/fGNkjY3/jV1MC+1CmZbaHzugyeRtpg==}
@@ -2611,7 +2611,7 @@ snapshots:
       path-type: 4.0.0
       yaml: 1.10.3
 
-  country-flag-icons@1.6.16: {}
+  country-flag-icons@1.6.17: {}
 
   css.escape@1.5.1: {}
 
