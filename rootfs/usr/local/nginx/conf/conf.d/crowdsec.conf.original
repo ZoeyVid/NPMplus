@@ -3,7 +3,7 @@ lua_shared_dict crowdsec_cache 50m;
 lua_ssl_trusted_certificate /etc/ssl/certs/ca-certificates.crt;
 init_by_lua_block {
         cs = require "crowdsec"
-        local ok, err = cs.init("/etc/crowdsec/bouncers/crowdsec-nginx-bouncer.conf", "crowdsec-nginx-bouncer/v1.1.3")
+        local ok, err = cs.init("/etc/crowdsec/bouncers/crowdsec-nginx-bouncer.conf", "crowdsec-nginx-bouncer/v1.1.6")
         if ok == nil then
                 ngx.log(ngx.ERR, "[Crowdsec] " .. err)
                 error()
