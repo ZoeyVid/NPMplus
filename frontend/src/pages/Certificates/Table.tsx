@@ -122,7 +122,7 @@ export default function Table({
 						(row.streams?.length || 0) >
 						0 || mtlsInUseIds.has(row.id),
 				{
-					id: "proxyHosts",
+					id: "inUse",
 					header: intl.formatMessage({ id: "column.status" }),
 					cell: (info: any) => {
 						const r = info.row.original;
