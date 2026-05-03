@@ -113,9 +113,9 @@ export default function Table({ data, isFetching, isFiltered, onEdit, onDelete, 
 			}),
 			columnHelper.accessor(
 				(row: any) => {
-					if (!row.enabled) return "disabled";
-					if (row.meta.nginxOnline) return "online";
-					return "offline";
+					if (!row.enabled) return "3disabled";
+					if (row.meta.nginxOnline) return "2online";
+					return "1offline";
 				},
 				{
 					id: "enabled",
