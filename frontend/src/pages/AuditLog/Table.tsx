@@ -15,7 +15,7 @@ export default function Table({ data, isFetching, onSelectItem }: Props) {
 	const columns = useMemo(
 		() => [
 			columnHelper.accessor((row: AuditLog) => row.user?.name, {
-				id: "user.avatar",
+				id: "avatar",
 				cell: (info: any) => {
 					const value = info.row.original.user;
 					return <GravatarFormatter url={value ? value.avatar : ""} name={value ? value.name : ""} />;
@@ -25,14 +25,14 @@ export default function Table({ data, isFetching, onSelectItem }: Props) {
 				},
 			}),
 			columnHelper.accessor((row: AuditLog) => row.createdOn, {
-				id: "objectType",
+				id: "log",
 				header: intl.formatMessage({ id: "column.event" }),
 				cell: (info: any) => {
 					return <EventFormatter row={info.row.original} />;
 				},
 			}),
 			columnHelper.display({
-				id: "id",
+				id: "details",
 				cell: (info: any) => {
 					return (
 						<button
