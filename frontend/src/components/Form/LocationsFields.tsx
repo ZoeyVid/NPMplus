@@ -123,14 +123,14 @@ export function LocationsFields({ initialValues, name = "locations" }: Props) {
 				<div key={item.uiKey} className={cn("card", "card-active", "mb-3", styles.locationCard)}>
 					<div className="card-body">
 						<div className="row mb-3">
-							<label className="row" htmlFor="npmplusEnabled">
+							<label className="row" htmlFor={`npmplusEnabled-${item.uiKey}`}>
 								<span className="col">
 									<T id="enabled" />
 								</span>
 								<span className="col-auto">
 									<label className="form-check form-check-single form-switch">
 										<input
-											id="npmplusEnabled"
+											id={`npmplusEnabled-${item.uiKey}`}
 											className={cn("form-check-input", {
 												"bg-lime": item.npmplusEnabled !== false,
 											})}
@@ -147,7 +147,7 @@ export function LocationsFields({ initialValues, name = "locations" }: Props) {
 								<div className="input-group mb-3">
 									<span className="input-group-text">Location</span>
 									<select
-										id="locationType"
+										id={`locationType-${item.uiKey}`}
 										className="form-select w-auto flex-grow-0"
 										value={item.locationType}
 										onChange={(e) => handleChange(idx, "locationType", e.target.value)}
@@ -184,11 +184,11 @@ export function LocationsFields({ initialValues, name = "locations" }: Props) {
 						<div className="row">
 							<div className="col-md-3">
 								<div className="mb-3">
-									<label className="form-label" htmlFor="forwardScheme">
+									<label className="form-label" htmlFor={`forwardScheme-${item.uiKey}`}>
 										<T id="host.forward-scheme" />
 									</label>
 									<select
-										id="forwardScheme"
+										id={`forwardScheme-${item.uiKey}`}
 										className="form-control"
 										value={item.forwardScheme}
 										onChange={(e) => handleChange(idx, "forwardScheme", e.target.value)}
@@ -204,11 +204,11 @@ export function LocationsFields({ initialValues, name = "locations" }: Props) {
 							</div>
 							<div className="col-md-6">
 								<div className="mb-3">
-									<label className="form-label" htmlFor="forwardHost">
+									<label className="form-label" htmlFor={`forwardHost-${item.uiKey}`}>
 										<T id="proxy-host.forward-host-path" />
 									</label>
 									<input
-										id="forwardHost"
+										id={`forwardHost-${item.uiKey}`}
 										type="text"
 										className="form-control"
 										required={item.forwardScheme !== "empty"}
@@ -220,11 +220,11 @@ export function LocationsFields({ initialValues, name = "locations" }: Props) {
 							</div>
 							<div className="col-md-3">
 								<div className="mb-3">
-									<label className="form-label" htmlFor="forwardPort">
+									<label className="form-label" htmlFor={`forwardPort-${item.uiKey}`}>
 										<T id="host.forward-port" />
 									</label>
 									<input
-										id="forwardPort"
+										id={`forwardPort-${item.uiKey}`}
 										type="number"
 										min={1}
 										max={65535}
@@ -255,14 +255,14 @@ export function LocationsFields({ initialValues, name = "locations" }: Props) {
 								</h4>
 								<div className="divide-y">
 									<div>
-										<label className="row" htmlFor="npmplusNoindex">
+										<label className="row" htmlFor={`npmplusNoindex-${item.uiKey}`}>
 											<span className="col">
 												<T id="host.flags.send-noindex" />
 											</span>
 											<span className="col-auto">
 												<label className="form-check form-check-single form-switch">
 													<input
-														id="npmplusNoindex"
+														id={`npmplusNoindex-${item.uiKey}`}
 														className={cn("form-check-input", {
 															"bg-lime": item.npmplusNoindex,
 														})}
@@ -277,14 +277,14 @@ export function LocationsFields({ initialValues, name = "locations" }: Props) {
 										</label>
 									</div>
 									<div>
-										<label className="row" htmlFor="npmplusCrowdsecAppsec">
+										<label className="row" htmlFor={`npmplusCrowdsecAppsec-${item.uiKey}`}>
 											<span className="col">
 												<T id="host.flags.disable-crowdsec-appsec" />
 											</span>
 											<span className="col-auto">
 												<label className="form-check form-check-single form-switch">
 													<input
-														id="npmplusCrowdsecAppsec"
+														id={`npmplusCrowdsecAppsec-${item.uiKey}`}
 														className={cn("form-check-input", {
 															"bg-lime": item.npmplusCrowdsecAppsec,
 														})}
@@ -299,14 +299,14 @@ export function LocationsFields({ initialValues, name = "locations" }: Props) {
 										</label>
 									</div>
 									<div>
-										<label className="row" htmlFor="npmplusProxyRequestBuffering">
+										<label className="row" htmlFor={`npmplusProxyRequestBuffering-${item.uiKey}`}>
 											<span className="col">
 												<T id="host.flags.disable-request-buffering" />
 											</span>
 											<span className="col-auto">
 												<label className="form-check form-check-single form-switch">
 													<input
-														id="npmplusProxyRequestBuffering"
+														id={`npmplusProxyRequestBuffering-${item.uiKey}`}
 														className={cn("form-check-input", {
 															"bg-lime": item.npmplusProxyRequestBuffering,
 														})}
@@ -326,14 +326,14 @@ export function LocationsFields({ initialValues, name = "locations" }: Props) {
 										</label>
 									</div>
 									<div>
-										<label className="row" htmlFor="npmplusProxyResponseBuffering">
+										<label className="row" htmlFor={`npmplusProxyResponseBuffering-${item.uiKey}`}>
 											<span className="col">
 												<T id="host.flags.disable-response-buffering" />
 											</span>
 											<span className="col-auto">
 												<label className="form-check form-check-single form-switch">
 													<input
-														id="npmplusProxyResponseBuffering"
+														id={`npmplusProxyResponseBuffering-${item.uiKey}`}
 														className={cn("form-check-input", {
 															"bg-lime": item.npmplusProxyResponseBuffering,
 														})}
@@ -353,14 +353,14 @@ export function LocationsFields({ initialValues, name = "locations" }: Props) {
 										</label>
 									</div>
 									<div>
-										<label className="row" htmlFor="npmplusUpstreamCompression">
+										<label className="row" htmlFor={`npmplusUpstreamCompression-${item.uiKey}`}>
 											<span className="col">
 												<T id="host.flags.upstream-compression" />
 											</span>
 											<span className="col-auto">
 												<label className="form-check form-check-single form-switch">
 													<input
-														id="npmplusUpstreamCompression"
+														id={`npmplusUpstreamCompression-${item.uiKey}`}
 														className={cn("form-check-input", {
 															"bg-lime": item.npmplusUpstreamCompression,
 														})}
@@ -380,14 +380,14 @@ export function LocationsFields({ initialValues, name = "locations" }: Props) {
 										</label>
 									</div>
 									<div>
-										<label className="row" htmlFor="npmplusFancyindex">
+										<label className="row" htmlFor={`npmplusFancyindex-${item.uiKey}`}>
 											<span className="col">
 												<T id="host.flags.fancyindex" />
 											</span>
 											<span className="col-auto">
 												<label className="form-check form-check-single form-switch">
 													<input
-														id="npmplusFancyindex"
+														id={`npmplusFancyindex-${item.uiKey}`}
 														className={cn("form-check-input", {
 															"bg-lime": item.npmplusFancyindex,
 														})}
@@ -403,12 +403,12 @@ export function LocationsFields({ initialValues, name = "locations" }: Props) {
 										</label>
 									</div>
 									<div>
-										<label className="row" htmlFor="npmplusXFrameOptions">
+										<label className="row" htmlFor={`npmplusXFrameOptions-${item.uiKey}`}>
 											<span className="col">X-Frame-Options</span>
 											<span className="col-auto">
 												<label className="form-check form-check-single form-switch">
 													<select
-														id="npmplusXFrameOptions"
+														id={`npmplusXFrameOptions-${item.uiKey}`}
 														className="form-select"
 														value={item.npmplusXFrameOptions}
 														onChange={(e) =>
@@ -425,12 +425,12 @@ export function LocationsFields({ initialValues, name = "locations" }: Props) {
 										</label>
 									</div>
 									<div>
-										<label className="row" htmlFor="npmplusAuthRequest">
+										<label className="row" htmlFor={`npmplusAuthRequest-${item.uiKey}`}>
 											<span className="col">Auth Request</span>
 											<span className="col-auto">
 												<label className="form-check form-check-single form-switch">
 													<select
-														id="npmplusAuthRequest"
+														id={`npmplusAuthRequest-${item.uiKey}`}
 														className="form-select"
 														value={item.npmplusAuthRequest}
 														onChange={(e) =>
