@@ -3,7 +3,7 @@ import { mkdir, open, readFile, realpath, rm, stat, writeFile } from "node:fs/pr
 import net from "node:net";
 import path from "node:path";
 import { domainToASCII } from "node:url";
-import archiver from "archiver";
+import { ZipArchive } from "archiver";
 import dayjs from "dayjs";
 import _ from "lodash";
 import dnsPlugins from "../certbot/dns-plugins.json" with { type: "json" };
@@ -314,23 +314,34 @@ const internalCertificate = {
 	},
 
 	/**
-	 * @param   {String}  source
+	 * @param   {String[]}  source
 	 * @param   {String}  out
 	 * @returns {Promise}
 	 */
 	zipFiles: async (source, out) => {
-		const archive = archiver("zip", { zlib: { level: 9 } });
 		const file = await open(out, "w");
 		const stream = file.createWriteStream();
+		const archive = new ZipArchive({ zlib: { level: 9 } });
 
 		return new Promise((resolve, reject) => {
-			source.forEach((fl) => {
-				const fileName = path.basename(fl);
-				debug(logger, fl, "added to certificate zip");
-				archive.file(fl, { name: fileName });
+			stream.on("close", () => {
+				resolve();
 			});
-			archive.on("error", (err) => reject(err)).pipe(stream);
-			stream.on("close", () => resolve());
+
+			archive.on("warning", (err) => {
+				reject(err);
+			});
+
+			archive.on("error", (err) => {
+				reject(err);
+			});
+
+			archive.pipe(stream);
+
+			for (const filePath of source) {
+				archive.file(filePath, { name: path.basename(filePath) });
+			}
+
 			archive.finalize();
 		});
 	},
