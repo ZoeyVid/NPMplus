@@ -431,6 +431,10 @@ if [ "$NGINX_TRUST_RSA_PKCS1" = "true" ]; then
     sed -i "s|ed25519:ecdsa_secp521r1_sha512:ecdsa_secp384r1_sha384:ecdsa_secp256r1_sha256:rsa_pss_rsae_sha512:rsa_pss_rsae_sha384:rsa_pss_rsae_sha256;|ed25519:ecdsa_secp521r1_sha512:ecdsa_secp384r1_sha384:ecdsa_secp256r1_sha256:rsa_pss_rsae_sha512:rsa_pss_rsae_sha384:rsa_pss_rsae_sha256:rsa_pkcs1_sha512:rsa_pkcs1_sha384:rsa_pkcs1_sha256;|g" /usr/local/nginx/conf/nginx.conf
 fi
 
+if [ ! -s "/data/tls/ech/cron.sh" ] && grep -q '^[^#]*ssl_ech_file' /usr/local/nginx/conf/nginx.conf; then
+    sed -i "s|ssl_ech_file|#ssl_ech_file|g" /usr/local/nginx/conf/nginx.conf
+fi
+
 if [ "$NGINX_LOAD_OPENAPPSEC_ATTACHMENT_MODULE" = "true" ]; then
     sed -i "s|#\(load_module.\+libngx_module.so;\)|\1|g" /usr/local/nginx/conf/nginx.conf
     sed -i "s|zstd on;|zstd off;|g" /usr/local/nginx/conf/nginx.conf
