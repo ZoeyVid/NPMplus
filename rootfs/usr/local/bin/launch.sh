@@ -85,6 +85,7 @@ if [ "$GOA" = "true" ]; then set -f; while true; do if [ -s /data/nginx/logs/acc
                     --real-time-html --output=/tmp/goa/index.html --db-path=/data/goaccess/data --restore --persist \
                     --browsers-file=/etc/goaccess/browsers.list --browsers-file=/etc/goaccess/podcast.list $GOACLA; else sleep 10s; fi; done; fi &
 while true; do
+  sleep 10s
   if [ -s "/data/tls/ech/cron.sh" ]; then
     chmod +x /data/tls/ech/cron.sh
     /data/tls/ech/cron.sh
