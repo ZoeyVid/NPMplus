@@ -119,6 +119,7 @@ export NGINX_WORKER_CONNECTIONS="${NGINX_WORKER_CONNECTIONS:-512}"
 export NGINX_FORCE_X25519MLKEM768="${NGINX_FORCE_X25519MLKEM768:-false}"
 export NGINX_DISABLE_TLS12="${NGINX_DISABLE_TLS12:-false}"
 export NGINX_TRUST_SECPR1="${NGINX_TRUST_SECPR1:-true}"
+export NGINX_TRUST_RSA_PKCS1="${NGINX_TRUST_RSA_PKCS1:-false}"
 export DISABLE_NGINX_BEAUTIFIER="${DISABLE_NGINX_BEAUTIFIER:-false}"
 export TRUST_CLOUDFLARE="${TRUST_CLOUDFLARE:-false}"
 export LOGROTATE="${LOGROTATE:-false}"
@@ -534,6 +535,11 @@ fi
 
 if ! echo "$NGINX_TRUST_SECPR1" | grep -q "^true$\|^false$"; then
     echo "NGINX_TRUST_SECPR1 needs to be true or false."
+    sleep inf
+fi
+
+if ! echo "$NGINX_TRUST_RSA_PKCS1" | grep -q "^true$\|^false$"; then
+    echo "NGINX_TRUST_RSA_PKCS1 needs to be true or false."
     sleep inf
 fi
 
