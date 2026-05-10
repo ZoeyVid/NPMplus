@@ -282,10 +282,10 @@
 		"package_name": "certbot-dns-ionos"
 	},
 	"ispconfig": {
-		"credentials": "certbot_dns_ispconfig:dns_ispconfig_username = myremoteuser\ncertbot_dns_ispconfig:dns_ispconfig_password = verysecureremoteuserpassword\ncertbot_dns_ispconfig:dns_ispconfig_endpoint = https://you.ipsconfig.host:8080/remote/json.php",
-		"full_plugin_name": "certbot-dns-ispconfig:dns-ispconfig",
+		"credentials": "dns_ispconfig_username = myremoteuser\ndns_ispconfig_password = verysecureremoteuserpassword\ndns_ispconfig_endpoint = https://you.ipsconfig.host:8080/remote/json.php",
+		"full_plugin_name": "dns-ispconfig",
 		"name": "ISPConfig",
-		"package_name": "certbot-dns-ispconfig"
+		"package_name": "certbot-v4-dns-ispconfig"
 	},
 	"isset": {
 		"credentials": "dns_isset_endpoint=\"https://customer.isset.net/api\"\ndns_isset_token=\"<token>\"",
