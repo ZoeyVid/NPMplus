@@ -1,0 +1,64 @@
+{
+	"operationId": "deleteDnsCredentials",
+	"summary": "Delete DNS Credentials",
+	"tags": [
+		"dns-credentials"
+	],
+	"security": [
+		{
+			"cookieAuth": [
+				"settings.manage"
+			]
+		}
+	],
+	"parameters": [
+		{
+			"in": "path",
+			"name": "credentialID",
+			"description": "DNS Credentials ID",
+			"schema": {
+				"type": "integer",
+				"minimum": 1
+			},
+			"required": true,
+			"example": 1
+		}
+	],
+	"responses": {
+		"200": {
+			"description": "200 response",
+			"content": {
+				"application/json": {
+					"examples": {
+						"default": {
+							"value": true
+						}
+					},
+					"schema": {
+						"type": "boolean"
+					}
+				}
+			}
+		},
+		"404": {
+			"description": "404 response",
+			"content": {
+				"application/json": {
+					"examples": {
+						"default": {
+							"value": {
+								"error": {
+									"code": 404,
+									"message": "Item not found"
+								}
+							}
+						}
+					},
+					"schema": {
+						"$ref": "../../../../components/error.json"
+					}
+				}
+			}
+		}
+	}
+}

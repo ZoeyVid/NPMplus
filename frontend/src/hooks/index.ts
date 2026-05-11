@@ -7,6 +7,8 @@ export * from "./useCertificates";
 export * from "./useCheckVersion";
 export * from "./useDeadHost";
 export * from "./useDeadHosts";
+export * from "./useDnsCredential";
+export * from "./useDnsCredentials";
 export * from "./useDnsProviders";
 export * from "./useHealth";
 export * from "./useHostReport";

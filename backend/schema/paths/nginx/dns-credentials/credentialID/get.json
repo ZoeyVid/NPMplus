@@ -1,0 +1,72 @@
+{
+	"operationId": "getDnsCredential",
+	"summary": "Get a DNS Credentials",
+	"tags": [
+		"dns-credentials"
+	],
+	"security": [
+		{
+			"cookieAuth": [
+				"settings.view"
+			]
+		}
+	],
+	"parameters": [
+		{
+			"in": "path",
+			"name": "credentialID",
+			"description": "DNS Credentials ID",
+			"schema": {
+				"type": "integer",
+				"minimum": 1
+			},
+			"required": true,
+			"example": 1
+		}
+	],
+	"responses": {
+		"200": {
+			"description": "200 response",
+			"content": {
+				"application/json": {
+					"examples": {
+						"default": {
+							"value": {
+								"id": 1,
+								"created_on": "2024-10-09T05:31:58.000Z",
+								"modified_on": "2024-10-09T05:32:11.000Z",
+								"owner_user_id": 1,
+								"name": "My Cloudflare Credentials",
+								"provider_id": "cloudflare",
+								"credentials": "***"
+							}
+						}
+					},
+					"schema": {
+						"$ref": "../../../../components/dns-credentials-object.json"
+					}
+				}
+			}
+		},
+		"404": {
+			"description": "404 response",
+			"content": {
+				"application/json": {
+					"examples": {
+						"default": {
+							"value": {
+								"error": {
+									"code": 404,
+									"message": "Item not found"
+								}
+							}
+						}
+					},
+					"schema": {
+						"$ref": "../../../../components/error.json"
+					}
+				}
+			}
+		}
+	}
+}

@@ -1,7 +1,11 @@
+import { useState } from "react";
 import { T } from "src/locale";
 import DefaultSite from "./DefaultSite";
+import DnsCredentials from "./DnsCredentials";
 
 export default function Layout() {
+	const [activeTab, setActiveTab] = useState<"default-site" | "dns-credentials">("default-site");
+
 	// Taken from https://preview.tabler.io/settings.html
 	// Refer to that when updating this content
 
@@ -22,16 +26,30 @@ export default function Layout() {
 							<div className="list-group list-group-transparent">
 								<a
 									href="#"
-									className="list-group-item list-group-item-action d-flex align-items-center active"
-									onClick={(e) => e.preventDefault()}
+									className={`list-group-item list-group-item-action d-flex align-items-center ${activeTab === "default-site" ? "active" : ""}`}
+									onClick={(e) => {
+										e.preventDefault();
+										setActiveTab("default-site");
+									}}
 								>
 									<T id="settings.default-site" />
+								</a>
+								<a
+									href="#"
+									className={`list-group-item list-group-item-action d-flex align-items-center ${activeTab === "dns-credentials" ? "active" : ""}`}
+									onClick={(e) => {
+										e.preventDefault();
+										setActiveTab("dns-credentials");
+									}}
+								>
+									<T id="settings.dns-credentials.nav" />
 								</a>
 							</div>
 						</div>
 					</div>
 					<div className="col-12 col-md-9 d-flex flex-column">
-						<DefaultSite />
+						{activeTab === "default-site" && <DefaultSite />}
+						{activeTab === "dns-credentials" && <DnsCredentials />}
 					</div>
 				</div>
 			</div>

@@ -1,0 +1,92 @@
+{
+	"operationId": "createDnsCredentials",
+	"summary": "Create DNS Credentials",
+	"tags": [
+		"dns-credentials"
+	],
+	"security": [
+		{
+			"cookieAuth": [
+				"settings.manage"
+			]
+		}
+	],
+	"requestBody": {
+		"description": "DNS Credentials Payload",
+		"required": true,
+		"content": {
+			"application/json": {
+				"schema": {
+					"type": "object",
+					"additionalProperties": false,
+					"required": [
+						"provider_id",
+						"credentials",
+						"name"
+					],
+					"properties": {
+						"provider_id": {
+							"$ref": "../../../components/dns-credentials-object.json#/properties/provider_id"
+						},
+						"credentials": {
+							"$ref": "../../../components/dns-credentials-object.json#/properties/credentials"
+						},
+						"name": {
+							"$ref": "../../../components/dns-credentials-object.json#/properties/name"
+						}
+					}
+				},
+				"example": {
+					"provider_id": "cloudflare",
+					"name": "My Cloudflare Credentials",
+					"credentials": "{\"api_key\": \"your-api-key\"}"
+				}
+			}
+		}
+	},
+	"responses": {
+		"201": {
+			"description": "201 response",
+			"content": {
+				"application/json": {
+					"examples": {
+						"default": {
+							"value": {
+								"id": 1,
+								"created_on": "2024-10-09T05:31:58.000Z",
+								"modified_on": "2024-10-09T05:31:58.000Z",
+								"owner_user_id": 1,
+								"name": "My Cloudflare Credentials",
+								"provider_id": "cloudflare",
+								"credentials": "***"
+							}
+						}
+					},
+					"schema": {
+						"$ref": "../../../components/dns-credentials-object.json"
+					}
+				}
+			}
+		},
+		"400": {
+			"description": "400 response",
+			"content": {
+				"application/json": {
+					"examples": {
+						"default": {
+							"value": {
+								"error": {
+									"code": 400,
+									"message": "Invalid request"
+								}
+							}
+						}
+					},
+					"schema": {
+						"$ref": "../../../components/error.json"
+					}
+				}
+			}
+		}
+	}
+}

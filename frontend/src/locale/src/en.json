@@ -215,6 +215,15 @@
 	"certificates.dns.provider.placeholder": {
 		"defaultMessage": "Select a Provider..."
 	},
+	"certificates.dns.saved-credentials": {
+		"defaultMessage": "Saved Credentials"
+	},
+	"certificates.dns.saved-credentials-note": {
+		"defaultMessage": "Select a previously saved credential or enter manually below"
+	},
+	"certificates.dns.saved-credentials.placeholder": {
+		"defaultMessage": "Use saved credential..."
+	},
 	"certificates.dns.warning": {
 		"defaultMessage": "This section requires some knowledge about Certbot and its DNS plugins. Please consult the respective plugins documentation."
 	},
@@ -349,6 +358,12 @@
 	},
 	"disabled": {
 		"defaultMessage": "Disabled"
+	},
+	"dns-credentials": {
+		"defaultMessage": "DNS Credentials"
+	},
+	"dns-credentials-empty": {
+		"defaultMessage": "DNS Credentials are empty"
 	},
 	"domain-names": {
 		"defaultMessage": "Domain Names"
@@ -748,6 +763,39 @@
 	},
 	"settings.default-site.redirect": {
 		"defaultMessage": "Redirect"
+	},
+	"settings.dns-credentials.columns.actions": {
+		"defaultMessage": "Actions"
+	},
+	"settings.dns-credentials.credentials": {
+		"defaultMessage": "Credentials"
+	},
+	"settings.dns-credentials.credentials-note": {
+		"defaultMessage": "Enter the credentials in the format required by the DNS provider (e.g., for Cloudflare: CF_API_EMAIL=xxx CF_API_KEY=xxx)"
+	},
+	"settings.dns-credentials.description": {
+		"defaultMessage": "Store DNS provider credentials to use when creating proxy hosts with SSL certificates."
+	},
+	"settings.dns-credentials.name": {
+		"defaultMessage": "Name of Credentials"
+	},
+	"settings.dns-credentials.nav": {
+		"defaultMessage": "DNS Credentials"
+	},
+	"settings.dns-credentials.none": {
+		"defaultMessage": "No saved credentials yet."
+	},
+	"settings.dns-credentials.provider": {
+		"defaultMessage": "DNS Provider"
+	},
+	"settings.dns-credentials.saved": {
+		"defaultMessage": "Saved Credentials"
+	},
+	"settings.dns-credentials.select-provider": {
+		"defaultMessage": "Select a provider..."
+	},
+	"settings.dns-credentials.title": {
+		"defaultMessage": "DNS Provider Credentials"
 	},
 	"setup.preamble": {
 		"defaultMessage": "Get started by creating your admin account."

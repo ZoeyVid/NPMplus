@@ -6,6 +6,7 @@ import auditLogRoutes from "./audit-log.js";
 import accessListsRoutes from "./nginx/access_lists.js";
 import certificatesHostsRoutes from "./nginx/certificates.js";
 import deadHostsRoutes from "./nginx/dead_hosts.js";
+import dnsCredentialsRoutes from "./nginx/dns-credentials.js";
 import proxyHostsRoutes from "./nginx/proxy_hosts.js";
 import redirectionHostsRoutes from "./nginx/redirection_hosts.js";
 import streamsRoutes from "./nginx/streams.js";
@@ -60,6 +61,7 @@ router.use("/api/nginx/dead-hosts", deadHostsRoutes);
 router.use("/api/nginx/streams", streamsRoutes);
 router.use("/api/nginx/access-lists", accessListsRoutes);
 router.use("/api/nginx/certificates", certificatesHostsRoutes);
+router.use("/api/nginx/dns-credentials", dnsCredentialsRoutes);
 
 /**
  * API 404 for all other routes

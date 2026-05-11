@@ -233,6 +233,25 @@
 				"$ref": "./paths/nginx/dead-hosts/hostID/disable/post.json"
 			}
 		},
+		"/nginx/dns-credentials": {
+			"get": {
+				"$ref": "./paths/nginx/dns-credentials/get.json"
+			},
+			"post": {
+				"$ref": "./paths/nginx/dns-credentials/post.json"
+			}
+		},
+		"/nginx/dns-credentials/{credentialID}": {
+			"get": {
+				"$ref": "./paths/nginx/dns-credentials/credentialID/get.json"
+			},
+			"put": {
+				"$ref": "./paths/nginx/dns-credentials/credentialID/put.json"
+			},
+			"delete": {
+				"$ref": "./paths/nginx/dns-credentials/credentialID/delete.json"
+			}
+		},
 		"/nginx/streams": {
 			"get": {
 				"$ref": "./paths/nginx/streams/get.json"

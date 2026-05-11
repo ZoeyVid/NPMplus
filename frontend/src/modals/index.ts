@@ -4,6 +4,7 @@ export * from "./CustomCertificateModal";
 export * from "./DeadHostModal";
 export * from "./DeleteConfirmModal";
 export * from "./DNSCertificateModal";
+export * from "./DnsCredentialModal";
 export * from "./EventDetailsModal";
 export * from "./HelpModal";
 export * from "./HTTPCertificateModal";
