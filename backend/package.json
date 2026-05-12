@@ -11,7 +11,7 @@
 		"ajv": "8.20.0",
 		"archiver": "8.0.0",
 		"bcryptjs": "3.0.3",
-		"better-sqlite3": "12.9.0",
+		"better-sqlite3": "12.10.0",
 		"cookie-parser": "1.4.7",
 		"dayjs": "1.11.20",
 		"express": "5.2.1",
