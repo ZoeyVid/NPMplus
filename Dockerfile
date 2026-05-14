@@ -5,9 +5,9 @@ SHELL ["/bin/ash", "-eo", "pipefail", "-c"]
 ARG LUAJIT_INC=/usr/include/luajit-2.1
 ARG LUAJIT_LIB=/usr/lib
 
-ARG AWSLC_VER=v1.73.0
+ARG AWSLC_VER=44766fa7daa88e5afc7fc6de3311c48eeeb02f39 # v1.73.0
 
-ARG NGINX_VER=release-1.31.0
+ARG NGINX_VER=bc053a4e18fa09c7bdcaf6ea9b980b1fdc05ba00 # release-1.31.0
 ARG DTR_VER=1.29.2
 ARG RCP_VER=1.31.0
 ARG ZNP_VER=1.30.0
@@ -16,16 +16,16 @@ ARG NB_VER=master
 ARG NUB_VER=main
 ARG ZNM_VER=master
 ARG NHUZFM_VER=main
-ARG NF_VER=v0.6.0
-ARG HMNM_VER=v0.39
-ARG NDK_VER=v0.3.4
-ARG LNM_VER=v0.10.29R2
+ARG NF_VER=047589e4dc0041517b8a47739fa960c430c4045e # v0.6.0
+ARG HMNM_VER=2b1debde426783b8f42246149d3638644a6347cb # v0.39
+ARG NDK_VER=bd44d16302273052d6005d7bdb55f74e23813de3 # v0.3.4
+ARG LNM_VER=16612cb0a2eb71273fc5b50a4d98e3c05559178a # v0.10.29R2
 
-ARG NJS_VER=0.9.8
+ARG NJS_VER=ab6f49e9340ef1c0e56bf4a8a79e0a31c138819d # 0.9.8
 ARG NAL_VER=master
-ARG VTS_VER=v0.2.5
+ARG VTS_VER=b2a036ab6c1ffd5615f9ea57d6710287590735cd # v0.2.5
 ARG NNTLM_VER=master
-ARG NHG2M_VER=3.4
+ARG NHG2M_VER=cbaa35461c62a99d2577e6bae3273492502d8769 # 3.4
 
 ARG FLAGS
 ARG CC=clang
@@ -48,17 +48,23 @@ RUN git clone --depth 1 https://github.com/aws/aws-lc --branch "$AWSLC_VER" /src
 
 RUN git clone --depth 1 https://github.com/nginx/nginx --branch "$NGINX_VER" /src/nginx && \
     cd /src/nginx && \
-    wget -q https://raw.githubusercontent.com/nginx-modules/ngx_http_tls_dyn_size/refs/heads/master/nginx__dynamic_tls_records_"$DTR_VER"%2B.patch -O /src/nginx/1.patch && \
+    wget -q https://patch-diff.githubusercontent.com/raw/nginx/nginx/pull/689.patch -O /src/nginx/1.patch && \
+    echo "73fdee62748f1624f87015a951a2480fd0d4fe566a81d92b852b51536d954b91  /src/nginx/1.patch" | sha256sum -c - && \
     git apply /src/nginx/1.patch && \
-    wget -q https://raw.githubusercontent.com/openresty/openresty/refs/heads/master/patches/nginx/"$RCP_VER"/nginx-"$RCP_VER"-resolver_conf_parsing.patch -O /src/nginx/2.patch && \
+    wget -q https://patch-diff.githubusercontent.com/raw/nginx/nginx/pull/1219.patch -O /src/nginx/2.patch && \
+    echo "1b82e6da05f533683c3c62e376aa707d3c79265e03dd5be5d740e658122cc171  /src/nginx/2.patch" | sha256sum -c - && \
     git apply /src/nginx/2.patch && \
-    wget -q https://patch-diff.githubusercontent.com/raw/nginx/nginx/pull/689.patch -O /src/nginx/3.patch && \
+    wget -q https://patch-diff.githubusercontent.com/raw/nginx/nginx/pull/1333.patch -O /src/nginx/3.patch && \
+    echo "2bee0e098f0c58c0648e086c51c9ce7f68f83c0da0f1b7bfaa3ede02fc9b5fc2  /src/nginx/3.patch" | sha256sum -c - && \
     git apply /src/nginx/3.patch && \
-    wget -q https://raw.githubusercontent.com/zlib-ng/patches/refs/heads/master/nginx/"$ZNP_VER"-zlib-ng.patch -O /src/nginx/4.patch && \
+    wget -q https://raw.githubusercontent.com/nginx-modules/ngx_http_tls_dyn_size/refs/heads/master/nginx__dynamic_tls_records_"$DTR_VER"%2B.patch -O /src/nginx/4.patch && \
+    echo "0aa9c73e7515dbbd48ecc798f7894412c1a50e96e98aee25847e823059faf821  /src/nginx/4.patch" | sha256sum -c - && \
     git apply /src/nginx/4.patch && \
-    wget -q https://patch-diff.githubusercontent.com/raw/nginx/nginx/pull/1219.patch -O /src/nginx/5.patch && \
+    wget -q https://raw.githubusercontent.com/openresty/openresty/refs/heads/master/patches/nginx/"$RCP_VER"/nginx-"$RCP_VER"-resolver_conf_parsing.patch -O /src/nginx/5.patch && \
+    echo "bda9db7d2766b20c9490f1ccd6d2da72fee402ade219efb32fe341851dbdd7c8  /src/nginx/5.patch" | sha256sum -c - && \
     git apply /src/nginx/5.patch && \
-    wget -q https://patch-diff.githubusercontent.com/raw/nginx/nginx/pull/1333.patch -O /src/nginx/6.patch && \
+    wget -q https://raw.githubusercontent.com/zlib-ng/patches/refs/heads/master/nginx/"$ZNP_VER"-zlib-ng.patch -O /src/nginx/6.patch && \
+    echo "bcd0f2fb9723fc1f251f94cead8d5160e767f7d4a04365331396a72a9ba54c6b  /src/nginx/6.patch" | sha256sum -c - && \
     git apply /src/nginx/6.patch && \
     git apply /src/nginx-footer.patch && \
     git apply /src/nginx-ip-sni.patch && \
@@ -74,8 +80,10 @@ RUN git clone --depth 1 https://github.com/nginx/nginx --branch "$NGINX_VER" /sr
     git apply /src/ngx_unbrotli.patch && \
     git clone --depth 1 https://github.com/tokers/zstd-nginx-module --branch "$ZNM_VER" /src/zstd-nginx-module && \
     cd /src/zstd-nginx-module && \
-    wget -q https://patch-diff.githubusercontent.com/raw/tokers/zstd-nginx-module/pull/44.patch -O /src/zstd-nginx-module/1.patch && \
-    wget -q https://patch-diff.githubusercontent.com/raw/tokers/zstd-nginx-module/pull/23.patch -O /src/zstd-nginx-module/2.patch && \
+    wget -q https://patch-diff.githubusercontent.com/raw/tokers/zstd-nginx-module/pull/23.patch -O /src/zstd-nginx-module/1.patch && \
+    echo "7bd3c71770305ab44defe5e2768a62d870061645b095b9564d4afd57a64ad3b9  /src/zstd-nginx-module/1.patch" | sha256sum -c - && \
+    wget -q https://patch-diff.githubusercontent.com/raw/tokers/zstd-nginx-module/pull/44.patch -O /src/zstd-nginx-module/2.patch && \
+    echo "577dc3e2d6e0378520cee6f621fa9824dd571992185cb58e2198ffa9bf814c6f  /src/zstd-nginx-module/2.patch" | sha256sum -c - && \
     git apply /src/zstd-nginx-module.patch && \
     git apply /src/zstd-nginx-module/1.patch && \
     git apply /src/zstd-nginx-module/2.patch && \
@@ -195,8 +203,8 @@ RUN apk upgrade --no-cache -a && \
 FROM alpine:3.23.4@sha256:5b10f432ef3da1b8d4c7eb6c487f2f5a8f096bc91145e68878dd4a5019afde11
 SHELL ["/bin/ash", "-eo", "pipefail", "-c"]
 ENV NODE_ENV=production
-ARG LRC_VER=v0.1.32R1
-ARG LRL_VER=v0.15
+ARG LRC_VER=3ad8ab4b01758c0a03b534026c31cbfa9fc203a5 # v0.1.32R1
+ARG LRL_VER=3ff6300e68b73ba20e909c7d16bd839aef2e5a4b # v0.15
 ARG LCSB_VER=v1.0.14
 
 COPY --from=nginx /usr/local/nginx                                                                         /usr/local/nginx
