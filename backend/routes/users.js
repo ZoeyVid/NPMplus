@@ -95,33 +95,6 @@ router
 			debug(logger, `${req.method.toUpperCase()} ${req.originalUrl}: ${err}`);
 			next(err);
 		}
-	})
-
-	/**
-	 * DELETE /api/users
-	 *
-	 * Deletes ALL users. This is NOT GENERALLY AVAILABLE!
-	 * (!) It is NOT an authenticated endpoint.
-	 * (!) Only CI should be able to call this endpoint. As a result,
-	 *
-	 * it will only work when the env vars DEBUG=true and CI=true
-	 *
-	 * Do NOT set those env vars in a production environment!
-	 */
-	.delete(async (_, res, next) => {
-		if (isCI()) {
-			try {
-				logger.warn("Deleting all users - CI environment detected, allowing this operation");
-				await internalUser.deleteAll();
-				res.status(200).send(true);
-			} catch (err) {
-				debug(logger, `${req.method.toUpperCase()} ${req.originalUrl}: ${err}`);
-				next(err);
-			}
-			return;
-		}
-
-		next(new errs.ItemNotFoundError());
 	});
 
 /**

@@ -267,7 +267,7 @@
   		"credentials": "dns_hosterby_access_key = YOUR_ACCESS_KEY\ndns_hosterby_secret_key = YOUR_SECRET_KEY",
   		"full_plugin_name": "dns-hosterby",
   		"name": "hoster.by",
-  		"package_name": "certbot-dns-hosterby",
+  		"package_name": "certbot-dns-hosterby"
 	},
 	"infomaniak": {
 		"credentials": "dns_infomaniak_token = XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX",

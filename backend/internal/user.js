@@ -357,12 +357,6 @@ const internalUser = {
 			});
 	},
 
-	deleteAll: async () => {
-		await userModel.query().patch({
-			is_deleted: 1,
-		});
-	},
-
 	/**
 	 * This will only count the users
 	 *
