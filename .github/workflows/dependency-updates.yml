@@ -16,14 +16,14 @@ jobs:
         id: update
         run: |
           AWSLC_VER="$(
-          git ls-remote --tags https://github.com/aws/aws-lc \
+          git ls-remote --tags --refs https://github.com/aws/aws-lc \
               | cut -d/ -f3 \
               | sort -V \
               | grep -vi rc \
-              | tail -1 \
-              | sed "s|\^{}||g"
+              | tail -1
           )"
-          sed -i "s|ARG AWSLC_VER=.*|ARG AWSLC_VER=$AWSLC_VER|" Dockerfile
+          AWSLC_SHA="$(git ls-remote https://github.com/aws/aws-lc "$AWSLC_VER" | cut -f1)"
+          sed -i "s|ARG AWSLC_VER=.*|ARG AWSLC_VER=$AWSLC_SHA # $AWSLC_VER|" Dockerfile
           echo "version=$AWSLC_VER" >> $GITHUB_OUTPUT
       - name: Create Pull Request
         uses: peter-evans/create-pull-request@5f6978faf089d4d20b00c7766989d076bb2fc7f1 # v8.1.1
@@ -44,14 +44,14 @@ jobs:
         id: update
         run: |
           NGINX_VER="$(
-          git ls-remote --tags https://github.com/nginx/nginx \
+          git ls-remote --tags --refs https://github.com/nginx/nginx \
               | cut -d/ -f3 \
               | sort -V \
               | grep -vi rc \
-              | tail -1 \
-              | sed "s|\^{}||g"
+              | tail -1
           )"
-          sed -i "s|ARG NGINX_VER=.*|ARG NGINX_VER=$NGINX_VER|" Dockerfile
+          NGINX_SHA="$(git ls-remote https://github.com/nginx/nginx "$NGINX_VER" | cut -f1)"
+          sed -i "s|ARG NGINX_VER=.*|ARG NGINX_VER=$NGINX_SHA # $NGINX_VER|" Dockerfile
           echo "version=$NGINX_VER" >> $GITHUB_OUTPUT
       - name: Create Pull Request
         uses: peter-evans/create-pull-request@5f6978faf089d4d20b00c7766989d076bb2fc7f1 # v8.1.1
@@ -153,18 +153,18 @@ jobs:
         id: update
         run: |
           NB_VER="$(
-          git ls-remote --tags https://github.com/google/ngx_brotli \
+          git ls-remote --tags --refs https://github.com/google/ngx_brotli \
               | cut -d/ -f3 \
               | sort -V \
               | grep -vi rc \
-              | tail -1 \
-              | sed "s|\^{}||g"
+              | tail -1
           )"
-          sed -i "s|ARG NB_VER=.*|ARG NB_VER=$NB_VER|" Dockerfile
+          if [ -z "$NB_VER" ]; then NB_VER=master; fi
+          NB_SHA="$(git ls-remote https://github.com/google/ngx_brotli "$NB_VER" | cut -f1)"
+          sed -i "s|ARG NB_VER=.*|ARG NB_VER=$NB_SHA # $NB_VER|" Dockerfile
           echo "version=$NB_VER" >> $GITHUB_OUTPUT
       - name: Create Pull Request
         uses: peter-evans/create-pull-request@5f6978faf089d4d20b00c7766989d076bb2fc7f1 # v8.1.1
-        if: ${{ steps.update.outputs.version != '' }}
         with:
           signoff: true
           delete-branch: true
@@ -181,18 +181,18 @@ jobs:
         id: update
         run: |
           NUB_VER="$(
-          git ls-remote --tags https://github.com/clyfish/ngx_unbrotli \
+          git ls-remote --tags --refs https://github.com/clyfish/ngx_unbrotli \
               | cut -d/ -f3 \
               | sort -V \
               | grep -vi rc \
-              | tail -1 \
-              | sed "s|\^{}||g"
+              | tail -1
           )"
-          sed -i "s|ARG NUB_VER=.*|ARG NUB_VER=$NUB_VER|" Dockerfile
+          if [ -z "$NUB_VER" ]; then NUB_VER=main; fi
+          NUB_SHA="$(git ls-remote https://github.com/clyfish/ngx_unbrotli "$NUB_VER" | cut -f1)"
+          sed -i "s|ARG NUB_VER=.*|ARG NUB_VER=$NUB_SHA # $NUB_VER|" Dockerfile
           echo "version=$NUB_VER" >> $GITHUB_OUTPUT
       - name: Create Pull Request
         uses: peter-evans/create-pull-request@5f6978faf089d4d20b00c7766989d076bb2fc7f1 # v8.1.1
-        if: ${{ steps.update.outputs.version != '' }}
         with:
           signoff: true
           delete-branch: true
@@ -209,18 +209,18 @@ jobs:
         id: update
         run: |
           ZNM_VER="$(
-          git ls-remote --tags https://github.com/tokers/zstd-nginx-module \
+          git ls-remote --tags --refs https://github.com/tokers/zstd-nginx-module \
               | cut -d/ -f3 \
               | sort -V \
               | grep -vi rc \
-              | tail -1 \
-              | sed "s|\^{}||g"
+              | tail -1
           )"
-          sed -i "s|ARG ZNM_VER=.*|ARG ZNM_VER=$ZNM_VER|" Dockerfile
+          if [ "$ZNM_VER" = "0.1.1" ]; then ZNM_VER=master; fi
+          ZNM_SHA="$(git ls-remote https://github.com/tokers/zstd-nginx-module "$ZNM_VER" | cut -f1)"
+          sed -i "s|ARG ZNM_VER=.*|ARG ZNM_VER=$ZNM_SHA # $ZNM_VER|" Dockerfile
           echo "version=$ZNM_VER" >> $GITHUB_OUTPUT
       - name: Create Pull Request
         uses: peter-evans/create-pull-request@5f6978faf089d4d20b00c7766989d076bb2fc7f1 # v8.1.1
-        if: ${{ steps.update.outputs.version != '0.1.1' }}
         with:
           signoff: true
           delete-branch: true
@@ -237,18 +237,18 @@ jobs:
         id: update
         run: |
           NHUZFM_VER="$(
-          git ls-remote --tags https://github.com/HanadaLee/ngx_http_unzstd_filter_module \
+          git ls-remote --tags --refs https://github.com/HanadaLee/ngx_http_unzstd_filter_module \
               | cut -d/ -f3 \
               | sort -V \
               | grep -vi rc \
-              | tail -1 \
-              | sed "s|\^{}||g"
+              | tail -1
           )"
-          sed -i "s|ARG NHUZFM_VER=.*|ARG NHUZFM_VER=$NHUZFM_VER|" Dockerfile
+          if [ -z "$NHUZFM_VER" ]; then NHUZFM_VER=main; fi
+          NHUZFM_SHA="$(git ls-remote https://github.com/HanadaLee/ngx_http_unzstd_filter_module "$NHUZFM_VER" | cut -f1)"
+          sed -i "s|ARG NHUZFM_VER=.*|ARG NHUZFM_VER=$NHUZFM_SHA # $NHUZFM_VER|" Dockerfile
           echo "version=$NHUZFM_VER" >> $GITHUB_OUTPUT
       - name: Create Pull Request
         uses: peter-evans/create-pull-request@5f6978faf089d4d20b00c7766989d076bb2fc7f1 # v8.1.1
-        if: ${{ steps.update.outputs.version != '' }}
         with:
           signoff: true
           delete-branch: true
@@ -265,18 +265,17 @@ jobs:
         id: update
         run: |
           NF_VER="$(
-          git ls-remote --tags https://github.com/aperezdc/ngx-fancyindex \
+          git ls-remote --tags --refs https://github.com/aperezdc/ngx-fancyindex \
               | cut -d/ -f3 \
               | sort -V \
               | grep -vi rc \
-              | tail -1 \
-              | sed "s|\^{}||g"
+              | tail -1
           )"
-          sed -i "s|ARG NF_VER=.*|ARG NF_VER=$NF_VER|" Dockerfile
+          NF_SHA="$(git ls-remote https://github.com/aperezdc/ngx-fancyindex "$NF_VER" | cut -f1)"
+          sed -i "s|ARG NF_VER=.*|ARG NF_VER=$NF_SHA # $NF_VER|" Dockerfile
           echo "version=$NF_VER" >> $GITHUB_OUTPUT
       - name: Create Pull Request
         uses: peter-evans/create-pull-request@5f6978faf089d4d20b00c7766989d076bb2fc7f1 # v8.1.1
-        if: ${{ steps.update.outputs.version != 'v0.5.2' }}
         with:
           signoff: true
           delete-branch: true
@@ -293,14 +292,14 @@ jobs:
         id: update
         run: |
           HMNM_VER="$(
-          git ls-remote --tags https://github.com/openresty/headers-more-nginx-module \
+          git ls-remote --tags --refs https://github.com/openresty/headers-more-nginx-module \
               | cut -d/ -f3 \
               | sort -V \
               | grep -vi rc \
-              | tail -1 \
-              | sed "s|\^{}||g"
+              | tail -1
           )"
-          sed -i "s|ARG HMNM_VER=.*|ARG HMNM_VER=$HMNM_VER|" Dockerfile
+          HMNM_SHA="$(git ls-remote https://github.com/openresty/headers-more-nginx-module "$HMNM_VER" | cut -f1)"
+          sed -i "s|ARG HMNM_VER=.*|ARG HMNM_VER=$HMNM_SHA # $HMNM_VER|" Dockerfile
           echo "version=$HMNM_VER" >> $GITHUB_OUTPUT
       - name: Create Pull Request
         uses: peter-evans/create-pull-request@5f6978faf089d4d20b00c7766989d076bb2fc7f1 # v8.1.1
@@ -320,14 +319,14 @@ jobs:
         id: update
         run: |
           NDK_VER="$(
-          git ls-remote --tags https://github.com/vision5/ngx_devel_kit \
+          git ls-remote --tags --refs https://github.com/vision5/ngx_devel_kit \
               | cut -d/ -f3 \
               | sort -V \
               | grep -vi rc \
-              | tail -1 \
-              | sed "s|\^{}||g"
+              | tail -1
           )"
-          sed -i "s|ARG NDK_VER=.*|ARG NDK_VER=$NDK_VER|" Dockerfile
+          NDK_SHA="$(git ls-remote https://github.com/vision5/ngx_devel_kit "$NDK_VER" | cut -f1)"
+          sed -i "s|ARG NDK_VER=.*|ARG NDK_VER=$NDK_SHA # $NDK_VER|" Dockerfile
           echo "version=$NDK_VER" >> $GITHUB_OUTPUT
       - name: Create Pull Request
         uses: peter-evans/create-pull-request@5f6978faf089d4d20b00c7766989d076bb2fc7f1 # v8.1.1
@@ -347,14 +346,14 @@ jobs:
         id: update
         run: |
           LNM_VER="$(
-          git ls-remote --tags https://github.com/openresty/lua-nginx-module \
+          git ls-remote --tags --refs https://github.com/openresty/lua-nginx-module \
               | cut -d/ -f3 \
               | sort -V \
               | grep -vi rc \
-              | tail -1 \
-              | sed "s|\^{}||g"
+              | tail -1
           )"
-          sed -i "s|ARG LNM_VER=.*|ARG LNM_VER=$LNM_VER|" Dockerfile
+          LNM_SHA="$(git ls-remote https://github.com/openresty/lua-nginx-module "$LNM_VER" | cut -f1)"
+          sed -i "s|ARG LNM_VER=.*|ARG LNM_VER=$LNM_SHA # $LNM_VER|" Dockerfile
           echo "version=$LNM_VER" >> $GITHUB_OUTPUT
       - name: Create Pull Request
         uses: peter-evans/create-pull-request@5f6978faf089d4d20b00c7766989d076bb2fc7f1 # v8.1.1
@@ -376,14 +375,14 @@ jobs:
         id: update
         run: |
           NJS_VER="$(
-          git ls-remote --tags https://github.com/nginx/njs \
+          git ls-remote --tags --refs https://github.com/nginx/njs \
               | cut -d/ -f3 \
               | sort -V \
               | grep -vi rc \
-              | tail -1 \
-              | sed "s|\^{}||g"
+              | tail -1
           )"
-          sed -i "s|ARG NJS_VER=.*|ARG NJS_VER=$NJS_VER|" Dockerfile
+          NJS_SHA="$(git ls-remote https://github.com/nginx/njs "$NJS_VER" | cut -f1)"
+          sed -i "s|ARG NJS_VER=.*|ARG NJS_VER=$NJS_SHA # $NJS_VER|" Dockerfile
           echo "version=$NJS_VER" >> $GITHUB_OUTPUT
       - name: Create Pull Request
         uses: peter-evans/create-pull-request@5f6978faf089d4d20b00c7766989d076bb2fc7f1 # v8.1.1
@@ -403,18 +402,18 @@ jobs:
         id: update
         run: |
           NAL_VER="$(
-          git ls-remote --tags https://github.com/kvspb/nginx-auth-ldap \
+          git ls-remote --tags --refs https://github.com/kvspb/nginx-auth-ldap \
               | cut -d/ -f3 \
               | sort -V \
               | grep -vi rc \
-              | tail -1 \
-              | sed "s|\^{}||g"
+              | tail -1
           )"
-          sed -i "s|ARG NAL_VER=.*|ARG NAL_VER=$NAL_VER|" Dockerfile
+          if [ "$NAL_VER" = "v0.1" ]; then NAL_VER=master; fi
+          NAL_SHA="$(git ls-remote https://github.com/kvspb/nginx-auth-ldap "$NAL_VER" | cut -f1)"
+          sed -i "s|ARG NAL_VER=.*|ARG NAL_VER=$NAL_SHA # $NAL_VER|" Dockerfile
           echo "version=$NAL_VER" >> $GITHUB_OUTPUT
       - name: Create Pull Request
         uses: peter-evans/create-pull-request@5f6978faf089d4d20b00c7766989d076bb2fc7f1 # v8.1.1
-        if: ${{ steps.update.outputs.version != 'v0.1' }}
         with:
           signoff: true
           delete-branch: true
@@ -431,14 +430,14 @@ jobs:
         id: update
         run: |
           VTS_VER="$(
-          git ls-remote --tags https://github.com/vozlt/nginx-module-vts \
+          git ls-remote --tags --refs https://github.com/vozlt/nginx-module-vts \
               | cut -d/ -f3 \
               | sort -V \
               | grep -vi rc \
-              | tail -1 \
-              | sed "s|\^{}||g"
+              | tail -1
           )"
-          sed -i "s|ARG VTS_VER=.*|ARG VTS_VER=$VTS_VER|" Dockerfile
+          VTS_SHA="$(git ls-remote https://github.com/vozlt/nginx-module-vts "$VTS_VER" | cut -f1)"
+          sed -i "s|ARG VTS_VER=.*|ARG VTS_VER=$VTS_SHA # $VTS_VER|" Dockerfile
           echo "version=$VTS_VER" >> $GITHUB_OUTPUT
       - name: Create Pull Request
         uses: peter-evans/create-pull-request@5f6978faf089d4d20b00c7766989d076bb2fc7f1 # v8.1.1
@@ -458,18 +457,18 @@ jobs:
         id: update
         run: |
           NNTLM_VER="$(
-          git ls-remote --tags https://github.com/gabihodoroaga/nginx-ntlm-module \
+          git ls-remote --tags --refs https://github.com/gabihodoroaga/nginx-ntlm-module \
               | cut -d/ -f3 \
               | sort -V \
               | grep -vi rc \
-              | tail -1 \
-              | sed "s|\^{}||g"
+              | tail -1
           )"
-          sed -i "s|ARG NNTLM_VER=.*|ARG NNTLM_VER=$NNTLM_VER|" Dockerfile
+          if [ "$NNTLM_VER" = "v1.19.3-beta.1" ]; then NNTLM_VER=master; fi
+          NNTLM_SHA="$(git ls-remote https://github.com/gabihodoroaga/nginx-ntlm-module "$NNTLM_VER" | cut -f1)"
+          sed -i "s|ARG NNTLM_VER=.*|ARG NNTLM_VER=$NNTLM_SHA # $NNTLM_VER|" Dockerfile
           echo "version=$NNTLM_VER" >> $GITHUB_OUTPUT
       - name: Create Pull Request
         uses: peter-evans/create-pull-request@5f6978faf089d4d20b00c7766989d076bb2fc7f1 # v8.1.1
-        if: ${{ steps.update.outputs.version != 'v1.19.3-beta.1' }}
         with:
           signoff: true
           delete-branch: true
@@ -486,14 +485,14 @@ jobs:
         id: update
         run: |
           NHG2M_VER="$(
-          git ls-remote --tags https://github.com/leev/ngx_http_geoip2_module \
+          git ls-remote --tags --refs https://github.com/leev/ngx_http_geoip2_module \
               | cut -d/ -f3 \
               | sort -V \
               | grep -vi rc \
-              | tail -1 \
-              | sed "s|\^{}||g"
+              | tail -1
           )"
-          sed -i "s|ARG NHG2M_VER=.*|ARG NHG2M_VER=$NHG2M_VER|" Dockerfile
+          NHG2M_SHA="$(git ls-remote https://github.com/leev/ngx_http_geoip2_module "$NHG2M_VER" | cut -f1)"
+          sed -i "s|ARG NHG2M_VER=.*|ARG NHG2M_VER=$NHG2M_SHA # $NHG2M_VER|" Dockerfile
           echo "version=$NHG2M_VER" >> $GITHUB_OUTPUT
       - name: Create Pull Request
         uses: peter-evans/create-pull-request@5f6978faf089d4d20b00c7766989d076bb2fc7f1 # v8.1.1
@@ -505,6 +504,35 @@ jobs:
           title: update ngx_http_geoip2_module version to ${{ steps.update.outputs.version }}
           body: update ngx_http_geoip2_module version to ${{ steps.update.outputs.version }}
 
+  attachment-update:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+      - name: update attachment version
+        id: update
+        run: |
+          OASA_VER="$(
+          git ls-remote --tags --refs https://github.com/openappsec/attachment \
+              | cut -d/ -f3 \
+              | sort -V \
+              | grep -vi rc \
+              | tail -1
+          )"
+          if [ -z "$OASA_VER" ]; then OASA_VER=main; fi
+          OASA_SHA="$(git ls-remote https://github.com/openappsec/attachment "$OASA_VER" | cut -f1)"
+          sed -i "s|ARG OASA_VER=.*|ARG OASA_VER=$OASA_SHA # $OASA_VER|" Dockerfile
+          echo "version=$OASA_VER" >> $GITHUB_OUTPUT
+      - name: Create Pull Request
+        uses: peter-evans/create-pull-request@5f6978faf089d4d20b00c7766989d076bb2fc7f1 # v8.1.1
+        with:
+          signoff: true
+          delete-branch: true
+          commit-message: update attachment version to ${{ steps.update.outputs.version }}
+          branch: update-attachment-version
+          title: update attachment version to ${{ steps.update.outputs.version }}
+          body: update attachment version to ${{ steps.update.outputs.version }}
+
   lua-resty-core-update:
     runs-on: ubuntu-latest
     steps:
@@ -514,14 +542,14 @@ jobs:
         id: update
         run: |
           LRC_VER="$(
-          git ls-remote --tags https://github.com/openresty/lua-resty-core \
+          git ls-remote --tags --refs https://github.com/openresty/lua-resty-core \
               | cut -d/ -f3 \
               | sort -V \
               | grep -vi rc \
-              | tail -1 \
-              | sed "s|\^{}||g"
+              | tail -1
           )"
-          sed -i "s|ARG LRC_VER=.*|ARG LRC_VER=$LRC_VER|" Dockerfile
+          LRC_SHA="$(git ls-remote https://github.com/openresty/lua-resty-core "$LRC_VER" | cut -f1)"
+          sed -i "s|ARG LRC_VER=.*|ARG LRC_VER=$LRC_SHA # $LRC_VER|" Dockerfile
           echo "version=$LRC_VER" >> $GITHUB_OUTPUT
       - name: Create Pull Request
         uses: peter-evans/create-pull-request@5f6978faf089d4d20b00c7766989d076bb2fc7f1 # v8.1.1
@@ -541,14 +569,14 @@ jobs:
         id: update
         run: |
           LRL_VER="$(
-          git ls-remote --tags https://github.com/openresty/lua-resty-lrucache \
+          git ls-remote --tags --refs https://github.com/openresty/lua-resty-lrucache \
               | cut -d/ -f3 \
               | sort -V \
               | grep -vi rc \
-              | tail -1 \
-              | sed "s|\^{}||g"
+              | tail -1
           )"
-          sed -i "s|ARG LRL_VER=.*|ARG LRL_VER=$LRL_VER|" Dockerfile
+          LRL_SHA="$(git ls-remote https://github.com/openresty/lua-resty-lrucache "$LRL_VER" | cut -f1)"
+          sed -i "s|ARG LRL_VER=.*|ARG LRL_VER=$LRL_SHA # $LRL_VER|" Dockerfile
           echo "version=$LRL_VER" >> $GITHUB_OUTPUT
       - name: Create Pull Request
         uses: peter-evans/create-pull-request@5f6978faf089d4d20b00c7766989d076bb2fc7f1 # v8.1.1
@@ -569,17 +597,17 @@ jobs:
         id: update
         run: |
           LCSB_VER="$(
-          git ls-remote --tags https://github.com/crowdsecurity/lua-cs-bouncer \
+          git ls-remote --tags --refs https://github.com/crowdsecurity/lua-cs-bouncer \
               | cut -d/ -f3 \
               | sort -V \
               | grep -vi rc \
-              | tail -1 \
-              | sed -E "s/\^\{\}//"
+              | tail -1
           )"
-          sed -i "s|ARG LCSB_VER=.*|ARG LCSB_VER=$LCSB_VER|" Dockerfile
+          LCSB_SHA="$(git ls-remote https://github.com/crowdsecurity/lua-cs-bouncer "$LCSB_VER" | cut -f1)"
+          sed -i "s|ARG LCSB_VER=.*|ARG LCSB_VER=$LCSB_SHA # $LCSB_VER|" Dockerfile
           echo "version=$LCSB_VER" >> $GITHUB_OUTPUT
-          wget https://raw.githubusercontent.com/crowdsecurity/cs-nginx-bouncer/refs/heads/main/nginx/crowdsec_nginx.conf -O rootfs/usr/local/nginx/conf/conf.d/crowdsec.conf.original
           wget https://raw.githubusercontent.com/crowdsecurity/lua-cs-bouncer/refs/tags/"$LCSB_VER"/config_example.conf -O rootfs/etc/crowdsec.conf.original
+          wget https://raw.githubusercontent.com/crowdsecurity/cs-nginx-bouncer/refs/heads/main/nginx/crowdsec_nginx.conf -O rootfs/usr/local/nginx/conf/conf.d/crowdsec.conf.original
       - name: Create Pull Request
         uses: peter-evans/create-pull-request@5f6978faf089d4d20b00c7766989d076bb2fc7f1 # v8.1.1
         with:
