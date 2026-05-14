@@ -5,27 +5,29 @@ SHELL ["/bin/ash", "-eo", "pipefail", "-c"]
 ARG LUAJIT_INC=/usr/include/luajit-2.1
 ARG LUAJIT_LIB=/usr/lib
 
-ARG AWSLC_VER=v1.73.0
+ARG AWSLC_VER=44766fa7daa88e5afc7fc6de3311c48eeeb02f39 # v1.73.0
 
-ARG NGINX_VER=release-1.31.0
+ARG NGINX_VER=bc053a4e18fa09c7bdcaf6ea9b980b1fdc05ba00 # release-1.31.0
 ARG DTR_VER=1.29.2
 ARG RCP_VER=1.31.0
 ARG ZNP_VER=1.30.0
 
-ARG NB_VER=master
-ARG NUB_VER=main
-ARG ZNM_VER=master
-ARG NHUZFM_VER=main
-ARG NF_VER=v0.6.0
-ARG HMNM_VER=v0.39
-ARG NDK_VER=v0.3.4
-ARG LNM_VER=v0.10.29R2
+ARG NB_VER=a71f9312c2deb28875acc7bacfdd5695a111aa53 # master
+ARG NUB_VER=60bed634504967a323645f8f53566cca3f2c3f53 # main
+ARG ZNM_VER=057a7d339af1111d04b5a9ac5ae9b0250d17cd94 # master
+ARG NHUZFM_VER=37e77ed348c242e222f2ae2b02c2e445e0ee2dc6 # main
+ARG NF_VER=047589e4dc0041517b8a47739fa960c430c4045e # v0.6.0
+ARG HMNM_VER=2b1debde426783b8f42246149d3638644a6347cb # v0.39
+ARG NDK_VER=bd44d16302273052d6005d7bdb55f74e23813de3 # v0.3.4
+ARG LNM_VER=16612cb0a2eb71273fc5b50a4d98e3c05559178a # v0.10.29R2
 
-ARG NJS_VER=0.9.8
-ARG NAL_VER=master
-ARG VTS_VER=v0.2.5
-ARG NNTLM_VER=master
-ARG NHG2M_VER=3.4
+ARG NJS_VER=ab6f49e9340ef1c0e56bf4a8a79e0a31c138819d # 0.9.8
+ARG NAL_VER=241200eac8e4acae74d353291bd27f79e5ca3dc4 # master
+ARG VTS_VER=b2a036ab6c1ffd5615f9ea57d6710287590735cd # v0.2.5
+ARG NNTLM_VER=3da77b0cb30e517dfee01d7e7f7d649144d24051 # master
+ARG NHG2M_VER=cbaa35461c62a99d2577e6bae3273492502d8769 # 3.4
+
+ARG OASA_VER=817925691c26cf0ea44c51125cd73d933cd7bd53 # main
 
 ARG FLAGS
 ARG CC=clang
@@ -36,29 +38,36 @@ ARG LDFLAGS="-fuse-ld=lld -m64 -Wl,-s -Wl,-O2 -Wl,-z,noexecstack -Wl,-z,relro -W
 
 WORKDIR /src
 COPY patches/*.patch /src
+COPY rootfs/usr/local/bin/git-clone-commit.sh /usr/local/bin/git-clone-commit.sh
 
 RUN apk upgrade --no-cache -a && \
     apk add --no-cache git make clang lld cmake ninja file \
                        linux-headers libatomic_ops-dev pcre2-dev luajit-dev zlib-ng-dev brotli-dev zstd-dev libxslt-dev openldap-dev quickjs-ng-dev libmaxminddb-dev clang-dev
 
-RUN git clone --depth 1 https://github.com/aws/aws-lc --branch "$AWSLC_VER" /src/aws-lc && \
+RUN git-clone-commit.sh https://github.com/aws/aws-lc "$AWSLC_VER" /src/aws-lc && \
     cd /src/aws-lc && \
     cmake /src/aws-lc -G Ninja -DCMAKE_BUILD_TYPE=Release -DBUILD_SHARED_LIBS=ON -DBUILD_TESTING=OFF -DDISABLE_GO=ON -DDISABLE_PERL=ON && \
     ninja install
 
-RUN git clone --depth 1 https://github.com/nginx/nginx --branch "$NGINX_VER" /src/nginx && \
+RUN git-clone-commit.sh https://github.com/nginx/nginx "$NGINX_VER" /src/nginx && \
     cd /src/nginx && \
-    wget -q https://raw.githubusercontent.com/nginx-modules/ngx_http_tls_dyn_size/refs/heads/master/nginx__dynamic_tls_records_"$DTR_VER"%2B.patch -O /src/nginx/1.patch && \
+    wget -q https://patch-diff.githubusercontent.com/raw/nginx/nginx/pull/689.patch -O /src/nginx/1.patch && \
+    echo "73fdee62748f1624f87015a951a2480fd0d4fe566a81d92b852b51536d954b91  /src/nginx/1.patch" | sha256sum -c - && \
     git apply /src/nginx/1.patch && \
-    wget -q https://raw.githubusercontent.com/openresty/openresty/refs/heads/master/patches/nginx/"$RCP_VER"/nginx-"$RCP_VER"-resolver_conf_parsing.patch -O /src/nginx/2.patch && \
+    wget -q https://patch-diff.githubusercontent.com/raw/nginx/nginx/pull/1219.patch -O /src/nginx/2.patch && \
+    echo "1b82e6da05f533683c3c62e376aa707d3c79265e03dd5be5d740e658122cc171  /src/nginx/2.patch" | sha256sum -c - && \
     git apply /src/nginx/2.patch && \
-    wget -q https://patch-diff.githubusercontent.com/raw/nginx/nginx/pull/689.patch -O /src/nginx/3.patch && \
+    wget -q https://patch-diff.githubusercontent.com/raw/nginx/nginx/pull/1333.patch -O /src/nginx/3.patch && \
+    echo "2bee0e098f0c58c0648e086c51c9ce7f68f83c0da0f1b7bfaa3ede02fc9b5fc2  /src/nginx/3.patch" | sha256sum -c - && \
     git apply /src/nginx/3.patch && \
-    wget -q https://raw.githubusercontent.com/zlib-ng/patches/refs/heads/master/nginx/"$ZNP_VER"-zlib-ng.patch -O /src/nginx/4.patch && \
+    wget -q https://raw.githubusercontent.com/nginx-modules/ngx_http_tls_dyn_size/refs/heads/master/nginx__dynamic_tls_records_"$DTR_VER"%2B.patch -O /src/nginx/4.patch && \
+    echo "0aa9c73e7515dbbd48ecc798f7894412c1a50e96e98aee25847e823059faf821  /src/nginx/4.patch" | sha256sum -c - && \
     git apply /src/nginx/4.patch && \
-    wget -q https://patch-diff.githubusercontent.com/raw/nginx/nginx/pull/1219.patch -O /src/nginx/5.patch && \
+    wget -q https://raw.githubusercontent.com/openresty/openresty/refs/heads/master/patches/nginx/"$RCP_VER"/nginx-"$RCP_VER"-resolver_conf_parsing.patch -O /src/nginx/5.patch && \
+    echo "bda9db7d2766b20c9490f1ccd6d2da72fee402ade219efb32fe341851dbdd7c8  /src/nginx/5.patch" | sha256sum -c - && \
     git apply /src/nginx/5.patch && \
-    wget -q https://patch-diff.githubusercontent.com/raw/nginx/nginx/pull/1333.patch -O /src/nginx/6.patch && \
+    wget -q https://raw.githubusercontent.com/zlib-ng/patches/refs/heads/master/nginx/"$ZNP_VER"-zlib-ng.patch -O /src/nginx/6.patch && \
+    echo "bcd0f2fb9723fc1f251f94cead8d5160e767f7d4a04365331396a72a9ba54c6b  /src/nginx/6.patch" | sha256sum -c - && \
     git apply /src/nginx/6.patch && \
     git apply /src/nginx-footer.patch && \
     git apply /src/nginx-ip-sni.patch && \
@@ -66,32 +75,34 @@ RUN git clone --depth 1 https://github.com/nginx/nginx --branch "$NGINX_VER" /sr
     git apply /src/nginx-ech-boringssl-awslc.patch && \
     git apply /src/nginx-cert-compression-brotli.patch && \
     \
-    git clone --depth 1 https://github.com/google/ngx_brotli --branch "$NB_VER" /src/ngx_brotli && \
+    git-clone-commit.sh https://github.com/google/ngx_brotli "$NB_VER" /src/ngx_brotli && \
     cd /src/ngx_brotli && \
     git apply /src/ngx_brotli.patch && \
-    git clone --depth 1 https://github.com/clyfish/ngx_unbrotli --branch "$NUB_VER" /src/ngx_unbrotli && \
+    git-clone-commit.sh https://github.com/clyfish/ngx_unbrotli "$NUB_VER" /src/ngx_unbrotli && \
     cd /src/ngx_unbrotli && \
     git apply /src/ngx_unbrotli.patch && \
-    git clone --depth 1 https://github.com/tokers/zstd-nginx-module --branch "$ZNM_VER" /src/zstd-nginx-module && \
+    git-clone-commit.sh https://github.com/tokers/zstd-nginx-module "$ZNM_VER" /src/zstd-nginx-module && \
     cd /src/zstd-nginx-module && \
-    wget -q https://patch-diff.githubusercontent.com/raw/tokers/zstd-nginx-module/pull/44.patch -O /src/zstd-nginx-module/1.patch && \
-    wget -q https://patch-diff.githubusercontent.com/raw/tokers/zstd-nginx-module/pull/23.patch -O /src/zstd-nginx-module/2.patch && \
+    wget -q https://patch-diff.githubusercontent.com/raw/tokers/zstd-nginx-module/pull/23.patch -O /src/zstd-nginx-module/1.patch && \
+    echo "7bd3c71770305ab44defe5e2768a62d870061645b095b9564d4afd57a64ad3b9  /src/zstd-nginx-module/1.patch" | sha256sum -c - && \
+    wget -q https://patch-diff.githubusercontent.com/raw/tokers/zstd-nginx-module/pull/44.patch -O /src/zstd-nginx-module/2.patch && \
+    echo "577dc3e2d6e0378520cee6f621fa9824dd571992185cb58e2198ffa9bf814c6f  /src/zstd-nginx-module/2.patch" | sha256sum -c - && \
     git apply /src/zstd-nginx-module.patch && \
     git apply /src/zstd-nginx-module/1.patch && \
     git apply /src/zstd-nginx-module/2.patch && \
-    git clone --depth 1 https://github.com/HanadaLee/ngx_http_unzstd_filter_module --branch "$NHUZFM_VER" /src/ngx_http_unzstd_filter_module && \
-    git clone --depth 1 https://github.com/aperezdc/ngx-fancyindex --branch "$NF_VER" /src/ngx-fancyindex && \
-    git clone --depth 1 https://github.com/openresty/headers-more-nginx-module --branch "$HMNM_VER" /src/headers-more-nginx-module && \
-    git clone --depth 1 https://github.com/vision5/ngx_devel_kit --branch "$NDK_VER" /src/ngx_devel_kit && \
-    git clone --depth 1 https://github.com/openresty/lua-nginx-module --branch "$LNM_VER" /src/lua-nginx-module && \
+    git-clone-commit.sh https://github.com/HanadaLee/ngx_http_unzstd_filter_module "$NHUZFM_VER" /src/ngx_http_unzstd_filter_module && \
+    git-clone-commit.sh https://github.com/aperezdc/ngx-fancyindex "$NF_VER" /src/ngx-fancyindex && \
+    git-clone-commit.sh https://github.com/openresty/headers-more-nginx-module "$HMNM_VER" /src/headers-more-nginx-module && \
+    git-clone-commit.sh https://github.com/vision5/ngx_devel_kit "$NDK_VER" /src/ngx_devel_kit && \
+    git-clone-commit.sh https://github.com/openresty/lua-nginx-module "$LNM_VER" /src/lua-nginx-module && \
     cd /src/lua-nginx-module && \
     git apply /src/lua-nginx-module.patch && \
     \
-    git clone --depth 1 https://github.com/nginx/njs --branch "$NJS_VER" /src/njs && \
-    git clone --depth 1 https://github.com/kvspb/nginx-auth-ldap --branch "$NAL_VER" /src/nginx-auth-ldap && \
-    git clone --depth 1 https://github.com/vozlt/nginx-module-vts --branch "$VTS_VER" /src/nginx-module-vts && \
-    git clone --depth 1 https://github.com/gabihodoroaga/nginx-ntlm-module --branch "$NNTLM_VER" /src/nginx-ntlm-module && \
-    git clone --depth 1 https://github.com/leev/ngx_http_geoip2_module --branch "$NHG2M_VER" /src/ngx_http_geoip2_module
+    git-clone-commit.sh https://github.com/nginx/njs "$NJS_VER" /src/njs && \
+    git-clone-commit.sh https://github.com/kvspb/nginx-auth-ldap "$NAL_VER" /src/nginx-auth-ldap && \
+    git-clone-commit.sh https://github.com/vozlt/nginx-module-vts "$VTS_VER" /src/nginx-module-vts && \
+    git-clone-commit.sh https://github.com/gabihodoroaga/nginx-ntlm-module "$NNTLM_VER" /src/nginx-ntlm-module && \
+    git-clone-commit.sh https://github.com/leev/ngx_http_geoip2_module "$NHG2M_VER" /src/ngx_http_geoip2_module
 
 RUN cd /src/nginx && \
     /src/nginx/auto/configure \
@@ -138,7 +149,7 @@ RUN cd /src/nginx && \
     \
     make -j "$(nproc)" install
 
-RUN git clone --depth 1 https://github.com/openappsec/attachment /src/attachment && \
+RUN git-clone-commit.sh https://github.com/openappsec/attachment "$OASA_VER" /src/attachment && \
     cd /src/attachment && \
     git apply /src/attachment.patch && \
     cmake /src/attachment -G Ninja && \
@@ -195,9 +206,9 @@ RUN apk upgrade --no-cache -a && \
 FROM alpine:3.23.4@sha256:5b10f432ef3da1b8d4c7eb6c487f2f5a8f096bc91145e68878dd4a5019afde11
 SHELL ["/bin/ash", "-eo", "pipefail", "-c"]
 ENV NODE_ENV=production
-ARG LRC_VER=v0.1.32R1
-ARG LRL_VER=v0.15
-ARG LCSB_VER=v1.0.14
+ARG LRC_VER=3ad8ab4b01758c0a03b534026c31cbfa9fc203a5 # v0.1.32R1
+ARG LRL_VER=3ff6300e68b73ba20e909c7d16bd839aef2e5a4b # v0.15
+ARG LCSB_VER=3e82dd61508ed9683b5007f823c69b112c59ac6f # v1.0.14
 
 COPY --from=nginx /usr/local/nginx                                                                         /usr/local/nginx
 COPY --from=nginx /usr/local/bin/bssl                                                                      /usr/local/bin/bssl
@@ -229,15 +240,15 @@ RUN apk upgrade --no-cache -a && \
     luarocks-5.1 install lua-resty-openidc && \
     luarocks-5.1 install lua-resty-session && \
     \
-    git clone --depth 1 https://github.com/openresty/lua-resty-core --branch "$LRC_VER" /src/lua-resty-core && \
+    git-clone-commit.sh https://github.com/openresty/lua-resty-core "$LRC_VER" /src/lua-resty-core && \
     cd /src/lua-resty-core && \
     make -j "$(nproc)" install LUA_LIB_DIR=/usr/local/share/lua/5.1 && \
     \
-    git clone --depth 1 https://github.com/openresty/lua-resty-lrucache --branch "$LRL_VER" /src/lua-resty-lrucache && \
+    git-clone-commit.sh https://github.com/openresty/lua-resty-lrucache "$LRL_VER" /src/lua-resty-lrucache && \
     cd /src/lua-resty-lrucache && \
     make -j "$(nproc)" install LUA_LIB_DIR=/usr/local/share/lua/5.1 && \
     \
-    git clone --depth 1 https://github.com/crowdsecurity/lua-cs-bouncer --branch "$LCSB_VER" /src/lua-cs-bouncer && \
+    git-clone-commit.sh https://github.com/crowdsecurity/lua-cs-bouncer "$LCSB_VER" /src/lua-cs-bouncer && \
     mv /src/lua-cs-bouncer/lib/* /usr/local/share/lua/5.1 && \
     mv /src/lua-cs-bouncer/templates/captcha.html /etc/captcha.html.original && \
     mv /src/lua-cs-bouncer/templates/ban.html /etc/ban.html.original && \
