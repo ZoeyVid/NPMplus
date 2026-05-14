@@ -204,7 +204,7 @@ FROM alpine:3.23.4@sha256:5b10f432ef3da1b8d4c7eb6c487f2f5a8f096bc91145e68878dd4a
 SHELL ["/bin/ash", "-eo", "pipefail", "-c"]
 ENV NODE_ENV=production
 ARG LRC_VER=3ad8ab4b01758c0a03b534026c31cbfa9fc203a5 # v0.1.32R1
-ARG LRL_VER=v0.15
+ARG LRL_VER=3ff6300e68b73ba20e909c7d16bd839aef2e5a4b # v0.15
 ARG LCSB_VER=v1.0.14
 
 COPY --from=nginx /usr/local/nginx                                                                         /usr/local/nginx
