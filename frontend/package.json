@@ -33,8 +33,8 @@
 	"devDependencies": {
 		"@biomejs/biome": "2.4.15",
 		"@formatjs/cli": "6.16.0",
-		"@formatjs/cli-native-linux-arm64": "^1.2.0",
-		"@formatjs/cli-native-linux-x64": "^1.1.0",
+		"@formatjs/cli-native-linux-arm64": "1.2.0",
+		"@formatjs/cli-native-linux-x64": "1.1.0",
 		"@tanstack/react-query-devtools": "5.100.10",
 		"@testing-library/dom": "10.4.1",
 		"@testing-library/jest-dom": "6.9.1",

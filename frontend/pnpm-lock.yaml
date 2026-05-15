@@ -85,10 +85,10 @@ importers:
         specifier: 6.16.0
         version: 6.16.0
       '@formatjs/cli-native-linux-arm64':
-        specifier: ^1.2.0
+        specifier: 1.2.0
         version: 1.2.0
       '@formatjs/cli-native-linux-x64':
-        specifier: ^1.1.0
+        specifier: 1.1.0
         version: 1.1.0
       '@tanstack/react-query-devtools':
         specifier: 5.100.10
@@ -323,6 +323,7 @@ packages:
     resolution: {integrity: sha512-G6YuIVD8D6hZjnsD/aYZQ2qMHSve7IadEiXgKiDfFQBbyrkjDAlt6LDSqq4qnuv3WJ7/jAOn/An6n/bGyt0rLg==}
     cpu: [arm64]
     os: [linux]
+    libc: [glibc]
 
   '@formatjs/cli-native-linux-x64@1.1.0':
     resolution: {integrity: sha512-AxORf5LR14HvXU4ov9gnhLrNIS2DYKqKMkRkprUhuh+ljba1riF05msK8KzslEPYQoeYKc5A0OZp57poh4xz/g==}
