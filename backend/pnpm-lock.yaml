@@ -43,7 +43,7 @@ importers:
         version: 9.0.3
       knex:
         specifier: 3.2.10
-        version: 3.2.10(better-sqlite3@12.10.0)(mysql2@3.22.3(@types/node@25.8.0))(pg@8.20.0)
+        version: 3.2.10(better-sqlite3@12.10.0)(mysql2@3.22.3(@types/node@25.8.0))(pg@8.21.0)
       liquidjs:
         specifier: 10.27.0
         version: 10.27.0
@@ -55,7 +55,7 @@ importers:
         version: 3.22.3(@types/node@25.8.0)
       objection:
         specifier: 3.1.5
-        version: 3.1.5(knex@3.2.10(better-sqlite3@12.10.0)(mysql2@3.22.3(@types/node@25.8.0))(pg@8.20.0))
+        version: 3.1.5(knex@3.2.10(better-sqlite3@12.10.0)(mysql2@3.22.3(@types/node@25.8.0))(pg@8.21.0))
       openid-client:
         specifier: 6.8.4
         version: 6.8.4
@@ -63,8 +63,8 @@ importers:
         specifier: 13.4.0
         version: 13.4.0
       pg:
-        specifier: 8.20.0
-        version: 8.20.0
+        specifier: 8.21.0
+        version: 8.21.0
       signale:
         specifier: 1.4.0
         version: 1.4.0
@@ -889,11 +889,11 @@ packages:
   path-to-regexp@8.4.2:
     resolution: {integrity: sha512-qRcuIdP69NPm4qbACK+aDogI5CBDMi1jKe0ry5rSQJz8JVLsC7jV8XpiJjGRLLol3N+R5ihGYcrPLTno6pAdBA==}
 
-  pg-cloudflare@1.3.0:
-    resolution: {integrity: sha512-6lswVVSztmHiRtD6I8hw4qP/nDm1EJbKMRhf3HCYaqud7frGysPv7FYJ5noZQdhQtN2xJnimfMtvQq21pdbzyQ==}
+  pg-cloudflare@1.4.0:
+    resolution: {integrity: sha512-Vo7z/6rrQYxpNRylp4Tlob2elzbh+N/MOQbxFVWCxS7oEx6jF53GTJFxK2WWpKuBRkmiin4Mt+xofFDjx09R0A==}
 
-  pg-connection-string@2.12.0:
-    resolution: {integrity: sha512-U7qg+bpswf3Cs5xLzRqbXbQl85ng0mfSV/J0nnA31MCLgvEaAo7CIhmeyrmJpOr7o+zm0rXK+hNnT5l9RHkCkQ==}
+  pg-connection-string@2.13.0:
+    resolution: {integrity: sha512-EMnU9E2fSULdsbErBbMaXJvFeD9B4+nPcM3f+4lsiCR0BHLPrLVjv3DbyM2hgQQviKJaTWIRRTjKjWlHg3p2ig==}
 
   pg-connection-string@2.6.2:
     resolution: {integrity: sha512-ch6OwaeaPYcova4kKZ15sbJ2hKb/VP48ZD2gE7i1J+L4MspCtBMAx8nMgz7bksc7IojCIIWuEhHibSMFH8m8oA==}
@@ -902,20 +902,20 @@ packages:
     resolution: {integrity: sha512-WCtabS6t3c8SkpDBUlb1kjOs7l66xsGdKpIPZsg4wR+B3+u9UAum2odSsF9tnvxg80h4ZxLWMy4pRjOsFIqQpw==}
     engines: {node: '>=4.0.0'}
 
-  pg-pool@3.13.0:
-    resolution: {integrity: sha512-gB+R+Xud1gLFuRD/QgOIgGOBE2KCQPaPwkzBBGC9oG69pHTkhQeIuejVIk3/cnDyX39av2AxomQiyPT13WKHQA==}
+  pg-pool@3.14.0:
+    resolution: {integrity: sha512-gKtPkFdQPU3DksooVLi9LsjZxrsBUZIpa+7aVx+LV5pNh0KzP4Zleud2po+ConrxbuXGBJ6Hfer6hdgpIBpBaw==}
     peerDependencies:
       pg: '>=8.0'
 
-  pg-protocol@1.13.0:
-    resolution: {integrity: sha512-zzdvXfS6v89r6v7OcFCHfHlyG/wvry1ALxZo4LqgUoy7W9xhBDMaqOuMiF3qEV45VqsN6rdlcehHrfDtlCPc8w==}
+  pg-protocol@1.14.0:
+    resolution: {integrity: sha512-n5taZ1kO3s9ngDTVxsEznOqCyToTgz0FLuPq0B33COy5pPpuWJpY3/2oRBVETuOgzdqRXfWpM9HIhp2LBBT1BA==}
 
   pg-types@2.2.0:
     resolution: {integrity: sha512-qTAAlrEsl8s4OiEQY69wDvcMIdQN6wdz5ojQiOy6YRMuynxenON0O5oCpJI6lshc6scgAY8qvJ2On/p+CXY0GA==}
     engines: {node: '>=4'}
 
-  pg@8.20.0:
-    resolution: {integrity: sha512-ldhMxz2r8fl/6QkXnBD3CR9/xg694oT6DZQ2s6c/RI28OjtSOpxnPrUCGOBJ46RCUxcWdx3p6kw/xnDHjKvaRA==}
+  pg@8.21.0:
+    resolution: {integrity: sha512-AUP1EYJuHraQGsVoCQVIcM7TEJVGtDzxWtGFZd8rds9d+CCXlU5Js1rYgfLNvxy9iJrpHjGrRjoi/3BT9fRyiA==}
     engines: {node: '>= 16.0.0'}
     peerDependencies:
       pg-native: '>=3.0.1'
@@ -1755,7 +1755,7 @@ snapshots:
       jwa: 2.0.1
       safe-buffer: 5.2.1
 
-  knex@3.2.10(better-sqlite3@12.10.0)(mysql2@3.22.3(@types/node@25.8.0))(pg@8.20.0):
+  knex@3.2.10(better-sqlite3@12.10.0)(mysql2@3.22.3(@types/node@25.8.0))(pg@8.21.0):
     dependencies:
       colorette: 2.0.19
       commander: 10.0.1
@@ -1774,7 +1774,7 @@ snapshots:
     optionalDependencies:
       better-sqlite3: 12.10.0
       mysql2: 3.22.3(@types/node@25.8.0)
-      pg: 8.20.0
+      pg: 8.21.0
     transitivePeerDependencies:
       - supports-color
 
@@ -1874,12 +1874,12 @@ snapshots:
 
   object-inspect@1.13.4: {}
 
-  objection@3.1.5(knex@3.2.10(better-sqlite3@12.10.0)(mysql2@3.22.3(@types/node@25.8.0))(pg@8.20.0)):
+  objection@3.1.5(knex@3.2.10(better-sqlite3@12.10.0)(mysql2@3.22.3(@types/node@25.8.0))(pg@8.21.0)):
     dependencies:
       ajv: 8.20.0
       ajv-formats: 2.1.1(ajv@8.20.0)
       db-errors: 0.2.3
-      knex: 3.2.10(better-sqlite3@12.10.0)(mysql2@3.22.3(@types/node@25.8.0))(pg@8.20.0)
+      knex: 3.2.10(better-sqlite3@12.10.0)(mysql2@3.22.3(@types/node@25.8.0))(pg@8.21.0)
 
   on-finished@2.4.1:
     dependencies:
@@ -1928,20 +1928,20 @@ snapshots:
 
   path-to-regexp@8.4.2: {}
 
-  pg-cloudflare@1.3.0:
+  pg-cloudflare@1.4.0:
     optional: true
 
-  pg-connection-string@2.12.0: {}
+  pg-connection-string@2.13.0: {}
 
   pg-connection-string@2.6.2: {}
 
   pg-int8@1.0.1: {}
 
-  pg-pool@3.13.0(pg@8.20.0):
+  pg-pool@3.14.0(pg@8.21.0):
     dependencies:
-      pg: 8.20.0
+      pg: 8.21.0
 
-  pg-protocol@1.13.0: {}
+  pg-protocol@1.14.0: {}
 
   pg-types@2.2.0:
     dependencies:
@@ -1951,15 +1951,15 @@ snapshots:
       postgres-date: 1.0.7
       postgres-interval: 1.2.0
 
-  pg@8.20.0:
+  pg@8.21.0:
     dependencies:
-      pg-connection-string: 2.12.0
-      pg-pool: 3.13.0(pg@8.20.0)
-      pg-protocol: 1.13.0
+      pg-connection-string: 2.13.0
+      pg-pool: 3.14.0(pg@8.21.0)
+      pg-protocol: 1.14.0
       pg-types: 2.2.0
       pgpass: 1.0.5
     optionalDependencies:
-      pg-cloudflare: 1.3.0
+      pg-cloudflare: 1.4.0
 
   pgpass@1.0.5:
     dependencies:
