@@ -147,7 +147,7 @@ services:
 #      - "127.0.0.1:8923:8923"
 #    environment:
 #      - "TZ=your-timezone" # needs to be changed
-#      - "TARGET= " # important to be set to a space
+#      - "TARGET= " # important: this needs to be and stay one single space
 #      - "POLICY_FNAME=/etc/botPolicies.yaml" # required so the status codes can be changed
 #    volumes:
 #      - "/opt/anubis.yaml:/etc/botPolicies.yaml:ro" # since a file is mounted here, you first need to create it before deploying this container, you can download the default file from here: https://raw.githubusercontent.com/TecharoHQ/anubis/refs/heads/main/data/botPolicies.yaml
