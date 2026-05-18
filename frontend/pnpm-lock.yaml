@@ -15,8 +15,8 @@ importers:
         specifier: 3.44.0
         version: 3.44.0(react@19.2.6)
       '@tanstack/react-query':
-        specifier: 5.100.10
-        version: 5.100.10(react@19.2.6)
+        specifier: 5.100.11
+        version: 5.100.11(react@19.2.6)
       '@tanstack/react-table':
         specifier: 8.21.3
         version: 8.21.3(react-dom@19.2.6(react@19.2.6))(react@19.2.6)
@@ -60,8 +60,8 @@ importers:
         specifier: 19.2.6
         version: 19.2.6(react@19.2.6)
       react-intl:
-        specifier: 10.1.7
-        version: 10.1.7(@types/react@19.2.14)(react@19.2.6)
+        specifier: 10.1.8
+        version: 10.1.8(@types/react@19.2.14)(react@19.2.6)
       react-markdown:
         specifier: 10.1.0
         version: 10.1.0(@types/react@19.2.14)(react@19.2.6)
@@ -82,8 +82,8 @@ importers:
         specifier: 2.4.15
         version: 2.4.15
       '@formatjs/cli':
-        specifier: 6.16.0
-        version: 6.16.0
+        specifier: 6.16.1
+        version: 6.16.1
       '@formatjs/cli-native-linux-arm64':
         specifier: 1.2.0
         version: 1.2.0
@@ -91,8 +91,8 @@ importers:
         specifier: 1.1.0
         version: 1.1.0
       '@tanstack/react-query-devtools':
-        specifier: 5.100.10
-        version: 5.100.10(@tanstack/react-query@5.100.10(react@19.2.6))(react@19.2.6)
+        specifier: 5.100.11
+        version: 5.100.11(@tanstack/react-query@5.100.11(react@19.2.6))(react@19.2.6)
       '@testing-library/dom':
         specifier: 10.4.1
         version: 10.4.1
@@ -127,8 +127,8 @@ importers:
         specifier: 20.9.0
         version: 20.9.0
       postcss:
-        specifier: 8.5.14
-        version: 8.5.14
+        specifier: 8.5.15
+        version: 8.5.15
       sass:
         specifier: 1.99.0
         version: 1.99.0
@@ -329,8 +329,13 @@ packages:
     cpu: [x64]
     os: [linux]
 
-  '@formatjs/cli@6.16.0':
-    resolution: {integrity: sha512-49VcOBTUkjAHkk6gLEXXtzeEAIEQem8DK11pCUCJ13ZCa/P2vf/uhQwvt3/yloJbQ7QqrBq+owO2XFmeWWZ2Eg==}
+  '@formatjs/cli-native-win32-x64@1.1.1':
+    resolution: {integrity: sha512-2vYgm7dzAb7wA9KjOOJGxZiSShwBNK4dEmgiJ1lRpEIz6RKMZ6wBY4UVn03VdAv8djJ7r6RK4Xyd2ouGcbh9Bg==}
+    cpu: [x64]
+    os: [win32]
+
+  '@formatjs/cli@6.16.1':
+    resolution: {integrity: sha512-mCiogVDH7ufC4x/gmXoc9rxCXhGr4QGZVN9/rPeHBUuRZ9mc8sbFB9HbMXCYoUzMwOOuC9fmEFh7TpEHeeWm3Q==}
     engines: {node: '>= 20.12.0'}
     hasBin: true
     peerDependencies:
@@ -639,20 +644,20 @@ packages:
   '@tabler/icons@3.44.0':
     resolution: {integrity: sha512-Wn0AOZG9sg0L+bjfMqq4eNhC6pQjIrk94LvvWYNYkY8KH8wC3YILRzQlrnVJc4FUeMxH/AK97QsYCX35H3LndA==}
 
-  '@tanstack/query-core@5.100.10':
-    resolution: {integrity: sha512-8UR0yJR+GiQ40m3lPhUr0xbfAupe6GSQiksSBSa9SM2NjezFyxXCIA69/lz8cSoNKZLrw1/PktIyQBJcVeMi3w==}
+  '@tanstack/query-core@5.100.11':
+    resolution: {integrity: sha512-lmE0994apShXPj8CUxgx4ch5yUJhE9k/+tVwihBvPOyerACWdBocfFg24t8+0RhtlTd7tEgchDkhlCxNssvDxw==}
 
-  '@tanstack/query-devtools@5.100.10':
-    resolution: {integrity: sha512-3DmJf25hDPus5IpVvp6ujXv6bKV2zPzI9vpbAmpJigsL/H6DPvPjmf7/Q9yVKEke//8fgeQ45abjgnLuyYxAiw==}
+  '@tanstack/query-devtools@5.100.11':
+    resolution: {integrity: sha512-47rVBDuGMW/A4ekt3YQdz+q0JSIwktwGnWCYyQUvSs2/g/Oa+6Fi2/IQk4/Y4vf6u1uwI7hOogHslgMC8f3X/Q==}
 
-  '@tanstack/react-query-devtools@5.100.10':
-    resolution: {integrity: sha512-zes0+o9ef5rAZXJ9f/SeaLs2nufJaeVkZkl/Or9NGrWVF41kL9Od9ED9nCwtQlgiF2VGtrzhEw5AU/igAO+aAg==}
+  '@tanstack/react-query-devtools@5.100.11':
+    resolution: {integrity: sha512-75RFlJEG53Ed/Cxe5WLmgIpOElPNpgLZq7h0fLFnM5XwTYxSTk1rX/gC6MqGVXsSdrbP7zn7hPSJx9MinwiUHA==}
     peerDependencies:
-      '@tanstack/react-query': ^5.100.10
+      '@tanstack/react-query': ^5.100.11
       react: ^18 || ^19
 
-  '@tanstack/react-query@5.100.10':
-    resolution: {integrity: sha512-FLaZf2RCrA/Zgp4aiu5tG3TyasTRO7aZ99skxQpr3Hg/zXOhu6yq5FZCYQ/tRaJtM9ylnoK8tFK7PolXQadv6Q==}
+  '@tanstack/react-query@5.100.11':
+    resolution: {integrity: sha512-J0f9s5x3LE1450nNNfYx+e/n0DMa0uOBdFJUy5r0RvmsXd4nB/n0rbHtHI1vYXhikNFan+wf51p6Tmp4c8ucrg==}
     peerDependencies:
       react: ^18 || ^19
 
@@ -1435,6 +1440,10 @@ packages:
     resolution: {integrity: sha512-SoSL4+OSEtR99LHFZQiJLkT59C5B1amGO1NzTwj7TT1qCUgUO6hxOvzkOYxD+vMrXBM3XJIKzokoERdqQq/Zmg==}
     engines: {node: ^10 || ^12 || >=14}
 
+  postcss@8.5.15:
+    resolution: {integrity: sha512-FfR8sjd4em2T6fb3I2MwAJU7HWVMr9zba+enmQeeWFfCbm+UOC/0X4DS8XtpUTMwWMGbjKYP7xjfNekzyGmB3A==}
+    engines: {node: ^10 || ^12 || >=14}
+
   pretty-format@27.5.1:
     resolution: {integrity: sha512-Qb1gy5OrP5+zDf2Bvnzdl3jsTf1qXVMazbvCoKhtKqVs4/YK4ozX4gKQJJVyNe+cajNPn0KoC0MC3FUmaHWEmQ==}
     engines: {node: ^10.13.0 || ^12.13.0 || ^14.15.0 || >=15.0.0}
@@ -1495,8 +1504,8 @@ packages:
   react-fast-compare@2.0.4:
     resolution: {integrity: sha512-suNP+J1VU1MWFKcyt7RtjiSWUjvidmQSlqu+eHslq+342xCbGTYmC0mEhPCOHxlW0CywylOC1u2DFAT+bv4dBw==}
 
-  react-intl@10.1.7:
-    resolution: {integrity: sha512-VAeHBDccPU9y43UbJJ7GzyLNY+1Z2ul3xSjVmb9qZ/vh/E+ACBm/me4IvAv/VvXShcF817hHyzcJOuzoZejqOA==}
+  react-intl@10.1.8:
+    resolution: {integrity: sha512-+iBzzkykXkZ2/9zI8LnDmfCobgz33J+r+24QbX4dJJ4f6rO1LuFwqv39kSTloZdPm9yYcnJOrvz0MqyCa6XeXQ==}
     peerDependencies:
       '@types/react': '19'
       react: '19'
@@ -2126,11 +2135,15 @@ snapshots:
 
   '@formatjs/cli-native-linux-x64@1.1.0': {}
 
-  '@formatjs/cli@6.16.0':
+  '@formatjs/cli-native-win32-x64@1.1.1':
+    optional: true
+
+  '@formatjs/cli@6.16.1':
     optionalDependencies:
       '@formatjs/cli-native-darwin-arm64': 1.1.0
       '@formatjs/cli-native-linux-arm64': 1.2.0
       '@formatjs/cli-native-linux-x64': 1.1.0
+      '@formatjs/cli-native-win32-x64': 1.1.1
 
   '@formatjs/fast-memoize@3.1.5': {}
 
@@ -2353,19 +2366,19 @@ snapshots:
 
   '@tabler/icons@3.44.0': {}
 
-  '@tanstack/query-core@5.100.10': {}
+  '@tanstack/query-core@5.100.11': {}
 
-  '@tanstack/query-devtools@5.100.10': {}
+  '@tanstack/query-devtools@5.100.11': {}
 
-  '@tanstack/react-query-devtools@5.100.10(@tanstack/react-query@5.100.10(react@19.2.6))(react@19.2.6)':
+  '@tanstack/react-query-devtools@5.100.11(@tanstack/react-query@5.100.11(react@19.2.6))(react@19.2.6)':
     dependencies:
-      '@tanstack/query-devtools': 5.100.10
-      '@tanstack/react-query': 5.100.10(react@19.2.6)
+      '@tanstack/query-devtools': 5.100.11
+      '@tanstack/react-query': 5.100.11(react@19.2.6)
       react: 19.2.6
 
-  '@tanstack/react-query@5.100.10(react@19.2.6)':
+  '@tanstack/react-query@5.100.11(react@19.2.6)':
     dependencies:
-      '@tanstack/query-core': 5.100.10
+      '@tanstack/query-core': 5.100.11
       react: 19.2.6
 
   '@tanstack/react-table@8.21.3(react-dom@19.2.6(react@19.2.6))(react@19.2.6)':
@@ -3255,6 +3268,12 @@ snapshots:
       picocolors: 1.1.1
       source-map-js: 1.2.1
 
+  postcss@8.5.15:
+    dependencies:
+      nanoid: 3.3.12
+      picocolors: 1.1.1
+      source-map-js: 1.2.1
+
   pretty-format@27.5.1:
     dependencies:
       ansi-regex: 5.0.1
@@ -3342,7 +3361,7 @@ snapshots:
 
   react-fast-compare@2.0.4: {}
 
-  react-intl@10.1.7(@types/react@19.2.14)(react@19.2.6):
+  react-intl@10.1.8(@types/react@19.2.14)(react@19.2.6):
     dependencies:
       '@formatjs/icu-messageformat-parser': 3.5.9
       '@formatjs/intl': 4.1.11
