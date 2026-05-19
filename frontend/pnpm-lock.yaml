@@ -60,8 +60,8 @@ importers:
         specifier: 19.2.6
         version: 19.2.6(react@19.2.6)
       react-intl:
-        specifier: 10.1.7
-        version: 10.1.7(@types/react@19.2.14)(react@19.2.6)
+        specifier: 10.1.8
+        version: 10.1.8(@types/react@19.2.14)(react@19.2.6)
       react-markdown:
         specifier: 10.1.0
         version: 10.1.0(@types/react@19.2.14)(react@19.2.6)
@@ -82,8 +82,8 @@ importers:
         specifier: 2.4.15
         version: 2.4.15
       '@formatjs/cli':
-        specifier: 6.16.0
-        version: 6.16.0
+        specifier: 6.16.1
+        version: 6.16.1
       '@formatjs/cli-native-linux-arm64':
         specifier: 1.2.0
         version: 1.2.0
@@ -329,8 +329,13 @@ packages:
     cpu: [x64]
     os: [linux]
 
-  '@formatjs/cli@6.16.0':
-    resolution: {integrity: sha512-49VcOBTUkjAHkk6gLEXXtzeEAIEQem8DK11pCUCJ13ZCa/P2vf/uhQwvt3/yloJbQ7QqrBq+owO2XFmeWWZ2Eg==}
+  '@formatjs/cli-native-win32-x64@1.1.1':
+    resolution: {integrity: sha512-2vYgm7dzAb7wA9KjOOJGxZiSShwBNK4dEmgiJ1lRpEIz6RKMZ6wBY4UVn03VdAv8djJ7r6RK4Xyd2ouGcbh9Bg==}
+    cpu: [x64]
+    os: [win32]
+
+  '@formatjs/cli@6.16.1':
+    resolution: {integrity: sha512-mCiogVDH7ufC4x/gmXoc9rxCXhGr4QGZVN9/rPeHBUuRZ9mc8sbFB9HbMXCYoUzMwOOuC9fmEFh7TpEHeeWm3Q==}
     engines: {node: '>= 20.12.0'}
     hasBin: true
     peerDependencies:
@@ -1499,8 +1504,8 @@ packages:
   react-fast-compare@2.0.4:
     resolution: {integrity: sha512-suNP+J1VU1MWFKcyt7RtjiSWUjvidmQSlqu+eHslq+342xCbGTYmC0mEhPCOHxlW0CywylOC1u2DFAT+bv4dBw==}
 
-  react-intl@10.1.7:
-    resolution: {integrity: sha512-VAeHBDccPU9y43UbJJ7GzyLNY+1Z2ul3xSjVmb9qZ/vh/E+ACBm/me4IvAv/VvXShcF817hHyzcJOuzoZejqOA==}
+  react-intl@10.1.8:
+    resolution: {integrity: sha512-+iBzzkykXkZ2/9zI8LnDmfCobgz33J+r+24QbX4dJJ4f6rO1LuFwqv39kSTloZdPm9yYcnJOrvz0MqyCa6XeXQ==}
     peerDependencies:
       '@types/react': '19'
       react: '19'
@@ -2130,11 +2135,15 @@ snapshots:
 
   '@formatjs/cli-native-linux-x64@1.1.0': {}
 
-  '@formatjs/cli@6.16.0':
+  '@formatjs/cli-native-win32-x64@1.1.1':
+    optional: true
+
+  '@formatjs/cli@6.16.1':
     optionalDependencies:
       '@formatjs/cli-native-darwin-arm64': 1.1.0
       '@formatjs/cli-native-linux-arm64': 1.2.0
       '@formatjs/cli-native-linux-x64': 1.1.0
+      '@formatjs/cli-native-win32-x64': 1.1.1
 
   '@formatjs/fast-memoize@3.1.5': {}
 
@@ -3352,7 +3361,7 @@ snapshots:
 
   react-fast-compare@2.0.4: {}
 
-  react-intl@10.1.7(@types/react@19.2.14)(react@19.2.6):
+  react-intl@10.1.8(@types/react@19.2.14)(react@19.2.6):
     dependencies:
       '@formatjs/icu-messageformat-parser': 3.5.9
       '@formatjs/intl': 4.1.11
