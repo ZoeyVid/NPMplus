@@ -739,9 +739,6 @@ packages:
   '@types/ms@2.1.0':
     resolution: {integrity: sha512-GsCCIZDE/p3i96vtEqx+7dBUGXrc7zeSK3wwPHIaRThS+9OhWIXRqzs4d6k1SVU8g91DrNRWxWUGhp5KXQb2VA==}
 
-  '@types/node@25.9.0':
-    resolution: {integrity: sha512-AOQwYUNolgy3VosiRqXrACUXTN8nJUtPl7FJXMqZVyxiiCLhQuG3jXKvCS1ALr+Y2OmZhzzLVlYPEqJaiqkaJQ==}
-
   '@types/node@25.9.1':
     resolution: {integrity: sha512-xfrlY7UD5rMJk3ZVJP8BNzS28J36YJg+xp+LPXV1TdWxr8uMH5A860QNxYDGQe/ylDSgjxE52Q9VnO7p75tJxg==}
 
@@ -766,9 +763,6 @@ packages:
     resolution: {integrity: sha512-8TV6R3h2j7a91c+1DXdJi3Syo69zzIZbz7Lg5tORM5LEJG7X/E6a1V3drRyBRZq7/utz7A+c4OgYLiLcYGHG6w==}
     peerDependencies:
       '@types/react': '*'
-
-  '@types/react@19.2.14':
-    resolution: {integrity: sha512-ilcTH/UniCkMdtexkoCN0bI7pMcJDvmQFPvuPvmEaYA/NSfFTAgdUSLAoVjaRJm7+6PvcM+q1zYOwS4wTYMF9w==}
 
   '@types/react@19.2.15':
     resolution: {integrity: sha512-eRwcGNHve+E8qtEQSSRl6urh+rFop4v8gm6O8rGv25CodbvFdLjA1vVQ1KkiFE0w0UPOnb8tDiFKL5lp0rtY5Q==}
@@ -2465,10 +2459,6 @@ snapshots:
 
   '@types/ms@2.1.0': {}
 
-  '@types/node@25.9.0':
-    dependencies:
-      undici-types: 7.24.6
-
   '@types/node@25.9.1':
     dependencies:
       undici-types: 7.24.6
@@ -2485,15 +2475,11 @@ snapshots:
 
   '@types/react-table@7.7.20':
     dependencies:
-      '@types/react': 19.2.14
+      '@types/react': 19.2.15
 
   '@types/react-transition-group@4.4.12(@types/react@19.2.15)':
     dependencies:
       '@types/react': 19.2.15
-
-  '@types/react@19.2.14':
-    dependencies:
-      csstype: 3.2.3
 
   '@types/react@19.2.15':
     dependencies:
@@ -2509,7 +2495,7 @@ snapshots:
 
   '@types/ws@8.18.1':
     dependencies:
-      '@types/node': 25.9.0
+      '@types/node': 25.9.1
 
   '@uiw/react-textarea-code-editor@3.1.1(@babel/runtime@7.29.2)(react-dom@19.2.6(react@19.2.6))(react@19.2.6)':
     dependencies:
@@ -2745,7 +2731,7 @@ snapshots:
 
   happy-dom@20.9.0:
     dependencies:
-      '@types/node': 25.9.0
+      '@types/node': 25.9.1
       '@types/whatwg-mimetype': 3.0.2
       '@types/ws': 8.18.1
       entities: 7.0.1
@@ -3629,7 +3615,7 @@ snapshots:
   uncontrollable@7.2.1(react@19.2.6):
     dependencies:
       '@babel/runtime': 7.29.2
-      '@types/react': 19.2.14
+      '@types/react': 19.2.15
       invariant: 2.2.4
       react: 19.2.6
       react-lifecycles-compat: 3.0.4
