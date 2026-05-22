@@ -48,7 +48,7 @@
 		"@vitejs/plugin-react": "6.0.2",
 		"happy-dom": "20.9.0",
 		"postcss": "8.5.15",
-		"sass": "1.99.0",
+		"sass": "1.100.0",
 		"tmp": "0.2.5",
 		"typescript": "6.0.3",
 		"vite": "8.0.14",
