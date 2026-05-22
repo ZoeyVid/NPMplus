@@ -32,7 +32,7 @@
 	},
 	"devDependencies": {
 		"@biomejs/biome": "2.4.15",
-		"@formatjs/cli": "6.16.2",
+		"@formatjs/cli": "6.16.3",
 		"@formatjs/cli-native-linux-arm64": "1.2.0",
 		"@formatjs/cli-native-linux-x64": "1.1.0",
 		"@tanstack/react-query-devtools": "5.100.11",

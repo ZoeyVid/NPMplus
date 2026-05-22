@@ -82,8 +82,8 @@ importers:
         specifier: 2.4.15
         version: 2.4.15
       '@formatjs/cli':
-        specifier: 6.16.2
-        version: 6.16.2
+        specifier: 6.16.3
+        version: 6.16.3
       '@formatjs/cli-native-linux-arm64':
         specifier: 1.2.0
         version: 1.2.0
@@ -334,8 +334,8 @@ packages:
     cpu: [x64]
     os: [win32]
 
-  '@formatjs/cli@6.16.2':
-    resolution: {integrity: sha512-XnM4kqifDh1+7/ryNdoNlSE9a2LlmccVpH0MiXBO+1r47Gjobb8hGlBr2/1BUQbNI+tA9PKDLRIBxB1vrQYSrg==}
+  '@formatjs/cli@6.16.3':
+    resolution: {integrity: sha512-AN6uZR1xnl3V215HHJiKiA+DvNMrO/XfQ7hOyq3gXfHJwKSgLLQFtSFxw9A1O0SaGC2E2Kwo4mqwS1ZCLGe/qw==}
     engines: {node: '>= 20.12.0'}
     hasBin: true
     peerDependencies:
@@ -2139,7 +2139,7 @@ snapshots:
   '@formatjs/cli-native-win32-x64@1.1.1':
     optional: true
 
-  '@formatjs/cli@6.16.2':
+  '@formatjs/cli@6.16.3':
     optionalDependencies:
       '@formatjs/cli-native-darwin-arm64': 1.1.0
       '@formatjs/cli-native-linux-arm64': 1.2.0
