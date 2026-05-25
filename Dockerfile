@@ -27,7 +27,7 @@ ARG VTS_VER=b2a036ab6c1ffd5615f9ea57d6710287590735cd # v0.2.5
 ARG NNTLM_VER=3da77b0cb30e517dfee01d7e7f7d649144d24051 # master
 ARG NHG2M_VER=cbaa35461c62a99d2577e6bae3273492502d8769 # 3.4
 
-ARG OASA_VER=1d46b0cb0037b537723d10de56429082c7d92c63 # main
+ARG OASA_VER=bc66d6302d03f0485be4888b5cc930f2f05e04ef # main
 
 ARG FLAGS
 ARG CC=clang
@@ -161,7 +161,7 @@ RUN find /usr/local/nginx/modules -name "*.so" -exec strip -s {} \; && \
     strip -s /usr/local/lib/libcrypto.so && \
     strip -s /usr/local/lib/libssl.so && \
     strip -s /usr/local/bin/bssl && \
-    strip -s /src/attachment/core/shmem_ipc/libosrc_shmem_ipc.so && \
+    strip -s /src/attachment/core/shmem_ipc_2/libshmem_ipc_2.so && \
     strip -s /src/attachment/core/compression/libosrc_compression_utils.so && \
     strip -s /src/attachment/attachments/nginx/nginx_attachment_util/libosrc_nginx_attachment_util.so && \
     \
@@ -170,7 +170,7 @@ RUN find /usr/local/nginx/modules -name "*.so" -exec strip -s {} \; && \
     file /usr/local/lib/libcrypto.so && \
     file /usr/local/lib/libssl.so && \
     file /usr/local/bin/bssl && \
-    file /src/attachment/core/shmem_ipc/libosrc_shmem_ipc.so && \
+    file /src/attachment/core/shmem_ipc_2/libshmem_ipc_2.so && \
     file /src/attachment/core/compression/libosrc_compression_utils.so && \
     file /src/attachment/attachments/nginx/nginx_attachment_util/libosrc_nginx_attachment_util.so && \
     /usr/local/nginx/sbin/nginx -V
@@ -214,7 +214,7 @@ COPY --from=nginx /usr/local/nginx                                              
 COPY --from=nginx /usr/local/bin/bssl                                                                      /usr/local/bin/bssl
 COPY --from=nginx /usr/local/lib/libssl.so                                                                 /usr/local/lib/libssl.so
 COPY --from=nginx /usr/local/lib/libcrypto.so                                                              /usr/local/lib/libcrypto.so
-COPY --from=nginx /src/attachment/core/shmem_ipc/libosrc_shmem_ipc.so                                      /usr/local/lib/libosrc_shmem_ipc.so
+COPY --from=nginx /src/attachment/core/shmem_ipc_2/libshmem_ipc_2.so                                       /usr/local/lib/libshmem_ipc_2.so
 COPY --from=nginx /src/attachment/core/compression/libosrc_compression_utils.so                            /usr/local/lib/libosrc_compression_utils.so
 COPY --from=nginx /src/attachment/attachments/nginx/nginx_attachment_util/libosrc_nginx_attachment_util.so /usr/local/lib/libosrc_nginx_attachment_util.so
 

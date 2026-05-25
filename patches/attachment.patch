@@ -27,7 +27,7 @@ index 7862ae9..f4b3ba9 100644
      add_subdirectory(envoy)
  elseif("${ATTACHMENT_TYPE}" STREQUAL "kong")
 diff --git a/attachments/nginx/ngx_module/CMakeLists.txt b/attachments/nginx/ngx_module/CMakeLists.txt
-index 8c8ae92..e8f700a 100644
+index 5b0646f..83de74a 100755
 --- a/attachments/nginx/ngx_module/CMakeLists.txt
 +++ b/attachments/nginx/ngx_module/CMakeLists.txt
 @@ -1,32 +1,3 @@
@@ -63,12 +63,13 @@ index 8c8ae92..e8f700a 100644
  add_library(
  	ngx_module
  	SHARED
-@@ -39,8 +10,13 @@ add_dependencies(ngx_module osrc_shmem_ipc osrc_nginx_attachment_util osrc_compr
+@@ -39,11 +10,14 @@ add_dependencies(ngx_module shmem_ipc_2 osrc_nginx_attachment_util osrc_compress
  
- target_link_libraries(ngx_module osrc_shmem_ipc osrc_nginx_attachment_util osrc_compression_utils)
+ target_link_libraries(ngx_module shmem_ipc_2 osrc_nginx_attachment_util osrc_compression_utils)
  
 -CREATE_INCLUDE_LIST(NGX_INCLUDES)
 -READ_COMPILE_FLAGS(CC_FLAG_LIST)
+-
 +file(GLOB_RECURSE NGINX_DIRS LIST_DIRECTORIES true "/src/nginx/*")
 +set(NGX_INCLUDES "/src/nginx")
 +foreach(dir ${NGINX_DIRS})
@@ -76,21 +77,23 @@ index 8c8ae92..e8f700a 100644
 +        list(APPEND NGX_INCLUDES ${dir})
 +    endif()
 +endforeach()
- 
  target_include_directories(ngx_module PRIVATE ${NGX_INCLUDES})
- target_compile_options(ngx_module PRIVATE ${CC_FLAG_LIST})
+-target_compile_options(ngx_module PRIVATE ${CC_FLAG_LIST})
+ 
+ install(TARGETS ngx_module DESTINATION lib)
+ install(TARGETS ngx_module DESTINATION nginx_attachment/lib)
 diff --git a/core/CMakeLists.txt b/core/CMakeLists.txt
-index 8285065..19cdc99 100644
+index 8285065..f5f311c 100644
 --- a/core/CMakeLists.txt
 +++ b/core/CMakeLists.txt
 @@ -1,4 +1,4 @@
- add_subdirectory(shmem_ipc)
--add_subdirectory(shmem_ipc_2)
-+#add_subdirectory(shmem_ipc_2)
+-add_subdirectory(shmem_ipc)
++#add_subdirectory(shmem_ipc)
+ add_subdirectory(shmem_ipc_2)
  add_subdirectory(compression)
  add_subdirectory(attachments)
 diff --git a/core/compression/compression_utils.cc b/core/compression/compression_utils.cc
-index c7e8922..f0f5930 100644
+index dc61b46..d466a8c 100644
 --- a/core/compression/compression_utils.cc
 +++ b/core/compression/compression_utils.cc
 @@ -21,7 +21,7 @@
@@ -102,7 +105,7 @@ index c7e8922..f0f5930 100644
  #include <brotli/encode.h>
  #include <brotli/decode.h>
  
-@@ -115,7 +115,7 @@ struct CompressionStream
+@@ -116,7 +116,7 @@ struct CompressionStream
      br_encoder_state(nullptr),
      br_decoder_state(nullptr)
      {
@@ -111,7 +114,7 @@ index c7e8922..f0f5930 100644
      }
  
      ~CompressionStream() { fini(); }
-@@ -144,7 +144,7 @@ struct CompressionStream
+@@ -162,7 +162,7 @@ struct CompressionStream
  
              auto old_total_out = stream.total_out;
  
@@ -120,7 +123,7 @@ index c7e8922..f0f5930 100644
  
              if (inflate_res != Z_OK && inflate_res != Z_STREAM_END) {
                  fini();
-@@ -181,7 +181,7 @@ struct CompressionStream
+@@ -199,7 +199,7 @@ struct CompressionStream
          stream.next_in = data;
  
          vector<unsigned char> work_space;
@@ -129,7 +132,7 @@ index c7e8922..f0f5930 100644
          basic_string<unsigned char> res;
          int retries = 0;
  
-@@ -191,7 +191,7 @@ struct CompressionStream
+@@ -209,7 +209,7 @@ struct CompressionStream
  
              auto old_total_out = stream.total_out;
  
@@ -138,7 +141,7 @@ index c7e8922..f0f5930 100644
  
              if (deflate_res != Z_OK && deflate_res != Z_STREAM_END) {
                  fini();
-@@ -221,7 +221,7 @@ private:
+@@ -239,7 +239,7 @@ private:
      {
          if (state != TYPE::UNINITIALIZED) return;
  
@@ -147,7 +150,7 @@ index c7e8922..f0f5930 100644
          if (init_status != zlib_ok_return_value) {
              throw runtime_error(
                  "Failed to initialize decompression stream. Error: " + getZlibError(init_status)
-@@ -258,7 +258,7 @@ private:
+@@ -276,7 +276,7 @@ private:
              }
          }
  
@@ -156,7 +159,7 @@ index c7e8922..f0f5930 100644
              &stream,
              default_compression_level,
              default_compression_method,
-@@ -464,8 +464,8 @@ private:
+@@ -487,8 +487,8 @@ private:
      {
          int end_stream_res = zlib_ok_return_value;
  
@@ -167,10 +170,10 @@ index c7e8922..f0f5930 100644
  
          if (br_encoder_state) {
              BrotliEncoderDestroyInstance(br_encoder_state);
-@@ -503,7 +503,7 @@ private:
-         }
+@@ -527,7 +527,7 @@ private:
      }
  
+     CompressionType compression_type;
 -    z_stream stream;
 +    zng_stream stream;
          enum class TYPE {
