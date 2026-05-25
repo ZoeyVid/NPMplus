@@ -16,16 +16,6 @@ index ecdcb61..250e5ca 100644
 -add_subdirectory(nodes)
 +#add_subdirectory(docker)
 +#add_subdirectory(nodes)
-diff --git a/attachments/CMakeLists.txt b/attachments/CMakeLists.txt
-index 7862ae9..f4b3ba9 100644
---- a/attachments/CMakeLists.txt
-+++ b/attachments/CMakeLists.txt
-@@ -1,4 +1,4 @@
--add_subdirectory(nano_attachment)
-+#add_subdirectory(nano_attachment)
- if ("${ATTACHMENT_TYPE}" STREQUAL "envoy")
-     add_subdirectory(envoy)
- elseif("${ATTACHMENT_TYPE}" STREQUAL "kong")
 diff --git a/attachments/nginx/ngx_module/CMakeLists.txt b/attachments/nginx/ngx_module/CMakeLists.txt
 index 5b0646f..83de74a 100755
 --- a/attachments/nginx/ngx_module/CMakeLists.txt
