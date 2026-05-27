@@ -31,7 +31,7 @@
 		"rooks": "9.8.0"
 	},
 	"devDependencies": {
-		"@biomejs/biome": "2.4.15",
+		"@biomejs/biome": "2.4.16",
 		"@formatjs/cli": "6.16.5",
 		"@formatjs/cli-native-linux-arm64": "1.2.0",
 		"@formatjs/cli-native-linux-x64": "1.1.0",
