@@ -48,8 +48,8 @@ importers:
         specifier: 4.2.0
         version: 4.2.0(react@19.2.6)
       query-string:
-        specifier: 9.3.1
-        version: 9.3.1
+        specifier: 9.4.0
+        version: 9.4.0
       react:
         specifier: 19.2.6
         version: 19.2.6
@@ -631,6 +631,7 @@ packages:
 
   '@swc/helpers@0.5.22':
     resolution: {integrity: sha512-/e2Ly3Docn9kYByap6TV4oquJ3wQuz3c+kC74riqtkwU9CwTMeuj6t2rW+bRr4pyOx/CYQM4wr0RgaKQwGEz0A==}
+    deprecated: This version contains a decorator helper regression from swc-project/swc#11847. Please upgrade to @swc/helpers@0.5.23 or newer.
 
   '@tabler/core@1.4.0':
     resolution: {integrity: sha512-5BigzOlbOH9N0Is4u0rYNRCiwtnUXWO57K9zwuscygcicAa8UV9MGaS4zTgQsZEtZ9tsNANhN/YD8gCBGKYCiw==}
@@ -1463,8 +1464,8 @@ packages:
     peerDependencies:
       react: ^16.8.0 || ^17.0.0 || ^18.0.0 || ^19.0.0
 
-  query-string@9.3.1:
-    resolution: {integrity: sha512-5fBfMOcDi5SA9qj5jZhWAcTtDfKF5WFdd2uD9nVNlbxVv1baq65aALy6qofpNEGELHvisjjasxQp7BlM9gvMzw==}
+  query-string@9.4.0:
+    resolution: {integrity: sha512-ivvWyHqU9K1Log4hJFhqVIIMoEi0nzmlRhvk2pPcTuQH/Y0K5iTTMxEx7R0PRHD2Z1hMVbWnjfsEWbIKIK+3IA==}
     engines: {node: '>=18'}
 
   raf@3.4.1:
@@ -3280,7 +3281,7 @@ snapshots:
     dependencies:
       react: 19.2.6
 
-  query-string@9.3.1:
+  query-string@9.4.0:
     dependencies:
       decode-uri-component: 0.4.1
       filter-obj: 5.1.0
