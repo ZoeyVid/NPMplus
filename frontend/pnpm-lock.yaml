@@ -82,14 +82,14 @@ importers:
         specifier: 2.4.16
         version: 2.4.16
       '@formatjs/cli':
-        specifier: 6.16.5
-        version: 6.16.5
+        specifier: 6.16.6
+        version: 6.16.6
       '@formatjs/cli-native-linux-arm64':
-        specifier: 1.2.0
-        version: 1.2.0
+        specifier: 1.2.1
+        version: 1.2.1
       '@formatjs/cli-native-linux-x64':
-        specifier: 1.1.0
-        version: 1.1.0
+        specifier: 1.1.1
+        version: 1.1.1
       '@tanstack/react-query-devtools':
         specifier: 5.100.14
         version: 5.100.14(@tanstack/react-query@5.100.14(react@19.2.6))(react@19.2.6)
@@ -314,28 +314,28 @@ packages:
   '@floating-ui/utils@0.2.11':
     resolution: {integrity: sha512-RiB/yIh78pcIxl6lLMG0CgBXAZ2Y0eVHqMPYugu+9U0AeT6YBeiJpf7lbdJNIugFP5SIjwNRgo4DhR1Qxi26Gg==}
 
-  '@formatjs/cli-native-darwin-arm64@1.1.0':
-    resolution: {integrity: sha512-ygEpFpmRjbAKanWaeto/eUItyuK18667mdDzpDg3CTzc15WYzjZKnwJNFUuPFvFA4hiod1tnhXT1eiXmc1wWNg==}
+  '@formatjs/cli-native-darwin-arm64@1.1.1':
+    resolution: {integrity: sha512-G2IfmxwDN1kUMIbM9ec5HfJTNR89X11+U3bt4lewfrRqoHOc9bQAkkVHLsY8gNVLjyQIXch58Ewd+AAHkg6cag==}
     cpu: [arm64]
     os: [darwin]
 
-  '@formatjs/cli-native-linux-arm64@1.2.0':
-    resolution: {integrity: sha512-G6YuIVD8D6hZjnsD/aYZQ2qMHSve7IadEiXgKiDfFQBbyrkjDAlt6LDSqq4qnuv3WJ7/jAOn/An6n/bGyt0rLg==}
+  '@formatjs/cli-native-linux-arm64@1.2.1':
+    resolution: {integrity: sha512-dbafLt5p1wQi16QnTFuz6s5j5c8HcyRSw+gUp5xEtaQ9Ua2YKRu+YqlgsERg+ArTWN+ZTHIGu+0YymTvfTropA==}
     cpu: [arm64]
     os: [linux]
 
-  '@formatjs/cli-native-linux-x64@1.1.0':
-    resolution: {integrity: sha512-AxORf5LR14HvXU4ov9gnhLrNIS2DYKqKMkRkprUhuh+ljba1riF05msK8KzslEPYQoeYKc5A0OZp57poh4xz/g==}
+  '@formatjs/cli-native-linux-x64@1.1.1':
+    resolution: {integrity: sha512-zi6eOPAc03fszPyiGCkmzBxjIxynDFflie9zgbyZIQgKV7MhXEmUmpGYeaTTDX903OFCJJ3ZvpajSTdZ7C7yeQ==}
     cpu: [x64]
     os: [linux]
 
-  '@formatjs/cli-native-win32-x64@1.1.1':
-    resolution: {integrity: sha512-2vYgm7dzAb7wA9KjOOJGxZiSShwBNK4dEmgiJ1lRpEIz6RKMZ6wBY4UVn03VdAv8djJ7r6RK4Xyd2ouGcbh9Bg==}
+  '@formatjs/cli-native-win32-x64@1.1.2':
+    resolution: {integrity: sha512-2TKatQRlDbVc+eJE4b9n0/+bsDg+DpS0kmHw7OYI1zGXhus4YqRPtlJnraazRmPlXtRNgvY/UYCPgBvX7DbYhw==}
     cpu: [x64]
     os: [win32]
 
-  '@formatjs/cli@6.16.5':
-    resolution: {integrity: sha512-zxLJSWcIKKO0F4A77i7VKX08BNEf8fTd9s66mPzJWhq17jQU6nb59G6DkRntKwXCPc2xbZAXnQbTlB3Os6zXxg==}
+  '@formatjs/cli@6.16.6':
+    resolution: {integrity: sha512-82l9wmeqvClrtI/8VQOcFVZQwZWYEiMI505hywngF+xr7ti94OQXg0gi3piYaQarfiIac2GSMibLQ2aQM5mJaA==}
     engines: {node: '>= 20.12.0'}
     hasBin: true
     peerDependencies:
@@ -2113,22 +2113,22 @@ snapshots:
 
   '@floating-ui/utils@0.2.11': {}
 
-  '@formatjs/cli-native-darwin-arm64@1.1.0':
+  '@formatjs/cli-native-darwin-arm64@1.1.1':
     optional: true
 
-  '@formatjs/cli-native-linux-arm64@1.2.0': {}
+  '@formatjs/cli-native-linux-arm64@1.2.1': {}
 
-  '@formatjs/cli-native-linux-x64@1.1.0': {}
+  '@formatjs/cli-native-linux-x64@1.1.1': {}
 
-  '@formatjs/cli-native-win32-x64@1.1.1':
+  '@formatjs/cli-native-win32-x64@1.1.2':
     optional: true
 
-  '@formatjs/cli@6.16.5':
+  '@formatjs/cli@6.16.6':
     optionalDependencies:
-      '@formatjs/cli-native-darwin-arm64': 1.1.0
-      '@formatjs/cli-native-linux-arm64': 1.2.0
-      '@formatjs/cli-native-linux-x64': 1.1.0
-      '@formatjs/cli-native-win32-x64': 1.1.1
+      '@formatjs/cli-native-darwin-arm64': 1.1.1
+      '@formatjs/cli-native-linux-arm64': 1.2.1
+      '@formatjs/cli-native-linux-x64': 1.1.1
+      '@formatjs/cli-native-win32-x64': 1.1.2
 
   '@formatjs/fast-memoize@3.1.5': {}
 
