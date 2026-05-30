@@ -24,7 +24,7 @@
 		"mysql2": "3.22.4",
 		"objection": "3.1.5",
 		"openid-client": "6.8.4",
-		"otplib": "13.4.0",
+		"otplib": "13.4.1",
 		"pg": "8.21.0",
 		"signale": "1.4.0",
 		"swagger-ui-express": "5.0.1"
