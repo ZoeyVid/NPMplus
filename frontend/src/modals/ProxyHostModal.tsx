@@ -663,6 +663,9 @@ const ProxyHostModal = EasyModal.create(({ id, isClone = false, visible, remove 
 																					<option value="authentik-send-basic-auth">
 																						authentik-send-basic-auth
 																					</option>
+																					<option value="lua-oidc">
+																						lua-oidc (no sidecar)
+																					</option>
 																				</select>
 																				{form.errors.npmplusAuthRequest ? (
 																					<div className="invalid-feedback">
@@ -682,6 +685,20 @@ const ProxyHostModal = EasyModal.create(({ id, isClone = false, visible, remove 
 														</div>
 													</div>
 												</div>
+												<Field name="npmplusAuthRequest">
+													{({ field }: any) =>
+														field.value === "lua-oidc" && (
+															<div className="alert alert-info mt-2 mb-0 py-2 px-3" style={{ fontSize: "0.82rem" }}>
+																<strong>lua-oidc</strong> uses the global{" "}
+																<code>OIDC_ISSUER_URL</code>, <code>OIDC_CLIENT_ID</code> and{" "}
+																<code>OIDC_CLIENT_SECRET</code> env vars.
+																Register{" "}
+																<code>https://&lt;domain&gt;/npmplus-oidc-&lt;id&gt;/callback</code>{" "}
+																as the redirect URI in your IdP. No sidecar needed — session is cookie-only.
+															</div>
+														)
+													}
+												</Field>
 												<Field name="npmplusLocationConfig">
 													{({ field }: any) => (
 														<>
