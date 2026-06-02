@@ -335,7 +335,7 @@ const internalNginx = {
 			await writeFile(filename, config_text, { encoding: "utf8" });
 			debug(logger, "Wrote config:", filename);
 
-			if (process.env.DISABLE_NGINX_BEAUTIFIER === "false") {
+			if (process.env.DISABLE_NGINX_BEAUTIFIER === "false" && !config_text.includes("_by_lua_block")) {
 				await utils.execFile("nginxbeautifier", ["-s", "2", filename]).catch(() => {});
 			}
 
