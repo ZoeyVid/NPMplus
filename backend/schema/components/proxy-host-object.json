@@ -124,7 +124,8 @@
 				"voidauth",
 				"authelia",
 				"authentik",
-				"authentik-send-basic-auth"
+				"authentik-send-basic-auth",
+				"lua-oidc"
 			],
 			"example": "none"
 		},
