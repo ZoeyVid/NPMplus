@@ -8,7 +8,7 @@
 	"dependencies": {
 		"@tabler/core": "1.4.0",
 		"@tabler/icons-react": "3.44.0",
-		"@tanstack/react-query": "5.100.14",
+		"@tanstack/react-query": "5.101.0",
 		"@tanstack/react-table": "8.21.3",
 		"@uiw/react-textarea-code-editor": "3.1.1",
 		"classnames": "2.5.1",
@@ -35,7 +35,7 @@
 		"@formatjs/cli": "6.16.6",
 		"@formatjs/cli-native-linux-arm64": "1.2.1",
 		"@formatjs/cli-native-linux-x64": "1.1.1",
-		"@tanstack/react-query-devtools": "5.100.14",
+		"@tanstack/react-query-devtools": "5.101.0",
 		"@testing-library/dom": "10.4.1",
 		"@testing-library/jest-dom": "6.9.1",
 		"@testing-library/react": "16.3.2",
