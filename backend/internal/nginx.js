@@ -315,6 +315,9 @@ const internalNginx = {
 				if (location.npmplus_auth_request === "authelia") {
 					host.create_authelia_locations = true;
 				}
+				if (location.npmplus_auth_request === "lua-oidc") {
+					host.create_lua_oidc_locations = true;
+				}
 				if (
 					location.npmplus_auth_request === "authentik" ||
 					location.npmplus_auth_request === "authentik-send-basic-auth"
