@@ -502,26 +502,22 @@ rm -vf /usr/local/nginx/logs/nginx.pid
 rm -vf /run/*.sock
 
 if [ "$PUID" != "0" ]; then
-    if id -u npm > /dev/null 2>&1; then
-        usermod -u "$PUID" npm
+    if [ -n "$(getent group "$PGID" 2>/dev/null)" ]; then
+        :
+    elif [ -n "$(getent group npmplus 2>/dev/null)" ]; then
+        groupmod -g "$PGID" npmplus
     else
-        useradd -o -u "$PUID" -U -d /tmp/npmhome -s /sbin/nologin npm
+        groupadd -g "$PGID" npmplus
     fi
-    if [ -z "$(getent group npm | cut -d: -f3)" ]; then
-        groupadd -f -g "$PGID" npm
+
+    if [ -n "$(getent passwd "$PUID" 2>/dev/null)" ]; then
+        :
+    elif [ -n "$(getent passwd npmplus 2>/dev/null)" ]; then
+        usermod -u "$PUID" -g "$PGID" -G "" -d /tmp npmplus
     else
-        groupmod -o -g "$PGID" npm
+        useradd -u "$PUID" -g "$PGID" -M -d /tmp -s /sbin/nologin npmplus
     fi
-    groupmod -o -g "$PGID" npm
-    if [ "$(getent group npm | cut -d: -f3)" != "$PGID" ]; then
-        echo "ERROR: Unable to set group id properly"
-        sleep inf
-    fi
-    usermod -G "$PGID" npm
-    if [ "$(id -g npm)" != "$PGID" ] ; then
-        echo "ERROR: Unable to set group against the user properly"
-        sleep inf
-    fi
+
     find /usr/local \
          /data \
          /run \
@@ -530,6 +526,7 @@ if [ "$PUID" != "0" ]; then
          -print0 \
          | xargs -r0 -P "$(($(nproc)*4))" -n 50 chown "$PUID:$PGID" 
     chown "$PUID:$PGID" /proc/self/fd/2
+
     if [ "$PHP83" = "true" ]; then
         sed -i "s|;\?user =.*|;user = root|" /data/php/83/php-fpm.d/www.conf
         sed -i "s|;\?group =.*|;group = root|" /data/php/83/php-fpm.d/www.conf
@@ -542,9 +539,11 @@ if [ "$PUID" != "0" ]; then
         sed -i "s|;\?user =.*|;user = root|" /data/php/85/php-fpm.d/www.conf
         sed -i "s|;\?group =.*|;group = root|" /data/php/85/php-fpm.d/www.conf
     fi
+
     exec su-exec "$PUID:$PGID" launch.sh
 else
     find /data -not \( -uid 0 -and -gid 0 \) -print0 | xargs -r0 -P "$(($(nproc)*4))" -n 50 chown 0:0
+
     if [ "$PHP83" = "true" ]; then
         sed -i "s|;user =.*|user = root|" /data/php/83/php-fpm.d/www.conf
         sed -i "s|;group =.*|group = root|" /data/php/83/php-fpm.d/www.conf
@@ -557,5 +556,6 @@ else
         sed -i "s|;user =.*|user = root|" /data/php/85/php-fpm.d/www.conf
         sed -i "s|;group =.*|group = root|" /data/php/85/php-fpm.d/www.conf
     fi
+
     exec launch.sh
 fi

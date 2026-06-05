@@ -2,7 +2,6 @@
 
 echo "
 -------------------------------------
-User:     $(whoami)
 PUID:     $PUID
 User ID:  $(id -u)
 PGID:     $PGID
