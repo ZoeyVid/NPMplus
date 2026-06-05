@@ -129,7 +129,10 @@ const ProxyHostModal = EasyModal.create(({ id, isClone = false, visible, remove 
 							npmplusCrowdsecAppsec: data?.npmplusCrowdsecAppsec || false,
 							npmplusProxyResponseBuffering: data?.npmplusProxyResponseBuffering || false,
 							npmplusProxyRequestBuffering: data?.npmplusProxyRequestBuffering || false,
-							npmplusDisableUriSanitisation: data?.npmplusDisableUriSanitisation || false,
+							npmplusDisableUriSanitisation:
+								(data?.npmplusDisableUriSanitisation || false) &&
+								["http", "https"].includes(data?.forwardScheme || "http") &&
+								!(data?.forwardHost || "").includes("/"),
 							npmplusSpoofHostHeader: data?.npmplusSpoofHostHeader || false,
 							npmplusUpstreamCompression: data?.npmplusUpstreamCompression || false,
 							npmplusFancyindex: data?.npmplusFancyindex || false,
@@ -881,7 +884,9 @@ const ProxyHostModal = EasyModal.create(({ id, isClone = false, visible, remove 
 													initialValues={(data?.locations || []).map((loc: any) => ({
 														...loc,
 														npmplusDisableUriSanitisation:
-															loc.npmplusDisableUriSanitisation ?? true,
+															(loc.npmplusDisableUriSanitisation ?? true) &&
+															["http", "https"].includes(loc.forwardScheme || "http") &&
+															!(loc.forwardHost || "").includes("/"),
 													}))}
 												/>
 											</div>
