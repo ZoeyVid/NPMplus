@@ -85,6 +85,22 @@ export function LocationsFields({ initialValues, name = "locations" }: Props) {
 			if (field === "npmplusProxyRequestBuffering" && fieldValue === true) {
 				updatedLocation.npmplusCrowdsecAppsec = true;
 			}
+			if (field === "forwardHost" && fieldValue.includes("/")) {
+				updatedLocation.npmplusDisableUriSanitisation = false;
+			}
+			if (field === "forwardScheme" && fieldValue !== "empty") {
+				if (!["http", "https"].includes(fieldValue)) {
+					updatedLocation.npmplusProxyRequestBuffering = false;
+					updatedLocation.npmplusProxyResponseBuffering = false;
+				}
+				if (fieldValue === "path") {
+					updatedLocation.npmplusUpstreamCompression = false;
+					updatedLocation.npmplusDisableUriSanitisation = false;
+					updatedLocation.npmplusSpoofHostHeader = false;
+				} else {
+					updatedLocation.npmplusFancyindex = false;
+				}
+			}
 			return updatedLocation;
 		});
 		setValues(newValues);

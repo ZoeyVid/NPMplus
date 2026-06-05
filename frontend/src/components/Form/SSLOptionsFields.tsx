@@ -39,6 +39,7 @@ export function SSLOptionsFields({
 		if (fieldName === "sslForced" && !e.target.checked) {
 			setFieldValue("hstsEnabled", false);
 			setFieldValue("hstsSubdomains", false);
+			setFieldValue("trustForwardedProto", false);
 		}
 		if (fieldName === "hstsEnabled" && !e.target.checked) {
 			setFieldValue("hstsSubdomains", false);

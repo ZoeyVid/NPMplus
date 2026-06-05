@@ -229,6 +229,40 @@ const ProxyHostModal = EasyModal.create(({ id, isClone = false, visible, remove 
 																		className={`form-select ${form.errors.forwardScheme && form.touched.forwardScheme ? "is-invalid" : ""}`}
 																		required
 																		{...field}
+																		onChange={(e) => {
+																			field.onChange(e);
+																			const scheme = e.target.value;
+																			if (scheme === "empty") return;
+																			if (!["http", "https"].includes(scheme)) {
+																				form.setFieldValue(
+																					"npmplusProxyRequestBuffering",
+																					false,
+																				);
+																				form.setFieldValue(
+																					"npmplusProxyResponseBuffering",
+																					false,
+																				);
+																			}
+																			if (scheme === "path") {
+																				form.setFieldValue(
+																					"npmplusUpstreamCompression",
+																					false,
+																				);
+																				form.setFieldValue(
+																					"npmplusDisableUriSanitisation",
+																					false,
+																				);
+																				form.setFieldValue(
+																					"npmplusSpoofHostHeader",
+																					false,
+																				);
+																			} else {
+																				form.setFieldValue(
+																					"npmplusFancyindex",
+																					false,
+																				);
+																			}
+																		}}
 																	>
 																		<option value="http">http://</option>
 																		<option value="https">https://</option>
@@ -262,6 +296,14 @@ const ProxyHostModal = EasyModal.create(({ id, isClone = false, visible, remove 
 																		className={`form-control ${form.errors.forwardHost && form.touched.forwardHost ? "is-invalid" : ""}`}
 																		placeholder="example.com"
 																		{...field}
+																		onChange={(e) => {
+																			field.onChange(e);
+																			if (e.target.value.includes("/"))
+																				form.setFieldValue(
+																					"npmplusDisableUriSanitisation",
+																					false,
+																				);
+																		}}
 																	/>
 																	{form.errors.forwardHost ? (
 																		<div className="invalid-feedback">
@@ -554,10 +596,12 @@ const ProxyHostModal = EasyModal.create(({ id, isClone = false, visible, remove 
 																						"bg-lime": field.checked,
 																					})}
 																					type="checkbox"
-																					disabled={
-																						form.values.forwardScheme ===
-																						"path"
-																					}
+																					disabled={[
+																						"path",
+																						"empty",
+																					].includes(
+																						form.values.forwardScheme,
+																					)}
 																				/>
 																			</label>
 																		)}
