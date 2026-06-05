@@ -535,7 +535,7 @@ export function LocationsFields({ initialValues, name = "locations" }: Props) {
 											</span>
 										</label>
 									</div>
-									{item.npmplusAuthRequest !== "none" && (
+									{item?.npmplusAuthRequest?.length > 0 && item.npmplusAuthRequest !== "none" && (
 										<div>
 											<label className="row" htmlFor={`npmplusAuthRequestUpstream-${item.uiKey}`}>
 												<span className="col">
