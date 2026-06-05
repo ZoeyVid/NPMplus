@@ -1,18 +1,18 @@
-diff --git a/src/ngx_http_lua_proxy_ssl_verifyby.h b/src/ngx_http_lua_proxy_ssl_verifyby.h
-index 04319298..a9493598 100644
---- a/src/ngx_http_lua_proxy_ssl_verifyby.h
-+++ b/src/ngx_http_lua_proxy_ssl_verifyby.h
-@@ -16,6 +16,8 @@
- #define  HAVE_LUA_PROXY_SSL_VERIFY 0
+diff --git a/src/ngx_http_lua_common.h b/src/ngx_http_lua_common.h
+index 28538cc2..ce006401 100644
+--- a/src/ngx_http_lua_common.h
++++ b/src/ngx_http_lua_common.h
+@@ -35,6 +35,8 @@
+ #define HAVE_LUA_PROXY_SSL  0
  #elif defined(OPENSSL_IS_BORINGSSL)
- #define  HAVE_LUA_PROXY_SSL_VERIFY 0
+ #define  HAVE_LUA_PROXY_SSL 0
 +#elif defined(OPENSSL_IS_AWSLC)
-+#define  HAVE_LUA_PROXY_SSL_VERIFY 1
++#define  HAVE_LUA_PROXY_SSL 1
  #elif defined(SSL_ERROR_WANT_RETRY_VERIFY) &&                                \
      OPENSSL_VERSION_NUMBER >= 0x30000020uL
- #define  HAVE_LUA_PROXY_SSL_VERIFY 1
+ #define  HAVE_LUA_PROXY_SSL 1
 diff --git a/src/ngx_http_lua_ssl_certby.c b/src/ngx_http_lua_ssl_certby.c
-index e0ee6905..f32526d5 100644
+index ac2bd9a1..099ec1ba 100644
 --- a/src/ngx_http_lua_ssl_certby.c
 +++ b/src/ngx_http_lua_ssl_certby.c
 @@ -37,7 +37,7 @@ static u_char *ngx_http_lua_log_ssl_cert_error(ngx_log_t *log, u_char *buf,
