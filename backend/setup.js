@@ -142,6 +142,7 @@ const setupCertbotPlugins = async () => {
 const regenerateAllHosts = async () => {
 	if (process.env.REGENERATE_ALL === "true") {
 		if (process.env.NGINX_LOAD_OPENAPPSEC_ATTACHMENT_MODULE === "true") {
+			logger.info("The openappsec attachment module will now be temporary disabled");
 			const conf = await readFile("/usr/local/nginx/conf/nginx.conf", "utf-8");
 			await writeFile(
 				"/usr/local/nginx/conf/nginx.conf",
@@ -199,6 +200,7 @@ const regenerateAllHosts = async () => {
 		}
 
 		if (process.env.NGINX_LOAD_OPENAPPSEC_ATTACHMENT_MODULE === "true") {
+			logger.info("The openappsec attachment module will now be enabled again");
 			const conf = await readFile("/usr/local/nginx/conf/nginx.conf", "utf-8");
 			await writeFile(
 				"/usr/local/nginx/conf/nginx.conf",

@@ -92,10 +92,10 @@ export function LocationsFields({ initialValues, name = "locations" }: Props) {
 				if (!["http", "https"].includes(fieldValue)) {
 					updatedLocation.npmplusProxyRequestBuffering = false;
 					updatedLocation.npmplusProxyResponseBuffering = false;
+					updatedLocation.npmplusDisableUriSanitisation = false;
 				}
 				if (fieldValue === "path") {
 					updatedLocation.npmplusUpstreamCompression = false;
-					updatedLocation.npmplusDisableUriSanitisation = false;
 					updatedLocation.npmplusSpoofHostHeader = false;
 				} else {
 					updatedLocation.npmplusFancyindex = false;
@@ -420,9 +420,8 @@ export function LocationsFields({ initialValues, name = "locations" }: Props) {
 															)
 														}
 														disabled={
-															!["http", "https", "grpc", "grpcs"].includes(
-																item.forwardScheme,
-															) || (item.forwardHost || "").includes("/")
+															!["http", "https"].includes(item.forwardScheme) ||
+															(item.forwardHost || "").includes("/")
 														}
 													/>
 												</label>

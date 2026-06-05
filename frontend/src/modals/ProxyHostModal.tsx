@@ -242,14 +242,14 @@ const ProxyHostModal = EasyModal.create(({ id, isClone = false, visible, remove 
 																					"npmplusProxyResponseBuffering",
 																					false,
 																				);
+																				form.setFieldValue(
+																					"npmplusDisableUriSanitisation",
+																					false,
+																				);
 																			}
 																			if (scheme === "path") {
 																				form.setFieldValue(
 																					"npmplusUpstreamCompression",
-																					false,
-																				);
-																				form.setFieldValue(
-																					"npmplusDisableUriSanitisation",
 																					false,
 																				);
 																				form.setFieldValue(
@@ -632,12 +632,7 @@ const ProxyHostModal = EasyModal.create(({ id, isClone = false, visible, remove 
 																					})}
 																					type="checkbox"
 																					disabled={
-																						![
-																							"http",
-																							"https",
-																							"grpc",
-																							"grpcs",
-																						].includes(
+																						!["http", "https"].includes(
 																							form.values.forwardScheme,
 																						) ||
 																						(
