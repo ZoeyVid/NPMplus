@@ -142,13 +142,11 @@ const setupCertbotPlugins = async () => {
 const regenerateAllHosts = async () => {
 	if (process.env.REGENERATE_ALL === "true") {
 		if (process.env.NGINX_LOAD_OPENAPPSEC_ATTACHMENT_MODULE === "true") {
-			logger.info("The openappsec attachment module will now be temporary disabled");
 			const conf = await readFile("/usr/local/nginx/conf/nginx.conf", "utf-8");
 			await writeFile(
 				"/usr/local/nginx/conf/nginx.conf",
 				conf.replace(/(load_module.+libngx_module\.so;)/gm, "#$1"),
 			);
-			await internalNginx.reload();
 		}
 
 		const proxyHosts = await proxyModel
@@ -166,7 +164,7 @@ const regenerateAllHosts = async () => {
 				}),
 			);
 
-			await internalNginx.bulkGenerateConfigs(proxyModel, "proxy_host", updatedProxyHosts);
+			await internalNginx.bulkGenerateConfigs(proxyModel, "proxy_host", updatedProxyHosts, { skipReload: true });
 		}
 
 		const redirectionHosts = await redirectionModel
@@ -176,7 +174,9 @@ const regenerateAllHosts = async () => {
 			.withGraphFetched(redirectionModel.defaultAllowGraph);
 
 		if (redirectionHosts?.length) {
-			await internalNginx.bulkGenerateConfigs(redirectionModel, "redirection_host", redirectionHosts);
+			await internalNginx.bulkGenerateConfigs(redirectionModel, "redirection_host", redirectionHosts, {
+				skipReload: true,
+			});
 		}
 
 		const deadHosts = await deadModel
@@ -186,7 +186,7 @@ const regenerateAllHosts = async () => {
 			.withGraphFetched(deadModel.defaultAllowGraph);
 
 		if (deadHosts?.length) {
-			await internalNginx.bulkGenerateConfigs(deadModel, "dead_host", deadHosts);
+			await internalNginx.bulkGenerateConfigs(deadModel, "dead_host", deadHosts, { skipReload: true });
 		}
 
 		const streamHosts = await streamModel
@@ -196,20 +196,20 @@ const regenerateAllHosts = async () => {
 			.withGraphFetched(streamModel.defaultAllowGraph);
 
 		if (streamHosts?.length) {
-			await internalNginx.bulkGenerateConfigs(streamModel, "stream", streamHosts);
+			await internalNginx.bulkGenerateConfigs(streamModel, "stream", streamHosts, { skipReload: true });
 		}
 
 		if (process.env.NGINX_LOAD_OPENAPPSEC_ATTACHMENT_MODULE === "true") {
-			logger.info("The openappsec attachment module will now be enabled again");
 			const conf = await readFile("/usr/local/nginx/conf/nginx.conf", "utf-8");
 			await writeFile(
 				"/usr/local/nginx/conf/nginx.conf",
 				conf.replace(/#(load_module.+libngx_module\.so;)/gm, "$1"),
 			);
-			await internalNginx.reload();
 		}
 
+		logger.debug("Writing Hash");
 		await utils.writeHash();
+		logger.debug("Hash written");
 	}
 };
 

@@ -25,7 +25,7 @@ const internalNginx = {
 	 * @param   {Object}         host
 	 * @returns {Promise}
 	 */
-	configure: async (model, host_type, host) => {
+	configure: async (model, host_type, host, { skipReload = false } = {}) => {
 		let combined_meta = {};
 
 		await internalProxyHostAccessList.build(host_type, host);
@@ -58,7 +58,9 @@ const internalNginx = {
 			await internalNginx.renameConfigAsError(host_type, host);
 		}
 
-		await internalNginx.reload();
+		if (!skipReload) {
+			await internalNginx.reload();
+		}
 		return combined_meta;
 	},
 
@@ -474,11 +476,11 @@ const internalNginx = {
 	 * @param   {Array}   hosts
 	 * @returns {Promise}
 	 */
-	bulkGenerateConfigs: async (model, hostType, hosts) => {
+	bulkGenerateConfigs: async (model, hostType, hosts, { skipReload = false } = {}) => {
 		const results = [];
 
 		for (const host of hosts) {
-			const result = await internalNginx.configure(model, hostType, host);
+			const result = await internalNginx.configure(model, hostType, host, { skipReload });
 			results.push(result);
 		}
 
