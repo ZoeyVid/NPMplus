@@ -82,14 +82,14 @@ importers:
         specifier: 2.4.16
         version: 2.4.16
       '@formatjs/cli':
-        specifier: 6.16.8
-        version: 6.16.8
+        specifier: 6.16.9
+        version: 6.16.9
       '@formatjs/cli-native-linux-arm64':
-        specifier: 1.2.2
-        version: 1.2.2
+        specifier: 1.2.3
+        version: 1.2.3
       '@formatjs/cli-native-linux-x64':
-        specifier: 1.1.2
-        version: 1.1.2
+        specifier: 1.1.3
+        version: 1.1.3
       '@tanstack/react-query-devtools':
         specifier: 5.101.0
         version: 5.101.0(@tanstack/react-query@5.101.0(react@19.2.7))(react@19.2.7)
@@ -109,8 +109,8 @@ importers:
         specifier: 2.0.6
         version: 2.0.6
       '@types/node':
-        specifier: 25.9.1
-        version: 25.9.1
+        specifier: 25.9.2
+        version: 25.9.2
       '@types/react':
         specifier: 19.2.17
         version: 19.2.17
@@ -122,7 +122,7 @@ importers:
         version: 7.7.20
       '@vitejs/plugin-react':
         specifier: 6.0.2
-        version: 6.0.2(vite@8.0.16(@types/node@25.9.1)(sass@1.100.0))
+        version: 6.0.2(vite@8.0.16(@types/node@25.9.2)(sass@1.100.0))
       happy-dom:
         specifier: 20.10.1
         version: 20.10.1
@@ -140,13 +140,13 @@ importers:
         version: 6.0.3
       vite:
         specifier: 8.0.16
-        version: 8.0.16(@types/node@25.9.1)(sass@1.100.0)
+        version: 8.0.16(@types/node@25.9.2)(sass@1.100.0)
       vite-plugin-checker:
         specifier: 0.14.1
-        version: 0.14.1(@biomejs/biome@2.4.16)(typescript@6.0.3)(vite@8.0.16(@types/node@25.9.1)(sass@1.100.0))
+        version: 0.14.1(@biomejs/biome@2.4.16)(typescript@6.0.3)(vite@8.0.16(@types/node@25.9.2)(sass@1.100.0))
       vitest:
         specifier: 4.1.8
-        version: 4.1.8(@types/node@25.9.1)(happy-dom@20.10.1)(vite@8.0.16(@types/node@25.9.1)(sass@1.100.0))
+        version: 4.1.8(@types/node@25.9.2)(happy-dom@20.10.1)(vite@8.0.16(@types/node@25.9.2)(sass@1.100.0))
 
 packages:
 
@@ -314,28 +314,40 @@ packages:
   '@floating-ui/utils@0.2.11':
     resolution: {integrity: sha512-RiB/yIh78pcIxl6lLMG0CgBXAZ2Y0eVHqMPYugu+9U0AeT6YBeiJpf7lbdJNIugFP5SIjwNRgo4DhR1Qxi26Gg==}
 
-  '@formatjs/cli-native-darwin-arm64@1.1.2':
-    resolution: {integrity: sha512-Pddp6/djcU0wJDS5xcCHVMTq+u6wrYQ5hJpXsMrA8cNeviIBVadQOUx/ATmNNHC3nuJUX9lYvI3gEvH/4zB//g==}
+  '@formatjs/cli-native-darwin-arm64@1.1.3':
+    resolution: {integrity: sha512-goYuHkzNf7Y/TFMYvSGHiWRvPOz16tgm+0d8f5Gn8BVbyZc5oudh3CnEstnJpK2vvGRPOlIFQoA+yasZob4m6Q==}
     cpu: [arm64]
     os: [darwin]
 
-  '@formatjs/cli-native-linux-arm64@1.2.2':
-    resolution: {integrity: sha512-CFbbp8IS9S7ROM8RA6h52pGzRK6gX5QjJmSLGbXSO1Mw3qtrFQyqZCHsJ4/Yn+ppLSquD1FnzI0ghsdTUC4WZg==}
+  '@formatjs/cli-native-linux-arm64-musl@1.0.1':
+    resolution: {integrity: sha512-w9huy/k2XAr8yn/fFUlgFsacRAhjlQJDZQGWLrUpr8Is82lkrbH85NRycssSQ49Jm+5oMYa7wEtP8HwinzXG6A==}
+    cpu: [arm64]
+    os: [linux]
+    libc: [musl]
+
+  '@formatjs/cli-native-linux-arm64@1.2.3':
+    resolution: {integrity: sha512-hOPwk3l/88aONfbVIT7hR4VOxBE7SN0DmLaYcwbfoM3Re/rELwBk9iYu/m6bIAjyez8OIVh+g9JnA82sU5Nn5w==}
     cpu: [arm64]
     os: [linux]
 
-  '@formatjs/cli-native-linux-x64@1.1.2':
-    resolution: {integrity: sha512-2soO6RPCBl7XGL9ZhRY/upAlM+cNPWDJy54Cf0M1mNAvV97n3sdvzcXSdcHrv8Wo4opNTlpHFb+PpnrbeFC27Q==}
+  '@formatjs/cli-native-linux-x64-musl@1.0.1':
+    resolution: {integrity: sha512-g9KVMN0CWccUEsFZOXTHEZbYP0lbRKCZzriIOdPTRPP8Sd+3Fl/wRin4gUWJGN9UWHArypx5PkQtpzGPp0yO9Q==}
+    cpu: [x64]
+    os: [linux]
+    libc: [musl]
+
+  '@formatjs/cli-native-linux-x64@1.1.3':
+    resolution: {integrity: sha512-R2LEzfBQVxZi4FAeXV2NmMfxRIAQ4CUcrAfSPdVEXlGdSILGwHdYNIodBrqS6T6DfkEe1RmxLdItTpoW5Y39yQ==}
     cpu: [x64]
     os: [linux]
 
-  '@formatjs/cli-native-win32-x64@1.1.3':
-    resolution: {integrity: sha512-ZVdDfYtcSxCUngPilFysXWFZ6wuTQanDZZOEhAp+KAggGZbPg7EFj2KYXcPuev0a/fbjNpiuA6nC/zE83EG8Og==}
+  '@formatjs/cli-native-win32-x64@1.1.4':
+    resolution: {integrity: sha512-dV9eS9yFqnKE61+vhb3yXprGGhpNYZHIQod7UCMwKZny2A9AkeQKrWGuAtGMB0KVG7fs1BYtgd7brxAFxoQkSQ==}
     cpu: [x64]
     os: [win32]
 
-  '@formatjs/cli@6.16.8':
-    resolution: {integrity: sha512-9a4za6iPj8yql6GlK+sRimRn1rkFPwsSAVJu9sSdwhetXpMnz1QzeK4W0aTH9VBUpctl4nzVuWnny1tELiAgBQ==}
+  '@formatjs/cli@6.16.9':
+    resolution: {integrity: sha512-E5xeMfLlpTpXmSI6wHaOuNySI5PmPBcAnZGT9CrpOweAu09QQvurJiigqAa/tnCoDhTYMHfUjH4J2MDqF/G4SQ==}
     engines: {node: '>= 20.12.0'}
     hasBin: true
     peerDependencies:
@@ -741,6 +753,9 @@ packages:
 
   '@types/node@25.9.1':
     resolution: {integrity: sha512-xfrlY7UD5rMJk3ZVJP8BNzS28J36YJg+xp+LPXV1TdWxr8uMH5A860QNxYDGQe/ylDSgjxE52Q9VnO7p75tJxg==}
+
+  '@types/node@25.9.2':
+    resolution: {integrity: sha512-G05zqtJhcDLb8uslf5EjCxXg9G1KQxiV8OS0R26IC//Eoyitzqe8z37I7cqvnZlrlSfgocQRfSn/AHBZJJFyGw==}
 
   '@types/parse-json@4.0.2':
     resolution: {integrity: sha512-dISoDXWWQwUquiKsyZ4Ng+HX2KsPL7LyHKHQwgGFEA3IaKac4Obd+h2a/a6waisAoepJlBcx9paWqjA8/HVjCw==}
@@ -2120,22 +2135,30 @@ snapshots:
 
   '@floating-ui/utils@0.2.11': {}
 
-  '@formatjs/cli-native-darwin-arm64@1.1.2':
+  '@formatjs/cli-native-darwin-arm64@1.1.3':
     optional: true
 
-  '@formatjs/cli-native-linux-arm64@1.2.2': {}
-
-  '@formatjs/cli-native-linux-x64@1.1.2': {}
-
-  '@formatjs/cli-native-win32-x64@1.1.3':
+  '@formatjs/cli-native-linux-arm64-musl@1.0.1':
     optional: true
 
-  '@formatjs/cli@6.16.8':
+  '@formatjs/cli-native-linux-arm64@1.2.3': {}
+
+  '@formatjs/cli-native-linux-x64-musl@1.0.1':
+    optional: true
+
+  '@formatjs/cli-native-linux-x64@1.1.3': {}
+
+  '@formatjs/cli-native-win32-x64@1.1.4':
+    optional: true
+
+  '@formatjs/cli@6.16.9':
     optionalDependencies:
-      '@formatjs/cli-native-darwin-arm64': 1.1.2
-      '@formatjs/cli-native-linux-arm64': 1.2.2
-      '@formatjs/cli-native-linux-x64': 1.1.2
-      '@formatjs/cli-native-win32-x64': 1.1.3
+      '@formatjs/cli-native-darwin-arm64': 1.1.3
+      '@formatjs/cli-native-linux-arm64': 1.2.3
+      '@formatjs/cli-native-linux-arm64-musl': 1.0.1
+      '@formatjs/cli-native-linux-x64': 1.1.3
+      '@formatjs/cli-native-linux-x64-musl': 1.0.1
+      '@formatjs/cli-native-win32-x64': 1.1.4
 
   '@formatjs/fast-memoize@3.1.6': {}
 
@@ -2462,6 +2485,10 @@ snapshots:
     dependencies:
       undici-types: 7.24.6
 
+  '@types/node@25.9.2':
+    dependencies:
+      undici-types: 7.24.6
+
   '@types/parse-json@4.0.2': {}
 
   '@types/prismjs@1.26.6': {}
@@ -2510,10 +2537,10 @@ snapshots:
 
   '@ungap/structured-clone@1.3.1': {}
 
-  '@vitejs/plugin-react@6.0.2(vite@8.0.16(@types/node@25.9.1)(sass@1.100.0))':
+  '@vitejs/plugin-react@6.0.2(vite@8.0.16(@types/node@25.9.2)(sass@1.100.0))':
     dependencies:
       '@rolldown/pluginutils': 1.0.1
-      vite: 8.0.16(@types/node@25.9.1)(sass@1.100.0)
+      vite: 8.0.16(@types/node@25.9.2)(sass@1.100.0)
 
   '@vitest/expect@4.1.8':
     dependencies:
@@ -2524,13 +2551,13 @@ snapshots:
       chai: 6.2.2
       tinyrainbow: 3.1.0
 
-  '@vitest/mocker@4.1.8(vite@8.0.16(@types/node@25.9.1)(sass@1.100.0))':
+  '@vitest/mocker@4.1.8(vite@8.0.16(@types/node@25.9.2)(sass@1.100.0))':
     dependencies:
       '@vitest/spy': 4.1.8
       estree-walker: 3.0.3
       magic-string: 0.30.21
     optionalDependencies:
-      vite: 8.0.16(@types/node@25.9.1)(sass@1.100.0)
+      vite: 8.0.16(@types/node@25.9.2)(sass@1.100.0)
 
   '@vitest/pretty-format@4.1.8':
     dependencies:
@@ -3700,7 +3727,7 @@ snapshots:
       '@types/unist': 3.0.3
       vfile-message: 4.0.3
 
-  vite-plugin-checker@0.14.1(@biomejs/biome@2.4.16)(typescript@6.0.3)(vite@8.0.16(@types/node@25.9.1)(sass@1.100.0)):
+  vite-plugin-checker@0.14.1(@biomejs/biome@2.4.16)(typescript@6.0.3)(vite@8.0.16(@types/node@25.9.2)(sass@1.100.0)):
     dependencies:
       '@babel/code-frame': 7.29.7
       chokidar: 5.0.0
@@ -3709,12 +3736,12 @@ snapshots:
       picomatch: 4.0.4
       proper-lockfile: 4.1.2
       tiny-invariant: 1.3.3
-      vite: 8.0.16(@types/node@25.9.1)(sass@1.100.0)
+      vite: 8.0.16(@types/node@25.9.2)(sass@1.100.0)
     optionalDependencies:
       '@biomejs/biome': 2.4.16
       typescript: 6.0.3
 
-  vite@8.0.16(@types/node@25.9.1)(sass@1.100.0):
+  vite@8.0.16(@types/node@25.9.2)(sass@1.100.0):
     dependencies:
       lightningcss: 1.32.0
       picomatch: 4.0.4
@@ -3722,14 +3749,14 @@ snapshots:
       rolldown: 1.0.3
       tinyglobby: 0.2.17
     optionalDependencies:
-      '@types/node': 25.9.1
+      '@types/node': 25.9.2
       fsevents: 2.3.3
       sass: 1.100.0
 
-  vitest@4.1.8(@types/node@25.9.1)(happy-dom@20.10.1)(vite@8.0.16(@types/node@25.9.1)(sass@1.100.0)):
+  vitest@4.1.8(@types/node@25.9.2)(happy-dom@20.10.1)(vite@8.0.16(@types/node@25.9.2)(sass@1.100.0)):
     dependencies:
       '@vitest/expect': 4.1.8
-      '@vitest/mocker': 4.1.8(vite@8.0.16(@types/node@25.9.1)(sass@1.100.0))
+      '@vitest/mocker': 4.1.8(vite@8.0.16(@types/node@25.9.2)(sass@1.100.0))
       '@vitest/pretty-format': 4.1.8
       '@vitest/runner': 4.1.8
       '@vitest/snapshot': 4.1.8
@@ -3746,10 +3773,10 @@ snapshots:
       tinyexec: 1.2.4
       tinyglobby: 0.2.17
       tinyrainbow: 3.1.0
-      vite: 8.0.16(@types/node@25.9.1)(sass@1.100.0)
+      vite: 8.0.16(@types/node@25.9.2)(sass@1.100.0)
       why-is-node-running: 2.3.0
     optionalDependencies:
-      '@types/node': 25.9.1
+      '@types/node': 25.9.2
       happy-dom: 20.10.1
     transitivePeerDependencies:
       - msw
