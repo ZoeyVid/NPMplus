@@ -43,7 +43,7 @@ importers:
         version: 9.0.3
       knex:
         specifier: 3.2.10
-        version: 3.2.10(better-sqlite3@12.10.0)(mysql2@3.22.4(@types/node@25.9.1))(pg@8.21.0)
+        version: 3.2.10(better-sqlite3@12.10.0)(mysql2@3.22.5(@types/node@25.9.1))(pg@8.21.0)
       liquidjs:
         specifier: 10.27.0
         version: 10.27.0
@@ -51,11 +51,11 @@ importers:
         specifier: 4.18.1
         version: 4.18.1
       mysql2:
-        specifier: 3.22.4
-        version: 3.22.4(@types/node@25.9.1)
+        specifier: 3.22.5
+        version: 3.22.5(@types/node@25.9.1)
       objection:
         specifier: 3.1.5
-        version: 3.1.5(knex@3.2.10(better-sqlite3@12.10.0)(mysql2@3.22.4(@types/node@25.9.1))(pg@8.21.0))
+        version: 3.1.5(knex@3.2.10(better-sqlite3@12.10.0)(mysql2@3.22.5(@types/node@25.9.1))(pg@8.21.0))
       openid-client:
         specifier: 6.8.4
         version: 6.8.4
@@ -805,8 +805,8 @@ packages:
   ms@2.1.3:
     resolution: {integrity: sha512-6FlzubTLZG3J2a/NVCAleEhjzq5oxgHyaCU9yYXvcLsvoVaHJq/s5xXI6/XXP6tz7R9xAOtHnSO/tXtF3WRTlA==}
 
-  mysql2@3.22.4:
-    resolution: {integrity: sha512-CtXYlmL7ZamiYKbmqkamQHWJROUHSfm+f3kByzGfknw7kW51mcB2ouMUqYq1XfYxbXmnWo6RhPydx6OCqdgcmQ==}
+  mysql2@3.22.5:
+    resolution: {integrity: sha512-95uZ2TrPWAZdwpB3vvvDbmEMcNG8yIeNCyu6GUcr/QnWEE/wXm7+mhOCsdQfWQDTV7qYT/PDUZ4U4UPP4AsXqQ==}
     engines: {node: '>= 8.0'}
     peerDependencies:
       '@types/node': '>= 8'
@@ -1755,7 +1755,7 @@ snapshots:
       jwa: 2.0.1
       safe-buffer: 5.2.1
 
-  knex@3.2.10(better-sqlite3@12.10.0)(mysql2@3.22.4(@types/node@25.9.1))(pg@8.21.0):
+  knex@3.2.10(better-sqlite3@12.10.0)(mysql2@3.22.5(@types/node@25.9.1))(pg@8.21.0):
     dependencies:
       colorette: 2.0.19
       commander: 10.0.1
@@ -1773,7 +1773,7 @@ snapshots:
       tildify: 2.0.0
     optionalDependencies:
       better-sqlite3: 12.10.0
-      mysql2: 3.22.4(@types/node@25.9.1)
+      mysql2: 3.22.5(@types/node@25.9.1)
       pg: 8.21.0
     transitivePeerDependencies:
       - supports-color
@@ -1844,7 +1844,7 @@ snapshots:
 
   ms@2.1.3: {}
 
-  mysql2@3.22.4(@types/node@25.9.1):
+  mysql2@3.22.5(@types/node@25.9.1):
     dependencies:
       '@types/node': 25.9.1
       aws-ssl-profiles: 1.1.2
@@ -1874,12 +1874,12 @@ snapshots:
 
   object-inspect@1.13.4: {}
 
-  objection@3.1.5(knex@3.2.10(better-sqlite3@12.10.0)(mysql2@3.22.4(@types/node@25.9.1))(pg@8.21.0)):
+  objection@3.1.5(knex@3.2.10(better-sqlite3@12.10.0)(mysql2@3.22.5(@types/node@25.9.1))(pg@8.21.0)):
     dependencies:
       ajv: 8.20.0
       ajv-formats: 2.1.1(ajv@8.20.0)
       db-errors: 0.2.3
-      knex: 3.2.10(better-sqlite3@12.10.0)(mysql2@3.22.4(@types/node@25.9.1))(pg@8.21.0)
+      knex: 3.2.10(better-sqlite3@12.10.0)(mysql2@3.22.5(@types/node@25.9.1))(pg@8.21.0)
 
   on-finished@2.4.1:
     dependencies:
