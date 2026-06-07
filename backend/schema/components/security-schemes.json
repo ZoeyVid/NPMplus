@@ -2,6 +2,6 @@
 	"cookieAuth": {
 		"type": "apiKey",
 		"in": "cookie",
-		"name": "token"
+		"name": "__Host-Http-token"
 	}
 }
