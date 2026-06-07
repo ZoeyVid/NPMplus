@@ -89,7 +89,6 @@ router
 
 			const data = await apiValidator(getValidationSchema("/tokens", "post"), req.body);
 			const result = await internalToken.getTokenFromEmail(data);
-			const { token, ...responseBody } = result;
 
 			if (result.token && result.expires) {
 				res.cookie("__Host-Http-token", result.token, {
@@ -101,7 +100,7 @@ router
 				});
 			}
 
-			res.status(200).send(responseBody);
+			res.status(200).send(result);
 		} catch (err) {
 			debug(logger, `${req.method.toUpperCase()} ${req.originalUrl}: ${err}`);
 			next(err);
@@ -147,7 +146,6 @@ router
 
 			const { challenge_token, code } = await apiValidator(getValidationSchema("/tokens/2fa", "post"), req.body);
 			const result = await internalToken.verify2FA(challenge_token, code);
-			const { token, ...responseBody } = result;
 
 			if (result.token && result.expires) {
 				res.cookie("__Host-Http-token", result.token, {
@@ -159,7 +157,7 @@ router
 				});
 			}
 
-			res.status(200).send(responseBody);
+			res.status(200).send(result);
 		} catch (err) {
 			debug(logger, `${req.method.toUpperCase()} ${req.path}: ${err}`);
 			next(err);

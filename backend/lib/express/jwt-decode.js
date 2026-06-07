@@ -2,7 +2,9 @@ import Access from "../access.js";
 
 export default () => {
 	return async (req, res, next) => {
-		const token = req.signedCookies?.["__Host-Http-token"] || null;
+		const bearerHeader = req.headers.authorization;
+		const bearerToken = bearerHeader?.startsWith("Bearer ") ? bearerHeader.slice(7) : null;
+		const token = req.signedCookies?.["__Host-Http-token"] || bearerToken || null;
 
 		//if (!token) {
 		//	return res.status(401).json({
