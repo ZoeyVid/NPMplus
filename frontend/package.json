@@ -31,10 +31,10 @@
 		"rooks": "9.8.0"
 	},
 	"devDependencies": {
-		"@biomejs/biome": "2.4.16",
-		"@formatjs/cli": "6.16.10",
-		"@formatjs/cli-native-linux-arm64": "1.2.4",
-		"@formatjs/cli-native-linux-x64": "1.1.4",
+		"@biomejs/biome": "2.5.0",
+		"@formatjs/cli": "6.16.11",
+		"@formatjs/cli-native-linux-arm64": "1.2.5",
+		"@formatjs/cli-native-linux-x64": "1.1.5",
 		"@tanstack/react-query-devtools": "5.101.0",
 		"@testing-library/dom": "10.4.1",
 		"@testing-library/jest-dom": "6.9.1",
@@ -46,13 +46,13 @@
 		"@types/react-dom": "19.2.3",
 		"@types/react-table": "7.7.20",
 		"@vitejs/plugin-react": "6.0.2",
-		"happy-dom": "20.10.2",
+		"happy-dom": "20.10.3",
 		"postcss": "8.5.15",
-		"sass": "1.100.0",
+		"sass": "1.101.0",
 		"tmp": "0.2.7",
 		"typescript": "6.0.3",
 		"vite": "8.0.16",
 		"vite-plugin-checker": "0.14.1",
-		"vitest": "4.1.8"
+		"vitest": "4.1.9"
 	}
 }
