@@ -7,11 +7,11 @@
 	"main": "index.js",
 	"type": "module",
 	"dependencies": {
-		"@apidevtools/json-schema-ref-parser": "15.3.5",
+		"@apidevtools/json-schema-ref-parser": "15.3.6",
 		"ajv": "8.20.0",
 		"archiver": "8.0.0",
 		"bcryptjs": "3.0.3",
-		"better-sqlite3": "12.10.0",
+		"better-sqlite3": "12.11.1",
 		"cookie-parser": "1.4.7",
 		"dayjs": "1.11.21",
 		"express": "5.2.1",
@@ -31,6 +31,6 @@
 	},
 	"devDependencies": {
 		"@apidevtools/swagger-parser": "12.1.0",
-		"@biomejs/biome": "2.4.16"
+		"@biomejs/biome": "2.5.0"
 	}
 }
