@@ -1,5 +1,5 @@
 # syntax=docker/dockerfile:1.24.0@sha256:87999aa3d42bdc6bea60565083ee17e86d1f3339802f543c0d03998580f9cb89
-FROM alpine:3.24.0@sha256:a2d49ea686c2adfe3c992e47dc3b5e7fa6e6b5055609400dc2acaeb241c829f4 AS nginx
+FROM alpine:3.24.1@sha256:28bd5fe8b56d1bd048e5babf5b10710ebe0bae67db86916198a6eec434943f8b AS nginx
 SHELL ["/bin/ash", "-eo", "pipefail", "-c"]
 
 ARG LUAJIT_INC=/usr/include/luajit-2.1
@@ -35,11 +35,11 @@ COPY patches/*.patch /src
 COPY rootfs/usr/local/bin/git-clone-commit.sh /usr/local/bin/git-clone-commit.sh
 
 RUN apk upgrade --no-cache -a && \
-    apk add --no-cache git clang lld compiler-rt llvm-libunwind-dev libc++-dev cmake ninja make llvm file \
-                       linux-headers libatomic_ops-dev pcre2-dev luajit-dev zlib-ng-dev brotli-dev zstd-dev libxslt-dev openldap-dev quickjs-ng-dev libmaxminddb-dev clang-dev
+    apk add --no-cache git clang lld compiler-rt llvm-libunwind-dev libc++-dev linux-headers cmake ninja make llvm file \
+                       libatomic_ops-dev pcre2-dev luajit-dev zlib-ng-dev brotli-dev zstd-dev libxslt-dev openldap-dev quickjs-ng-dev libmaxminddb-dev clang-dev
 
 RUN for f in $(apk info --no-cache -qL libgcc-static libstdc++-dev); do rm /"$f"; done && \
-    echo "-fuse-ld=lld --rtlib=compiler-rt --unwindlib=libunwind -stdlib=libc++" | tee /etc/clang*/*.cfg
+    echo "-fuse-ld=lld --rtlib=compiler-rt --unwindlib=libunwind -stdlib=libc++ -D_LIBCPP_HARDENING_MODE=_LIBCPP_HARDENING_MODE_EXTENSIVE" | tee /etc/clang*/*.cfg
 
 ARG CC=clang
 ARG CXX=clang++
@@ -48,7 +48,7 @@ ARG AR=llvm-ar
 
 ARG FLAGS
 ARG CFLAGS="$FLAGS -m64 -O3 -pipe -flto=full -ffunction-sections -fdata-sections -fno-math-errno -ffp-contract=fast -fstack-clash-protection -fstack-protector-strong -fzero-call-used-regs=used-gpr -fstrict-flex-arrays=3 -ftrivial-auto-var-init=zero -fno-delete-null-pointer-checks -fno-strict-overflow -fno-strict-aliasing -fno-semantic-interposition -fno-plt -U_FORTIFY_SOURCE -D_FORTIFY_SOURCE=3 -Wformat=2 -Werror=format-security -Wno-sign-compare"
-ARG CXXFLAGS="$CFLAGS -D_GLIBCXX_ASSERTIONS -D_LIBCPP_ENABLE_THREAD_SAFETY_ANNOTATIONS=1 -D_LIBCPP_HARDENING_MODE=_LIBCPP_HARDENING_MODE_EXTENSIVE"
+ARG CXXFLAGS="$CFLAGS"
 ARG LDFLAGS="-m64 -Wl,-s -Wl,-O2 -Wl,--lto-O3 -Wl,--icf=safe -Wl,--gc-sections -Wl,-z,noexecstack -Wl,-z,relro -Wl,-z,now -Wl,--sort-common -Wl,--as-needed -Wl,-z,pack-relative-relocs -Wl,--no-copy-dt-needed-entries"
 
 RUN git config --global advice.detachedHead false && \
@@ -57,7 +57,7 @@ RUN git config --global advice.detachedHead false && \
 RUN git-clone-commit.sh https://github.com/aws/aws-lc "$AWSLC_VER" /src/aws-lc && \
     cd /src/aws-lc && \
     git apply /src/aws-lc-tls13-cipher-preference.patch && \
-    cmake /src/aws-lc -G Ninja -DCMAKE_BUILD_TYPE=Release -DBUILD_SHARED_LIBS=ON -DBUILD_TESTING=OFF -DDISABLE_GO=ON -DDISABLE_PERL=ON && \
+    cmake /src/aws-lc -G Ninja -DCMAKE_BUILD_TYPE=Release -DBUILD_SHARED_LIBS=ON -DDISABLE_GO=ON -DDISABLE_PERL=ON -DBUILD_TESTING=OFF && \
     ninja install
 
 RUN git-clone-commit.sh https://github.com/nginx/nginx "$NGINX_VER" /src/nginx && \
@@ -188,7 +188,7 @@ RUN find /usr/local/nginx/modules -name "*.so" -exec llvm-strip -s {} \; && \
     /usr/local/nginx/sbin/nginx -V
 
 
-FROM --platform="$BUILDPLATFORM" alpine:3.24.0@sha256:a2d49ea686c2adfe3c992e47dc3b5e7fa6e6b5055609400dc2acaeb241c829f4 AS frontend
+FROM --platform="$BUILDPLATFORM" alpine:3.24.1@sha256:28bd5fe8b56d1bd048e5babf5b10710ebe0bae67db86916198a6eec434943f8b AS frontend
 SHELL ["/bin/ash", "-eo", "pipefail", "-c"]
 ARG NODE_ENV=production
 WORKDIR /app
@@ -205,7 +205,7 @@ RUN pnpm formatjs compile-folder src/locale/src src/locale/lang && \
     pnpm tsc && \
     pnpm vite build
 
-FROM alpine:3.24.0@sha256:a2d49ea686c2adfe3c992e47dc3b5e7fa6e6b5055609400dc2acaeb241c829f4 AS backend
+FROM alpine:3.24.1@sha256:28bd5fe8b56d1bd048e5babf5b10710ebe0bae67db86916198a6eec434943f8b AS backend
 SHELL ["/bin/ash", "-eo", "pipefail", "-c"]
 ARG NODE_ENV=production
 WORKDIR /app
@@ -221,7 +221,7 @@ RUN apk upgrade --no-cache -a && \
 COPY backend /app
 
 
-FROM alpine:3.24.0@sha256:a2d49ea686c2adfe3c992e47dc3b5e7fa6e6b5055609400dc2acaeb241c829f4
+FROM alpine:3.24.1@sha256:28bd5fe8b56d1bd048e5babf5b10710ebe0bae67db86916198a6eec434943f8b
 SHELL ["/bin/ash", "-eo", "pipefail", "-c"]
 ENV NODE_ENV=production
 ARG LRC_VER=6fec23e2149c88b33b39fec8a5ebdd67a3e0dd88 # v0.1.34rc3
@@ -244,8 +244,8 @@ COPY COPYING /COPYING
 
 WORKDIR /app
 RUN apk upgrade --no-cache -a && \
-    apk add --no-cache tzdata tini \
-                       pcre2 luajit zlib-ng brotli zstd lua5.1-cjson libxml2 libldap quickjs-ng-libs libmaxminddb-libs libc++ llvm-libunwind \
+    apk add --no-cache tzdata tini llvm-libunwind libc++ \
+                       pcre2 luajit zlib-ng brotli zstd lua5.1-cjson libxml2 libldap quickjs-ng-libs libmaxminddb-libs \
                        curl coreutils findutils grep jq openssl shadow su-exec util-linux-misc \
                        bash bash-completion nano \
                        logrotate goaccess fcgi \
