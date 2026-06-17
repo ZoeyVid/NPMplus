@@ -142,8 +142,8 @@ importers:
         specifier: 8.0.16
         version: 8.0.16(@types/node@25.9.3)(sass@1.101.0)
       vite-plugin-checker:
-        specifier: 0.14.1
-        version: 0.14.1(@biomejs/biome@2.5.0)(typescript@6.0.3)(vite@8.0.16(@types/node@25.9.3)(sass@1.101.0))
+        specifier: 0.14.4
+        version: 0.14.4(@biomejs/biome@2.5.0)(typescript@6.0.3)(vite@8.0.16(@types/node@25.9.3)(sass@1.101.0))
       vitest:
         specifier: 4.1.9
         version: 4.1.9(@types/node@25.9.3)(happy-dom@20.10.5)(vite@8.0.16(@types/node@25.9.3)(sass@1.101.0))
@@ -1794,8 +1794,8 @@ packages:
   vfile@6.0.3:
     resolution: {integrity: sha512-KzIbH/9tXat2u30jf+smMwFCsno4wHVdNmzFyL+T/L3UGqqk6JKfVqOFOZEpZSHADH1k40ab6NUIXZq422ov3Q==}
 
-  vite-plugin-checker@0.14.1:
-    resolution: {integrity: sha512-Mv8oQc9XYBYf+XkP/riqqQCt8lBP6Iad75PZPho1lHRrpxQI0BwX2gwE10enn4f6Hgc+PvR1F7N38KARcaJtzw==}
+  vite-plugin-checker@0.14.4:
+    resolution: {integrity: sha512-Tw0U9UgHIRiZ+Yoe4Gh0RrYoBiCVmO9j4tomVdYr0KUjUsqXMPhqW8ouoSWmOzGp5Iimipbl3bNXZcK7OeP7Qg==}
     engines: {node: '>=20.19.0'}
     peerDependencies:
       '@biomejs/biome': '>=2.4.12'
@@ -3713,7 +3713,7 @@ snapshots:
       '@types/unist': 3.0.3
       vfile-message: 4.0.3
 
-  vite-plugin-checker@0.14.1(@biomejs/biome@2.5.0)(typescript@6.0.3)(vite@8.0.16(@types/node@25.9.3)(sass@1.101.0)):
+  vite-plugin-checker@0.14.4(@biomejs/biome@2.5.0)(typescript@6.0.3)(vite@8.0.16(@types/node@25.9.3)(sass@1.101.0)):
     dependencies:
       '@babel/code-frame': 7.29.7
       chokidar: 5.0.0
