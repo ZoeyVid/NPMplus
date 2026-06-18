@@ -9,7 +9,7 @@ jobs:
   test-json:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
+      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
       - name: json-syntax-check
         uses: limitusus/json-syntax-check@6e25e4304c75d72195ad8c6fca739cb2e99c3fb1 # v2.0.3
         with:
