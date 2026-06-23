@@ -8,11 +8,11 @@
 	"dependencies": {
 		"@tabler/core": "1.4.0",
 		"@tabler/icons-react": "3.44.0",
-		"@tanstack/react-query": "5.101.0",
+		"@tanstack/react-query": "5.101.1",
 		"@tanstack/react-table": "8.21.3",
 		"@uiw/react-textarea-code-editor": "3.1.1",
 		"classnames": "2.5.1",
-		"country-flag-icons": "1.6.18",
+		"country-flag-icons": "1.6.19",
 		"date-fns": "4.4.0",
 		"ez-modal-react": "1.0.5",
 		"formik": "2.4.9",
@@ -31,11 +31,11 @@
 		"rooks": "9.8.0"
 	},
 	"devDependencies": {
-		"@biomejs/biome": "2.5.0",
+		"@biomejs/biome": "2.5.1",
 		"@formatjs/cli": "6.16.11",
 		"@formatjs/cli-native-linux-arm64": "1.2.5",
 		"@formatjs/cli-native-linux-x64": "1.1.5",
-		"@tanstack/react-query-devtools": "5.101.0",
+		"@tanstack/react-query-devtools": "5.101.1",
 		"@testing-library/dom": "10.4.1",
 		"@testing-library/jest-dom": "6.9.1",
 		"@testing-library/react": "16.3.2",
@@ -45,13 +45,13 @@
 		"@types/react": "19.2.17",
 		"@types/react-dom": "19.2.3",
 		"@types/react-table": "7.7.20",
-		"@vitejs/plugin-react": "6.0.2",
+		"@vitejs/plugin-react": "6.0.3",
 		"happy-dom": "20.10.6",
 		"postcss": "8.5.15",
 		"sass": "1.101.0",
 		"tmp": "0.2.7",
 		"typescript": "6.0.3",
-		"vite": "8.0.16",
+		"vite": "8.1.0",
 		"vite-plugin-checker": "0.14.4",
 		"vitest": "4.1.9"
 	}
