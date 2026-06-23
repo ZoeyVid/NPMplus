@@ -12,8 +12,9 @@ interface Props {
 }
 export function AccessListFormatter({ proxyHostId, access = [], type = "public", locations = [] }: Props) {
 	const hasLocationAcls =
-		locations.filter((loc) => loc.npmplusAccessListType === "custom" && (loc.npmplusAccessListIds || []).length > 0)
-			.length > 0;
+		(locations || []).filter(
+			(loc) => loc.npmplusAccessListType === "custom" && (loc.npmplusAccessListIds || []).length > 0,
+		).length > 0;
 
 	let triggerLabel =
 		type === "custom"
