@@ -18,7 +18,7 @@
 		"express-fileupload": "1.5.2",
 		"express-rate-limit": "8.5.2",
 		"jsonwebtoken": "9.0.3",
-		"knex": "3.2.10",
+		"knex": "3.3.0",
 		"liquidjs": "10.27.1",
 		"lodash": "4.18.1",
 		"mysql2": "3.22.5",
