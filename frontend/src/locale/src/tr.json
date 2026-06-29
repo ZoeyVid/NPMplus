@@ -506,14 +506,8 @@
 	"proxy-host": {
 		"defaultMessage": "Proxy Host"
 	},
-	"proxy-host.directory": {
-		"defaultMessage": "Directory"
-	},
 	"proxy-host.forward-host": {
 		"defaultMessage": "İletme Host Adı / IP"
-	},
-	"proxy-host.no-directory": {
-		"defaultMessage": "No directory"
 	},
 	"proxy-hosts": {
 		"defaultMessage": "Proxy Host'lar"

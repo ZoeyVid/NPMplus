@@ -590,14 +590,8 @@
 	"proxy-host": {
 		"defaultMessage": "Proxy Kiszolgáló"
 	},
-	"proxy-host.directory": {
-		"defaultMessage": "Directory"
-	},
 	"proxy-host.forward-host": {
 		"defaultMessage": "Továbbító hostnév / IP"
-	},
-	"proxy-host.no-directory": {
-		"defaultMessage": "No directory"
 	},
 	"proxy-hosts": {
 		"defaultMessage": "Proxy Kiszolgálók"

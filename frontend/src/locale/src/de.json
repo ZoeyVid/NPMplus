@@ -524,17 +524,11 @@
 	"proxy-host": {
 		"defaultMessage": "Proxy Host"
 	},
-	"proxy-host.directory": {
-		"defaultMessage": "Directory"
-	},
 	"proxy-host.forward-host": {
 		"defaultMessage": "Forward Hostname / IP"
 	},
 	"proxy-host.forward-host-path": {
 		"defaultMessage": "Forward Hostname / IP / Pfad"
-	},
-	"proxy-host.no-directory": {
-		"defaultMessage": "No directory"
 	},
 	"proxy-hosts": {
 		"defaultMessage": "Proxy Hosts"

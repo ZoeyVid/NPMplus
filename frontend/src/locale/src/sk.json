@@ -593,14 +593,8 @@
 	"proxy-host": {
 		"defaultMessage": "proxy hostiteľa"
 	},
-	"proxy-host.directory": {
-		"defaultMessage": "Directory"
-	},
 	"proxy-host.forward-host": {
 		"defaultMessage": "Cieľový názov hostiteľa / IP"
-	},
-	"proxy-host.no-directory": {
-		"defaultMessage": "No directory"
 	},
 	"proxy-hosts": {
 		"defaultMessage": "Proxy hostitelia"

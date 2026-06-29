@@ -518,14 +518,8 @@
 	"proxy-host": {
 		"defaultMessage": "Прокси хост"
 	},
-	"proxy-host.directory": {
-		"defaultMessage": "Directory"
-	},
 	"proxy-host.forward-host": {
 		"defaultMessage": "Хост/IP за препращане"
-	},
-	"proxy-host.no-directory": {
-		"defaultMessage": "No directory"
 	},
 	"proxy-hosts": {
 		"defaultMessage": "Прокси хостове"

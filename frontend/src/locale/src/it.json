@@ -506,14 +506,8 @@
 	"proxy-host": {
 		"defaultMessage": "Proxy Host"
 	},
-	"proxy-host.directory": {
-		"defaultMessage": "Directory"
-	},
 	"proxy-host.forward-host": {
 		"defaultMessage": "Hostname / IP di Destinazione"
-	},
-	"proxy-host.no-directory": {
-		"defaultMessage": "No directory"
 	},
 	"proxy-hosts": {
 		"defaultMessage": "Proxy Hosts"

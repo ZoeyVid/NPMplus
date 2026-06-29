@@ -596,14 +596,8 @@
 	"proxy-host": {
 		"defaultMessage": "Hôte proxy"
 	},
-	"proxy-host.directory": {
-		"defaultMessage": "Directory"
-	},
 	"proxy-host.forward-host": {
 		"defaultMessage": "Nom d'hôte de redirection / IP"
-	},
-	"proxy-host.no-directory": {
-		"defaultMessage": "No directory"
 	},
 	"proxy-hosts": {
 		"defaultMessage": "Hôtes proxy"

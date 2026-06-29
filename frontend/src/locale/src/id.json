@@ -506,14 +506,8 @@
 	"proxy-host": {
 		"defaultMessage": "Host Proxy"
 	},
-	"proxy-host.directory": {
-		"defaultMessage": "Directory"
-	},
 	"proxy-host.forward-host": {
 		"defaultMessage": "Hostname / IP Terusan"
-	},
-	"proxy-host.no-directory": {
-		"defaultMessage": "No directory"
 	},
 	"proxy-hosts": {
 		"defaultMessage": "Host Proxy"

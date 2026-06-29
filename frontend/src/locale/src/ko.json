@@ -518,14 +518,8 @@
 	"proxy-host": {
 		"defaultMessage": "프록시 호스트"
 	},
-	"proxy-host.directory": {
-		"defaultMessage": "Directory"
-	},
 	"proxy-host.forward-host": {
 		"defaultMessage": "전달할 호스트명 / IP"
-	},
-	"proxy-host.no-directory": {
-		"defaultMessage": "No directory"
 	},
 	"proxy-hosts": {
 		"defaultMessage": "프록시 호스트"
