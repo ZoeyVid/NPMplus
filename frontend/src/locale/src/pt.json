@@ -507,13 +507,13 @@
 		"defaultMessage": "Proxy Host"
 	},
 	"proxy-host.directory": {
-		"defaultMessage": "Caminho"
+		"defaultMessage": "Pasta"
 	},
 	"proxy-host.forward-host": {
 		"defaultMessage": "Hostname/IP de Encaminhamento"
 	},
 	"proxy-host.no-directory": {
-		"defaultMessage": "Sem Caminho"
+		"defaultMessage": "Sem Pasta"
 	},
 	"proxy-hosts": {
 		"defaultMessage": "Proxy Hosts"
