@@ -590,8 +590,14 @@
 	"proxy-host": {
 		"defaultMessage": "proxy hostitele"
 	},
+	"proxy-host.directory": {
+		"defaultMessage": "Directory"
+	},
 	"proxy-host.forward-host": {
 		"defaultMessage": "Cílový název hostitele / IP"
+	},
+	"proxy-host.no-directory": {
+		"defaultMessage": "No directory"
 	},
 	"proxy-hosts": {
 		"defaultMessage": "Proxy hostitelé"

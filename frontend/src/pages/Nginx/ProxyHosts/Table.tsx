@@ -1,5 +1,12 @@
 import { IconCopy, IconDotsVertical, IconEdit, IconPower, IconTrash } from "@tabler/icons-react";
-import { createColumnHelper, getCoreRowModel, getSortedRowModel, useReactTable } from "@tanstack/react-table";
+import {
+	createColumnHelper,
+	getCoreRowModel,
+	getSortedRowModel,
+	type OnChangeFn,
+	type SortingState,
+	useReactTable,
+} from "@tanstack/react-table";
 import { useMemo } from "react";
 import type { ProxyHost } from "src/api/backend";
 import {
@@ -24,6 +31,9 @@ interface Props {
 	onDelete?: (id: number) => void;
 	onDisableToggle?: (id: number, enabled: boolean) => void;
 	onNew?: () => void;
+	sorting?: SortingState;
+	onSortingChange?: OnChangeFn<SortingState>;
+	showHeader?: boolean;
 }
 export default function Table({
 	data,
@@ -34,6 +44,9 @@ export default function Table({
 	onDisableToggle,
 	onNew,
 	isFiltered,
+	sorting,
+	onSortingChange,
+	showHeader,
 }: Props) {
 	const columnHelper = createColumnHelper<ProxyHost>();
 	const columns = useMemo(
@@ -223,11 +236,14 @@ export default function Table({
 			isFetching,
 		},
 		enableSortingRemoval: false,
+		state: sorting ? { sorting } : undefined,
+		onSortingChange,
 	});
 
 	return (
 		<TableLayout
 			tableInstance={tableInstance}
+			showHeader={showHeader}
 			emptyState={
 				<EmptyData
 					object="proxy-host"

@@ -506,8 +506,14 @@
 	"proxy-host": {
 		"defaultMessage": "プロキシホスト"
 	},
+	"proxy-host.directory": {
+		"defaultMessage": "Directory"
+	},
 	"proxy-host.forward-host": {
 		"defaultMessage": "転送ホスト名/IP"
+	},
+	"proxy-host.no-directory": {
+		"defaultMessage": "No directory"
 	},
 	"proxy-hosts": {
 		"defaultMessage": "プロキシホスト"

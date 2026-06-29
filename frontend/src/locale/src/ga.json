@@ -506,8 +506,14 @@
 	"proxy-host": {
 		"defaultMessage": "Óstach Seachfhreastalaí"
 	},
+	"proxy-host.directory": {
+		"defaultMessage": "Directory"
+	},
 	"proxy-host.forward-host": {
 		"defaultMessage": "Ainm Óstach / IP Ar Aghaidh"
+	},
+	"proxy-host.no-directory": {
+		"defaultMessage": "No directory"
 	},
 	"proxy-hosts": {
 		"defaultMessage": "Óstaigh Seachfhreastalaí"

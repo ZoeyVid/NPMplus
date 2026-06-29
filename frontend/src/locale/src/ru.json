@@ -599,8 +599,14 @@
 	"proxy-host": {
 		"defaultMessage": "Прокси-хост"
 	},
+	"proxy-host.directory": {
+		"defaultMessage": "Directory"
+	},
 	"proxy-host.forward-host": {
 		"defaultMessage": "Целевой хост"
+	},
+	"proxy-host.no-directory": {
+		"defaultMessage": "No directory"
 	},
 	"proxy-hosts": {
 		"defaultMessage": "Прокси-хосты"

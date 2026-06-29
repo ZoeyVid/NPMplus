@@ -506,8 +506,14 @@
 	"proxy-host": {
 		"defaultMessage": "Máy chủ proxy"
 	},
+	"proxy-host.directory": {
+		"defaultMessage": "Directory"
+	},
 	"proxy-host.forward-host": {
 		"defaultMessage": "Chuyển tiếp Hostname / IP"
+	},
+	"proxy-host.no-directory": {
+		"defaultMessage": "No directory"
 	},
 	"proxy-hosts": {
 		"defaultMessage": "Máy chủ proxy"

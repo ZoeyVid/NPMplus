@@ -55,9 +55,22 @@ const ProxyHostModal = EasyModal.create(({ id, isClone = false, visible, remove 
 			return newLoc;
 		});
 
+		const meta = { ...(values.meta || {}) };
+		if (typeof meta.directory === "string") {
+			const trimmed = meta.directory.trim();
+			if (trimmed) {
+				meta.directory = trimmed;
+			} else {
+				delete meta.directory;
+			}
+		} else {
+			delete meta.directory;
+		}
+
 		const { ...payload } = {
 			id: id === "new" || isClone ? undefined : id,
 			...values,
+			meta,
 			npmplusAccessListIds: globalAclIds,
 			locations,
 			forwardPort: values.forwardPort || null,
@@ -216,6 +229,30 @@ const ProxyHostModal = EasyModal.create(({ id, isClone = false, visible, remove 
 										<div className="tab-content">
 											<div className="tab-pane active show" id="tab-details" role="tabpanel">
 												<DomainNamesField isWildcardPermitted dnsProviderWildcardSupported />
+												<div className="row">
+													<div className="col-md-12 mb-3">
+														<Field name="meta.directory">
+															{({ field }: any) => (
+																<div>
+																	<label
+																		className="form-label"
+																		htmlFor="meta.directory"
+																	>
+																		<T id="proxy-host.directory" />
+																	</label>
+																	<input
+																		id="meta.directory"
+																		type="text"
+																		className="form-control"
+																		placeholder="eg: Production, Staging"
+																		{...field}
+																		value={field.value || ""}
+																	/>
+																</div>
+															)}
+														</Field>
+													</div>
+												</div>
 												<div className="row">
 													<div className="col-md-3">
 														<Field name="forwardScheme">

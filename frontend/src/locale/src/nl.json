@@ -599,8 +599,14 @@
 	"proxy-host": {
 		"defaultMessage": "Proxyhost"
 	},
+	"proxy-host.directory": {
+		"defaultMessage": "Directory"
+	},
 	"proxy-host.forward-host": {
 		"defaultMessage": "Hostname / IP Doorsturen"
+	},
+	"proxy-host.no-directory": {
+		"defaultMessage": "No directory"
 	},
 	"proxy-hosts": {
 		"defaultMessage": "Proxyhosts"

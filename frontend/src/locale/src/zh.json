@@ -512,8 +512,14 @@
 	"proxy-host": {
 		"defaultMessage": "代理服务"
 	},
+	"proxy-host.directory": {
+		"defaultMessage": "Directory"
+	},
 	"proxy-host.forward-host": {
 		"defaultMessage": "转发主机名 / IP"
+	},
+	"proxy-host.no-directory": {
+		"defaultMessage": "No directory"
 	},
 	"proxy-hosts": {
 		"defaultMessage": "代理服务列表"

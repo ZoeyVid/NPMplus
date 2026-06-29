@@ -674,6 +674,9 @@
 	"proxy-host.access-lists": {
 		"defaultMessage": "Access Lists"
 	},
+	"proxy-host.directory": {
+		"defaultMessage": "Directory"
+	},
 	"proxy-host.forward-host": {
 		"defaultMessage": "Forward Hostname / IP"
 	},
@@ -682,6 +685,9 @@
 	},
 	"proxy-host.global-access-lists": {
 		"defaultMessage": "Global Access Lists"
+	},
+	"proxy-host.no-directory": {
+		"defaultMessage": "No directory"
 	},
 	"proxy-hosts": {
 		"defaultMessage": "Proxy Hosts"
