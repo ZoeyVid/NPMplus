@@ -2,8 +2,9 @@ name: npmplus
 services:
   npmplus:
     container_name: npmplus
-    image: docker.io/zoeyvid/npmplus:latest # or ghcr.io/zoeyvid/npmplus:latest
     restart: unless-stopped
+    image: docker.io/zoeyvid/npmplus:latest # or ghcr.io/zoeyvid/npmplus:latest
+    pull_policy: always
     network_mode: host
 #    ipc: host # required when you want to use the openappsec attachment module
     cap_drop:
@@ -121,8 +122,9 @@ services:
 # This can be used to enable crowdsec, see README for a guide
 #  crowdsec:
 #    container_name: crowdsec
-#    image: docker.io/crowdsecurity/crowdsec:latest
 #    restart: unless-stopped
+#    image: docker.io/crowdsecurity/crowdsec:latest
+#    pull_policy: always
 #    network_mode: bridge
 #    ports:
 #      - "127.0.0.1:7422:7422"
@@ -140,8 +142,9 @@ services:
 # See the readme on how to configure your proxy hosts to use anubis and what needs to be changes in the botPolicy to make it work
 #  anubis:
 #    container_name: npmplus-anubis
-#    image: ghcr.io/techarohq/anubis:latest
 #    restart: unless-stopped
+#    image: ghcr.io/techarohq/anubis:latest
+#    pull_policy: always
 #    network_mode: bridge
 #    ports:
 #      - "127.0.0.1:8923:8923"
@@ -155,8 +158,9 @@ services:
 # This can be used with GOA=true to keep the geoip database updated, environment variables must be configured
 #  geoipupdate:
 #    container_name: npmplus-geoipupdate
-#    image: ghcr.io/maxmind/geoipupdate:latest
 #    restart: unless-stopped
+#    image: ghcr.io/maxmind/geoipupdate:latest
+#    pull_policy: always
 #    network_mode: bridge
 #    environment:
 #      - "TZ=your-timezone" # needs to be changed
@@ -170,8 +174,9 @@ services:
 # This can be used to run openappsec, you must also set NGINX_LOAD_OPENAPPSEC_ATTACHMENT_MODULE to true and set ipc for NPMplus
 #  openappsec-agent:
 #    container_name: openappsec-agent
-#    image: ghcr.io/openappsec/agent:latest
 #    restart: unless-stopped
+#    image: ghcr.io/openappsec/agent:latest
+#    pull_policy: always
 #    ipc: host
 #    volumes:
 #      - "shm-volume:/dev/shm/check-point"
@@ -194,8 +199,9 @@ services:
 # uncomment if you don't set AGENT_TOKEN
 #  openappsec-smartsync:
 #    container_name: openappsec-smartsync
-#    image: ghcr.io/openappsec/smartsync:latest
 #    restart: unless-stopped
+#    image: ghcr.io/openappsec/smartsync:latest
+#    pull_policy: always
 #    environment:
 #      - "TZ=your-timezone" # needs to be changed
 #      - "SHARED_STORAGE_HOST=openappsec-shared-storage"
@@ -203,8 +209,9 @@ services:
 #      - openappsec-shared-storage
 #  openappsec-shared-storage:
 #    container_name: openappsec-shared-storage
-#    image: ghcr.io/openappsec/smartsync-shared-files:latest
 #    restart: unless-stopped
+#    image: ghcr.io/openappsec/smartsync-shared-files:latest
+#    pull_policy: always
 #    ipc: service:openappsec-agent
 #    user: root # if you do not want to run this container as "root" user you can comment it out and instead run the following command after the deployment: docker exec -u root openappsec-shared-storage chown -R appuser:appuser /db
 #    environment:
@@ -213,8 +220,9 @@ services:
 #      - "/opt/openappsec/storage:/db"
 #  openappsec-tuning-svc:
 #    container_name: openappsec-tuning-svc
-#    image: ghcr.io/openappsec/smartsync-tuning:latest
 #    restart: unless-stopped
+#    image: ghcr.io/openappsec/smartsync-tuning:latest
+#    pull_policy: always
 #    environment:
 #      - "TZ=your-timezone" # needs to be changed
 #      - "SHARED_STORAGE_HOST=openappsec-shared-storage"
@@ -228,8 +236,9 @@ services:
 #      - openappsec-db
 #  openappsec-db:
 #    container_name: openappsec-db
-#    image: postgres:17-alpine
 #    restart: unless-stopped
+#    image: postgres:17-alpine
+#    pull_policy: always
 #    environment:
 #      - "TZ=your-timezone" # needs to be changed
 #      - "POSTGRES_PASSWORD=password" # replace with something secure, should match QUERY_DB_PASSWORD from openappsec-tuning-svc container
@@ -240,8 +249,9 @@ services:
 # This can be used with DISABLE_HTTP=true, to force HTTPS redirects for every host
 #  npmplus-caddy:
 #    container_name: npmplus-caddy
-#    image: docker.io/zoeyvid/npmplus:caddy
 #    restart: unless-stopped
+#    image: docker.io/zoeyvid/npmplus:caddy
+#    pull_policy: always
 #    network_mode: bridge
 #    ports:
 #      - "80:80"
