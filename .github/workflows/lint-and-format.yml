@@ -7,7 +7,7 @@ on:
   workflow_dispatch:
 jobs:
   lint-and-format:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-slim
     steps:
       - name: Checkout
         uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
@@ -18,7 +18,9 @@ jobs:
         with:
           version: latest
       - name: install-sponge
-        run: sudo apt-get install -y moreutils
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y moreutils
       - name: biome-backend
         run: |
           cd backend
