@@ -4,11 +4,11 @@ on:
     branches:
       - develop
   schedule:
-    - cron: "0 */3 * * *"
+    - cron: "0 * * * *"
   workflow_dispatch:
 jobs:
   aws-lc-update:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-slim
     steps:
       - name: Checkout
         uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
@@ -36,7 +36,7 @@ jobs:
           body: update aws-lc version to ${{ steps.update.outputs.version }}
 
   nginx-update:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-slim
     steps:
       - name: Checkout
         uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
@@ -64,7 +64,7 @@ jobs:
           body: update nginx version to ${{ steps.update.outputs.version }}
 
   dynamic_tls_records-update:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-slim
     steps:
       - name: Checkout
         uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
@@ -91,7 +91,7 @@ jobs:
           title: update dynamic_tls_records version to ${{ steps.update.outputs.version }}
           body: update dynamic_tls_records version to ${{ steps.update.outputs.version }}
   resolver_conf_parsing-update:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-slim
     steps:
       - name: Checkout
         uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
@@ -117,7 +117,7 @@ jobs:
           title: update resolver_conf_parsing version to ${{ steps.update.outputs.version }}
           body: update resolver_conf_parsing version to ${{ steps.update.outputs.version }}
   zlib-ng-patch-update:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-slim
     steps:
       - name: Checkout
         uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
@@ -145,7 +145,7 @@ jobs:
           body: update zlib-ng-patch version to ${{ steps.update.outputs.version }}
 
   ngx_brotli-update:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-slim
     steps:
       - name: Checkout
         uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
@@ -173,7 +173,7 @@ jobs:
           title: update ngx_brotli version to ${{ steps.update.outputs.version }}
           body: update ngx_brotli version to ${{ steps.update.outputs.version }}
   ngx_unbrotli-update:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-slim
     steps:
       - name: Checkout
         uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
@@ -201,7 +201,7 @@ jobs:
           title: update ngx_unbrotli version to ${{ steps.update.outputs.version }}
           body: update ngx_unbrotli version to ${{ steps.update.outputs.version }}
   zstd-nginx-module-update:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-slim
     steps:
       - name: Checkout
         uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
@@ -229,7 +229,7 @@ jobs:
           title: update zstd-nginx-module version to ${{ steps.update.outputs.version }}
           body: update zstd-nginx-module version to ${{ steps.update.outputs.version }}
   ngx_http_unzstd_filter_module-update:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-slim
     steps:
       - name: Checkout
         uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
@@ -257,7 +257,7 @@ jobs:
           title: update ngx_http_unzstd_filter_module version to ${{ steps.update.outputs.version }}
           body: update ngx_http_unzstd_filter_module version to ${{ steps.update.outputs.version }}
   ngx-fancyindex-update:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-slim
     steps:
       - name: Checkout
         uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
@@ -284,7 +284,7 @@ jobs:
           title: update ngx-fancyindex version to ${{ steps.update.outputs.version }}
           body: update ngx-fancyindex version to ${{ steps.update.outputs.version }}
   headers-more-nginx-module-update:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-slim
     steps:
       - name: Checkout
         uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
@@ -311,7 +311,7 @@ jobs:
           title: update headers-more-nginx-module version to ${{ steps.update.outputs.version }}
           body: update headers-more-nginx-module version to ${{ steps.update.outputs.version }}
   ngx_devel_kit-update:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-slim
     steps:
       - name: Checkout
         uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
@@ -338,7 +338,7 @@ jobs:
           title: update ngx_devel_kit version to ${{ steps.update.outputs.version }}
           body: update ngx_devel_kit version to ${{ steps.update.outputs.version }}
   lua-nginx-module-update:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-slim
     steps:
       - name: Checkout
         uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
@@ -367,7 +367,7 @@ jobs:
 
 
   njs-update:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-slim
     steps:
       - name: Checkout
         uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
@@ -394,7 +394,7 @@ jobs:
           title: update njs version to ${{ steps.update.outputs.version }}
           body: update njs version to ${{ steps.update.outputs.version }}
   nginx-auth-ldap-update:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-slim
     steps:
       - name: Checkout
         uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
@@ -422,7 +422,7 @@ jobs:
           title: update nginx-auth-ldap version to ${{ steps.update.outputs.version }}
           body: update nginx-auth-ldap version to ${{ steps.update.outputs.version }}
   nginx-module-vts-update:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-slim
     steps:
       - name: Checkout
         uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
@@ -449,7 +449,7 @@ jobs:
           title: update vts version to ${{ steps.update.outputs.version }}
           body: update vtsversion to ${{ steps.update.outputs.version }}
   nginx-ntlm-module-update:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-slim
     steps:
       - name: Checkout
         uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
@@ -477,7 +477,7 @@ jobs:
           title: update nginx-ntlm-module version to ${{ steps.update.outputs.version }}
           body: update nginx-ntlm-module version to ${{ steps.update.outputs.version }}
   ngx_http_geoip2_module-update:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-slim
     steps:
       - name: Checkout
         uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
@@ -505,7 +505,7 @@ jobs:
           body: update ngx_http_geoip2_module version to ${{ steps.update.outputs.version }}
 
   attachment-update:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-slim
     steps:
       - name: Checkout
         uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
@@ -534,7 +534,7 @@ jobs:
           body: update attachment version to ${{ steps.update.outputs.version }}
 
   lua-resty-core-update:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-slim
     steps:
       - name: Checkout
         uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
@@ -561,7 +561,7 @@ jobs:
           title: update lua-resty-core version to ${{ steps.update.outputs.version }}
           body: update lua-resty-core version to ${{ steps.update.outputs.version }}
   lua-resty-lrucache-update:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-slim
     steps:
       - name: Checkout
         uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
@@ -589,7 +589,7 @@ jobs:
           body: update lua-resty-lrucache version to ${{ steps.update.outputs.version }}
 
   lua-cs-bouncer-update:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-slim
     steps:
       - name: Checkout
         uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
