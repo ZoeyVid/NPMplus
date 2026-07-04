@@ -1,5 +1,6 @@
 import { IconHelp, IconSearch } from "@tabler/icons-react";
 import { useQueryClient } from "@tanstack/react-query";
+import type { SortingState } from "@tanstack/react-table";
 import { useState } from "react";
 import Alert from "react-bootstrap/Alert";
 import { deleteStream, toggleStream, type Stream } from "src/api/backend";
@@ -14,6 +15,7 @@ import Table from "./Table";
 export default function TableWrapper() {
 	const queryClient = useQueryClient();
 	const [search, setSearch] = useState("");
+	const [sorting, setSorting] = useState<SortingState>([]);
 	const [_deleteId, _setDeleteIdd] = useState(0);
 	const { isFetching, isLoading, isError, error, data } = useStreams(["owner", "certificate"]);
 
@@ -65,6 +67,8 @@ export default function TableWrapper() {
 	const sharedTableProps = {
 		isFiltered: !!filtered,
 		isFetching,
+		sorting,
+		onSortingChange: setSorting,
 		onEdit: (id: number) => showStreamModal(id),
 		onDelete: (id: number) =>
 			showDeleteConfirmModal({
