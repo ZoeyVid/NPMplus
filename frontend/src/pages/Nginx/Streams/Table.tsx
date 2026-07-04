@@ -1,6 +1,13 @@
 import { IconDotsVertical, IconEdit, IconPower, IconTrash } from "@tabler/icons-react";
-import { createColumnHelper, getCoreRowModel, getSortedRowModel, useReactTable } from "@tanstack/react-table";
-import { useMemo } from "react";
+import {
+	createColumnHelper,
+	getCoreRowModel,
+	getSortedRowModel,
+	type OnChangeFn,
+	type SortingState,
+	useReactTable,
+} from "@tanstack/react-table";
+import { type ReactNode, useMemo } from "react";
 import type { Stream } from "src/api/backend";
 import {
 	CertificateFormatter,
@@ -22,8 +29,26 @@ interface Props {
 	onDelete?: (id: number) => void;
 	onDisableToggle?: (id: number, enabled: boolean) => void;
 	onNew?: () => void;
+	sorting?: SortingState;
+	onSortingChange?: OnChangeFn<SortingState>;
+	showHeader?: boolean;
+	groupBy?: (row: Stream) => string;
+	renderGroupLabel?: (key: string) => ReactNode;
 }
-export default function Table({ data, isFetching, isFiltered, onEdit, onDelete, onDisableToggle, onNew }: Props) {
+export default function Table({
+	data,
+	isFetching,
+	isFiltered,
+	onEdit,
+	onDelete,
+	onDisableToggle,
+	onNew,
+	sorting,
+	onSortingChange,
+	showHeader,
+	groupBy,
+	renderGroupLabel,
+}: Props) {
 	const columnHelper = createColumnHelper<Stream>();
 	const columns = useMemo(
 		() => [
@@ -219,11 +244,16 @@ export default function Table({ data, isFetching, isFiltered, onEdit, onDelete, 
 			isFetching,
 		},
 		enableSortingRemoval: false,
+		state: sorting ? { sorting } : undefined,
+		onSortingChange,
 	});
 
 	return (
 		<TableLayout
 			tableInstance={tableInstance}
+			showHeader={showHeader}
+			groupBy={groupBy}
+			renderGroupLabel={renderGroupLabel}
 			emptyState={
 				<EmptyData
 					object="stream"
