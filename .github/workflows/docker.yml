@@ -3,20 +3,21 @@ on:
   push:
     branches:
       - develop
+  pull_request:
   workflow_dispatch:
 jobs:
   build-x86_64:
     runs-on: ubuntu-latest
-    if: ${{ github.repository_owner == 'ZoeyVid' }}
     steps:
       - name: Checkout
         uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
       - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@d7f5e7f509e45cec5c76c4d5afdd7de93d0b3df5 # v4.1.0
+        uses: docker/setup-buildx-action@bb05f3f5519dd87d3ba754cc423b652a5edd6d2c # v4.2.0
         with:
           driver-opts: env.BUILDKIT_STEP_LOG_MAX_SIZE=-1
       - name: Login to GitHub Container Registry
-        uses: docker/login-action@650006c6eb7dba73a995cc03b0b2d7f5ca915bee # v4.2.0
+        uses: docker/login-action@af1e73f918a031802d376d3c8bbc3fe56130a9b0 # v4.4.0
+        if: ${{ github.repository_owner == 'ZoeyVid' && github.ref_name == 'develop' }}
         with:
           registry: ghcr.io
           username: zoeyvid
@@ -27,27 +28,27 @@ jobs:
           jq --arg v "$(git rev-parse --short HEAD)" '.version = $v' frontend/package.json | sponge frontend/package.json
           jq --arg v "$(git rev-parse --short HEAD)" '.version = $v' backend/package.json | sponge backend/package.json
       - name: Build
-        uses: docker/build-push-action@f9f3042f7e2789586610d6e8b85c8f03e5195baf # v7.2.0
+        uses: docker/build-push-action@53b7df96c91f9c12dcc8a07bcb9ccacbed38856a # v7.3.0
         with:
           context: .
           file: ./Dockerfile
-          push: true
+          push: ${{ github.repository_owner == 'ZoeyVid' && github.ref_name == 'develop' }}
           tags: ghcr.io/zoeyvid/npmplus:develop-x86_64
           build-args: |
             FLAGS=-march=x86-64-v2 -mtune=generic -fcf-protection=full
           
   build-aarch64:
     runs-on: ubuntu-24.04-arm
-    if: ${{ github.repository_owner == 'ZoeyVid' }}
     steps:
       - name: Checkout
         uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
       - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@d7f5e7f509e45cec5c76c4d5afdd7de93d0b3df5 # v4.1.0
+        uses: docker/setup-buildx-action@bb05f3f5519dd87d3ba754cc423b652a5edd6d2c # v4.2.0
         with:
           driver-opts: env.BUILDKIT_STEP_LOG_MAX_SIZE=-1
       - name: Login to GitHub Container Registry
-        uses: docker/login-action@650006c6eb7dba73a995cc03b0b2d7f5ca915bee # v4.2.0
+        uses: docker/login-action@af1e73f918a031802d376d3c8bbc3fe56130a9b0 # v4.4.0
+        if: ${{ github.repository_owner == 'ZoeyVid' && github.ref_name == 'develop' }}
         with:
           registry: ghcr.io
           username: zoeyvid
@@ -58,27 +59,27 @@ jobs:
           jq --arg v "$(git rev-parse --short HEAD)" '.version = $v' frontend/package.json | sponge frontend/package.json
           jq --arg v "$(git rev-parse --short HEAD)" '.version = $v' backend/package.json | sponge backend/package.json
       - name: Build
-        uses: docker/build-push-action@f9f3042f7e2789586610d6e8b85c8f03e5195baf # v7.2.0
+        uses: docker/build-push-action@53b7df96c91f9c12dcc8a07bcb9ccacbed38856a # v7.3.0
         with:
           context: .
           file: ./Dockerfile
-          push: true
+          push: ${{ github.repository_owner == 'ZoeyVid' && github.ref_name == 'develop' }}
           tags: ghcr.io/zoeyvid/npmplus:develop-aarch64
           build-args: |
             FLAGS=-mbranch-protection=standard
           
   merge:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-slim
     needs: [build-x86_64, build-aarch64]
-    if: ${{ github.repository_owner == 'ZoeyVid' }}
+    if: ${{ github.repository_owner == 'ZoeyVid' && github.ref_name == 'develop' }}
     steps:
       - name: Login to DockerHub
-        uses: docker/login-action@650006c6eb7dba73a995cc03b0b2d7f5ca915bee # v4.2.0
+        uses: docker/login-action@af1e73f918a031802d376d3c8bbc3fe56130a9b0 # v4.4.0
         with:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
       - name: Login to GitHub Container Registry
-        uses: docker/login-action@650006c6eb7dba73a995cc03b0b2d7f5ca915bee # v4.2.0
+        uses: docker/login-action@af1e73f918a031802d376d3c8bbc3fe56130a9b0 # v4.4.0
         with:
           registry: ghcr.io
           username: zoeyvid

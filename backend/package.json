@@ -7,7 +7,7 @@
 	"main": "index.js",
 	"type": "module",
 	"dependencies": {
-		"@apidevtools/json-schema-ref-parser": "15.4.0",
+		"@apidevtools/json-schema-ref-parser": "15.5.0",
 		"ajv": "8.20.0",
 		"archiver": "8.0.0",
 		"bcryptjs": "3.0.3",
@@ -21,7 +21,7 @@
 		"knex": "3.3.0",
 		"liquidjs": "10.27.1",
 		"lodash": "4.18.1",
-		"mysql2": "3.22.5",
+		"mysql2": "3.22.6",
 		"objection": "3.1.5",
 		"openid-client": "6.8.4",
 		"otplib": "13.4.1",
@@ -31,6 +31,6 @@
 	},
 	"devDependencies": {
 		"@apidevtools/swagger-parser": "12.1.0",
-		"@biomejs/biome": "2.5.1"
+		"@biomejs/biome": "2.5.3"
 	}
 }

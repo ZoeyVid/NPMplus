@@ -8,12 +8,10 @@ on:
 jobs:
   shellcheck:
     name: Check Shell
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-slim
     steps:
       - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
       - name: Run Shellcheck
         uses: ludeeus/action-shellcheck@00b27aa7cb85167568cb48a3838b75f4265f2bca # master
         with:
           check_together: 'yes'
-#        env:
-#          SHELLCHECK_OPTS: --shell sh -e SC1091 -e SC2153 -e SC2154

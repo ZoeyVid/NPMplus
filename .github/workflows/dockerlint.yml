@@ -7,24 +7,22 @@ on:
   workflow_dispatch:
 jobs:
   docker-lint:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-slim
     name: docker-lint
     steps:
       - name: Checkout
         uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
-      - name: Install hadolint
+      - name: hadolint
         run: |
-          sudo wget https://github.com/hadolint/hadolint/releases/latest/download/hadolint-Linux-x86_64 -O /usr/bin/hadolint
-          sudo chmod +x /usr/bin/hadolint
-      - name: run lint
-        run: |
-          DOCKERFILES="$(find . -name "*Dockerfile*")"
-          for file in $(echo "$DOCKERFILES" | tr " " "\n"); do
-            # DL3003 warning: Use WORKDIR to switch to a directory
+          set -x
+          curl -sSfL https://github.com/hadolint/hadolint/releases/latest/download/hadolint-Linux-$(uname -m) -o hadolint
+          chmod +x hadolint
+          for file in $(find -name "*Dockerfile"); do
             # DL3018 warning: Pin versions in apk add. Instead of `apk add <package>` use `apk add <package>=<version>`
+            # DL3003 warning: Use WORKDIR to switch to a directory
             # DL3013 warning: Pin versions in pip. Instead of `pip install <package>` use `pip install <package>==<version>` or `pip install --requirement <requirements file>`
-            hadolint "$file" --ignore DL3003 --ignore DL3013 --ignore DL3018 | tee -a hadolint.log
+            ./hadolint "$file" --ignore DL3018 --ignore DL3003 --ignore DL3013 | tee -a hadolint.log
           done
-          if grep -q "DL[0-9]\+\|SC[0-9]\+" hadolint.log; then
+          if [ -n "$(cat hadolint.log)" ]; then
             exit 1
           fi
