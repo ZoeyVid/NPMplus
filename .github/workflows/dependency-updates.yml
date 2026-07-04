@@ -4,14 +4,13 @@ on:
     branches:
       - develop
   schedule:
-    - cron: "0 */3 * * *"
+    - cron: "0 * * * *"
   workflow_dispatch:
 jobs:
   aws-lc-update:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-slim
     steps:
-      - name: Checkout
-        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
       - name: update aws-lc version
         id: update
         run: |
@@ -25,8 +24,7 @@ jobs:
           AWSLC_SHA="$(git ls-remote https://github.com/aws/aws-lc "$AWSLC_VER" | cut -f1)"
           sed -i "s|ARG AWSLC_VER=.*|ARG AWSLC_VER=$AWSLC_SHA # $AWSLC_VER|" Dockerfile
           echo "version=$AWSLC_VER" >> $GITHUB_OUTPUT
-      - name: Create Pull Request
-        uses: peter-evans/create-pull-request@5f6978faf089d4d20b00c7766989d076bb2fc7f1 # v8.1.1
+      - uses: peter-evans/create-pull-request@5f6978faf089d4d20b00c7766989d076bb2fc7f1 # v8.1.1
         with:
           signoff: true
           delete-branch: true
@@ -36,10 +34,9 @@ jobs:
           body: update aws-lc version to ${{ steps.update.outputs.version }}
 
   nginx-update:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-slim
     steps:
-      - name: Checkout
-        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
       - name: update nginx version
         id: update
         run: |
@@ -53,8 +50,7 @@ jobs:
           NGINX_SHA="$(git ls-remote https://github.com/nginx/nginx "$NGINX_VER" | cut -f1)"
           sed -i "s|ARG NGINX_VER=.*|ARG NGINX_VER=$NGINX_SHA # $NGINX_VER|" Dockerfile
           echo "version=$NGINX_VER" >> $GITHUB_OUTPUT
-      - name: Create Pull Request
-        uses: peter-evans/create-pull-request@5f6978faf089d4d20b00c7766989d076bb2fc7f1 # v8.1.1
+      - uses: peter-evans/create-pull-request@5f6978faf089d4d20b00c7766989d076bb2fc7f1 # v8.1.1
         with:
           signoff: true
           delete-branch: true
@@ -64,10 +60,9 @@ jobs:
           body: update nginx version to ${{ steps.update.outputs.version }}
 
   dynamic_tls_records-update:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-slim
     steps:
-      - name: Checkout
-        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
       - name: update dynamic_tls_records version
         id: update
         run: |
@@ -81,8 +76,7 @@ jobs:
           rm -r ngx_http_tls_dyn_size
           sed -i "s|ARG DTR_VER=.*|ARG DTR_VER=$DTR_VER|" Dockerfile
           echo "version=$DTR_VER" >> $GITHUB_OUTPUT
-      - name: Create Pull Request
-        uses: peter-evans/create-pull-request@5f6978faf089d4d20b00c7766989d076bb2fc7f1 # v8.1.1
+      - uses: peter-evans/create-pull-request@5f6978faf089d4d20b00c7766989d076bb2fc7f1 # v8.1.1
         with:
           signoff: true
           delete-branch: true
@@ -91,10 +85,9 @@ jobs:
           title: update dynamic_tls_records version to ${{ steps.update.outputs.version }}
           body: update dynamic_tls_records version to ${{ steps.update.outputs.version }}
   resolver_conf_parsing-update:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-slim
     steps:
-      - name: Checkout
-        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
       - name: update resolver_conf_parsing version
         id: update
         run: |
@@ -107,8 +100,7 @@ jobs:
           rm -r openresty
           sed -i "s|ARG RCP_VER=.*|ARG RCP_VER=$RCP_VER|" Dockerfile
           echo "version=$RCP_VER" >> $GITHUB_OUTPUT
-      - name: Create Pull Request
-        uses: peter-evans/create-pull-request@5f6978faf089d4d20b00c7766989d076bb2fc7f1 # v8.1.1
+      - uses: peter-evans/create-pull-request@5f6978faf089d4d20b00c7766989d076bb2fc7f1 # v8.1.1
         with:
           signoff: true
           delete-branch: true
@@ -117,10 +109,9 @@ jobs:
           title: update resolver_conf_parsing version to ${{ steps.update.outputs.version }}
           body: update resolver_conf_parsing version to ${{ steps.update.outputs.version }}
   zlib-ng-patch-update:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-slim
     steps:
-      - name: Checkout
-        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
       - name: update zlib-ng-patch version
         id: update
         run: |
@@ -134,8 +125,7 @@ jobs:
           rm -r zlib-ng-patches
           sed -i "s|ARG ZNP_VER=.*|ARG ZNP_VER=$ZNP_VER|" Dockerfile
           echo "version=$ZNP_VER" >> $GITHUB_OUTPUT
-      - name: Create Pull Request
-        uses: peter-evans/create-pull-request@5f6978faf089d4d20b00c7766989d076bb2fc7f1 # v8.1.1
+      - uses: peter-evans/create-pull-request@5f6978faf089d4d20b00c7766989d076bb2fc7f1 # v8.1.1
         with:
           signoff: true
           delete-branch: true
@@ -145,10 +135,9 @@ jobs:
           body: update zlib-ng-patch version to ${{ steps.update.outputs.version }}
 
   ngx_brotli-update:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-slim
     steps:
-      - name: Checkout
-        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
       - name: update ngx_brotli version
         id: update
         run: |
@@ -163,8 +152,7 @@ jobs:
           NB_SHA="$(git ls-remote https://github.com/google/ngx_brotli "$NB_VER" | cut -f1)"
           sed -i "s|ARG NB_VER=.*|ARG NB_VER=$NB_SHA # $NB_VER|" Dockerfile
           echo "version=$NB_VER" >> $GITHUB_OUTPUT
-      - name: Create Pull Request
-        uses: peter-evans/create-pull-request@5f6978faf089d4d20b00c7766989d076bb2fc7f1 # v8.1.1
+      - uses: peter-evans/create-pull-request@5f6978faf089d4d20b00c7766989d076bb2fc7f1 # v8.1.1
         with:
           signoff: true
           delete-branch: true
@@ -173,10 +161,9 @@ jobs:
           title: update ngx_brotli version to ${{ steps.update.outputs.version }}
           body: update ngx_brotli version to ${{ steps.update.outputs.version }}
   ngx_unbrotli-update:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-slim
     steps:
-      - name: Checkout
-        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
       - name: update ngx_unbrotli version
         id: update
         run: |
@@ -191,8 +178,7 @@ jobs:
           NUB_SHA="$(git ls-remote https://github.com/clyfish/ngx_unbrotli "$NUB_VER" | cut -f1)"
           sed -i "s|ARG NUB_VER=.*|ARG NUB_VER=$NUB_SHA # $NUB_VER|" Dockerfile
           echo "version=$NUB_VER" >> $GITHUB_OUTPUT
-      - name: Create Pull Request
-        uses: peter-evans/create-pull-request@5f6978faf089d4d20b00c7766989d076bb2fc7f1 # v8.1.1
+      - uses: peter-evans/create-pull-request@5f6978faf089d4d20b00c7766989d076bb2fc7f1 # v8.1.1
         with:
           signoff: true
           delete-branch: true
@@ -201,10 +187,9 @@ jobs:
           title: update ngx_unbrotli version to ${{ steps.update.outputs.version }}
           body: update ngx_unbrotli version to ${{ steps.update.outputs.version }}
   zstd-nginx-module-update:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-slim
     steps:
-      - name: Checkout
-        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
       - name: update zstd-nginx-module version
         id: update
         run: |
@@ -219,8 +204,7 @@ jobs:
           ZNM_SHA="$(git ls-remote https://github.com/tokers/zstd-nginx-module "$ZNM_VER" | cut -f1)"
           sed -i "s|ARG ZNM_VER=.*|ARG ZNM_VER=$ZNM_SHA # $ZNM_VER|" Dockerfile
           echo "version=$ZNM_VER" >> $GITHUB_OUTPUT
-      - name: Create Pull Request
-        uses: peter-evans/create-pull-request@5f6978faf089d4d20b00c7766989d076bb2fc7f1 # v8.1.1
+      - uses: peter-evans/create-pull-request@5f6978faf089d4d20b00c7766989d076bb2fc7f1 # v8.1.1
         with:
           signoff: true
           delete-branch: true
@@ -229,10 +213,9 @@ jobs:
           title: update zstd-nginx-module version to ${{ steps.update.outputs.version }}
           body: update zstd-nginx-module version to ${{ steps.update.outputs.version }}
   ngx_http_unzstd_filter_module-update:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-slim
     steps:
-      - name: Checkout
-        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
       - name: update ngx_http_unzstd_filter_module version
         id: update
         run: |
@@ -247,8 +230,7 @@ jobs:
           NHUZFM_SHA="$(git ls-remote https://github.com/HanadaLee/ngx_http_unzstd_filter_module "$NHUZFM_VER" | cut -f1)"
           sed -i "s|ARG NHUZFM_VER=.*|ARG NHUZFM_VER=$NHUZFM_SHA # $NHUZFM_VER|" Dockerfile
           echo "version=$NHUZFM_VER" >> $GITHUB_OUTPUT
-      - name: Create Pull Request
-        uses: peter-evans/create-pull-request@5f6978faf089d4d20b00c7766989d076bb2fc7f1 # v8.1.1
+      - uses: peter-evans/create-pull-request@5f6978faf089d4d20b00c7766989d076bb2fc7f1 # v8.1.1
         with:
           signoff: true
           delete-branch: true
@@ -257,10 +239,9 @@ jobs:
           title: update ngx_http_unzstd_filter_module version to ${{ steps.update.outputs.version }}
           body: update ngx_http_unzstd_filter_module version to ${{ steps.update.outputs.version }}
   ngx-fancyindex-update:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-slim
     steps:
-      - name: Checkout
-        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
       - name: update ngx-fancyindex version
         id: update
         run: |
@@ -274,8 +255,7 @@ jobs:
           NF_SHA="$(git ls-remote https://github.com/aperezdc/ngx-fancyindex "$NF_VER" | cut -f1)"
           sed -i "s|ARG NF_VER=.*|ARG NF_VER=$NF_SHA # $NF_VER|" Dockerfile
           echo "version=$NF_VER" >> $GITHUB_OUTPUT
-      - name: Create Pull Request
-        uses: peter-evans/create-pull-request@5f6978faf089d4d20b00c7766989d076bb2fc7f1 # v8.1.1
+      - uses: peter-evans/create-pull-request@5f6978faf089d4d20b00c7766989d076bb2fc7f1 # v8.1.1
         with:
           signoff: true
           delete-branch: true
@@ -284,10 +264,9 @@ jobs:
           title: update ngx-fancyindex version to ${{ steps.update.outputs.version }}
           body: update ngx-fancyindex version to ${{ steps.update.outputs.version }}
   headers-more-nginx-module-update:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-slim
     steps:
-      - name: Checkout
-        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
       - name: update headers-more-nginx-module version
         id: update
         run: |
@@ -301,8 +280,7 @@ jobs:
           HMNM_SHA="$(git ls-remote https://github.com/openresty/headers-more-nginx-module "$HMNM_VER" | cut -f1)"
           sed -i "s|ARG HMNM_VER=.*|ARG HMNM_VER=$HMNM_SHA # $HMNM_VER|" Dockerfile
           echo "version=$HMNM_VER" >> $GITHUB_OUTPUT
-      - name: Create Pull Request
-        uses: peter-evans/create-pull-request@5f6978faf089d4d20b00c7766989d076bb2fc7f1 # v8.1.1
+      - uses: peter-evans/create-pull-request@5f6978faf089d4d20b00c7766989d076bb2fc7f1 # v8.1.1
         with:
           signoff: true
           delete-branch: true
@@ -311,10 +289,9 @@ jobs:
           title: update headers-more-nginx-module version to ${{ steps.update.outputs.version }}
           body: update headers-more-nginx-module version to ${{ steps.update.outputs.version }}
   ngx_devel_kit-update:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-slim
     steps:
-      - name: Checkout
-        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
       - name: update ngx_devel_kit version
         id: update
         run: |
@@ -328,8 +305,7 @@ jobs:
           NDK_SHA="$(git ls-remote https://github.com/vision5/ngx_devel_kit "$NDK_VER" | cut -f1)"
           sed -i "s|ARG NDK_VER=.*|ARG NDK_VER=$NDK_SHA # $NDK_VER|" Dockerfile
           echo "version=$NDK_VER" >> $GITHUB_OUTPUT
-      - name: Create Pull Request
-        uses: peter-evans/create-pull-request@5f6978faf089d4d20b00c7766989d076bb2fc7f1 # v8.1.1
+      - uses: peter-evans/create-pull-request@5f6978faf089d4d20b00c7766989d076bb2fc7f1 # v8.1.1
         with:
           signoff: true
           delete-branch: true
@@ -338,10 +314,9 @@ jobs:
           title: update ngx_devel_kit version to ${{ steps.update.outputs.version }}
           body: update ngx_devel_kit version to ${{ steps.update.outputs.version }}
   lua-nginx-module-update:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-slim
     steps:
-      - name: Checkout
-        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
       - name: update lua-nginx-module version
         id: update
         run: |
@@ -355,8 +330,7 @@ jobs:
           LNM_SHA="$(git ls-remote https://github.com/openresty/lua-nginx-module "$LNM_VER" | cut -f1)"
           sed -i "s|ARG LNM_VER=.*|ARG LNM_VER=$LNM_SHA # $LNM_VER|" Dockerfile
           echo "version=$LNM_VER" >> $GITHUB_OUTPUT
-      - name: Create Pull Request
-        uses: peter-evans/create-pull-request@5f6978faf089d4d20b00c7766989d076bb2fc7f1 # v8.1.1
+      - uses: peter-evans/create-pull-request@5f6978faf089d4d20b00c7766989d076bb2fc7f1 # v8.1.1
         with:
           signoff: true
           delete-branch: true
@@ -367,10 +341,9 @@ jobs:
 
 
   njs-update:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-slim
     steps:
-      - name: Checkout
-        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
       - name: update njs version
         id: update
         run: |
@@ -384,8 +357,7 @@ jobs:
           NJS_SHA="$(git ls-remote https://github.com/nginx/njs "$NJS_VER" | cut -f1)"
           sed -i "s|ARG NJS_VER=.*|ARG NJS_VER=$NJS_SHA # $NJS_VER|" Dockerfile
           echo "version=$NJS_VER" >> $GITHUB_OUTPUT
-      - name: Create Pull Request
-        uses: peter-evans/create-pull-request@5f6978faf089d4d20b00c7766989d076bb2fc7f1 # v8.1.1
+      - uses: peter-evans/create-pull-request@5f6978faf089d4d20b00c7766989d076bb2fc7f1 # v8.1.1
         with:
           signoff: true
           delete-branch: true
@@ -394,10 +366,9 @@ jobs:
           title: update njs version to ${{ steps.update.outputs.version }}
           body: update njs version to ${{ steps.update.outputs.version }}
   nginx-auth-ldap-update:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-slim
     steps:
-      - name: Checkout
-        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
       - name: update nginx-auth-ldap version
         id: update
         run: |
@@ -412,8 +383,7 @@ jobs:
           NAL_SHA="$(git ls-remote https://github.com/kvspb/nginx-auth-ldap "$NAL_VER" | cut -f1)"
           sed -i "s|ARG NAL_VER=.*|ARG NAL_VER=$NAL_SHA # $NAL_VER|" Dockerfile
           echo "version=$NAL_VER" >> $GITHUB_OUTPUT
-      - name: Create Pull Request
-        uses: peter-evans/create-pull-request@5f6978faf089d4d20b00c7766989d076bb2fc7f1 # v8.1.1
+      - uses: peter-evans/create-pull-request@5f6978faf089d4d20b00c7766989d076bb2fc7f1 # v8.1.1
         with:
           signoff: true
           delete-branch: true
@@ -422,10 +392,9 @@ jobs:
           title: update nginx-auth-ldap version to ${{ steps.update.outputs.version }}
           body: update nginx-auth-ldap version to ${{ steps.update.outputs.version }}
   nginx-module-vts-update:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-slim
     steps:
-      - name: Checkout
-        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
       - name: update vts version
         id: update
         run: |
@@ -439,8 +408,7 @@ jobs:
           VTS_SHA="$(git ls-remote https://github.com/vozlt/nginx-module-vts "$VTS_VER" | cut -f1)"
           sed -i "s|ARG VTS_VER=.*|ARG VTS_VER=$VTS_SHA # $VTS_VER|" Dockerfile
           echo "version=$VTS_VER" >> $GITHUB_OUTPUT
-      - name: Create Pull Request
-        uses: peter-evans/create-pull-request@5f6978faf089d4d20b00c7766989d076bb2fc7f1 # v8.1.1
+      - uses: peter-evans/create-pull-request@5f6978faf089d4d20b00c7766989d076bb2fc7f1 # v8.1.1
         with:
           signoff: true
           delete-branch: true
@@ -449,10 +417,9 @@ jobs:
           title: update vts version to ${{ steps.update.outputs.version }}
           body: update vtsversion to ${{ steps.update.outputs.version }}
   nginx-ntlm-module-update:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-slim
     steps:
-      - name: Checkout
-        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
       - name: update nginx-ntlm-module version
         id: update
         run: |
@@ -467,8 +434,7 @@ jobs:
           NNTLM_SHA="$(git ls-remote https://github.com/gabihodoroaga/nginx-ntlm-module "$NNTLM_VER" | cut -f1)"
           sed -i "s|ARG NNTLM_VER=.*|ARG NNTLM_VER=$NNTLM_SHA # $NNTLM_VER|" Dockerfile
           echo "version=$NNTLM_VER" >> $GITHUB_OUTPUT
-      - name: Create Pull Request
-        uses: peter-evans/create-pull-request@5f6978faf089d4d20b00c7766989d076bb2fc7f1 # v8.1.1
+      - uses: peter-evans/create-pull-request@5f6978faf089d4d20b00c7766989d076bb2fc7f1 # v8.1.1
         with:
           signoff: true
           delete-branch: true
@@ -477,10 +443,9 @@ jobs:
           title: update nginx-ntlm-module version to ${{ steps.update.outputs.version }}
           body: update nginx-ntlm-module version to ${{ steps.update.outputs.version }}
   ngx_http_geoip2_module-update:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-slim
     steps:
-      - name: Checkout
-        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
       - name: update ngx_http_geoip2_module version
         id: update
         run: |
@@ -494,8 +459,7 @@ jobs:
           NHG2M_SHA="$(git ls-remote https://github.com/leev/ngx_http_geoip2_module "$NHG2M_VER" | cut -f1)"
           sed -i "s|ARG NHG2M_VER=.*|ARG NHG2M_VER=$NHG2M_SHA # $NHG2M_VER|" Dockerfile
           echo "version=$NHG2M_VER" >> $GITHUB_OUTPUT
-      - name: Create Pull Request
-        uses: peter-evans/create-pull-request@5f6978faf089d4d20b00c7766989d076bb2fc7f1 # v8.1.1
+      - uses: peter-evans/create-pull-request@5f6978faf089d4d20b00c7766989d076bb2fc7f1 # v8.1.1
         with:
           signoff: true
           delete-branch: true
@@ -505,10 +469,9 @@ jobs:
           body: update ngx_http_geoip2_module version to ${{ steps.update.outputs.version }}
 
   attachment-update:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-slim
     steps:
-      - name: Checkout
-        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
       - name: update attachment version
         id: update
         run: |
@@ -523,8 +486,7 @@ jobs:
           OASA_SHA="$(git ls-remote https://github.com/openappsec/attachment "$OASA_VER" | cut -f1)"
           sed -i "s|ARG OASA_VER=.*|ARG OASA_VER=$OASA_SHA # $OASA_VER|" Dockerfile
           echo "version=$OASA_VER" >> $GITHUB_OUTPUT
-      - name: Create Pull Request
-        uses: peter-evans/create-pull-request@5f6978faf089d4d20b00c7766989d076bb2fc7f1 # v8.1.1
+      - uses: peter-evans/create-pull-request@5f6978faf089d4d20b00c7766989d076bb2fc7f1 # v8.1.1
         with:
           signoff: true
           delete-branch: true
@@ -534,10 +496,9 @@ jobs:
           body: update attachment version to ${{ steps.update.outputs.version }}
 
   lua-resty-core-update:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-slim
     steps:
-      - name: Checkout
-        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
       - name: update lua-resty-core version
         id: update
         run: |
@@ -551,8 +512,7 @@ jobs:
           LRC_SHA="$(git ls-remote https://github.com/openresty/lua-resty-core "$LRC_VER" | cut -f1)"
           sed -i "s|ARG LRC_VER=.*|ARG LRC_VER=$LRC_SHA # $LRC_VER|" Dockerfile
           echo "version=$LRC_VER" >> $GITHUB_OUTPUT
-      - name: Create Pull Request
-        uses: peter-evans/create-pull-request@5f6978faf089d4d20b00c7766989d076bb2fc7f1 # v8.1.1
+      - uses: peter-evans/create-pull-request@5f6978faf089d4d20b00c7766989d076bb2fc7f1 # v8.1.1
         with:
           signoff: true
           delete-branch: true
@@ -561,10 +521,9 @@ jobs:
           title: update lua-resty-core version to ${{ steps.update.outputs.version }}
           body: update lua-resty-core version to ${{ steps.update.outputs.version }}
   lua-resty-lrucache-update:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-slim
     steps:
-      - name: Checkout
-        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
       - name: update lua-resty-lrucache version
         id: update
         run: |
@@ -578,8 +537,7 @@ jobs:
           LRL_SHA="$(git ls-remote https://github.com/openresty/lua-resty-lrucache "$LRL_VER" | cut -f1)"
           sed -i "s|ARG LRL_VER=.*|ARG LRL_VER=$LRL_SHA # $LRL_VER|" Dockerfile
           echo "version=$LRL_VER" >> $GITHUB_OUTPUT
-      - name: Create Pull Request
-        uses: peter-evans/create-pull-request@5f6978faf089d4d20b00c7766989d076bb2fc7f1 # v8.1.1
+      - uses: peter-evans/create-pull-request@5f6978faf089d4d20b00c7766989d076bb2fc7f1 # v8.1.1
         with:
           signoff: true
           delete-branch: true
@@ -589,10 +547,9 @@ jobs:
           body: update lua-resty-lrucache version to ${{ steps.update.outputs.version }}
 
   lua-cs-bouncer-update:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-slim
     steps:
-      - name: Checkout
-        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
       - name: update lua-cs-bouncer version
         id: update
         run: |
@@ -608,8 +565,7 @@ jobs:
           echo "version=$LCSB_VER" >> $GITHUB_OUTPUT
           wget https://raw.githubusercontent.com/crowdsecurity/lua-cs-bouncer/refs/tags/"$LCSB_VER"/config_example.conf -O rootfs/etc/crowdsec.conf.original
           wget https://raw.githubusercontent.com/crowdsecurity/cs-nginx-bouncer/refs/heads/main/nginx/crowdsec_nginx.conf -O rootfs/usr/local/nginx/conf/conf.d/crowdsec.conf.original
-      - name: Create Pull Request
-        uses: peter-evans/create-pull-request@5f6978faf089d4d20b00c7766989d076bb2fc7f1 # v8.1.1
+      - uses: peter-evans/create-pull-request@5f6978faf089d4d20b00c7766989d076bb2fc7f1 # v8.1.1
         with:
           signoff: true
           delete-branch: true
