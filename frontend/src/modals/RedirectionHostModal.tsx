@@ -6,13 +6,14 @@ import { Alert } from "react-bootstrap";
 import Modal from "react-bootstrap/Modal";
 import {
 	Button,
+	DirectoryField,
 	DomainNamesField,
 	Loading,
 	NginxConfigField,
 	SSLCertificateField,
 	SSLOptionsFields,
 } from "src/components";
-import { useRedirectionHost, useSetRedirectionHost } from "src/hooks";
+import { useDirectorySuggestions, useRedirectionHost, useRedirectionHosts, useSetRedirectionHost } from "src/hooks";
 import { T } from "src/locale";
 import { validateString } from "src/modules/Validations";
 import { showObjectSuccess } from "src/notifications";
@@ -27,6 +28,8 @@ interface Props extends InnerModalProps {
 const RedirectionHostModal = EasyModal.create(({ id, visible, remove }: Props) => {
 	const { data, isLoading, error } = useRedirectionHost(id);
 	const { mutate: setRedirectionHost } = useSetRedirectionHost();
+	const { data: allRedirectionHosts } = useRedirectionHosts();
+	const suggestions = useDirectorySuggestions(allRedirectionHosts);
 	const [errorMsg, setErrorMsg] = useState<ReactNode | null>(null);
 	const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -35,9 +38,22 @@ const RedirectionHostModal = EasyModal.create(({ id, visible, remove }: Props) =
 		setIsSubmitting(true);
 		setErrorMsg(null);
 
+		const meta = { ...(values.meta || {}) };
+		if (typeof meta.directory === "string") {
+			const trimmed = meta.directory.trim();
+			if (trimmed) {
+				meta.directory = trimmed;
+			} else {
+				delete meta.directory;
+			}
+		} else {
+			delete meta.directory;
+		}
+
 		const { ...payload } = {
 			id: id === "new" ? undefined : id,
 			...values,
+			meta,
 		};
 
 		setRedirectionHost(payload, {
@@ -332,6 +348,15 @@ const RedirectionHostModal = EasyModal.create(({ id, visible, remove }: Props) =
 											</div>
 											<div className="tab-pane" id="tab-advanced" role="tabpanel">
 												<NginxConfigField />
+												<div className="row">
+													<div className="col-md-12 mb-3">
+														<DirectoryField
+															labelId="redirection-host.directory"
+															datalistId="directory-suggestions-redirection"
+															suggestions={suggestions}
+														/>
+													</div>
+												</div>
 											</div>
 										</div>
 									</div>
