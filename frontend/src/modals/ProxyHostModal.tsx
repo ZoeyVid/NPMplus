@@ -9,6 +9,7 @@ import Modal from "react-bootstrap/Modal";
 import {
 	AccessFields,
 	Button,
+	DirectoryField,
 	DomainNamesField,
 	HasPermission,
 	Loading,
@@ -17,7 +18,7 @@ import {
 	SSLCertificateField,
 	SSLOptionsFields,
 } from "src/components";
-import { useProxyHost, useSetProxyHost, useUser } from "src/hooks";
+import { useDirectorySuggestions, useProxyHost, useProxyHosts, useSetProxyHost, useUser } from "src/hooks";
 import { intl, T } from "src/locale";
 import { MANAGE, PROXY_HOSTS } from "src/modules/Permissions";
 import { validateNumber, validateUpstreamUrl } from "src/modules/Validations";
@@ -31,6 +32,8 @@ interface Props extends InnerModalProps {
 const ProxyHostModal = EasyModal.create(({ id, isClone = false, visible, remove }: Props) => {
 	const { data: currentUser, isLoading: userIsLoading, error: userError } = useUser("me");
 	const { data, isLoading, error } = useProxyHost(id);
+	const { data: allProxyHosts } = useProxyHosts();
+	const suggestions = useDirectorySuggestions(allProxyHosts);
 	const { mutate: setProxyHost } = useSetProxyHost();
 	const [errorMsg, setErrorMsg] = useState<ReactNode | null>(null);
 	const [isSubmitting, setIsSubmitting] = useState(false);
@@ -55,9 +58,22 @@ const ProxyHostModal = EasyModal.create(({ id, isClone = false, visible, remove 
 			return newLoc;
 		});
 
+		const meta = { ...(values.meta || {}) };
+		if (typeof meta.directory === "string") {
+			const trimmed = meta.directory.trim();
+			if (trimmed) {
+				meta.directory = trimmed;
+			} else {
+				delete meta.directory;
+			}
+		} else {
+			delete meta.directory;
+		}
+
 		const { ...payload } = {
 			id: id === "new" || isClone ? undefined : id,
 			...values,
+			meta,
 			npmplusAccessListIds: globalAclIds,
 			locations,
 			forwardPort: values.forwardPort || null,
@@ -900,6 +916,15 @@ const ProxyHostModal = EasyModal.create(({ id, isClone = false, visible, remove 
 											</div>
 											<div className="tab-pane" id="tab-advanced" role="tabpanel">
 												<NginxConfigField />
+												<div className="row">
+													<div className="col-md-12 mb-3">
+														<DirectoryField
+															labelId="proxy-host.directory"
+															datalistId="directory-suggestions-proxy"
+															suggestions={suggestions}
+														/>
+													</div>
+												</div>
 											</div>
 										</div>
 									</div>

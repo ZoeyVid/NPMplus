@@ -3,8 +3,8 @@ import { Field, Form, Formik } from "formik";
 import { type ReactNode, useState } from "react";
 import { Alert } from "react-bootstrap";
 import Modal from "react-bootstrap/Modal";
-import { Button, Loading, NginxConfigField, SSLCertificateField } from "src/components";
-import { useSetStream, useStream } from "src/hooks";
+import { Button, DirectoryField, Loading, NginxConfigField, SSLCertificateField } from "src/components";
+import { useDirectorySuggestions, useSetStream, useStream, useStreams } from "src/hooks";
 import { intl, T } from "src/locale";
 import { validateString } from "src/modules/Validations";
 import { showObjectSuccess } from "src/notifications";
@@ -18,6 +18,8 @@ interface Props extends InnerModalProps {
 }
 const StreamModal = EasyModal.create(({ id, visible, remove }: Props) => {
 	const { data, isLoading, error } = useStream(id);
+	const { data: allStreams } = useStreams();
+	const suggestions = useDirectorySuggestions(allStreams);
 	const { mutate: setStream } = useSetStream();
 	const [errorMsg, setErrorMsg] = useState<ReactNode | null>(null);
 	const [isSubmitting, setIsSubmitting] = useState(false);
@@ -27,9 +29,22 @@ const StreamModal = EasyModal.create(({ id, visible, remove }: Props) => {
 		setIsSubmitting(true);
 		setErrorMsg(null);
 
+		const meta = { ...(values.meta || {}) };
+		if (typeof meta.directory === "string") {
+			const trimmed = meta.directory.trim();
+			if (trimmed) {
+				meta.directory = trimmed;
+			} else {
+				delete meta.directory;
+			}
+		} else {
+			delete meta.directory;
+		}
+
 		const { ...payload } = {
 			id: id === "new" ? undefined : id,
 			...values,
+			meta,
 			forwardingPort: values.forwardingPort || null,
 		};
 
@@ -483,6 +498,15 @@ const StreamModal = EasyModal.create(({ id, visible, remove }: Props) => {
 													name="npmplusAdvancedConfig"
 													id="npmplusAdvancedConfig"
 												/>
+												<div className="row">
+													<div className="col-md-12 mb-3">
+														<DirectoryField
+															labelId="stream.directory"
+															datalistId="directory-suggestions-stream"
+															suggestions={suggestions}
+														/>
+													</div>
+												</div>
 											</div>
 										</div>
 									</div>
