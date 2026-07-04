@@ -341,6 +341,12 @@
 	"dead-host": {
 		"defaultMessage": "404 Host"
 	},
+	"dead-host.directory": {
+		"defaultMessage": "Group"
+	},
+	"dead-host.no-directory": {
+		"defaultMessage": "No group"
+	},
 	"dead-hosts": {
 		"defaultMessage": "404 Hosts"
 	},
@@ -674,6 +680,9 @@
 	"proxy-host.access-lists": {
 		"defaultMessage": "Access Lists"
 	},
+	"proxy-host.directory": {
+		"defaultMessage": "Group"
+	},
 	"proxy-host.forward-host": {
 		"defaultMessage": "Forward Hostname / IP"
 	},
@@ -682,6 +691,9 @@
 	},
 	"proxy-host.global-access-lists": {
 		"defaultMessage": "Global Access Lists"
+	},
+	"proxy-host.no-directory": {
+		"defaultMessage": "No group"
 	},
 	"proxy-hosts": {
 		"defaultMessage": "Proxy Hosts"
@@ -695,11 +707,17 @@
 	"redirection-host": {
 		"defaultMessage": "Redirection Host"
 	},
+	"redirection-host.directory": {
+		"defaultMessage": "Group"
+	},
 	"redirection-host.forward-domain": {
 		"defaultMessage": "Forward Domain"
 	},
 	"redirection-host.forward-http-code": {
 		"defaultMessage": "HTTP Code"
+	},
+	"redirection-host.no-directory": {
+		"defaultMessage": "No group"
 	},
 	"redirection-hosts": {
 		"defaultMessage": "Redirection Hosts"
@@ -788,6 +806,9 @@
 	"stream.description.placeholder": {
 		"defaultMessage": "Optional description to identify this stream"
 	},
+	"stream.directory": {
+		"defaultMessage": "Group"
+	},
 	"stream.forward-host": {
 		"defaultMessage": "Forward Host"
 	},
@@ -796,6 +817,9 @@
 	},
 	"stream.incoming-port": {
 		"defaultMessage": "Incoming Port"
+	},
+	"stream.no-directory": {
+		"defaultMessage": "No group"
 	},
 	"streams": {
 		"defaultMessage": "Streams"
