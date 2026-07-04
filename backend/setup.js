@@ -12,7 +12,10 @@ import proxyModel from "./models/proxy_host.js";
 import redirectionModel from "./models/redirection_host.js";
 import deadModel from "./models/dead_host.js";
 import streamModel from "./models/stream.js";
+import Access from "./lib/access.js";
+import internalHost from "./internal/host.js";
 import internalNginx from "./internal/nginx.js";
+import internalProxyHost from "./internal/proxy-host.js";
 import internalProxyHostAccessList from "./internal/proxy-host-access-list.js";
 
 export const isSetup = async () => {
@@ -196,4 +199,36 @@ const regenerateAllHosts = async () => {
 	}
 };
 
-export default () => setupDefaultUser().then(setupDefaultSettings).then(setupCertbotPlugins).then(regenerateAllHosts);
+/**
+ * Creates the AIO proxy host if enabled and not already present
+ *
+ * @returns {Promise}
+ */
+const setupAio = async () => {
+	const domain = process.env.NC_DOMAIN;
+	if (process.env.NC_AIO !== "true" || !domain) return;
+	if ((await internalHost.isHostnameTaken(domain)).is_taken) return;
+
+	const access = new Access(null);
+	await access.load(true);
+
+	try {
+		await internalProxyHost.create(access, {
+			domain_names: [domain],
+			forward_scheme: "http",
+			forward_host: "127.0.0.1",
+			forward_port: 11000,
+			certificate_id: "new",
+			ssl_forced: true,
+			hsts_enabled: true,
+			hsts_subdomains: true,
+			npmplus_http3_support: true,
+		});
+		logger.info("AIO proxy host created");
+	} catch (err) {
+		logger.error(`AIO proxy host setup failed, create it manually in the NPMplus UI: ${err.message}`);
+	}
+};
+
+export default () =>
+	setupDefaultUser().then(setupDefaultSettings).then(setupCertbotPlugins).then(regenerateAllHosts).then(setupAio);
