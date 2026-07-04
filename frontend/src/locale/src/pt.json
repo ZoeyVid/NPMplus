@@ -254,6 +254,12 @@
 	"dead-host": {
 		"defaultMessage": "Host 404"
 	},
+	"dead-host.directory": {
+		"defaultMessage": "Pasta"
+	},
+	"dead-host.no-directory": {
+		"defaultMessage": "Sem pasta"
+	},
 	"dead-hosts": {
 		"defaultMessage": "Hosts 404"
 	},
@@ -506,8 +512,14 @@
 	"proxy-host": {
 		"defaultMessage": "Proxy Host"
 	},
+	"proxy-host.directory": {
+		"defaultMessage": "Pasta"
+	},
 	"proxy-host.forward-host": {
 		"defaultMessage": "Hostname/IP de Encaminhamento"
+	},
+	"proxy-host.no-directory": {
+		"defaultMessage": "Sem Pasta"
 	},
 	"proxy-hosts": {
 		"defaultMessage": "Proxy Hosts"
