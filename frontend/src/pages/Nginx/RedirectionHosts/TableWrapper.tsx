@@ -1,10 +1,11 @@
 import { IconHelp, IconSearch } from "@tabler/icons-react";
 import { useQueryClient } from "@tanstack/react-query";
+import type { SortingState } from "@tanstack/react-table";
 import { useState } from "react";
 import Alert from "react-bootstrap/Alert";
 import { deleteRedirectionHost, toggleRedirectionHost } from "src/api/backend";
 import { Button, HasPermission, LoadingPage } from "src/components";
-import { useRedirectionHosts } from "src/hooks";
+import { getDirectory, useRedirectionHosts } from "src/hooks";
 import { T } from "src/locale";
 import { showDeleteConfirmModal, showHelpModal, showRedirectionHostModal } from "src/modals";
 import { MANAGE, REDIRECTION_HOSTS } from "src/modules/Permissions";
@@ -14,6 +15,7 @@ import Table from "./Table";
 export default function TableWrapper() {
 	const queryClient = useQueryClient();
 	const [search, setSearch] = useState("");
+	const [sorting, setSorting] = useState<SortingState>([]);
 	const { isFetching, isLoading, isError, error, data } = useRedirectionHosts(["owner", "certificate"]);
 
 	if (isLoading) {
@@ -39,15 +41,37 @@ export default function TableWrapper() {
 	let filtered = null;
 	if (search && data) {
 		filtered = data?.filter((item) => {
+			const directory = getDirectory(item).toLowerCase();
 			return (
 				item.domainNames.some((domain: string) => domain.toLowerCase().includes(search)) ||
-				item.forwardDomainName.toLowerCase().includes(search)
+				item.forwardDomainName.toLowerCase().includes(search) ||
+				directory.includes(search)
 			);
 		});
 	} else if (search !== "") {
 		// this can happen if someone deletes the last item while searching
 		setSearch("");
 	}
+
+	const displayedHosts = filtered ?? data ?? [];
+	const groupingActive = displayedHosts.some((item) => getDirectory(item));
+
+	const sharedTableProps = {
+		isFiltered: !!search,
+		isFetching,
+		sorting,
+		onSortingChange: setSorting,
+		onEdit: (id: number) => showRedirectionHostModal(id),
+		onDelete: (id: number) =>
+			showDeleteConfirmModal({
+				title: <T id="object.delete" tData={{ object: "redirection-host" }} />,
+				onConfirm: () => handleDelete(id),
+				invalidations: [["redirection-hosts"], ["redirection-host", id]],
+				children: <T id="object.delete.content" tData={{ object: "redirection-host" }} />,
+			}),
+		onDisableToggle: handleDisableToggle,
+		onNew: () => showRedirectionHostModal("new"),
+	};
 
 	return (
 		<div className="card mt-4">
@@ -95,20 +119,10 @@ export default function TableWrapper() {
 					</div>
 				</div>
 				<Table
-					data={filtered ?? data ?? []}
-					isFiltered={!!search}
-					isFetching={isFetching}
-					onEdit={(id: number) => showRedirectionHostModal(id)}
-					onDelete={(id: number) =>
-						showDeleteConfirmModal({
-							title: <T id="object.delete" tData={{ object: "redirection-host" }} />,
-							onConfirm: () => handleDelete(id),
-							invalidations: [["redirection-hosts"], ["redirection-host", id]],
-							children: <T id="object.delete.content" tData={{ object: "redirection-host" }} />,
-						})
-					}
-					onDisableToggle={handleDisableToggle}
-					onNew={() => showRedirectionHostModal("new")}
+					data={displayedHosts}
+					groupBy={groupingActive ? getDirectory : undefined}
+					renderGroupLabel={(key) => (key === "" ? <T id="redirection-host.no-directory" /> : key)}
+					{...sharedTableProps}
 				/>
 			</div>
 		</div>

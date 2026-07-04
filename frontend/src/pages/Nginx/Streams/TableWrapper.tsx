@@ -1,10 +1,11 @@
 import { IconHelp, IconSearch } from "@tabler/icons-react";
 import { useQueryClient } from "@tanstack/react-query";
+import type { SortingState } from "@tanstack/react-table";
 import { useState } from "react";
 import Alert from "react-bootstrap/Alert";
 import { deleteStream, toggleStream } from "src/api/backend";
 import { Button, HasPermission, LoadingPage } from "src/components";
-import { useStreams } from "src/hooks";
+import { getDirectory, useStreams } from "src/hooks";
 import { T } from "src/locale";
 import { showDeleteConfirmModal, showHelpModal, showStreamModal } from "src/modals";
 import { MANAGE, STREAMS } from "src/modules/Permissions";
@@ -14,6 +15,7 @@ import Table from "./Table";
 export default function TableWrapper() {
 	const queryClient = useQueryClient();
 	const [search, setSearch] = useState("");
+	const [sorting, setSorting] = useState<SortingState>([]);
 	const [_deleteId, _setDeleteIdd] = useState(0);
 	const { isFetching, isLoading, isError, error, data } = useStreams(["owner", "certificate"]);
 
@@ -40,17 +42,39 @@ export default function TableWrapper() {
 	let filtered = null;
 	if (search && data) {
 		filtered = data?.filter((item) => {
+			const directory = getDirectory(item).toLowerCase();
 			return (
 				`${item.incomingPort}`.includes(search) ||
 				`${item.forwardingPort}`.includes(search) ||
 				item.forwardingHost.includes(search) ||
-				item.npmplusDescription?.toLowerCase().includes(search.toLowerCase())
+				item.npmplusDescription?.toLowerCase().includes(search.toLowerCase()) ||
+				directory.includes(search)
 			);
 		});
 	} else if (search !== "") {
 		// this can happen if someone deletes the last item while searching
 		setSearch("");
 	}
+
+	const displayedStreams = filtered ?? data ?? [];
+	const groupingActive = displayedStreams.some((item) => getDirectory(item));
+
+	const sharedTableProps = {
+		isFiltered: !!search,
+		isFetching,
+		sorting,
+		onSortingChange: setSorting,
+		onEdit: (id: number) => showStreamModal(id),
+		onDelete: (id: number) =>
+			showDeleteConfirmModal({
+				title: <T id="object.delete" tData={{ object: "stream" }} />,
+				onConfirm: () => handleDelete(id),
+				invalidations: [["streams"], ["stream", id]],
+				children: <T id="object.delete.content" tData={{ object: "stream" }} />,
+			}),
+		onDisableToggle: handleDisableToggle,
+		onNew: () => showStreamModal("new"),
+	};
 
 	return (
 		<div className="card mt-4">
@@ -94,20 +118,10 @@ export default function TableWrapper() {
 					</div>
 				</div>
 				<Table
-					data={filtered ?? data ?? []}
-					isFetching={isFetching}
-					isFiltered={!!filtered}
-					onEdit={(id: number) => showStreamModal(id)}
-					onDelete={(id: number) =>
-						showDeleteConfirmModal({
-							title: <T id="object.delete" tData={{ object: "stream" }} />,
-							onConfirm: () => handleDelete(id),
-							invalidations: [["streams"], ["stream", id]],
-							children: <T id="object.delete.content" tData={{ object: "stream" }} />,
-						})
-					}
-					onDisableToggle={handleDisableToggle}
-					onNew={() => showStreamModal("new")}
+					data={displayedStreams}
+					groupBy={groupingActive ? getDirectory : undefined}
+					renderGroupLabel={(key) => (key === "" ? <T id="stream.no-directory" /> : key)}
+					{...sharedTableProps}
 				/>
 			</div>
 		</div>
