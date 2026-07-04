@@ -1,6 +1,5 @@
 import react from "@vitejs/plugin-react";
 import { defineConfig } from "vite";
-import checker from "vite-plugin-checker";
 import "vitest/config";
 import { execFileSync } from "node:child_process";
 
@@ -34,10 +33,6 @@ export default defineConfig({
 			},
 		},
 		react(),
-		checker({
-			// e.g. use TypeScript check
-			typescript: true,
-		}),
 	],
 	resolve: {
 		tsconfigPaths: true,
