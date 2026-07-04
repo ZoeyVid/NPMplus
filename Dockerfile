@@ -239,7 +239,7 @@ COPY --from=nginx /src/attachment/attachments/nginx/nginx_attachment_util/libosr
 COPY --from=backend  /app      /app
 
 COPY rootfs  /
-COPY LICENSE /LICENSE
+COPY LICENSE.MIT /LICENSE.MIT
 COPY COPYING /COPYING
 
 WORKDIR /app
