@@ -9,6 +9,7 @@ import Modal from "react-bootstrap/Modal";
 import {
 	AccessFields,
 	Button,
+	DirectoryField,
 	DomainNamesField,
 	HasPermission,
 	Loading,
@@ -17,7 +18,7 @@ import {
 	SSLCertificateField,
 	SSLOptionsFields,
 } from "src/components";
-import { useProxyHost, useSetProxyHost, useUser } from "src/hooks";
+import { useDirectorySuggestions, useProxyHost, useProxyHosts, useSetProxyHost, useUser } from "src/hooks";
 import { intl, T } from "src/locale";
 import { MANAGE, PROXY_HOSTS } from "src/modules/Permissions";
 import { validateNumber, validateUpstreamUrl } from "src/modules/Validations";
@@ -31,6 +32,8 @@ interface Props extends InnerModalProps {
 const ProxyHostModal = EasyModal.create(({ id, isClone = false, visible, remove }: Props) => {
 	const { data: currentUser, isLoading: userIsLoading, error: userError } = useUser("me");
 	const { data, isLoading, error } = useProxyHost(id);
+	const { data: allProxyHosts } = useProxyHosts();
+	const suggestions = useDirectorySuggestions(allProxyHosts);
 	const { mutate: setProxyHost } = useSetProxyHost();
 	const [errorMsg, setErrorMsg] = useState<ReactNode | null>(null);
 	const [isSubmitting, setIsSubmitting] = useState(false);
@@ -231,26 +234,11 @@ const ProxyHostModal = EasyModal.create(({ id, isClone = false, visible, remove 
 												<DomainNamesField isWildcardPermitted dnsProviderWildcardSupported />
 												<div className="row">
 													<div className="col-md-12 mb-3">
-														<Field name="meta.directory">
-															{({ field }: any) => (
-																<div>
-																	<label
-																		className="form-label"
-																		htmlFor="meta.directory"
-																	>
-																		<T id="proxy-host.directory" />
-																	</label>
-																	<input
-																		id="meta.directory"
-																		type="text"
-																		className="form-control"
-																		placeholder="eg: Production, Staging"
-																		{...field}
-																		value={field.value || ""}
-																	/>
-																</div>
-															)}
-														</Field>
+														<DirectoryField
+															labelId="proxy-host.directory"
+															datalistId="directory-suggestions-proxy"
+															suggestions={suggestions}
+														/>
 													</div>
 												</div>
 												<div className="row">

@@ -22,8 +22,18 @@ interface Props {
 	onDelete?: (id: number) => void;
 	onDisableToggle?: (id: number, enabled: boolean) => void;
 	onNew?: () => void;
+	showHeader?: boolean;
 }
-export default function Table({ data, isFetching, isFiltered, onEdit, onDelete, onDisableToggle, onNew }: Props) {
+export default function Table({
+	data,
+	isFetching,
+	isFiltered,
+	onEdit,
+	onDelete,
+	onDisableToggle,
+	onNew,
+	showHeader,
+}: Props) {
 	const columnHelper = createColumnHelper<Stream>();
 	const columns = useMemo(
 		() => [
@@ -224,6 +234,7 @@ export default function Table({ data, isFetching, isFiltered, onEdit, onDelete, 
 	return (
 		<TableLayout
 			tableInstance={tableInstance}
+			showHeader={showHeader}
 			emptyState={
 				<EmptyData
 					object="stream"

@@ -341,6 +341,12 @@
 	"dead-host": {
 		"defaultMessage": "404 Host"
 	},
+	"dead-host.directory": {
+		"defaultMessage": "Directory"
+	},
+	"dead-host.no-directory": {
+		"defaultMessage": "No directory"
+	},
 	"dead-hosts": {
 		"defaultMessage": "404 Hosts"
 	},
@@ -701,11 +707,17 @@
 	"redirection-host": {
 		"defaultMessage": "Redirection Host"
 	},
+	"redirection-host.directory": {
+		"defaultMessage": "Directory"
+	},
 	"redirection-host.forward-domain": {
 		"defaultMessage": "Forward Domain"
 	},
 	"redirection-host.forward-http-code": {
 		"defaultMessage": "HTTP Code"
+	},
+	"redirection-host.no-directory": {
+		"defaultMessage": "No directory"
 	},
 	"redirection-hosts": {
 		"defaultMessage": "Redirection Hosts"
@@ -794,6 +806,9 @@
 	"stream.description.placeholder": {
 		"defaultMessage": "Optional description to identify this stream"
 	},
+	"stream.directory": {
+		"defaultMessage": "Directory"
+	},
 	"stream.forward-host": {
 		"defaultMessage": "Forward Host"
 	},
@@ -802,6 +817,9 @@
 	},
 	"stream.incoming-port": {
 		"defaultMessage": "Incoming Port"
+	},
+	"stream.no-directory": {
+		"defaultMessage": "No directory"
 	},
 	"streams": {
 		"defaultMessage": "Streams"

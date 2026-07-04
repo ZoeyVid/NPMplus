@@ -254,6 +254,12 @@
 	"dead-host": {
 		"defaultMessage": "Host 404"
 	},
+	"dead-host.directory": {
+		"defaultMessage": "Pasta"
+	},
+	"dead-host.no-directory": {
+		"defaultMessage": "Sem pasta"
+	},
 	"dead-hosts": {
 		"defaultMessage": "Hosts 404"
 	},

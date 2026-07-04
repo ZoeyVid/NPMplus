@@ -2,7 +2,7 @@ import { IconHelp, IconSearch } from "@tabler/icons-react";
 import { useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
 import Alert from "react-bootstrap/Alert";
-import { deleteRedirectionHost, toggleRedirectionHost } from "src/api/backend";
+import { deleteRedirectionHost, type RedirectionHost, toggleRedirectionHost } from "src/api/backend";
 import { Button, HasPermission, LoadingPage } from "src/components";
 import { useRedirectionHosts } from "src/hooks";
 import { T } from "src/locale";
@@ -36,18 +36,87 @@ export default function TableWrapper() {
 		showObjectSuccess("redirection-host", enabled ? "enabled" : "disabled");
 	};
 
+	const getDirectory = (item: RedirectionHost) => {
+		const dir = item.meta?.directory;
+		return typeof dir === "string" ? dir.trim() : "";
+	};
+
 	let filtered = null;
 	if (search && data) {
 		filtered = data?.filter((item) => {
+			const directory = getDirectory(item).toLowerCase();
 			return (
 				item.domainNames.some((domain: string) => domain.toLowerCase().includes(search)) ||
-				item.forwardDomainName.toLowerCase().includes(search)
+				item.forwardDomainName.toLowerCase().includes(search) ||
+				directory.includes(search)
 			);
 		});
 	} else if (search !== "") {
 		// this can happen if someone deletes the last item while searching
 		setSearch("");
 	}
+
+	const displayedHosts = filtered ?? data ?? [];
+	const groupingActive = displayedHosts.some((item) => getDirectory(item));
+
+	const sharedTableProps = {
+		isFiltered: !!search,
+		isFetching,
+		onEdit: (id: number) => showRedirectionHostModal(id),
+		onDelete: (id: number) =>
+			showDeleteConfirmModal({
+				title: <T id="object.delete" tData={{ object: "redirection-host" }} />,
+				onConfirm: () => handleDelete(id),
+				invalidations: [["redirection-hosts"], ["redirection-host", id]],
+				children: <T id="object.delete.content" tData={{ object: "redirection-host" }} />,
+			}),
+		onDisableToggle: handleDisableToggle,
+		onNew: () => showRedirectionHostModal("new"),
+	};
+
+	const renderGroups: { name: string; isNoDirectory?: boolean; data: RedirectionHost[] }[] = [];
+	if (groupingActive) {
+		const groups: Record<string, RedirectionHost[]> = {};
+		for (const host of displayedHosts) {
+			const dir = getDirectory(host);
+			if (!groups[dir]) {
+				groups[dir] = [];
+			}
+			groups[dir].push(host);
+		}
+
+		const sortedDirs = Object.keys(groups)
+			.filter((dir) => dir !== "")
+			.sort((a, b) => a.localeCompare(b));
+
+		for (const dir of sortedDirs) {
+			renderGroups.push({ name: dir, data: groups[dir] });
+		}
+		if (groups[""] && groups[""].length > 0) {
+			renderGroups.push({ name: "", isNoDirectory: true, data: groups[""] });
+		}
+	}
+
+	const renderedTables = groupingActive ? (
+		renderGroups.map((group, index) => (
+			<div key={group.isNoDirectory ? "no-directory" : `dir-${group.name}`}>
+				<div
+					className="card-header py-2 border-top border-bottom"
+					style={{ backgroundColor: "var(--tblr-bg-surface-secondary)" }}
+				>
+					<div
+						className="fw-bold text-secondary text-uppercase"
+						style={{ fontSize: "0.75rem", letterSpacing: "0.05em" }}
+					>
+						{group.isNoDirectory ? <T id="redirection-host.no-directory" /> : group.name}
+					</div>
+				</div>
+				<Table data={group.data} showHeader={index === 0} {...sharedTableProps} />
+			</div>
+		))
+	) : (
+		<Table data={displayedHosts} showHeader={true} {...sharedTableProps} />
+	);
 
 	return (
 		<div className="card mt-4">
@@ -94,22 +163,7 @@ export default function TableWrapper() {
 						</div>
 					</div>
 				</div>
-				<Table
-					data={filtered ?? data ?? []}
-					isFiltered={!!search}
-					isFetching={isFetching}
-					onEdit={(id: number) => showRedirectionHostModal(id)}
-					onDelete={(id: number) =>
-						showDeleteConfirmModal({
-							title: <T id="object.delete" tData={{ object: "redirection-host" }} />,
-							onConfirm: () => handleDelete(id),
-							invalidations: [["redirection-hosts"], ["redirection-host", id]],
-							children: <T id="object.delete.content" tData={{ object: "redirection-host" }} />,
-						})
-					}
-					onDisableToggle={handleDisableToggle}
-					onNew={() => showRedirectionHostModal("new")}
-				/>
+				{renderedTables}
 			</div>
 		</div>
 	);

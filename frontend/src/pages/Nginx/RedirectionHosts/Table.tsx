@@ -22,8 +22,18 @@ interface Props {
 	onDelete?: (id: number) => void;
 	onDisableToggle?: (id: number, enabled: boolean) => void;
 	onNew?: () => void;
+	showHeader?: boolean;
 }
-export default function Table({ data, isFetching, onEdit, onDelete, onDisableToggle, onNew, isFiltered }: Props) {
+export default function Table({
+	data,
+	isFetching,
+	onEdit,
+	onDelete,
+	onDisableToggle,
+	onNew,
+	isFiltered,
+	showHeader,
+}: Props) {
 	const columnHelper = createColumnHelper<RedirectionHost>();
 	const columns = useMemo(
 		() => [
@@ -186,6 +196,7 @@ export default function Table({ data, isFetching, onEdit, onDelete, onDisableTog
 	return (
 		<TableLayout
 			tableInstance={tableInstance}
+			showHeader={showHeader}
 			emptyState={
 				<EmptyData
 					object="redirection-host"
