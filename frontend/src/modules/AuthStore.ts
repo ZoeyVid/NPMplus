@@ -22,7 +22,7 @@ export class AuthStore {
 	get token() {
 		const t = this.tokens;
 		if (t.length) {
-			return t[t.length - 1];
+			return t.at(-1);
 		}
 		return null;
 	}
