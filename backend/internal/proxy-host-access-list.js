@@ -115,9 +115,20 @@ const internalProxyHostAccessList = {
 	buildAclFile: (list) => {
 		const lists = list || [];
 		const first = lists[0] || null; // satisfy any/pass auth need to be specified in the first acl
+
+		const last = (first?.clients || []).at(-1);
+		const catchAll =
+			last?.directive === "allow" && last?.address?.trim().toLowerCase() === "all"
+				? { directive: "allow", address: "all" }
+				: { directive: "deny", address: "all" };
+
+		const specificRules = lists
+			.flatMap((l) => l.clients || [])
+			.filter((c) => c.address?.trim().toLowerCase() !== "all");
+		const clients = specificRules.length === 0 ? [] : [...specificRules, catchAll];
 		return {
 			items: getMergedItems(lists),
-			clients: lists.flatMap((list) => list.clients || []),
+			clients,
 			satisfy_any: first ? !!first.satisfy_any : false,
 			pass_auth: first ? !!first.pass_auth : false,
 			source_acl_ids: lists.map((list) => list.id).filter((id) => Number.isInteger(id)),
