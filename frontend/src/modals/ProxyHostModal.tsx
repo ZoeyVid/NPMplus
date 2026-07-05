@@ -379,17 +379,6 @@ const ProxyHostModal = EasyModal.create(({ id, isClone = false, visible, remove 
 														</div>
 													</div>
 												</div>
-												<div className="row">
-													<h4 className="py-2">
-														<T id="proxy-host.global-access-lists" />
-													</h4>
-													<AccessFields
-														initialAccessListType={data?.npmplusAccessListType || "public"}
-														initialAccessListIds={data?.npmplusAccessListIds || []}
-														name="npmplusAccessListIds"
-														type="npmplusAccessListType"
-													/>
-												</div>
 												<div className="my-3">
 													<h4 className="py-2">
 														<T id="options" />
@@ -866,6 +855,17 @@ const ProxyHostModal = EasyModal.create(({ id, isClone = false, visible, remove 
 															</div>
 														)}
 													</div>
+												</div>
+												<div className="my-3">
+													<h4 className="py-2">
+														<T id="proxy-host.global-access-lists" />
+													</h4>
+													<AccessFields
+														initialAccessListType={data?.npmplusAccessListType || "public"}
+														initialAccessListIds={data?.npmplusAccessListIds || []}
+														name="npmplusAccessListIds"
+														type="npmplusAccessListType"
+													/>
 												</div>
 												<Field name="npmplusLocationConfig">
 													{({ field }: any) => (
