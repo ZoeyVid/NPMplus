@@ -9,7 +9,7 @@
 		"defaultMessage": "{count} {count, plural, one {User} other {Users}}"
 	},
 	"access-list.help-rules-last": {
-		"defaultMessage": "Wenn mindestens eine Regel vorhanden ist, wird diese Regel zum Ablehnen aller Anfragen als letzte hinzugefügt."
+		"defaultMessage": "Diese letzte Regel wird nur hinzugefügt, wenn mindestens eine andere Regel existiert."
 	},
 	"access-list.help.rules-order": {
 		"defaultMessage": "Beachten Sie, dass die Anweisungen „Erlauben“ und „Verbieten“ in der Reihenfolge ihrer Definition angewendet werden."
