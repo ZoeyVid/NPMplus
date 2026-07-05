@@ -78,7 +78,7 @@
 		"defaultMessage": "Use the same as the Global Access List"
 	},
 	"access-list.help-rules-last": {
-		"defaultMessage": "When at least 1 rule exists, this deny all rule will be added last"
+		"defaultMessage": "This final rule will only be added if there is at least one other rule"
 	},
 	"access-list.help.rules-order": {
 		"defaultMessage": "Note that the allow and deny directives will be applied in the order they are defined."
