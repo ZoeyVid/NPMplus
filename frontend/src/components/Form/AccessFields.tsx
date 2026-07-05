@@ -175,7 +175,7 @@ export function AccessFields({ initialAccessListType, location, initialAccessLis
 			{isError ? <div className="invalid-feedback">{`${error}`}</div> : null}
 			<div className="row">
 				<div className="col-md-10">
-					<div className="input-group mb-3">
+					<div className="input-group mb-3 shadow-none">
 						<Select<AccessTypeOption, false>
 							className="react-select-container col-md-8"
 							classNamePrefix="react-select"
