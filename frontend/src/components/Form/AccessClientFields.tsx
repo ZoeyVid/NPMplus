@@ -10,32 +10,35 @@ interface Props {
 	name?: string;
 }
 export function AccessClientFields({ initialValues, name = "clients" }: Props) {
-	const [values, setValues] = useState<AccessListClient[]>(initialValues || []);
+	const initial = initialValues || [];
+	const [values, setValues] = useState<AccessListClient[]>(
+		initial.at(-1)?.address?.trim().toLowerCase() === "all"
+			? initial
+			: [...initial, { directive: "deny", address: "all" }],
+	);
 	const { setFieldValue } = useFormikContext();
 
 	const blankClient: AccessListClient = { directive: "allow", address: "" };
 
-	if (values?.length === 0) {
-		setValues([blankClient]);
+	if (values?.length === 1) {
+		setValues([blankClient, ...values]);
 	}
 
 	const handleAdd = () => {
-		setValues([...values, blankClient]);
+		setValues(values.toSpliced(values.length - 1, 0, blankClient));
 	};
 
 	const handleRemove = (idx: number) => {
-		const newValues = values.filter((_: AccessListClient, i: number) => i !== idx);
-		if (newValues.length === 0) {
-			newValues.push(blankClient);
+		const newValues = values.toSpliced(idx, 1);
+		if (newValues.length === 1) {
+			newValues.splice(newValues.length - 1, 0, blankClient);
 		}
 		setValues(newValues);
 		setFormField(newValues);
 	};
 
 	const handleChange = (idx: number, field: string, fieldValue: string) => {
-		const newValues = values.map((v: AccessListClient, i: number) =>
-			i === idx ? { ...v, [field]: fieldValue } : v,
-		);
+		const newValues = values.with(idx, { ...values[idx], [field]: fieldValue });
 		setValues(newValues);
 		setFormField(newValues);
 	};
@@ -50,7 +53,7 @@ export function AccessClientFields({ initialValues, name = "clients" }: Props) {
 			<p className="text-muted">
 				<T id="access-list.help.rules-order" />
 			</p>
-			{values.map((client: AccessListClient, idx: number) => (
+			{values.slice(0, -1).map((client: AccessListClient, idx: number) => (
 				<div className="row mb-1" key={idx}>
 					<div className="col-11">
 						<div className="input-group mb-2">
@@ -78,6 +81,7 @@ export function AccessClientFields({ initialValues, name = "clients" }: Props) {
 								type="text"
 								className="form-control"
 								autoComplete="off"
+								pattern="[^lL]+"
 								value={client.address}
 								onChange={(e) => handleChange(idx, "address", e.target.value)}
 								placeholder={intl.formatMessage({ id: "access-list.rule-source.placeholder" })}
@@ -111,11 +115,18 @@ export function AccessClientFields({ initialValues, name = "clients" }: Props) {
 					<div className="input-group mb-2">
 						<span className="input-group-select">
 							<select
-								className="form-select m-0 bg-orange-lt"
+								className={cn(
+									"form-select",
+									"m-0",
+									values[values.length - 1].directive === "allow" ? "bg-lime-lt" : "bg-orange-lt",
+								)}
 								name="clients[last].directive"
-								value="deny"
-								disabled
+								value={values[values.length - 1].directive}
+								onChange={(e) => handleChange(values.length - 1, "directive", e.target.value)}
 							>
+								<option value="allow">
+									<T id="action.allow" />
+								</option>
 								<option value="deny">
 									<T id="action.deny" />
 								</option>
