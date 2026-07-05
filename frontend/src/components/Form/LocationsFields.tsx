@@ -257,19 +257,6 @@ export function LocationsFields({ initialValues, name = "locations" }: Props) {
 
 							<div className="my-3">
 								<h4 className="py-2">
-									<T id="proxy-host.access-lists" />
-								</h4>
-								<AccessFields
-									initialAccessListType={item?.npmplusAccessListType || "global"}
-									location={item.path}
-									initialAccessListIds={item?.npmplusAccessListIds || []}
-									name={`locations[${idx}].npmplusAccessListIds`}
-									type={`locations[${idx}].npmplusAccessListType`}
-									onChange={(changes) => handleAccessFieldsChange(idx, changes)}
-								/>
-							</div>
-							<div className="my-3">
-								<h4 className="py-2">
 									<T id="options" />
 								</h4>
 								<div className="divide-y">
@@ -569,6 +556,19 @@ export function LocationsFields({ initialValues, name = "locations" }: Props) {
 										</div>
 									)}
 								</div>
+							</div>
+							<div className="my-3">
+								<h4 className="py-2">
+									<T id="proxy-host.access-lists" />
+								</h4>
+								<AccessFields
+									initialAccessListType={item?.npmplusAccessListType || "global"}
+									location={item.path}
+									initialAccessListIds={item?.npmplusAccessListIds || []}
+									name={`locations[${idx}].npmplusAccessListIds`}
+									type={`locations[${idx}].npmplusAccessListType`}
+									onChange={(changes) => handleAccessFieldsChange(idx, changes)}
+								/>
 							</div>
 						</div>
 						{advVisible.includes(idx) && (
