@@ -43,7 +43,7 @@ importers:
         version: 9.0.3
       knex:
         specifier: 3.3.0
-        version: 3.3.0(better-sqlite3@12.11.1)(mysql2@3.22.5(@types/node@26.1.0))(pg@8.22.0)
+        version: 3.3.0(better-sqlite3@12.11.1)(mysql2@3.22.6(@types/node@26.1.0))(pg@8.22.0)
       liquidjs:
         specifier: 10.27.1
         version: 10.27.1
@@ -51,11 +51,11 @@ importers:
         specifier: 4.18.1
         version: 4.18.1
       mysql2:
-        specifier: 3.22.5
-        version: 3.22.5(@types/node@26.1.0)
+        specifier: 3.22.6
+        version: 3.22.6(@types/node@26.1.0)
       objection:
         specifier: 3.1.5
-        version: 3.1.5(knex@3.3.0(better-sqlite3@12.11.1)(mysql2@3.22.5(@types/node@26.1.0))(pg@8.22.0))
+        version: 3.1.5(knex@3.3.0(better-sqlite3@12.11.1)(mysql2@3.22.6(@types/node@26.1.0))(pg@8.22.0))
       openid-client:
         specifier: 6.8.4
         version: 6.8.4
@@ -808,8 +808,8 @@ packages:
   ms@2.1.3:
     resolution: {integrity: sha512-6FlzubTLZG3J2a/NVCAleEhjzq5oxgHyaCU9yYXvcLsvoVaHJq/s5xXI6/XXP6tz7R9xAOtHnSO/tXtF3WRTlA==}
 
-  mysql2@3.22.5:
-    resolution: {integrity: sha512-95uZ2TrPWAZdwpB3vvvDbmEMcNG8yIeNCyu6GUcr/QnWEE/wXm7+mhOCsdQfWQDTV7qYT/PDUZ4U4UPP4AsXqQ==}
+  mysql2@3.22.6:
+    resolution: {integrity: sha512-fPKmeDGUzvFP7bMD5SASlJ5zIgvCC4hbanTmhbUlEmhyrY1hR4Hi3xLOWgTd3luYjLVifx6uGvMNJ2m/LlqEpg==}
     engines: {node: '>= 8.0'}
     peerDependencies:
       '@types/node': '>= 8'
@@ -1080,8 +1080,8 @@ packages:
     resolution: {integrity: sha512-UcjcJOWknrNkF6PLX83qcHM6KHgVKNkV62Y8a5uYDVv9ydGQVwAHMKqHdJje1VTWpljG0WYpCDhrCdAOYH4TWg==}
     engines: {node: '>= 10.x'}
 
-  sql-escaper@1.3.3:
-    resolution: {integrity: sha512-BsTCV265VpTp8tm1wyIm1xqQCS+Q9NHx2Sr+WcnUrgLrQ6yiDIvHYJV5gHxsj1lMBy2zm5twLaZao8Jd+S8JJw==}
+  sql-escaper@1.4.0:
+    resolution: {integrity: sha512-Ti/Zx9J3aITMYUMFhCKbkplQjyi7Kk2SyYXp+rzrkyKZetIy19XbQtVZ+0ZR5aVm/178tIJ6+aVvBqXkH+Xs7w==}
     engines: {bun: '>=1.0.0', deno: '>=2.0.0', node: '>=12.0.0'}
 
   statuses@2.0.2:
@@ -1759,7 +1759,7 @@ snapshots:
       jwa: 2.0.1
       safe-buffer: 5.2.1
 
-  knex@3.3.0(better-sqlite3@12.11.1)(mysql2@3.22.5(@types/node@26.1.0))(pg@8.22.0):
+  knex@3.3.0(better-sqlite3@12.11.1)(mysql2@3.22.6(@types/node@26.1.0))(pg@8.22.0):
     dependencies:
       colorette: 2.0.19
       commander: 10.0.1
@@ -1777,7 +1777,7 @@ snapshots:
       tildify: 2.0.0
     optionalDependencies:
       better-sqlite3: 12.11.1
-      mysql2: 3.22.5(@types/node@26.1.0)
+      mysql2: 3.22.6(@types/node@26.1.0)
       pg: 8.22.0
     transitivePeerDependencies:
       - supports-color
@@ -1848,7 +1848,7 @@ snapshots:
 
   ms@2.1.3: {}
 
-  mysql2@3.22.5(@types/node@26.1.0):
+  mysql2@3.22.6(@types/node@26.1.0):
     dependencies:
       '@types/node': 26.1.0
       aws-ssl-profiles: 1.1.2
@@ -1858,7 +1858,7 @@ snapshots:
       long: 5.3.2
       lru.min: 1.1.4
       named-placeholders: 1.1.6
-      sql-escaper: 1.3.3
+      sql-escaper: 1.4.0
 
   named-placeholders@1.1.6:
     dependencies:
@@ -1878,12 +1878,12 @@ snapshots:
 
   object-inspect@1.13.4: {}
 
-  objection@3.1.5(knex@3.3.0(better-sqlite3@12.11.1)(mysql2@3.22.5(@types/node@26.1.0))(pg@8.22.0)):
+  objection@3.1.5(knex@3.3.0(better-sqlite3@12.11.1)(mysql2@3.22.6(@types/node@26.1.0))(pg@8.22.0)):
     dependencies:
       ajv: 8.20.0
       ajv-formats: 2.1.1(ajv@8.20.0)
       db-errors: 0.2.3
-      knex: 3.3.0(better-sqlite3@12.11.1)(mysql2@3.22.5(@types/node@26.1.0))(pg@8.22.0)
+      knex: 3.3.0(better-sqlite3@12.11.1)(mysql2@3.22.6(@types/node@26.1.0))(pg@8.22.0)
 
   on-finished@2.4.1:
     dependencies:
@@ -2168,7 +2168,7 @@ snapshots:
 
   split2@4.2.0: {}
 
-  sql-escaper@1.3.3: {}
+  sql-escaper@1.4.0: {}
 
   statuses@2.0.2: {}
 
