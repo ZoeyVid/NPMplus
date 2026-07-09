@@ -60,8 +60,8 @@ importers:
         specifier: 19.2.7
         version: 19.2.7(react@19.2.7)
       react-intl:
-        specifier: 10.1.14
-        version: 10.1.14(@types/react@19.2.17)(react@19.2.7)
+        specifier: 10.1.15
+        version: 10.1.15(@types/react@19.2.17)(react@19.2.7)
       react-markdown:
         specifier: 10.1.0
         version: 10.1.0(@types/react@19.2.17)(react@19.2.7)
@@ -82,14 +82,14 @@ importers:
         specifier: 2.5.3
         version: 2.5.3
       '@formatjs/cli':
-        specifier: 6.16.11
-        version: 6.16.11
+        specifier: 6.16.12
+        version: 6.16.12
       '@formatjs/cli-native-linux-arm64':
-        specifier: 1.2.5
-        version: 1.2.5
+        specifier: 1.2.6
+        version: 1.2.6
       '@formatjs/cli-native-linux-x64':
-        specifier: 1.1.5
-        version: 1.1.5
+        specifier: 1.1.6
+        version: 1.1.6
       '@tanstack/react-query-devtools':
         specifier: 5.101.2
         version: 5.101.2(@tanstack/react-query@5.101.2(react@19.2.7))(react@19.2.7)
@@ -314,40 +314,40 @@ packages:
   '@floating-ui/utils@0.2.11':
     resolution: {integrity: sha512-RiB/yIh78pcIxl6lLMG0CgBXAZ2Y0eVHqMPYugu+9U0AeT6YBeiJpf7lbdJNIugFP5SIjwNRgo4DhR1Qxi26Gg==}
 
-  '@formatjs/cli-native-darwin-arm64@1.1.5':
-    resolution: {integrity: sha512-zGt7OenQakyh8a+eAgCx/zUInbQXYT0UNzeOaYlnaKmU9yr78wsVAGGhPc85gchnQ7gIXSWOKhwIzvfSMFGU7w==}
+  '@formatjs/cli-native-darwin-arm64@1.1.6':
+    resolution: {integrity: sha512-5nWgLGHskgHcx2x5T+ExpYgdXYd6LJq+O7wVa8FklGDKiQOgZyOk//asoLrWRhaun/7IO0AjuQOVxWgzC2D4NA==}
     cpu: [arm64]
     os: [darwin]
 
-  '@formatjs/cli-native-linux-arm64-musl@1.0.3':
-    resolution: {integrity: sha512-1qq9EZIY87cnptTd2PywI41s/DlkJBzNID6AofHCYm8sunXfj+vYAIQOSZnctNm7/u1ZlSJ/VjxHSS1NIC4tTw==}
+  '@formatjs/cli-native-linux-arm64-musl@1.0.4':
+    resolution: {integrity: sha512-s4R7TSmYg91iiIevZyWoCRmRLFGWnThLuL4gd+6S1e2ngO8yEzCpEYX9wEZ/pNLx/JzGEPGsL5JFwD6YrPMhqw==}
     cpu: [arm64]
     os: [linux]
     libc: [musl]
 
-  '@formatjs/cli-native-linux-arm64@1.2.5':
-    resolution: {integrity: sha512-G1Ou5CFDM2hfqmD2jfXJJpHL7DL7f7OxlMXf6VPWvUYu+jcvpEj0KdEtmz5poh8rWzfHbOf4MfqC6WNhExJD5A==}
+  '@formatjs/cli-native-linux-arm64@1.2.6':
+    resolution: {integrity: sha512-FPg0T4XRkNb3XbQcWVG8e7GVse6VzqNuxR6nHZI8BlAampeJaXTDJkEsVEHT/DiV8Vmak1zoQMf/QK7e6k5Efw==}
     cpu: [arm64]
     os: [linux]
 
-  '@formatjs/cli-native-linux-x64-musl@1.0.3':
-    resolution: {integrity: sha512-wb90O1S7cad8QKmHQ2I5glN9O9m+y+V29mrvvxFbKAVmVbKB7oyjhoau/jtuHQ/Yv2tfah3CYCj+1iaDNlJmYg==}
+  '@formatjs/cli-native-linux-x64-musl@1.0.4':
+    resolution: {integrity: sha512-0JjSEMtm3Aa5h5U22+sSVTw7cdk0hsGNR7f8fngUgZSKif8ASUO2/tajHPBKtiVR5pUadslB4ixHgu12ksmrFg==}
     cpu: [x64]
     os: [linux]
     libc: [musl]
 
-  '@formatjs/cli-native-linux-x64@1.1.5':
-    resolution: {integrity: sha512-v/EtDIMC7C3cOpYpRJDvUImQFHBveFP+PTggZJbi88zXCeMMEL6eMwbMlJezUIwvYjgH1FWQargCgwOnI3lVdg==}
+  '@formatjs/cli-native-linux-x64@1.1.6':
+    resolution: {integrity: sha512-bTXdt8Octj3pFHUPLMhPDhKiCgywDkz+QLkLcdcI9rHTHG+gCXfTDTd0KY9hfQZwMTSlcaiG24YIUun7QWap+w==}
     cpu: [x64]
     os: [linux]
 
-  '@formatjs/cli-native-win32-x64@1.1.6':
-    resolution: {integrity: sha512-fsPOUB4JePy6VJfQV+oorLfozbb9IfYRAncGZ54VZg77Uj2aOP2h/KLhQmgippNlgi0Q77EB8QDMzNQfaKpVAA==}
+  '@formatjs/cli-native-win32-x64@1.1.7':
+    resolution: {integrity: sha512-TVSmt37IfUZPI/ajdjYcKFGpRBsT5I+UCG8QO6jYq7pDDr/SDkMZQXoMAM7yjIDINfd3YiVNrDvxaCtH7MSeKQ==}
     cpu: [x64]
     os: [win32]
 
-  '@formatjs/cli@6.16.11':
-    resolution: {integrity: sha512-O3tTFavGK3zOhW4i2/ONWfMUgbU7fapxNbIsdFuF9eTMtQZFnKFdoBDdiBHj7d2W4ULVyeWd4b3qw2XHYpmuBg==}
+  '@formatjs/cli@6.16.12':
+    resolution: {integrity: sha512-Oz5Clsudvvsw5ReUGBqOHpvSQBRTEK6egYTNFHEeaMGyWXPz937pxt1eeQ0JwmPNAtdymGnOQX7BOk/nxSAXPg==}
     engines: {node: '>= 20.12.0'}
     hasBin: true
     peerDependencies:
@@ -377,14 +377,14 @@ packages:
   '@formatjs/fast-memoize@3.1.6':
     resolution: {integrity: sha512-H5aexk1Le7T9TPmscacZ+1pR6CTa2n1wq+HDVGXhH8TzUlQQpeXzZs91dRtmFHrbeNbjPFPfQujUqm7MHgVoXQ==}
 
-  '@formatjs/icu-messageformat-parser@3.5.12':
-    resolution: {integrity: sha512-YyzzxVgYJ8DELmmkhn0Yr0rUj0dTJFf9Jp628K3S0ysInBWxLVDOS8i3RP91cCp4DMK4WYb4cVMhWA9i4knSJg==}
+  '@formatjs/icu-messageformat-parser@3.5.13':
+    resolution: {integrity: sha512-Y50dQ09tjkv9cCTSGaQYo9Rgx5COBCqBhXuU7b8ZMAec+oA6ePZv7prycY3iYz9iD0J2LjB8/Eys1so4Xguptg==}
 
   '@formatjs/icu-skeleton-parser@2.1.10':
     resolution: {integrity: sha512-XuSva+8ZGawk8VnD5VD6UeH8KarQ/Z022zgjHDoHmlNiAewstXuuzXc0Hk5pGFSdG+nNw5bfJKXqj1ZXHn9yUA==}
 
-  '@formatjs/intl@4.1.14':
-    resolution: {integrity: sha512-hl8dgvbV2Te/KPnCud+nuBc+z8qW8fGreiun7ul5LopIHkbP0izylvnhIFDL2dQMeMPdrKCAXhJkYDeoxVuDRw==}
+  '@formatjs/intl@4.1.15':
+    resolution: {integrity: sha512-YN4CmJuqBC4CwiebhXz2EJDWXo8sdXA5WT+DbeaBaps7umJ5p5h5cVZeuhhTyVlNsPe9GkRNGKCQiBNzsbXotw==}
 
   '@internationalized/date@3.12.2':
     resolution: {integrity: sha512-FY1Y+H64NDs+HAF6omlnWxm3mEpfgaCSWtL5l551ZZfImA+kGjPFgrnJrGjH6lfmLL0g8Z/mBu1R3kufeCp6Jw==}
@@ -1141,8 +1141,8 @@ packages:
   inline-style-parser@0.2.7:
     resolution: {integrity: sha512-Nb2ctOyNR8DqQoR0OwRG95uNWIC0C1lCgf5Naz5H6Ji72KZ8OcFZLz2P5sNgwlyoJ8Yif11oMuYs5pBQa86csA==}
 
-  intl-messageformat@11.2.9:
-    resolution: {integrity: sha512-cGzymZerpDhVXRKjKLgXKda9gI29TU2o88L7gwNMHp3WZVxA/0c5tX52udXbW9JklDApolvMXZG6Dhhdz5eirA==}
+  intl-messageformat@11.2.10:
+    resolution: {integrity: sha512-SxsSKKqsXBfibu8erV2R5tsrSALvkarJo72EVjPgLbp9Bc/+5f/UDbSpdiRbUtvNLiy/xb9NyNzFHFzSEoZtrA==}
 
   invariant@2.2.4:
     resolution: {integrity: sha512-phJfQVBuaJM5raOpJjSfkiD6BpbCE4Ns//LaXl6wGYtUBY83nWS6Rf9tXm2e8VaK60JEjYldbPif/A2B1C2gNA==}
@@ -1514,8 +1514,8 @@ packages:
   react-fast-compare@2.0.4:
     resolution: {integrity: sha512-suNP+J1VU1MWFKcyt7RtjiSWUjvidmQSlqu+eHslq+342xCbGTYmC0mEhPCOHxlW0CywylOC1u2DFAT+bv4dBw==}
 
-  react-intl@10.1.14:
-    resolution: {integrity: sha512-DuL7vAViDCjxyiPNccMkt1PBv22mh+1OBhA8ta4r0fbjnJYhLVFc+3pR71qADZRHytRnKm9JcVDP9jYJW+qO6g==}
+  react-intl@10.1.15:
+    resolution: {integrity: sha512-G6L7N0VM0XXmJyBSPvf9JQBd3xjkEQjYXx0UwXYn97QOhfDMhxJS7MmPh5IWJ1PnzJES3D4ewvGHP3kqiUsa2g==}
     peerDependencies:
       '@types/react': '>=18.0.0'
       react: '>=18.0.0'
@@ -2129,44 +2129,44 @@ snapshots:
 
   '@floating-ui/utils@0.2.11': {}
 
-  '@formatjs/cli-native-darwin-arm64@1.1.5':
+  '@formatjs/cli-native-darwin-arm64@1.1.6':
     optional: true
 
-  '@formatjs/cli-native-linux-arm64-musl@1.0.3':
+  '@formatjs/cli-native-linux-arm64-musl@1.0.4':
     optional: true
 
-  '@formatjs/cli-native-linux-arm64@1.2.5': {}
+  '@formatjs/cli-native-linux-arm64@1.2.6': {}
 
-  '@formatjs/cli-native-linux-x64-musl@1.0.3':
+  '@formatjs/cli-native-linux-x64-musl@1.0.4':
     optional: true
 
-  '@formatjs/cli-native-linux-x64@1.1.5': {}
+  '@formatjs/cli-native-linux-x64@1.1.6': {}
 
-  '@formatjs/cli-native-win32-x64@1.1.6':
+  '@formatjs/cli-native-win32-x64@1.1.7':
     optional: true
 
-  '@formatjs/cli@6.16.11':
+  '@formatjs/cli@6.16.12':
     optionalDependencies:
-      '@formatjs/cli-native-darwin-arm64': 1.1.5
-      '@formatjs/cli-native-linux-arm64': 1.2.5
-      '@formatjs/cli-native-linux-arm64-musl': 1.0.3
-      '@formatjs/cli-native-linux-x64': 1.1.5
-      '@formatjs/cli-native-linux-x64-musl': 1.0.3
-      '@formatjs/cli-native-win32-x64': 1.1.6
+      '@formatjs/cli-native-darwin-arm64': 1.1.6
+      '@formatjs/cli-native-linux-arm64': 1.2.6
+      '@formatjs/cli-native-linux-arm64-musl': 1.0.4
+      '@formatjs/cli-native-linux-x64': 1.1.6
+      '@formatjs/cli-native-linux-x64-musl': 1.0.4
+      '@formatjs/cli-native-win32-x64': 1.1.7
 
   '@formatjs/fast-memoize@3.1.6': {}
 
-  '@formatjs/icu-messageformat-parser@3.5.12':
+  '@formatjs/icu-messageformat-parser@3.5.13':
     dependencies:
       '@formatjs/icu-skeleton-parser': 2.1.10
 
   '@formatjs/icu-skeleton-parser@2.1.10': {}
 
-  '@formatjs/intl@4.1.14':
+  '@formatjs/intl@4.1.15':
     dependencies:
       '@formatjs/fast-memoize': 3.1.6
-      '@formatjs/icu-messageformat-parser': 3.5.12
-      intl-messageformat: 11.2.9
+      '@formatjs/icu-messageformat-parser': 3.5.13
+      intl-messageformat: 11.2.10
 
   '@internationalized/date@3.12.2':
     dependencies:
@@ -2875,10 +2875,10 @@ snapshots:
 
   inline-style-parser@0.2.7: {}
 
-  intl-messageformat@11.2.9:
+  intl-messageformat@11.2.10:
     dependencies:
       '@formatjs/fast-memoize': 3.1.6
-      '@formatjs/icu-messageformat-parser': 3.5.12
+      '@formatjs/icu-messageformat-parser': 3.5.13
 
   invariant@2.2.4:
     dependencies:
@@ -3365,12 +3365,12 @@ snapshots:
 
   react-fast-compare@2.0.4: {}
 
-  react-intl@10.1.14(@types/react@19.2.17)(react@19.2.7):
+  react-intl@10.1.15(@types/react@19.2.17)(react@19.2.7):
     dependencies:
-      '@formatjs/icu-messageformat-parser': 3.5.12
-      '@formatjs/intl': 4.1.14
+      '@formatjs/icu-messageformat-parser': 3.5.13
+      '@formatjs/intl': 4.1.15
       '@types/react': 19.2.17
-      intl-messageformat: 11.2.9
+      intl-messageformat: 11.2.10
       react: 19.2.7
 
   react-is@16.13.1: {}
