@@ -36,6 +36,7 @@ jobs:
           pnpm biome lint --write
           pnpm biome format --write
           pnpm formatjs compile-folder src/locale/src src/locale/lang
+          pnpm tsc --noEmit
           pnpm vitest
           ./src/locale/scripts/locale-sort.sh
       - name: nginxbeautifier
