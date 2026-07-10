@@ -104,6 +104,10 @@ RUN git-clone-commit.sh https://github.com/nginx/nginx "$NGINX_VER" /src/nginx &
     git apply /src/zstd-nginx-module/2.patch && \
     git-clone-commit.sh https://github.com/HanadaLee/ngx_http_unzstd_filter_module "$NHUZFM_VER" /src/ngx_http_unzstd_filter_module && \
     git-clone-commit.sh https://github.com/aperezdc/ngx-fancyindex "$NF_VER" /src/ngx-fancyindex && \
+    cd /src/ngx-fancyindex && \
+    wget -q https://patch-diff.githubusercontent.com/raw/aperezdc/ngx-fancyindex/pull/176.patch -O /src/ngx-fancyindex/176.patch && \
+    echo "0b76992c0981e5beda1f158493d0334dcbdfe381348ea0eeeb09123bd9aaa4d3  /src/ngx-fancyindex/176.patch" | sha256sum -c - && \
+    git apply /src/ngx-fancyindex/176.patch && \
     git-clone-commit.sh https://github.com/openresty/headers-more-nginx-module "$HMNM_VER" /src/headers-more-nginx-module && \
     git-clone-commit.sh https://github.com/vision5/ngx_devel_kit "$NDK_VER" /src/ngx_devel_kit && \
     git-clone-commit.sh https://github.com/openresty/lua-nginx-module "$LNM_VER" /src/lua-nginx-module && \
