@@ -45,7 +45,7 @@
 		"@types/react-table": "7.7.20",
 		"@vitejs/plugin-react": "6.0.3",
 		"happy-dom": "20.10.6",
-		"postcss": "8.5.17",
+		"postcss": "8.5.19",
 		"sass": "1.101.0",
 		"tmp": "0.2.7",
 		"typescript": "7.0.2",
