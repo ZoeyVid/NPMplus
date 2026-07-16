@@ -16,6 +16,12 @@ UPDATE_FREQUENCY=10
 ENABLE_INTERNAL=false
 # live or stream
 MODE=live
+# Only enforce decisions whose scenario contains one of these comma-separated substrings.
+# Matching is done server-side by the LAPI (case-insensitive substring), e.g. "http-,wordpress".
+# Leave empty to enforce decisions from all scenarios.
+SCENARIOS_CONTAINING=
+# Ignore decisions whose scenario contains one of these comma-separated substrings, e.g. "ssh-bf".
+SCENARIOS_NOT_CONTAINING=
 # exclude the bouncing on those location
 EXCLUDE_LOCATION=
 #those apply for "ban" action
@@ -34,10 +40,10 @@ CAPTCHA_TEMPLATE_PATH=/data/crowdsec/captcha.html
 CAPTCHA_EXPIRATION=3600
 
 APPSEC_URL=http://127.0.0.1:7422
-APPSEC_FAILURE_ACTION=deny
+APPSEC_FAILURE_ACTION=passthrough
 APPSEC_CONNECT_TIMEOUT=
-APPSEC_SEND_TIMEOUT=1000
-APPSEC_PROCESS_TIMEOUT=30000
+APPSEC_SEND_TIMEOUT=
+APPSEC_PROCESS_TIMEOUT=
 ALWAYS_SEND_TO_APPSEC=false
 # When true, drop requests whose body cannot be read (e.g. HTTP/2 or HTTP/3 requests without a content-length header) instead of forwarding them to AppSec without a body.
 APPSEC_DROP_UNREADABLE_BODY=false
