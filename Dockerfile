@@ -5,11 +5,11 @@ SHELL ["/bin/ash", "-eo", "pipefail", "-c"]
 ARG LUAJIT_INC=/usr/include/luajit-2.1
 ARG LUAJIT_LIB=/usr/lib
 
-ARG AWSLC_VER=683ebde4bf3bcc016a9a710ad6b49c0c91b59161 # v5.2.0
+ARG AWSLC_VER=970583b1061b407d09b5fc1f18bbba38690e1684 # v5.3.0
 
 ARG NGINX_VER=a885808aa592eea32c8064624717be3d94fbdfe7 # release-1.31.3
 ARG DTR_VER=1.29.2
-ARG RCP_VER=1.31.2
+ARG RCP_VER=1.31.3
 ARG ZNP_VER=1.30.0
 
 ARG NB_VER=a71f9312c2deb28875acc7bacfdd5695a111aa53 # master
@@ -230,7 +230,7 @@ SHELL ["/bin/ash", "-eo", "pipefail", "-c"]
 ENV NODE_ENV=production
 ARG LRC_VER=6fec23e2149c88b33b39fec8a5ebdd67a3e0dd88 # v0.1.34rc3
 ARG LRL_VER=3ff6300e68b73ba20e909c7d16bd839aef2e5a4b # v0.15
-ARG LCSB_VER=3e82dd61508ed9683b5007f823c69b112c59ac6f # v1.0.14
+ARG LCSB_VER=c6fe0130caf1a668d1893dcc5a32f41d98cbd695 # v1.0.15
 
 COPY --from=nginx /usr/local/nginx                                                                         /usr/local/nginx
 COPY --from=nginx /usr/local/bin/bssl                                                                      /usr/local/bin/bssl
@@ -243,7 +243,7 @@ COPY --from=nginx /src/attachment/attachments/nginx/nginx_attachment_util/libosr
 COPY --from=backend  /app      /app
 
 COPY rootfs  /
-COPY LICENSE.MIT /LICENSE.MIT
+COPY MIT.LICENSE /MIT.LICENSE
 COPY COPYING /COPYING
 
 WORKDIR /app
