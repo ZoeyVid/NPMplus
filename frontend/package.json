@@ -23,7 +23,7 @@
 		"react": "19.2.7",
 		"react-bootstrap": "2.10.10",
 		"react-dom": "19.2.7",
-		"react-intl": "10.1.16",
+		"react-intl": "10.1.17",
 		"react-markdown": "10.1.0",
 		"react-router-dom": "7.18.1",
 		"react-select": "5.10.2",
