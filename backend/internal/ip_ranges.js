@@ -83,7 +83,7 @@ const internalIpRanges = {
 		try {
 			const renderEngine = utils.getRenderEngine();
 			const template = await readFile(`${__dirname}/../templates/ip_ranges.conf`, { encoding: "utf8" });
-			const newConfig = await renderEngine.parseAndRender(template, { ip_ranges: ip_ranges });
+			const newConfig = await renderEngine.parseAndRender(template, { ip_ranges: ip_ranges, env: process.env });
 			const filePath = "/usr/local/nginx/conf/conf.d/ip_ranges.conf";
 
 			try {
@@ -91,16 +91,16 @@ const internalIpRanges = {
 					encoding: "utf8",
 				});
 				if (oldConfig === newConfig) {
-					logger.info("Not updating Cloudflared IPs");
+					logger.info("Not updating trusted IP ranges");
 					return false;
 				}
 			} catch {}
 
 			await writeFile(filePath, newConfig, { encoding: "utf8" });
-			logger.info("Updated Cloudflared IPs");
+			logger.info("Updated trusted IP ranges");
 			return true;
 		} catch (err) {
-			logger.error(`Error updating Cloudflare IPs: ${err.message}`);
+			logger.error(`Error updating trusted IP ranges: ${err.message}`);
 			return false;
 		}
 	},
