@@ -16,7 +16,7 @@ async function appStart() {
 		.then(() => {
 			if (process.env.TRUST_CLOUDFLARE === "false") {
 				logger.info("Cloudflares IPs are NOT trusted");
-				return;
+				return internalIpRanges.generateConfig([]);
 			}
 			logger.info("Cloudflares IPs are trusted");
 			internalIpRanges.initTimer();
