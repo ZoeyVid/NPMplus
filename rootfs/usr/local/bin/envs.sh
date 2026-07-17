@@ -559,6 +559,11 @@ if ! echo "$DISABLE_NGINX_BEAUTIFIER" | grep -q "^true$\|^false$"; then
     sleep inf
 fi
 
+if [ -n "$TRUST_IP" ] && ! echo "$TRUST_IP" | grep -q "^[0-9a-fA-F.:/ ]\+$"; then
+    echo "TRUST_IP can consist of space separated IPv4/IPv6 addresses or subnets."
+    sleep inf
+fi
+
 if ! echo "$TRUST_CLOUDFLARE" | grep -q "^true$\|^false$"; then
     echo "TRUST_CLOUDFLARE needs to be true or false."
     sleep inf
