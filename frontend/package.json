@@ -7,7 +7,7 @@
 	"type": "module",
 	"dependencies": {
 		"@tabler/core": "1.4.0",
-		"@tabler/icons-react": "3.44.0",
+		"@tabler/icons-react": "3.45.0",
 		"@tanstack/react-query": "5.101.2",
 		"@tanstack/react-table": "8.21.3",
 		"@uiw/react-textarea-code-editor": "3.1.1",
