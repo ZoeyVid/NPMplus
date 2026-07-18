@@ -40,7 +40,7 @@ importers:
         version: 9.0.3
       knex:
         specifier: 3.3.0
-        version: 3.3.0(better-sqlite3@12.11.1)(mysql2@3.23.0(@types/node@26.1.1))(pg@8.22.0)
+        version: 3.3.0(better-sqlite3@12.11.1)(mysql2@3.23.1(@types/node@26.1.1))(pg@8.22.0)
       liquidjs:
         specifier: 10.27.2
         version: 10.27.2
@@ -51,11 +51,11 @@ importers:
         specifier: 2.2.0
         version: 2.2.0
       mysql2:
-        specifier: 3.23.0
-        version: 3.23.0(@types/node@26.1.1)
+        specifier: 3.23.1
+        version: 3.23.1(@types/node@26.1.1)
       objection:
         specifier: 3.1.5
-        version: 3.1.5(knex@3.3.0(better-sqlite3@12.11.1)(mysql2@3.23.0(@types/node@26.1.1))(pg@8.22.0))
+        version: 3.1.5(knex@3.3.0(better-sqlite3@12.11.1)(mysql2@3.23.1(@types/node@26.1.1))(pg@8.22.0))
       openid-client:
         specifier: 6.8.4
         version: 6.8.4
@@ -520,8 +520,8 @@ packages:
   fast-fifo@1.3.2:
     resolution: {integrity: sha512-/d9sfos4yxzpwkDkuN7k2SqFKtYNmCTzgfEpz82x34IM9/zc8KGxQoXg1liNC/izpRM/MBdt44Nmx41ZWqk+FQ==}
 
-  fast-uri@3.1.3:
-    resolution: {integrity: sha512-i70LwGWUduXqzicKXWshooq+sWL1K3WUU5rKZNG/0i3a1OSoX3HqhH5WbWwTmqWfor4urUakGPiRQcleRZTwOg==}
+  fast-uri@3.1.4:
+    resolution: {integrity: sha512-8JnbkQ4juDyvYs4mgFGQqg4yCYtFDtUtmp2QIQq11ZZe5CFQ5wcqm1rqDgAh/QdMySuBnPzMUiJUNZG5N/AiQw==}
 
   file-uri-to-path@1.0.0:
     resolution: {integrity: sha512-0Zt+s3L7Vf1biwWZ29aARiVYLx7iMGnEUl9x33fbB/j3jR81u/O2LbqK+Bm1CDSNDKVtJ/YjwY7TUd5SkeLQLw==}
@@ -773,8 +773,8 @@ packages:
     resolution: {integrity: sha512-6rdyFg2kLrMh9Jee7/BMPuV9lEAd7lLW2YUpF9/YxR7njyoUwwQ0ZPh3TaIY50Sw6vlyD2HW3wGOkTS4P79xrQ==}
     engines: {node: '>= 10.16.0'}
 
-  mysql2@3.23.0:
-    resolution: {integrity: sha512-ZwyGLoG9BRlL7hKNDcIy7q18hA6WTWGEpLAerGHXj5Xahemia4msZdwjIOUIzesjK3B5z5gWLktf+2tYSLAyTA==}
+  mysql2@3.23.1:
+    resolution: {integrity: sha512-tTuRnC7qCet2IOfSNMYZ5SwXuBnfvBPAcIA28P0gtruXyZlU1LMxA6uha32kYypoFgyYklMqhLWwt4laYwXR/Q==}
     engines: {node: '>= 8.0'}
     peerDependencies:
       '@types/node': '>= 8'
@@ -1042,8 +1042,8 @@ packages:
     resolution: {integrity: sha512-ot0WnXS9fgdkgIcePe6RHNk1WA8+muPa6cSjeR3V8K27q9BB1rTE3R1p7Hv0z1ZyAc8s6Vvv8DIyWf681MAt0w==}
     engines: {node: '>= 0.4'}
 
-  swagger-ui-dist@5.32.8:
-    resolution: {integrity: sha512-dgMdWXIgnI4zX4OPhKEdWnlDODbgm8W3AX0Ivn/BBqcUh6xZsBxhZMnvk6DJyRz1BTrj8dPxtarmEGgkz30oyA==}
+  swagger-ui-dist@5.32.9:
+    resolution: {integrity: sha512-8i2tzJQi+7bgxESMD2hg/UBumbTsf6vLbtu4cW5ETPz/B070UuS0rTP1hu6WSH81HcsHqYalJE+rP21Vg96rUQ==}
 
   swagger-ui-express@5.0.1:
     resolution: {integrity: sha512-SrNU3RiBGTLLmFU8GIJdOdanJTl4TOmT27tt3bWWHppqYmAZ6IDuEuBvMU6nZq0zLEe6b/1rACXCgLZqO6ZfrA==}
@@ -1238,7 +1238,7 @@ snapshots:
   ajv@8.20.0:
     dependencies:
       fast-deep-equal: 3.1.3
-      fast-uri: 3.1.3
+      fast-uri: 3.1.4
       json-schema-traverse: 1.0.0
       require-from-string: 2.0.2
 
@@ -1532,7 +1532,7 @@ snapshots:
 
   fast-fifo@1.3.2: {}
 
-  fast-uri@3.1.3: {}
+  fast-uri@3.1.4: {}
 
   file-uri-to-path@1.0.0: {}
 
@@ -1659,7 +1659,7 @@ snapshots:
       jwa: 2.0.1
       safe-buffer: 5.2.1
 
-  knex@3.3.0(better-sqlite3@12.11.1)(mysql2@3.23.0(@types/node@26.1.1))(pg@8.22.0):
+  knex@3.3.0(better-sqlite3@12.11.1)(mysql2@3.23.1(@types/node@26.1.1))(pg@8.22.0):
     dependencies:
       colorette: 2.0.19
       commander: 10.0.1
@@ -1677,7 +1677,7 @@ snapshots:
       tildify: 2.0.0
     optionalDependencies:
       better-sqlite3: 12.11.1
-      mysql2: 3.23.0(@types/node@26.1.1)
+      mysql2: 3.23.1(@types/node@26.1.1)
       pg: 8.22.0
     transitivePeerDependencies:
       - supports-color
@@ -1751,7 +1751,7 @@ snapshots:
       concat-stream: 2.0.0
       type-is: 1.6.18
 
-  mysql2@3.23.0(@types/node@26.1.1):
+  mysql2@3.23.1(@types/node@26.1.1):
     dependencies:
       '@types/node': 26.1.1
       aws-ssl-profiles: 1.1.2
@@ -1781,12 +1781,12 @@ snapshots:
 
   object-inspect@1.13.4: {}
 
-  objection@3.1.5(knex@3.3.0(better-sqlite3@12.11.1)(mysql2@3.23.0(@types/node@26.1.1))(pg@8.22.0)):
+  objection@3.1.5(knex@3.3.0(better-sqlite3@12.11.1)(mysql2@3.23.1(@types/node@26.1.1))(pg@8.22.0)):
     dependencies:
       ajv: 8.20.0
       ajv-formats: 2.1.1(ajv@8.20.0)
       db-errors: 0.2.3
-      knex: 3.3.0(better-sqlite3@12.11.1)(mysql2@3.23.0(@types/node@26.1.1))(pg@8.22.0)
+      knex: 3.3.0(better-sqlite3@12.11.1)(mysql2@3.23.1(@types/node@26.1.1))(pg@8.22.0)
 
   on-finished@2.4.1:
     dependencies:
@@ -2068,14 +2068,14 @@ snapshots:
 
   supports-preserve-symlinks-flag@1.0.0: {}
 
-  swagger-ui-dist@5.32.8:
+  swagger-ui-dist@5.32.9:
     dependencies:
       '@scarf/scarf': 1.4.0
 
   swagger-ui-express@5.0.1(express@5.2.1):
     dependencies:
       express: 5.2.1
-      swagger-ui-dist: 5.32.8
+      swagger-ui-dist: 5.32.9
 
   tar-fs@2.1.5:
     dependencies:
