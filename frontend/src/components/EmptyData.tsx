@@ -1,5 +1,5 @@
 import type { Table as ReactTable } from "@tanstack/react-table";
-import cn from "classnames";
+import cn from "clsx";
 import type { ReactNode } from "react";
 import { Button, HasPermission } from "src/components";
 import { T } from "src/locale";

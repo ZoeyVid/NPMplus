@@ -1,6 +1,6 @@
 import { IconSettings } from "@tabler/icons-react";
 import CodeEditor from "@uiw/react-textarea-code-editor";
-import cn from "classnames";
+import cn from "clsx";
 import { useFormikContext } from "formik";
 import { useRef, useState } from "react";
 import type { ProxyLocation } from "src/api/backend";

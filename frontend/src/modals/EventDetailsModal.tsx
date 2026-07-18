@@ -1,5 +1,5 @@
 import CodeEditor from "@uiw/react-textarea-code-editor";
-import EasyModal, { type InnerModalProps } from "ez-modal-react";
+import EasyModal, { type InnerModalProps } from "src/modules/easyModal";
 import { Alert } from "react-bootstrap";
 import Modal from "react-bootstrap/Modal";
 import { Button, EventFormatter, GravatarFormatter, Loading } from "src/components";

@@ -1,7 +1,7 @@
-import EasyModal, { type InnerModalProps } from "ez-modal-react";
+import EasyModal, { type InnerModalProps } from "src/modules/easyModal";
 import { useEffect, useState } from "react";
 import Modal from "react-bootstrap/Modal";
-import ReactMarkdown from "react-markdown";
+import Markdown from "markdown-to-jsx";
 import { getLocale, T } from "src/locale";
 import { getHelpFile } from "src/locale/src/HelpDoc";
 
@@ -36,7 +36,7 @@ const HelpModal = EasyModal.create(({ section, visible, remove }: Props) => {
 				</Modal.Title>
 			</Modal.Header>
 			<Modal.Body>
-				<ReactMarkdown>{markdownText}</ReactMarkdown>
+				<Markdown options={{ disableParsingRawHTML: true }}>{markdownText}</Markdown>
 			</Modal.Body>
 		</Modal>
 	);

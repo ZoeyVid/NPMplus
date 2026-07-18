@@ -1,4 +1,4 @@
-import EasyModal, { type InnerModalProps } from "ez-modal-react";
+import EasyModal, { type InnerModalProps } from "src/modules/easyModal";
 import { Field, Form, Formik } from "formik";
 import { QRCodeSVG } from "qrcode.react";
 import { type ReactNode, useCallback, useEffect, useState } from "react";

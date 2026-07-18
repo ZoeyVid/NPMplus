@@ -1,7 +1,7 @@
 import { QueryClient } from "@tanstack/react-query";
-import { camelizeKeys, decamelize, decamelizeKeys } from "humps";
 import queryString, { type StringifiableRecord } from "query-string";
 import AuthStore from "src/modules/AuthStore";
+import { camelizeKeys, decamelize, decamelizeKeys } from "./caseConvert";
 
 const queryClient = new QueryClient();
 const contentTypeHeader = "Content-Type";

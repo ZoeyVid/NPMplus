@@ -7,7 +7,7 @@ import {
 	IconShield,
 	IconUser,
 } from "@tabler/icons-react";
-import cn from "classnames";
+import cn from "clsx";
 import React from "react";
 import { HasPermission, NavLink } from "src/components";
 import { T } from "src/locale";
