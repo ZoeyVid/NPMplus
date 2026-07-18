@@ -1,4 +1,5 @@
 import express from "express";
+import multer from "multer";
 import dnsPlugins from "../../certbot/dns-plugins.json" with { type: "json" };
 import internalCertificate from "../../internal/certificate.js";
 import errs from "../../lib/error.js";
@@ -13,6 +14,16 @@ const router = express.Router({
 	strict: true,
 	mergeParams: true,
 });
+
+const uploadCerts = multer({ storage: multer.memoryStorage(), limits: { fileSize: 1024 * 1024 } }).fields([
+	{ name: "certificate", maxCount: 1 },
+	{ name: "certificate_key", maxCount: 1 },
+]);
+const parseCertFiles = (req, res, next) =>
+	uploadCerts(req, res, (err) => {
+		if (err) return res.status(400).send({ error: "only certificate and certificate_key files are allowed" });
+		next();
+	});
 
 /**
  * /api/nginx/certificates
@@ -154,14 +165,8 @@ router
 	 *
 	 * Validate certificates
 	 */
-	.post(async (req, res, next) => {
-		if (
-			!req.files?.certificate ||
-			Object.keys(req.files).some((name) => name !== "certificate" && name !== "certificate_key")
-		) {
-			res.status(400).send({ error: "only certificate and certificate_key files are allowed" });
-			return;
-		}
+	.post(parseCertFiles, async (req, res, next) => {
+		if (!req.files?.certificate) return res.status(400).send({ error: "certificate file is required" });
 
 		try {
 			const result = await internalCertificate.validate(res.locals.access, {
@@ -256,14 +261,8 @@ router
 	 *
 	 * Upload certificates
 	 */
-	.post(async (req, res, next) => {
-		if (
-			!req.files?.certificate ||
-			Object.keys(req.files).some((name) => name !== "certificate" && name !== "certificate_key")
-		) {
-			res.status(400).send({ error: "only certificate and certificate_key files are allowed" });
-			return;
-		}
+	.post(parseCertFiles, async (req, res, next) => {
+		if (!req.files?.certificate) return res.status(400).send({ error: "certificate file is required" });
 
 		try {
 			const result = await internalCertificate.upload(res.locals.access, {
