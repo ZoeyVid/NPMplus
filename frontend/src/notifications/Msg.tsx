@@ -1,5 +1,5 @@
 import { IconCheck, IconExclamationCircle } from "@tabler/icons-react";
-import cn from "classnames";
+import cn from "clsx";
 import type { ReactNode } from "react";
 
 function Msg({ data }: any) {

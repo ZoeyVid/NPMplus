@@ -1,6 +1,5 @@
-import EasyModal, { type InnerModalProps } from "ez-modal-react";
+import EasyModal, { type InnerModalProps } from "src/modules/easyModal";
 import { Field, Form, Formik } from "formik";
-import { generate } from "generate-password-browser";
 import { type ReactNode, useState } from "react";
 import { Alert } from "react-bootstrap";
 import Modal from "react-bootstrap/Modal";
@@ -18,7 +17,6 @@ interface Props extends InnerModalProps {
 }
 const SetPasswordModal = EasyModal.create(({ id, visible, remove }: Props) => {
 	const [error, setError] = useState<ReactNode | null>(null);
-	const [showPassword, setShowPassword] = useState(false);
 	const [isSubmitting, setIsSubmitting] = useState(false);
 
 	const onSubmit = async (values: any, { setSubmitting }: any) => {
@@ -58,57 +56,24 @@ const SetPasswordModal = EasyModal.create(({ id, visible, remove }: Props) => {
 							<div className="mb-3">
 								<Field name="new" validate={validateString(8, 100)}>
 									{({ field, form }: any) => (
-										<>
-											<p className="text-end">
-												<small>
-													<a
-														href="#"
-														onClick={(e) => {
-															e.preventDefault();
-															form.setFieldValue(
-																field.name,
-																generate({
-																	length: 12,
-																	numbers: true,
-																}),
-															);
-															setShowPassword(true);
-														}}
-													>
-														<T id="password.generate" />
-													</a>{" "}
-													&mdash;{" "}
-													<a
-														href="#"
-														className="text-xs"
-														onClick={(e) => {
-															e.preventDefault();
-															setShowPassword(!showPassword);
-														}}
-													>
-														<T id={showPassword ? "password.hide" : "password.show"} />
-													</a>
-												</small>
-											</p>
-											<div className="form-floating mb-3">
-												<input
-													id="new"
-													type={showPassword ? "text" : "password"}
-													required
-													className={`form-control ${form.errors.new && form.touched.new ? "is-invalid" : ""}`}
-													placeholder={intl.formatMessage({ id: "user.new-password" })}
-													{...field}
-												/>
-												<label htmlFor="new">
-													<T id="user.new-password" />
-												</label>
-												{form.errors.new ? (
-													<div className="invalid-feedback">
-														{form.errors.new && form.touched.new ? form.errors.new : null}
-													</div>
-												) : null}
-											</div>
-										</>
+										<div className="form-floating mb-3">
+											<input
+												id="new"
+												type="password"
+												required
+												className={`form-control ${form.errors.new && form.touched.new ? "is-invalid" : ""}`}
+												placeholder={intl.formatMessage({ id: "user.new-password" })}
+												{...field}
+											/>
+											<label htmlFor="new">
+												<T id="user.new-password" />
+											</label>
+											{form.errors.new ? (
+												<div className="invalid-feedback">
+													{form.errors.new && form.touched.new ? form.errors.new : null}
+												</div>
+											) : null}
+										</div>
 									)}
 								</Field>
 							</div>

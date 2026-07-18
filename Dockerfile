@@ -198,7 +198,7 @@ ARG NODE_ENV=production
 WORKDIR /app
 COPY frontend/package.json frontend/pnpm-lock.yaml frontend/pnpm-workspace.yaml /app/
 RUN apk upgrade --no-cache -a && \
-    apk add --no-cache nodejs pnpm llvm file && \
+    apk add --no-cache nodejs pnpm llvm file gzip brotli zstd && \
     pnpm install --frozen-lockfile && \
     pnpm cache delete && \
     find /app/node_modules -name "*.map" -delete && \
@@ -207,7 +207,10 @@ RUN apk upgrade --no-cache -a && \
 COPY frontend /app
 RUN pnpm formatjs compile-folder src/locale/src src/locale/lang && \
     pnpm tsc && \
-    pnpm vite build
+    pnpm vite build && \
+    find /app/dist -type f ! -name '*.jpg' ! -name '*.png' ! -name '*.br' ! -name '*.gz' ! -name '*.zst' -exec gzip -9 -k {} \; && \
+    find /app/dist -type f ! -name '*.jpg' ! -name '*.png' ! -name '*.br' ! -name '*.gz' ! -name '*.zst' -exec brotli -q 11 {} \; && \
+    find /app/dist -type f ! -name '*.jpg' ! -name '*.png' ! -name '*.br' ! -name '*.gz' ! -name '*.zst' -exec zstd -19 -q {} \;
 
 FROM alpine:3.24.1@sha256:28bd5fe8b56d1bd048e5babf5b10710ebe0bae67db86916198a6eec434943f8b AS backend
 SHELL ["/bin/ash", "-eo", "pipefail", "-c"]

@@ -1,4 +1,4 @@
-import cn from "classnames";
+import cn from "clsx";
 import { Field, useFormikContext } from "formik";
 import { DNSProviderFields, DomainNamesField } from "src/components";
 import { T } from "src/locale";
