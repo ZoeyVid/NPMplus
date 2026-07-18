@@ -1,4 +1,4 @@
-import cn from "classnames";
+import cn from "clsx";
 import styles from "./Page.module.css";
 
 interface Props {

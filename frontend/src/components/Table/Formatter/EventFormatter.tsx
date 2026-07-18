@@ -1,5 +1,5 @@
 import { IconArrowsCross, IconBolt, IconBoltOff, IconDisc, IconLock, IconShield, IconUser } from "@tabler/icons-react";
-import cn from "classnames";
+import cn from "clsx";
 import type { AuditLog } from "src/api/backend";
 import { useLocaleState } from "src/context";
 import { formatDateTime, T } from "src/locale";

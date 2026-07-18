@@ -1,4 +1,4 @@
-import cn from "classnames";
+import cn from "clsx";
 import { differenceInDays, isPast } from "date-fns";
 import { useLocaleState } from "src/context";
 import { formatDateTime, parseDate } from "src/locale";

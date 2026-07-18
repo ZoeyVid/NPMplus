@@ -1,7 +1,7 @@
-import cn from "classnames";
+import cn from "clsx";
 import { IconAlertTriangle } from "@tabler/icons-react";
 import { useQueryClient } from "@tanstack/react-query";
-import EasyModal, { type InnerModalProps } from "ez-modal-react";
+import EasyModal, { type InnerModalProps } from "src/modules/easyModal";
 import { Field, Form, Formik } from "formik";
 import { type ReactNode, useState } from "react";
 import { Alert } from "react-bootstrap";

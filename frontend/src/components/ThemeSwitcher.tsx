@@ -1,5 +1,5 @@
 import { IconMoon, IconSun } from "@tabler/icons-react";
-import cn from "classnames";
+import cn from "clsx";
 import { Button } from "src/components";
 import { useTheme } from "src/hooks";
 import styles from "./ThemeSwitcher.module.css";

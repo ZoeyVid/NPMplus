@@ -1,10 +1,10 @@
 {
 	"type": "object",
 	"description": "Token object",
-	"required": ["requires_2fa", "challenge_token"],
+	"required": ["requires2fa", "challenge_token"],
 	"additionalProperties": false,
 	"properties": {
-		"requires_2fa": {
+		"requires2fa": {
 			"description": "Whether this token request requires two-factor authentication",
 			"example": true,
 			"type": "boolean"
