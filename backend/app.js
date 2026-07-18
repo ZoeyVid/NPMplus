@@ -1,7 +1,6 @@
 import crypto from "node:crypto";
 import cookieParser from "cookie-parser";
 import express from "express";
-import fileUpload from "express-fileupload";
 import { debug, express as logger } from "./logger.js";
 import mainRoutes from "./routes/main.js";
 
@@ -19,11 +18,6 @@ app.use((req, _res, next) => {
 app.disable("x-powered-by");
 app.set("json spaces", 2);
 
-app.use(
-	fileUpload({
-		limits: { fileSize: 1024 * 1024 },
-	}),
-);
 app.use(cookieParser(process.env.COOKIE_SECRET || crypto.randomBytes(16).toString("hex")));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
