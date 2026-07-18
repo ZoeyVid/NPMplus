@@ -1,4 +1,4 @@
-import { decamelize } from "humps";
+import { decamelize } from "./caseConvert";
 
 /**
  * This will convert a react-table sort object into

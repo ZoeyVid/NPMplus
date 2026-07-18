@@ -1,4 +1,4 @@
-import cn from "classnames";
+import cn from "clsx";
 import { Flag } from "src/components";
 import { useLocaleState } from "src/context";
 import { useTheme } from "src/hooks";

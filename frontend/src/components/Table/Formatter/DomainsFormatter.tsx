@@ -1,4 +1,4 @@
-import cn from "classnames";
+import cn from "clsx";
 import type { ReactNode } from "react";
 import { useLocaleState } from "src/context";
 import { formatDateTime, T } from "src/locale";

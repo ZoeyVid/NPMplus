@@ -69,7 +69,7 @@ export default {
 			});
 
 			return {
-				requires_2fa: true,
+				requires2fa: true,
 				challenge_token: challengeToken.token,
 			};
 		}

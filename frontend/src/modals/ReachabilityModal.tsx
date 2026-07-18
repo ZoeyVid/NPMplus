@@ -1,4 +1,4 @@
-import EasyModal, { type InnerModalProps } from "ez-modal-react";
+import EasyModal, { type InnerModalProps } from "src/modules/easyModal";
 import { type ReactNode, useEffect, useState } from "react";
 import { Alert, Spinner } from "react-bootstrap";
 import Modal from "react-bootstrap/Modal";

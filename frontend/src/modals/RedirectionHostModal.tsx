@@ -1,5 +1,5 @@
-import cn from "classnames";
-import EasyModal, { type InnerModalProps } from "ez-modal-react";
+import cn from "clsx";
+import EasyModal, { type InnerModalProps } from "src/modules/easyModal";
 import { Field, Form, Formik } from "formik";
 import { type ReactNode, useState } from "react";
 import { Alert } from "react-bootstrap";

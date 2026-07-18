@@ -1,5 +1,5 @@
 import { IconX } from "@tabler/icons-react";
-import cn from "classnames";
+import cn from "clsx";
 import { useFormikContext } from "formik";
 import { useState } from "react";
 import type { AccessListClient } from "src/api/backend";
