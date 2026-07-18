@@ -1,22 +1,24 @@
-import signale from "signale";
+const createLogger = (scope) =>
+	Object.fromEntries(
+		["info", "warn", "error", "success", "start", "complete", "fatal", "debug"].map((type) => [
+			type,
+			(...args) => console.log(`[${scope}] › ${type.padEnd(9)}`, ...args),
+		]),
+	);
 
-const opts = {
-	logLevel: "info",
-};
-
-const global = new signale.Signale({ scope: "Global        ", ...opts });
-const migrate = new signale.Signale({ scope: "Migrate       ", ...opts });
-const express = new signale.Signale({ scope: "Express       ", ...opts });
-const access = new signale.Signale({ scope: "Access        ", ...opts });
-const nginx = new signale.Signale({ scope: "Nginx         ", ...opts });
-const ssl = new signale.Signale({ scope: "TLS           ", ...opts });
-const certbot = new signale.Signale({ scope: "Certbot       ", ...opts });
-const importer = new signale.Signale({ scope: "Importer      ", ...opts });
-const setup = new signale.Signale({ scope: "Setup         ", ...opts });
-const ipRanges = new signale.Signale({ scope: "IP Ranges     ", ...opts });
-const remoteVersion = new signale.Signale({ scope: "Remote Version", ...opts });
-const gravatar = new signale.Signale({ scope: "Gravatar      ", ...opts });
-const oidc = new signale.Signale({ scope: "OIDC          ", ...opts });
+const global = createLogger("Global        ");
+const migrate = createLogger("Migrate       ");
+const express = createLogger("Express       ");
+const access = createLogger("Access        ");
+const nginx = createLogger("Nginx         ");
+const ssl = createLogger("TLS           ");
+const certbot = createLogger("Certbot       ");
+const importer = createLogger("Importer      ");
+const setup = createLogger("Setup         ");
+const ipRanges = createLogger("IP Ranges     ");
+const remoteVersion = createLogger("Remote Version");
+const gravatar = createLogger("Gravatar      ");
+const oidc = createLogger("OIDC          ");
 
 const debug = (logger, ...args) => {
 	if (logger !== express) logger.debug(...args);

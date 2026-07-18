@@ -12,9 +12,9 @@ import error from "../lib/error.js";
 import utils from "../lib/utils.js";
 import { debug, ssl as logger } from "../logger.js";
 import certificateModel from "../models/certificate.js";
+import pjson from "../package.json" with { type: "json" };
 import internalAuditLog from "./audit-log.js";
 import internalNginx from "./nginx.js";
-import pjson from "../package.json" with { type: "json" };
 
 const omissions = () => {
 	return ["is_deleted", "owner.is_deleted", "meta.dns_provider_credentials"];
@@ -496,9 +496,9 @@ const internalCertificate = {
 	validate: async (access, data) => {
 		await access.can("certificates:create");
 		const finalData = {};
-		for (const [name, file] of Object.entries(data.files)) {
+		for (const [name, [file]] of Object.entries(data.files)) {
 			if (internalCertificate.allowedSslFiles.includes(name)) {
-				const content = file.data.toString();
+				const content = file.buffer.toString();
 				let res;
 				if (name === "certificate_key") {
 					res = await internalCertificate.checkPrivateKey(content);
@@ -535,12 +535,12 @@ const internalCertificate = {
 		}
 
 		const certs = {};
-		_.map(data.files, (file, name) => {
+		_.map(data.files, ([file], name) => {
 			if (
 				(isMtls && name === "certificate") ||
 				(!isMtls && internalCertificate.allowedSslFiles.indexOf(name) !== -1)
 			) {
-				certs[name] = file.data.toString();
+				certs[name] = file.buffer.toString();
 			}
 		});
 
