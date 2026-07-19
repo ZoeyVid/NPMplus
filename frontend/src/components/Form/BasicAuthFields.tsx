@@ -1,4 +1,4 @@
-import { IconX } from "@tabler/icons-react";
+import { IconEye, IconEyeOff, IconX } from "@tabler/icons-react";
 import { useFormikContext } from "formik";
 import { useState } from "react";
 import type { AccessListItem } from "src/api/backend";
@@ -10,6 +10,7 @@ interface Props {
 }
 export function BasicAuthFields({ initialValues, name = "items" }: Props) {
 	const [values, setValues] = useState<AccessListItem[]>(initialValues || []);
+	const [revealed, setRevealed] = useState<Record<number, boolean>>({});
 	const { setFieldValue } = useFormikContext();
 
 	const blankItem: AccessListItem = { username: "", password: "" };
@@ -68,18 +69,32 @@ export function BasicAuthFields({ initialValues, name = "items" }: Props) {
 						/>
 					</div>
 					<div className="col-5">
-						<input
-							type="password"
-							autoComplete="off"
-							className="form-control"
-							value={item.password}
-							placeholder={
-								initialValues.filter((iv: AccessListItem) => iv.username === item.username).length > 0
-									? "••••••••"
-									: ""
-							}
-							onChange={(e) => handleChange(idx, "password", e.target.value)}
-						/>
+						<div className="input-group input-group-flat">
+							<input
+								type={revealed[idx] ? "text" : "password"}
+								autoComplete="off"
+								className="form-control"
+								value={item.password}
+								placeholder={
+									initialValues.filter((iv: AccessListItem) => iv.username === item.username).length >
+									0
+										? "••••••••"
+										: ""
+								}
+								onChange={(e) => handleChange(idx, "password", e.target.value)}
+							/>
+							<span className="input-group-text">
+								<button
+									type="button"
+									tabIndex={-1}
+									aria-label="toggle visibility"
+									className="btn p-0 border-0 bg-transparent text-secondary d-flex align-items-center"
+									onClick={() => setRevealed((r) => ({ ...r, [idx]: !r[idx] }))}
+								>
+									{revealed[idx] ? <IconEyeOff size={18} /> : <IconEye size={18} />}
+								</button>
+							</span>
+						</div>
 					</div>
 					<div className="col-1">
 						<button
