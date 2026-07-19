@@ -109,8 +109,7 @@
 										"access_list_id": 1,
 										"username": "admin",
 										"password": "",
-										"meta": {},
-										"hint": "a****"
+										"meta": {}
 									},
 									{
 										"id": 2,
@@ -119,8 +118,7 @@
 										"access_list_id": 1,
 										"username": "asdad",
 										"password": "",
-										"meta": {},
-										"hint": "a*****"
+										"meta": {}
 									}
 								],
 								"clients": [
