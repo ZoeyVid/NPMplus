@@ -1,5 +1,6 @@
 import EasyModal, { type InnerModalProps } from "src/modules/easyModal";
-import { Field, Form, Formik } from "formik";
+import { IconEye, IconEyeOff } from "@tabler/icons-react";
+import { ErrorMessage, Field, Form, Formik } from "formik";
 import { QRCodeSVG } from "qrcode.react";
 import { type ReactNode, useCallback, useEffect, useState } from "react";
 import { Alert } from "react-bootstrap";
@@ -27,6 +28,7 @@ const TwoFactorModal = EasyModal.create(({ id, visible, remove }: Props) => {
 	const [setupData, setSetupData] = useState<{ secret: string; otpauthUrl: string } | null>(null);
 	const [backupCodes, setBackupCodes] = useState<string[]>([]);
 	const [isSubmitting, setIsSubmitting] = useState(false);
+	const [showCode, setShowCode] = useState(false);
 
 	const loadStatus = useCallback(async () => {
 		try {
@@ -179,16 +181,33 @@ const TwoFactorModal = EasyModal.create(({ id, visible, remove }: Props) => {
 											<span className="form-label">
 												<T id="2fa.enter-code" />
 											</span>
-											<input
-												{...field}
-												type="text"
-												inputMode="numeric"
-												autoComplete="one-time-code"
-												className={`form-control ${form.errors.code && form.touched.code ? "is-invalid" : ""}`}
-												placeholder="000000"
-												maxLength={6}
+											<div className="input-group input-group-flat">
+												<input
+													{...field}
+													type={showCode ? "text" : "password"}
+													inputMode="numeric"
+													autoComplete="one-time-code"
+													className={`form-control ${form.errors.code && form.touched.code ? "is-invalid" : ""}`}
+													placeholder="000000"
+													maxLength={6}
+												/>
+												<span className="input-group-text">
+													<button
+														type="button"
+														tabIndex={-1}
+														aria-label="toggle visibility"
+														className="p-0 border-0 bg-transparent text-secondary d-flex align-items-center cursor-pointer"
+														onClick={() => setShowCode((v) => !v)}
+													>
+														{showCode ? <IconEyeOff size={18} /> : <IconEye size={18} />}
+													</button>
+												</span>
+											</div>
+											<ErrorMessage
+												name="code"
+												component="div"
+												className="invalid-feedback d-block"
 											/>
-											<div className="invalid-feedback">{form.errors.code}</div>
 										</label>
 									)}
 								</Field>
@@ -249,15 +268,32 @@ const TwoFactorModal = EasyModal.create(({ id, visible, remove }: Props) => {
 											<span className="form-label">
 												<T id="2fa.enter-code-disable" />
 											</span>
-											<input
-												{...field}
-												type="text"
-												autoComplete="one-time-code"
-												className={`form-control ${form.errors.code && form.touched.code ? "is-invalid" : ""}`}
-												placeholder="000000"
-												maxLength={8}
+											<div className="input-group input-group-flat">
+												<input
+													{...field}
+													type={showCode ? "text" : "password"}
+													autoComplete="one-time-code"
+													className={`form-control ${form.errors.code && form.touched.code ? "is-invalid" : ""}`}
+													placeholder="000000"
+													maxLength={8}
+												/>
+												<span className="input-group-text">
+													<button
+														type="button"
+														tabIndex={-1}
+														aria-label="toggle visibility"
+														className="p-0 border-0 bg-transparent text-secondary d-flex align-items-center cursor-pointer"
+														onClick={() => setShowCode((v) => !v)}
+													>
+														{showCode ? <IconEyeOff size={18} /> : <IconEye size={18} />}
+													</button>
+												</span>
+											</div>
+											<ErrorMessage
+												name="code"
+												component="div"
+												className="invalid-feedback d-block"
 											/>
-											<div className="invalid-feedback">{form.errors.code}</div>
 										</label>
 									)}
 								</Field>
@@ -296,15 +332,32 @@ const TwoFactorModal = EasyModal.create(({ id, visible, remove }: Props) => {
 											<span className="form-label">
 												<T id="2fa.enter-code" />
 											</span>
-											<input
-												{...field}
-												type="text"
-												autoComplete="one-time-code"
-												className={`form-control ${form.errors.code && form.touched.code ? "is-invalid" : ""}`}
-												placeholder="000000"
-												maxLength={8}
+											<div className="input-group input-group-flat">
+												<input
+													{...field}
+													type={showCode ? "text" : "password"}
+													autoComplete="one-time-code"
+													className={`form-control ${form.errors.code && form.touched.code ? "is-invalid" : ""}`}
+													placeholder="000000"
+													maxLength={8}
+												/>
+												<span className="input-group-text">
+													<button
+														type="button"
+														tabIndex={-1}
+														aria-label="toggle visibility"
+														className="p-0 border-0 bg-transparent text-secondary d-flex align-items-center cursor-pointer"
+														onClick={() => setShowCode((v) => !v)}
+													>
+														{showCode ? <IconEyeOff size={18} /> : <IconEye size={18} />}
+													</button>
+												</span>
+											</div>
+											<ErrorMessage
+												name="code"
+												component="div"
+												className="invalid-feedback d-block"
 											/>
-											<div className="invalid-feedback">{form.errors.code}</div>
 										</label>
 									)}
 								</Field>
