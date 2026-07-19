@@ -1,3 +1,4 @@
+import { IconEye, IconEyeOff } from "@tabler/icons-react";
 import { useQueryClient } from "@tanstack/react-query";
 import cn from "clsx";
 import { Field, Form, Formik } from "formik";
@@ -20,6 +21,7 @@ export default function Setup() {
 	const queryClient = useQueryClient();
 	const { login } = useAuthState();
 	const [errorMsg, setErrorMsg] = useState<string | null>(null);
+	const [showPassword, setShowPassword] = useState(false);
 
 	const onSubmit = async (values: Payload, { setSubmitting }: any) => {
 		setErrorMsg(null);
@@ -146,20 +148,39 @@ export default function Setup() {
 									<div className="mb-3">
 										<Field name="password" validate={validateString(8, 100)}>
 											{({ field, form }: any) => (
-												<div className="form-floating mb-3">
-													<input
-														id="password"
-														type="password"
-														autoComplete="new-password"
-														className={`form-control ${form.errors.password && form.touched.password ? "is-invalid" : ""}`}
-														placeholder={intl.formatMessage({ id: "user.new-password" })}
-														{...field}
-													/>
-													<label htmlFor="password">
-														<T id="user.new-password" />
-													</label>
+												<div className="input-group input-group-flat mb-3">
+													<div className="form-floating">
+														<input
+															id="password"
+															type={showPassword ? "text" : "password"}
+															autoComplete="new-password"
+															className={`form-control ${form.errors.password && form.touched.password ? "is-invalid" : ""}`}
+															placeholder={intl.formatMessage({
+																id: "user.new-password",
+															})}
+															{...field}
+														/>
+														<label htmlFor="password">
+															<T id="user.new-password" />
+														</label>
+													</div>
+													<span className="input-group-text">
+														<button
+															type="button"
+															tabIndex={-1}
+															aria-label="toggle visibility"
+															className="p-0 border-0 bg-transparent text-secondary d-flex align-items-center cursor-pointer"
+															onClick={() => setShowPassword((v) => !v)}
+														>
+															{showPassword ? (
+																<IconEyeOff size={18} />
+															) : (
+																<IconEye size={18} />
+															)}
+														</button>
+													</span>
 													{form.errors.password ? (
-														<div className="invalid-feedback">
+														<div className="invalid-feedback d-block">
 															{form.errors.password && form.touched.password
 																? form.errors.password
 																: null}
