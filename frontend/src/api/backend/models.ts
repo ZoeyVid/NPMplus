@@ -62,7 +62,6 @@ export interface AccessListItem {
 	username: string;
 	password: string;
 	meta?: Record<string, any>;
-	hint?: string;
 }
 
 export type AccessListClient = {
