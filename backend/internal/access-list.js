@@ -469,19 +469,7 @@ const internalAccessList = {
 	 */
 	maskItems: (list) => {
 		if (list && typeof list.items !== "undefined") {
-			list.items.map((val, idx) => {
-				let repeatFor = 8;
-				let firstChar = "*";
-
-				if (typeof val.password !== "undefined" && val.password) {
-					repeatFor = val.password.length - 1;
-					firstChar = val.password.charAt(0);
-				}
-
-				list.items[idx].hint = firstChar + "*".repeat(repeatFor);
-				list.items[idx].password = "";
-				return true;
-			});
+			for (const item of list.items) item.password = "";
 		}
 		return list;
 	},
