@@ -1,3 +1,4 @@
+import { IconEye, IconEyeOff } from "@tabler/icons-react";
 import { Field, Form, Formik } from "formik";
 import { useEffect, useRef, useState } from "react";
 import Alert from "react-bootstrap/Alert";
@@ -10,6 +11,7 @@ import styles from "./index.module.css";
 
 function TwoFactorForm() {
 	const codeRef = useRef<HTMLInputElement>(null);
+	const [showCode, setShowCode] = useState(false);
 	const [formErr, setFormErr] = useState("");
 	const { verifyTwoFactor, cancelTwoFactor } = useAuthState();
 
@@ -46,17 +48,30 @@ function TwoFactorForm() {
 								{({ field, form }: any) => (
 									<label className="form-label">
 										<T id="login.2fa-code" />
-										<input
-											{...field}
-											ref={codeRef}
-											type="text"
-											autoComplete="one-time-code"
-											required
-											maxLength={8}
-											className={`form-control ${form.errors.code && form.touched.code ? "is-invalid" : ""}`}
-											placeholder={intl.formatMessage({ id: "login.2fa-code-placeholder" })}
-										/>
-										<div className="invalid-feedback">{form.errors.code}</div>
+										<div className="input-group input-group-flat">
+											<input
+												{...field}
+												ref={codeRef}
+												type={showCode ? "text" : "password"}
+												autoComplete="one-time-code"
+												required
+												maxLength={8}
+												className={`form-control ${form.errors.code && form.touched.code ? "is-invalid" : ""}`}
+												placeholder={intl.formatMessage({ id: "login.2fa-code-placeholder" })}
+											/>
+											<span className="input-group-text">
+												<button
+													type="button"
+													tabIndex={-1}
+													aria-label="toggle visibility"
+													className="p-0 border-0 bg-transparent text-secondary d-flex align-items-center cursor-pointer"
+													onClick={() => setShowCode((v) => !v)}
+												>
+													{showCode ? <IconEyeOff size={18} /> : <IconEye size={18} />}
+												</button>
+											</span>
+											<div className="invalid-feedback">{form.errors.code}</div>
+										</div>
 									</label>
 								)}
 							</Field>
@@ -78,6 +93,7 @@ function TwoFactorForm() {
 
 function LoginForm() {
 	const emailRef = useRef<HTMLInputElement>(null);
+	const [showPassword, setShowPassword] = useState(false);
 	const [formErr, setFormErr] = useState("");
 	const { login } = useAuthState();
 	const health = useHealth();
@@ -158,16 +174,33 @@ function LoginForm() {
 										<>
 											<label className="form-label">
 												<T id="password" />
-												<input
-													{...field}
-													type="password"
-													autoComplete="current-password"
-													required
-													maxLength={255}
-													className={`form-control ${form.errors.password && form.touched.password ? " is-invalid" : ""}`}
-													placeholder={intl.formatMessage({ id: "password" })}
-												/>
-												<div className="invalid-feedback">{form.errors.password}</div>
+												<div className="input-group input-group-flat">
+													<input
+														{...field}
+														type={showPassword ? "text" : "password"}
+														autoComplete="current-password"
+														required
+														maxLength={255}
+														className={`form-control ${form.errors.password && form.touched.password ? " is-invalid" : ""}`}
+														placeholder={intl.formatMessage({ id: "password" })}
+													/>
+													<span className="input-group-text">
+														<button
+															type="button"
+															tabIndex={-1}
+															aria-label="toggle visibility"
+															className="p-0 border-0 bg-transparent text-secondary d-flex align-items-center cursor-pointer"
+															onClick={() => setShowPassword((v) => !v)}
+														>
+															{showPassword ? (
+																<IconEyeOff size={18} />
+															) : (
+																<IconEye size={18} />
+															)}
+														</button>
+													</span>
+													<div className="invalid-feedback">{form.errors.password}</div>
+												</div>
 											</label>
 										</>
 									)}
