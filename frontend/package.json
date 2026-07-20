@@ -16,7 +16,7 @@
 		"country-flag-icons": "1.6.20",
 		"date-fns": "4.4.0",
 		"formik": "2.4.9",
-		"markdown-to-jsx": "9.8.2",
+		"markdown-to-jsx": "9.9.0",
 		"qrcode.react": "4.2.0",
 		"query-string": "9.4.1",
 		"react": "19.2.7",

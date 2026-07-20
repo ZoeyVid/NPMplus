@@ -39,8 +39,8 @@ importers:
         specifier: 2.4.9
         version: 2.4.9(@types/react@19.2.17)(react@19.2.7)
       markdown-to-jsx:
-        specifier: 9.8.2
-        version: 9.8.2(react@19.2.7)
+        specifier: 9.9.0
+        version: 9.9.0(react@19.2.7)
       qrcode.react:
         specifier: 4.2.0
         version: 4.2.0(react@19.2.7)
@@ -1350,8 +1350,8 @@ packages:
   magic-string@0.30.21:
     resolution: {integrity: sha512-vd2F4YUyEXKGcLHoq+TEyCjxueSeHnFxyyjNp80yg0XV4vUhnDer/lvvlqM/arB5bXQN5K2/3oinyCRyx8T2CQ==}
 
-  markdown-to-jsx@9.8.2:
-    resolution: {integrity: sha512-rWUuxKB5NsuJmSfUOuXkQ0O5qk0J/Lr3Lk6dzxKoKQI/jeHYlsVfz3zJdMLAhI46hHoXDYERWhtBOiqtWDZ4LA==}
+  markdown-to-jsx@9.9.0:
+    resolution: {integrity: sha512-3YRQuriODgdMr9EeY//Ya/104p978bY0nOwmc85IGxHixqOlhNDgq7IJTsLOdmFxjMFKJ6bVzUav30wWVJZOJQ==}
     engines: {node: '>= 18'}
     peerDependencies:
       react: '>= 16.0.0'
@@ -2919,7 +2919,7 @@ snapshots:
     dependencies:
       '@jridgewell/sourcemap-codec': 1.5.5
 
-  markdown-to-jsx@9.8.2(react@19.2.7):
+  markdown-to-jsx@9.9.0(react@19.2.7):
     optionalDependencies:
       react: 19.2.7
 
