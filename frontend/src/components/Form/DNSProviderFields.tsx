@@ -1,5 +1,4 @@
 import { IconAlertTriangle } from "@tabler/icons-react";
-import CodeEditor from "@uiw/react-textarea-code-editor";
 import { Field, useFormikContext } from "formik";
 import { useState } from "react";
 import Select, { type ActionMeta } from "react-select";
@@ -75,13 +74,10 @@ export function DNSProviderFields({ showBoundaryBox = false }: Props) {
 								<label htmlFor="dnsProviderCredentials" className="form-label">
 									<T id="certificates.dns.credentials" />
 								</label>
-								<CodeEditor
-									language="bash"
+								<textarea
+									className="form-control"
+									spellCheck={false}
 									id="dnsProviderCredentials"
-									padding={15}
-									data-color-mode="dark"
-									minHeight={130}
-									indentWidth={2}
 									style={{
 										fontFamily:
 											"ui-monospace,SFMono-Regular,SF Mono,Consolas,Liberation Mono,Menlo,monospace",

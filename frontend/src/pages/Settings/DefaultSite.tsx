@@ -1,4 +1,3 @@
-import CodeEditor from "@uiw/react-textarea-code-editor";
 import { Field, Form, Formik } from "formik";
 import { type ReactNode, useState } from "react";
 import { Alert } from "react-bootstrap";
@@ -217,17 +216,12 @@ export default function DefaultSite() {
 											<T id="settings.default-site.html" />
 										</label>
 										<div>
-											<CodeEditor
-												// Believe it or not, 'html' sucks yet 'php' renders the html
-												// content much nicer.
-												language="php"
+											<textarea
+												className="form-control"
+												spellCheck={false}
 												placeholder={intl.formatMessage({
 													id: "settings.default-site.html.placeholder",
 												})}
-												padding={15}
-												data-color-mode="dark"
-												minHeight={300}
-												indentWidth={2}
 												style={{
 													fontFamily:
 														"ui-monospace,SFMono-Regular,SF Mono,Consolas,Liberation Mono,Menlo,monospace",
