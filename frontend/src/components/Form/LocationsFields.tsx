@@ -46,7 +46,6 @@ export function LocationsFields({ initialValues, name = "locations" }: Props) {
 		npmplusProxyResponseBuffering: false,
 		npmplusProxyRequestBuffering: false,
 		npmplusDisableUriSanitisation: false,
-		npmplusSpoofHostHeader: false,
 		npmplusUpstreamCompression: false,
 		npmplusFancyindex: false,
 		npmplusXFrameOptions: "SAMEORIGIN",
@@ -95,7 +94,6 @@ export function LocationsFields({ initialValues, name = "locations" }: Props) {
 				}
 				if (fieldValue === "path") {
 					updatedLocation.npmplusUpstreamCompression = false;
-					updatedLocation.npmplusSpoofHostHeader = false;
 				} else {
 					updatedLocation.npmplusFancyindex = false;
 				}
@@ -408,37 +406,6 @@ export function LocationsFields({ initialValues, name = "locations" }: Props) {
 														disabled={
 															!["http", "https"].includes(item.forwardScheme) ||
 															(item.forwardHost || "").includes("/")
-														}
-													/>
-												</label>
-											</span>
-										</label>
-									</div>
-									<div>
-										<label className="row" htmlFor={`npmplusSpoofHostHeader-${item.uiKey}`}>
-											<span className="col">
-												<T id="host.flags.spoof-host-header" />
-											</span>
-											<span className="col-auto">
-												<label className="form-check form-check-single form-switch">
-													<input
-														id={`npmplusSpoofHostHeader-${item.uiKey}`}
-														className={cn("form-check-input", {
-															"bg-lime": item.npmplusSpoofHostHeader,
-														})}
-														type="checkbox"
-														checked={item.npmplusSpoofHostHeader}
-														onChange={(e) =>
-															handleChange(
-																idx,
-																"npmplusSpoofHostHeader",
-																e.target.checked,
-															)
-														}
-														disabled={
-															!["http", "https", "grpc", "grpcs"].includes(
-																item.forwardScheme,
-															)
 														}
 													/>
 												</label>

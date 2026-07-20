@@ -78,6 +78,9 @@ RUN git-clone-commit.sh https://github.com/nginx/nginx "$NGINX_VER" /src/nginx &
     wget -q https://raw.githubusercontent.com/zlib-ng/patches/refs/heads/master/nginx/"$ZNP_VER"-zlib-ng.patch -O /src/nginx/6.patch && \
     echo "bcd0f2fb9723fc1f251f94cead8d5160e767f7d4a04365331396a72a9ba54c6b  /src/nginx/6.patch" | sha256sum -c - && \
     git apply /src/nginx/6.patch && \
+    wget -q https://patch-diff.githubusercontent.com/raw/nginx/nginx/pull/1593.patch -O /src/nginx/7.patch && \
+    echo "42951e1b3aab34995cff6004ce4ba3a84d86d73ae08bbb35e7a3979a5f2e2df1  /src/nginx/7.patch" | sha256sum -c - && \
+    git apply /src/nginx/7.patch && \
     git apply /src/nginx-footer.patch && \
     git apply /src/nginx-ip-sni.patch && \
     git apply /src/nginx-gso-fix.patch && \
