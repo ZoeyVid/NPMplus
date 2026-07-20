@@ -1,0 +1,22 @@
+diff --git a/src/http/modules/ngx_http_proxy_module.c b/src/http/modules/ngx_http_proxy_module.c
+index 3ae8c97..3672ef4 100644
+--- a/src/http/modules/ngx_http_proxy_module.c
++++ b/src/http/modules/ngx_http_proxy_module.c
+@@ -759,7 +759,7 @@ static char  ngx_http_proxy_version_11[] = " HTTP/1.1" CRLF;
+ 
+ 
+ static ngx_keyval_t  ngx_http_proxy_headers[] = {
+-    { ngx_string("Host"), ngx_string("$proxy_internal_host") },
++    { ngx_string("Host"), ngx_string("$host$is_request_port$request_port") },
+     { ngx_string("Connection"), ngx_string("") },
+     { ngx_string("Proxy-Connection"), ngx_string("") },
+     { ngx_string("Content-Length"), ngx_string("$proxy_internal_body_length") },
+@@ -788,7 +788,7 @@ static ngx_str_t  ngx_http_proxy_hide_headers[] = {
+ #if (NGX_HTTP_CACHE)
+ 
+ static ngx_keyval_t  ngx_http_proxy_cache_headers[] = {
+-    { ngx_string("Host"), ngx_string("$proxy_internal_host") },
++    { ngx_string("Host"), ngx_string("$host$is_request_port$request_port") },
+     { ngx_string("Connection"), ngx_string("") },
+     { ngx_string("Proxy-Connection"), ngx_string("") },
+     { ngx_string("Content-Length"), ngx_string("$proxy_internal_body_length") },
