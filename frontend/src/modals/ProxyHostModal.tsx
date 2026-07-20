@@ -1,5 +1,4 @@
 import { IconSettings } from "@tabler/icons-react";
-import CodeEditor from "@uiw/react-textarea-code-editor";
 import cn from "clsx";
 import EasyModal, { type InnerModalProps } from "src/modules/easyModal";
 import { Field, Form, Formik } from "formik";
@@ -872,15 +871,12 @@ const ProxyHostModal = EasyModal.create(({ id, isClone = false, visible, remove 
 														<>
 															{advVisible && (
 																<div className="">
-																	<CodeEditor
-																		language="nginx"
+																	<textarea
+																		className="form-control"
+																		spellCheck={false}
 																		placeholder={intl.formatMessage({
 																			id: "nginx-config.placeholder",
 																		})}
-																		padding={15}
-																		data-color-mode="dark"
-																		minHeight={170}
-																		indentWidth={2}
 																		style={{
 																			fontFamily:
 																				"ui-monospace,SFMono-Regular,SF Mono,Consolas,Liberation Mono,Menlo,monospace",

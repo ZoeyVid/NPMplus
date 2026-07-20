@@ -1,5 +1,4 @@
 import { IconSettings } from "@tabler/icons-react";
-import CodeEditor from "@uiw/react-textarea-code-editor";
 import cn from "clsx";
 import { useFormikContext } from "formik";
 import { useRef, useState } from "react";
@@ -573,13 +572,10 @@ export function LocationsFields({ initialValues, name = "locations" }: Props) {
 						</div>
 						{advVisible.includes(idx) && (
 							<div className="">
-								<CodeEditor
-									language="nginx"
+								<textarea
+									className="form-control"
+									spellCheck={false}
 									placeholder={intl.formatMessage({ id: "nginx-config.placeholder" })}
-									padding={15}
-									data-color-mode="dark"
-									minHeight={170}
-									indentWidth={2}
 									value={item.advancedConfig}
 									onChange={(e) => handleChange(idx, "advancedConfig", e.target.value)}
 									style={{
