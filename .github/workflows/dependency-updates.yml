@@ -468,33 +468,6 @@ jobs:
           title: update ngx_http_geoip2_module version to ${{ steps.update.outputs.version }}
           body: update ngx_http_geoip2_module version to ${{ steps.update.outputs.version }}
 
-  attachment-update:
-    runs-on: ubuntu-slim
-    steps:
-      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
-      - name: update attachment version
-        id: update
-        run: |
-          OASA_VER="$(
-          git ls-remote --tags --refs https://github.com/openappsec/attachment \
-              | cut -d/ -f3 \
-              | sort -V \
-              | grep -vi rc \
-              | tail -1
-          )"
-          if [ -z "$OASA_VER" ]; then OASA_VER=main; fi
-          OASA_SHA="$(git ls-remote https://github.com/openappsec/attachment "$OASA_VER" | cut -f1)"
-          sed -i "s|ARG OASA_VER=.*|ARG OASA_VER=$OASA_SHA # $OASA_VER|" Dockerfile
-          echo "version=$OASA_VER" >> $GITHUB_OUTPUT
-      - uses: peter-evans/create-pull-request@5f6978faf089d4d20b00c7766989d076bb2fc7f1 # v8.1.1
-        with:
-          signoff: true
-          delete-branch: true
-          commit-message: update attachment version to ${{ steps.update.outputs.version }}
-          branch: update-attachment-version
-          title: update attachment version to ${{ steps.update.outputs.version }}
-          body: update attachment version to ${{ steps.update.outputs.version }}
-
   lua-resty-core-update:
     runs-on: ubuntu-slim
     steps:
