@@ -82,6 +82,7 @@ RUN git-clone-commit.sh https://github.com/nginx/nginx "$NGINX_VER" /src/nginx &
     git apply /src/nginx-ip-sni.patch && \
     git apply /src/nginx-gso-fix.patch && \
     git apply /src/nginx-buffer-log.patch && \
+    git apply /src/nginx-proxy-host-header.patch && \
     git apply /src/nginx-ech-boringssl-awslc.patch && \
     git apply /src/nginx-cert-compression-brotli.patch && \
     \

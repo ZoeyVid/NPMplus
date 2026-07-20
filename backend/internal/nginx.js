@@ -153,21 +153,6 @@ const internalNginx = {
 				location.forward_path = `/${split.join("/")}`;
 			}
 
-			if (location.npmplus_spoof_host_header === true) {
-				location.spoofed_host = location.forward_host;
-				if (location.forward_port !== null && location.forward_port !== undefined) {
-					if (location.forward_scheme === "http" || location.forward_scheme === "grpc") {
-						if (location.forward_port !== 80) {
-							location.spoofed_host = `${location.forward_host}:${location.forward_port}`;
-						}
-					} else if (location.forward_scheme === "https" || location.forward_scheme === "grpcs") {
-						if (location.forward_port !== 443) {
-							location.spoofed_host = `${location.forward_host}:${location.forward_port}`;
-						}
-					}
-				}
-			}
-
 			if (location.forward_host?.startsWith("cu_")) {
 				location.forward_upstream_name = location.forward_host;
 			} else {
@@ -281,21 +266,6 @@ const internalNginx = {
 			const split = host.forward_host.split("/");
 			host.forward_host = split.shift();
 			host.forward_path = `/${split.join("/")}`;
-		}
-
-		if (host.npmplus_spoof_host_header === true) {
-			host.spoofed_host = host.forward_host;
-			if (host.forward_port !== null && host.forward_port !== undefined) {
-				if (host.forward_scheme === "http" || host.forward_scheme === "grpc") {
-					if (host.forward_port !== 80) {
-						host.spoofed_host = `${host.forward_host}:${host.forward_port}`;
-					}
-				} else if (host.forward_scheme === "https" || host.forward_scheme === "grpcs") {
-					if (host.forward_port !== 443) {
-						host.spoofed_host = `${host.forward_host}:${host.forward_port}`;
-					}
-				}
-			}
 		}
 
 		if (host.domain_names) {

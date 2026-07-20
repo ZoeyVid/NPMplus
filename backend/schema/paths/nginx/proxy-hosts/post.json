@@ -89,9 +89,6 @@
 						"npmplus_disable_uri_sanitisation": {
 							"$ref": "../../../components/proxy-host-object.json#/properties/npmplus_disable_uri_sanitisation"
 						},
-						"npmplus_spoof_host_header": {
-							"$ref": "../../../components/proxy-host-object.json#/properties/npmplus_spoof_host_header"
-						},
 						"npmplus_upstream_compression": {
 							"$ref": "../../../components/proxy-host-object.json#/properties/npmplus_upstream_compression"
 						},
@@ -164,7 +161,6 @@
 								"npmplus_proxy_request_buffering": false,
 								"npmplus_proxy_response_buffering": false,
 								"npmplus_disable_uri_sanitisation": false,
-								"npmplus_spoof_host_header": false,
 								"npmplus_upstream_compression": false,
 								"npmplus_fancyindex": false,
 								"npmplus_x_frame_options": "DENY",

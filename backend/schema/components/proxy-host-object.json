@@ -36,8 +36,7 @@
 		"npmplus_x_frame_options",
 		"npmplus_auth_request",
 		"npmplus_auth_request_upstream",
-		"npmplus_disable_uri_sanitisation",
-		"npmplus_spoof_host_header"
+		"npmplus_disable_uri_sanitisation"
 	],
 	"properties": {
 		"id": {
@@ -103,9 +102,6 @@
 		},
 		"npmplus_disable_uri_sanitisation": {
 			"$ref": "../common.json#/properties/npmplus_disable_uri_sanitisation"
-		},
-		"npmplus_spoof_host_header": {
-			"$ref": "../common.json#/properties/npmplus_spoof_host_header"
 		},
 		"npmplus_upstream_compression": {
 			"$ref": "../common.json#/properties/npmplus_upstream_compression"
@@ -253,9 +249,6 @@
 					},
 					"npmplus_disable_uri_sanitisation": {
 						"$ref": "#/properties/npmplus_disable_uri_sanitisation"
-					},
-					"npmplus_spoof_host_header": {
-						"$ref": "#/properties/npmplus_spoof_host_header"
 					},
 					"npmplus_upstream_compression": {
 						"$ref": "#/properties/npmplus_upstream_compression"
