@@ -6,7 +6,6 @@ services:
     image: docker.io/zoeyvid/npmplus:latest # or ghcr.io/zoeyvid/npmplus:latest
     pull_policy: always
     network_mode: host
-#    ipc: host # required when you want to use the openappsec attachment module
     cap_drop:
       - ALL
     cap_add:
@@ -34,7 +33,6 @@ services:
       - "/opt/npmplus:/data"
 #      - "/var/www:/var/www" # optional, if you want to use NPMplus directly as a webserver for html/php
 #      - "/path/to/old/npm/letsencrypt/folder:/etc/letsencrypt" # Only needed for initial migration from original nginx-proxy-manager to this fork, remove after migration
-#      - "shm-volume:/dev/shm/check-point" # required if you want to use the openappsec attachment module, also enable this volume at the end of this compose.yaml
     environment:
       - "TZ=your-timezone" # set timezone, required, set it to one of the values from the "TZ identifier" https://en.wikipedia.org/wiki/List_of_tz_database_time_zones#List
 #      - "ACME_EMAIL=your-email" # email address to use for acme, required for zerossl and google public ca
@@ -100,7 +98,6 @@ services:
 #      - "DISABLE_GRAVATAR=true" # disables usage of gravatar images, users need to update theier profile for this to apply, default false
 #      - "COOKIE_SECRET=some-random-string" # by default a new secret to encrypt/decrypt cookies is used after each restart, to keep cookies valid after restarts you can set a static secret here
 #      - "ENABLE_PRERUN=true" # see readme, default off
-#      - "NGINX_LOAD_OPENAPPSEC_ATTACHMENT_MODULE=true" # loads the openappsec attachment module, you must also set ipc and enable the shm-volume for NPMplus in this compose file, this will fully disable zstd, default false
 #      - "NGINX_LOAD_NJS_MODULE=true" # loads the njs module, requires manual configuration, default false
 #      - "NGINX_LOAD_GEOIP2_MODULE=true" # loads the geoip2 module, requires manual configuration, default false
 #      - "NGINX_LOAD_LDAP_MODULE=true" # loads the ldap module, requires manual configuration, default false
@@ -138,7 +135,6 @@ services:
 #      - "/opt/crowdsec/conf:/etc/crowdsec"
 #      - "/opt/crowdsec/data:/var/lib/crowdsec/data"
 #      - "/opt/npmplus/nginx/logs:/opt/npmplus/nginx/logs:ro"
-#      - "/opt/openappsec/logs:/opt/openappsec/logs:ro" # only uncomment if you also use the openappsec-agent container
 
 # See the readme on how to configure your proxy hosts to use anubis and what needs to be changes in the botPolicy to make it work
 #  anubis:
@@ -172,81 +168,6 @@ services:
 #    volumes:
 #      - "/opt/npmplus/goaccess/geoip:/usr/share/GeoIP"
 
-# This can be used to run openappsec, you must also set NGINX_LOAD_OPENAPPSEC_ATTACHMENT_MODULE to true and set ipc for NPMplus
-#  openappsec-agent:
-#    container_name: openappsec-agent
-#    restart: unless-stopped
-#    image: ghcr.io/openappsec/agent:latest
-#    pull_policy: always
-#    ipc: host
-#    volumes:
-#      - "shm-volume:/dev/shm/check-point"
-#      - "/opt/openappsec/conf:/etc/cp/conf"
-#      - "/opt/openappsec/data:/etc/cp/data"
-#      - "/opt/openappsec/logs:/var/log/nano_agent"
-#      - "/opt/openappsec/localconf:/ext/appsec" # if you don't set AGENT_TOKEN, then please put a local_policy.yaml in the /opt/openappsec/localconf folder before deploying
-#      - "/opt/openappsec/open-appsec-advanced-model.tgz:/advanced-model/open-appsec-advanced-model.tgz" # optional, if you want to use a different model, since a file is mounted here, you first need to create it before deploying this container
-#    environment:
-#      - "TZ=your-timezone" # needs to be changed
-#      - "autoPolicyLoad=true"
-#      - "registered_server=NPMplus"
-#      - "user_email=your-email" # optional, from their docs: "This allows the open-appsec team to provide you easy assistance in case of any issues you might have with your specific deployment in the future and also to provide you information proactively regarding open-appsec in general or regarding your specific deployment. [...] If we send automatic emails there will also be an opt-out option included for receiving similar communication in the future."
-#      - "AGENT_TOKEN=" # optional, you can specify an openappsec deployment profile token for connecting to their central webinterface  at https://my.openappsec.io, if you leave this commented, make sure to uncomment all other openappsec containers below, see: https://docs.openappsec.io/getting-started/using-the-web-ui-saas/create-a-profile
-#      - "SHARED_STORAGE_HOST=openappsec-shared-storage" # uncomment if you don't set AGENT_TOKEN
-#      - "LEARNING_HOST=openappsec-smartsync" # uncomment if you don't set AGENT_TOKEN
-#      - "TUNING_HOST=openappsec-tuning-svc" # uncomment if you don't set AGENT_TOKEN
-#    command: /cp-nano-agent
-
-# uncomment if you don't set AGENT_TOKEN
-#  openappsec-smartsync:
-#    container_name: openappsec-smartsync
-#    restart: unless-stopped
-#    image: ghcr.io/openappsec/smartsync:latest
-#    pull_policy: always
-#    environment:
-#      - "TZ=your-timezone" # needs to be changed
-#      - "SHARED_STORAGE_HOST=openappsec-shared-storage"
-#    depends_on:
-#      - openappsec-shared-storage
-#  openappsec-shared-storage:
-#    container_name: openappsec-shared-storage
-#    restart: unless-stopped
-#    image: ghcr.io/openappsec/smartsync-shared-files:latest
-#    pull_policy: always
-#    ipc: service:openappsec-agent
-#    user: root # if you do not want to run this container as "root" user you can comment it out and instead run the following command after the deployment: docker exec -u root openappsec-shared-storage chown -R appuser:appuser /db
-#    environment:
-#      - "TZ=your-timezone" # needs to be changed
-#    volumes:
-#      - "/opt/openappsec/storage:/db"
-#  openappsec-tuning-svc:
-#    container_name: openappsec-tuning-svc
-#    restart: unless-stopped
-#    image: ghcr.io/openappsec/smartsync-tuning:latest
-#    pull_policy: always
-#    environment:
-#      - "TZ=your-timezone" # needs to be changed
-#      - "SHARED_STORAGE_HOST=openappsec-shared-storage"
-#      - "QUERY_DB_HOST=openappsec-db"
-#      - "QUERY_DB_PASSWORD=password" # replace with something secure, should match POSTGRES_PASSWORD from openappsec-db container
-#      - "QUERY_DB_USER=appsec"
-#    volumes:
-#      - "/opt/openappsec/conf:/etc/cp/conf"
-#    depends_on:
-#      - openappsec-shared-storage
-#      - openappsec-db
-#  openappsec-db:
-#    container_name: openappsec-db
-#    restart: unless-stopped
-#    image: postgres:17-alpine
-#    pull_policy: always
-#    environment:
-#      - "TZ=your-timezone" # needs to be changed
-#      - "POSTGRES_PASSWORD=password" # replace with something secure, should match QUERY_DB_PASSWORD from openappsec-tuning-svc container
-#      - "POSTGRES_USER=appsec"
-#    volumes:
-#      - "/opt/openappsec/pgdb:/var/lib/postgresql/data"
-
 # This can be used with DISABLE_HTTP=true, to force HTTPS redirects for every host
 #  npmplus-caddy:
 #    container_name: npmplus-caddy
@@ -258,10 +179,3 @@ services:
 #      - "80:80"
 #    environment:
 #      - "TZ=your-timezone"
-
-# volumes:
-#   shm-volume:
-#     driver: local
-#     driver_opts:
-#       type: tmpfs
-#       device: tmpfs
