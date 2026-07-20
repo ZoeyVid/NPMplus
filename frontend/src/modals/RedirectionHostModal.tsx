@@ -348,7 +348,7 @@ const RedirectionHostModal = EasyModal.create(({ id, visible, remove }: Props) =
 											</div>
 											<div className="tab-pane" id="tab-advanced" role="tabpanel">
 												<NginxConfigField />
-												<div className="row">
+												<div className="row mt-3">
 													<div className="col-md-12 mb-3">
 														<DirectoryField
 															labelId="redirection-host.directory"

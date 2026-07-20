@@ -498,7 +498,7 @@ const StreamModal = EasyModal.create(({ id, visible, remove }: Props) => {
 													name="npmplusAdvancedConfig"
 													id="npmplusAdvancedConfig"
 												/>
-												<div className="row">
+												<div className="row mt-3">
 													<div className="col-md-12 mb-3">
 														<DirectoryField
 															labelId="stream.directory"
