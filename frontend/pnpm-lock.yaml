@@ -18,8 +18,8 @@ importers:
         specifier: 3.45.0
         version: 3.45.0(react@19.2.7)
       '@tanstack/react-query':
-        specifier: 5.101.2
-        version: 5.101.2(react@19.2.7)
+        specifier: 5.101.3
+        version: 5.101.3(react@19.2.7)
       '@tanstack/react-table':
         specifier: 8.21.3
         version: 8.21.3(react-dom@19.2.7(react@19.2.7))(react@19.2.7)
@@ -39,8 +39,8 @@ importers:
         specifier: 2.4.9
         version: 2.4.9(@types/react@19.2.17)(react@19.2.7)
       markdown-to-jsx:
-        specifier: 9.8.2
-        version: 9.8.2(react@19.2.7)
+        specifier: 9.9.0
+        version: 9.9.0(react@19.2.7)
       qrcode.react:
         specifier: 4.2.0
         version: 4.2.0(react@19.2.7)
@@ -79,8 +79,8 @@ importers:
         specifier: 6.16.14
         version: 6.16.14
       '@tanstack/react-query-devtools':
-        specifier: 5.101.2
-        version: 5.101.2(@tanstack/react-query@5.101.2(react@19.2.7))(react@19.2.7)
+        specifier: 5.101.3
+        version: 5.101.3(@tanstack/react-query@5.101.3(react@19.2.7))(react@19.2.7)
       '@testing-library/dom':
         specifier: 10.4.1
         version: 10.4.1
@@ -109,11 +109,11 @@ importers:
         specifier: 6.0.3
         version: 6.0.3(vite@8.1.5(@types/node@25.9.5)(sass@1.101.0))
       happy-dom:
-        specifier: 20.10.6
-        version: 20.10.6
+        specifier: 20.11.0
+        version: 20.11.0
       postcss:
-        specifier: 8.5.19
-        version: 8.5.19
+        specifier: 8.5.20
+        version: 8.5.20
       sass:
         specifier: 1.101.0
         version: 1.101.0
@@ -128,7 +128,7 @@ importers:
         version: 8.1.5(@types/node@25.9.5)(sass@1.101.0)
       vitest:
         specifier: 4.1.10
-        version: 4.1.10(@types/node@25.9.5)(happy-dom@20.10.6)(vite@8.1.5(@types/node@25.9.5)(sass@1.101.0))
+        version: 4.1.10(@types/node@25.9.5)(happy-dom@20.11.0)(vite@8.1.5(@types/node@25.9.5)(sass@1.101.0))
 
 packages:
 
@@ -646,20 +646,20 @@ packages:
   '@tabler/icons@3.45.0':
     resolution: {integrity: sha512-jiATwV8+zGYLTZ7gMLGivCic+KtsMZXcDmufIG8umlLxoHhI6902hGYIEt0Oa9Y9SXblNzUlrisHm5jOFMxOQA==}
 
-  '@tanstack/query-core@5.101.2':
-    resolution: {integrity: sha512-hH5MLoJhF7KaIGd7q3xTXGXvslI+GYlM1Z/35aSHHWaCJWB7XvTSHYuV3eM7tw+aE0mT/xMro4M4Q9rCGHT0lw==}
+  '@tanstack/query-core@5.101.3':
+    resolution: {integrity: sha512-pWLyu7AjFFVM5G+frjcL81kKEW9R8GCCPKnL3uaWbMwd2f3ZINFCuy+PtKkdz/+pKw/f/XMsFsYq/H+uJHM4GQ==}
 
-  '@tanstack/query-devtools@5.101.2':
-    resolution: {integrity: sha512-o+wHcqgN7Pp0s8v1i0UGq/ZrrEKrxdIiMQmKRdYb2w7NPtylYSJ4+wg/tIn71m9DLstwUwdEGAvROdly6HXP6w==}
+  '@tanstack/query-devtools@5.101.3':
+    resolution: {integrity: sha512-twEAOB5uBmpFAdlIuy3KIUujwmoZIhCXZpu1PFMTress2XvK/CyzsvV70WrhtTcocszKpbvwMR0Bxq4dqkvH0g==}
 
-  '@tanstack/react-query-devtools@5.101.2':
-    resolution: {integrity: sha512-eU7HctdA9gDjqoERoEdzLbw9DiqnBDfh5+Hu0u26gjqoHJezOpQAuiesDL2VvkU+2cPV76zgv0tMZsOrI4LjnQ==}
+  '@tanstack/react-query-devtools@5.101.3':
+    resolution: {integrity: sha512-Xr4gCymObeVmtImtsPDVzOlvy3Itr2ti3IrtdbcyhsmpsM54v2A7VR9hTB40C6wzCf3yM4Q2LqkFbNm1u8wd3A==}
     peerDependencies:
-      '@tanstack/react-query': ^5.101.2
+      '@tanstack/react-query': ^5.101.3
       react: ^18 || ^19
 
-  '@tanstack/react-query@5.101.2':
-    resolution: {integrity: sha512-seDkr6kzGzX1okaaTtZPtgA688CDPlXUz1C6xSg0ESqn04Vuc8tlrYms1s3de+znBqhPVxFRfpAfUf+6XvfPWg==}
+  '@tanstack/react-query@5.101.3':
+    resolution: {integrity: sha512-ZjgcRwmQUSCythDPj6pE2NKFi9bpQegxIBxgt3hPytXI1ElFHNaa3A7aWW8vFaLCIRjPv467rbREYHbxcdgQbg==}
     peerDependencies:
       react: ^18 || ^19
 
@@ -1150,8 +1150,8 @@ packages:
   function-bind@1.1.2:
     resolution: {integrity: sha512-7XHNxH7qX9xG5mIwxkhumTox/MIRNcOgDrxWsMt2pAr23WHp6MrRlN7FBSFpCpr+oVO0F744iUgR82nJMfG2SA==}
 
-  happy-dom@20.10.6:
-    resolution: {integrity: sha512-6QD0ilzDDt93tX44y8tbmZdAcdTRYDhUP+Asgi6pC8Pp5IA3cvaZGyoVN/EGtlq9ziT65iPuBBn3ASLr6hCgVw==}
+  happy-dom@20.11.0:
+    resolution: {integrity: sha512-XogN4asPd1a56di9prVG6bZxteNcXsZxxKmAvcEfc5Px5Ca2hMyMgk8wvqK2K1V8zXg40j9VANXsDaJYh9DeNA==}
     engines: {node: '>=20.0.0'}
 
   hasown@2.0.4:
@@ -1350,8 +1350,8 @@ packages:
   magic-string@0.30.21:
     resolution: {integrity: sha512-vd2F4YUyEXKGcLHoq+TEyCjxueSeHnFxyyjNp80yg0XV4vUhnDer/lvvlqM/arB5bXQN5K2/3oinyCRyx8T2CQ==}
 
-  markdown-to-jsx@9.8.2:
-    resolution: {integrity: sha512-rWUuxKB5NsuJmSfUOuXkQ0O5qk0J/Lr3Lk6dzxKoKQI/jeHYlsVfz3zJdMLAhI46hHoXDYERWhtBOiqtWDZ4LA==}
+  markdown-to-jsx@9.9.0:
+    resolution: {integrity: sha512-3YRQuriODgdMr9EeY//Ya/104p978bY0nOwmc85IGxHixqOlhNDgq7IJTsLOdmFxjMFKJ6bVzUav30wWVJZOJQ==}
     engines: {node: '>= 18'}
     peerDependencies:
       react: '>= 16.0.0'
@@ -1408,8 +1408,8 @@ packages:
     resolution: {integrity: sha512-rJgTQnkUnH1sFw8yT6VSU3zD3sWmu6sZhIseY8VX+GRu3P6F7Fu+JNDoXfklElbLJSnc3FUQHVe4cU5hj+BcUg==}
     engines: {node: '>=0.10.0'}
 
-  obug@2.1.3:
-    resolution: {integrity: sha512-9miFgM2OFba7hB+pRgvtV84pYTBaoTHohvmIgiRt6dRIzbwEOIaNaP+dIlGs2fNFoB0SeISs0Jz5WFVRid6Xyg==}
+  obug@2.1.4:
+    resolution: {integrity: sha512-4a+OsYv9UktOJKE+l1A4OufDgdRF9PifWj+tJnHURo/P+WOxpG4GzUFL9qCalmWauao6ogiG+QvnCovwPoyAWA==}
     engines: {node: '>=12.20.0'}
 
   parent-module@1.0.1:
@@ -1449,8 +1449,8 @@ packages:
     resolution: {integrity: sha512-RvwwcruNjI1ncT5xRakeyS9Lf8lcItv34KD+aif+VH9kduAyfYBipGh12274xtenIPZ119/R9BdTBa8gAwSh0A==}
     engines: {node: '>=12'}
 
-  postcss@8.5.19:
-    resolution: {integrity: sha512-Mz8SaolMd8nB+G13WkORcxQKHZ/NE4xXevtkJHVuG+guo9/wYKlIMTKAqGdEmYOXR2ijPjTYNHssizdaVSUNdQ==}
+  postcss@8.5.20:
+    resolution: {integrity: sha512-lW616l85ucIQL+FocMmL7pQFPqBmwejrCMg+iPxyImlrANNJG9NHq/RkyCZopDhd8C3LA03PHRJDjkbGu8vvug==}
     engines: {node: ^10 || ^12 || >=14}
 
   pretty-format@27.5.1:
@@ -1851,8 +1851,8 @@ packages:
     engines: {node: '>=8'}
     hasBin: true
 
-  ws@8.21.0:
-    resolution: {integrity: sha512-Vsp28b7DRcimFQvrqu2Wek3z1iYxDCWqHYB8Qsnk/S4RfaCQzPGPyBNuVjJV3cd6UiKtUtp6sNM77gWvzcCH+g==}
+  ws@8.21.1:
+    resolution: {integrity: sha512-+0NTnW77fFN/DjQi6k/Sq/Yvk4Sgajw7urW8V+asjXnRgDs9gyGkdb7EzgfhA4goXsRIZKE28fzIXBHEzhuiWw==}
     engines: {node: '>=10.0.0'}
     peerDependencies:
       bufferutil: ^4.0.1
@@ -2309,19 +2309,19 @@ snapshots:
 
   '@tabler/icons@3.45.0': {}
 
-  '@tanstack/query-core@5.101.2': {}
+  '@tanstack/query-core@5.101.3': {}
 
-  '@tanstack/query-devtools@5.101.2': {}
+  '@tanstack/query-devtools@5.101.3': {}
 
-  '@tanstack/react-query-devtools@5.101.2(@tanstack/react-query@5.101.2(react@19.2.7))(react@19.2.7)':
+  '@tanstack/react-query-devtools@5.101.3(@tanstack/react-query@5.101.3(react@19.2.7))(react@19.2.7)':
     dependencies:
-      '@tanstack/query-devtools': 5.101.2
-      '@tanstack/react-query': 5.101.2(react@19.2.7)
+      '@tanstack/query-devtools': 5.101.3
+      '@tanstack/react-query': 5.101.3(react@19.2.7)
       react: 19.2.7
 
-  '@tanstack/react-query@5.101.2(react@19.2.7)':
+  '@tanstack/react-query@5.101.3(react@19.2.7)':
     dependencies:
-      '@tanstack/query-core': 5.101.2
+      '@tanstack/query-core': 5.101.3
       react: 19.2.7
 
   '@tanstack/react-table@8.21.3(react-dom@19.2.7(react@19.2.7))(react@19.2.7)':
@@ -2709,7 +2709,7 @@ snapshots:
 
   function-bind@1.1.2: {}
 
-  happy-dom@20.10.6:
+  happy-dom@20.11.0:
     dependencies:
       '@types/node': 25.9.5
       '@types/whatwg-mimetype': 3.0.2
@@ -2717,7 +2717,7 @@ snapshots:
       buffer-image-size: 0.6.4
       entities: 7.0.1
       whatwg-mimetype: 3.0.0
-      ws: 8.21.0
+      ws: 8.21.1
     transitivePeerDependencies:
       - bufferutil
       - utf-8-validate
@@ -2919,7 +2919,7 @@ snapshots:
     dependencies:
       '@jridgewell/sourcemap-codec': 1.5.5
 
-  markdown-to-jsx@9.8.2(react@19.2.7):
+  markdown-to-jsx@9.9.0(react@19.2.7):
     optionalDependencies:
       react: 19.2.7
 
@@ -2965,7 +2965,7 @@ snapshots:
 
   object-assign@4.1.1: {}
 
-  obug@2.1.3: {}
+  obug@2.1.4: {}
 
   parent-module@1.0.1:
     dependencies:
@@ -3006,7 +3006,7 @@ snapshots:
 
   picomatch@4.0.5: {}
 
-  postcss@8.5.19:
+  postcss@8.5.20:
     dependencies:
       nanoid: 3.3.16
       picocolors: 1.1.1
@@ -3409,7 +3409,7 @@ snapshots:
     dependencies:
       lightningcss: 1.32.0
       picomatch: 4.0.5
-      postcss: 8.5.19
+      postcss: 8.5.20
       rolldown: 1.1.5
       tinyglobby: 0.2.17
     optionalDependencies:
@@ -3417,7 +3417,7 @@ snapshots:
       fsevents: 2.3.3
       sass: 1.101.0
 
-  vitest@4.1.10(@types/node@25.9.5)(happy-dom@20.10.6)(vite@8.1.5(@types/node@25.9.5)(sass@1.101.0)):
+  vitest@4.1.10(@types/node@25.9.5)(happy-dom@20.11.0)(vite@8.1.5(@types/node@25.9.5)(sass@1.101.0)):
     dependencies:
       '@vitest/expect': 4.1.10
       '@vitest/mocker': 4.1.10(vite@8.1.5(@types/node@25.9.5)(sass@1.101.0))
@@ -3429,7 +3429,7 @@ snapshots:
       es-module-lexer: 2.3.1
       expect-type: 1.4.0
       magic-string: 0.30.21
-      obug: 2.1.3
+      obug: 2.1.4
       pathe: 2.0.3
       picomatch: 4.0.5
       std-env: 4.2.0
@@ -3441,7 +3441,7 @@ snapshots:
       why-is-node-running: 2.3.0
     optionalDependencies:
       '@types/node': 25.9.5
-      happy-dom: 20.10.6
+      happy-dom: 20.11.0
     transitivePeerDependencies:
       - msw
 
@@ -3458,7 +3458,7 @@ snapshots:
       siginfo: 2.0.0
       stackback: 0.0.2
 
-  ws@8.21.0: {}
+  ws@8.21.1: {}
 
   yaml@1.10.3: {}
 
