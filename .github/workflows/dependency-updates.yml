@@ -10,7 +10,7 @@ jobs:
   aws-lc-update:
     runs-on: ubuntu-slim
     steps:
-      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       - name: update aws-lc version
         id: update
         run: |
@@ -36,7 +36,7 @@ jobs:
   nginx-update:
     runs-on: ubuntu-slim
     steps:
-      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       - name: update nginx version
         id: update
         run: |
@@ -62,7 +62,7 @@ jobs:
   dynamic_tls_records-update:
     runs-on: ubuntu-slim
     steps:
-      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       - name: update dynamic_tls_records version
         id: update
         run: |
@@ -87,7 +87,7 @@ jobs:
   resolver_conf_parsing-update:
     runs-on: ubuntu-slim
     steps:
-      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       - name: update resolver_conf_parsing version
         id: update
         run: |
@@ -111,7 +111,7 @@ jobs:
   zlib-ng-patch-update:
     runs-on: ubuntu-slim
     steps:
-      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       - name: update zlib-ng-patch version
         id: update
         run: |
@@ -137,7 +137,7 @@ jobs:
   ngx_brotli-update:
     runs-on: ubuntu-slim
     steps:
-      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       - name: update ngx_brotli version
         id: update
         run: |
@@ -163,7 +163,7 @@ jobs:
   ngx_unbrotli-update:
     runs-on: ubuntu-slim
     steps:
-      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       - name: update ngx_unbrotli version
         id: update
         run: |
@@ -189,7 +189,7 @@ jobs:
   zstd-nginx-module-update:
     runs-on: ubuntu-slim
     steps:
-      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       - name: update zstd-nginx-module version
         id: update
         run: |
@@ -215,7 +215,7 @@ jobs:
   ngx_http_unzstd_filter_module-update:
     runs-on: ubuntu-slim
     steps:
-      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       - name: update ngx_http_unzstd_filter_module version
         id: update
         run: |
@@ -241,7 +241,7 @@ jobs:
   ngx-fancyindex-update:
     runs-on: ubuntu-slim
     steps:
-      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       - name: update ngx-fancyindex version
         id: update
         run: |
@@ -266,7 +266,7 @@ jobs:
   headers-more-nginx-module-update:
     runs-on: ubuntu-slim
     steps:
-      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       - name: update headers-more-nginx-module version
         id: update
         run: |
@@ -291,7 +291,7 @@ jobs:
   ngx_devel_kit-update:
     runs-on: ubuntu-slim
     steps:
-      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       - name: update ngx_devel_kit version
         id: update
         run: |
@@ -316,7 +316,7 @@ jobs:
   lua-nginx-module-update:
     runs-on: ubuntu-slim
     steps:
-      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       - name: update lua-nginx-module version
         id: update
         run: |
@@ -343,7 +343,7 @@ jobs:
   njs-update:
     runs-on: ubuntu-slim
     steps:
-      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       - name: update njs version
         id: update
         run: |
@@ -368,7 +368,7 @@ jobs:
   nginx-auth-ldap-update:
     runs-on: ubuntu-slim
     steps:
-      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       - name: update nginx-auth-ldap version
         id: update
         run: |
@@ -394,7 +394,7 @@ jobs:
   nginx-module-vts-update:
     runs-on: ubuntu-slim
     steps:
-      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       - name: update vts version
         id: update
         run: |
@@ -419,7 +419,7 @@ jobs:
   nginx-ntlm-module-update:
     runs-on: ubuntu-slim
     steps:
-      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       - name: update nginx-ntlm-module version
         id: update
         run: |
@@ -445,7 +445,7 @@ jobs:
   ngx_http_geoip2_module-update:
     runs-on: ubuntu-slim
     steps:
-      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       - name: update ngx_http_geoip2_module version
         id: update
         run: |
@@ -471,7 +471,7 @@ jobs:
   lua-resty-core-update:
     runs-on: ubuntu-slim
     steps:
-      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       - name: update lua-resty-core version
         id: update
         run: |
@@ -496,7 +496,7 @@ jobs:
   lua-resty-lrucache-update:
     runs-on: ubuntu-slim
     steps:
-      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       - name: update lua-resty-lrucache version
         id: update
         run: |
@@ -522,7 +522,7 @@ jobs:
   lua-cs-bouncer-update:
     runs-on: ubuntu-slim
     steps:
-      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       - name: update lua-cs-bouncer version
         id: update
         run: |
