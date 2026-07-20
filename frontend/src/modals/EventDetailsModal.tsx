@@ -1,4 +1,3 @@
-import CodeEditor from "@uiw/react-textarea-code-editor";
 import EasyModal, { type InnerModalProps } from "src/modules/easyModal";
 import { Alert } from "react-bootstrap";
 import Modal from "react-bootstrap/Modal";
@@ -40,12 +39,9 @@ const EventDetailsModal = EasyModal.create(({ id, visible, remove }: Props) => {
 								<EventFormatter row={data} />
 							</div>
 							<hr className="mt-4 mb-3" />
-							<CodeEditor
-								language="json"
-								padding={15}
-								data-color-mode="dark"
-								minHeight={200}
-								indentWidth={2}
+							<textarea
+								className="form-control"
+								spellCheck={false}
 								style={{
 									fontFamily:
 										"ui-monospace,SFMono-Regular,SF Mono,Consolas,Liberation Mono,Menlo,monospace",
