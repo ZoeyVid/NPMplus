@@ -500,9 +500,6 @@
 	"host.flags.send-noindex": {
 		"defaultMessage": "Send noindex header and block some user agents"
 	},
-	"host.flags.spoof-host-header": {
-		"defaultMessage": "Spoof Host Header, not recommended"
-	},
 	"host.flags.upstream-compression": {
 		"defaultMessage": "Enable compression by upstream, not recommended"
 	},
