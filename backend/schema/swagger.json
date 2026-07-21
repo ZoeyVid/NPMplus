@@ -343,6 +343,11 @@
 				"$ref": "./paths/users/userID/2fa/backup-codes/post.json"
 			}
 		},
+		"/users/{userID}/sessions": {
+			"delete": {
+				"$ref": "./paths/users/userID/sessions/delete.json"
+			}
+		},
 		"/users/{userID}/auth": {
 			"put": {
 				"$ref": "./paths/users/userID/auth/put.json"

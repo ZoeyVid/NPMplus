@@ -143,15 +143,6 @@ router
 
 			const data = await internalToken.getTokenFromOAuthClaim({ identity: claims.email.toLowerCase().trim() });
 
-			res.cookie("__Host-Http-token", data.token, {
-				signed: true,
-				httpOnly: true,
-				secure: true,
-				sameSite: "Strict",
-				expires: new Date(data.expires),
-			});
-
-			res.clearCookie("__Host-npmplus_oidc_no_redirect", { secure: true, sameSite: "Strict" });
 			res.clearCookie("__Host-Http-npmplus_oidc_state", {
 				httpOnly: true,
 				secure: true,
@@ -167,6 +158,23 @@ router
 				secure: true,
 				sameSite: "Lax",
 			});
+
+			if (data.requires2fa) {
+				res.cookie("__Host-npmplus_oidc_2fa_challenge", data.challenge_token, {
+					secure: true,
+					sameSite: "Strict",
+					maxAge: 5 * 60 * 1000,
+				});
+			} else {
+				res.cookie("__Host-Http-token", data.token, {
+					signed: true,
+					httpOnly: true,
+					secure: true,
+					sameSite: "Strict",
+					expires: new Date(data.expires),
+				});
+				res.clearCookie("__Host-npmplus_oidc_no_redirect", { secure: true, sameSite: "Strict" });
+			}
 			res.redirect("/");
 		} catch (err) {
 			logger.error(`Callback error: ${err.message}`);
