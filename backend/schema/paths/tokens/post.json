@@ -17,18 +17,15 @@
 							"type": "string",
 							"example": "me@example.com"
 						},
-						"scope": {
-							"minLength": 1,
-							"type": "string",
-							"enum": [
-								"user"
-							],
-							"example": "user"
-						},
 						"secret": {
 							"minLength": 1,
 							"type": "string",
 							"example": "bigredhorsebanana"
+						},
+						"code": {
+							"minLength": 1,
+							"type": "string",
+							"example": "123456"
 						}
 					},
 					"required": [

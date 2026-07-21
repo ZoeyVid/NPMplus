@@ -1,4 +1,4 @@
-import { IconLock, IconLogout, IconShieldLock, IconUser } from "@tabler/icons-react";
+import { IconDevicesX, IconLock, IconLogout, IconShieldLock, IconUser } from "@tabler/icons-react";
 import { LocalePicker, NavLink, ThemeSwitcher } from "src/components";
 import { useAuthState } from "src/context";
 import { useUser } from "src/hooks";
@@ -9,7 +9,7 @@ import styles from "./SiteHeader.module.css";
 export function SiteHeader() {
 	const { data: currentUser } = useUser("me");
 	const isAdmin = currentUser?.roles.includes("admin");
-	const { logout } = useAuthState();
+	const { logout, logoutEverywhere } = useAuthState();
 
 	return (
 		<header className="navbar navbar-expand-md d-print-none">
@@ -133,6 +133,17 @@ export function SiteHeader() {
 								>
 									<IconLogout width={18} />
 									<T id="user.logout" />
+								</a>
+								<a
+									href="?"
+									className="dropdown-item"
+									onClick={(e) => {
+										e.preventDefault();
+										logoutEverywhere();
+									}}
+								>
+									<IconDevicesX width={18} />
+									<T id="user.logout-everywhere" />
 								</a>
 							</div>
 						</div>

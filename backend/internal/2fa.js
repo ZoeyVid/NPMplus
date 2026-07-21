@@ -3,6 +3,7 @@ import bcrypt from "bcryptjs";
 import { createGuardrails, generateSecret, generateURI, verify } from "otplib";
 import errs from "../lib/error.js";
 import authModel from "../models/auth.js";
+import internalAuditLog from "./audit-log.js";
 import internalUser from "./user.js";
 
 const APP_NAME = "NPMplus";
@@ -70,6 +71,9 @@ const internal2fa = {
 	 */
 	startSetup: async (access, userId) => {
 		await access.can("users:password", userId);
+		if (Number(userId) !== access.token.getUserId(0)) {
+			throw new errs.PermissionError("2FA can only be managed for your own account");
+		}
 		const user = await internalUser.get(access, { id: userId });
 		const secret = generateSecret();
 		const otpauth_url = generateURI({
@@ -108,7 +112,10 @@ const internal2fa = {
 	 */
 	enable: async (access, userId, code) => {
 		await access.can("users:password", userId);
-		await internalUser.get(access, { id: userId });
+		if (Number(userId) !== access.token.getUserId(0)) {
+			throw new errs.PermissionError("2FA can only be managed for your own account");
+		}
+		const user = await internalUser.get(access, { id: userId });
 		const auth = await internal2fa.getUserPasswordAuth(userId);
 		const secret = auth?.meta?.totp_pending_secret || false;
 
@@ -141,6 +148,16 @@ const internal2fa = {
 			.andWhere("type", "password")
 			.patch({ meta });
 
+		await internalAuditLog.add(access, {
+			action: "updated",
+			object_type: "user",
+			object_id: user.id,
+			meta: {
+				name: user.name,
+				totp_enabled: true,
+			},
+		});
+
 		return { backup_codes: plain };
 	},
 
@@ -154,11 +171,13 @@ const internal2fa = {
 	 */
 	disable: async (access, userId, code) => {
 		await access.can("users:password", userId);
-		await internalUser.get(access, { id: userId });
+		if (Number(userId) !== access.token.getUserId(0)) {
+			throw new errs.PermissionError("2FA can only be managed for your own account");
+		}
+		const user = await internalUser.get(access, { id: userId });
 		const auth = await internal2fa.getUserPasswordAuth(userId);
 
-		const enabled = auth?.meta?.totp_enabled === true;
-		if (!enabled) {
+		if (auth?.meta?.totp_enabled !== true) {
 			throw new errs.ValidationError("2FA is not enabled");
 		}
 
@@ -226,6 +245,54 @@ const internal2fa = {
 			.andWhere("user_id", userId)
 			.andWhere("type", "password")
 			.patch({ meta });
+
+		await internalAuditLog.add(access, {
+			action: "updated",
+			object_type: "user",
+			object_id: user.id,
+			meta: {
+				name: user.name,
+				totp_enabled: false,
+			},
+		});
+	},
+
+	adminDisable: async (access, userId) => {
+		await access.can("users:2fadisable", userId);
+		if (Number(userId) === access.token.getUserId(0)) {
+			throw new errs.ValidationError("Missing required parameter: code");
+		}
+		const user = await internalUser.get(access, { id: userId });
+		const auth = await internal2fa.getUserPasswordAuth(userId);
+
+		if (auth?.meta?.totp_enabled !== true) {
+			throw new errs.ValidationError("2FA is not enabled");
+		}
+
+		const meta = { ...auth.meta };
+		delete meta.totp_secret;
+		delete meta.totp_enabled;
+		delete meta.totp_enabled_at;
+		delete meta.totp_pending_secret;
+		delete meta.backup_codes;
+
+		await authModel
+			.query()
+			.where("id", auth.id)
+			.andWhere("user_id", userId)
+			.andWhere("type", "password")
+			.patch({ meta });
+
+		await internalAuditLog.add(access, {
+			action: "updated",
+			object_type: "user",
+			object_id: user.id,
+			meta: {
+				name: user.name,
+				totp_enabled: false,
+				recovery: true,
+			},
+		});
 	},
 
 	/**
@@ -297,7 +364,10 @@ const internal2fa = {
 	 */
 	regenerateBackupCodes: async (access, userId, token) => {
 		await access.can("users:password", userId);
-		await internalUser.get(access, { id: userId });
+		if (Number(userId) !== access.token.getUserId(0)) {
+			throw new errs.PermissionError("2FA can only be managed for your own account");
+		}
+		const user = await internalUser.get(access, { id: userId });
 		const auth = await internal2fa.getUserPasswordAuth(userId);
 		const enabled = auth?.meta?.totp_enabled === true;
 		const secret = auth?.meta?.totp_secret || false;
@@ -311,54 +381,23 @@ const internal2fa = {
 
 		const tokenTrim = token.trim();
 
-		if (tokenTrim.length !== 6 && tokenTrim.length !== 8) {
+		if (tokenTrim.length !== 6) {
 			throw new errs.ValidationError("Invalid verification code");
 		}
 
-		// Try TOTP code first, if it's 6 chars. it will throw errors if it's not 6 chars
-		// and the backup codes are 8 chars.
-		if (tokenTrim.length === 6) {
-			const result = await verify({
-				token: tokenTrim,
-				secret,
-				// These guardrails lower the minimum length requirement for secrets.
-				// In v12 of otplib the default minimum length is 10 and in v13 it is 16.
-				// Since there are 2fa secrets in the wild generated with v12 we need to allow shorter secrets
-				// so people won't be locked out when upgrading.
-				guardrails: createGuardrails({
-					MIN_SECRET_BYTES: 10,
-				}),
-			});
-
-			if (!result.valid) {
-				throw new errs.ValidationError("Invalid verification code");
-			}
-		}
-
-		// Try backup codes
-		if (tokenTrim.length === 8) {
-			const backupCodes = auth?.meta?.backup_codes || [];
-			let invalid = true;
-			for (let i = 0; i < backupCodes.length; i++) {
-				const match = await bcrypt.compare(tokenTrim.toUpperCase(), backupCodes[i]);
-				if (match) {
-					// Remove used backup code
-					const updatedCodes = [...backupCodes];
-					updatedCodes.splice(i, 1);
-					const meta = { ...auth.meta, backup_codes: updatedCodes };
-					await authModel
-						.query()
-						.where("id", auth.id)
-						.andWhere("user_id", userId)
-						.andWhere("type", "password")
-						.patch({ meta });
-					invalid = false;
-				}
-			}
-
-			if (invalid) {
-				throw new errs.ValidationError("Invalid verification code");
-			}
+		const result = await verify({
+			token: tokenTrim,
+			secret,
+			// These guardrails lower the minimum length requirement for secrets.
+			// In v12 of otplib the default minimum length is 10 and in v13 it is 16.
+			// Since there are 2fa secrets in the wild generated with v12 we need to allow shorter secrets
+			// so people won't be locked out when upgrading.
+			guardrails: createGuardrails({
+				MIN_SECRET_BYTES: 10,
+			}),
+		});
+		if (!result.valid) {
+			throw new errs.ValidationError("Invalid verification code");
 		}
 
 		const { plain, hashed } = await generateBackupCodes();
@@ -370,6 +409,16 @@ const internal2fa = {
 			.andWhere("user_id", userId)
 			.andWhere("type", "password")
 			.patch({ meta });
+
+		await internalAuditLog.add(access, {
+			action: "updated",
+			object_type: "user",
+			object_id: user.id,
+			meta: {
+				name: user.name,
+				backup_codes_regenerated: true,
+			},
+		});
 
 		return { backup_codes: plain };
 	},
