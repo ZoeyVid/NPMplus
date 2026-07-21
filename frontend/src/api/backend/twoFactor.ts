@@ -35,3 +35,9 @@ export async function regenerateBackupCodes(userId: number | "me", code: string)
 		data: { code },
 	});
 }
+
+export async function adminDisable2FA(userId: number): Promise<boolean> {
+	return await api.del({
+		url: `/users/${userId}/2fa`,
+	});
+}
