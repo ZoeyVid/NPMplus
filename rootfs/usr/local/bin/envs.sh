@@ -140,6 +140,7 @@ export NGINX_LOAD_NTLM_MODULE="${NGINX_LOAD_NTLM_MODULE:-false}"
 export NGINX_LOAD_VHOST_TRAFFIC_STATUS_MODULE="${NGINX_LOAD_VHOST_TRAFFIC_STATUS_MODULE:-false}"
 export OIDC_REQUIRE_VERIFIED_EMAIL="${OIDC_REQUIRE_VERIFIED_EMAIL:-true}"
 export OIDC_DISABLE_PASSWORD="${OIDC_DISABLE_PASSWORD:-false}"
+export OIDC_SKIP_MFA="${OIDC_SKIP_MFA:-false}"
 if [ -s /data/anubis/happy.webp ] && [ -s /data/anubis/reject.webp ] && [ -s /data/anubis/pensive.webp ]; then
     export AUTH_REQUEST_ANUBIS_USE_CUSTOM_IMAGES="${AUTH_REQUEST_ANUBIS_USE_CUSTOM_IMAGES:-true}"
 else
@@ -744,11 +745,19 @@ if ! echo "$OIDC_DISABLE_PASSWORD" | grep -q "^true$\|^false$"; then
     sleep inf
 fi
 
+if ! echo "$OIDC_SKIP_MFA" | grep -q "^true$\|^false$"; then
+    echo "OIDC_SKIP_MFA needs to be true or false."
+    sleep inf
+fi
+
 if { [ -n "$OIDC_REDIRECT_DOMAIN" ] || [ -n "$OIDC_ISSUER_URL" ] || [ -n "$OIDC_CLIENT_ID" ] || [ -n "$OIDC_CLIENT_SECRET" ]; } && { [ -z "$OIDC_REDIRECT_DOMAIN" ] || [ -z "$OIDC_ISSUER_URL" ] || [ -z "$OIDC_CLIENT_ID" ] || [ -z "$OIDC_CLIENT_SECRET" ]; }; then
     echo "You need to set OIDC_REDIRECT_DOMAIN, OIDC_ISSUER_URL, OIDC_CLIENT_ID and OIDC_CLIENT_SECRET (all are needed) or none of them."
     sleep inf
 elif [ "$OIDC_DISABLE_PASSWORD" = "true" ] && [ -z "$OIDC_REDIRECT_DOMAIN" ] && [ -z "$OIDC_ISSUER_URL" ] && [ -z "$OIDC_CLIENT_ID" ] && [ -z "$OIDC_CLIENT_SECRET" ]; then
     echo "You need to configure OIDC to enable OIDC_DISABLE_PASSWORD."
+    sleep inf
+elif [ "$OIDC_SKIP_MFA" = "true" ] && [ -z "$OIDC_REDIRECT_DOMAIN" ] && [ -z "$OIDC_ISSUER_URL" ] && [ -z "$OIDC_CLIENT_ID" ] && [ -z "$OIDC_CLIENT_SECRET" ]; then
+    echo "You need to configure OIDC to enable OIDC_SKIP_MFA."
     sleep inf
 fi
 
