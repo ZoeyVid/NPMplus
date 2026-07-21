@@ -66,6 +66,10 @@ export default function (tokenString) {
 				.first();
 
 			if (user) {
+				if (tokenData.iat <= user.npmplus_token_valid_after) {
+					throw new errs.AuthError("Token has been revoked");
+				}
+
 				// make sure user has all scopes of the token
 				// The `user` role is not added against the user row, so we have to just add it here to get past this check.
 				user.roles.push("user");
@@ -203,7 +207,7 @@ export default function (tokenString) {
 		 */
 		load: async (allowInternal) => {
 			if (tokenString) {
-				return await Token.load(tokenString);
+				return await this.init();
 			}
 			allowInternalAccess = allowInternal;
 			return allowInternal || null;
