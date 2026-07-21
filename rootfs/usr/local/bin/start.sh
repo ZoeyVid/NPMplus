@@ -171,11 +171,6 @@ if [ -s /data/npmplus/database.sqlite ]; then
 fi
 
 
-if [ -s /data/keys.json ]; then
-    mv -vn /data/keys.json /data/npmplus/keys.json
-fi
-
-
 if [ -n "$(ls -A /data/nginx/default_www 2> /dev/null)" ]; then
     cp -van /data/nginx/default_www/* /data/html
 fi
@@ -236,7 +231,9 @@ fi
 rm -vrf /data/letsencrypt-acme-challenge \
         /data/nginx/default_host \
         /data/nginx/temp \
-        /data/logs
+        /data/logs \
+        /data/keys.json \
+        /data/npmplus/keys.json
 
 touch /data/tls/ech/cron.sh \
       /data/html/index.html \

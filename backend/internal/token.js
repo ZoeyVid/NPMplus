@@ -1,4 +1,3 @@
-import _ from "lodash";
 import errs from "../lib/error.js";
 import { parseDatePeriod } from "../lib/helpers.js";
 import authModel from "../models/auth.js";
@@ -16,16 +15,10 @@ export default {
 	 * @param   {Object} data
 	 * @param   {String} data.identity
 	 * @param   {String} data.secret
-	 * @param   {String} [data.scope]
-	 * @param   {String} [data.expiry]
-	 * @param   {String} [issuer]
 	 * @returns {Promise}
 	 */
-	getTokenFromEmail: async (data, issuer) => {
+	getTokenFromEmail: async (data) => {
 		const Token = TokenModel();
-
-		data.scope = data.scope || "user";
-		data.expiry = data.expiry || "1d";
 
 		const user = await userModel
 			.query()
@@ -49,23 +42,17 @@ export default {
 			throw new errs.AuthError(ERROR_MESSAGE_INVALID_AUTH, ERROR_MESSAGE_INVALID_AUTH_I18N);
 		}
 
-		if (data.scope !== "user" && _.indexOf(user.roles, data.scope) === -1) {
-			// The scope requested doesn't exist as a role against the user,
-			// you shall not pass.
-			throw new errs.AuthError(`Invalid scope: ${data.scope}`);
-		}
-
 		// Check if 2FA is enabled
 		const has2FA = await twoFactor.isEnabled(user.id);
 		if (has2FA) {
 			// Return challenge token instead of full token
 			const challengeToken = await Token.create({
-				iss: issuer || "api",
+				iss: "api",
 				attrs: {
 					id: user.id,
 				},
 				scope: ["2fa-challenge"],
-				expiresIn: "5m",
+				expiresIn: "3m",
 			});
 
 			return {
@@ -74,24 +61,18 @@ export default {
 			};
 		}
 
-		// Create a dayjs of the expiry expression
-		const expiry = parseDatePeriod(data.expiry);
-		if (expiry === null) {
-			throw new errs.AuthError(`Invalid expiry time: ${data.expiry}`);
-		}
-
 		const signed = await Token.create({
-			iss: issuer || "api",
+			iss: "api",
 			attrs: {
 				id: user.id,
 			},
-			scope: [data.scope],
-			expiresIn: data.expiry,
+			scope: ["user"],
+			expiresIn: "1h",
 		});
 
 		return {
 			token: signed.token,
-			expires: expiry.toISOString(),
+			expires: parseDatePeriod("1h").toISOString(),
 		};
 	},
 
@@ -102,9 +83,6 @@ export default {
 	 */
 	getTokenFromOAuthClaim: async (data) => {
 		const Token = TokenModel();
-
-		data.scope = "user";
-		data.expiry = "1d";
 
 		const user = await userModel
 			.query()
@@ -117,10 +95,23 @@ export default {
 			throw new errs.AuthError(ERROR_MESSAGE_INVALID_AUTH);
 		}
 
-		// Create a dayjs of the expiry expression
-		const expiry = parseDatePeriod(data.expiry);
-		if (expiry === null) {
-			throw new errs.AuthError(`Invalid expiry time: ${data.expiry}`);
+		// Check if 2FA is enabled
+		const has2FA = await twoFactor.isEnabled(user.id);
+		if (has2FA) {
+			// Return challenge token instead of full token
+			const challengeToken = await Token.create({
+				iss: "api",
+				attrs: {
+					id: user.id,
+				},
+				scope: ["2fa-challenge"],
+				expiresIn: "3m",
+			});
+
+			return {
+				requires2fa: true,
+				challenge_token: challengeToken.token,
+			};
 		}
 
 		const signed = await Token.create({
@@ -128,60 +119,36 @@ export default {
 			attrs: {
 				id: user.id,
 			},
-			scope: [data.scope],
-			expiresIn: data.expiry,
+			scope: ["user"],
+			expiresIn: "1h",
 		});
 
 		return {
 			token: signed.token,
-			expires: expiry.toISOString(),
+			expires: parseDatePeriod("1h").toISOString(),
 		};
 	},
 
 	/**
 	 * @param {Access} access
-	 * @param {Object} [data]
-	 * @param {String} [data.expiry]
-	 * @param {String} [data.scope]   Only considered if existing token scope is admin
 	 * @returns {Promise}
 	 */
-	getFreshToken: async (access, data) => {
+	getFreshToken: async (access) => {
 		const Token = TokenModel();
-		const thisData = data || {};
 
-		thisData.expiry = thisData.expiry || "1d";
-
-		if (access?.token.getUserId(0)) {
-			// Create a dayjs of the expiry expression
-			const expiry = parseDatePeriod(thisData.expiry);
-			if (expiry === null) {
-				throw new errs.AuthError(`Invalid expiry time: ${thisData.expiry}`);
-			}
-
-			const token_attrs = {
-				id: access.token.getUserId(0),
-			};
-
-			// Only admins can request otherwise scoped tokens
-			let scope = access.token.get("scope");
-			if (thisData.scope && access.token.hasScope("admin")) {
-				scope = [thisData.scope];
-
-				if (thisData.scope === "job-board" || thisData.scope === "worker") {
-					token_attrs.id = 0;
-				}
-			}
-
+		if (access?.token.getUserId(0) && access.token.hasScope("user")) {
 			const signed = await Token.create({
 				iss: "api",
-				scope: scope,
-				attrs: token_attrs,
-				expiresIn: thisData.expiry,
+				scope: ["user"],
+				attrs: {
+					id: access.token.getUserId(0),
+				},
+				expiresIn: "1h",
 			});
 
 			return {
 				token: signed.token,
-				expires: expiry.toISOString(),
+				expires: parseDatePeriod("1h").toISOString(),
 			};
 		}
 		throw new errs.AssertionFailedError("Existing token contained invalid user data");
@@ -191,12 +158,10 @@ export default {
 	 * Verify 2FA code and return full token
 	 * @param {string} challengeToken
 	 * @param {string} code
-	 * @param {string} [expiry]
 	 * @returns {Promise}
 	 */
-	verify2FA: async (challengeToken, code, expiry) => {
+	verify2FA: async (challengeToken, code) => {
 		const Token = TokenModel();
-		const tokenExpiry = expiry || "1d";
 
 		// Verify challenge token
 		let tokenData;
@@ -222,49 +187,18 @@ export default {
 			throw new errs.AuthError(ERROR_MESSAGE_INVALID_2FA, ERROR_MESSAGE_INVALID_2FA_I18N);
 		}
 
-		// Create full token
-		const expiryDate = parseDatePeriod(tokenExpiry);
-		if (expiryDate === null) {
-			throw new errs.AuthError(`Invalid expiry time: ${tokenExpiry}`);
-		}
-
 		const signed = await Token.create({
 			iss: "api",
 			attrs: {
 				id: userId,
 			},
 			scope: ["user"],
-			expiresIn: tokenExpiry,
+			expiresIn: "1h",
 		});
 
 		return {
 			token: signed.token,
-			expires: expiryDate.toISOString(),
-		};
-	},
-
-	/**
-	 * @param   {Object} user
-	 * @returns {Promise}
-	 */
-	getTokenFromUser: async (user) => {
-		const expire = "1d";
-		const Token = TokenModel();
-		const expiry = parseDatePeriod(expire);
-
-		const signed = await Token.create({
-			iss: "api",
-			attrs: {
-				id: user.id,
-			},
-			scope: ["user"],
-			expiresIn: expire,
-		});
-
-		return {
-			token: signed.token,
-			expires: expiry.toISOString(),
-			user: user,
+			expires: parseDatePeriod("1h").toISOString(),
 		};
 	},
 };

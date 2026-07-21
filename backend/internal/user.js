@@ -573,20 +573,13 @@ const internalUser = {
 			});
 	},
 
-	/**
-	 * @param {Access}   access
-	 * @param {Object}   data
-	 * @param {Integer}  data.id
-	 */
-	loginAs: (access, data) => {
-		return access
-			.can("users:loginas", data.id)
-			.then(() => {
-				return internalUser.get(access, data);
-			})
-			.then((user) => {
-				return internalToken.getTokenFromUser(user);
-			});
+	revokeSessions: async (access, userId) => {
+		await access.can("users:revoke", userId);
+		await userModel
+			.query()
+			.where("id", userId)
+			.patch({ npmplus_token_valid_after: Math.floor(Date.now() / 1000) });
+		return true;
 	},
 };
 

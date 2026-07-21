@@ -10,7 +10,7 @@ import { getPrivateKey, getPublicKey } from "../lib/config.js";
 import errs from "../lib/error.js";
 import { global as logger } from "../logger.js";
 
-const ALGO = "RS256";
+const ALGO = "ES512";
 
 export default () => {
 	let tokenData = {};
