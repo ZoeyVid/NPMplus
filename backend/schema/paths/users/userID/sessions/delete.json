@@ -1,31 +1,26 @@
 {
-	"operationId": "disableUser2fa",
-	"summary": "Disable 2fa for user",
+	"operationId": "revokeUserSessions",
+	"summary": "Revoke all of a user's sessions",
 	"tags": ["users"],
 	"parameters": [
 		{
 			"in": "path",
 			"name": "userID",
 			"schema": {
-				"type": "integer",
-				"minimum": 1
+				"oneOf": [
+					{
+						"type": "string",
+						"pattern": "^me$"
+					},
+					{
+						"type": "integer",
+						"minimum": 1
+					}
+				]
 			},
 			"required": true,
-			"description": "User ID",
+			"description": "User ID or 'me' for yourself",
 			"example": 2
-		},
-		{
-			"in": "query",
-			"name": "code",
-			"schema": {
-				"type": "string",
-				"minLength": 6,
-				"maxLength": 8,
-				"example": "012345"
-			},
-			"required": false,
-			"description": "2fa Code",
-			"example": "012345"
 		}
 	],
 	"responses": {

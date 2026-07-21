@@ -2,18 +2,16 @@ import { IconSearch } from "@tabler/icons-react";
 import { useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
 import Alert from "react-bootstrap/Alert";
-import { deleteUser, toggleUser } from "src/api/backend";
+import { adminDisable2FA, deleteUser, revokeSessions, toggleUser } from "src/api/backend";
 import { Button, LoadingPage } from "src/components";
-import { useAuthState } from "src/context";
 import { useUser, useUsers } from "src/hooks";
 import { T } from "src/locale";
 import { showDeleteConfirmModal, showPermissionsModal, showSetPasswordModal, showUserModal } from "src/modals";
-import { showError, showObjectSuccess } from "src/notifications";
+import { showObjectSuccess } from "src/notifications";
 import Table from "./Table";
 
 export default function TableWrapper() {
 	const queryClient = useQueryClient();
-	const { loginAs } = useAuthState();
 	const [search, setSearch] = useState("");
 	const { isFetching, isLoading, isError, error, data } = useUsers(["permissions"]);
 	const { data: currentUser } = useUser("me");
@@ -26,16 +24,6 @@ export default function TableWrapper() {
 		return <Alert variant="danger">{error?.message || "Unknown error"}</Alert>;
 	}
 
-	const handleLoginAs = async (id: number) => {
-		try {
-			await loginAs(id);
-		} catch (err) {
-			if (err instanceof Error) {
-				showError(err.message);
-			}
-		}
-	};
-
 	const handleDelete = async (id: number) => {
 		await deleteUser(id);
 		showObjectSuccess("user", "deleted");
@@ -46,6 +34,16 @@ export default function TableWrapper() {
 		queryClient.invalidateQueries({ queryKey: ["users"] });
 		queryClient.invalidateQueries({ queryKey: ["user", id] });
 		showObjectSuccess("user", enabled ? "enabled" : "disabled");
+	};
+
+	const handleReset2FA = async (id: number) => {
+		await adminDisable2FA(id);
+		showObjectSuccess("user", "updated");
+	};
+
+	const handleRevokeSessions = async (id: number) => {
+		await revokeSessions(id);
+		showObjectSuccess("user", "updated");
 	};
 
 	let filtered = null;
@@ -105,6 +103,22 @@ export default function TableWrapper() {
 					onEditUser={(id: number) => showUserModal(id)}
 					onEditPermissions={(id: number) => showPermissionsModal(id)}
 					onSetPassword={(id: number) => showSetPasswordModal(id)}
+					onReset2FA={(id: number) =>
+						showDeleteConfirmModal({
+							tTitle: "user.reset-2fa",
+							children: <T id="user.reset-2fa.content" />,
+							onConfirm: () => handleReset2FA(id),
+							invalidations: [["users"], ["user", id]],
+						})
+					}
+					onRevokeSessions={(id: number) =>
+						showDeleteConfirmModal({
+							tTitle: "user.revoke-sessions",
+							children: <T id="user.revoke-sessions.content" />,
+							onConfirm: () => handleRevokeSessions(id),
+							invalidations: [["users"], ["user", id]],
+						})
+					}
 					onDeleteUser={(id: number) =>
 						showDeleteConfirmModal({
 							title: <T id="object.delete" tData={{ object: "user" }} />,
@@ -115,7 +129,6 @@ export default function TableWrapper() {
 					}
 					onDisableToggle={handleDisableToggle}
 					onNewUser={() => showUserModal("new")}
-					onLoginAs={handleLoginAs}
 				/>
 			</div>
 		</div>
