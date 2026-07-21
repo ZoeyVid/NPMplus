@@ -12,6 +12,10 @@ import error from "../lib/error.js";
 import utils from "../lib/utils.js";
 import { debug, ssl as logger } from "../logger.js";
 import certificateModel from "../models/certificate.js";
+import deadHostModel from "../models/dead_host.js";
+import proxyHostModel from "../models/proxy_host.js";
+import redirectionHostModel from "../models/redirection_host.js";
+import streamModel from "../models/stream.js";
 import pjson from "../package.json" with { type: "json" };
 import internalAuditLog from "./audit-log.js";
 import internalNginx from "./nginx.js";
@@ -361,6 +365,19 @@ const internalCertificate = {
 			throw new error.ItemNotFoundError(data.id);
 		}
 
+		for (const hostModel of [proxyHostModel, redirectionHostModel, deadHostModel, streamModel]) {
+			const hosts = await hostModel.query().where("is_deleted", 0).select("id", "certificate_id", "meta");
+			if (
+				hosts.some(
+					(host) =>
+						Number(host.certificate_id) === row.id ||
+						Number(host.meta?.npmplus_mtls_certificate_id) === row.id,
+				)
+			) {
+				throw new error.ValidationError("Certificate is still in use");
+			}
+		}
+
 		await certificateModel.query().where("id", row.id).patch({
 			is_deleted: 1,
 		});
@@ -553,6 +570,7 @@ const internalCertificate = {
 
 		certificate.meta = _.assign({}, row.meta, certs);
 		await internalCertificate.writeCustomCert(certificate);
+		await internalNginx.reload();
 		return _.omit(certificate.meta, internalCertificate.allowedSslFiles);
 	},
 
