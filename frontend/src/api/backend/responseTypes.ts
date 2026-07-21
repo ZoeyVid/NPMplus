@@ -1,5 +1,3 @@
-import type { User } from "./models";
-
 export interface HealthResponse {
 	status: string;
 	version: string;
@@ -15,10 +13,6 @@ export interface TokenResponse {
 export interface ValidatedCertificateResponse {
 	certificate: Record<string, any>;
 	certificateKey: boolean;
-}
-
-export interface LoginAsTokenResponse extends TokenResponse {
-	user: User;
 }
 
 export interface VersionCheckResponse {
