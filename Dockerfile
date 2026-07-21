@@ -5,7 +5,7 @@ SHELL ["/bin/ash", "-eo", "pipefail", "-c"]
 ARG LUAJIT_INC=/usr/include/luajit-2.1
 ARG LUAJIT_LIB=/usr/lib
 
-ARG AWSLC_VER=970583b1061b407d09b5fc1f18bbba38690e1684 # v5.3.0
+ARG AWSLC_VER=f6acf748df0ea6157d55e640730b38d21a7751cd # v5.4.0
 
 ARG NGINX_VER=a885808aa592eea32c8064624717be3d94fbdfe7 # release-1.31.3
 ARG DTR_VER=1.29.2
@@ -23,7 +23,7 @@ ARG LNM_VER=4b21d8f5fd3cc94fd25c530b3a61405af9666d0b # v0.10.31
 
 ARG NJS_VER=ad60b62c3b4ca6339ca19c19ceed8c942dbe575d # 1.0.0
 ARG NAL_VER=241200eac8e4acae74d353291bd27f79e5ca3dc4 # master
-ARG VTS_VER=b2a036ab6c1ffd5615f9ea57d6710287590735cd # v0.2.5
+ARG VTS_VER=4875eef7767940528c60ffd293fb2348232d8a62 # v0.2.6
 ARG NNTLM_VER=3da77b0cb30e517dfee01d7e7f7d649144d24051 # master
 ARG NHG2M_VER=cbaa35461c62a99d2577e6bae3273492502d8769 # 3.4
 
@@ -36,7 +36,7 @@ RUN apk upgrade --no-cache -a && \
     apk add --no-cache git clang lld compiler-rt llvm-libunwind-dev libc++-dev linux-headers cmake ninja make llvm file \
                        libatomic_ops-dev pcre2-dev luajit-dev zlib-ng-dev brotli-dev zstd-dev libxslt-dev openldap-dev quickjs-ng-dev libmaxminddb-dev clang-dev
 
-RUN for f in $(apk info --no-cache -qL libgcc-static libstdc++-dev); do rm /"$f"; done && \
+RUN for f in $(apk info --no-cache -qL libgcc-static libstdc++-dev); do rm -v /"$f"; done && \
     echo "-fuse-ld=lld --rtlib=compiler-rt --unwindlib=libunwind -stdlib=libc++ -D_LIBCPP_HARDENING_MODE=_LIBCPP_HARDENING_MODE_EXTENSIVE" | tee /etc/clang*/*.cfg
 
 ARG CC=clang
@@ -188,7 +188,6 @@ COPY frontend/package.json frontend/pnpm-lock.yaml frontend/pnpm-workspace.yaml 
 RUN apk upgrade --no-cache -a && \
     apk add --no-cache nodejs pnpm llvm file gzip brotli zstd && \
     pnpm install --frozen-lockfile && \
-    pnpm cache delete && \
     find /app/node_modules -name "*.map" -delete && \
     find /app/node_modules -name "*.node" -type f -exec llvm-strip -s {} \; && \
     find /app/node_modules -name "*.node" -type f -exec file {} \;
@@ -208,9 +207,14 @@ COPY backend/package.json backend/pnpm-lock.yaml backend/pnpm-workspace.yaml /ap
 RUN apk upgrade --no-cache -a && \
     apk add --no-cache nodejs pnpm llvm file && \
     pnpm install --frozen-lockfile --prod && \
-    pnpm cache delete && \
     find /app/node_modules -name "*.map" -delete && \
-    rm -r /app/node_modules/better-sqlite3/deps/sqlite3 && \
+    rm -vr /app/node_modules/better-sqlite3/deps/sqlite3 && \
+    case "$(uname -m)" in \
+      x86_64) keep="linuxmusl-x64.node" ;; \
+      aarch64) keep="linuxmusl-arm64.node" ;; \
+      *) keep="linuxmusl-*.node" ;; \
+    esac && \
+    find /app/node_modules/better-sqlite3/prebuilds -name '*.node' ! -name "$keep" -delete && \
     find /app/node_modules -name "*.node" -type f -exec llvm-strip -s {} \; && \
     find /app/node_modules -name "*.node" -type f -exec file {} \;
 COPY backend /app
@@ -266,7 +270,7 @@ RUN apk upgrade --no-cache -a && \
     mv /src/lua-cs-bouncer/templates/ban.html /etc/ban.html.original && \
     \
     cd && \
-    rm -r /src /tmp/luarocks_local_cache-* && \
+    rm -vr /src /tmp/luarocks_local_cache-* && \
     apk del --no-cache luarocks5.1 git make && \
     \
     sed -i "s|placeholder|$(cat /app/package.json | jq -r .version)|g" /usr/local/nginx/conf/conf.d/crowdsec.conf.disabled && \
