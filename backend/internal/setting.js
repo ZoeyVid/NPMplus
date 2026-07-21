@@ -1,6 +1,7 @@
 import { writeFile } from "node:fs/promises";
 import errs from "../lib/error.js";
 import settingModel from "../models/setting.js";
+import internalAuditLog from "./audit-log.js";
 import internalNginx from "./nginx.js";
 
 const internalSetting = {
@@ -32,6 +33,14 @@ const internalSetting = {
 				});
 			})
 			.then(async (row) => {
+				await internalAuditLog.add(access, {
+					action: "updated",
+					object_type: "setting",
+					meta: {
+						id: row.id,
+						value: row.value,
+					},
+				});
 				if (row.id === "default-site") {
 					// write the html if we need to
 					if (row.value === "html") {
