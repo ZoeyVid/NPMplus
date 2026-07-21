@@ -2,7 +2,7 @@ import { existsSync, readFileSync, writeFileSync } from "node:fs";
 import crypto from "node:crypto";
 import { global as logger } from "../logger.js";
 
-const keysFile = "/data/npmplus/keys.json";
+const keysFile = "/data/npmplus/keys-ec.json";
 const sqliteEngine = "better-sqlite3";
 const mysqlEngine = "mysql2";
 const postgresEngine = "pg";
@@ -104,8 +104,8 @@ const generateKeys = () => {
 	logger.info("Creating a new JWT key pair...");
 
 	// Now create the keys and save them in the config.
-	const { privateKey, publicKey } = crypto.generateKeyPairSync("rsa", {
-		modulusLength: 2048,
+	const { privateKey, publicKey } = crypto.generateKeyPairSync("ec", {
+		namedCurve: "P-521",
 		publicKeyEncoding: {
 			type: "spki",
 			format: "pem",
