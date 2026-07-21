@@ -866,11 +866,26 @@
 	"user.logout": {
 		"defaultMessage": "Logout"
 	},
+	"user.logout-everywhere": {
+		"defaultMessage": "Logout everywhere"
+	},
 	"user.new-password": {
 		"defaultMessage": "New Password"
 	},
 	"user.nickname": {
 		"defaultMessage": "Nickname"
+	},
+	"user.reset-2fa": {
+		"defaultMessage": "Reset 2FA"
+	},
+	"user.reset-2fa.content": {
+		"defaultMessage": "This disables two-factor authentication for this user without their recovery code. They can set it up again afterwards. Continue?"
+	},
+	"user.revoke-sessions": {
+		"defaultMessage": "Revoke sessions"
+	},
+	"user.revoke-sessions.content": {
+		"defaultMessage": "This logs the user out of all their sessions on every device. Continue?"
 	},
 	"user.set-password": {
 		"defaultMessage": "Set Password"
