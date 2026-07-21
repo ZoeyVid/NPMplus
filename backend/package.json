@@ -11,7 +11,7 @@
 		"ajv": "8.20.0",
 		"archiver": "8.0.0",
 		"bcryptjs": "3.0.3",
-		"better-sqlite3": "12.11.1",
+		"better-sqlite3": "13.0.1",
 		"cookie-parser": "1.4.7",
 		"dayjs": "1.11.21",
 		"express": "5.2.1",
@@ -30,6 +30,6 @@
 	},
 	"devDependencies": {
 		"@apidevtools/swagger-parser": "12.1.0",
-		"@biomejs/biome": "2.5.4"
+		"@biomejs/biome": "2.5.5"
 	}
 }
