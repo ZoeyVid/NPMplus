@@ -32,11 +32,9 @@ const internalUser = {
 		data.roles = data.roles || [];
 
 		data.email = data.email.toLowerCase().trim();
-		internalUser.isEmailAvailable(data.email).then((available) => {
-			if (!available) {
-				throw new errs.ValidationError(`Email address already in use - ${data.email}`);
-			}
-		});
+		if (!(await internalUser.isEmailAvailable(data.email))) {
+			throw new errs.ValidationError(`Email address already in use - ${data.email}`);
+		}
 
 		if (typeof data.is_disabled !== "undefined") {
 			data.is_disabled = data.is_disabled ? 1 : 0;
@@ -92,7 +90,7 @@ const internalUser = {
 
 		let user = await userModel.query().insertAndFetch(data).then(utils.omitRow(omissions()));
 		if (auth) {
-			user = await authModel.query().insert({
+			await authModel.query().insert({
 				user_id: user.id,
 				type: auth.type,
 				secret: auth.secret,
@@ -573,20 +571,13 @@ const internalUser = {
 			});
 	},
 
-	/**
-	 * @param {Access}   access
-	 * @param {Object}   data
-	 * @param {Integer}  data.id
-	 */
-	loginAs: (access, data) => {
-		return access
-			.can("users:loginas", data.id)
-			.then(() => {
-				return internalUser.get(access, data);
-			})
-			.then((user) => {
-				return internalToken.getTokenFromUser(user);
-			});
+	revokeSessions: async (access, userId) => {
+		await access.can("users:revoke", userId);
+		await userModel
+			.query()
+			.where("id", userId)
+			.patch({ npmplus_token_valid_after: Math.floor(Date.now() / 1000) });
+		return true;
 	},
 };
 
