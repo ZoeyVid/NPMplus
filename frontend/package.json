@@ -20,7 +20,7 @@
 		"query-string": "9.4.1",
 		"react": "19.2.7",
 		"react-bootstrap": "2.10.10",
-		"react-dom": "19.2.7",
+		"react-dom": "19.2.8",
 		"react-intl": "10.1.18",
 		"react-router-dom": "7.18.1",
 		"react-select": "5.10.2",
