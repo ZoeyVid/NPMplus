@@ -4,9 +4,9 @@ import { useIntervalWhen } from "rooks";
 import {
 	getToken,
 	isTwoFactorChallenge,
-	loginAsUser,
 	deleteToken,
 	refreshToken,
+	revokeSessions,
 	verify2FA,
 	type TokenResponse,
 } from "src/api/backend";
@@ -24,12 +24,19 @@ export interface AuthContextType {
 	login: (username: string, password: string) => Promise<void>;
 	verifyTwoFactor: (code: string) => Promise<void>;
 	cancelTwoFactor: () => void;
-	loginAs: (id: number) => Promise<void>;
 	logout: () => void;
+	logoutEverywhere: () => void;
 }
 
 const initalValue = null;
 const AuthContext = createContext<AuthContextType | null>(initalValue);
+
+const getCookie = (name: string): string | undefined => {
+	const value = `; ${document.cookie}`;
+	const parts = value.split(`; ${name}=`);
+	if (parts.length === 2) return parts.pop()?.split(";").shift();
+	return undefined;
+};
 
 // Provider
 interface Props {
@@ -39,7 +46,10 @@ interface Props {
 function AuthProvider({ children, tokenRefreshInterval = 5 * 60 * 1000 }: Props) {
 	const queryClient = useQueryClient();
 	const [authenticated, setAuthenticated] = useState(AuthStore.hasActiveToken());
-	const [twoFactorChallenge, setTwoFactorChallenge] = useState<TwoFactorChallenge | null>(null);
+	const [twoFactorChallenge, setTwoFactorChallenge] = useState<TwoFactorChallenge | null>(() => {
+		const challenge = getCookie("__Host-npmplus_oidc_2fa_challenge");
+		return challenge ? { challengeToken: challenge } : null;
+	});
 
 	const handleTokenUpdate = (response: TokenResponse) => {
 		AuthStore.set(response);
@@ -68,15 +78,15 @@ function AuthProvider({ children, tokenRefreshInterval = 5 * 60 * 1000 }: Props)
 		setTwoFactorChallenge(null);
 	};
 
-	const loginAs = async (id: number) => {
-		const response = await loginAsUser(id);
-		AuthStore.add(response);
-		queryClient.clear();
-		window.location.reload();
-	};
-
 	const logout = async () => {
 		await deleteToken();
+		AuthStore.clear();
+		setAuthenticated(false);
+		queryClient.clear();
+	};
+
+	const logoutEverywhere = async () => {
+		await revokeSessions("me");
 		AuthStore.clear();
 		setAuthenticated(false);
 		queryClient.clear();
@@ -89,6 +99,10 @@ function AuthProvider({ children, tokenRefreshInterval = 5 * 60 * 1000 }: Props)
 
 	useEffect(() => {
 		if (!authenticated) {
+			if (twoFactorChallenge) {
+				window.cookieStore.delete("__Host-npmplus_oidc_2fa_challenge");
+				return;
+			}
 			refresh(false).catch(() => {});
 		}
 	});
@@ -109,8 +123,8 @@ function AuthProvider({ children, tokenRefreshInterval = 5 * 60 * 1000 }: Props)
 		login,
 		verifyTwoFactor,
 		cancelTwoFactor,
-		loginAs,
 		logout,
+		logoutEverywhere,
 	};
 
 	return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
