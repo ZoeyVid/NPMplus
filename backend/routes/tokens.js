@@ -51,10 +51,7 @@ router
 		}
 
 		try {
-			const data = await internalToken.getFreshToken(res.locals.access, {
-				expiry: typeof req.query.expiry !== "undefined" ? req.query.expiry : null,
-				scope: typeof req.query.scope !== "undefined" ? req.query.scope : null,
-			});
+			const data = await internalToken.getFreshToken(res.locals.access);
 
 			res.cookie("__Host-Http-token", data.token, {
 				signed: true,
@@ -141,10 +138,6 @@ router
 	 */
 	.post(async (req, res, next) => {
 		try {
-			if (process.env.OIDC_DISABLE_PASSWORD === "true") {
-				throw new errs.AuthError("Non OIDC login is disabled");
-			}
-
 			const { challenge_token, code } = await apiValidator(getValidationSchema("/tokens/2fa", "post"), req.body);
 			const result = await internalToken.verify2FA(challenge_token, code);
 			const { token, ...responseBody } = result;
@@ -157,6 +150,7 @@ router
 					sameSite: "Strict",
 					expires: new Date(result.expires),
 				});
+				res.clearCookie("__Host-npmplus_oidc_no_redirect", { secure: true, sameSite: "Strict" });
 			}
 
 			res.status(200).send(responseBody);
