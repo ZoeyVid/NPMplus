@@ -199,7 +199,7 @@ if [ -d /data/tls/certbot/live ] && [ -d /data/tls/certbot/archive ]; then
   while IFS= read -r cert
   do
     rm -vf "$cert"
-    ln -rs "$(find /data/tls/certbot/archive/"$(echo "$cert" | sed "s|/data/tls/certbot/live/\(npm-[0-9]\+/.*\).pem|\1|g")"*.pem | sort -V | tail -n1 | sed "s|/data/tls/certbot/|../../|g")" "$cert"
+    ln -rs "$(find /data/tls/certbot/archive/"$(echo "$cert" | sed "s|/data/tls/certbot/live/\(npm-[0-9]\+/.*\).pem|\1|g")"*.pem | sort -V | tail -n1)" "$cert"
   done < /tmp/certs.txt
   rm /tmp/certs.txt
 fi
