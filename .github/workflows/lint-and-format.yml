@@ -8,6 +8,8 @@ on:
 jobs:
   lint-and-format:
     runs-on: ubuntu-slim
+    env:
+      BIOME: ${{ github.event_name == 'pull_request' && 'ci' || 'check --write' }}
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
@@ -16,24 +18,18 @@ jobs:
       - uses: pnpm/action-setup@0ebf47130e4866e96fce0953f49152a61190b271 # v6.0.9
         with:
           version: latest
-      - name: sponge
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y moreutils
       - name: backend
         run: |
           set -x
           cd backend
           pnpm install --frozen-lockfile
-          pnpm biome lint --write
-          pnpm biome format --write
+          pnpm biome $BIOME --reporter=default --reporter=github || echo "BIOME_FAILED=1" >> "$GITHUB_ENV"
       - name: frontend
         run: |
           set -x
           cd frontend
           pnpm install --frozen-lockfile
-          pnpm biome lint --write
-          pnpm biome format --write
+          pnpm biome $BIOME --reporter=default --reporter=github || echo "BIOME_FAILED=1" >> "$GITHUB_ENV"
           ./src/locale/scripts/locale-sort.sh
           pnpm formatjs compile-folder src/locale/src src/locale/lang
           pnpm tsc --noEmit
@@ -51,3 +47,9 @@ jobs:
           branch: lint-and-format
           title: lint-and-format
           body: lint-and-format
+      - name: diff
+        if: ${{ github.event_name == 'pull_request' }}
+        run: git diff --exit-code
+      - name: biome
+        if: ${{ env.BIOME_FAILED == '1' }}
+        run: exit 1
