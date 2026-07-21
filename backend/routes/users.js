@@ -2,7 +2,6 @@ import express from "express";
 import internal2FA from "../internal/2fa.js";
 import internalUser from "../internal/user.js";
 import Access from "../lib/access.js";
-import errs from "../lib/error.js";
 import jwtdecode from "../lib/express/jwt-decode.js";
 import userIdFromMe from "../lib/express/user-id-from-me.js";
 import apiValidator from "../lib/validator/api.js";
@@ -16,6 +15,19 @@ const router = express.Router({
 	strict: true,
 	mergeParams: true,
 });
+
+const limiter = rateLimit({
+	windowMs: 5 * 60 * 1000,
+	limit: 5,
+	message: { error: { message: "Too many requests, please try again later." } },
+	standardHeaders: "draft-8",
+	legacyHeaders: false,
+	ipv6Subnet: 48,
+	skipSuccessfulRequests: true,
+	validate: { trustProxy: false },
+});
+
+router.use(limiter);
 
 /**
  * /api/users
@@ -242,47 +254,6 @@ router
 	});
 
 /**
- * Specific user login as
- *
- * /api/users/123/login
- */
-router
-	.route("/:user_id/login")
-	.options((_, res) => {
-		res.sendStatus(204);
-	})
-	.all(jwtdecode())
-
-	/**
-	 * POST /api/users/123/login
-	 *
-	 * Log in as a user
-	 */
-	.post(async (req, res, next) => {
-		try {
-			const result = await internalUser.loginAs(res.locals.access, {
-				id: Number.parseInt(req.params.user_id, 10),
-			});
-			const { token, ...responseBody } = result;
-
-			if (result.token && result.expires) {
-				res.cookie("__Host-Http-token", result.token, {
-					signed: true,
-					httpOnly: true,
-					secure: true,
-					sameSite: "Strict",
-					expires: new Date(result.expires),
-				});
-			}
-
-			res.status(200).send(responseBody);
-		} catch (err) {
-			debug(logger, `${req.method.toUpperCase()} ${req.originalUrl}: ${err}`);
-			next(err);
-		}
-	});
-
-/**
  * User 2FA status
  *
  * /api/users/123/2fa
@@ -333,10 +304,11 @@ router
 	.delete(async (req, res, next) => {
 		try {
 			const code = typeof req.query.code === "string" ? req.query.code : null;
-			if (!code) {
-				throw new errs.ValidationError("Missing required parameter: code");
+			if (code) {
+				await internal2FA.disable(res.locals.access, req.params.user_id, code);
+			} else {
+				await internal2FA.adminDisable(res.locals.access, req.params.user_id);
 			}
-			await internal2FA.disable(res.locals.access, req.params.user_id, code);
 			res.status(200).send(true);
 		} catch (err) {
 			debug(logger, `${req.method.toUpperCase()} ${req.path}: ${err}`);
@@ -401,6 +373,36 @@ router
 			res.status(200).send(result);
 		} catch (err) {
 			debug(logger, `${req.method.toUpperCase()} ${req.path}: ${err}`);
+			next(err);
+		}
+	});
+
+router
+	.route("/:user_id/sessions")
+	.options((_, res) => {
+		res.sendStatus(204);
+	})
+	.all(jwtdecode())
+	.all(userIdFromMe)
+
+	/**
+	 * DELETE /api/users/123/sessions
+	 *
+	 * Revoke all of a user's sessions (self or admin)
+	 */
+	.delete(async (req, res, next) => {
+		try {
+			await internalUser.revokeSessions(res.locals.access, req.params.user_id);
+			if (Number(req.params.user_id) === res.locals.access.token.getUserId(0)) {
+				res.clearCookie("__Host-Http-token", {
+					httpOnly: true,
+					secure: true,
+					sameSite: "Strict",
+				});
+			}
+			res.status(200).send(true);
+		} catch (err) {
+			debug(logger, `${req.method.toUpperCase()} ${req.originalUrl}: ${err}`);
 			next(err);
 		}
 	});

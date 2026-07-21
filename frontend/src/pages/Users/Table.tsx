@@ -1,10 +1,11 @@
 import {
+	IconDevicesX,
 	IconDotsVertical,
 	IconEdit,
 	IconLock,
-	IconLogin2,
 	IconPower,
 	IconShield,
+	IconShieldOff,
 	IconTrash,
 } from "@tabler/icons-react";
 import { createColumnHelper, getCoreRowModel, getSortedRowModel, useReactTable } from "@tanstack/react-table";
@@ -29,10 +30,11 @@ interface Props {
 	onEditUser?: (id: number) => void;
 	onEditPermissions?: (id: number) => void;
 	onSetPassword?: (id: number) => void;
+	onReset2FA?: (id: number) => void;
+	onRevokeSessions?: (id: number) => void;
 	onDeleteUser?: (id: number) => void;
 	onDisableToggle?: (id: number, enabled: boolean) => void;
 	onNewUser?: () => void;
-	onLoginAs?: (id: number) => void;
 }
 export default function Table({
 	data,
@@ -42,10 +44,11 @@ export default function Table({
 	onEditUser,
 	onEditPermissions,
 	onSetPassword,
+	onReset2FA,
+	onRevokeSessions,
 	onDeleteUser,
 	onDisableToggle,
 	onNewUser,
-	onLoginAs,
 }: Props) {
 	const columnHelper = createColumnHelper<User>();
 	const columns = useMemo(
@@ -165,30 +168,34 @@ export default function Table({
 											href="#"
 											onClick={(e) => {
 												e.preventDefault();
+												onReset2FA?.(info.row.original.id);
+											}}
+										>
+											<IconShieldOff size={16} />
+											<T id="user.reset-2fa" />
+										</a>
+										<a
+											className="dropdown-item"
+											href="#"
+											onClick={(e) => {
+												e.preventDefault();
+												onRevokeSessions?.(info.row.original.id);
+											}}
+										>
+											<IconDevicesX size={16} />
+											<T id="user.revoke-sessions" />
+										</a>
+										<a
+											className="dropdown-item"
+											href="#"
+											onClick={(e) => {
+												e.preventDefault();
 												onDisableToggle?.(info.row.original.id, info.row.original.isDisabled);
 											}}
 										>
 											<IconPower size={16} />
 											<T id={info.row.original.isDisabled ? "action.enable" : "action.disable"} />
 										</a>
-										{info.row.original.isDisabled ? (
-											<div className="dropdown-item text-muted">
-												<IconLogin2 size={16} />
-												<T id="user.login-as" data={{ name: info.row.original.name }} />
-											</div>
-										) : (
-											<a
-												className="dropdown-item"
-												href="#"
-												onClick={(e) => {
-													e.preventDefault();
-													onLoginAs?.(info.row.original.id);
-												}}
-											>
-												<IconLogin2 size={16} />
-												<T id="user.login-as" data={{ name: info.row.original.name }} />
-											</a>
-										)}
 										<div className="dropdown-divider" />
 										<a
 											className="dropdown-item"
@@ -220,7 +227,8 @@ export default function Table({
 			onDeleteUser,
 			onEditPermissions,
 			onSetPassword,
-			onLoginAs,
+			onReset2FA,
+			onRevokeSessions,
 		],
 	);
 
