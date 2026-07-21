@@ -36,7 +36,7 @@ RUN apk upgrade --no-cache -a && \
     apk add --no-cache git clang lld compiler-rt llvm-libunwind-dev libc++-dev linux-headers cmake ninja make llvm file \
                        libatomic_ops-dev pcre2-dev luajit-dev zlib-ng-dev brotli-dev zstd-dev libxslt-dev openldap-dev quickjs-ng-dev libmaxminddb-dev clang-dev
 
-RUN for f in $(apk info --no-cache -qL libgcc-static libstdc++-dev); do rm /"$f"; done && \
+RUN for f in $(apk info --no-cache -qL libgcc-static libstdc++-dev); do rm -v /"$f"; done && \
     echo "-fuse-ld=lld --rtlib=compiler-rt --unwindlib=libunwind -stdlib=libc++ -D_LIBCPP_HARDENING_MODE=_LIBCPP_HARDENING_MODE_EXTENSIVE" | tee /etc/clang*/*.cfg
 
 ARG CC=clang
@@ -188,7 +188,6 @@ COPY frontend/package.json frontend/pnpm-lock.yaml frontend/pnpm-workspace.yaml 
 RUN apk upgrade --no-cache -a && \
     apk add --no-cache nodejs pnpm llvm file gzip brotli zstd && \
     pnpm install --frozen-lockfile && \
-    pnpm cache delete && \
     find /app/node_modules -name "*.map" -delete && \
     find /app/node_modules -name "*.node" -type f -exec llvm-strip -s {} \; && \
     find /app/node_modules -name "*.node" -type f -exec file {} \;
@@ -208,9 +207,14 @@ COPY backend/package.json backend/pnpm-lock.yaml backend/pnpm-workspace.yaml /ap
 RUN apk upgrade --no-cache -a && \
     apk add --no-cache nodejs pnpm llvm file && \
     pnpm install --frozen-lockfile --prod && \
-    pnpm cache delete && \
     find /app/node_modules -name "*.map" -delete && \
-    rm -r /app/node_modules/better-sqlite3/deps/sqlite3 && \
+    rm -vr /app/node_modules/better-sqlite3/deps/sqlite3 && \
+    case "$(uname -m)" in \
+      x86_64) keep="linuxmusl-x64.node" ;; \
+      aarch64) keep="linuxmusl-arm64.node" ;; \
+      *) keep="linuxmusl-*.node" ;; \
+    esac && \
+    find /app/node_modules/better-sqlite3/prebuilds -name '*.node' ! -name "$keep" -delete && \
     find /app/node_modules -name "*.node" -type f -exec llvm-strip -s {} \; && \
     find /app/node_modules -name "*.node" -type f -exec file {} \;
 COPY backend /app
@@ -266,7 +270,7 @@ RUN apk upgrade --no-cache -a && \
     mv /src/lua-cs-bouncer/templates/ban.html /etc/ban.html.original && \
     \
     cd && \
-    rm -r /src /tmp/luarocks_local_cache-* && \
+    rm -vr /src /tmp/luarocks_local_cache-* && \
     apk del --no-cache luarocks5.1 git make && \
     \
     sed -i "s|placeholder|$(cat /app/package.json | jq -r .version)|g" /usr/local/nginx/conf/conf.d/crowdsec.conf.disabled && \
