@@ -49,8 +49,6 @@ if [ "$NC_AIO" = "true" ]; then
         sleep inf
     fi
     export DISABLE_HTTP="${DISABLE_HTTP:-true}"
-    export INITIAL_ADMIN_EMAIL="${INITIAL_ADMIN_EMAIL:-admin@example.org}"
-    export INITIAL_ADMIN_PASSWORD="${INITIAL_ADMIN_PASSWORD:-$(openssl rand -hex 32)}"
 fi
 
 
@@ -131,7 +129,6 @@ export GOACLA="${GOACLA:-"--agent-list --real-os --double-decode --anonymize-ip 
 export PHP83="${PHP83:-false}"
 export PHP84="${PHP84:-false}"
 export PHP85="${PHP85:-false}"
-export INITIAL_DEFAULT_PAGE="${INITIAL_DEFAULT_PAGE:-congratulations}"
 export DISABLE_GRAVATAR="${DISABLE_GRAVATAR:-false}"
 export NGINX_LOAD_NJS_MODULE="${NGINX_LOAD_NJS_MODULE:-false}"
 export NGINX_LOAD_GEOIP2_MODULE="${NGINX_LOAD_GEOIP2_MODULE:-false}"
@@ -682,14 +679,19 @@ if [ -n "$INITIAL_ADMIN_EMAIL" ] && ! echo "$INITIAL_ADMIN_EMAIL" | grep -q "@.*
     sleep inf
 fi
 
+if [ -n "$INITIAL_DEFAULT_PAGE" ] && ! echo "$INITIAL_DEFAULT_PAGE" | grep -q "^\(404\|444\|redirect\|congratulations\|html\)$"; then
+    echo "INITIAL_DEFAULT_PAGE needs to be 404, 444, redirect, congratulations or html."
+    sleep inf
+fi
+
 if { [ -n "$INITIAL_ADMIN_EMAIL" ] || [ -n "$INITIAL_ADMIN_PASSWORD" ]; } && { [ -z "$INITIAL_ADMIN_EMAIL" ] || [ -z "$INITIAL_ADMIN_PASSWORD" ]; }; then
     echo "You need to set INITIAL_ADMIN_EMAIL and INITIAL_ADMIN_PASSWORD (both are needed) or none of them."
     sleep inf
 fi
 
-if ! echo "$INITIAL_DEFAULT_PAGE" | grep -q "^\(404\|444\|redirect\|congratulations\|html\)$"; then
-    echo "INITIAL_DEFAULT_PAGE needs to be 404, 444, redirect, congratulations or html."
-    sleep inf
+if [ -n "$INITIAL_ADMIN_EMAIL" ] || [ -n "$INITIAL_ADMIN_PASSWORD" ] || [ -n "$INITIAL_DEFAULT_PAGE" ]; then
+    echo "Remember to remove INITIAL_ envs after the first start."
+    sleep 3
 fi
 
 
