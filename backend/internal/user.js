@@ -1,6 +1,6 @@
 import _ from "lodash";
 import crypto from "node:crypto";
-import { writeFile } from "node:fs/promises";
+import { rm, writeFile } from "node:fs/promises";
 import errs from "../lib/error.js";
 import utils from "../lib/utils.js";
 import { gravatar as logger } from "../logger.js";
@@ -13,6 +13,18 @@ import pjson from "../package.json" with { type: "json" };
 
 const omissions = () => {
 	return ["is_deleted", "permissions.id", "permissions.user_id", "permissions.created_on", "permissions.modified_on"];
+};
+
+const avatarExts = ["png", "jpg", "gif", "webp"];
+
+const avatarExt = (b) => {
+	if (!b || b.length < 12) return null;
+	if (b.subarray(0, 8).equals(Buffer.from("89504e470d0a1a0a", "hex"))) return "png";
+	if (b.subarray(0, 3).equals(Buffer.from("ffd8ff", "hex"))) return "jpg";
+	if (b.subarray(0, 4).toString("latin1") === "GIF8") return "gif";
+	if (b.subarray(0, 4).toString("latin1") === "RIFF" && b.subarray(8, 12).toString("latin1") === "WEBP")
+		return "webp";
+	return null;
 };
 
 const internalUser = {
@@ -126,6 +138,25 @@ const internalUser = {
 		return user;
 	},
 
+	setAvatar: async (access, id, file) => {
+		await access.can("users:update", id);
+		const ext = avatarExt(file?.buffer);
+		if (!ext) throw new errs.ValidationError("Invalid avatar file type");
+		const user = await internalUser.get(access, { id });
+		await Promise.all(avatarExts.map((e) => rm(`/data/npmplus/avatar/${user.id}.${e}`, { force: true })));
+		await writeFile(`/data/npmplus/avatar/${user.id}.${ext}`, file.buffer);
+		await userModel.query().patchAndFetchById(user.id, { avatar: `/images/avatar/${user.id}.${ext}` });
+		return internalUser.update(access, { id: user.id });
+	},
+
+	deleteAvatar: async (access, id) => {
+		await access.can("users:update", id);
+		const user = await internalUser.get(access, { id });
+		await Promise.all(avatarExts.map((e) => rm(`/data/npmplus/avatar/${user.id}.${e}`, { force: true })));
+		await userModel.query().patchAndFetchById(user.id, { avatar: "" });
+		return internalUser.update(access, { id: user.id });
+	},
+
 	/**
 	 * @param  {Access}  access
 	 * @param  {Object}  data
@@ -177,7 +208,9 @@ const internalUser = {
 					);
 				}
 
-				if (process.env.DISABLE_GRAVATAR === "true") {
+				if (user.avatar?.startsWith("/images/avatar/")) {
+					data.avatar = user.avatar;
+				} else if (process.env.DISABLE_GRAVATAR === "true") {
 					data.avatar = "/images/default-avatar.jpg";
 				} else {
 					try {
