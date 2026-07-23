@@ -1,9 +1,9 @@
 #!/usr/bin/env node
 
 import app from "./app.js";
-import internalNginx from "./internal/nginx.js";
 import internalCertificate from "./internal/certificate.js";
 import internalIpRanges from "./internal/ip_ranges.js";
+import internalNginx from "./internal/nginx.js";
 import { global as logger } from "./logger.js";
 import { migrateUp } from "./migrate.js";
 import { getCompiledSchema } from "./schema/index.js";

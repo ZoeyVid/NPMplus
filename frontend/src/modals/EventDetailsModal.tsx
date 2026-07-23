@@ -1,9 +1,9 @@
-import EasyModal, { type InnerModalProps } from "src/modules/easyModal";
 import { Alert } from "react-bootstrap";
 import Modal from "react-bootstrap/Modal";
 import { Button, EventFormatter, GravatarFormatter, Loading } from "src/components";
 import { useAuditLog } from "src/hooks";
 import { T } from "src/locale";
+import EasyModal, { type InnerModalProps } from "src/modules/easyModal";
 
 const showEventDetailsModal = (id: number) => {
 	EasyModal.show(EventDetailsModal, { id });

@@ -1,4 +1,3 @@
-import EasyModal, { type InnerModalProps } from "src/modules/easyModal";
 import { IconEye, IconEyeOff } from "@tabler/icons-react";
 import { ErrorMessage, Field, Form, Formik } from "formik";
 import { type ReactNode, useState } from "react";
@@ -7,6 +6,7 @@ import Modal from "react-bootstrap/Modal";
 import { updateAuth } from "src/api/backend";
 import { Button } from "src/components";
 import { intl, T } from "src/locale";
+import EasyModal, { type InnerModalProps } from "src/modules/easyModal";
 import { validateString } from "src/modules/Validations";
 
 const showSetPasswordModal = (id: number) => {

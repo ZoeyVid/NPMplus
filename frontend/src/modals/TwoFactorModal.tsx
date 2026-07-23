@@ -1,4 +1,3 @@
-import EasyModal, { type InnerModalProps } from "src/modules/easyModal";
 import { IconEye, IconEyeOff } from "@tabler/icons-react";
 import { ErrorMessage, Field, Form, Formik } from "formik";
 import { QRCodeSVG } from "qrcode.react";
@@ -8,6 +7,7 @@ import Modal from "react-bootstrap/Modal";
 import { disable2FA, enable2FA, get2FAStatus, regenerateBackupCodes, start2FASetup } from "src/api/backend";
 import { Button } from "src/components";
 import { T } from "src/locale";
+import EasyModal, { type InnerModalProps } from "src/modules/easyModal";
 import { validateString } from "src/modules/Validations";
 
 type Step = "loading" | "status" | "setup" | "verify" | "backup" | "disable";
