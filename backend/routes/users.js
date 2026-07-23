@@ -1,4 +1,5 @@
 import express from "express";
+import multer from "multer";
 import internal2FA from "../internal/2fa.js";
 import internalUser from "../internal/user.js";
 import Access from "../lib/access.js";
@@ -388,6 +389,52 @@ router
 				});
 			}
 			res.status(200).send(true);
+		} catch (err) {
+			debug(logger, `${req.method.toUpperCase()} ${req.originalUrl}: ${err}`);
+			next(err);
+		}
+	});
+
+/**
+ * User avatar
+ *
+ * /api/users/123/avatar
+ */
+router
+	.route("/:user_id/avatar")
+	.options((_, res) => {
+		res.sendStatus(204);
+	})
+	.all(jwtdecode())
+	.all(userIdFromMe)
+
+	/**
+	 * POST /api/users/123/avatar
+	 *
+	 * Upload a custom avatar
+	 */
+	.post(
+		multer({ storage: multer.memoryStorage(), limits: { fileSize: 1024 * 1024 } }).single("avatar"),
+		async (req, res, next) => {
+			try {
+				const result = await internalUser.setAvatar(res.locals.access, req.params.user_id, req.file);
+				res.status(200).send(result);
+			} catch (err) {
+				debug(logger, `${req.method.toUpperCase()} ${req.originalUrl}: ${err}`);
+				next(err);
+			}
+		},
+	)
+
+	/**
+	 * DELETE /api/users/123/avatar
+	 *
+	 * Remove the custom avatar, falling back to gravatar
+	 */
+	.delete(async (req, res, next) => {
+		try {
+			const result = await internalUser.deleteAvatar(res.locals.access, req.params.user_id);
+			res.status(200).send(result);
 		} catch (err) {
 			debug(logger, `${req.method.toUpperCase()} ${req.originalUrl}: ${err}`);
 			next(err);

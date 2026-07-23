@@ -152,6 +152,12 @@
 	"auto": {
 		"defaultMessage": "Auto"
 	},
+	"avatar.remove": {
+		"defaultMessage": "Remove avatar"
+	},
+	"avatar.upload": {
+		"defaultMessage": "Upload avatar"
+	},
 	"cancel": {
 		"defaultMessage": "Cancel"
 	},
