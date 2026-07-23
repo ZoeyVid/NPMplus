@@ -134,58 +134,58 @@ jobs:
           title: update zlib-ng-patch version to ${{ steps.update.outputs.version }}
           body: update zlib-ng-patch version to ${{ steps.update.outputs.version }}
 
-  ngx_brotli-update:
+  ngx_http_brotli_module-update:
     runs-on: ubuntu-slim
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
-      - name: update ngx_brotli version
+      - name: update ngx_http_brotli_module version
         id: update
         run: |
           NB_VER="$(
-          git ls-remote --tags --refs https://github.com/google/ngx_brotli \
+          git ls-remote --tags --refs https://github.com/HanadaLee/ngx_http_brotli_module \
               | cut -d/ -f3 \
               | sort -V \
               | grep -vi rc \
               | tail -1
           )"
-          if [ -z "$NB_VER" ]; then NB_VER=master; fi
-          NB_SHA="$(git ls-remote https://github.com/google/ngx_brotli "$NB_VER" | cut -f1)"
+          if [ "$NB_VER" = "v1.0.0rc" ]; then NB_VER=master; fi
+          NB_SHA="$(git ls-remote https://github.com/HanadaLee/ngx_http_brotli_module "$NB_VER" | cut -f1)"
           sed -i "s|ARG NB_VER=.*|ARG NB_VER=$NB_SHA # $NB_VER|" Dockerfile
           echo "version=$NB_VER" >> $GITHUB_OUTPUT
       - uses: peter-evans/create-pull-request@5f6978faf089d4d20b00c7766989d076bb2fc7f1 # v8.1.1
         with:
           signoff: true
           delete-branch: true
-          commit-message: update ngx_brotli version to ${{ steps.update.outputs.version }}
-          branch: update-ngx_brotli-version
-          title: update ngx_brotli version to ${{ steps.update.outputs.version }}
-          body: update ngx_brotli version to ${{ steps.update.outputs.version }}
-  ngx_unbrotli-update:
+          commit-message: update ngx_http_brotli_module version to ${{ steps.update.outputs.version }}
+          branch: update-ngx_http_brotli_module-version
+          title: update ngx_http_brotli_module version to ${{ steps.update.outputs.version }}
+          body: update ngx_http_brotli_module version to ${{ steps.update.outputs.version }}
+  ngx_http_unbrotli_filter_module-update:
     runs-on: ubuntu-slim
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
-      - name: update ngx_unbrotli version
+      - name: update ngx_http_unbrotli_filter_module version
         id: update
         run: |
           NUB_VER="$(
-          git ls-remote --tags --refs https://github.com/clyfish/ngx_unbrotli \
+          git ls-remote --tags --refs https://github.com/HanadaLee/ngx_http_unbrotli_filter_module \
               | cut -d/ -f3 \
               | sort -V \
               | grep -vi rc \
               | tail -1
           )"
           if [ -z "$NUB_VER" ]; then NUB_VER=main; fi
-          NUB_SHA="$(git ls-remote https://github.com/clyfish/ngx_unbrotli "$NUB_VER" | cut -f1)"
+          NUB_SHA="$(git ls-remote https://github.com/HanadaLee/ngx_http_unbrotli_filter_module "$NUB_VER" | cut -f1)"
           sed -i "s|ARG NUB_VER=.*|ARG NUB_VER=$NUB_SHA # $NUB_VER|" Dockerfile
           echo "version=$NUB_VER" >> $GITHUB_OUTPUT
       - uses: peter-evans/create-pull-request@5f6978faf089d4d20b00c7766989d076bb2fc7f1 # v8.1.1
         with:
           signoff: true
           delete-branch: true
-          commit-message: update ngx_unbrotli version to ${{ steps.update.outputs.version }}
-          branch: update-ngx_unbrotli-version
-          title: update ngx_unbrotli version to ${{ steps.update.outputs.version }}
-          body: update ngx_unbrotli version to ${{ steps.update.outputs.version }}
+          commit-message: update ngx_http_unbrotli_filter_module version to ${{ steps.update.outputs.version }}
+          branch: update-ngx_http_unbrotli_filter_module-version
+          title: update ngx_http_unbrotli_filter_module version to ${{ steps.update.outputs.version }}
+          body: update ngx_http_unbrotli_filter_module version to ${{ steps.update.outputs.version }}
   zstd-nginx-module-update:
     runs-on: ubuntu-slim
     steps:
@@ -194,14 +194,13 @@ jobs:
         id: update
         run: |
           ZNM_VER="$(
-          git ls-remote --tags --refs https://github.com/tokers/zstd-nginx-module \
+          git ls-remote --tags --refs https://github.com/hsw/zstd-nginx-module \
               | cut -d/ -f3 \
               | sort -V \
               | grep -vi rc \
               | tail -1
           )"
-          if [ "$ZNM_VER" = "0.1.1" ]; then ZNM_VER=master; fi
-          ZNM_SHA="$(git ls-remote https://github.com/tokers/zstd-nginx-module "$ZNM_VER" | cut -f1)"
+          ZNM_SHA="$(git ls-remote https://github.com/hsw/zstd-nginx-module "$ZNM_VER" | cut -f1)"
           sed -i "s|ARG ZNM_VER=.*|ARG ZNM_VER=$ZNM_SHA # $ZNM_VER|" Dockerfile
           echo "version=$ZNM_VER" >> $GITHUB_OUTPUT
       - uses: peter-evans/create-pull-request@5f6978faf089d4d20b00c7766989d076bb2fc7f1 # v8.1.1
