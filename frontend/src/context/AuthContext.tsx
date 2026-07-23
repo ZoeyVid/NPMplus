@@ -1,14 +1,14 @@
 import { useQueryClient } from "@tanstack/react-query";
-import { createContext, type ReactNode, useContext, useState, useEffect } from "react";
+import { createContext, type ReactNode, useContext, useEffect, useState } from "react";
 import { useIntervalWhen } from "rooks";
 import {
+	deleteToken,
 	getToken,
 	isTwoFactorChallenge,
-	deleteToken,
 	refreshToken,
 	revokeSessions,
-	verify2FA,
 	type TokenResponse,
+	verify2FA,
 } from "src/api/backend";
 import AuthStore from "src/modules/AuthStore";
 

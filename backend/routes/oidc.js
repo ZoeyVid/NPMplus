@@ -1,8 +1,8 @@
-import * as client from "openid-client";
 import express from "express";
 import { rateLimit } from "express-rate-limit";
-import errs from "../lib/error.js";
+import * as client from "openid-client";
 import internalToken from "../internal/token.js";
+import errs from "../lib/error.js";
 import { oidc as logger } from "../logger.js";
 
 const router = express.Router({

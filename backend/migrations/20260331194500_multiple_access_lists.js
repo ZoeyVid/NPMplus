@@ -97,4 +97,4 @@ const down = (_knex) => {
 	return Promise.resolve(true);
 };
 
-export { up, down };
+export { down, up };

@@ -1,9 +1,9 @@
-import EasyModal, { type InnerModalProps } from "src/modules/easyModal";
+import Markdown from "markdown-to-jsx";
 import { useEffect, useState } from "react";
 import Modal from "react-bootstrap/Modal";
-import Markdown from "markdown-to-jsx";
 import { getLocale, T } from "src/locale";
 import { getHelpFile } from "src/locale/src/HelpDoc";
+import EasyModal, { type InnerModalProps } from "src/modules/easyModal";
 
 interface Props extends InnerModalProps {
 	section: string;
