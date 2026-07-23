@@ -117,7 +117,8 @@ mkdir -p /tmp/npmhome \
          /tmp/certbot-log \
          /tmp/certbot-work \
          /tmp/certbot-credentials
-mkdir -vp /data/npmplus/gravatar \
+mkdir -vp /data/npmplus/avatar \
+          /data/npmplus/gravatar \
           /data/tls/certbot/renewal \
           /data/tls/certbot/acme-challenge/.well-known/acme-challenge \
           /data/tls/custom \
