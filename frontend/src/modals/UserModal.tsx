@@ -109,7 +109,9 @@ const UserModal = EasyModal.create(({ id, visible, remove }: Props) => {
 									<div className="d-flex align-items-center mb-3">
 										<span
 											className="avatar avatar-lg me-3"
-											style={{ backgroundImage: `url(${data?.avatar || "/images/default-avatar.jpg"})` }}
+											style={{
+												backgroundImage: `url(${data?.avatar || "/images/default-avatar.jpg"})`,
+											}}
 										/>
 										<input
 											ref={fileInput}
@@ -126,7 +128,11 @@ const UserModal = EasyModal.create(({ id, visible, remove }: Props) => {
 											<T id="avatar.upload" />
 										</Button>
 										{data?.avatar?.startsWith("/images/avatar/") && (
-											<Button actionType="danger" variant="outline" onClick={() => changeAvatar(() => deleteAvatar(id))}>
+											<Button
+												actionType="danger"
+												variant="outline"
+												onClick={() => changeAvatar(() => deleteAvatar(id))}
+											>
 												<T id="avatar.remove" />
 											</Button>
 										)}

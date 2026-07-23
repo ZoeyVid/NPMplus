@@ -22,7 +22,8 @@ const avatarExt = (b) => {
 	if (b.subarray(0, 8).equals(Buffer.from("89504e470d0a1a0a", "hex"))) return "png";
 	if (b.subarray(0, 3).equals(Buffer.from("ffd8ff", "hex"))) return "jpg";
 	if (b.subarray(0, 4).toString("latin1") === "GIF8") return "gif";
-	if (b.subarray(0, 4).toString("latin1") === "RIFF" && b.subarray(8, 12).toString("latin1") === "WEBP") return "webp";
+	if (b.subarray(0, 4).toString("latin1") === "RIFF" && b.subarray(8, 12).toString("latin1") === "WEBP")
+		return "webp";
 	return null;
 };
 

@@ -413,15 +413,18 @@ router
 	 *
 	 * Upload a custom avatar
 	 */
-	.post(multer({ storage: multer.memoryStorage(), limits: { fileSize: 1024 * 1024 } }).single("avatar"), async (req, res, next) => {
-		try {
-			const result = await internalUser.setAvatar(res.locals.access, req.params.user_id, req.file);
-			res.status(200).send(result);
-		} catch (err) {
-			debug(logger, `${req.method.toUpperCase()} ${req.originalUrl}: ${err}`);
-			next(err);
-		}
-	})
+	.post(
+		multer({ storage: multer.memoryStorage(), limits: { fileSize: 1024 * 1024 } }).single("avatar"),
+		async (req, res, next) => {
+			try {
+				const result = await internalUser.setAvatar(res.locals.access, req.params.user_id, req.file);
+				res.status(200).send(result);
+			} catch (err) {
+				debug(logger, `${req.method.toUpperCase()} ${req.originalUrl}: ${err}`);
+				next(err);
+			}
+		},
+	)
 
 	/**
 	 * DELETE /api/users/123/avatar
