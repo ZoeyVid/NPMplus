@@ -1,6 +1,5 @@
-import cn from "clsx";
 import { useQueryClient } from "@tanstack/react-query";
-import EasyModal, { type InnerModalProps } from "src/modules/easyModal";
+import cn from "clsx";
 import { Field, Form, Formik } from "formik";
 import { type ReactNode, useState } from "react";
 import { Alert } from "react-bootstrap";
@@ -8,6 +7,7 @@ import Modal from "react-bootstrap/Modal";
 import { createCertificate } from "src/api/backend";
 import { Button, DNSProviderFields, DomainNamesField } from "src/components";
 import { T } from "src/locale";
+import EasyModal, { type InnerModalProps } from "src/modules/easyModal";
 import { showObjectSuccess } from "src/notifications";
 
 const showDNSCertificateModal = () => {

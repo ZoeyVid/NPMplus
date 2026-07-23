@@ -106,4 +106,4 @@ const validateUpstreamUrl = () => {
 	};
 };
 
-export { validateEmail, validateNumber, validateString, validateDomains, validateDomain, validateUpstreamUrl };
+export { validateDomain, validateDomains, validateEmail, validateNumber, validateString, validateUpstreamUrl };
