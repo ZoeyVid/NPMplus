@@ -5,4 +5,4 @@ const useTheme = () => {
 	return useThemeContext();
 };
 
-export { useTheme, Dark, Light };
+export { Dark, Light, useTheme };
