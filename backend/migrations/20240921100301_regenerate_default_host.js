@@ -49,4 +49,4 @@ const down = (knex) => {
 	return regenerateDefaultHost(knex);
 };
 
-export { up, down };
+export { down, up };
