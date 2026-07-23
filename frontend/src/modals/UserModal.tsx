@@ -1,8 +1,10 @@
 import EasyModal, { type InnerModalProps } from "src/modules/easyModal";
 import { Field, Form, Formik } from "formik";
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { Alert } from "react-bootstrap";
 import Modal from "react-bootstrap/Modal";
+import { useQueryClient } from "@tanstack/react-query";
+import { deleteAvatar, uploadAvatar } from "src/api/backend";
 import { Button, Loading } from "src/components";
 import { useSetUser, useUser } from "src/hooks";
 import { intl, T } from "src/locale";
@@ -22,6 +24,19 @@ const UserModal = EasyModal.create(({ id, visible, remove }: Props) => {
 	const { mutate: setUser } = useSetUser();
 	const [errorMsg, setErrorMsg] = useState<string | null>(null);
 	const [isSubmitting, setIsSubmitting] = useState(false);
+	const queryClient = useQueryClient();
+	const fileInput = useRef<HTMLInputElement>(null);
+
+	const changeAvatar = async (fn: () => Promise<unknown>) => {
+		setErrorMsg(null);
+		try {
+			await fn();
+			queryClient.invalidateQueries({ queryKey: ["user"] });
+			queryClient.invalidateQueries({ queryKey: ["users"] });
+		} catch (err: any) {
+			setErrorMsg(err.message);
+		}
+	};
 
 	const onSubmit = async (values: any, { setSubmitting }: any) => {
 		if (isSubmitting) return;
@@ -90,6 +105,39 @@ const UserModal = EasyModal.create(({ id, visible, remove }: Props) => {
 								<Alert variant="danger" show={!!errorMsg} onClose={() => setErrorMsg(null)} dismissible>
 									{errorMsg}
 								</Alert>
+								{id !== "new" && (
+									<div className="d-flex align-items-center mb-3">
+										<span
+											className="avatar avatar-lg me-3"
+											style={{
+												backgroundImage: `url(${data?.avatar || "/images/default-avatar.jpg"})`,
+											}}
+										/>
+										<input
+											ref={fileInput}
+											type="file"
+											accept="image/png,image/jpeg,image/gif,image/webp"
+											className="d-none"
+											onChange={(e) => {
+												const file = e.target.files?.[0];
+												if (file) changeAvatar(() => uploadAvatar(id, file));
+												e.target.value = "";
+											}}
+										/>
+										<Button className="me-2" onClick={() => fileInput.current?.click()}>
+											<T id="avatar.upload" />
+										</Button>
+										{data?.avatar?.startsWith("/images/avatar/") && (
+											<Button
+												actionType="danger"
+												variant="outline"
+												onClick={() => changeAvatar(() => deleteAvatar(id))}
+											>
+												<T id="avatar.remove" />
+											</Button>
+										)}
+									</div>
+								)}
 								<div className="row">
 									<div className="col-lg-6">
 										<div className="mb-3">
