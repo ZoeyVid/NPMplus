@@ -1,3 +1,4 @@
+export * from "./avatar";
 export * from "./checkVersion";
 export * from "./createAccessList";
 export * from "./createCertificate";
