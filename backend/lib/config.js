@@ -1,5 +1,5 @@
-import { existsSync, readFileSync, writeFileSync } from "node:fs";
 import crypto from "node:crypto";
+import { existsSync, readFileSync, writeFileSync } from "node:fs";
 import { global as logger } from "../logger.js";
 
 const keysFile = "/data/npmplus/keys-ec.json";
@@ -211,4 +211,4 @@ const getPrivateKey = () => {
 	return instance.keys.key;
 };
 
-export { configHas, configGet, isSqlite, isMysql, isPostgres, getPrivateKey, getPublicKey };
+export { configGet, configHas, getPrivateKey, getPublicKey, isMysql, isPostgres, isSqlite };

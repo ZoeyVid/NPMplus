@@ -1,6 +1,5 @@
 import { useQueryClient } from "@tanstack/react-query";
 import cn from "clsx";
-import EasyModal, { type InnerModalProps } from "src/modules/easyModal";
 import { Field, Form, Formik } from "formik";
 import { type ReactNode, useState } from "react";
 import { Alert } from "react-bootstrap";
@@ -9,6 +8,7 @@ import { setPermissions } from "src/api/backend";
 import { Button, Loading } from "src/components";
 import { useUser } from "src/hooks";
 import { T } from "src/locale";
+import EasyModal, { type InnerModalProps } from "src/modules/easyModal";
 import styles from "./PermissionsModal.module.css";
 
 const showPermissionsModal = (id: number) => {

@@ -1,5 +1,4 @@
 import cn from "clsx";
-import EasyModal, { type InnerModalProps } from "src/modules/easyModal";
 import { Field, Form, Formik } from "formik";
 import { type ReactNode, useState } from "react";
 import { Alert } from "react-bootstrap";
@@ -8,6 +7,7 @@ import type { AccessList, AccessListClient, AccessListItem } from "src/api/backe
 import { AccessClientFields, BasicAuthFields, Button, Loading } from "src/components";
 import { useAccessList, useSetAccessList } from "src/hooks";
 import { intl, T } from "src/locale";
+import EasyModal, { type InnerModalProps } from "src/modules/easyModal";
 import { validateString } from "src/modules/Validations";
 import { showObjectSuccess } from "src/notifications";
 

@@ -55,4 +55,4 @@ const installPlugins = async (pluginKeys) => {
 	}
 };
 
-export { installPlugins, installPlugin };
+export { installPlugin, installPlugins };

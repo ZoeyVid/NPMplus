@@ -33,4 +33,5 @@ function Msg({ data }: any) {
 		</div>
 	);
 }
+
 export { Msg };
