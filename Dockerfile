@@ -12,9 +12,9 @@ ARG DTR_VER=1.29.2
 ARG RCP_VER=1.31.3
 ARG ZNP_VER=1.30.0
 
-ARG NB_VER=a71f9312c2deb28875acc7bacfdd5695a111aa53 # master
-ARG NUB_VER=60bed634504967a323645f8f53566cca3f2c3f53 # main
-ARG ZNM_VER=057a7d339af1111d04b5a9ac5ae9b0250d17cd94 # master
+ARG NB_VER=c9eb4c75c1691e0ddbf23a490336aa5910cbea69 # master
+ARG NUB_VER=c4edcc5652569036b0adfbc6112ba01fe9d39a18 # main
+ARG ZNM_VER=53927b6408ebf166496a3d79f016563f7f720cb0 # v0.4.0
 ARG NHUZFM_VER=37e77ed348c242e222f2ae2b02c2e445e0ee2dc6 # main
 ARG NF_VER=047589e4dc0041517b8a47739fa960c430c4045e # v0.6.0
 ARG HMNM_VER=0bf283ff92017acd616814b0e5153e0ccf93e2c9 # v0.40
@@ -33,7 +33,7 @@ COPY patches/*.patch /src
 COPY rootfs/usr/local/bin/git-clone-commit.sh /usr/local/bin/git-clone-commit.sh
 
 RUN apk upgrade --no-cache -a && \
-    apk add --no-cache git clang lld compiler-rt llvm-libunwind-dev libc++-dev linux-headers cmake ninja make llvm file \
+    apk add --no-cache git clang lld compiler-rt llvm-libunwind-dev libc++-dev linux-headers cmake ninja make pkgconf llvm file \
                        libatomic_ops-dev pcre2-dev luajit-dev zlib-ng-dev brotli-dev zstd-dev libxslt-dev openldap-dev quickjs-ng-dev libmaxminddb-dev clang-dev
 
 RUN for f in $(apk info --no-cache -qL libgcc-static libstdc++-dev); do rm -v /"$f"; done && \
@@ -45,7 +45,7 @@ ARG LD=ld.lld
 ARG AR=llvm-ar
 
 ARG FLAGS
-ARG CFLAGS="$FLAGS -m64 -O3 -pipe -flto=full -ffunction-sections -fdata-sections -fno-math-errno -ffp-contract=fast -fstack-clash-protection -fstack-protector-strong -fzero-call-used-regs=used-gpr -fstrict-flex-arrays=3 -ftrivial-auto-var-init=zero -fno-delete-null-pointer-checks -fno-strict-overflow -fno-strict-aliasing -fno-semantic-interposition -fno-plt -U_FORTIFY_SOURCE -D_FORTIFY_SOURCE=3 -Wformat=2 -Werror=format-security -Wno-sign-compare"
+ARG CFLAGS="$FLAGS -m64 -O3 -pipe -flto=full -ffunction-sections -fdata-sections -fno-math-errno -ffp-contract=fast -fstack-clash-protection -fstack-protector-strong -fzero-call-used-regs=used-gpr -fstrict-flex-arrays=3 -ftrivial-auto-var-init=zero -fno-delete-null-pointer-checks -fno-strict-overflow -fno-strict-aliasing -fno-semantic-interposition -fno-plt -U_FORTIFY_SOURCE -D_FORTIFY_SOURCE=3 -Wformat=2 -Werror=format-security"
 ARG CXXFLAGS="$CFLAGS"
 ARG LDFLAGS="-m64 -Wl,-s -Wl,-O2 -Wl,--lto-O3 -Wl,--icf=safe -Wl,--gc-sections -Wl,-z,noexecstack -Wl,-z,relro -Wl,-z,now -Wl,--sort-common -Wl,--as-needed -Wl,-z,pack-relative-relocs -Wl,--no-copy-dt-needed-entries"
 
@@ -81,28 +81,18 @@ RUN git-clone-commit.sh https://github.com/nginx/nginx "$NGINX_VER" /src/nginx &
     wget -q https://patch-diff.githubusercontent.com/raw/nginx/nginx/pull/1593.patch -O /src/nginx/7.patch && \
     echo "42951e1b3aab34995cff6004ce4ba3a84d86d73ae08bbb35e7a3979a5f2e2df1  /src/nginx/7.patch" | sha256sum -c - && \
     git apply /src/nginx/7.patch && \
+    wget -q https://patch-diff.githubusercontent.com/raw/nginx/nginx/pull/1430.patch -O /src/nginx/8.patch && \
+    echo "c8e827d50314b6ec027677ae8c70b11f805408af3efb5175bf377071bd2a14a5  /src/nginx/8.patch" | sha256sum -c - && \
+    git apply /src/nginx/8.patch && \
     git apply /src/nginx-footer.patch && \
     git apply /src/nginx-ip-sni.patch && \
-    git apply /src/nginx-gso-fix.patch && \
     git apply /src/nginx-buffer-log.patch && \
     git apply /src/nginx-ech-boringssl-awslc.patch && \
     git apply /src/nginx-cert-compression-brotli.patch && \
     \
-    git-clone-commit.sh https://github.com/google/ngx_brotli "$NB_VER" /src/ngx_brotli && \
-    cd /src/ngx_brotli && \
-    git apply /src/ngx_brotli.patch && \
-    git-clone-commit.sh https://github.com/clyfish/ngx_unbrotli "$NUB_VER" /src/ngx_unbrotli && \
-    cd /src/ngx_unbrotli && \
-    git apply /src/ngx_unbrotli.patch && \
-    git-clone-commit.sh https://github.com/tokers/zstd-nginx-module "$ZNM_VER" /src/zstd-nginx-module && \
-    cd /src/zstd-nginx-module && \
-    wget -q https://patch-diff.githubusercontent.com/raw/tokers/zstd-nginx-module/pull/23.patch -O /src/zstd-nginx-module/1.patch && \
-    echo "7bd3c71770305ab44defe5e2768a62d870061645b095b9564d4afd57a64ad3b9  /src/zstd-nginx-module/1.patch" | sha256sum -c - && \
-    wget -q https://patch-diff.githubusercontent.com/raw/tokers/zstd-nginx-module/pull/44.patch -O /src/zstd-nginx-module/2.patch && \
-    echo "577dc3e2d6e0378520cee6f621fa9824dd571992185cb58e2198ffa9bf814c6f  /src/zstd-nginx-module/2.patch" | sha256sum -c - && \
-    git apply /src/zstd-nginx-module.patch && \
-    git apply /src/zstd-nginx-module/1.patch && \
-    git apply /src/zstd-nginx-module/2.patch && \
+    git-clone-commit.sh https://github.com/HanadaLee/ngx_http_brotli_module "$NB_VER" /src/ngx_http_brotli_module && \
+    git-clone-commit.sh https://github.com/HanadaLee/ngx_http_unbrotli_filter_module "$NUB_VER" /src/ngx_http_unbrotli_filter_module && \
+    git-clone-commit.sh https://github.com/hsw/zstd-nginx-module "$ZNM_VER" /src/zstd-nginx-module && \
     git-clone-commit.sh https://github.com/HanadaLee/ngx_http_unzstd_filter_module "$NHUZFM_VER" /src/ngx_http_unzstd_filter_module && \
     git-clone-commit.sh https://github.com/aperezdc/ngx-fancyindex "$NF_VER" /src/ngx-fancyindex && \
     cd /src/ngx-fancyindex && \
@@ -149,8 +139,8 @@ RUN cd /src/nginx && \
     --with-http_addition_module \
     --with-http_stub_status_module \
     --with-http_auth_request_module \
-    --add-module=/src/ngx_brotli \
-    --add-module=/src/ngx_unbrotli \
+    --add-module=/src/ngx_http_brotli_module \
+    --add-module=/src/ngx_http_unbrotli_filter_module \
     --add-module=/src/zstd-nginx-module \
     --add-module=/src/ngx_http_unzstd_filter_module \
     --add-module=/src/ngx-fancyindex \
@@ -162,6 +152,7 @@ RUN cd /src/nginx && \
     --add-dynamic-module=/src/nginx-module-vts \
     --add-dynamic-module=/src/nginx-ntlm-module \
     --add-dynamic-module=/src/ngx_http_geoip2_module \
+    --with-cc-opt="-DZSTD_STATIC_LINKING_ONLY" \
     --with-ld-opt="$LDFLAGS" && \
     \
     make -j "$(nproc)" install
