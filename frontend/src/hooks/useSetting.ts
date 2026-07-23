@@ -37,4 +37,4 @@ const useSetSetting = () => {
 	});
 };
 
-export { useSetting, useSetSetting };
+export { useSetSetting, useSetting };
