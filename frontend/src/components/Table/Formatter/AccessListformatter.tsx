@@ -1,8 +1,8 @@
+import OverlayTrigger from "react-bootstrap/OverlayTrigger";
+import Popover from "react-bootstrap/Popover";
 import type { AccessList, ProxyLocation } from "src/api/backend";
 import { intl } from "src/locale";
 import { showAccessListModal, showProxyHostModal } from "src/modals";
-import OverlayTrigger from "react-bootstrap/OverlayTrigger";
-import Popover from "react-bootstrap/Popover";
 
 interface Props {
 	access?: AccessList[];

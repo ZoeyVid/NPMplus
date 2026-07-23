@@ -1,5 +1,5 @@
-import type { TwoFactorEnableResponse, TwoFactorSetupResponse, TwoFactorStatusResponse } from "./responseTypes";
 import * as api from "./base";
+import type { TwoFactorEnableResponse, TwoFactorSetupResponse, TwoFactorStatusResponse } from "./responseTypes";
 
 export async function get2FAStatus(userId: number | "me"): Promise<TwoFactorStatusResponse> {
 	return await api.get({
