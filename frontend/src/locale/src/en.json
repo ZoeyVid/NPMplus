@@ -152,6 +152,12 @@
 	"auto": {
 		"defaultMessage": "Auto"
 	},
+	"avatar.remove": {
+		"defaultMessage": "Remove avatar"
+	},
+	"avatar.upload": {
+		"defaultMessage": "Upload avatar"
+	},
 	"cancel": {
 		"defaultMessage": "Cancel"
 	},
@@ -688,6 +694,9 @@
 	},
 	"proxy-host.global-access-lists": {
 		"defaultMessage": "Global Access Lists"
+	},
+	"proxy-host.location-no-trailing-slash-warning": {
+		"defaultMessage": "A location without a trailing slash is matched as a byte prefix, not a path segment, which can lead to over-matching and/or path traversal. Add a trailing slash unless you intend prefix matching."
 	},
 	"proxy-host.no-directory": {
 		"defaultMessage": "No group"

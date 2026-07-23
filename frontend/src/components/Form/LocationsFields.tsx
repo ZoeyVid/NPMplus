@@ -1,4 +1,4 @@
-import { IconSettings } from "@tabler/icons-react";
+import { IconAlertTriangle, IconSettings } from "@tabler/icons-react";
 import cn from "clsx";
 import { useFormikContext } from "formik";
 import { useRef, useState } from "react";
@@ -197,6 +197,12 @@ export function LocationsFields({ initialValues, name = "locations" }: Props) {
 								</button>
 							</div>
 						</div>
+						{!item.path?.endsWith("/") && item.locationType !== "= " && item.locationType !== "@" && (
+							<p className="text-warning">
+								<IconAlertTriangle size={16} className="me-1" />
+								<T id="proxy-host.location-no-trailing-slash-warning" />
+							</p>
+						)}
 						<div className="row">
 							<div className="col-md-3">
 								<div className="mb-3">
