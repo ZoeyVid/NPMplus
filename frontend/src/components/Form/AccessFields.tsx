@@ -1,6 +1,6 @@
-import { IconArrowDown, IconWorld, IconLock, IconLockOpen2, IconArrowUp, IconX } from "@tabler/icons-react";
+import { IconArrowDown, IconArrowUp, IconLock, IconLockOpen2, IconWorld, IconX } from "@tabler/icons-react";
 import { useFormikContext } from "formik";
-import { useState, type ReactNode } from "react";
+import { type ReactNode, useState } from "react";
 import Select, { components, type OptionProps } from "react-select";
 import type { AccessList, ProxyLocation } from "src/api/backend";
 import { useLocaleState } from "src/context";

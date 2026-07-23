@@ -1,22 +1,21 @@
 import { writeFile } from "node:fs/promises";
+import internalHost from "./internal/host.js";
+import internalNginx from "./internal/nginx.js";
+import internalProxyHost from "./internal/proxy-host.js";
+import internalProxyHostAccessList from "./internal/proxy-host-access-list.js";
+import Access from "./lib/access.js";
 import { installPlugins } from "./lib/certbot.js";
 import utils from "./lib/utils.js";
 import { setup as logger } from "./logger.js";
 import authModel from "./models/auth.js";
 import certificateModel from "./models/certificate.js";
-import settingModel from "./models/setting.js";
-import userModel from "./models/user.js";
-import userPermissionModel from "./models/user_permission.js";
-
+import deadModel from "./models/dead_host.js";
 import proxyModel from "./models/proxy_host.js";
 import redirectionModel from "./models/redirection_host.js";
-import deadModel from "./models/dead_host.js";
+import settingModel from "./models/setting.js";
 import streamModel from "./models/stream.js";
-import Access from "./lib/access.js";
-import internalHost from "./internal/host.js";
-import internalNginx from "./internal/nginx.js";
-import internalProxyHost from "./internal/proxy-host.js";
-import internalProxyHostAccessList from "./internal/proxy-host-access-list.js";
+import userModel from "./models/user.js";
+import userPermissionModel from "./models/user_permission.js";
 
 export const isSetup = async () => {
 	const row = await userModel.query().select("id").where("is_deleted", 0).first();
