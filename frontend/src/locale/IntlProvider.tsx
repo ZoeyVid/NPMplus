@@ -1,8 +1,8 @@
 import { createIntl, createIntlCache } from "react-intl";
-import langEn from "./lang/en.json";
 import langBg from "./lang/bg.json";
 import langCs from "./lang/cs.json";
 import langDe from "./lang/de.json";
+import langEn from "./lang/en.json";
 import langEs from "./lang/es.json";
 import langEt from "./lang/et.json";
 import langFr from "./lang/fr.json";
@@ -12,6 +12,7 @@ import langId from "./lang/id.json";
 import langIt from "./lang/it.json";
 import langJa from "./lang/ja.json";
 import langKo from "./lang/ko.json";
+import langList from "./lang/lang-list.json";
 import langNl from "./lang/nl.json";
 import langNo from "./lang/no.json";
 import langPl from "./lang/pl.json";
@@ -21,7 +22,6 @@ import langSk from "./lang/sk.json";
 import langTr from "./lang/tr.json";
 import langVi from "./lang/vi.json";
 import langZh from "./lang/zh.json";
-import langList from "./lang/lang-list.json";
 
 // first item of each array should be the language code,
 // not the country code
@@ -135,4 +135,4 @@ const T = ({
 
 //console.log("L:", localeOptions);
 
-export { localeOptions, getFlagCodeForLocale, getLocale, createIntl, changeLocale, intl, T };
+export { changeLocale, createIntl, getFlagCodeForLocale, getLocale, intl, localeOptions, T };

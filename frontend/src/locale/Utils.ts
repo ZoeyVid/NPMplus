@@ -38,4 +38,4 @@ const formatDateTime = (value: string | number, locale = "en-US"): string => {
 	}
 };
 
-export { formatDateTime, parseDate, isUnixTimestamp };
+export { formatDateTime, isUnixTimestamp, parseDate };

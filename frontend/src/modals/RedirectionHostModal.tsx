@@ -1,5 +1,4 @@
 import cn from "clsx";
-import EasyModal, { type InnerModalProps } from "src/modules/easyModal";
 import { Field, Form, Formik } from "formik";
 import { type ReactNode, useState } from "react";
 import { Alert } from "react-bootstrap";
@@ -15,6 +14,7 @@ import {
 } from "src/components";
 import { useDirectorySuggestions, useRedirectionHost, useRedirectionHosts, useSetRedirectionHost } from "src/hooks";
 import { T } from "src/locale";
+import EasyModal, { type InnerModalProps } from "src/modules/easyModal";
 import { validateString } from "src/modules/Validations";
 import { showObjectSuccess } from "src/notifications";
 
