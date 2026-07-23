@@ -1,13 +1,13 @@
-import EasyModal, { type InnerModalProps } from "src/modules/easyModal";
+import { useQueryClient } from "@tanstack/react-query";
 import { Field, Form, Formik } from "formik";
 import { useRef, useState } from "react";
 import { Alert } from "react-bootstrap";
 import Modal from "react-bootstrap/Modal";
-import { useQueryClient } from "@tanstack/react-query";
 import { deleteAvatar, uploadAvatar } from "src/api/backend";
 import { Button, Loading } from "src/components";
 import { useSetUser, useUser } from "src/hooks";
 import { intl, T } from "src/locale";
+import EasyModal, { type InnerModalProps } from "src/modules/easyModal";
 import { validateEmail, validateString } from "src/modules/Validations";
 import { showObjectSuccess } from "src/notifications";
 

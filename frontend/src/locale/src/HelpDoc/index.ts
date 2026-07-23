@@ -1,7 +1,7 @@
-import * as en from "./en/index";
 import * as bg from "./bg/index";
 import * as cs from "./cs/index";
 import * as de from "./de/index";
+import * as en from "./en/index";
 import * as es from "./es/index";
 import * as et from "./et/index";
 import * as fr from "./fr/index";

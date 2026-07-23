@@ -3,8 +3,8 @@ import { dirname } from "node:path";
 import { fileURLToPath } from "node:url";
 import utils from "../lib/utils.js";
 import { ipRanges as logger } from "../logger.js";
-import internalNginx from "./nginx.js";
 import pjson from "../package.json" with { type: "json" };
+import internalNginx from "./nginx.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);

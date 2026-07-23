@@ -1,4 +1,3 @@
-import EasyModal, { type InnerModalProps } from "src/modules/easyModal";
 import { Form, Formik } from "formik";
 import { type ReactNode, useState } from "react";
 import { Alert } from "react-bootstrap";
@@ -14,6 +13,7 @@ import {
 } from "src/components";
 import { useDeadHost, useDeadHosts, useDirectorySuggestions, useSetDeadHost } from "src/hooks";
 import { T } from "src/locale";
+import EasyModal, { type InnerModalProps } from "src/modules/easyModal";
 import { showObjectSuccess } from "src/notifications";
 
 const showDeadHostModal = (id: number | "new") => {

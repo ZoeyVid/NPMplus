@@ -57,4 +57,4 @@ const useSetStream = () => {
 	});
 };
 
-export { useStream, useSetStream };
+export { useSetStream, useStream };
