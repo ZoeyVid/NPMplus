@@ -1,15 +1,15 @@
-import _ from "lodash";
 import crypto from "node:crypto";
 import { rm, writeFile } from "node:fs/promises";
+import _ from "lodash";
 import errs from "../lib/error.js";
 import utils from "../lib/utils.js";
 import { gravatar as logger } from "../logger.js";
 import authModel from "../models/auth.js";
 import userModel from "../models/user.js";
 import userPermissionModel from "../models/user_permission.js";
+import pjson from "../package.json" with { type: "json" };
 import internalAuditLog from "./audit-log.js";
 import internalToken from "./token.js";
-import pjson from "../package.json" with { type: "json" };
 
 const omissions = () => {
 	return ["is_deleted", "permissions.id", "permissions.user_id", "permissions.created_on", "permissions.modified_on"];

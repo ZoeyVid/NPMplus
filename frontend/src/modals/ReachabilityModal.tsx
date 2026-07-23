@@ -1,9 +1,9 @@
-import EasyModal, { type InnerModalProps } from "src/modules/easyModal";
 import { type ReactNode, useEffect, useState } from "react";
 import { Alert, Spinner } from "react-bootstrap";
 import Modal from "react-bootstrap/Modal";
 import { testHttpCertificate } from "src/api/backend";
 import { T } from "src/locale";
+import EasyModal, { type InnerModalProps } from "src/modules/easyModal";
 
 const showReachabilityModal = (domains: string[]) => {
 	EasyModal.show(ReachabilityModal, { domains });
