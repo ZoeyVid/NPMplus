@@ -1,5 +1,6 @@
 import express from "express";
 import errs from "../lib/error.js";
+import jwtdecode from "../lib/express/jwt-decode.js";
 import pjson from "../package.json" with { type: "json" };
 import { isSetup } from "../setup.js";
 import auditLogRoutes from "./audit-log.js";
@@ -43,6 +44,14 @@ router.get(["/api", "/api/"], async (_, res /*, next*/) => {
 		password: process.env.OIDC_DISABLE_PASSWORD === "false",
 		oidc: isOIDCenabled,
 	});
+});
+
+/**
+ * Auth Check, used by the nginx auth_request directive
+ * GET /api/auth
+ */
+router.get("/api/auth", jwtdecode(), (_, res) => {
+	res.sendStatus(res.locals.access?.token.getUserId(0) ? 200 : 401);
 });
 
 router.use("/api/docs", docsRoutes);
