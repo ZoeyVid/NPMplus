@@ -1,5 +1,6 @@
 import express from "express";
 import internalRemoteVersion from "../internal/remote-version.js";
+import requireLogin from "../lib/express/require-login.js";
 import { debug, express as logger } from "../logger.js";
 
 const router = express.Router({
@@ -16,6 +17,7 @@ router
 	.options((_, res) => {
 		res.sendStatus(204);
 	})
+	.all(requireLogin())
 
 	/**
 	 * GET /api/version/check
