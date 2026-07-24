@@ -241,14 +241,6 @@ function LoginForm() {
 
 export default function Login() {
 	const { twoFactorChallenge } = useAuthState();
-	const health = useHealth();
-
-	const getVersion = () => {
-		if (!health.data) {
-			return "";
-		}
-		return health.data.version;
-	};
 
 	return (
 		<Page className="page page-center">
@@ -263,7 +255,6 @@ export default function Login() {
 				<div className="card card-md">
 					<div className="card-body">{twoFactorChallenge ? <TwoFactorForm /> : <LoginForm />}</div>
 				</div>
-				<div className="text-center text-secondary mt-3">{getVersion()}</div>
 			</div>
 		</Page>
 	);
