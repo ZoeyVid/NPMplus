@@ -13,8 +13,7 @@
 						"default": {
 							"value": {
 								"status": "OK",
-								"setup": true,
-								"version": "..."
+								"setup": true
 							}
 						}
 					},
