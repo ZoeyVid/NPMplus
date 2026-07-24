@@ -1,11 +1,10 @@
-import { useCheckVersion, useHealth } from "src/hooks";
+import { useCheckVersion } from "src/hooks";
 import { T } from "src/locale";
 
 export function SiteFooter() {
-	const health = useHealth();
 	const { data: versionData } = useCheckVersion();
 
-	const version = health.data?.version || "";
+	const version = versionData?.current || "";
 	const githubTag = version.split("-").slice(0, 4).join("-");
 	const githubLinkType = githubTag.length < 13 ? "tree" : "releases/tag";
 
