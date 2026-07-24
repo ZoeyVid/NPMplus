@@ -2,7 +2,12 @@
 	"operationId": "schema",
 	"summary": "Returns this swagger API schema",
 	"tags": [
-		"public"
+		"docs"
+	],
+	"security": [
+		{
+			"cookieAuth": []
+		}
 	],
 	"responses": {
 		"200": {

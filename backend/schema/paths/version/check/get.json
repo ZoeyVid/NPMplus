@@ -2,7 +2,12 @@
 	"operationId": "checkVersion",
 	"summary": "Returns any new version data from github",
 	"tags": [
-		"public"
+		"version"
+	],
+	"security": [
+		{
+			"cookieAuth": []
+		}
 	],
 	"responses": {
 		"200": {
