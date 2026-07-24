@@ -1,7 +1,6 @@
 import express from "express";
 import errs from "../lib/error.js";
 import jwtdecode from "../lib/express/jwt-decode.js";
-import pjson from "../package.json" with { type: "json" };
 import { isSetup } from "../setup.js";
 import auditLogRoutes from "./audit-log.js";
 import docsRoutes from "./docs.js";
@@ -40,7 +39,6 @@ router.get(["/api", "/api/"], async (_, res /*, next*/) => {
 	res.status(200).send({
 		status: "OK",
 		setup: await isSetup(),
-		version: pjson.version,
 		password: process.env.OIDC_DISABLE_PASSWORD === "false",
 		oidc: isOIDCenabled,
 	});
