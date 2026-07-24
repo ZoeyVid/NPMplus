@@ -1,4 +1,5 @@
 import express from "express";
+import requireLogin from "../lib/express/require-login.js";
 import { debug, express as logger } from "../logger.js";
 import PACKAGE from "../package.json" with { type: "json" };
 import { getCompiledSchema } from "../schema/index.js";
@@ -14,6 +15,7 @@ router
 	.options((_, res) => {
 		res.sendStatus(204);
 	})
+	.all(requireLogin())
 
 	/**
 	 * GET /schema

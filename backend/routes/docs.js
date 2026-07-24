@@ -1,5 +1,6 @@
 import express from "express";
 import swaggerUi from "swagger-ui-express";
+import requireLogin from "../lib/express/require-login.js";
 import { debug, express as logger } from "../logger.js";
 import PACKAGE from "../package.json" with { type: "json" };
 import { getCompiledSchema } from "../schema/index.js";
@@ -10,7 +11,7 @@ const router = express.Router({
 	mergeParams: true,
 });
 
-router.use("/", swaggerUi.serve);
+router.use("/", requireLogin(), swaggerUi.serve);
 
 router
 	.route("/")
