@@ -139,13 +139,12 @@ const getMenuDropown = (item: MenuItem, onClick?: () => void) => {
 			hideError
 		>
 			<li className={cns}>
-				<a
+				<button
+					type="button"
 					className="nav-link dropdown-toggle"
-					href={item.to}
 					data-bs-toggle="dropdown"
 					data-bs-auto-close="outside"
 					aria-expanded="false"
-					role="button"
 				>
 					<span className="nav-link-icon d-md-none d-lg-inline-block">
 						<IconDeviceDesktop height={24} width={24} />
@@ -153,7 +152,7 @@ const getMenuDropown = (item: MenuItem, onClick?: () => void) => {
 					<span className="nav-link-title">
 						<T id={item.label} />
 					</span>
-				</a>
+				</button>
 				<div className="dropdown-menu">
 					{item.items?.map((subitem, idx) => {
 						return (

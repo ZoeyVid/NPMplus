@@ -1,13 +1,13 @@
 #!/usr/bin/env node
 
-const fs = require("fs");
-const path = require("path");
+const fs = require("node:fs");
+const path = require("node:path");
 
 const DIR = path.resolve(__dirname, "../src");
 
 // Function to sort object keys recursively
 function sortKeys(obj) {
-	if (obj === null || typeof obj !== "object" || obj instanceof Array) {
+	if (obj === null || typeof obj !== "object" || Array.isArray(obj)) {
 		return obj;
 	}
 
@@ -15,7 +15,7 @@ function sortKeys(obj) {
 	const keys = Object.keys(obj).sort();
 	for (const key of keys) {
 		const value = obj[key];
-		if (typeof value === "object" && value !== null && !(value instanceof Array)) {
+		if (typeof value === "object" && value !== null && !Array.isArray(value)) {
 			sorted[key] = sortKeys(value);
 		} else {
 			sorted[key] = value;
@@ -51,7 +51,7 @@ files.forEach((file) => {
 		const sortedJson = sortKeys(originalJson);
 
 		// Convert back to string with tabs
-		const sortedContent = JSON.stringify(sortedJson, null, "\t") + "\n";
+		const sortedContent = `${JSON.stringify(sortedJson, null, "\t")}\n`;
 
 		// Compare (normalize whitespace)
 		if (originalContent.trim() === sortedContent.trim()) {
@@ -66,4 +66,3 @@ files.forEach((file) => {
 		console.error(`Error processing ${file}:`, error.message);
 	}
 });
-
