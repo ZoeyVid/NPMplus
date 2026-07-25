@@ -133,7 +133,7 @@ const internalDeadHost = {
 		if (createCertificate) {
 			const cert = await internalCertificate.createQuickCertificate(access, {
 				domain_names: data.domain_names || row.domain_names,
-				meta: _.assign({}, row.meta, data.meta),
+				meta: { ...row.meta, ...data.meta },
 			});
 
 			// update host with cert id
@@ -141,13 +141,7 @@ const internalDeadHost = {
 		}
 
 		// Add domain_names to the data in case it isn't there, so that the audit log renders correctly. The order is important here.
-		let thisData = _.assign(
-			{},
-			{
-				domain_names: row.domain_names,
-			},
-			data,
-		);
+		let thisData = { domain_names: row.domain_names, ...data };
 
 		thisData = internalHost.cleanSslHstsData(createCertificate, thisData, row);
 

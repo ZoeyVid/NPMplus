@@ -1,7 +1,6 @@
 import { readFile, rename, rm, writeFile } from "node:fs/promises";
 import { dirname } from "node:path";
 import { domainToASCII, fileURLToPath } from "node:url";
-import _ from "lodash";
 import errs from "../lib/error.js";
 import utils from "../lib/utils.js";
 import { debug, nginx as logger } from "../logger.js";
@@ -34,10 +33,7 @@ const internalNginx = {
 
 		try {
 			await internalNginx.test();
-			combined_meta = _.assign({}, host.meta, {
-				nginx_online: true,
-				nginx_err: null,
-			});
+			combined_meta = { ...host.meta, nginx_online: true, nginx_err: null };
 
 			await model.query().where("id", host.id).patch({
 				meta: combined_meta,
@@ -46,10 +42,7 @@ const internalNginx = {
 			logger.error(err.message);
 
 			// config is bad, update meta and rename config
-			combined_meta = _.assign({}, host.meta, {
-				nginx_online: false,
-				nginx_err: err.message,
-			});
+			combined_meta = { ...host.meta, nginx_online: false, nginx_err: err.message };
 
 			await model.query().where("id", host.id).patch({
 				meta: combined_meta,
@@ -293,7 +286,7 @@ const internalNginx = {
 		host.upstreams = await internalNginx.renderUpstreams(host);
 
 		if (host.locations) {
-			_.map(host.locations, (location) => {
+			for (const location of host.locations) {
 				if (location.npmplus_access_list_type === "global") {
 					location.access_list = host.access_list;
 				} else if (location.npmplus_access_list_type === "custom") {
@@ -335,7 +328,7 @@ const internalNginx = {
 				) {
 					host.create_authentik_locations = true;
 				}
-			});
+			}
 
 			const originalLocations = [...host.locations];
 			host.locations = await internalNginx.renderLocations(host);
