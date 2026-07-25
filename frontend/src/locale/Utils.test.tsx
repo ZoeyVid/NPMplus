@@ -1,20 +1,13 @@
-import { formatDateTime, getFlagCodeForLocale } from "src/locale";
+import { formatDateTime, getFlagCodeForLocale } from "src/locale/Utils";
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
 
 describe("DateFormatter", () => {
 	// Keep a reference to the real Intl to restore later
-	const RealIntl = global.Intl;
+	const RealIntl = globalThis.Intl;
 	const desiredTimeZone = "Europe/London";
 	const desiredLocale = "en-GB";
 
 	beforeAll(() => {
-		// Ensure Node-based libs using TZ behave deterministically
-		try {
-			process.env.TZ = desiredTimeZone;
-		} catch {
-			// ignore if not available
-		}
-
 		// Mock Intl.DateTimeFormat so formatting is stable regardless of host
 		const MockedDateTimeFormat = class extends RealIntl.DateTimeFormat {
 			constructor(_locales?: string | string[], options?: Intl.DateTimeFormatOptions) {
@@ -25,7 +18,7 @@ describe("DateFormatter", () => {
 			}
 		} as unknown as typeof Intl.DateTimeFormat;
 
-		global.Intl = {
+		globalThis.Intl = {
 			...RealIntl,
 			DateTimeFormat: MockedDateTimeFormat,
 		};
@@ -33,7 +26,7 @@ describe("DateFormatter", () => {
 
 	afterAll(() => {
 		// Restore original Intl after tests
-		global.Intl = RealIntl;
+		globalThis.Intl = RealIntl;
 	});
 
 	it("format date from iso date", () => {

@@ -39,7 +39,7 @@
 }
 
 .react-select-container {
-	.react-select__control  {
+	.react-select__control {
 		color: var(--tblr-body-color);
 		background-color: var(--tblr-bg-forms);
 		border: var(--tblr-border-width) solid var(--tblr-border-color);
@@ -67,14 +67,14 @@
 		background-color: var(--tblr-bg-forms);
 
 		.react-select__option {
-			background: rgba(var(--tblr-primary-rgb), .04);
+			background: rgba(var(--tblr-primary-rgb), 0.04);
 			color: inherit !important;
 			&.react-select__option--is-focused {
-				background: rgba(var(--tblr-primary-rgb), .1);
+				background: rgba(var(--tblr-primary-rgb), 0.1);
 			}
 
 			&.react-select__option--is-focused.react-select__option--is-selected {
-				background: rgba(var(--tblr-primary-rgb), .2);
+				background: rgba(var(--tblr-primary-rgb), 0.2);
 			}
 		}
 	}
@@ -88,7 +88,7 @@ label.row {
 	display: flex;
 	align-items: center;
 	padding: 0;
-	font-size: .875rem;
+	font-size: 0.875rem;
 	font-weight: 400;
 	line-height: 1.25rem;
 	color: var(--tblr-gray-500);
@@ -112,7 +112,8 @@ label.row {
 
 /* Fix for Tabler scrollbar compensation */
 @media (min-width: 992px) {
-  :host, :root {
-    margin-left: 0;
-  }
+	:host,
+	:root {
+		margin-left: 0;
+	}
 }
