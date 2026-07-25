@@ -90,7 +90,7 @@ const internalRedirectionHost = {
 				});
 			})
 			.then((row) => {
-				thisData.meta = _.assign({}, thisData.meta || {}, row.meta);
+				thisData.meta = { ...thisData.meta, ...row.meta };
 
 				// Add to audit log
 				return internalAuditLog
@@ -159,7 +159,7 @@ const internalRedirectionHost = {
 					return internalCertificate
 						.createQuickCertificate(access, {
 							domain_names: thisData.domain_names || row.domain_names,
-							meta: _.assign({}, row.meta, thisData.meta),
+							meta: { ...row.meta, ...thisData.meta },
 						})
 						.then((cert) => {
 							// update host with cert id
@@ -173,13 +173,7 @@ const internalRedirectionHost = {
 			})
 			.then((row) => {
 				// Add domain_names to the data in case it isn't there, so that the audit log renders correctly. The order is important here.
-				thisData = _.assign(
-					{},
-					{
-						domain_names: row.domain_names,
-					},
-					thisData,
-				);
+				thisData = { domain_names: row.domain_names, ...thisData };
 
 				thisData = internalHost.cleanSslHstsData(createCertificate, thisData, row);
 

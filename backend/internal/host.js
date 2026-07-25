@@ -1,4 +1,3 @@
-import _ from "lodash";
 import { castJsonIfNeed } from "../lib/helpers.js";
 import deadHostModel from "../models/dead_host.js";
 import proxyHostModel from "../models/proxy_host.js";
@@ -15,7 +14,7 @@ const internalHost = {
 	 * @returns {object}
 	 */
 	cleanSslHstsData: (newCert, data, existingData) => {
-		const combinedData = _.assign({}, existingData || {}, data);
+		const combinedData = { ...existingData, ...data };
 
 		if (!combinedData.certificate_id && !newCert) {
 			combinedData.hsts_subdomains = false;
