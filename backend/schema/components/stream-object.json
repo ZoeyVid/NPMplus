@@ -43,10 +43,7 @@
 			"example": "127.0.0.1"
 		},
 		"forwarding_port": {
-			"type": [
-				"string",
-				"null"
-			],
+			"type": "string",
 			"pattern": "^([0-9]{0,5}|\\$server_port)$",
 			"maxLength": 12,
 			"example": 80
@@ -82,7 +79,7 @@
 			"example": {}
 		},
 		"npmplus_description": {
-			"type": ["string", "null"],
+			"type": "string",
 			"maxLength": 255,
 			"example": "MariaDB database connection"
 		},
