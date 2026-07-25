@@ -147,9 +147,7 @@ const internalCertificate = {
 						.then(utils.omitRow(omissions()));
 
 					// Add cert data for audit log
-					savedRow.meta = _.assign({}, savedRow.meta, {
-						letsencrypt_certificate: certInfo,
-					});
+					savedRow.meta = { ...savedRow.meta, letsencrypt_certificate: certInfo };
 
 					await internalCertificate.addCreatedAuditLog(access, certificate.id, savedRow);
 
@@ -166,7 +164,7 @@ const internalCertificate = {
 			throw err;
 		}
 
-		data.meta = _.assign({}, data.meta || {}, certificate.meta);
+		data.meta = { ...data.meta, ...certificate.meta };
 
 		// Add to audit log
 		await internalCertificate.addCreatedAuditLog(access, certificate.id, utils.omitRow(omissions())(data));
@@ -552,23 +550,20 @@ const internalCertificate = {
 		}
 
 		const certs = {};
-		_.map(data.files, ([file], name) => {
-			if (
-				(isMtls && name === "certificate") ||
-				(!isMtls && internalCertificate.allowedSslFiles.indexOf(name) !== -1)
-			) {
+		for (const [name, [file]] of Object.entries(data.files)) {
+			if ((isMtls ? ["certificate"] : internalCertificate.allowedSslFiles).includes(name)) {
 				certs[name] = file.buffer.toString();
 			}
-		});
+		}
 
 		const certificate = await internalCertificate.update(access, {
 			id: data.id,
 			expires_on: dayjs.unix(validations.certificate.dates.to).format("YYYY-MM-DD HH:mm:ss"),
 			domain_names: validations.certificate.cn,
-			meta: _.clone(row.meta), // Prevent the update method from changing this value that we'll use later
+			meta: { ...row.meta }, // Prevent the update method from changing this value that we'll use later
 		});
 
-		certificate.meta = _.assign({}, row.meta, certs);
+		certificate.meta = { ...row.meta, ...certs };
 		await internalCertificate.writeCustomCert(certificate);
 		await internalNginx.reload();
 		return _.omit(certificate.meta, internalCertificate.allowedSslFiles);
