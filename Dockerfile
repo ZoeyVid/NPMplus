@@ -214,7 +214,7 @@ COPY backend /app
 FROM alpine:3.24.1@sha256:28bd5fe8b56d1bd048e5babf5b10710ebe0bae67db86916198a6eec434943f8b
 SHELL ["/bin/ash", "-eo", "pipefail", "-c"]
 ENV NODE_ENV=production
-ARG LRC_VER=6fec23e2149c88b33b39fec8a5ebdd67a3e0dd88 # v0.1.34rc3
+ARG LRC_VER=be42297c57dc2393cdbb09d4597d9d4840a7c769 # v0.1.35rc1
 ARG LRL_VER=3ff6300e68b73ba20e909c7d16bd839aef2e5a4b # v0.15
 ARG LCSB_VER=c6fe0130caf1a668d1893dcc5a32f41d98cbd695 # v1.0.15
 
