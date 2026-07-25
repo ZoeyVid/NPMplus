@@ -477,18 +477,11 @@ jobs:
           LRC_VER="$(
           git ls-remote --tags --refs https://github.com/openresty/lua-resty-core \
               | cut -d/ -f3 \
+              | sed 's|rc|~&|I' \
               | sort -V \
-              | grep -vi rc \
+              | sed 's|~||' \
               | tail -1
           )"
-          if [ "$LRC_VER" = "v0.1.32R1" ]; then
-           LRC_VER="$(
-            git ls-remote --tags --refs https://github.com/openresty/lua-resty-core \
-                | cut -d/ -f3 \
-                | sort -V \
-                | tail -1
-            )"
-          fi
           LRC_SHA="$(git ls-remote https://github.com/openresty/lua-resty-core "$LRC_VER" | cut -f1)"
           sed -i "s|ARG LRC_VER=.*|ARG LRC_VER=$LRC_SHA # $LRC_VER|" Dockerfile
           echo "version=$LRC_VER" >> $GITHUB_OUTPUT
