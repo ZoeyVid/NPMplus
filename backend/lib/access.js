@@ -10,7 +10,6 @@ import { readFile } from "node:fs/promises";
 import { dirname } from "node:path";
 import { fileURLToPath } from "node:url";
 import Ajv from "ajv/dist/2020.js";
-import _ from "lodash";
 import { access as logger } from "../logger.js";
 import proxyHostModel from "../models/proxy_host.js";
 import TokenModel from "../models/token.js";
@@ -51,10 +50,7 @@ export default function (tokenString) {
 		// - exist (and not soft deleted)
 		// - still have the appropriate scopes for this token
 		// This is only required when the User ID is supplied or if the token scope has `user`
-		if (
-			tokenData.attrs.id ||
-			(typeof tokenData.scope !== "undefined" && _.indexOf(tokenData.scope, "user") !== -1)
-		) {
+		if (tokenData.attrs.id || tokenData.scope?.includes("user")) {
 			// Has token user id or token user scope
 			const user = await userModel
 				.query()
@@ -74,14 +70,7 @@ export default function (tokenString) {
 				// The `user` role is not added against the user row, so we have to just add it here to get past this check.
 				user.roles.push("user");
 
-				let ok = true;
-				_.forEach(tokenData.scope, (scope_item) => {
-					if (_.indexOf(user.roles, scope_item) === -1) {
-						ok = false;
-					}
-				});
-
-				if (!ok) {
+				if (!(tokenData.scope ?? []).every((scopeItem) => user.roles.includes(scopeItem))) {
 					throw new errs.AuthError("Invalid token scope for User");
 				}
 				initialised = true;
@@ -130,10 +119,7 @@ export default function (tokenString) {
 						}
 
 						const rows = await query;
-						objects = [];
-						_.forEach(rows, (ruleRow) => {
-							objects.push(ruleRow.id);
-						});
+						objects = rows.map((ruleRow) => ruleRow.id);
 
 						// enum should not have less than 1 item
 						if (!objects.length) {
