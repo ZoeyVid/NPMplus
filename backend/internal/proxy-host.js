@@ -113,7 +113,7 @@ const internalProxyHost = {
 			})
 			.then((row) => {
 				// Audit log
-				thisData.meta = _.assign({}, thisData.meta || {}, row.meta);
+				thisData.meta = { ...thisData.meta, ...row.meta };
 
 				// Add to audit log
 				return internalAuditLog
@@ -181,7 +181,7 @@ const internalProxyHost = {
 					return internalCertificate
 						.createQuickCertificate(access, {
 							domain_names: thisData.domain_names || row.domain_names,
-							meta: _.assign({}, row.meta, thisData.meta),
+							meta: { ...row.meta, ...thisData.meta },
 						})
 						.then((cert) => {
 							// update host with cert id
@@ -195,13 +195,7 @@ const internalProxyHost = {
 			})
 			.then(async (row) => {
 				// Add domain_names to the data in case it isn't there, so that the audit log renders correctly. The order is important here.
-				thisData = _.assign(
-					{},
-					{
-						domain_names: row.domain_names,
-					},
-					data,
-				);
+				thisData = { domain_names: row.domain_names, ...data };
 
 				thisData = internalHost.cleanSslHstsData(createCertificate, thisData, row);
 				thisData = internalProxyHostAccessList.cleanAccessListTypes(thisData);

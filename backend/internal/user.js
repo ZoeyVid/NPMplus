@@ -583,10 +583,10 @@ const internalUser = {
 							return userPermissionModel
 								.query()
 								.where("user_id", user.id)
-								.patchAndFetchById(existing_auth.id, _.assign({ user_id: user.id }, data));
+								.patchAndFetchById(existing_auth.id, { user_id: user.id, ...data });
 						}
 						// insert
-						return userPermissionModel.query().insertAndFetch(_.assign({ user_id: user.id }, data));
+						return userPermissionModel.query().insertAndFetch({ user_id: user.id, ...data });
 					})
 					.then((permissions) => {
 						// Add to Audit Log
