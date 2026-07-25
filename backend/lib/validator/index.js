@@ -1,5 +1,4 @@
 import Ajv from "ajv/dist/2020.js";
-import _ from "lodash";
 import commonDefinitions from "../../schema/common.json" with { type: "json" };
 import errs from "../error.js";
 
@@ -30,7 +29,7 @@ const validator = (schema, payload) => {
 				const valid = validate(payload);
 
 				if (valid && !validate.errors) {
-					resolve(_.cloneDeep(payload));
+					resolve(structuredClone(payload));
 				} else {
 					const message = ajv.errorsText(validate.errors);
 					reject(new errs.InternalValidationError(message));
