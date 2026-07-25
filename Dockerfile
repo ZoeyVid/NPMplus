@@ -184,7 +184,8 @@ RUN apk upgrade --no-cache -a && \
     find /app/node_modules -name "*.node" -type f -exec file {} \;
 COPY frontend /app
 RUN pnpm formatjs compile-folder src/locale/src src/locale/lang && \
-    pnpm tsc && \
+    pnpm tsc -b && \
+    pnpm vitest && \
     pnpm vite build && \
     find /app/dist -type f ! -name '*.jpg' ! -name '*.png' ! -name '*.br' ! -name '*.gz' ! -name '*.zst' -exec gzip -9 -k {} \; && \
     find /app/dist -type f ! -name '*.jpg' ! -name '*.png' ! -name '*.br' ! -name '*.gz' ! -name '*.zst' -exec brotli -q 11 {} \; && \
