@@ -1,5 +1,3 @@
-import _ from "lodash";
-
 const errs = {
 	PermissionError: function (_, previous) {
 		Error.captureStackTrace(this, this.constructor);
@@ -96,8 +94,8 @@ const errs = {
 	},
 };
 
-_.forEach(errs, (err) => {
+for (const err of Object.values(errs)) {
 	err.prototype = Object.create(Error.prototype);
-});
+}
 
 export default errs;
