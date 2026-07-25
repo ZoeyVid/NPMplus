@@ -1,51 +1,17 @@
 import react from "@vitejs/plugin-react";
 import { defineConfig } from "vite";
 import "vitest/config";
-import { execFileSync } from "node:child_process";
 
-const runLocaleScripts = () => {
-	execFileSync("pnpm", ["formatjs", "compile-folder", "src/locale/src", "src/locale/lang"], {
-		stdio: "inherit",
-	});
-	execFileSync("./src/locale/scripts/locale-sort.sh", {
-		stdio: "inherit",
-	});
-};
-
-// https://vitejs.dev/config/
 export default defineConfig({
-	plugins: [
-		{
-			name: "run-on-start",
-			configureServer(_server) {
-				runLocaleScripts();
-			},
-		},
-		{
-			name: "trigger-on-reload",
-			configureServer(server) {
-				server.watcher.on("change", (file) => {
-					if (file.includes("locale/src")) {
-						console.log(`File changed: ${file}, running locale scripts...`);
-						runLocaleScripts();
-					}
-				});
-			},
-		},
-		react(),
-	],
+	plugins: [react()],
+	define: {
+		global: "globalThis",
+	},
 	resolve: {
 		tsconfigPaths: true,
 	},
-	server: {
-		host: true,
-		port: 5173,
-		strictPort: true,
-		allowedHosts: true,
-	},
+	assetsInclude: ["**/*.md"],
 	test: {
 		environment: "happy-dom",
-		setupFiles: ["./vitest-setup.js"],
 	},
-	assetsInclude: ["**/*.md", "**/*.png", "**/*.svg"],
 });
