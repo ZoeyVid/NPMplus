@@ -17,8 +17,9 @@ jobs:
           AWSLC_VER="$(
           git ls-remote --tags --refs https://github.com/aws/aws-lc \
               | cut -d/ -f3 \
+              | sed 's|rc|~&|I' \
               | sort -V \
-              | grep -vi rc \
+              | sed 's|~||' \
               | tail -1
           )"
           AWSLC_SHA="$(git ls-remote https://github.com/aws/aws-lc "$AWSLC_VER" | cut -f1)"
@@ -43,8 +44,9 @@ jobs:
           NGINX_VER="$(
           git ls-remote --tags --refs https://github.com/nginx/nginx \
               | cut -d/ -f3 \
+              | sed 's|rc|~&|I' \
               | sort -V \
-              | grep -vi rc \
+              | sed 's|~||' \
               | tail -1
           )"
           NGINX_SHA="$(git ls-remote https://github.com/nginx/nginx "$NGINX_VER" | cut -f1)"
@@ -144,8 +146,9 @@ jobs:
           NB_VER="$(
           git ls-remote --tags --refs https://github.com/HanadaLee/ngx_http_brotli_module \
               | cut -d/ -f3 \
+              | sed 's|rc|~&|I' \
               | sort -V \
-              | grep -vi rc \
+              | sed 's|~||' \
               | tail -1
           )"
           if [ -z "$NB_VER" ]; then NB_VER=master; fi
@@ -170,8 +173,9 @@ jobs:
           NUB_VER="$(
           git ls-remote --tags --refs https://github.com/HanadaLee/ngx_http_unbrotli_filter_module \
               | cut -d/ -f3 \
+              | sed 's|rc|~&|I' \
               | sort -V \
-              | grep -vi rc \
+              | sed 's|~||' \
               | tail -1
           )"
           if [ -z "$NUB_VER" ]; then NUB_VER=main; fi
@@ -196,8 +200,9 @@ jobs:
           ZNM_VER="$(
           git ls-remote --tags --refs https://github.com/hsw/zstd-nginx-module \
               | cut -d/ -f3 \
+              | sed 's|rc|~&|I' \
               | sort -V \
-              | grep -vi rc \
+              | sed 's|~||' \
               | tail -1
           )"
           ZNM_SHA="$(git ls-remote https://github.com/hsw/zstd-nginx-module "$ZNM_VER" | cut -f1)"
@@ -221,8 +226,9 @@ jobs:
           NHUZFM_VER="$(
           git ls-remote --tags --refs https://github.com/HanadaLee/ngx_http_unzstd_filter_module \
               | cut -d/ -f3 \
+              | sed 's|rc|~&|I' \
               | sort -V \
-              | grep -vi rc \
+              | sed 's|~||' \
               | tail -1
           )"
           if [ -z "$NHUZFM_VER" ]; then NHUZFM_VER=main; fi
@@ -247,8 +253,9 @@ jobs:
           NF_VER="$(
           git ls-remote --tags --refs https://github.com/aperezdc/ngx-fancyindex \
               | cut -d/ -f3 \
+              | sed 's|rc|~&|I' \
               | sort -V \
-              | grep -vi rc \
+              | sed 's|~||' \
               | tail -1
           )"
           NF_SHA="$(git ls-remote https://github.com/aperezdc/ngx-fancyindex "$NF_VER" | cut -f1)"
@@ -272,8 +279,9 @@ jobs:
           HMNM_VER="$(
           git ls-remote --tags --refs https://github.com/openresty/headers-more-nginx-module \
               | cut -d/ -f3 \
+              | sed 's|rc|~&|I' \
               | sort -V \
-              | grep -vi rc \
+              | sed 's|~||' \
               | tail -1
           )"
           HMNM_SHA="$(git ls-remote https://github.com/openresty/headers-more-nginx-module "$HMNM_VER" | cut -f1)"
@@ -297,8 +305,9 @@ jobs:
           NDK_VER="$(
           git ls-remote --tags --refs https://github.com/vision5/ngx_devel_kit \
               | cut -d/ -f3 \
+              | sed 's|rc|~&|I' \
               | sort -V \
-              | grep -vi rc \
+              | sed 's|~||' \
               | tail -1
           )"
           NDK_SHA="$(git ls-remote https://github.com/vision5/ngx_devel_kit "$NDK_VER" | cut -f1)"
@@ -322,8 +331,9 @@ jobs:
           LNM_VER="$(
           git ls-remote --tags --refs https://github.com/openresty/lua-nginx-module \
               | cut -d/ -f3 \
+              | sed 's|rc|~&|I' \
               | sort -V \
-              | grep -vi rc \
+              | sed 's|~||' \
               | tail -1
           )"
           LNM_SHA="$(git ls-remote https://github.com/openresty/lua-nginx-module "$LNM_VER" | cut -f1)"
@@ -349,8 +359,9 @@ jobs:
           NJS_VER="$(
           git ls-remote --tags --refs https://github.com/nginx/njs \
               | cut -d/ -f3 \
+              | sed 's|rc|~&|I' \
               | sort -V \
-              | grep -vi rc \
+              | sed 's|~||' \
               | tail -1
           )"
           NJS_SHA="$(git ls-remote https://github.com/nginx/njs "$NJS_VER" | cut -f1)"
@@ -374,8 +385,9 @@ jobs:
           NAL_VER="$(
           git ls-remote --tags --refs https://github.com/kvspb/nginx-auth-ldap \
               | cut -d/ -f3 \
+              | sed 's|rc|~&|I' \
               | sort -V \
-              | grep -vi rc \
+              | sed 's|~||' \
               | tail -1
           )"
           if [ "$NAL_VER" = "v0.1" ]; then NAL_VER=master; fi
@@ -400,8 +412,9 @@ jobs:
           VTS_VER="$(
           git ls-remote --tags --refs https://github.com/vozlt/nginx-module-vts \
               | cut -d/ -f3 \
+              | sed 's|rc|~&|I' \
               | sort -V \
-              | grep -vi rc \
+              | sed 's|~||' \
               | tail -1
           )"
           VTS_SHA="$(git ls-remote https://github.com/vozlt/nginx-module-vts "$VTS_VER" | cut -f1)"
@@ -425,8 +438,9 @@ jobs:
           NNTLM_VER="$(
           git ls-remote --tags --refs https://github.com/gabihodoroaga/nginx-ntlm-module \
               | cut -d/ -f3 \
+              | sed 's|rc|~&|I' \
               | sort -V \
-              | grep -vi rc \
+              | sed 's|~||' \
               | tail -1
           )"
           if [ "$NNTLM_VER" = "v1.19.3-beta.1" ]; then NNTLM_VER=master; fi
@@ -451,8 +465,9 @@ jobs:
           NHG2M_VER="$(
           git ls-remote --tags --refs https://github.com/leev/ngx_http_geoip2_module \
               | cut -d/ -f3 \
+              | sed 's|rc|~&|I' \
               | sort -V \
-              | grep -vi rc \
+              | sed 's|~||' \
               | tail -1
           )"
           NHG2M_SHA="$(git ls-remote https://github.com/leev/ngx_http_geoip2_module "$NHG2M_VER" | cut -f1)"
@@ -503,8 +518,9 @@ jobs:
           LRL_VER="$(
           git ls-remote --tags --refs https://github.com/openresty/lua-resty-lrucache \
               | cut -d/ -f3 \
+              | sed 's|rc|~&|I' \
               | sort -V \
-              | grep -vi rc \
+              | sed 's|~||' \
               | tail -1
           )"
           LRL_SHA="$(git ls-remote https://github.com/openresty/lua-resty-lrucache "$LRL_VER" | cut -f1)"
@@ -529,8 +545,9 @@ jobs:
           LCSB_VER="$(
           git ls-remote --tags --refs https://github.com/crowdsecurity/lua-cs-bouncer \
               | cut -d/ -f3 \
+              | sed 's|rc|~&|I' \
               | sort -V \
-              | grep -vi rc \
+              | sed 's|~||' \
               | tail -1
           )"
           LCSB_SHA="$(git ls-remote https://github.com/crowdsecurity/lua-cs-bouncer "$LCSB_VER" | cut -f1)"
