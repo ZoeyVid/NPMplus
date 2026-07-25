@@ -1,5 +1,3 @@
-import _ from "lodash";
-
 export default (default_sort, default_offset, default_limit, max_limit) => {
 	/**
 	 * This will setup the req query params with filtered data and defaults
@@ -26,7 +24,7 @@ export default (default_sort, default_offset, default_limit, max_limit) => {
 		const sort_array = [];
 
 		sort = sort.split(",");
-		_.map(sort, (val) => {
+		for (const val of sort) {
 			const matches = myRegexp.exec(val);
 
 			if (matches !== null) {
@@ -41,7 +39,7 @@ export default (default_sort, default_offset, default_limit, max_limit) => {
 					dir: "asc",
 				});
 			}
-		});
+		}
 
 		// Sort will now be in this format:
 		// [
