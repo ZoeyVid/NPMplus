@@ -62,25 +62,6 @@ const loadMessages = (locale?: string): typeof langList & typeof langEn => {
 	return Object.assign({}, langList, langEn, localeOptions.find(([code]) => code === thisLocale)?.[2]);
 };
 
-const getFlagCodeForLocale = (locale?: string) => {
-	const thisLocale = (locale || "en").slice(0, 2);
-
-	// only add to this if your flag is different from the locale code
-	const specialCases: Record<string, string> = {
-		ja: "jp", // Japan
-		zh: "cn", // China
-		vi: "vn", // Vietnam
-		ko: "kr", // Korea
-		cs: "cz", // Czechia
-		ga: "ie", // Ireland (Irish)
-	};
-
-	if (specialCases[thisLocale]) {
-		return specialCases[thisLocale].toUpperCase();
-	}
-	return thisLocale.toUpperCase();
-};
-
 const getLocale = (short = false) => {
 	let loc = window.localStorage.getItem("locale");
 	if (!loc) loc = document.documentElement.lang;
@@ -135,4 +116,4 @@ const T = ({
 
 //console.log("L:", localeOptions);
 
-export { changeLocale, createIntl, getFlagCodeForLocale, getLocale, intl, localeOptions, T };
+export { changeLocale, createIntl, getLocale, intl, localeOptions, T };
