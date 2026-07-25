@@ -1,46 +1,4 @@
 {
-	"compilerOptions": {
-		"target": "ESNext",
-		"types": ["node", "vitest/globals"],
-		"useDefineForClassFields": true,
-		"lib": [
-			"ESNext",
-			"DOM",
-			"DOM.Iterable"
-		],
-		"types": [
-			"node"
-		],
-		"module": "ESNext",
-		"skipLibCheck": true,
-		/* Bundler mode */
-		"moduleResolution": "bundler",
-		"allowImportingTsExtensions": true,
-		"resolveJsonModule": true,
-		"isolatedModules": true,
-		"noEmit": true,
-		"jsx": "react-jsx",
-		/* Linting */
-		"strict": true,
-		"noUnusedLocals": true,
-		"noUnusedParameters": true,
-		"noFallthroughCasesInSwitch": true,
-		"paths": {
-			"src/*": [
-				"./src/*"
-			],
-			"test/*": [
-				"./test/*"
-			]
-		}
-	},
-	"include": [
-		"src",
-		"test"
-	],
-	"references": [
-		{
-			"path": "./tsconfig.node.json"
-		}
-	]
+	"files": [],
+	"references": [{ "path": "./tsconfig.app.json" }, { "path": "./tsconfig.node.json" }]
 }

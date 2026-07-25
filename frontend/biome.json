@@ -7,7 +7,7 @@
 	},
 	"files": {
 		"ignoreUnknown": false,
-		"includes": ["**/*.ts", "**/*.tsx", "**/*.js", "**/*.jsx", "!**/dist/**/*"]
+		"includes": ["**", "!**/*.svg"]
 	},
 	"formatter": {
 		"enabled": true,
@@ -16,59 +16,32 @@
 		"lineWidth": 120,
 		"formatWithErrors": true
 	},
-	"assist": {
-		"actions": {
-			"source": {
-				"organizeImports": {
-					"level": "on",
-					"options": {
-						"groups": [
-							":BUN:",
-							":NODE:",
-							["npm:*", "npm:*/**"],
-							":PACKAGE_WITH_PROTOCOL:",
-							":URL:",
-							":PACKAGE:",
-							["/src/*", "/src/**"],
-							["/**"],
-							["#*", "#*/**"],
-							":PATH:"
-						]
-					}
-				}
-			}
-		}
-	},
 	"linter": {
 		"enabled": true,
 		"rules": {
 			"preset": "recommended",
-			"correctness": {
-				"useUniqueElementIds": "off"
-			},
 			"suspicious": {
 				"noExplicitAny": "off",
 				"noArrayIndexKey": "off"
 			},
-			"performance": {
-				"noDelete": "off"
-			},
-			"nursery": "off",
 			"a11y": {
-				"useSemanticElements": "off",
 				"useValidAnchor": "off"
 			},
-			"style": {
-				"noParameterAssign": "error",
-				"useAsConstAssertion": "error",
-				"useDefaultParameterLast": "error",
-				"useEnumInitializers": "error",
-				"useSelfClosingElements": "error",
-				"useSingleVarDeclarator": "error",
-				"noUnusedTemplateLiteral": "error",
-				"useNumberNamespace": "error",
-				"noInferrableTypes": "error",
-				"noUselessElse": "error"
+			"complexity": {
+				"noImportantStyles": "off"
+			}
+		}
+	},
+	"javascript": {
+		"formatter": {
+			"quoteStyle": "double"
+		}
+	},
+	"assist": {
+		"enabled": true,
+		"actions": {
+			"source": {
+				"organizeImports": "on"
 			}
 		}
 	}

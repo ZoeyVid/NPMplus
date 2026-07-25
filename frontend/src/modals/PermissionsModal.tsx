@@ -84,7 +84,7 @@ const PermissionsModal = EasyModal.create(({ id, visible, remove }: Props) => {
 
 		return (
 			<div>
-				<div className="btn-group w-100" role="group">
+				<fieldset className="btn-group w-100">
 					<input
 						type="radio"
 						className="btn-check"
@@ -125,7 +125,7 @@ const PermissionsModal = EasyModal.create(({ id, visible, remove }: Props) => {
 					<label htmlFor={`${field.name}-hidden`} className={getClasses(isHidden)}>
 						<T id="permissions.hidden" />
 					</label>
-				</div>
+				</fieldset>
 			</div>
 		);
 	};
@@ -172,7 +172,7 @@ const PermissionsModal = EasyModal.create(({ id, visible, remove }: Props) => {
 									</label>
 									<Field name="visibility">
 										{({ field, form }: any) => (
-											<div className="btn-group w-100" role="group">
+											<fieldset className="btn-group w-100">
 												<input
 													type="radio"
 													className="btn-check"
@@ -205,7 +205,7 @@ const PermissionsModal = EasyModal.create(({ id, visible, remove }: Props) => {
 												>
 													<T id="permissions.visibility.all" />
 												</label>
-											</div>
+											</fieldset>
 										)}
 									</Field>
 								</div>
