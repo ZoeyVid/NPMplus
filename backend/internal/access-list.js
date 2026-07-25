@@ -71,7 +71,7 @@ const internalAccessList = {
 		);
 
 		// Audit log
-		data.meta = _.assign({}, data.meta || {}, freshRow.meta);
+		data.meta = { ...data.meta, ...freshRow.meta };
 		await internalAccessList.build(freshRow);
 		if (Number.parseInt(freshRow.proxy_host_count, 10)) {
 			// locations don't have accessList objects, only IDs, so populate it with the object itself

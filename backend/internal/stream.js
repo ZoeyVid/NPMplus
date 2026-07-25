@@ -121,7 +121,7 @@ const internalStream = {
 					return internalCertificate
 						.createQuickCertificate(access, {
 							domain_names: thisData.domain_names || row.domain_names,
-							meta: _.assign({}, row.meta, thisData.meta),
+							meta: { ...row.meta, ...thisData.meta },
 						})
 						.then((cert) => {
 							// update host with cert id
@@ -135,13 +135,7 @@ const internalStream = {
 			})
 			.then((row) => {
 				// Add domain_names to the data in case it isn't there, so that the audit log renders correctly. The order is important here.
-				thisData = _.assign(
-					{},
-					{
-						domain_names: row.domain_names,
-					},
-					thisData,
-				);
+				thisData = { domain_names: row.domain_names, ...thisData };
 
 				return streamModel
 					.query()
