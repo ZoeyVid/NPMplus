@@ -35,7 +35,7 @@ const ReachabilityModal = EasyModal.create(({ visible, remove, domains }: InnerM
 			<>
 				{testResults.map((testResult) => {
 					const { domain, status } = testResult;
-					let messageComponent: ReactNode = status;
+					let messageComponent: ReactNode;
 
 					switch (status) {
 						case "ok":
