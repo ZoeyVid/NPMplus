@@ -1,4 +1,7 @@
+import { rm } from "node:fs/promises";
+import path from "node:path";
 import express from "express";
+import { rateLimit } from "express-rate-limit";
 import multer from "multer";
 import dnsPlugins from "../../certbot/dns-plugins.json" with { type: "json" };
 import internalCertificate from "../../internal/certificate.js";
@@ -13,6 +16,16 @@ const router = express.Router({
 	caseSensitive: true,
 	strict: true,
 	mergeParams: true,
+});
+
+const downloadLimiter = rateLimit({
+	windowMs: 10 * 60 * 1000,
+	limit: 10,
+	message: { error: { message: "Too many requests, please try again later." } },
+	standardHeaders: "draft-8",
+	legacyHeaders: false,
+	ipv6Subnet: 48,
+	validate: { trustProxy: false },
 });
 
 const uploadCerts = multer({ storage: multer.memoryStorage(), limits: { fileSize: 1024 * 1024 } }).fields([
@@ -323,12 +336,15 @@ router
 	 *
 	 * Renew certificate
 	 */
-	.get(async (req, res, next) => {
+	.get(downloadLimiter, async (req, res, next) => {
 		try {
 			const result = await internalCertificate.download(res.locals.access, {
 				id: Number.parseInt(req.params.certificate_id, 10),
 			});
-			res.status(200).download(result.fileName);
+			res.status(200).download(result.fileName, (err) => {
+				rm(path.dirname(result.fileName), { recursive: true, force: true });
+				if (err && !res.headersSent) next(err);
+			});
 		} catch (err) {
 			debug(logger, `${req.method.toUpperCase()} ${req.originalUrl}: ${err}`);
 			next(err);

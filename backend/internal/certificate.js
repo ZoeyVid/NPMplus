@@ -1,6 +1,7 @@
 import { createPrivateKey, X509Certificate } from "node:crypto";
-import { mkdir, open, readFile, realpath, rm, stat, writeFile } from "node:fs/promises";
+import { mkdir, mkdtemp, open, readFile, realpath, rm, stat, writeFile } from "node:fs/promises";
 import net from "node:net";
+import { tmpdir } from "node:os";
 import path from "node:path";
 import { domainToASCII } from "node:url";
 import { ZipArchive } from "archiver";
@@ -303,8 +304,7 @@ const internalCertificate = {
 				}
 			}
 
-			const downloadName = `npm-${data.id}-${Date.now()}.zip`;
-			const opName = `/tmp/${downloadName}`;
+			const opName = path.join(await mkdtemp(path.join(tmpdir(), "npm-")), `npm-${data.id}-${Date.now()}.zip`);
 
 			await internalCertificate.zipFiles(certFiles, opName);
 			debug(logger, "zip completed : ", opName);
