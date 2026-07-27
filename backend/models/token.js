@@ -56,7 +56,7 @@ export default () => {
 			}
 			return new Promise((resolve, reject) => {
 				try {
-					if (!token || token === null || token === "null") {
+					if (!token || token === "null") {
 						reject(new errs.AuthError("Empty token"));
 					} else {
 						jwt.verify(
