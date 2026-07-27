@@ -74,7 +74,7 @@ const HTTPCertificateModal = EasyModal.create(({ visible, remove }: InnerModalPr
 			<>
 				{testResults.map((testResult) => {
 					const { domain, status } = testResult;
-					let messageComponent: ReactNode = status;
+					let messageComponent: ReactNode;
 
 					switch (status) {
 						case "ok":
