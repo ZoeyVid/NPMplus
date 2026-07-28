@@ -1,0 +1,6 @@
+type = process
+command = index.js
+term-signal = TERM
+restart = yes
+options = shares-console
+working-dir = /app

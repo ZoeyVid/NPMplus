@@ -1,0 +1,5 @@
+type = process
+command = nginx -e stderr
+term-signal = QUIT
+restart = yes
+options = shares-console

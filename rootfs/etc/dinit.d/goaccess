@@ -1,0 +1,5 @@
+type = process
+command = goaccess --no-global-config --num-tests=0 --tz=$TZ --time-format=%H:%M:%S --date-format=%d/%b/%Y --log-format="[%d:%t %^] %v %h %T \"%r\" %s %b %b %R %u" --unix-socket=/run/goaccess.sock --log-file=/data/nginx/logs/access.log --real-time-html --output=/tmp/goa/index.html --db-path=/data/goaccess/data --restore --persist --browsers-file=/etc/goaccess/browsers.list --browsers-file=/etc/goaccess/podcast.list $/GOACLA
+term-signal = INT
+restart = yes
+options = shares-console

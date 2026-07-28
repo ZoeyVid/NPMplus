@@ -1,0 +1,5 @@
+type = process
+command = env PHP_INI_SCAN_DIR=/data/php/84/conf.d php-fpm84 -c /data/php/84 -y /data/php/84/php-fpm.conf -FOR
+term-signal = QUIT
+restart = yes
+options = shares-console
