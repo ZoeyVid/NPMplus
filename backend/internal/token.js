@@ -63,7 +63,8 @@ export default {
 
 				return {
 					requires2fa: true,
-					challenge_token: challengeToken.token,
+					token: challengeToken.token,
+					expires: parseDatePeriod("3m").toISOString(),
 				};
 			}
 		}
@@ -117,7 +118,8 @@ export default {
 
 			return {
 				requires2fa: true,
-				challenge_token: challengeToken.token,
+				token: challengeToken.token,
+				expires: parseDatePeriod("3m").toISOString(),
 			};
 		}
 

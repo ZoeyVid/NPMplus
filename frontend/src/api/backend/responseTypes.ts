@@ -20,11 +20,6 @@ export interface VersionCheckResponse {
 	updateAvailable: boolean;
 }
 
-export interface TwoFactorChallengeResponse {
-	requires2fa: boolean;
-	challengeToken: string;
-}
-
 export interface TwoFactorStatusResponse {
 	enabled: boolean;
 	backupCodesRemaining: number;
