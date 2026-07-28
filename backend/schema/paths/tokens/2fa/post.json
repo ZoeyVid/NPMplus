@@ -10,11 +10,6 @@
 				"schema": {
 					"additionalProperties": false,
 					"properties": {
-						"challenge_token": {
-							"minLength": 1,
-							"type": "string",
-							"example": "eyJhbGciOiJSUzUxMiIsInR5cCI6IkpXVCJ9.ey...xaHKYr3Kk6MvkUjcC4"
-						},
 						"code": {
 							"minLength": 6,
 							"maxLength": 8,
@@ -22,11 +17,10 @@
 							"example": "012345"
 						}
 					},
-					"required": ["challenge_token", "code"],
+					"required": ["code"],
 					"type": "object"
 				},
 				"example": {
-					"challenge_token": "eyJhbGciOiJSUzUxMiIsInR5cCI6IkpXVCJ9.ey...xaHKYr3Kk6MvkUjcC4",
 					"code": "012345"
 				}
 			}

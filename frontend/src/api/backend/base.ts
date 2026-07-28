@@ -2,6 +2,7 @@ import { QueryClient } from "@tanstack/react-query";
 import queryString, { type StringifiableRecord } from "query-string";
 import AuthStore from "src/modules/AuthStore";
 import { camelizeKeys, decamelize, decamelizeKeys } from "./caseConvert";
+import { deleteToken } from "./deleteToken";
 
 const queryClient = new QueryClient();
 const contentTypeHeader = "Content-Type";
@@ -46,6 +47,7 @@ async function processResponse(response: Response, reload = true) {
 			// Force logout user and reload the page if Unauthorized
 			AuthStore.clear();
 			queryClient.clear();
+			await deleteToken().catch(() => {});
 			if (reload) {
 				window.location.reload();
 			}

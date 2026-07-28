@@ -46,7 +46,11 @@ router
 				secure: true,
 				sameSite: "Strict",
 			});
-			res.cookie("__Host-npmplus_oidc_no_redirect", "true", { secure: true, sameSite: "Strict" });
+			res.cookie("__Host-npmplus_oidc_no_redirect", "true", {
+				secure: true,
+				sameSite: "Strict",
+				maxAge: 60 * 60 * 1000,
+			});
 			return res.status(401).send({ expires: new Date(0).toISOString() });
 		}
 
@@ -88,8 +92,16 @@ router
 			const result = await internalToken.getTokenFromEmail(data);
 			const { token, ...responseBody } = result;
 
-			if (result.token && result.expires) {
-				res.cookie("__Host-Http-token", result.token, {
+			if (result.requires2fa) {
+				res.cookie("__Host-Http-challenge_token", token, {
+					signed: true,
+					httpOnly: true,
+					secure: true,
+					sameSite: "Strict",
+					expires: new Date(result.expires),
+				});
+			} else {
+				res.cookie("__Host-Http-token", token, {
 					signed: true,
 					httpOnly: true,
 					secure: true,
@@ -117,7 +129,11 @@ router
 				secure: true,
 				sameSite: "Strict",
 			});
-			res.cookie("__Host-npmplus_oidc_no_redirect", "true", { secure: true, sameSite: "Strict" });
+			res.cookie("__Host-npmplus_oidc_no_redirect", "true", {
+				secure: true,
+				sameSite: "Strict",
+				maxAge: 60 * 60 * 1000,
+			});
 			res.status(200).send({ expires: new Date(0).toISOString() });
 		} catch (err) {
 			debug(logger, `${req.method.toUpperCase()} ${req.originalUrl}: ${err}`);
@@ -138,20 +154,24 @@ router
 	 */
 	.post(async (req, res, next) => {
 		try {
-			const { challenge_token, code } = await apiValidator(getValidationSchema("/tokens/2fa", "post"), req.body);
-			const result = await internalToken.verify2FA(challenge_token, code);
+			const { code } = await apiValidator(getValidationSchema("/tokens/2fa", "post"), req.body);
+			const result = await internalToken.verify2FA(req.signedCookies?.["__Host-Http-challenge_token"], code);
 			const { token, ...responseBody } = result;
 
-			if (result.token && result.expires) {
-				res.cookie("__Host-Http-token", result.token, {
-					signed: true,
-					httpOnly: true,
-					secure: true,
-					sameSite: "Strict",
-					expires: new Date(result.expires),
-				});
-				res.clearCookie("__Host-npmplus_oidc_no_redirect", { secure: true, sameSite: "Strict" });
-			}
+			res.cookie("__Host-Http-token", token, {
+				signed: true,
+				httpOnly: true,
+				secure: true,
+				sameSite: "Strict",
+				expires: new Date(result.expires),
+			});
+			res.clearCookie("__Host-Http-challenge_token", {
+				httpOnly: true,
+				secure: true,
+				sameSite: "Strict",
+			});
+			res.clearCookie("__Host-npmplus_oidc_totp_required", { secure: true, sameSite: "Strict" });
+			res.clearCookie("__Host-npmplus_oidc_no_redirect", { secure: true, sameSite: "Strict" });
 
 			res.status(200).send(responseBody);
 		} catch (err) {
