@@ -1,7 +1,7 @@
 {
 	"type": "object",
 	"description": "Token object",
-	"required": ["requires2fa", "challenge_token"],
+	"required": ["requires2fa", "expires"],
 	"additionalProperties": false,
 	"properties": {
 		"requires2fa": {
@@ -9,9 +9,9 @@
 			"example": true,
 			"type": "boolean"
 		},
-		"challenge_token": {
-			"description": "Challenge Token used in subsequent 2FA verification",
-			"example": "eyJhbGciOiJSUzUxMiIsInR5cCI6IkpXVCJ9.ey...xaHKYr3Kk6MvkUjcC4",
+		"expires": {
+			"description": "Token Expiry ISO Time String",
+			"example": "2025-02-04T20:40:46.340Z",
 			"type": "string"
 		}
 	}
