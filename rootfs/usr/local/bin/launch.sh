@@ -48,6 +48,14 @@ if [ "$CUSTOM_OCSP_STAPLING" = "true" ]; then
     echo
 fi
 
+if [ -s /data/tls/ech/cron.sh ]; then
+    chmod +x /data/tls/ech/cron.sh
+    /data/tls/ech/cron.sh
+    sed -i "s|#ssl_ech_file|ssl_ech_file|g" /usr/local/nginx/conf/nginx.conf
+elif grep -q '^[^#]*ssl_ech_file' /usr/local/nginx/conf/nginx.conf; then
+    sed -i "s|ssl_ech_file|#ssl_ech_file|g" /usr/local/nginx/conf/nginx.conf
+fi
+
 
 if ! nginx -tq; then
     sleep inf
@@ -72,28 +80,17 @@ if [ "$PHP85" = "true" ]; then
 fi
 
 
+echo "0 */$ECH_ROTATION_INTERVAL * * * cron-ech.sh" | tee "/tmp/crontabs/$(id -un)"
+if [ "$LOGROTATE" = "true" ]; then
+    logrotate --state /data/nginx/logs/logrotate.state /etc/logrotate
+    echo "0 * * * * logrotate --state /data/nginx/logs/logrotate.state /etc/logrotate" | tee -a "/tmp/crontabs/$(id -un)"
+fi
+
+set -- backend nginx crond
+[ "$GOA" = "true" ] && set -- "$@" goaccess
+[ "$PHP83" = "true" ] && set -- "$@" php-fpm83
+[ "$PHP84" = "true" ] && set -- "$@" php-fpm84
+[ "$PHP85" = "true" ] && set -- "$@" php-fpm85
+
 echo "Starting services..."
-if [ "$PHP83" = "true" ]; then while true; do PHP_INI_SCAN_DIR=/data/php/83/conf.d php-fpm83 -c /data/php/83 -y /data/php/83/php-fpm.conf -FOR; done; fi &
-if [ "$PHP84" = "true" ]; then while true; do PHP_INI_SCAN_DIR=/data/php/84/conf.d php-fpm84 -c /data/php/84 -y /data/php/84/php-fpm.conf -FOR; done; fi &
-if [ "$PHP85" = "true" ]; then while true; do PHP_INI_SCAN_DIR=/data/php/85/conf.d php-fpm85 -c /data/php/85 -y /data/php/85/php-fpm.conf -FOR; done; fi &
-if [ "$LOGROTATE" = "true" ]; then while true; do logrotate --verbose --state /data/nginx/logs/logrotate.state /etc/logrotate; sleep 25h; done; fi &
-# shellcheck disable=SC2086
-if [ "$GOA" = "true" ]; then set -f; while true; do if [ -s /data/nginx/logs/access.log ]; then goaccess --no-global-config --num-tests=0 --tz="$TZ" --time-format="%H:%M:%S" \
-                    --date-format="%d/%b/%Y" --log-format='[%d:%t %^] %v %h %T "%r" %s %b %b %R %u' --unix-socket=/run/goaccess.sock --log-file=/data/nginx/logs/access.log \
-                    --real-time-html --output=/tmp/goa/index.html --db-path=/data/goaccess/data --restore --persist \
-                    --browsers-file=/etc/goaccess/browsers.list --browsers-file=/etc/goaccess/podcast.list $GOACLA; else sleep 10s; fi; done; fi &
-while true; do
-  sleep 10s
-  if [ -s "/data/tls/ech/cron.sh" ]; then
-    chmod +x /data/tls/ech/cron.sh
-    /data/tls/ech/cron.sh
-    sed -i "s|#ssl_ech_file|ssl_ech_file|g" /usr/local/nginx/conf/nginx.conf
-    nginx -s reload
-  elif grep -q '^[^#]*ssl_ech_file' /usr/local/nginx/conf/nginx.conf; then
-    sed -i "s|ssl_ech_file|#ssl_ech_file|g" /usr/local/nginx/conf/nginx.conf
-    nginx -s reload
-  fi
-  sleep "$ECH_ROTATION_INTERVAL"h
-done &
-while true; do nginx -e stderr; done &
-while true; do index.js; done
+exec dinit -s "$@"
