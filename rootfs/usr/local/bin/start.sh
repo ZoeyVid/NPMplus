@@ -114,6 +114,7 @@ fi
 
 mkdir -p /tmp/npmhome \
          /tmp/goa \
+         /tmp/crontabs \
          /tmp/certbot-log \
          /tmp/certbot-work \
          /tmp/certbot-credentials
@@ -427,10 +428,6 @@ if [ "$NGINX_TRUST_SECPR1" = "false" ]; then
 fi
 if [ "$NGINX_TRUST_RSA_PKCS1" = "true" ]; then
     sed -i "s|mldsa87:mldsa65:mldsa44:ed25519:ecdsa_secp521r1_sha512:ecdsa_secp384r1_sha384:ecdsa_secp256r1_sha256:rsa_pss_rsae_sha512:rsa_pss_rsae_sha384:rsa_pss_rsae_sha256;|mldsa87:mldsa65:mldsa44:ed25519:ecdsa_secp521r1_sha512:ecdsa_secp384r1_sha384:ecdsa_secp256r1_sha256:rsa_pss_rsae_sha512:rsa_pss_rsae_sha384:rsa_pss_rsae_sha256:rsa_pkcs1_sha512:rsa_pkcs1_sha384:rsa_pkcs1_sha256;|g" /usr/local/nginx/conf/nginx.conf
-fi
-
-if [ ! -s "/data/tls/ech/cron.sh" ] && grep -q '^[^#]*ssl_ech_file' /usr/local/nginx/conf/nginx.conf; then
-    sed -i "s|ssl_ech_file|#ssl_ech_file|g" /usr/local/nginx/conf/nginx.conf
 fi
 
 if [ "$NGINX_LOAD_NJS_MODULE" = "true" ]; then
