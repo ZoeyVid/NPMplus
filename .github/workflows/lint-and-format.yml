@@ -23,13 +23,14 @@ jobs:
           set -x
           cd backend
           pnpm install --frozen-lockfile
-          pnpm biome $BIOME --reporter=default --reporter=github || echo "BIOME_FAILED=1" >> "$GITHUB_ENV"
+
+          pnpm biome $BIOME --reporter=default --reporter=github | sed "s|,file=|,file=backend/|g" || echo "BIOME_FAILED=1" >> "$GITHUB_ENV"
       - name: frontend
         run: |
           set -x
           cd frontend
           pnpm install --frozen-lockfile
-          pnpm biome $BIOME --reporter=default --reporter=github || echo "BIOME_FAILED=1" >> "$GITHUB_ENV"
+          pnpm biome $BIOME --reporter=default --reporter=github | sed "s|,file=|,file=frontend/|g" || echo "BIOME_FAILED=1" >> "$GITHUB_ENV"
           ./src/locale/scripts/locale-sort.sh
           pnpm formatjs compile-folder src/locale/src src/locale/lang
           pnpm tsc -b
