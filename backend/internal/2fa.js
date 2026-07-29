@@ -3,8 +3,8 @@ import bcrypt from "bcryptjs";
 import { createGuardrails, generateSecret, generateURI, verify } from "otplib";
 import errs from "../lib/error.js";
 import authModel from "../models/auth.js";
+import internalUser from  "./user.js";
 import internalAuditLog from "./audit-log.js";
-import internalUser from "./user.js";
 
 const APP_NAME = "NPMplus";
 const BACKUP_CODE_COUNT = 8;
