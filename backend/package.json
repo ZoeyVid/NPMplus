@@ -7,7 +7,7 @@
 	"main": "index.js",
 	"type": "module",
 	"dependencies": {
-		"@apidevtools/json-schema-ref-parser": "15.5.0",
+		"@apidevtools/json-schema-ref-parser": "15.5.1",
 		"ajv": "8.20.0",
 		"archiver": "8.0.0",
 		"bcryptjs": "3.0.3",
