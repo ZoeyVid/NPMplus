@@ -284,7 +284,7 @@ RUN apk upgrade --no-cache -a && \
 COPY --from=frontend /app/dist /app/frontend
 
 ENTRYPOINT ["tini", "--", "entrypoint.sh"]
-HEALTHCHECK CMD healthcheck.sh
+HEALTHCHECK CMD [healthcheck.sh]
 
 LABEL com.centurylinklabs.watchtower.monitor-only="true"
 LABEL wud.watch="false"
