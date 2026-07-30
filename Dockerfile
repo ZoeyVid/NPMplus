@@ -1,4 +1,4 @@
-# syntax=docker/dockerfile:1.25.0@sha256:0adf442eae370b6087e08edc7c50b552d80ddf261576f4ebd6421006b2461f12
+# syntax=docker/dockerfile:1.26.0@sha256:ecfaec9ed6d810b56388c508f4121597bfbba70d41a6dfeee4d8cad5f295fc32
 FROM alpine:3.24.1@sha256:28bd5fe8b56d1bd048e5babf5b10710ebe0bae67db86916198a6eec434943f8b AS nginx
 SHELL ["/bin/ash", "-eo", "pipefail", "-c"]
 
@@ -12,10 +12,10 @@ ARG DTR_VER=1.29.2
 ARG RCP_VER=1.31.3
 ARG ZNP_VER=1.30.0
 
-ARG NB_VER=c9eb4c75c1691e0ddbf23a490336aa5910cbea69 # master
-ARG NUB_VER=c4edcc5652569036b0adfbc6112ba01fe9d39a18 # main
+ARG NB_VER=a1ae35e73d47ba4d85c52397c575b093b75972ea # master
+ARG NUB_VER=34a5311898601fa2efa0f592b287d5384e0bb165 # main
 ARG ZNM_VER=53927b6408ebf166496a3d79f016563f7f720cb0 # v0.4.0
-ARG NHUZFM_VER=37e77ed348c242e222f2ae2b02c2e445e0ee2dc6 # main
+ARG NHUZFM_VER=3f0d54ff455b963fc4bfcc1fbe4c49ae464a085e # main
 ARG NF_VER=047589e4dc0041517b8a47739fa960c430c4045e # v0.6.0
 ARG HMNM_VER=0bf283ff92017acd616814b0e5153e0ccf93e2c9 # v0.40
 ARG NDK_VER=bd44d16302273052d6005d7bdb55f74e23813de3 # v0.3.4
@@ -79,7 +79,7 @@ RUN git-clone-commit.sh https://github.com/nginx/nginx "$NGINX_VER" /src/nginx &
     echo "bcd0f2fb9723fc1f251f94cead8d5160e767f7d4a04365331396a72a9ba54c6b  /src/nginx/6.patch" | sha256sum -c - && \
     git apply /src/nginx/6.patch && \
     wget -q https://patch-diff.githubusercontent.com/raw/nginx/nginx/pull/1593.patch -O /src/nginx/7.patch && \
-    echo "42951e1b3aab34995cff6004ce4ba3a84d86d73ae08bbb35e7a3979a5f2e2df1  /src/nginx/7.patch" | sha256sum -c - && \
+    echo "04c4e7ff7289aa9719f3db88fe5fa1e139968d41179331488b3e118fa30616ba  /src/nginx/7.patch" | sha256sum -c - && \
     git apply /src/nginx/7.patch && \
     wget -q https://patch-diff.githubusercontent.com/raw/nginx/nginx/pull/1430.patch -O /src/nginx/8.patch && \
     echo "c8e827d50314b6ec027677ae8c70b11f805408af3efb5175bf377071bd2a14a5  /src/nginx/8.patch" | sha256sum -c - && \
@@ -217,7 +217,7 @@ SHELL ["/bin/ash", "-eo", "pipefail", "-c"]
 ENV NODE_ENV=production
 ARG LRC_VER=be42297c57dc2393cdbb09d4597d9d4840a7c769 # v0.1.35rc1
 ARG LRL_VER=3ff6300e68b73ba20e909c7d16bd839aef2e5a4b # v0.15
-ARG LCSB_VER=c6fe0130caf1a668d1893dcc5a32f41d98cbd695 # v1.0.15
+ARG LCSB_VER=35455a64e11368b3df73a381b09c056a3ee77e24 # main
 
 COPY --from=nginx /usr/local/nginx                                                                         /usr/local/nginx
 COPY --from=nginx /usr/local/bin/bssl                                                                      /usr/local/bin/bssl
@@ -256,7 +256,6 @@ RUN apk upgrade --no-cache -a && \
     make -j "$(nproc)" install LUA_LIB_DIR=/usr/local/share/lua/5.1 && \
     \
     git-clone-commit.sh https://github.com/crowdsecurity/lua-cs-bouncer "$LCSB_VER" /src/lua-cs-bouncer && \
-    sed -i '748s| then$| and err ~= "" then|' /src/lua-cs-bouncer/lib/crowdsec.lua && \
     mv /src/lua-cs-bouncer/lib/* /usr/local/share/lua/5.1 && \
     mv /src/lua-cs-bouncer/templates/captcha.html /etc/captcha.html.original && \
     mv /src/lua-cs-bouncer/templates/ban.html /etc/ban.html.original && \
@@ -284,7 +283,7 @@ RUN apk upgrade --no-cache -a && \
 COPY --from=frontend /app/dist /app/frontend
 
 ENTRYPOINT ["tini", "--", "entrypoint.sh"]
-HEALTHCHECK CMD healthcheck.sh
+HEALTHCHECK CMD ["healthcheck.sh"]
 
 LABEL com.centurylinklabs.watchtower.monitor-only="true"
 LABEL wud.watch="false"
