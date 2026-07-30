@@ -12,7 +12,6 @@ jobs:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       - name: dockerlint
         run: |
-          set -x
           curl -sSfL https://github.com/hadolint/hadolint/releases/latest/download/hadolint-Linux-$(uname -m) -o hadolint
           chmod +x hadolint
           for file in $(find -name "*Dockerfile"); do
@@ -21,6 +20,6 @@ jobs:
             # DL3013 warning: Pin versions in pip. Instead of `pip install <package>` use `pip install <package>==<version>` or `pip install --requirement <requirements file>`
             ./hadolint "$file" --ignore DL3018 --ignore DL3003 --ignore DL3013 | tee -a hadolint.log
           done
-          if [ -n "$(cat hadolint.log)" ]; then
+          if [ -s hadolint.log ]; then
             exit 1
           fi
