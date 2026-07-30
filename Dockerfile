@@ -256,7 +256,6 @@ RUN apk upgrade --no-cache -a && \
     make -j "$(nproc)" install LUA_LIB_DIR=/usr/local/share/lua/5.1 && \
     \
     git-clone-commit.sh https://github.com/crowdsecurity/lua-cs-bouncer "$LCSB_VER" /src/lua-cs-bouncer && \
-    sed -i '748s| then$| and err ~= "" then|' /src/lua-cs-bouncer/lib/crowdsec.lua && \
     mv /src/lua-cs-bouncer/lib/* /usr/local/share/lua/5.1 && \
     mv /src/lua-cs-bouncer/templates/captcha.html /etc/captcha.html.original && \
     mv /src/lua-cs-bouncer/templates/ban.html /etc/ban.html.original && \
