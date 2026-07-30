@@ -217,7 +217,7 @@ SHELL ["/bin/ash", "-eo", "pipefail", "-c"]
 ENV NODE_ENV=production
 ARG LRC_VER=be42297c57dc2393cdbb09d4597d9d4840a7c769 # v0.1.35rc1
 ARG LRL_VER=3ff6300e68b73ba20e909c7d16bd839aef2e5a4b # v0.15
-ARG LCSB_VER=c6fe0130caf1a668d1893dcc5a32f41d98cbd695 # v1.0.15
+ARG LCSB_VER=35455a64e11368b3df73a381b09c056a3ee77e24 # main
 
 COPY --from=nginx /usr/local/nginx                                                                         /usr/local/nginx
 COPY --from=nginx /usr/local/bin/bssl                                                                      /usr/local/bin/bssl
