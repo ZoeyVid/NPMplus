@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/usr/bin/env sh
 
 CF_API_TOKEN="your_cloudflare_api_token"
 
