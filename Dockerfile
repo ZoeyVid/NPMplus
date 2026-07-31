@@ -235,7 +235,7 @@ WORKDIR /app
 RUN apk upgrade --no-cache -a && \
     apk add --no-cache tzdata tini dinit llvm-libunwind libc++ \
                        pcre2 luajit zlib-ng brotli zstd lua5.1-cjson libxml2 libldap quickjs-ng-libs libmaxminddb-libs \
-                       curl coreutils findutils grep jq openssl shadow su-exec util-linux-misc \
+                       curl coreutils findutils grep jq openssl shadow su-exec util-linux-misc moreutils \
                        bash bash-completion nano \
                        logrotate goaccess fcgi \
                        luarocks5.1 git make \
