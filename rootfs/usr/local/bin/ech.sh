@@ -8,7 +8,14 @@ if [ "$#" -lt 2 ] || [ "$#" -gt 3 ]; then
   exit 1
 fi
 
-if [ -s "/data/tls/ech/${2%.ech}-current.ech" ]; then mv "/data/tls/ech/${2%.ech}-current.ech" "/data/tls/ech/${2%.ech}-previous.ech"; fi
+if [ -s "/data/tls/ech/${2%.ech}-current.ech" ]; then
+  mv "/data/tls/ech/${2%.ech}-current.ech" "/data/tls/ech/${2%.ech}-previous.ech"
+fi
+
+ECHCID="$(hexdump -n 1 -e '"%u"' /dev/urandom)"
+while jq -r '.previous[], .current[]' /data/tls/ech/config-ids.json | grep -qw "$ECHCID"; do
+  ECHCID="$(hexdump -n 1 -e '"%u"' /dev/urandom)"
+done
 
 ECHPK=/tmp/private-key-${2%.ech}.bin
 ECHCL=/tmp/config-list-${2%.ech}.bin
@@ -16,7 +23,7 @@ ECHCL=/tmp/config-list-${2%.ech}.bin
 bssl generate-ech \
   -public-name "$1" \
   -max-name-length "${3:-64}" \
-  -config-id "$(hexdump -n 1 -e '"%u"' /dev/urandom)" \
+  -config-id "$ECHCID" \
   -out-ech-config /dev/null \
   -out-ech-config-list "$ECHCL" \
   -out-private-key "$ECHPK"
@@ -34,3 +41,4 @@ openssl base64 -A -in "$ECHCL"
 echo
 
 rm "$ECHPK" "$ECHCL"
+jq --argjson id "$ECHCID" '.current += [$id]' /data/tls/ech/config-ids.json | sponge /data/tls/ech/config-ids.json
