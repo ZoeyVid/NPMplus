@@ -237,7 +237,8 @@ rm -vrf /data/letsencrypt-acme-challenge \
         /data/keys.json \
         /data/npmplus/keys.json
 
-touch /data/tls/ech/cron.sh \
+touch /data/tls/ech/nginx.conf \
+      /data/tls/ech/cron.sh \
       /data/html/index.html \
       /data/anubis/happy.webp \
       /data/anubis/reject.webp \
