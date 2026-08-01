@@ -1,6 +1,7 @@
 #!/usr/bin/env sh
 
-CF_API_TOKEN="your_cloudflare_api_token"
+# You can either set the API Token directly here in the cron shell script or together with all your others envs in your compose.yaml
+#CF_API_TOKEN="your_cloudflare_api_token"
 
 # I recommend you to first create the HTTPS records in the cloudflare web dashboard and the use the commands below to get theier IDs
 # to get your zone-ids: curl -H "Authorization: Bearer $CF_API_TOKEN" "https://api.cloudflare.com/client/v4/zones" | jq ".result[] | {name, id}"
