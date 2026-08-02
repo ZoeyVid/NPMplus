@@ -30,7 +30,7 @@ interface Props {
 	onEditUser?: (id: number) => void;
 	onEditPermissions?: (id: number) => void;
 	onSetPassword?: (id: number) => void;
-	onReset2FA?: (id: number) => void;
+	onResetMfa?: (id: number) => void;
 	onRevokeSessions?: (id: number) => void;
 	onDeleteUser?: (id: number) => void;
 	onDisableToggle?: (id: number, enabled: boolean) => void;
@@ -44,7 +44,7 @@ export default function Table({
 	onEditUser,
 	onEditPermissions,
 	onSetPassword,
-	onReset2FA,
+	onResetMfa,
 	onRevokeSessions,
 	onDeleteUser,
 	onDisableToggle,
@@ -168,11 +168,11 @@ export default function Table({
 											href="#"
 											onClick={(e) => {
 												e.preventDefault();
-												onReset2FA?.(info.row.original.id);
+												onResetMfa?.(info.row.original.id);
 											}}
 										>
 											<IconShieldOff size={16} />
-											<T id="user.reset-2fa" />
+											<T id="user.reset-mfa" />
 										</a>
 										<a
 											className="dropdown-item"
@@ -227,7 +227,7 @@ export default function Table({
 			onDeleteUser,
 			onEditPermissions,
 			onSetPassword,
-			onReset2FA,
+			onResetMfa,
 			onRevokeSessions,
 		],
 	);

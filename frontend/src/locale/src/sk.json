@@ -1,59 +1,59 @@
 {
-	"2fa.backup-codes-remaining": {
+	"totp.backup-codes-remaining": {
 		"defaultMessage": "Počet zostávajúcich záložných kódov: {count}"
 	},
-	"2fa.backup-warning": {
+	"totp.backup-warning": {
 		"defaultMessage": "Tieto záložné kódy si uložte na bezpečnom mieste. Každý kód je možné použiť len raz."
 	},
-	"2fa.disable": {
-		"defaultMessage": "Vypnúť dvojfaktorové overovanie"
+	"totp.disable": {
+		"defaultMessage": "Vypnúť TOTP"
 	},
-	"2fa.disable-confirm": {
-		"defaultMessage": "Vypnúť 2FA"
+	"totp.disable-confirm": {
+		"defaultMessage": "Vypnúť TOTP"
 	},
-	"2fa.disable-warning": {
-		"defaultMessage": "Vypnutím dvojfaktorového overovania sa zníži bezpečnosť vášho účtu."
+	"totp.disable-warning": {
+		"defaultMessage": "Vypnutím TOTP sa zníži bezpečnosť vášho účtu."
 	},
-	"2fa.disabled": {
+	"totp.disabled": {
 		"defaultMessage": "Vypnuté"
 	},
-	"2fa.done": {
+	"totp.done": {
 		"defaultMessage": "Uložil som si svoje záložné kódy."
 	},
-	"2fa.enable": {
-		"defaultMessage": "Zapnúť dvojfaktorové overovanie"
+	"totp.enable": {
+		"defaultMessage": "Zapnúť TOTP"
 	},
-	"2fa.enabled": {
+	"totp.enabled": {
 		"defaultMessage": "Zapnuté"
 	},
-	"2fa.enter-code": {
+	"totp.enter-code": {
 		"defaultMessage": "Zadajte overovací kód"
 	},
-	"2fa.enter-code-disable": {
+	"totp.enter-code-disable": {
 		"defaultMessage": "Zadajte overovací kód na vypnutie"
 	},
-	"2fa.regenerate": {
+	"totp.regenerate": {
 		"defaultMessage": "Znova vytvoriť"
 	},
-	"2fa.regenerate-backup": {
+	"totp.regenerate-backup": {
 		"defaultMessage": "Znova vytvoriť záložné kódy"
 	},
-	"2fa.regenerate-instructions": {
+	"totp.regenerate-instructions": {
 		"defaultMessage": "Zadajte overovací kód, aby sa vytvorili nové záložné kódy. Vaše staré kódy budú neplatné."
 	},
-	"2fa.secret-key": {
+	"totp.secret-key": {
 		"defaultMessage": "Tajný kľúč"
 	},
-	"2fa.setup-instructions": {
+	"totp.setup-instructions": {
 		"defaultMessage": "Naskenujte tento QR kód pomocou svojej overovacej aplikácie alebo zadajte tajný kľúč ručne."
 	},
-	"2fa.status": {
+	"totp.status": {
 		"defaultMessage": "Stav"
 	},
-	"2fa.title": {
-		"defaultMessage": "Dvojfaktorové overenie"
+	"totp.title": {
+		"defaultMessage": "TOTP"
 	},
-	"2fa.verify-enable": {
+	"totp.verify-enable": {
 		"defaultMessage": "Overiť a zapnúť"
 	},
 	"access-list": {
@@ -458,19 +458,19 @@
 	"loading": {
 		"defaultMessage": "Načítava sa…"
 	},
-	"login.2fa-code": {
+	"login.totp-code": {
 		"defaultMessage": "Overovací kód"
 	},
-	"login.2fa-code-placeholder": {
+	"login.totp-code-placeholder": {
 		"defaultMessage": "Vložiť kód"
 	},
-	"login.2fa-description": {
+	"login.totp-description": {
 		"defaultMessage": "Vložte kód z vašej overovacej aplikácie"
 	},
-	"login.2fa-title": {
+	"login.totp-title": {
 		"defaultMessage": "Dvoj-faktorové overenie"
 	},
-	"login.2fa-verify": {
+	"login.totp-verify": {
 		"defaultMessage": "Overiť"
 	},
 	"login.title": {
@@ -761,7 +761,7 @@
 	"user.switch-light": {
 		"defaultMessage": "Prepnúť na svetlý režim"
 	},
-	"user.two-factor": {
+	"user.totp": {
 		"defaultMessage": "Dvojfakt. overenie"
 	},
 	"username": {

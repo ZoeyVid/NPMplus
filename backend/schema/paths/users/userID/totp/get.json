@@ -1,6 +1,6 @@
 {
-	"operationId": "getUser2faStatus",
-	"summary": "Get user 2fa Status",
+	"operationId": "getUserTotpStatus",
+	"summary": "Get user totp Status",
 	"tags": ["users"],
 	"security": [
 		{
@@ -40,7 +40,7 @@
 						"properties": {
 							"enabled": {
 								"type": "boolean",
-								"description": "Is 2FA enabled for this user",
+								"description": "Is TOTP enabled for this user",
 								"example": true
 							},
 							"backup_codes_remaining": {

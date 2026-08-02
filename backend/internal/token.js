@@ -3,12 +3,12 @@ import { parseDatePeriod } from "../lib/helpers.js";
 import authModel from "../models/auth.js";
 import TokenModel from "../models/token.js";
 import userModel from "../models/user.js";
-import twoFactor from "./2fa.js";
+import totp from "./totp.js";
 
 const ERROR_MESSAGE_INVALID_AUTH = "Invalid email or password";
 const ERROR_MESSAGE_INVALID_AUTH_I18N = "error.invalid-auth";
-const ERROR_MESSAGE_INVALID_2FA = "Invalid verification code";
-const ERROR_MESSAGE_INVALID_2FA_I18N = "error.invalid-2fa";
+const ERROR_MESSAGE_INVALID_TOTP = "Invalid verification code";
+const ERROR_MESSAGE_INVALID_TOTP_I18N = "error.invalid-totp";
 
 export default {
 	/**
@@ -42,13 +42,13 @@ export default {
 			throw new errs.AuthError(ERROR_MESSAGE_INVALID_AUTH, ERROR_MESSAGE_INVALID_AUTH_I18N);
 		}
 
-		// Check if 2FA is enabled
-		const has2FA = await twoFactor.isEnabled(user.id);
-		if (has2FA) {
+		// Check if MFA is enabled
+		const hasMfa = await totp.isEnabled(user.id);
+		if (hasMfa) {
 			if (data.code) {
-				const validCode = await twoFactor.verifyForLogin(user.id, data.code);
+				const validCode = await totp.verifyForLogin(user.id, data.code);
 				if (!validCode) {
-					throw new errs.AuthError(ERROR_MESSAGE_INVALID_2FA, ERROR_MESSAGE_INVALID_2FA_I18N);
+					throw new errs.AuthError(ERROR_MESSAGE_INVALID_TOTP, ERROR_MESSAGE_INVALID_TOTP_I18N);
 				}
 			} else {
 				// Return challenge token instead of full token
@@ -57,12 +57,12 @@ export default {
 					attrs: {
 						id: user.id,
 					},
-					scope: ["2fa-challenge"],
+					scope: ["mfa-challenge"],
 					expiresIn: "3m",
 				});
 
 				return {
-					requires2fa: true,
+					requiresTotp: true,
 					token: challengeToken.token,
 					expires: parseDatePeriod("3m").toISOString(),
 				};
@@ -103,21 +103,21 @@ export default {
 			throw new errs.AuthError(ERROR_MESSAGE_INVALID_AUTH);
 		}
 
-		// Check if 2FA is enabled
-		const has2FA = await twoFactor.isEnabled(user.id);
-		if (has2FA && process.env.OIDC_SKIP_MFA === "false") {
+		// Check if MFA is enabled
+		const hasMfa = await totp.isEnabled(user.id);
+		if (hasMfa && process.env.OIDC_SKIP_MFA === "false") {
 			// Return challenge token instead of full token
 			const challengeToken = await Token.create({
 				iss: "api",
 				attrs: {
 					id: user.id,
 				},
-				scope: ["2fa-challenge"],
+				scope: ["mfa-challenge"],
 				expiresIn: "3m",
 			});
 
 			return {
-				requires2fa: true,
+				requiresTotp: true,
 				token: challengeToken.token,
 				expires: parseDatePeriod("3m").toISOString(),
 			};
@@ -164,12 +164,12 @@ export default {
 	},
 
 	/**
-	 * Verify 2FA code and return full token
+	 * Verify TOTP code and return full token
 	 * @param {string} challengeToken
 	 * @param {string} code
 	 * @returns {Promise}
 	 */
-	verify2FA: async (challengeToken, code) => {
+	verifyTotp: async (challengeToken, code) => {
 		const Token = TokenModel();
 
 		// Verify challenge token
@@ -181,7 +181,7 @@ export default {
 		}
 
 		// Check scope
-		if (tokenData.scope?.[0] !== "2fa-challenge") {
+		if (tokenData.scope?.[0] !== "mfa-challenge") {
 			throw new errs.AuthError("Invalid challenge token");
 		}
 
@@ -190,10 +190,10 @@ export default {
 			throw new errs.AuthError("Invalid challenge token");
 		}
 
-		// Verify 2FA code
-		const valid = await twoFactor.verifyForLogin(userId, code);
+		// Verify TOTP code
+		const valid = await totp.verifyForLogin(userId, code);
 		if (!valid) {
-			throw new errs.AuthError(ERROR_MESSAGE_INVALID_2FA, ERROR_MESSAGE_INVALID_2FA_I18N);
+			throw new errs.AuthError(ERROR_MESSAGE_INVALID_TOTP, ERROR_MESSAGE_INVALID_TOTP_I18N);
 		}
 
 		const signed = await Token.create({

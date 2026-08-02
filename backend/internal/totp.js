@@ -27,19 +27,19 @@ const generateBackupCodes = async () => {
 	return { plain, hashed };
 };
 
-const internal2fa = {
+const internalTotp = {
 	/**
-	 * Check if user has 2FA enabled
+	 * Check if user has TOTP enabled
 	 * @param {number} userId
 	 * @returns {Promise<boolean>}
 	 */
 	isEnabled: async (userId) => {
-		const auth = await internal2fa.getUserPasswordAuth(userId);
+		const auth = await internalTotp.getUserPasswordAuth(userId);
 		return auth?.meta?.totp_enabled === true;
 	},
 
 	/**
-	 * Get 2FA status for user
+	 * Get TOTP status for user
 	 * @param   {Access}  access
 	 * @param   {number}  userId
 	 * @returns {Promise<{enabled: boolean, backup_codes_remaining: number}>}
@@ -47,7 +47,7 @@ const internal2fa = {
 	getStatus: async (access, userId) => {
 		await access.can("users:password", userId);
 		await internalUser.get(access, { id: userId });
-		const auth = await internal2fa.getUserPasswordAuth(userId);
+		const auth = await internalTotp.getUserPasswordAuth(userId);
 		const enabled = auth?.meta?.totp_enabled === true;
 		let backup_codes_remaining = 0;
 
@@ -63,7 +63,7 @@ const internal2fa = {
 	},
 
 	/**
-	 * Start 2FA setup - store pending secret
+	 * Start TOTP setup - store pending secret
 	 *
 	 * @param   {Access}  access
 	 * @param   {number} userId
@@ -72,7 +72,7 @@ const internal2fa = {
 	startSetup: async (access, userId) => {
 		await access.can("users:password", userId);
 		if (Number(userId) !== access.token.getUserId(0)) {
-			throw new errs.PermissionError("2FA can only be managed for your own account");
+			throw new errs.PermissionError("TOTP can only be managed for your own account");
 		}
 		const user = await internalUser.get(access, { id: userId });
 		const secret = generateSecret();
@@ -81,12 +81,12 @@ const internal2fa = {
 			label: user.email,
 			secret: secret,
 		});
-		const auth = await internal2fa.getUserPasswordAuth(userId);
+		const auth = await internalTotp.getUserPasswordAuth(userId);
 
-		// ensure user isn't already setup for 2fa
+		// ensure user isn't already setup for totp
 		const enabled = auth?.meta?.totp_enabled === true;
 		if (enabled) {
-			throw new errs.ValidationError("2FA is already enabled");
+			throw new errs.ValidationError("TOTP is already enabled");
 		}
 
 		const meta = auth.meta || {};
@@ -103,7 +103,7 @@ const internal2fa = {
 	},
 
 	/**
-	 * Enable 2FA after verifying code
+	 * Enable TOTP after verifying code
 	 *
 	 * @param   {Access}  access
 	 * @param   {number}  userId
@@ -113,14 +113,14 @@ const internal2fa = {
 	enable: async (access, userId, code) => {
 		await access.can("users:password", userId);
 		if (Number(userId) !== access.token.getUserId(0)) {
-			throw new errs.PermissionError("2FA can only be managed for your own account");
+			throw new errs.PermissionError("TOTP can only be managed for your own account");
 		}
 		const user = await internalUser.get(access, { id: userId });
-		const auth = await internal2fa.getUserPasswordAuth(userId);
+		const auth = await internalTotp.getUserPasswordAuth(userId);
 		const secret = auth?.meta?.totp_pending_secret || false;
 
 		if (!secret) {
-			throw new errs.ValidationError("No pending 2FA setup found");
+			throw new errs.ValidationError("No pending TOTP setup found");
 		}
 
 		const codeTrim = code.trim();
@@ -162,7 +162,7 @@ const internal2fa = {
 	},
 
 	/**
-	 * Disable 2FA
+	 * Disable TOTP
 	 *
 	 * @param   {Access}  access
 	 * @param   {number} userId
@@ -172,13 +172,13 @@ const internal2fa = {
 	disable: async (access, userId, code) => {
 		await access.can("users:password", userId);
 		if (Number(userId) !== access.token.getUserId(0)) {
-			throw new errs.PermissionError("2FA can only be managed for your own account");
+			throw new errs.PermissionError("TOTP can only be managed for your own account");
 		}
 		const user = await internalUser.get(access, { id: userId });
-		const auth = await internal2fa.getUserPasswordAuth(userId);
+		const auth = await internalTotp.getUserPasswordAuth(userId);
 
 		if (auth?.meta?.totp_enabled !== true) {
-			throw new errs.ValidationError("2FA is not enabled");
+			throw new errs.ValidationError("TOTP is not enabled");
 		}
 
 		const codeTrim = code.trim();
@@ -195,7 +195,7 @@ const internal2fa = {
 				secret: auth.meta.totp_secret,
 				// These guardrails lower the minimum length requirement for secrets.
 				// In v12 of otplib the default minimum length is 10 and in v13 it is 16.
-				// Since there are 2fa secrets in the wild generated with v12 we need to allow shorter secrets
+				// Since there are totp secrets in the wild generated with v12 we need to allow shorter secrets
 				// so people won't be locked out when upgrading.
 				guardrails: createGuardrails({
 					MIN_SECRET_BYTES: 10,
@@ -258,15 +258,15 @@ const internal2fa = {
 	},
 
 	adminDisable: async (access, userId) => {
-		await access.can("users:2fadisable", userId);
+		await access.can("users:mfadisable", userId);
 		if (Number(userId) === access.token.getUserId(0)) {
 			throw new errs.ValidationError("Missing required parameter: code");
 		}
 		const user = await internalUser.get(access, { id: userId });
-		const auth = await internal2fa.getUserPasswordAuth(userId);
+		const auth = await internalTotp.getUserPasswordAuth(userId);
 
 		if (auth?.meta?.totp_enabled !== true) {
-			throw new errs.ValidationError("2FA is not enabled");
+			throw new errs.ValidationError("TOTP is not enabled");
 		}
 
 		const meta = { ...auth.meta };
@@ -296,14 +296,14 @@ const internal2fa = {
 	},
 
 	/**
-	 * Verify 2FA code for login
+	 * Verify TOTP code for login
 	 *
 	 * @param   {number} userId
 	 * @param   {string} token
 	 * @returns {Promise<boolean>}
 	 */
 	verifyForLogin: async (userId, token) => {
-		const auth = await internal2fa.getUserPasswordAuth(userId);
+		const auth = await internalTotp.getUserPasswordAuth(userId);
 		const secret = auth?.meta?.totp_secret || false;
 
 		if (!secret) {
@@ -320,7 +320,7 @@ const internal2fa = {
 				secret,
 				// These guardrails lower the minimum length requirement for secrets.
 				// In v12 of otplib the default minimum length is 10 and in v13 it is 16.
-				// Since there are 2fa secrets in the wild generated with v12 we need to allow shorter secrets
+				// Since there are totp secrets in the wild generated with v12 we need to allow shorter secrets
 				// so people won't be locked out when upgrading.
 				guardrails: createGuardrails({
 					MIN_SECRET_BYTES: 10,
@@ -365,18 +365,18 @@ const internal2fa = {
 	regenerateBackupCodes: async (access, userId, token) => {
 		await access.can("users:password", userId);
 		if (Number(userId) !== access.token.getUserId(0)) {
-			throw new errs.PermissionError("2FA can only be managed for your own account");
+			throw new errs.PermissionError("TOTP can only be managed for your own account");
 		}
 		const user = await internalUser.get(access, { id: userId });
-		const auth = await internal2fa.getUserPasswordAuth(userId);
+		const auth = await internalTotp.getUserPasswordAuth(userId);
 		const enabled = auth?.meta?.totp_enabled === true;
 		const secret = auth?.meta?.totp_secret || false;
 
 		if (!enabled) {
-			throw new errs.ValidationError("2FA is not enabled");
+			throw new errs.ValidationError("TOTP is not enabled");
 		}
 		if (!secret) {
-			throw new errs.ValidationError("No 2FA secret found");
+			throw new errs.ValidationError("No TOTP secret found");
 		}
 
 		const tokenTrim = token.trim();
@@ -390,7 +390,7 @@ const internal2fa = {
 			secret,
 			// These guardrails lower the minimum length requirement for secrets.
 			// In v12 of otplib the default minimum length is 10 and in v13 it is 16.
-			// Since there are 2fa secrets in the wild generated with v12 we need to allow shorter secrets
+			// Since there are totp secrets in the wild generated with v12 we need to allow shorter secrets
 			// so people won't be locked out when upgrading.
 			guardrails: createGuardrails({
 				MIN_SECRET_BYTES: 10,
@@ -434,4 +434,4 @@ const internal2fa = {
 	},
 };
 
-export default internal2fa;
+export default internalTotp;

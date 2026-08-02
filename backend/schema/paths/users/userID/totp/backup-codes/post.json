@@ -1,6 +1,6 @@
 {
-	"operationId": "enableUser2fa",
-	"summary": "Verify code and enable 2FA",
+	"operationId": "regenUserTotpCodes",
+	"summary": "Regenerate TOTP backup codes",
 	"tags": ["users"],
 	"parameters": [
 		{

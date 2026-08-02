@@ -1,6 +1,6 @@
 {
-	"operationId": "disableUser2fa",
-	"summary": "Disable 2fa for user",
+	"operationId": "disableUserTotp",
+	"summary": "Disable totp for user",
 	"tags": ["users"],
 	"parameters": [
 		{
@@ -24,7 +24,7 @@
 				"example": "012345"
 			},
 			"required": false,
-			"description": "2fa Code",
+			"description": "totp Code",
 			"example": "012345"
 		}
 	],

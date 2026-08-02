@@ -1,7 +1,7 @@
 import express from "express";
 import { rateLimit } from "express-rate-limit";
 import multer from "multer";
-import internal2FA from "../internal/2fa.js";
+import internalTotp from "../internal/totp.js";
 import internalUser from "../internal/user.js";
 import Access from "../lib/access.js";
 import jwtdecode from "../lib/express/jwt-decode.js";
@@ -256,12 +256,12 @@ router
 	});
 
 /**
- * User 2FA status
+ * User TOTP status
  *
- * /api/users/123/2fa
+ * /api/users/123/totp
  */
 router
-	.route("/:user_id/2fa")
+	.route("/:user_id/totp")
 	.options((_, res) => {
 		res.sendStatus(204);
 	})
@@ -269,13 +269,13 @@ router
 	.all(userIdFromMe)
 
 	/**
-	 * POST /api/users/123/2fa
+	 * POST /api/users/123/totp
 	 *
-	 * Start 2FA setup, returns QR code URL
+	 * Start TOTP setup, returns QR code URL
 	 */
 	.post(async (req, res, next) => {
 		try {
-			const result = await internal2FA.startSetup(res.locals.access, req.params.user_id);
+			const result = await internalTotp.startSetup(res.locals.access, req.params.user_id);
 			res.status(200).send(result);
 		} catch (err) {
 			debug(logger, `${req.method.toUpperCase()} ${req.path}: ${err}`);
@@ -284,13 +284,13 @@ router
 	})
 
 	/**
-	 * GET /api/users/123/2fa
+	 * GET /api/users/123/totp
 	 *
-	 * Get 2FA status for a user
+	 * Get TOTP status for a user
 	 */
 	.get(async (req, res, next) => {
 		try {
-			const status = await internal2FA.getStatus(res.locals.access, req.params.user_id);
+			const status = await internalTotp.getStatus(res.locals.access, req.params.user_id);
 			res.status(200).send(status);
 		} catch (err) {
 			debug(logger, `${req.method.toUpperCase()} ${req.path}: ${err}`);
@@ -299,17 +299,17 @@ router
 	})
 
 	/**
-	 * DELETE /api/users/123/2fa?code=XXXXXX
+	 * DELETE /api/users/123/totp?code=XXXXXX
 	 *
-	 * Disable 2FA for a user
+	 * Disable TOTP for a user
 	 */
 	.delete(async (req, res, next) => {
 		try {
 			const code = typeof req.query.code === "string" ? req.query.code : null;
 			if (code) {
-				await internal2FA.disable(res.locals.access, req.params.user_id, code);
+				await internalTotp.disable(res.locals.access, req.params.user_id, code);
 			} else {
-				await internal2FA.adminDisable(res.locals.access, req.params.user_id);
+				await internalTotp.adminDisable(res.locals.access, req.params.user_id);
 			}
 			res.status(200).send(true);
 		} catch (err) {
@@ -319,12 +319,12 @@ router
 	});
 
 /**
- * User 2FA enable
+ * User TOTP enable
  *
- * /api/users/123/2fa/enable
+ * /api/users/123/totp/enable
  */
 router
-	.route("/:user_id/2fa/enable")
+	.route("/:user_id/totp/enable")
 	.options((_, res) => {
 		res.sendStatus(204);
 	})
@@ -332,14 +332,14 @@ router
 	.all(userIdFromMe)
 
 	/**
-	 * POST /api/users/123/2fa/enable
+	 * POST /api/users/123/totp/enable
 	 *
-	 * Verify code and enable 2FA
+	 * Verify code and enable TOTP
 	 */
 	.post(async (req, res, next) => {
 		try {
-			const { code } = await apiValidator(getValidationSchema("/users/{userID}/2fa/enable", "post"), req.body);
-			const result = await internal2FA.enable(res.locals.access, req.params.user_id, code);
+			const { code } = await apiValidator(getValidationSchema("/users/{userID}/totp/enable", "post"), req.body);
+			const result = await internalTotp.enable(res.locals.access, req.params.user_id, code);
 			res.status(200).send(result);
 		} catch (err) {
 			debug(logger, `${req.method.toUpperCase()} ${req.path}: ${err}`);
@@ -348,12 +348,12 @@ router
 	});
 
 /**
- * User 2FA backup codes
+ * User TOTP backup codes
  *
- * /api/users/123/2fa/backup-codes
+ * /api/users/123/totp/backup-codes
  */
 router
-	.route("/:user_id/2fa/backup-codes")
+	.route("/:user_id/totp/backup-codes")
 	.options((_, res) => {
 		res.sendStatus(204);
 	})
@@ -361,17 +361,17 @@ router
 	.all(userIdFromMe)
 
 	/**
-	 * POST /api/users/123/2fa/backup-codes
+	 * POST /api/users/123/totp/backup-codes
 	 *
 	 * Regenerate backup codes
 	 */
 	.post(async (req, res, next) => {
 		try {
 			const { code } = await apiValidator(
-				getValidationSchema("/users/{userID}/2fa/backup-codes", "post"),
+				getValidationSchema("/users/{userID}/totp/backup-codes", "post"),
 				req.body,
 			);
-			const result = await internal2FA.regenerateBackupCodes(res.locals.access, req.params.user_id, code);
+			const result = await internalTotp.regenerateBackupCodes(res.locals.access, req.params.user_id, code);
 			res.status(200).send(result);
 		} catch (err) {
 			debug(logger, `${req.method.toUpperCase()} ${req.path}: ${err}`);

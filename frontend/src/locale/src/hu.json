@@ -1,59 +1,59 @@
 {
-	"2fa.backup-codes-remaining": {
+	"totp.backup-codes-remaining": {
 		"defaultMessage": "Hátralévő tartalék kódok: {count}"
 	},
-	"2fa.backup-warning": {
+	"totp.backup-warning": {
 		"defaultMessage": "Mentse el ezeket a tartalék kódokat biztonságos helyre. Minden kód csak egyszer használható."
 	},
-	"2fa.disable": {
-		"defaultMessage": "Kétfaktoros hitelesítés letiltása"
+	"totp.disable": {
+		"defaultMessage": "TOTP letiltása"
 	},
-	"2fa.disable-confirm": {
-		"defaultMessage": "2FA letiltása"
+	"totp.disable-confirm": {
+		"defaultMessage": "TOTP letiltása"
 	},
-	"2fa.disable-warning": {
-		"defaultMessage": "A kétfaktoros hitelesítés letiltása kevésbé teszi biztonságossá a fiókját."
+	"totp.disable-warning": {
+		"defaultMessage": "A TOTP letiltása kevésbé teszi biztonságossá a fiókját."
 	},
-	"2fa.disabled": {
+	"totp.disabled": {
 		"defaultMessage": "Letiltva"
 	},
-	"2fa.done": {
+	"totp.done": {
 		"defaultMessage": "Elmentettem a tartalék kódjaimat"
 	},
-	"2fa.enable": {
-		"defaultMessage": "Kétfaktoros hitelesítés engedélyezése"
+	"totp.enable": {
+		"defaultMessage": "TOTP engedélyezése"
 	},
-	"2fa.enabled": {
+	"totp.enabled": {
 		"defaultMessage": "Engedélyezve"
 	},
-	"2fa.enter-code": {
+	"totp.enter-code": {
 		"defaultMessage": "Adja meg az ellenőrző kódot"
 	},
-	"2fa.enter-code-disable": {
+	"totp.enter-code-disable": {
 		"defaultMessage": "Adja meg az ellenőrző kódot a letiltáshoz"
 	},
-	"2fa.regenerate": {
+	"totp.regenerate": {
 		"defaultMessage": "Újragenerálás"
 	},
-	"2fa.regenerate-backup": {
+	"totp.regenerate-backup": {
 		"defaultMessage": "Tartalék kódok újragenerálása"
 	},
-	"2fa.regenerate-instructions": {
+	"totp.regenerate-instructions": {
 		"defaultMessage": "Adjon meg egy ellenőrző kódot az új tartalék kódok generálásához. A régi kódok érvénytelenné válnak."
 	},
-	"2fa.secret-key": {
+	"totp.secret-key": {
 		"defaultMessage": "Titkos kulcs"
 	},
-	"2fa.setup-instructions": {
+	"totp.setup-instructions": {
 		"defaultMessage": "Olvassa be ezt a QR kódot a hitelesítő alkalmazásával, vagy adja meg a titkot manuálisan."
 	},
-	"2fa.status": {
+	"totp.status": {
 		"defaultMessage": "Állapot"
 	},
-	"2fa.title": {
-		"defaultMessage": "Kétfaktoros hitelesítés"
+	"totp.title": {
+		"defaultMessage": "TOTP"
 	},
-	"2fa.verify-enable": {
+	"totp.verify-enable": {
 		"defaultMessage": "Ellenőrzés és engedélyezés"
 	},
 	"access-list": {
@@ -455,19 +455,19 @@
 	"loading": {
 		"defaultMessage": "Betöltés…"
 	},
-	"login.2fa-code": {
+	"login.totp-code": {
 		"defaultMessage": "Ellenőrző kód"
 	},
-	"login.2fa-code-placeholder": {
+	"login.totp-code-placeholder": {
 		"defaultMessage": "Adja meg a kódot"
 	},
-	"login.2fa-description": {
+	"login.totp-description": {
 		"defaultMessage": "Adja meg a kódot a hitelesítő alkalmazásából"
 	},
-	"login.2fa-title": {
-		"defaultMessage": "Kétfaktoros hitelesítés"
+	"login.totp-title": {
+		"defaultMessage": "TOTP"
 	},
-	"login.2fa-verify": {
+	"login.totp-verify": {
 		"defaultMessage": "Ellenőrzés"
 	},
 	"login.title": {
@@ -758,8 +758,8 @@
 	"user.switch-light": {
 		"defaultMessage": "Váltás világos módra"
 	},
-	"user.two-factor": {
-		"defaultMessage": "Kétfaktoros hitelesítés"
+	"user.totp": {
+		"defaultMessage": "TOTP"
 	},
 	"username": {
 		"defaultMessage": "Felhasználónév"

@@ -1,59 +1,59 @@
 {
-	"2fa.backup-codes-remaining": {
+	"totp.backup-codes-remaining": {
 		"defaultMessage": "Resterende back-upcodes: {count}"
 	},
-	"2fa.backup-warning": {
+	"totp.backup-warning": {
 		"defaultMessage": "Bewaar deze back-upcodes op een veilige plaats. Elke code kan slechts één keer worden gebruikt."
 	},
-	"2fa.disable": {
-		"defaultMessage": "Tweefactorauthenticatie uitschakelen"
+	"totp.disable": {
+		"defaultMessage": "TOTP uitschakelen"
 	},
-	"2fa.disable-confirm": {
-		"defaultMessage": "2FA uitschakelen"
+	"totp.disable-confirm": {
+		"defaultMessage": "TOTP uitschakelen"
 	},
-	"2fa.disable-warning": {
-		"defaultMessage": "Als je tweefactorauthenticatie uitschakelt, wordt je account minder beveiligd."
+	"totp.disable-warning": {
+		"defaultMessage": "Als je TOTP uitschakelt, wordt je account minder beveiligd."
 	},
-	"2fa.disabled": {
+	"totp.disabled": {
 		"defaultMessage": "Uitgeschakeld"
 	},
-	"2fa.done": {
+	"totp.done": {
 		"defaultMessage": "Ik heb mijn back-upcodes opgeslagen"
 	},
-	"2fa.enable": {
-		"defaultMessage": "Tweefactorauthenticatie inschakelen"
+	"totp.enable": {
+		"defaultMessage": "TOTP inschakelen"
 	},
-	"2fa.enabled": {
+	"totp.enabled": {
 		"defaultMessage": "Ingeschakeld"
 	},
-	"2fa.enter-code": {
+	"totp.enter-code": {
 		"defaultMessage": "Verificatiecode invoeren"
 	},
-	"2fa.enter-code-disable": {
+	"totp.enter-code-disable": {
 		"defaultMessage": "Verificatiecode invoeren om uit te schakelen"
 	},
-	"2fa.regenerate": {
+	"totp.regenerate": {
 		"defaultMessage": "Opnieuw genereren"
 	},
-	"2fa.regenerate-backup": {
+	"totp.regenerate-backup": {
 		"defaultMessage": "Back-upcodes opnieuw genereren"
 	},
-	"2fa.regenerate-instructions": {
+	"totp.regenerate-instructions": {
 		"defaultMessage": "Voer een verificatiecode in om nieuwe back-upcodes te genereren. Oude codes worden ongeldig gemaakt."
 	},
-	"2fa.secret-key": {
+	"totp.secret-key": {
 		"defaultMessage": "Geheime sleutel"
 	},
-	"2fa.setup-instructions": {
+	"totp.setup-instructions": {
 		"defaultMessage": "Scan deze QR-code met je authenticator-app, of voer de code handmatig in."
 	},
-	"2fa.status": {
+	"totp.status": {
 		"defaultMessage": "Status"
 	},
-	"2fa.title": {
-		"defaultMessage": "Tweefactorauthenticatie"
+	"totp.title": {
+		"defaultMessage": "TOTP"
 	},
-	"2fa.verify-enable": {
+	"totp.verify-enable": {
 		"defaultMessage": "Verifiëren en inschakelen"
 	},
 	"access-list": {
@@ -464,19 +464,19 @@
 	"loading": {
 		"defaultMessage": "Laden…"
 	},
-	"login.2fa-code": {
+	"login.totp-code": {
 		"defaultMessage": "Verificatiecode"
 	},
-	"login.2fa-code-placeholder": {
+	"login.totp-code-placeholder": {
 		"defaultMessage": "Code invoeren"
 	},
-	"login.2fa-description": {
+	"login.totp-description": {
 		"defaultMessage": "Voer de code in vanuit je Authenticator-app"
 	},
-	"login.2fa-title": {
-		"defaultMessage": "Tweefactorauthenticatie"
+	"login.totp-title": {
+		"defaultMessage": "TOTP"
 	},
-	"login.2fa-verify": {
+	"login.totp-verify": {
 		"defaultMessage": "Verifiëren"
 	},
 	"login.title": {
@@ -767,8 +767,8 @@
 	"user.switch-light": {
 		"defaultMessage": "Lichte modus inschakelen"
 	},
-	"user.two-factor": {
-		"defaultMessage": "Tweefactorauthenticatie"
+	"user.totp": {
+		"defaultMessage": "TOTP"
 	},
 	"username": {
 		"defaultMessage": "Gebruikersnaam"

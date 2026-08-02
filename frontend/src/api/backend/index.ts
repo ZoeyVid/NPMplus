@@ -52,7 +52,7 @@ export * from "./toggleProxyHost";
 export * from "./toggleRedirectionHost";
 export * from "./toggleStream";
 export * from "./toggleUser";
-export * from "./twoFactor";
+export * from "./totp";
 export * from "./updateAccessList";
 export * from "./updateAuth";
 export * from "./updateDeadHost";

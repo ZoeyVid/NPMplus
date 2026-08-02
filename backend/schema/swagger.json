@@ -301,9 +301,9 @@
 				"$ref": "./paths/tokens/post.json"
 			}
 		},
-		"/tokens/2fa": {
+		"/tokens/totp": {
 			"post": {
-				"$ref": "./paths/tokens/2fa/post.json"
+				"$ref": "./paths/tokens/totp/post.json"
 			}
 		},
 		"/version/check": {
@@ -330,25 +330,25 @@
 				"$ref": "./paths/users/userID/delete.json"
 			}
 		},
-		"/users/{userID}/2fa": {
+		"/users/{userID}/totp": {
 			"post": {
-				"$ref": "./paths/users/userID/2fa/post.json"
+				"$ref": "./paths/users/userID/totp/post.json"
 			},
 			"get": {
-				"$ref": "./paths/users/userID/2fa/get.json"
+				"$ref": "./paths/users/userID/totp/get.json"
 			},
 			"delete": {
-				"$ref": "./paths/users/userID/2fa/delete.json"
+				"$ref": "./paths/users/userID/totp/delete.json"
 			}
 		},
-		"/users/{userID}/2fa/enable": {
+		"/users/{userID}/totp/enable": {
 			"post": {
-				"$ref": "./paths/users/userID/2fa/enable/post.json"
+				"$ref": "./paths/users/userID/totp/enable/post.json"
 			}
 		},
-		"/users/{userID}/2fa/backup-codes": {
+		"/users/{userID}/totp/backup-codes": {
 			"post": {
-				"$ref": "./paths/users/userID/2fa/backup-codes/post.json"
+				"$ref": "./paths/users/userID/totp/backup-codes/post.json"
 			}
 		},
 		"/users/{userID}/sessions": {

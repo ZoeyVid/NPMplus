@@ -1,59 +1,59 @@
 {
-	"2fa.backup-codes-remaining": {
+	"totp.backup-codes-remaining": {
 		"defaultMessage": "Backup codes remaining: {count}"
 	},
-	"2fa.backup-warning": {
+	"totp.backup-warning": {
 		"defaultMessage": "Save these backup codes in a secure place. Each code can only be used once."
 	},
-	"2fa.disable": {
-		"defaultMessage": "Disable Two-Factor Authentication"
+	"totp.disable": {
+		"defaultMessage": "Disable TOTP"
 	},
-	"2fa.disable-confirm": {
-		"defaultMessage": "Disable 2FA"
+	"totp.disable-confirm": {
+		"defaultMessage": "Disable TOTP"
 	},
-	"2fa.disable-warning": {
-		"defaultMessage": "Disabling two-factor authentication will make your account less secure."
+	"totp.disable-warning": {
+		"defaultMessage": "Disabling TOTP will make your account less secure."
 	},
-	"2fa.disabled": {
+	"totp.disabled": {
 		"defaultMessage": "Disabled"
 	},
-	"2fa.done": {
+	"totp.done": {
 		"defaultMessage": "I have saved my backup codes"
 	},
-	"2fa.enable": {
-		"defaultMessage": "Enable Two-Factor Authentication"
+	"totp.enable": {
+		"defaultMessage": "Enable TOTP"
 	},
-	"2fa.enabled": {
+	"totp.enabled": {
 		"defaultMessage": "Enabled"
 	},
-	"2fa.enter-code": {
+	"totp.enter-code": {
 		"defaultMessage": "Enter verification code"
 	},
-	"2fa.enter-code-disable": {
+	"totp.enter-code-disable": {
 		"defaultMessage": "Enter verification code to disable"
 	},
-	"2fa.regenerate": {
+	"totp.regenerate": {
 		"defaultMessage": "Regenerate"
 	},
-	"2fa.regenerate-backup": {
+	"totp.regenerate-backup": {
 		"defaultMessage": "Regenerate Backup Codes"
 	},
-	"2fa.regenerate-instructions": {
+	"totp.regenerate-instructions": {
 		"defaultMessage": "Enter a verification code to generate new backup codes. Your old codes will be invalidated."
 	},
-	"2fa.secret-key": {
+	"totp.secret-key": {
 		"defaultMessage": "Secret Key"
 	},
-	"2fa.setup-instructions": {
+	"totp.setup-instructions": {
 		"defaultMessage": "Scan this QR code with your authenticator app, or enter the secret manually."
 	},
-	"2fa.status": {
+	"totp.status": {
 		"defaultMessage": "Status"
 	},
-	"2fa.title": {
-		"defaultMessage": "Two-Factor Authentication"
+	"totp.title": {
+		"defaultMessage": "TOTP"
 	},
-	"2fa.verify-enable": {
+	"totp.verify-enable": {
 		"defaultMessage": "Verify and Enable"
 	},
 	"access-list": {
@@ -536,19 +536,19 @@
 	"loading": {
 		"defaultMessage": "Loading…"
 	},
-	"login.2fa-code": {
+	"login.totp-code": {
 		"defaultMessage": "Verification Code"
 	},
-	"login.2fa-code-placeholder": {
+	"login.totp-code-placeholder": {
 		"defaultMessage": "Enter code"
 	},
-	"login.2fa-description": {
+	"login.totp-description": {
 		"defaultMessage": "Enter the code from your authenticator app"
 	},
-	"login.2fa-title": {
-		"defaultMessage": "Two-Factor Authentication"
+	"login.totp-title": {
+		"defaultMessage": "TOTP"
 	},
-	"login.2fa-verify": {
+	"login.totp-verify": {
 		"defaultMessage": "Verify"
 	},
 	"login.title": {
@@ -884,11 +884,11 @@
 	"user.nickname": {
 		"defaultMessage": "Nickname"
 	},
-	"user.reset-2fa": {
-		"defaultMessage": "Reset 2FA"
+	"user.reset-mfa": {
+		"defaultMessage": "Reset TOTP"
 	},
-	"user.reset-2fa.content": {
-		"defaultMessage": "This disables two-factor authentication for this user without their recovery code. They can set it up again afterwards. Continue?"
+	"user.reset-mfa.content": {
+		"defaultMessage": "This disables TOTP for this user without their recovery code. They can set it up again afterwards. Continue?"
 	},
 	"user.revoke-sessions": {
 		"defaultMessage": "Revoke sessions"
@@ -908,8 +908,8 @@
 	"user.switch-light": {
 		"defaultMessage": "Switch to Light mode"
 	},
-	"user.two-factor": {
-		"defaultMessage": "Two-Factor Auth"
+	"user.totp": {
+		"defaultMessage": "TOTP"
 	},
 	"username": {
 		"defaultMessage": "Username"
