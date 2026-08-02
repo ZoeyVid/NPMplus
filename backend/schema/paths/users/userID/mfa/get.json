@@ -1,6 +1,6 @@
 {
-	"operationId": "getUser2faStatus",
-	"summary": "Get user 2fa Status",
+	"operationId": "getUserMfaStatus",
+	"summary": "Get user MFA status (all factors and backup codes)",
 	"tags": ["users"],
 	"security": [
 		{
@@ -28,7 +28,7 @@
 					"examples": {
 						"default": {
 							"value": {
-								"enabled": false,
+								"totp_enabled": false,
 								"backup_codes_remaining": 0
 							}
 						}
@@ -36,11 +36,11 @@
 					"schema": {
 						"type": "object",
 						"additionalProperties": false,
-						"required": ["enabled", "backup_codes_remaining"],
+						"required": ["totp_enabled", "backup_codes_remaining"],
 						"properties": {
-							"enabled": {
+							"totp_enabled": {
 								"type": "boolean",
-								"description": "Is 2FA enabled for this user",
+								"description": "Is TOTP enabled for this user",
 								"example": true
 							},
 							"backup_codes_remaining": {

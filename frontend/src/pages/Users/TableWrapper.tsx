@@ -2,7 +2,7 @@ import { IconSearch } from "@tabler/icons-react";
 import { useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
 import Alert from "react-bootstrap/Alert";
-import { adminDisable2FA, deleteUser, revokeSessions, toggleUser } from "src/api/backend";
+import { adminDisableMfa, deleteUser, revokeSessions, toggleUser } from "src/api/backend";
 import { Button, LoadingPage } from "src/components";
 import { useUser, useUsers } from "src/hooks";
 import { T } from "src/locale";
@@ -36,8 +36,8 @@ export default function TableWrapper() {
 		showObjectSuccess("user", enabled ? "enabled" : "disabled");
 	};
 
-	const handleReset2FA = async (id: number) => {
-		await adminDisable2FA(id);
+	const handleResetMfa = async (id: number) => {
+		await adminDisableMfa(id);
 		showObjectSuccess("user", "updated");
 	};
 
@@ -103,11 +103,11 @@ export default function TableWrapper() {
 					onEditUser={(id: number) => showUserModal(id)}
 					onEditPermissions={(id: number) => showPermissionsModal(id)}
 					onSetPassword={(id: number) => showSetPasswordModal(id)}
-					onReset2FA={(id: number) =>
+					onResetMfa={(id: number) =>
 						showDeleteConfirmModal({
-							tTitle: "user.reset-2fa",
-							children: <T id="user.reset-2fa.content" />,
-							onConfirm: () => handleReset2FA(id),
+							tTitle: "user.reset-mfa",
+							children: <T id="user.reset-mfa.content" />,
+							onConfirm: () => handleResetMfa(id),
 							invalidations: [["users"], ["user", id]],
 						})
 					}
