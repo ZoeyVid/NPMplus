@@ -1,61 +1,4 @@
 {
-	"2fa.backup-codes-remaining": {
-		"defaultMessage": "Počet zbývajících záložních kódů: {count}"
-	},
-	"2fa.backup-warning": {
-		"defaultMessage": "Tyto záložní kódy si uložte na bezpečném místě. Každý kód lze použít pouze jednou."
-	},
-	"2fa.disable": {
-		"defaultMessage": "Vypnout dvoufaktorové ověřování"
-	},
-	"2fa.disable-confirm": {
-		"defaultMessage": "Vypnout 2FA"
-	},
-	"2fa.disable-warning": {
-		"defaultMessage": "Vypnutím dvoufaktorového ověřování snížíte bezpečnost svého účtu."
-	},
-	"2fa.disabled": {
-		"defaultMessage": "Vypnuto"
-	},
-	"2fa.done": {
-		"defaultMessage": "Uložil jsem si své záložní kódy."
-	},
-	"2fa.enable": {
-		"defaultMessage": "Zapnout dvoufaktorové ověřování"
-	},
-	"2fa.enabled": {
-		"defaultMessage": "Zapnuto"
-	},
-	"2fa.enter-code": {
-		"defaultMessage": "Zadejte ověřovací kód"
-	},
-	"2fa.enter-code-disable": {
-		"defaultMessage": "Zadejte ověřovací kód pro vypnutí"
-	},
-	"2fa.regenerate": {
-		"defaultMessage": "Znovu vytvořit"
-	},
-	"2fa.regenerate-backup": {
-		"defaultMessage": "Znovu vytvořit záložní kódy"
-	},
-	"2fa.regenerate-instructions": {
-		"defaultMessage": "Zadejte ověřovací kód pro vytvoření nových záložních kódů. Vaše staré kódy budou neplatné."
-	},
-	"2fa.secret-key": {
-		"defaultMessage": "Tajný klíč"
-	},
-	"2fa.setup-instructions": {
-		"defaultMessage": "Naskenujte tento QR kód pomocí své ověřovací aplikace nebo zadejte tajný klíč ručně."
-	},
-	"2fa.status": {
-		"defaultMessage": "Stav"
-	},
-	"2fa.title": {
-		"defaultMessage": "Dvoufaktorové ověření"
-	},
-	"2fa.verify-enable": {
-		"defaultMessage": "Ověřit a zapnout"
-	},
 	"access-list": {
 		"defaultMessage": "seznam přístupů"
 	},
@@ -455,23 +398,23 @@
 	"loading": {
 		"defaultMessage": "Načítá se…"
 	},
-	"login.2fa-code": {
-		"defaultMessage": "Ověřovací kód"
-	},
-	"login.2fa-code-placeholder": {
-		"defaultMessage": "Vložit kód"
-	},
-	"login.2fa-description": {
-		"defaultMessage": "Vložte kód z vaší ověřovací aplikace"
-	},
-	"login.2fa-title": {
-		"defaultMessage": "Dvoufaktorové ověření"
-	},
-	"login.2fa-verify": {
-		"defaultMessage": "Ověřit"
-	},
 	"login.title": {
 		"defaultMessage": "Přihlaste se ke svému účtu"
+	},
+	"login.totp-code": {
+		"defaultMessage": "Ověřovací kód"
+	},
+	"login.totp-code-placeholder": {
+		"defaultMessage": "Vložit kód"
+	},
+	"login.totp-description": {
+		"defaultMessage": "Vložte kód z vaší ověřovací aplikace"
+	},
+	"login.totp-title": {
+		"defaultMessage": "MFA"
+	},
+	"login.totp-verify": {
+		"defaultMessage": "Ověřit"
 	},
 	"nginx-config.label": {
 		"defaultMessage": "Vlastní Nginx konfigurace"
@@ -713,6 +656,63 @@
 	"test": {
 		"defaultMessage": "Test"
 	},
+	"mfa.backup-codes-remaining": {
+		"defaultMessage": "Počet zbývajících záložních kódů: {count}"
+	},
+	"mfa.backup-warning": {
+		"defaultMessage": "Tyto záložní kódy si uložte na bezpečném místě. Každý kód lze použít pouze jednou."
+	},
+	"totp.disable": {
+		"defaultMessage": "Vypnout TOTP"
+	},
+	"totp.disable-confirm": {
+		"defaultMessage": "Vypnout TOTP"
+	},
+	"totp.disable-warning": {
+		"defaultMessage": "Vypnutím TOTP snížíte bezpečnost svého účtu."
+	},
+	"totp.disabled": {
+		"defaultMessage": "Vypnuto"
+	},
+	"totp.done": {
+		"defaultMessage": "Uložil jsem si své záložní kódy."
+	},
+	"totp.enable": {
+		"defaultMessage": "Zapnout TOTP"
+	},
+	"totp.enabled": {
+		"defaultMessage": "Zapnuto"
+	},
+	"totp.enter-code": {
+		"defaultMessage": "Zadejte ověřovací kód"
+	},
+	"totp.enter-code-disable": {
+		"defaultMessage": "Zadejte ověřovací kód pro vypnutí"
+	},
+	"mfa.regenerate": {
+		"defaultMessage": "Znovu vytvořit"
+	},
+	"mfa.regenerate-backup": {
+		"defaultMessage": "Znovu vytvořit záložní kódy"
+	},
+	"mfa.regenerate-instructions": {
+		"defaultMessage": "Zadejte ověřovací kód pro vytvoření nových záložních kódů. Vaše staré kódy budou neplatné."
+	},
+	"totp.secret-key": {
+		"defaultMessage": "Tajný klíč"
+	},
+	"totp.setup-instructions": {
+		"defaultMessage": "Naskenujte tento QR kód pomocí své ověřovací aplikace nebo zadejte tajný klíč ručně."
+	},
+	"totp.status": {
+		"defaultMessage": "Stav"
+	},
+	"mfa.title": {
+		"defaultMessage": "MFA"
+	},
+	"totp.verify-enable": {
+		"defaultMessage": "Ověřit a zapnout"
+	},
 	"update-available": {
 		"defaultMessage": "Dostupná aktualizace: {latestVersion}"
 	},
@@ -758,8 +758,8 @@
 	"user.switch-light": {
 		"defaultMessage": "Přepnout na světlý režim"
 	},
-	"user.two-factor": {
-		"defaultMessage": "Dvoufaktorové ověření"
+	"user.mfa": {
+		"defaultMessage": "MFA"
 	},
 	"username": {
 		"defaultMessage": "Uživatelské jméno"

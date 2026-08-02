@@ -1,6 +1,6 @@
 {
-	"operationId": "enableUser2fa",
-	"summary": "Verify code and enable 2FA",
+	"operationId": "regenUserMfaBackupCodes",
+	"summary": "Regenerate MFA backup codes",
 	"tags": ["users"],
 	"parameters": [
 		{

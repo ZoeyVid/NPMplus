@@ -1,61 +1,4 @@
 {
-	"2fa.backup-codes-remaining": {
-		"defaultMessage": "Gjenstående backup-koder: {count}"
-	},
-	"2fa.backup-warning": {
-		"defaultMessage": "Lagre disse backup-kodene på et sikkert sted. Hver kode kan kun brukes én gang."
-	},
-	"2fa.disable": {
-		"defaultMessage": "Deaktiver tofaktorautentisering"
-	},
-	"2fa.disable-confirm": {
-		"defaultMessage": "Deaktiver 2FA"
-	},
-	"2fa.disable-warning": {
-		"defaultMessage": "Å deaktivere tofaktorautentisering vil gjøre kontoen din mindre sikker."
-	},
-	"2fa.disabled": {
-		"defaultMessage": "Deaktivert"
-	},
-	"2fa.done": {
-		"defaultMessage": "Jeg har lagret backup-kodene mine"
-	},
-	"2fa.enable": {
-		"defaultMessage": "Aktiver tofaktorautentisering"
-	},
-	"2fa.enabled": {
-		"defaultMessage": "Aktivert"
-	},
-	"2fa.enter-code": {
-		"defaultMessage": "Angi verifiseringskode"
-	},
-	"2fa.enter-code-disable": {
-		"defaultMessage": "Angi verifiseringskode for å deaktivere"
-	},
-	"2fa.regenerate": {
-		"defaultMessage": "Regenerer"
-	},
-	"2fa.regenerate-backup": {
-		"defaultMessage": "Generer nye backup-koder"
-	},
-	"2fa.regenerate-instructions": {
-		"defaultMessage": "Angi en verifiseringskode for å generere nye backup-koder. Dine gamle koder vil bli ugyldige."
-	},
-	"2fa.secret-key": {
-		"defaultMessage": "Hemmelig nøkkel"
-	},
-	"2fa.setup-instructions": {
-		"defaultMessage": "Skann denne QR-koden med autentiseringsappen din, eller skriv inn nøkkelen manuelt."
-	},
-	"2fa.status": {
-		"defaultMessage": "Status"
-	},
-	"2fa.title": {
-		"defaultMessage": "Tofaktorautentisering"
-	},
-	"2fa.verify-enable": {
-		"defaultMessage": "Verifiser og aktiver"
-	},
 	"access-list": {
 		"defaultMessage": "Tilgangsliste"
 	},
@@ -461,23 +404,23 @@
 	"loading": {
 		"defaultMessage": "Laster…"
 	},
-	"login.2fa-code": {
-		"defaultMessage": "Verifikasjonskode"
-	},
-	"login.2fa-code-placeholder": {
-		"defaultMessage": "Skriv inn kode"
-	},
-	"login.2fa-description": {
-		"defaultMessage": "Skriv inn koden fra autentiseringsappen din"
-	},
-	"login.2fa-title": {
-		"defaultMessage": "To-faktorautentisering"
-	},
-	"login.2fa-verify": {
-		"defaultMessage": "Verifiser"
-	},
 	"login.title": {
 		"defaultMessage": "Logg på kontoen din"
+	},
+	"login.totp-code": {
+		"defaultMessage": "Verifikasjonskode"
+	},
+	"login.totp-code-placeholder": {
+		"defaultMessage": "Skriv inn kode"
+	},
+	"login.totp-description": {
+		"defaultMessage": "Skriv inn koden fra autentiseringsappen din"
+	},
+	"login.totp-title": {
+		"defaultMessage": "MFA"
+	},
+	"login.totp-verify": {
+		"defaultMessage": "Verifiser"
 	},
 	"nginx-config.label": {
 		"defaultMessage": "Egendefinert Nginx-konfigurasjon"
@@ -719,6 +662,63 @@
 	"test": {
 		"defaultMessage": "Test"
 	},
+	"mfa.backup-codes-remaining": {
+		"defaultMessage": "Gjenstående backup-koder: {count}"
+	},
+	"mfa.backup-warning": {
+		"defaultMessage": "Lagre disse backup-kodene på et sikkert sted. Hver kode kan kun brukes én gang."
+	},
+	"totp.disable": {
+		"defaultMessage": "Deaktiver TOTP"
+	},
+	"totp.disable-confirm": {
+		"defaultMessage": "Deaktiver TOTP"
+	},
+	"totp.disable-warning": {
+		"defaultMessage": "Å deaktivere TOTP vil gjøre kontoen din mindre sikker."
+	},
+	"totp.disabled": {
+		"defaultMessage": "Deaktivert"
+	},
+	"totp.done": {
+		"defaultMessage": "Jeg har lagret backup-kodene mine"
+	},
+	"totp.enable": {
+		"defaultMessage": "Aktiver TOTP"
+	},
+	"totp.enabled": {
+		"defaultMessage": "Aktivert"
+	},
+	"totp.enter-code": {
+		"defaultMessage": "Angi verifiseringskode"
+	},
+	"totp.enter-code-disable": {
+		"defaultMessage": "Angi verifiseringskode for å deaktivere"
+	},
+	"mfa.regenerate": {
+		"defaultMessage": "Regenerer"
+	},
+	"mfa.regenerate-backup": {
+		"defaultMessage": "Generer nye backup-koder"
+	},
+	"mfa.regenerate-instructions": {
+		"defaultMessage": "Angi en verifiseringskode for å generere nye backup-koder. Dine gamle koder vil bli ugyldige."
+	},
+	"totp.secret-key": {
+		"defaultMessage": "Hemmelig nøkkel"
+	},
+	"totp.setup-instructions": {
+		"defaultMessage": "Skann denne QR-koden med autentiseringsappen din, eller skriv inn nøkkelen manuelt."
+	},
+	"totp.status": {
+		"defaultMessage": "Status"
+	},
+	"mfa.title": {
+		"defaultMessage": "MFA"
+	},
+	"totp.verify-enable": {
+		"defaultMessage": "Verifiser og aktiver"
+	},
 	"update-available": {
 		"defaultMessage": "Oppdatering tilgjengelig: {latestVersion}"
 	},
@@ -764,8 +764,8 @@
 	"user.switch-light": {
 		"defaultMessage": "Bytt til lys modus"
 	},
-	"user.two-factor": {
-		"defaultMessage": "To-faktor autentisering"
+	"user.mfa": {
+		"defaultMessage": "MFA"
 	},
 	"username": {
 		"defaultMessage": "Brukernavn"

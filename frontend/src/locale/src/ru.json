@@ -1,61 +1,4 @@
 {
-	"2fa.backup-codes-remaining": {
-		"defaultMessage": "Осталось резервных кодов: {count}"
-	},
-	"2fa.backup-warning": {
-		"defaultMessage": "Сохраните коды в надежном месте. Они одноразовые."
-	},
-	"2fa.disable": {
-		"defaultMessage": "Выключить двухфакторную аутентификацию"
-	},
-	"2fa.disable-confirm": {
-		"defaultMessage": "Выключить 2FA"
-	},
-	"2fa.disable-warning": {
-		"defaultMessage": "Выключение двухфакторной аутентификации снизит защиту вашего аккаунта."
-	},
-	"2fa.disabled": {
-		"defaultMessage": "Выключена"
-	},
-	"2fa.done": {
-		"defaultMessage": "Я сохранил резервные коды"
-	},
-	"2fa.enable": {
-		"defaultMessage": "Включить двухфакторную аутентификацию"
-	},
-	"2fa.enabled": {
-		"defaultMessage": "Включена"
-	},
-	"2fa.enter-code": {
-		"defaultMessage": "Введите код проверки"
-	},
-	"2fa.enter-code-disable": {
-		"defaultMessage": "Введите код проверки для выключения"
-	},
-	"2fa.regenerate": {
-		"defaultMessage": "Перевыпустить"
-	},
-	"2fa.regenerate-backup": {
-		"defaultMessage": "Перевыпустить резервные коды"
-	},
-	"2fa.regenerate-instructions": {
-		"defaultMessage": "Введите код проверки, чтобы создать новые резервные коды. Прежние перестанут работать."
-	},
-	"2fa.secret-key": {
-		"defaultMessage": "Секретный ключ"
-	},
-	"2fa.setup-instructions": {
-		"defaultMessage": "Отсканируйте QR-код приложением или введите ключ настройки вручную."
-	},
-	"2fa.status": {
-		"defaultMessage": "Статус"
-	},
-	"2fa.title": {
-		"defaultMessage": "Двухфакторная аутентификация"
-	},
-	"2fa.verify-enable": {
-		"defaultMessage": "Проверить и включить"
-	},
 	"access-list": {
 		"defaultMessage": "Список доступа"
 	},
@@ -464,23 +407,23 @@
 	"loading": {
 		"defaultMessage": "Загрузка…"
 	},
-	"login.2fa-code": {
-		"defaultMessage": "Код проверки"
-	},
-	"login.2fa-code-placeholder": {
-		"defaultMessage": "Введите код"
-	},
-	"login.2fa-description": {
-		"defaultMessage": "Введите код из приложения для аутентификации"
-	},
-	"login.2fa-title": {
-		"defaultMessage": "Двухфакторная аутентификация"
-	},
-	"login.2fa-verify": {
-		"defaultMessage": "Проверить"
-	},
 	"login.title": {
 		"defaultMessage": "Авторизация"
+	},
+	"login.totp-code": {
+		"defaultMessage": "Код проверки"
+	},
+	"login.totp-code-placeholder": {
+		"defaultMessage": "Введите код"
+	},
+	"login.totp-description": {
+		"defaultMessage": "Введите код из приложения для аутентификации"
+	},
+	"login.totp-title": {
+		"defaultMessage": "MFA"
+	},
+	"login.totp-verify": {
+		"defaultMessage": "Проверить"
 	},
 	"nginx-config.label": {
 		"defaultMessage": "Своя Nginx-конфигурация"
@@ -722,6 +665,63 @@
 	"test": {
 		"defaultMessage": "Проверить"
 	},
+	"mfa.backup-codes-remaining": {
+		"defaultMessage": "Осталось резервных кодов: {count}"
+	},
+	"mfa.backup-warning": {
+		"defaultMessage": "Сохраните коды в надежном месте. Они одноразовые."
+	},
+	"totp.disable": {
+		"defaultMessage": "Выключить TOTP"
+	},
+	"totp.disable-confirm": {
+		"defaultMessage": "Выключить TOTP"
+	},
+	"totp.disable-warning": {
+		"defaultMessage": "Выключение TOTP снизит защиту вашего аккаунта."
+	},
+	"totp.disabled": {
+		"defaultMessage": "Выключена"
+	},
+	"totp.done": {
+		"defaultMessage": "Я сохранил резервные коды"
+	},
+	"totp.enable": {
+		"defaultMessage": "Включить TOTP"
+	},
+	"totp.enabled": {
+		"defaultMessage": "Включена"
+	},
+	"totp.enter-code": {
+		"defaultMessage": "Введите код проверки"
+	},
+	"totp.enter-code-disable": {
+		"defaultMessage": "Введите код проверки для выключения"
+	},
+	"mfa.regenerate": {
+		"defaultMessage": "Перевыпустить"
+	},
+	"mfa.regenerate-backup": {
+		"defaultMessage": "Перевыпустить резервные коды"
+	},
+	"mfa.regenerate-instructions": {
+		"defaultMessage": "Введите код проверки, чтобы создать новые резервные коды. Прежние перестанут работать."
+	},
+	"totp.secret-key": {
+		"defaultMessage": "Секретный ключ"
+	},
+	"totp.setup-instructions": {
+		"defaultMessage": "Отсканируйте QR-код приложением или введите ключ настройки вручную."
+	},
+	"totp.status": {
+		"defaultMessage": "Статус"
+	},
+	"mfa.title": {
+		"defaultMessage": "MFA"
+	},
+	"totp.verify-enable": {
+		"defaultMessage": "Проверить и включить"
+	},
 	"update-available": {
 		"defaultMessage": "Доступно обновление: {latestVersion}"
 	},
@@ -767,8 +767,8 @@
 	"user.switch-light": {
 		"defaultMessage": "Включить светлую тему"
 	},
-	"user.two-factor": {
-		"defaultMessage": "Настроить 2FA"
+	"user.mfa": {
+		"defaultMessage": "Настроить MFA"
 	},
 	"username": {
 		"defaultMessage": "Имя пользователя"
