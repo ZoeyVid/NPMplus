@@ -1,61 +1,4 @@
 {
-	"totp.backup-codes-remaining": {
-		"defaultMessage": "Backup codes remaining: {count}"
-	},
-	"totp.backup-warning": {
-		"defaultMessage": "Save these backup codes in a secure place. Each code can only be used once."
-	},
-	"totp.disable": {
-		"defaultMessage": "Disable TOTP"
-	},
-	"totp.disable-confirm": {
-		"defaultMessage": "Disable TOTP"
-	},
-	"totp.disable-warning": {
-		"defaultMessage": "Disabling TOTP will make your account less secure."
-	},
-	"totp.disabled": {
-		"defaultMessage": "Disabled"
-	},
-	"totp.done": {
-		"defaultMessage": "I have saved my backup codes"
-	},
-	"totp.enable": {
-		"defaultMessage": "Enable TOTP"
-	},
-	"totp.enabled": {
-		"defaultMessage": "Enabled"
-	},
-	"totp.enter-code": {
-		"defaultMessage": "Enter verification code"
-	},
-	"totp.enter-code-disable": {
-		"defaultMessage": "Enter verification code to disable"
-	},
-	"totp.regenerate": {
-		"defaultMessage": "Regenerate"
-	},
-	"totp.regenerate-backup": {
-		"defaultMessage": "Regenerate Backup Codes"
-	},
-	"totp.regenerate-instructions": {
-		"defaultMessage": "Enter a verification code to generate new backup codes. Your old codes will be invalidated."
-	},
-	"totp.secret-key": {
-		"defaultMessage": "Secret Key"
-	},
-	"totp.setup-instructions": {
-		"defaultMessage": "Scan this QR code with your authenticator app, or enter the secret manually."
-	},
-	"totp.status": {
-		"defaultMessage": "Status"
-	},
-	"totp.title": {
-		"defaultMessage": "TOTP"
-	},
-	"totp.verify-enable": {
-		"defaultMessage": "Verify and Enable"
-	},
 	"access-list": {
 		"defaultMessage": "Access List"
 	},
@@ -461,6 +404,9 @@
 	"loading": {
 		"defaultMessage": "Loading…"
 	},
+	"login.title": {
+		"defaultMessage": "Login to your account"
+	},
 	"login.totp-code": {
 		"defaultMessage": "Verification Code"
 	},
@@ -475,9 +421,6 @@
 	},
 	"login.totp-verify": {
 		"defaultMessage": "Verify"
-	},
-	"login.title": {
-		"defaultMessage": "Login to your account"
 	},
 	"nginx-config.label": {
 		"defaultMessage": "Custom Nginx Configuration"
@@ -718,6 +661,63 @@
 	},
 	"test": {
 		"defaultMessage": "Test"
+	},
+	"totp.backup-codes-remaining": {
+		"defaultMessage": "Backup codes remaining: {count}"
+	},
+	"totp.backup-warning": {
+		"defaultMessage": "Save these backup codes in a secure place. Each code can only be used once."
+	},
+	"totp.disable": {
+		"defaultMessage": "Disable TOTP"
+	},
+	"totp.disable-confirm": {
+		"defaultMessage": "Disable TOTP"
+	},
+	"totp.disable-warning": {
+		"defaultMessage": "Disabling TOTP will make your account less secure."
+	},
+	"totp.disabled": {
+		"defaultMessage": "Disabled"
+	},
+	"totp.done": {
+		"defaultMessage": "I have saved my backup codes"
+	},
+	"totp.enable": {
+		"defaultMessage": "Enable TOTP"
+	},
+	"totp.enabled": {
+		"defaultMessage": "Enabled"
+	},
+	"totp.enter-code": {
+		"defaultMessage": "Enter verification code"
+	},
+	"totp.enter-code-disable": {
+		"defaultMessage": "Enter verification code to disable"
+	},
+	"totp.regenerate": {
+		"defaultMessage": "Regenerate"
+	},
+	"totp.regenerate-backup": {
+		"defaultMessage": "Regenerate Backup Codes"
+	},
+	"totp.regenerate-instructions": {
+		"defaultMessage": "Enter a verification code to generate new backup codes. Your old codes will be invalidated."
+	},
+	"totp.secret-key": {
+		"defaultMessage": "Secret Key"
+	},
+	"totp.setup-instructions": {
+		"defaultMessage": "Scan this QR code with your authenticator app, or enter the secret manually."
+	},
+	"totp.status": {
+		"defaultMessage": "Status"
+	},
+	"totp.title": {
+		"defaultMessage": "TOTP"
+	},
+	"totp.verify-enable": {
+		"defaultMessage": "Verify and Enable"
 	},
 	"update-available": {
 		"defaultMessage": "Update Available: {latestVersion}"

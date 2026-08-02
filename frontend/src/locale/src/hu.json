@@ -1,61 +1,4 @@
 {
-	"totp.backup-codes-remaining": {
-		"defaultMessage": "Hátralévő tartalék kódok: {count}"
-	},
-	"totp.backup-warning": {
-		"defaultMessage": "Mentse el ezeket a tartalék kódokat biztonságos helyre. Minden kód csak egyszer használható."
-	},
-	"totp.disable": {
-		"defaultMessage": "TOTP letiltása"
-	},
-	"totp.disable-confirm": {
-		"defaultMessage": "TOTP letiltása"
-	},
-	"totp.disable-warning": {
-		"defaultMessage": "A TOTP letiltása kevésbé teszi biztonságossá a fiókját."
-	},
-	"totp.disabled": {
-		"defaultMessage": "Letiltva"
-	},
-	"totp.done": {
-		"defaultMessage": "Elmentettem a tartalék kódjaimat"
-	},
-	"totp.enable": {
-		"defaultMessage": "TOTP engedélyezése"
-	},
-	"totp.enabled": {
-		"defaultMessage": "Engedélyezve"
-	},
-	"totp.enter-code": {
-		"defaultMessage": "Adja meg az ellenőrző kódot"
-	},
-	"totp.enter-code-disable": {
-		"defaultMessage": "Adja meg az ellenőrző kódot a letiltáshoz"
-	},
-	"totp.regenerate": {
-		"defaultMessage": "Újragenerálás"
-	},
-	"totp.regenerate-backup": {
-		"defaultMessage": "Tartalék kódok újragenerálása"
-	},
-	"totp.regenerate-instructions": {
-		"defaultMessage": "Adjon meg egy ellenőrző kódot az új tartalék kódok generálásához. A régi kódok érvénytelenné válnak."
-	},
-	"totp.secret-key": {
-		"defaultMessage": "Titkos kulcs"
-	},
-	"totp.setup-instructions": {
-		"defaultMessage": "Olvassa be ezt a QR kódot a hitelesítő alkalmazásával, vagy adja meg a titkot manuálisan."
-	},
-	"totp.status": {
-		"defaultMessage": "Állapot"
-	},
-	"totp.title": {
-		"defaultMessage": "TOTP"
-	},
-	"totp.verify-enable": {
-		"defaultMessage": "Ellenőrzés és engedélyezés"
-	},
 	"access-list": {
 		"defaultMessage": "Hozzáférési lista"
 	},
@@ -455,6 +398,9 @@
 	"loading": {
 		"defaultMessage": "Betöltés…"
 	},
+	"login.title": {
+		"defaultMessage": "Jelentkezzen be a fiókjába"
+	},
 	"login.totp-code": {
 		"defaultMessage": "Ellenőrző kód"
 	},
@@ -469,9 +415,6 @@
 	},
 	"login.totp-verify": {
 		"defaultMessage": "Ellenőrzés"
-	},
-	"login.title": {
-		"defaultMessage": "Jelentkezzen be a fiókjába"
 	},
 	"nginx-config.label": {
 		"defaultMessage": "Egyéni Nginx konfiguráció"
@@ -712,6 +655,63 @@
 	},
 	"test": {
 		"defaultMessage": "Teszt"
+	},
+	"totp.backup-codes-remaining": {
+		"defaultMessage": "Hátralévő tartalék kódok: {count}"
+	},
+	"totp.backup-warning": {
+		"defaultMessage": "Mentse el ezeket a tartalék kódokat biztonságos helyre. Minden kód csak egyszer használható."
+	},
+	"totp.disable": {
+		"defaultMessage": "TOTP letiltása"
+	},
+	"totp.disable-confirm": {
+		"defaultMessage": "TOTP letiltása"
+	},
+	"totp.disable-warning": {
+		"defaultMessage": "A TOTP letiltása kevésbé teszi biztonságossá a fiókját."
+	},
+	"totp.disabled": {
+		"defaultMessage": "Letiltva"
+	},
+	"totp.done": {
+		"defaultMessage": "Elmentettem a tartalék kódjaimat"
+	},
+	"totp.enable": {
+		"defaultMessage": "TOTP engedélyezése"
+	},
+	"totp.enabled": {
+		"defaultMessage": "Engedélyezve"
+	},
+	"totp.enter-code": {
+		"defaultMessage": "Adja meg az ellenőrző kódot"
+	},
+	"totp.enter-code-disable": {
+		"defaultMessage": "Adja meg az ellenőrző kódot a letiltáshoz"
+	},
+	"totp.regenerate": {
+		"defaultMessage": "Újragenerálás"
+	},
+	"totp.regenerate-backup": {
+		"defaultMessage": "Tartalék kódok újragenerálása"
+	},
+	"totp.regenerate-instructions": {
+		"defaultMessage": "Adjon meg egy ellenőrző kódot az új tartalék kódok generálásához. A régi kódok érvénytelenné válnak."
+	},
+	"totp.secret-key": {
+		"defaultMessage": "Titkos kulcs"
+	},
+	"totp.setup-instructions": {
+		"defaultMessage": "Olvassa be ezt a QR kódot a hitelesítő alkalmazásával, vagy adja meg a titkot manuálisan."
+	},
+	"totp.status": {
+		"defaultMessage": "Állapot"
+	},
+	"totp.title": {
+		"defaultMessage": "TOTP"
+	},
+	"totp.verify-enable": {
+		"defaultMessage": "Ellenőrzés és engedélyezés"
 	},
 	"update-available": {
 		"defaultMessage": "Frissítés elérhető: {latestVersion}"

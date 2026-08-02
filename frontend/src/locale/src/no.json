@@ -1,61 +1,4 @@
 {
-	"totp.backup-codes-remaining": {
-		"defaultMessage": "Gjenstående backup-koder: {count}"
-	},
-	"totp.backup-warning": {
-		"defaultMessage": "Lagre disse backup-kodene på et sikkert sted. Hver kode kan kun brukes én gang."
-	},
-	"totp.disable": {
-		"defaultMessage": "Deaktiver TOTP"
-	},
-	"totp.disable-confirm": {
-		"defaultMessage": "Deaktiver TOTP"
-	},
-	"totp.disable-warning": {
-		"defaultMessage": "Å deaktivere TOTP vil gjøre kontoen din mindre sikker."
-	},
-	"totp.disabled": {
-		"defaultMessage": "Deaktivert"
-	},
-	"totp.done": {
-		"defaultMessage": "Jeg har lagret backup-kodene mine"
-	},
-	"totp.enable": {
-		"defaultMessage": "Aktiver TOTP"
-	},
-	"totp.enabled": {
-		"defaultMessage": "Aktivert"
-	},
-	"totp.enter-code": {
-		"defaultMessage": "Angi verifiseringskode"
-	},
-	"totp.enter-code-disable": {
-		"defaultMessage": "Angi verifiseringskode for å deaktivere"
-	},
-	"totp.regenerate": {
-		"defaultMessage": "Regenerer"
-	},
-	"totp.regenerate-backup": {
-		"defaultMessage": "Generer nye backup-koder"
-	},
-	"totp.regenerate-instructions": {
-		"defaultMessage": "Angi en verifiseringskode for å generere nye backup-koder. Dine gamle koder vil bli ugyldige."
-	},
-	"totp.secret-key": {
-		"defaultMessage": "Hemmelig nøkkel"
-	},
-	"totp.setup-instructions": {
-		"defaultMessage": "Skann denne QR-koden med autentiseringsappen din, eller skriv inn nøkkelen manuelt."
-	},
-	"totp.status": {
-		"defaultMessage": "Status"
-	},
-	"totp.title": {
-		"defaultMessage": "TOTP"
-	},
-	"totp.verify-enable": {
-		"defaultMessage": "Verifiser og aktiver"
-	},
 	"access-list": {
 		"defaultMessage": "Tilgangsliste"
 	},
@@ -461,6 +404,9 @@
 	"loading": {
 		"defaultMessage": "Laster…"
 	},
+	"login.title": {
+		"defaultMessage": "Logg på kontoen din"
+	},
 	"login.totp-code": {
 		"defaultMessage": "Verifikasjonskode"
 	},
@@ -475,9 +421,6 @@
 	},
 	"login.totp-verify": {
 		"defaultMessage": "Verifiser"
-	},
-	"login.title": {
-		"defaultMessage": "Logg på kontoen din"
 	},
 	"nginx-config.label": {
 		"defaultMessage": "Egendefinert Nginx-konfigurasjon"
@@ -718,6 +661,63 @@
 	},
 	"test": {
 		"defaultMessage": "Test"
+	},
+	"totp.backup-codes-remaining": {
+		"defaultMessage": "Gjenstående backup-koder: {count}"
+	},
+	"totp.backup-warning": {
+		"defaultMessage": "Lagre disse backup-kodene på et sikkert sted. Hver kode kan kun brukes én gang."
+	},
+	"totp.disable": {
+		"defaultMessage": "Deaktiver TOTP"
+	},
+	"totp.disable-confirm": {
+		"defaultMessage": "Deaktiver TOTP"
+	},
+	"totp.disable-warning": {
+		"defaultMessage": "Å deaktivere TOTP vil gjøre kontoen din mindre sikker."
+	},
+	"totp.disabled": {
+		"defaultMessage": "Deaktivert"
+	},
+	"totp.done": {
+		"defaultMessage": "Jeg har lagret backup-kodene mine"
+	},
+	"totp.enable": {
+		"defaultMessage": "Aktiver TOTP"
+	},
+	"totp.enabled": {
+		"defaultMessage": "Aktivert"
+	},
+	"totp.enter-code": {
+		"defaultMessage": "Angi verifiseringskode"
+	},
+	"totp.enter-code-disable": {
+		"defaultMessage": "Angi verifiseringskode for å deaktivere"
+	},
+	"totp.regenerate": {
+		"defaultMessage": "Regenerer"
+	},
+	"totp.regenerate-backup": {
+		"defaultMessage": "Generer nye backup-koder"
+	},
+	"totp.regenerate-instructions": {
+		"defaultMessage": "Angi en verifiseringskode for å generere nye backup-koder. Dine gamle koder vil bli ugyldige."
+	},
+	"totp.secret-key": {
+		"defaultMessage": "Hemmelig nøkkel"
+	},
+	"totp.setup-instructions": {
+		"defaultMessage": "Skann denne QR-koden med autentiseringsappen din, eller skriv inn nøkkelen manuelt."
+	},
+	"totp.status": {
+		"defaultMessage": "Status"
+	},
+	"totp.title": {
+		"defaultMessage": "TOTP"
+	},
+	"totp.verify-enable": {
+		"defaultMessage": "Verifiser og aktiver"
 	},
 	"update-available": {
 		"defaultMessage": "Oppdatering tilgjengelig: {latestVersion}"

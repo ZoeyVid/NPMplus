@@ -1,61 +1,4 @@
 {
-	"totp.backup-codes-remaining": {
-		"defaultMessage": "Počet zostávajúcich záložných kódov: {count}"
-	},
-	"totp.backup-warning": {
-		"defaultMessage": "Tieto záložné kódy si uložte na bezpečnom mieste. Každý kód je možné použiť len raz."
-	},
-	"totp.disable": {
-		"defaultMessage": "Vypnúť TOTP"
-	},
-	"totp.disable-confirm": {
-		"defaultMessage": "Vypnúť TOTP"
-	},
-	"totp.disable-warning": {
-		"defaultMessage": "Vypnutím TOTP sa zníži bezpečnosť vášho účtu."
-	},
-	"totp.disabled": {
-		"defaultMessage": "Vypnuté"
-	},
-	"totp.done": {
-		"defaultMessage": "Uložil som si svoje záložné kódy."
-	},
-	"totp.enable": {
-		"defaultMessage": "Zapnúť TOTP"
-	},
-	"totp.enabled": {
-		"defaultMessage": "Zapnuté"
-	},
-	"totp.enter-code": {
-		"defaultMessage": "Zadajte overovací kód"
-	},
-	"totp.enter-code-disable": {
-		"defaultMessage": "Zadajte overovací kód na vypnutie"
-	},
-	"totp.regenerate": {
-		"defaultMessage": "Znova vytvoriť"
-	},
-	"totp.regenerate-backup": {
-		"defaultMessage": "Znova vytvoriť záložné kódy"
-	},
-	"totp.regenerate-instructions": {
-		"defaultMessage": "Zadajte overovací kód, aby sa vytvorili nové záložné kódy. Vaše staré kódy budú neplatné."
-	},
-	"totp.secret-key": {
-		"defaultMessage": "Tajný kľúč"
-	},
-	"totp.setup-instructions": {
-		"defaultMessage": "Naskenujte tento QR kód pomocou svojej overovacej aplikácie alebo zadajte tajný kľúč ručne."
-	},
-	"totp.status": {
-		"defaultMessage": "Stav"
-	},
-	"totp.title": {
-		"defaultMessage": "TOTP"
-	},
-	"totp.verify-enable": {
-		"defaultMessage": "Overiť a zapnúť"
-	},
 	"access-list": {
 		"defaultMessage": "zoznam prístupov"
 	},
@@ -458,6 +401,9 @@
 	"loading": {
 		"defaultMessage": "Načítava sa…"
 	},
+	"login.title": {
+		"defaultMessage": "Prihláste sa do svojho účtu"
+	},
 	"login.totp-code": {
 		"defaultMessage": "Overovací kód"
 	},
@@ -472,9 +418,6 @@
 	},
 	"login.totp-verify": {
 		"defaultMessage": "Overiť"
-	},
-	"login.title": {
-		"defaultMessage": "Prihláste sa do svojho účtu"
 	},
 	"nginx-config.label": {
 		"defaultMessage": "Vlastná Nginx konfigurácia"
@@ -715,6 +658,63 @@
 	},
 	"test": {
 		"defaultMessage": "Test"
+	},
+	"totp.backup-codes-remaining": {
+		"defaultMessage": "Počet zostávajúcich záložných kódov: {count}"
+	},
+	"totp.backup-warning": {
+		"defaultMessage": "Tieto záložné kódy si uložte na bezpečnom mieste. Každý kód je možné použiť len raz."
+	},
+	"totp.disable": {
+		"defaultMessage": "Vypnúť TOTP"
+	},
+	"totp.disable-confirm": {
+		"defaultMessage": "Vypnúť TOTP"
+	},
+	"totp.disable-warning": {
+		"defaultMessage": "Vypnutím TOTP sa zníži bezpečnosť vášho účtu."
+	},
+	"totp.disabled": {
+		"defaultMessage": "Vypnuté"
+	},
+	"totp.done": {
+		"defaultMessage": "Uložil som si svoje záložné kódy."
+	},
+	"totp.enable": {
+		"defaultMessage": "Zapnúť TOTP"
+	},
+	"totp.enabled": {
+		"defaultMessage": "Zapnuté"
+	},
+	"totp.enter-code": {
+		"defaultMessage": "Zadajte overovací kód"
+	},
+	"totp.enter-code-disable": {
+		"defaultMessage": "Zadajte overovací kód na vypnutie"
+	},
+	"totp.regenerate": {
+		"defaultMessage": "Znova vytvoriť"
+	},
+	"totp.regenerate-backup": {
+		"defaultMessage": "Znova vytvoriť záložné kódy"
+	},
+	"totp.regenerate-instructions": {
+		"defaultMessage": "Zadajte overovací kód, aby sa vytvorili nové záložné kódy. Vaše staré kódy budú neplatné."
+	},
+	"totp.secret-key": {
+		"defaultMessage": "Tajný kľúč"
+	},
+	"totp.setup-instructions": {
+		"defaultMessage": "Naskenujte tento QR kód pomocou svojej overovacej aplikácie alebo zadajte tajný kľúč ručne."
+	},
+	"totp.status": {
+		"defaultMessage": "Stav"
+	},
+	"totp.title": {
+		"defaultMessage": "TOTP"
+	},
+	"totp.verify-enable": {
+		"defaultMessage": "Overiť a zapnúť"
 	},
 	"update-available": {
 		"defaultMessage": "Dostupná aktualizácia: {latestVersion}"

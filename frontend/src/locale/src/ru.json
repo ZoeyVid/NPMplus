@@ -1,61 +1,4 @@
 {
-	"totp.backup-codes-remaining": {
-		"defaultMessage": "Осталось резервных кодов: {count}"
-	},
-	"totp.backup-warning": {
-		"defaultMessage": "Сохраните коды в надежном месте. Они одноразовые."
-	},
-	"totp.disable": {
-		"defaultMessage": "Выключить TOTP"
-	},
-	"totp.disable-confirm": {
-		"defaultMessage": "Выключить TOTP"
-	},
-	"totp.disable-warning": {
-		"defaultMessage": "Выключение TOTP снизит защиту вашего аккаунта."
-	},
-	"totp.disabled": {
-		"defaultMessage": "Выключена"
-	},
-	"totp.done": {
-		"defaultMessage": "Я сохранил резервные коды"
-	},
-	"totp.enable": {
-		"defaultMessage": "Включить TOTP"
-	},
-	"totp.enabled": {
-		"defaultMessage": "Включена"
-	},
-	"totp.enter-code": {
-		"defaultMessage": "Введите код проверки"
-	},
-	"totp.enter-code-disable": {
-		"defaultMessage": "Введите код проверки для выключения"
-	},
-	"totp.regenerate": {
-		"defaultMessage": "Перевыпустить"
-	},
-	"totp.regenerate-backup": {
-		"defaultMessage": "Перевыпустить резервные коды"
-	},
-	"totp.regenerate-instructions": {
-		"defaultMessage": "Введите код проверки, чтобы создать новые резервные коды. Прежние перестанут работать."
-	},
-	"totp.secret-key": {
-		"defaultMessage": "Секретный ключ"
-	},
-	"totp.setup-instructions": {
-		"defaultMessage": "Отсканируйте QR-код приложением или введите ключ настройки вручную."
-	},
-	"totp.status": {
-		"defaultMessage": "Статус"
-	},
-	"totp.title": {
-		"defaultMessage": "TOTP"
-	},
-	"totp.verify-enable": {
-		"defaultMessage": "Проверить и включить"
-	},
 	"access-list": {
 		"defaultMessage": "Список доступа"
 	},
@@ -464,6 +407,9 @@
 	"loading": {
 		"defaultMessage": "Загрузка…"
 	},
+	"login.title": {
+		"defaultMessage": "Авторизация"
+	},
 	"login.totp-code": {
 		"defaultMessage": "Код проверки"
 	},
@@ -478,9 +424,6 @@
 	},
 	"login.totp-verify": {
 		"defaultMessage": "Проверить"
-	},
-	"login.title": {
-		"defaultMessage": "Авторизация"
 	},
 	"nginx-config.label": {
 		"defaultMessage": "Своя Nginx-конфигурация"
@@ -721,6 +664,63 @@
 	},
 	"test": {
 		"defaultMessage": "Проверить"
+	},
+	"totp.backup-codes-remaining": {
+		"defaultMessage": "Осталось резервных кодов: {count}"
+	},
+	"totp.backup-warning": {
+		"defaultMessage": "Сохраните коды в надежном месте. Они одноразовые."
+	},
+	"totp.disable": {
+		"defaultMessage": "Выключить TOTP"
+	},
+	"totp.disable-confirm": {
+		"defaultMessage": "Выключить TOTP"
+	},
+	"totp.disable-warning": {
+		"defaultMessage": "Выключение TOTP снизит защиту вашего аккаунта."
+	},
+	"totp.disabled": {
+		"defaultMessage": "Выключена"
+	},
+	"totp.done": {
+		"defaultMessage": "Я сохранил резервные коды"
+	},
+	"totp.enable": {
+		"defaultMessage": "Включить TOTP"
+	},
+	"totp.enabled": {
+		"defaultMessage": "Включена"
+	},
+	"totp.enter-code": {
+		"defaultMessage": "Введите код проверки"
+	},
+	"totp.enter-code-disable": {
+		"defaultMessage": "Введите код проверки для выключения"
+	},
+	"totp.regenerate": {
+		"defaultMessage": "Перевыпустить"
+	},
+	"totp.regenerate-backup": {
+		"defaultMessage": "Перевыпустить резервные коды"
+	},
+	"totp.regenerate-instructions": {
+		"defaultMessage": "Введите код проверки, чтобы создать новые резервные коды. Прежние перестанут работать."
+	},
+	"totp.secret-key": {
+		"defaultMessage": "Секретный ключ"
+	},
+	"totp.setup-instructions": {
+		"defaultMessage": "Отсканируйте QR-код приложением или введите ключ настройки вручную."
+	},
+	"totp.status": {
+		"defaultMessage": "Статус"
+	},
+	"totp.title": {
+		"defaultMessage": "TOTP"
+	},
+	"totp.verify-enable": {
+		"defaultMessage": "Проверить и включить"
 	},
 	"update-available": {
 		"defaultMessage": "Доступно обновление: {latestVersion}"

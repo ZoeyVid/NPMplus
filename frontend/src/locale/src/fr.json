@@ -1,61 +1,4 @@
 {
-	"totp.backup-codes-remaining": {
-		"defaultMessage": "Codes de secours restants : {count}"
-	},
-	"totp.backup-warning": {
-		"defaultMessage": "Sauvegardez ces codes de secours dans un endroit sûr. Chaque code ne peut être utilisé qu'une seule fois."
-	},
-	"totp.disable": {
-		"defaultMessage": "Désactiver TOTP"
-	},
-	"totp.disable-confirm": {
-		"defaultMessage": "Désactiver TOTP"
-	},
-	"totp.disable-warning": {
-		"defaultMessage": "La désactivation de TOTP rendra votre compte moins sécurisé."
-	},
-	"totp.disabled": {
-		"defaultMessage": "Désactivée"
-	},
-	"totp.done": {
-		"defaultMessage": "J'ai sauvegardé mes codes de secours"
-	},
-	"totp.enable": {
-		"defaultMessage": "Activer TOTP"
-	},
-	"totp.enabled": {
-		"defaultMessage": "Activée"
-	},
-	"totp.enter-code": {
-		"defaultMessage": "Entrez le code de vérification"
-	},
-	"totp.enter-code-disable": {
-		"defaultMessage": "Entrez le code de vérification pour désactiver"
-	},
-	"totp.regenerate": {
-		"defaultMessage": "Régénérer"
-	},
-	"totp.regenerate-backup": {
-		"defaultMessage": "Régénérer les codes de secours"
-	},
-	"totp.regenerate-instructions": {
-		"defaultMessage": "Entrez un code de vérification pour générer de nouveaux codes de secours. Vos anciens codes seront invalidés."
-	},
-	"totp.secret-key": {
-		"defaultMessage": "Clé secrète"
-	},
-	"totp.setup-instructions": {
-		"defaultMessage": "Scannez ce QR code avec votre application d'authentification, ou entrez la clé secrète manuellement."
-	},
-	"totp.status": {
-		"defaultMessage": "Statut"
-	},
-	"totp.title": {
-		"defaultMessage": "TOTP"
-	},
-	"totp.verify-enable": {
-		"defaultMessage": "Vérifier et activer"
-	},
 	"access-list": {
 		"defaultMessage": "Liste d'accès"
 	},
@@ -461,6 +404,9 @@
 	"loading": {
 		"defaultMessage": "Chargement…"
 	},
+	"login.title": {
+		"defaultMessage": "Connectez-vous à votre compte"
+	},
 	"login.totp-code": {
 		"defaultMessage": "Code de vérification"
 	},
@@ -475,9 +421,6 @@
 	},
 	"login.totp-verify": {
 		"defaultMessage": "Vérifier"
-	},
-	"login.title": {
-		"defaultMessage": "Connectez-vous à votre compte"
 	},
 	"nginx-config.label": {
 		"defaultMessage": "Configuration Nginx personnalisée"
@@ -718,6 +661,63 @@
 	},
 	"test": {
 		"defaultMessage": "Test"
+	},
+	"totp.backup-codes-remaining": {
+		"defaultMessage": "Codes de secours restants : {count}"
+	},
+	"totp.backup-warning": {
+		"defaultMessage": "Sauvegardez ces codes de secours dans un endroit sûr. Chaque code ne peut être utilisé qu'une seule fois."
+	},
+	"totp.disable": {
+		"defaultMessage": "Désactiver TOTP"
+	},
+	"totp.disable-confirm": {
+		"defaultMessage": "Désactiver TOTP"
+	},
+	"totp.disable-warning": {
+		"defaultMessage": "La désactivation de TOTP rendra votre compte moins sécurisé."
+	},
+	"totp.disabled": {
+		"defaultMessage": "Désactivée"
+	},
+	"totp.done": {
+		"defaultMessage": "J'ai sauvegardé mes codes de secours"
+	},
+	"totp.enable": {
+		"defaultMessage": "Activer TOTP"
+	},
+	"totp.enabled": {
+		"defaultMessage": "Activée"
+	},
+	"totp.enter-code": {
+		"defaultMessage": "Entrez le code de vérification"
+	},
+	"totp.enter-code-disable": {
+		"defaultMessage": "Entrez le code de vérification pour désactiver"
+	},
+	"totp.regenerate": {
+		"defaultMessage": "Régénérer"
+	},
+	"totp.regenerate-backup": {
+		"defaultMessage": "Régénérer les codes de secours"
+	},
+	"totp.regenerate-instructions": {
+		"defaultMessage": "Entrez un code de vérification pour générer de nouveaux codes de secours. Vos anciens codes seront invalidés."
+	},
+	"totp.secret-key": {
+		"defaultMessage": "Clé secrète"
+	},
+	"totp.setup-instructions": {
+		"defaultMessage": "Scannez ce QR code avec votre application d'authentification, ou entrez la clé secrète manuellement."
+	},
+	"totp.status": {
+		"defaultMessage": "Statut"
+	},
+	"totp.title": {
+		"defaultMessage": "TOTP"
+	},
+	"totp.verify-enable": {
+		"defaultMessage": "Vérifier et activer"
 	},
 	"update-available": {
 		"defaultMessage": "Mise à jour disponible : {latestVersion}"

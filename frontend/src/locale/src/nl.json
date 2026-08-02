@@ -1,61 +1,4 @@
 {
-	"totp.backup-codes-remaining": {
-		"defaultMessage": "Resterende back-upcodes: {count}"
-	},
-	"totp.backup-warning": {
-		"defaultMessage": "Bewaar deze back-upcodes op een veilige plaats. Elke code kan slechts één keer worden gebruikt."
-	},
-	"totp.disable": {
-		"defaultMessage": "TOTP uitschakelen"
-	},
-	"totp.disable-confirm": {
-		"defaultMessage": "TOTP uitschakelen"
-	},
-	"totp.disable-warning": {
-		"defaultMessage": "Als je TOTP uitschakelt, wordt je account minder beveiligd."
-	},
-	"totp.disabled": {
-		"defaultMessage": "Uitgeschakeld"
-	},
-	"totp.done": {
-		"defaultMessage": "Ik heb mijn back-upcodes opgeslagen"
-	},
-	"totp.enable": {
-		"defaultMessage": "TOTP inschakelen"
-	},
-	"totp.enabled": {
-		"defaultMessage": "Ingeschakeld"
-	},
-	"totp.enter-code": {
-		"defaultMessage": "Verificatiecode invoeren"
-	},
-	"totp.enter-code-disable": {
-		"defaultMessage": "Verificatiecode invoeren om uit te schakelen"
-	},
-	"totp.regenerate": {
-		"defaultMessage": "Opnieuw genereren"
-	},
-	"totp.regenerate-backup": {
-		"defaultMessage": "Back-upcodes opnieuw genereren"
-	},
-	"totp.regenerate-instructions": {
-		"defaultMessage": "Voer een verificatiecode in om nieuwe back-upcodes te genereren. Oude codes worden ongeldig gemaakt."
-	},
-	"totp.secret-key": {
-		"defaultMessage": "Geheime sleutel"
-	},
-	"totp.setup-instructions": {
-		"defaultMessage": "Scan deze QR-code met je authenticator-app, of voer de code handmatig in."
-	},
-	"totp.status": {
-		"defaultMessage": "Status"
-	},
-	"totp.title": {
-		"defaultMessage": "TOTP"
-	},
-	"totp.verify-enable": {
-		"defaultMessage": "Verifiëren en inschakelen"
-	},
 	"access-list": {
 		"defaultMessage": "Toegangslijst"
 	},
@@ -464,6 +407,9 @@
 	"loading": {
 		"defaultMessage": "Laden…"
 	},
+	"login.title": {
+		"defaultMessage": "Log in op je account"
+	},
 	"login.totp-code": {
 		"defaultMessage": "Verificatiecode"
 	},
@@ -478,9 +424,6 @@
 	},
 	"login.totp-verify": {
 		"defaultMessage": "Verifiëren"
-	},
-	"login.title": {
-		"defaultMessage": "Log in op je account"
 	},
 	"nginx-config.label": {
 		"defaultMessage": "Aangepaste Nginx-configuratie"
@@ -721,6 +664,63 @@
 	},
 	"test": {
 		"defaultMessage": "Testen"
+	},
+	"totp.backup-codes-remaining": {
+		"defaultMessage": "Resterende back-upcodes: {count}"
+	},
+	"totp.backup-warning": {
+		"defaultMessage": "Bewaar deze back-upcodes op een veilige plaats. Elke code kan slechts één keer worden gebruikt."
+	},
+	"totp.disable": {
+		"defaultMessage": "TOTP uitschakelen"
+	},
+	"totp.disable-confirm": {
+		"defaultMessage": "TOTP uitschakelen"
+	},
+	"totp.disable-warning": {
+		"defaultMessage": "Als je TOTP uitschakelt, wordt je account minder beveiligd."
+	},
+	"totp.disabled": {
+		"defaultMessage": "Uitgeschakeld"
+	},
+	"totp.done": {
+		"defaultMessage": "Ik heb mijn back-upcodes opgeslagen"
+	},
+	"totp.enable": {
+		"defaultMessage": "TOTP inschakelen"
+	},
+	"totp.enabled": {
+		"defaultMessage": "Ingeschakeld"
+	},
+	"totp.enter-code": {
+		"defaultMessage": "Verificatiecode invoeren"
+	},
+	"totp.enter-code-disable": {
+		"defaultMessage": "Verificatiecode invoeren om uit te schakelen"
+	},
+	"totp.regenerate": {
+		"defaultMessage": "Opnieuw genereren"
+	},
+	"totp.regenerate-backup": {
+		"defaultMessage": "Back-upcodes opnieuw genereren"
+	},
+	"totp.regenerate-instructions": {
+		"defaultMessage": "Voer een verificatiecode in om nieuwe back-upcodes te genereren. Oude codes worden ongeldig gemaakt."
+	},
+	"totp.secret-key": {
+		"defaultMessage": "Geheime sleutel"
+	},
+	"totp.setup-instructions": {
+		"defaultMessage": "Scan deze QR-code met je authenticator-app, of voer de code handmatig in."
+	},
+	"totp.status": {
+		"defaultMessage": "Status"
+	},
+	"totp.title": {
+		"defaultMessage": "TOTP"
+	},
+	"totp.verify-enable": {
+		"defaultMessage": "Verifiëren en inschakelen"
 	},
 	"update-available": {
 		"defaultMessage": "Update beschikbaar: {latestVersion}"
