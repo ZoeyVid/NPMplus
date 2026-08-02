@@ -92,7 +92,7 @@ router
 			const result = await internalToken.getTokenFromEmail(data);
 			const { token, ...responseBody } = result;
 
-			if (result.requires2fa) {
+			if (result.requiresTotp) {
 				res.cookie("__Host-Http-challenge_token", token, {
 					signed: true,
 					httpOnly: true,
@@ -142,20 +142,20 @@ router
 	});
 
 router
-	.route("/2fa")
+	.route("/totp")
 	.options((_, res) => {
 		res.sendStatus(204);
 	})
 
 	/**
-	 * POST /tokens/2fa
+	 * POST /tokens/totp
 	 *
-	 * Verify 2FA code and get full token
+	 * Verify TOTP code and get full token
 	 */
 	.post(async (req, res, next) => {
 		try {
-			const { code } = await apiValidator(getValidationSchema("/tokens/2fa", "post"), req.body);
-			const result = await internalToken.verify2FA(req.signedCookies?.["__Host-Http-challenge_token"], code);
+			const { code } = await apiValidator(getValidationSchema("/tokens/totp", "post"), req.body);
+			const result = await internalToken.verifyTotp(req.signedCookies?.["__Host-Http-challenge_token"], code);
 			const { token, ...responseBody } = result;
 
 			res.cookie("__Host-Http-token", token, {
