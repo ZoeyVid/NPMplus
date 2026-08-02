@@ -20,16 +20,20 @@ export interface VersionCheckResponse {
 	updateAvailable: boolean;
 }
 
-export interface TwoFactorStatusResponse {
-	enabled: boolean;
+export interface MfaStatusResponse {
+	totpEnabled: boolean;
 	backupCodesRemaining: number;
 }
 
-export interface TwoFactorSetupResponse {
+export interface TotpSetupResponse {
 	secret: string;
 	otpauthUrl: string;
 }
 
-export interface TwoFactorEnableResponse {
+export interface TotpEnableResponse {
+	backupCodes: string[] | null;
+}
+
+export interface MfaBackupCodesResponse {
 	backupCodes: string[];
 }
