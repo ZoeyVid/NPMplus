@@ -1,6 +1,6 @@
 {
-	"operationId": "disableUser2fa",
-	"summary": "Disable 2fa for user",
+	"operationId": "adminDisableUserMfa",
+	"summary": "Reset MFA for a user (disables all second factors and backup codes)",
 	"tags": ["users"],
 	"parameters": [
 		{
@@ -13,19 +13,6 @@
 			"required": true,
 			"description": "User ID",
 			"example": 2
-		},
-		{
-			"in": "query",
-			"name": "code",
-			"schema": {
-				"type": "string",
-				"minLength": 6,
-				"maxLength": 8,
-				"example": "012345"
-			},
-			"required": false,
-			"description": "2fa Code",
-			"example": "012345"
 		}
 	],
 	"responses": {

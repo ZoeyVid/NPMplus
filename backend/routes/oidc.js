@@ -170,7 +170,7 @@ router
 				sameSite: "Lax",
 			});
 
-			if (data.requires2fa) {
+			if (data.requiresTotp) {
 				res.cookie("__Host-Http-challenge_token", data.token, {
 					signed: true,
 					httpOnly: true,

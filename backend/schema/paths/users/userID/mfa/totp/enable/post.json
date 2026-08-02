@@ -1,6 +1,6 @@
 {
-	"operationId": "regenUser2faCodes",
-	"summary": "Regenerate 2FA backup codes",
+	"operationId": "enableUserTotp",
+	"summary": "Verify code and enable TOTP",
 	"tags": ["users"],
 	"parameters": [
 		{
@@ -65,7 +65,7 @@
 						"additionalProperties": false,
 						"properties": {
 							"backup_codes": {
-								"description": "Backup codes",
+								"description": "Newly generated backup codes, or null if backup codes already exist",
 								"example": [
 									"6CD7CB06",
 									"495302F3",
@@ -76,7 +76,7 @@
 									"A406D2E8",
 									"0AE3C522"
 								],
-								"type": "array",
+								"type": ["array", "null"],
 								"items": {
 									"type": "string",
 									"example": "6CD7CB06"
