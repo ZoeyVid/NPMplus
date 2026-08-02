@@ -9,16 +9,16 @@ import { intl, T } from "src/locale";
 import { validateEmail, validateString } from "src/modules/Validations";
 import styles from "./index.module.css";
 
-function TwoFactorForm() {
+function TotpForm() {
 	const codeRef = useRef<HTMLInputElement>(null);
 	const [showCode, setShowCode] = useState(false);
 	const [formErr, setFormErr] = useState("");
-	const { verifyTwoFactor, cancelTwoFactor } = useAuthState();
+	const { submitTotp, cancelTotp } = useAuthState();
 
 	const onSubmit = async (values: any, { setSubmitting }: any) => {
 		setFormErr("");
 		try {
-			await verifyTwoFactor(values.code);
+			await submitTotp(values.code);
 		} catch (err) {
 			if (err instanceof Error) {
 				setFormErr(err.message);
@@ -34,10 +34,10 @@ function TwoFactorForm() {
 	return (
 		<>
 			<h2 className="h2 text-center mb-4">
-				<T id="login.2fa-title" />
+				<T id="login.totp-title" />
 			</h2>
 			<p className="text-secondary text-center mb-4">
-				<T id="login.2fa-description" />
+				<T id="login.totp-description" />
 			</p>
 			{formErr !== "" && <Alert variant="danger">{formErr}</Alert>}
 			<Formik initialValues={{ code: "" }} onSubmit={onSubmit}>
@@ -47,7 +47,7 @@ function TwoFactorForm() {
 							<Field name="code" validate={validateString(6, 8)}>
 								{({ field, form }: any) => (
 									<label className="form-label">
-										<T id="login.2fa-code" />
+										<T id="login.totp-code" />
 										<div className="input-group input-group-flat">
 											<input
 												{...field}
@@ -57,7 +57,7 @@ function TwoFactorForm() {
 												required
 												maxLength={8}
 												className={`form-control ${form.errors.code && form.touched.code ? "is-invalid" : ""}`}
-												placeholder={intl.formatMessage({ id: "login.2fa-code-placeholder" })}
+												placeholder={intl.formatMessage({ id: "login.totp-code-placeholder" })}
 											/>
 											<span className="input-group-text">
 												<button
@@ -81,11 +81,11 @@ function TwoFactorForm() {
 							</Field>
 						</div>
 						<div className="form-footer d-flex gap-2">
-							<Button type="button" fullWidth onClick={cancelTwoFactor} disabled={isSubmitting}>
+							<Button type="button" fullWidth onClick={cancelTotp} disabled={isSubmitting}>
 								<T id="cancel" />
 							</Button>
 							<Button type="submit" fullWidth color="azure" isLoading={isSubmitting}>
-								<T id="login.2fa-verify" />
+								<T id="login.totp-verify" />
 							</Button>
 						</div>
 					</Form>
@@ -95,7 +95,7 @@ function TwoFactorForm() {
 	);
 }
 
-function LoginForm() {
+function PasswordForm() {
 	const emailRef = useRef<HTMLInputElement>(null);
 	const [showPassword, setShowPassword] = useState(false);
 	const [formErr, setFormErr] = useState("");
@@ -240,7 +240,7 @@ function LoginForm() {
 }
 
 export default function Login() {
-	const { twoFactorChallenge } = useAuthState();
+	const { totpChallenge } = useAuthState();
 
 	return (
 		<Page className="page page-center">
@@ -253,7 +253,7 @@ export default function Login() {
 					</div>
 				</div>
 				<div className="card card-md">
-					<div className="card-body">{twoFactorChallenge ? <TwoFactorForm /> : <LoginForm />}</div>
+					<div className="card-body">{totpChallenge ? <TotpForm /> : <PasswordForm />}</div>
 				</div>
 			</div>
 		</Page>
