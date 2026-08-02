@@ -60,6 +60,16 @@ class Auth extends Model {
 		return bcrypt.compare(password, this.secret);
 	}
 
+	/**
+	 * Get the password auth row for a user, or undefined if none exists
+	 *
+	 * @param   {number} userId
+	 * @returns {Promise<object|undefined>}
+	 */
+	static getPasswordAuth(userId) {
+		return Auth.query().where("user_id", userId).andWhere("type", "password").first();
+	}
+
 	static get name() {
 		return "Auth";
 	}

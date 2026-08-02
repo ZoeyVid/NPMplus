@@ -1,9 +1,11 @@
 import express from "express";
 import { rateLimit } from "express-rate-limit";
 import multer from "multer";
-import internal2FA from "../internal/2fa.js";
+import internalMfa from "../internal/mfa.js";
+import internalTotp from "../internal/totp.js";
 import internalUser from "../internal/user.js";
 import Access from "../lib/access.js";
+import errs from "../lib/error.js";
 import jwtdecode from "../lib/express/jwt-decode.js";
 import userIdFromMe from "../lib/express/user-id-from-me.js";
 import apiValidator from "../lib/validator/api.js";
@@ -256,12 +258,12 @@ router
 	});
 
 /**
- * User 2FA status
+ * User MFA
  *
- * /api/users/123/2fa
+ * /api/users/123/mfa
  */
 router
-	.route("/:user_id/2fa")
+	.route("/:user_id/mfa")
 	.options((_, res) => {
 		res.sendStatus(204);
 	})
@@ -269,28 +271,13 @@ router
 	.all(userIdFromMe)
 
 	/**
-	 * POST /api/users/123/2fa
+	 * GET /api/users/123/mfa
 	 *
-	 * Start 2FA setup, returns QR code URL
-	 */
-	.post(async (req, res, next) => {
-		try {
-			const result = await internal2FA.startSetup(res.locals.access, req.params.user_id);
-			res.status(200).send(result);
-		} catch (err) {
-			debug(logger, `${req.method.toUpperCase()} ${req.path}: ${err}`);
-			next(err);
-		}
-	})
-
-	/**
-	 * GET /api/users/123/2fa
-	 *
-	 * Get 2FA status for a user
+	 * Get MFA status for a user (all factors and backup codes)
 	 */
 	.get(async (req, res, next) => {
 		try {
-			const status = await internal2FA.getStatus(res.locals.access, req.params.user_id);
+			const status = await internalMfa.getStatus(res.locals.access, req.params.user_id);
 			res.status(200).send(status);
 		} catch (err) {
 			debug(logger, `${req.method.toUpperCase()} ${req.path}: ${err}`);
@@ -299,18 +286,13 @@ router
 	})
 
 	/**
-	 * DELETE /api/users/123/2fa?code=XXXXXX
+	 * DELETE /api/users/123/mfa
 	 *
-	 * Disable 2FA for a user
+	 * Admin reset: disable all second factors and backup codes for a user
 	 */
 	.delete(async (req, res, next) => {
 		try {
-			const code = typeof req.query.code === "string" ? req.query.code : null;
-			if (code) {
-				await internal2FA.disable(res.locals.access, req.params.user_id, code);
-			} else {
-				await internal2FA.adminDisable(res.locals.access, req.params.user_id);
-			}
+			await internalMfa.adminDisable(res.locals.access, req.params.user_id);
 			res.status(200).send(true);
 		} catch (err) {
 			debug(logger, `${req.method.toUpperCase()} ${req.path}: ${err}`);
@@ -319,12 +301,12 @@ router
 	});
 
 /**
- * User 2FA enable
+ * User TOTP
  *
- * /api/users/123/2fa/enable
+ * /api/users/123/mfa/totp
  */
 router
-	.route("/:user_id/2fa/enable")
+	.route("/:user_id/mfa/totp")
 	.options((_, res) => {
 		res.sendStatus(204);
 	})
@@ -332,14 +314,62 @@ router
 	.all(userIdFromMe)
 
 	/**
-	 * POST /api/users/123/2fa/enable
+	 * POST /api/users/123/mfa/totp
 	 *
-	 * Verify code and enable 2FA
+	 * Start TOTP setup, returns QR code URL
 	 */
 	.post(async (req, res, next) => {
 		try {
-			const { code } = await apiValidator(getValidationSchema("/users/{userID}/2fa/enable", "post"), req.body);
-			const result = await internal2FA.enable(res.locals.access, req.params.user_id, code);
+			const result = await internalTotp.startSetup(res.locals.access, req.params.user_id);
+			res.status(200).send(result);
+		} catch (err) {
+			debug(logger, `${req.method.toUpperCase()} ${req.path}: ${err}`);
+			next(err);
+		}
+	})
+
+	/**
+	 * DELETE /api/users/123/mfa/totp?code=XXXXXX
+	 *
+	 * Disable TOTP for a user
+	 */
+	.delete(async (req, res, next) => {
+		try {
+			const code = typeof req.query.code === "string" ? req.query.code : null;
+			if (!code) throw new errs.ValidationError("Missing required parameter: code");
+			await internalMfa.disableTotp(res.locals.access, req.params.user_id, code);
+			res.status(200).send(true);
+		} catch (err) {
+			debug(logger, `${req.method.toUpperCase()} ${req.path}: ${err}`);
+			next(err);
+		}
+	});
+
+/**
+ * User TOTP enable
+ *
+ * /api/users/123/mfa/totp/enable
+ */
+router
+	.route("/:user_id/mfa/totp/enable")
+	.options((_, res) => {
+		res.sendStatus(204);
+	})
+	.all(jwtdecode())
+	.all(userIdFromMe)
+
+	/**
+	 * POST /api/users/123/mfa/totp/enable
+	 *
+	 * Verify code and enable TOTP
+	 */
+	.post(async (req, res, next) => {
+		try {
+			const { code } = await apiValidator(
+				getValidationSchema("/users/{userID}/mfa/totp/enable", "post"),
+				req.body,
+			);
+			const result = await internalMfa.enableTotp(res.locals.access, req.params.user_id, code);
 			res.status(200).send(result);
 		} catch (err) {
 			debug(logger, `${req.method.toUpperCase()} ${req.path}: ${err}`);
@@ -348,12 +378,12 @@ router
 	});
 
 /**
- * User 2FA backup codes
+ * User TOTP backup codes
  *
- * /api/users/123/2fa/backup-codes
+ * /api/users/123/mfa/backup-codes
  */
 router
-	.route("/:user_id/2fa/backup-codes")
+	.route("/:user_id/mfa/backup-codes")
 	.options((_, res) => {
 		res.sendStatus(204);
 	})
@@ -361,17 +391,17 @@ router
 	.all(userIdFromMe)
 
 	/**
-	 * POST /api/users/123/2fa/backup-codes
+	 * POST /api/users/123/mfa/backup-codes
 	 *
 	 * Regenerate backup codes
 	 */
 	.post(async (req, res, next) => {
 		try {
 			const { code } = await apiValidator(
-				getValidationSchema("/users/{userID}/2fa/backup-codes", "post"),
+				getValidationSchema("/users/{userID}/mfa/backup-codes", "post"),
 				req.body,
 			);
-			const result = await internal2FA.regenerateBackupCodes(res.locals.access, req.params.user_id, code);
+			const result = await internalMfa.regenerateBackupCodes(res.locals.access, req.params.user_id, code);
 			res.status(200).send(result);
 		} catch (err) {
 			debug(logger, `${req.method.toUpperCase()} ${req.path}: ${err}`);
