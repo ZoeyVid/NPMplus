@@ -1,61 +1,4 @@
 {
-	"2fa.backup-codes-remaining": {
-		"defaultMessage": "Codes de secours restants : {count}"
-	},
-	"2fa.backup-warning": {
-		"defaultMessage": "Sauvegardez ces codes de secours dans un endroit sûr. Chaque code ne peut être utilisé qu'une seule fois."
-	},
-	"2fa.disable": {
-		"defaultMessage": "Désactiver l'authentification à deux facteurs"
-	},
-	"2fa.disable-confirm": {
-		"defaultMessage": "Désactiver la 2FA"
-	},
-	"2fa.disable-warning": {
-		"defaultMessage": "La désactivation de l'authentification à deux facteurs rendra votre compte moins sécurisé."
-	},
-	"2fa.disabled": {
-		"defaultMessage": "Désactivée"
-	},
-	"2fa.done": {
-		"defaultMessage": "J'ai sauvegardé mes codes de secours"
-	},
-	"2fa.enable": {
-		"defaultMessage": "Activer l'authentification à deux facteurs"
-	},
-	"2fa.enabled": {
-		"defaultMessage": "Activée"
-	},
-	"2fa.enter-code": {
-		"defaultMessage": "Entrez le code de vérification"
-	},
-	"2fa.enter-code-disable": {
-		"defaultMessage": "Entrez le code de vérification pour désactiver"
-	},
-	"2fa.regenerate": {
-		"defaultMessage": "Régénérer"
-	},
-	"2fa.regenerate-backup": {
-		"defaultMessage": "Régénérer les codes de secours"
-	},
-	"2fa.regenerate-instructions": {
-		"defaultMessage": "Entrez un code de vérification pour générer de nouveaux codes de secours. Vos anciens codes seront invalidés."
-	},
-	"2fa.secret-key": {
-		"defaultMessage": "Clé secrète"
-	},
-	"2fa.setup-instructions": {
-		"defaultMessage": "Scannez ce QR code avec votre application d'authentification, ou entrez la clé secrète manuellement."
-	},
-	"2fa.status": {
-		"defaultMessage": "Statut"
-	},
-	"2fa.title": {
-		"defaultMessage": "Authentification à deux facteurs"
-	},
-	"2fa.verify-enable": {
-		"defaultMessage": "Vérifier et activer"
-	},
 	"access-list": {
 		"defaultMessage": "Liste d'accès"
 	},
@@ -461,23 +404,41 @@
 	"loading": {
 		"defaultMessage": "Chargement…"
 	},
-	"login.2fa-code": {
-		"defaultMessage": "Code de vérification"
-	},
-	"login.2fa-code-placeholder": {
-		"defaultMessage": "Entrez le code"
-	},
-	"login.2fa-description": {
-		"defaultMessage": "Entrez le code depuis votre application d'authentification"
-	},
-	"login.2fa-title": {
-		"defaultMessage": "Authentification à deux facteurs"
-	},
-	"login.2fa-verify": {
-		"defaultMessage": "Vérifier"
-	},
 	"login.title": {
 		"defaultMessage": "Connectez-vous à votre compte"
+	},
+	"login.totp-code": {
+		"defaultMessage": "Code de vérification"
+	},
+	"login.totp-code-placeholder": {
+		"defaultMessage": "Entrez le code"
+	},
+	"login.totp-description": {
+		"defaultMessage": "Entrez le code depuis votre application d'authentification"
+	},
+	"login.totp-title": {
+		"defaultMessage": "MFA"
+	},
+	"login.totp-verify": {
+		"defaultMessage": "Vérifier"
+	},
+	"mfa.backup-codes-remaining": {
+		"defaultMessage": "Codes de secours restants : {count}"
+	},
+	"mfa.backup-warning": {
+		"defaultMessage": "Sauvegardez ces codes de secours dans un endroit sûr. Chaque code ne peut être utilisé qu'une seule fois."
+	},
+	"mfa.regenerate": {
+		"defaultMessage": "Régénérer"
+	},
+	"mfa.regenerate-backup": {
+		"defaultMessage": "Régénérer les codes de secours"
+	},
+	"mfa.regenerate-instructions": {
+		"defaultMessage": "Entrez un code de vérification pour générer de nouveaux codes de secours. Vos anciens codes seront invalidés."
+	},
+	"mfa.title": {
+		"defaultMessage": "MFA"
 	},
 	"nginx-config.label": {
 		"defaultMessage": "Configuration Nginx personnalisée"
@@ -719,6 +680,45 @@
 	"test": {
 		"defaultMessage": "Test"
 	},
+	"totp.disable": {
+		"defaultMessage": "Désactiver TOTP"
+	},
+	"totp.disable-confirm": {
+		"defaultMessage": "Désactiver TOTP"
+	},
+	"totp.disable-warning": {
+		"defaultMessage": "La désactivation de TOTP rendra votre compte moins sécurisé."
+	},
+	"totp.disabled": {
+		"defaultMessage": "Désactivée"
+	},
+	"totp.done": {
+		"defaultMessage": "J'ai sauvegardé mes codes de secours"
+	},
+	"totp.enable": {
+		"defaultMessage": "Activer TOTP"
+	},
+	"totp.enabled": {
+		"defaultMessage": "Activée"
+	},
+	"totp.enter-code": {
+		"defaultMessage": "Entrez le code de vérification"
+	},
+	"totp.enter-code-disable": {
+		"defaultMessage": "Entrez le code de vérification pour désactiver"
+	},
+	"totp.secret-key": {
+		"defaultMessage": "Clé secrète"
+	},
+	"totp.setup-instructions": {
+		"defaultMessage": "Scannez ce QR code avec votre application d'authentification, ou entrez la clé secrète manuellement."
+	},
+	"totp.status": {
+		"defaultMessage": "Statut"
+	},
+	"totp.verify-enable": {
+		"defaultMessage": "Vérifier et activer"
+	},
 	"update-available": {
 		"defaultMessage": "Mise à jour disponible : {latestVersion}"
 	},
@@ -746,6 +746,9 @@
 	"user.logout": {
 		"defaultMessage": "Déconnexion"
 	},
+	"user.mfa": {
+		"defaultMessage": "MFA"
+	},
 	"user.new-password": {
 		"defaultMessage": "Nouveau mot de passe"
 	},
@@ -763,9 +766,6 @@
 	},
 	"user.switch-light": {
 		"defaultMessage": "Passer au mode Lumineux"
-	},
-	"user.two-factor": {
-		"defaultMessage": "Auth. à deux facteurs"
 	},
 	"username": {
 		"defaultMessage": "Nom d'utilisateur"
