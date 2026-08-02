@@ -1,11 +1,11 @@
 {
 	"type": "object",
 	"description": "Token object",
-	"required": ["requires2fa", "expires"],
+	"required": ["requiresTotp", "expires"],
 	"additionalProperties": false,
 	"properties": {
-		"requires2fa": {
-			"description": "Whether this token request requires two-factor authentication",
+		"requiresTotp": {
+			"description": "Whether TOTP is enabled for this user",
 			"example": true,
 			"type": "boolean"
 		},

@@ -1,16 +1,16 @@
 import { useQueryClient } from "@tanstack/react-query";
 import { createContext, type ReactNode, useContext, useEffect, useState } from "react";
 import { useIntervalWhen } from "rooks";
-import { deleteToken, getToken, refreshToken, revokeSessions, type TokenResponse, verify2FA } from "src/api/backend";
+import { deleteToken, getToken, refreshToken, revokeSessions, type TokenResponse, verifyTotp } from "src/api/backend";
 import AuthStore from "src/modules/AuthStore";
 
 // Context
 export interface AuthContextType {
 	authenticated: boolean;
-	twoFactorChallenge: boolean;
+	totpChallenge: boolean;
 	login: (username: string, password: string) => Promise<void>;
-	verifyTwoFactor: (code: string) => Promise<void>;
-	cancelTwoFactor: () => void;
+	submitTotp: (code: string) => Promise<void>;
+	cancelTotp: () => void;
 	logout: () => void;
 	logoutEverywhere: () => void;
 }
@@ -33,35 +33,35 @@ interface Props {
 function AuthProvider({ children, tokenRefreshInterval = 5 * 60 * 1000 }: Props) {
 	const queryClient = useQueryClient();
 	const [authenticated, setAuthenticated] = useState(AuthStore.hasActiveToken());
-	const [twoFactorChallenge, setTwoFactorChallenge] = useState<boolean>(
+	const [totpChallenge, setTotpChallenge] = useState<boolean>(
 		() => getCookie("__Host-npmplus_oidc_totp_required") === "true",
 	);
 
 	const handleTokenUpdate = (response: TokenResponse) => {
 		AuthStore.set(response);
 		setAuthenticated(true);
-		setTwoFactorChallenge(false);
+		setTotpChallenge(false);
 	};
 
 	const login = async (identity: string, secret: string) => {
 		const response = await getToken(identity, secret);
-		if (response.requires2fa) {
-			setTwoFactorChallenge(true);
+		if (response.requiresTotp) {
+			setTotpChallenge(true);
 			return;
 		}
 		handleTokenUpdate(response);
 	};
 
-	const verifyTwoFactor = async (code: string) => {
-		if (!twoFactorChallenge) {
-			throw new Error("No 2FA challenge pending");
+	const submitTotp = async (code: string) => {
+		if (!totpChallenge) {
+			throw new Error("No TOTP challenge pending");
 		}
-		const response = await verify2FA(code);
+		const response = await verifyTotp(code);
 		handleTokenUpdate(response);
 	};
 
-	const cancelTwoFactor = () => {
-		setTwoFactorChallenge(false);
+	const cancelTotp = () => {
+		setTotpChallenge(false);
 	};
 
 	const logout = async () => {
@@ -85,7 +85,7 @@ function AuthProvider({ children, tokenRefreshInterval = 5 * 60 * 1000 }: Props)
 
 	useEffect(() => {
 		if (!authenticated) {
-			if (twoFactorChallenge) {
+			if (totpChallenge) {
 				window.cookieStore.delete("__Host-npmplus_oidc_totp_required");
 				return;
 			}
@@ -105,10 +105,10 @@ function AuthProvider({ children, tokenRefreshInterval = 5 * 60 * 1000 }: Props)
 
 	const value = {
 		authenticated,
-		twoFactorChallenge,
+		totpChallenge,
 		login,
-		verifyTwoFactor,
-		cancelTwoFactor,
+		submitTotp,
+		cancelTotp,
 		logout,
 		logoutEverywhere,
 	};
