@@ -1,0 +1,48 @@
+{
+	"operationId": "disableUserTotp",
+	"summary": "Disable totp for user",
+	"tags": ["users"],
+	"parameters": [
+		{
+			"in": "path",
+			"name": "userID",
+			"schema": {
+				"type": "integer",
+				"minimum": 1
+			},
+			"required": true,
+			"description": "User ID",
+			"example": 2
+		},
+		{
+			"in": "query",
+			"name": "code",
+			"schema": {
+				"type": "string",
+				"minLength": 6,
+				"maxLength": 8,
+				"example": "012345"
+			},
+			"required": true,
+			"description": "TOTP code or backup code",
+			"example": "012345"
+		}
+	],
+	"responses": {
+		"200": {
+			"content": {
+				"application/json": {
+					"examples": {
+						"default": {
+							"value": true
+						}
+					},
+					"schema": {
+						"type": "boolean"
+					}
+				}
+			},
+			"description": "200 response"
+		}
+	}
+}

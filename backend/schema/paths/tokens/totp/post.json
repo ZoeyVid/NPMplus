@@ -1,9 +1,9 @@
 {
-	"operationId": "loginWith2FA",
-	"summary": "Verify 2FA code and get full token",
+	"operationId": "loginWithTotp",
+	"summary": "Verify TOTP code and get full token",
 	"tags": ["tokens"],
 	"requestBody": {
-		"description": "2fa Challenge Payload",
+		"description": "totp Challenge Payload",
 		"required": true,
 		"content": {
 			"application/json": {
