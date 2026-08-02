@@ -422,6 +422,24 @@
 	"login.totp-verify": {
 		"defaultMessage": "Verify"
 	},
+	"mfa.backup-codes-remaining": {
+		"defaultMessage": "Backup codes remaining: {count}"
+	},
+	"mfa.backup-warning": {
+		"defaultMessage": "Save these backup codes in a secure place. Each code can only be used once."
+	},
+	"mfa.regenerate": {
+		"defaultMessage": "Regenerate"
+	},
+	"mfa.regenerate-backup": {
+		"defaultMessage": "Regenerate Backup Codes"
+	},
+	"mfa.regenerate-instructions": {
+		"defaultMessage": "Enter a verification code to generate new backup codes. Your old codes will be invalidated."
+	},
+	"mfa.title": {
+		"defaultMessage": "MFA"
+	},
 	"nginx-config.label": {
 		"defaultMessage": "Custom Nginx Configuration"
 	},
@@ -662,12 +680,6 @@
 	"test": {
 		"defaultMessage": "Test"
 	},
-	"mfa.backup-codes-remaining": {
-		"defaultMessage": "Backup codes remaining: {count}"
-	},
-	"mfa.backup-warning": {
-		"defaultMessage": "Save these backup codes in a secure place. Each code can only be used once."
-	},
 	"totp.disable": {
 		"defaultMessage": "Disable TOTP"
 	},
@@ -695,15 +707,6 @@
 	"totp.enter-code-disable": {
 		"defaultMessage": "Enter verification code to disable"
 	},
-	"mfa.regenerate": {
-		"defaultMessage": "Regenerate"
-	},
-	"mfa.regenerate-backup": {
-		"defaultMessage": "Regenerate Backup Codes"
-	},
-	"mfa.regenerate-instructions": {
-		"defaultMessage": "Enter a verification code to generate new backup codes. Your old codes will be invalidated."
-	},
 	"totp.secret-key": {
 		"defaultMessage": "Secret Key"
 	},
@@ -712,9 +715,6 @@
 	},
 	"totp.status": {
 		"defaultMessage": "Status"
-	},
-	"mfa.title": {
-		"defaultMessage": "MFA"
 	},
 	"totp.verify-enable": {
 		"defaultMessage": "Verify and Enable"
@@ -746,6 +746,9 @@
 	"user.logout": {
 		"defaultMessage": "Logout"
 	},
+	"user.mfa": {
+		"defaultMessage": "MFA"
+	},
 	"user.new-password": {
 		"defaultMessage": "New Password"
 	},
@@ -763,9 +766,6 @@
 	},
 	"user.switch-light": {
 		"defaultMessage": "Switch to Light mode"
-	},
-	"user.mfa": {
-		"defaultMessage": "MFA"
 	},
 	"username": {
 		"defaultMessage": "Username"

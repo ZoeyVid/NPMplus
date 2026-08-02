@@ -416,6 +416,24 @@
 	"login.totp-verify": {
 		"defaultMessage": "Ověřit"
 	},
+	"mfa.backup-codes-remaining": {
+		"defaultMessage": "Počet zbývajících záložních kódů: {count}"
+	},
+	"mfa.backup-warning": {
+		"defaultMessage": "Tyto záložní kódy si uložte na bezpečném místě. Každý kód lze použít pouze jednou."
+	},
+	"mfa.regenerate": {
+		"defaultMessage": "Znovu vytvořit"
+	},
+	"mfa.regenerate-backup": {
+		"defaultMessage": "Znovu vytvořit záložní kódy"
+	},
+	"mfa.regenerate-instructions": {
+		"defaultMessage": "Zadejte ověřovací kód pro vytvoření nových záložních kódů. Vaše staré kódy budou neplatné."
+	},
+	"mfa.title": {
+		"defaultMessage": "MFA"
+	},
 	"nginx-config.label": {
 		"defaultMessage": "Vlastní Nginx konfigurace"
 	},
@@ -656,12 +674,6 @@
 	"test": {
 		"defaultMessage": "Test"
 	},
-	"mfa.backup-codes-remaining": {
-		"defaultMessage": "Počet zbývajících záložních kódů: {count}"
-	},
-	"mfa.backup-warning": {
-		"defaultMessage": "Tyto záložní kódy si uložte na bezpečném místě. Každý kód lze použít pouze jednou."
-	},
 	"totp.disable": {
 		"defaultMessage": "Vypnout TOTP"
 	},
@@ -689,15 +701,6 @@
 	"totp.enter-code-disable": {
 		"defaultMessage": "Zadejte ověřovací kód pro vypnutí"
 	},
-	"mfa.regenerate": {
-		"defaultMessage": "Znovu vytvořit"
-	},
-	"mfa.regenerate-backup": {
-		"defaultMessage": "Znovu vytvořit záložní kódy"
-	},
-	"mfa.regenerate-instructions": {
-		"defaultMessage": "Zadejte ověřovací kód pro vytvoření nových záložních kódů. Vaše staré kódy budou neplatné."
-	},
 	"totp.secret-key": {
 		"defaultMessage": "Tajný klíč"
 	},
@@ -706,9 +709,6 @@
 	},
 	"totp.status": {
 		"defaultMessage": "Stav"
-	},
-	"mfa.title": {
-		"defaultMessage": "MFA"
 	},
 	"totp.verify-enable": {
 		"defaultMessage": "Ověřit a zapnout"
@@ -740,6 +740,9 @@
 	"user.logout": {
 		"defaultMessage": "Odhlásit se"
 	},
+	"user.mfa": {
+		"defaultMessage": "MFA"
+	},
 	"user.new-password": {
 		"defaultMessage": "Nové heslo"
 	},
@@ -757,9 +760,6 @@
 	},
 	"user.switch-light": {
 		"defaultMessage": "Přepnout na světlý režim"
-	},
-	"user.mfa": {
-		"defaultMessage": "MFA"
 	},
 	"username": {
 		"defaultMessage": "Uživatelské jméno"

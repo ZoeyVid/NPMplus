@@ -419,6 +419,24 @@
 	"login.totp-verify": {
 		"defaultMessage": "Overiť"
 	},
+	"mfa.backup-codes-remaining": {
+		"defaultMessage": "Počet zostávajúcich záložných kódov: {count}"
+	},
+	"mfa.backup-warning": {
+		"defaultMessage": "Tieto záložné kódy si uložte na bezpečnom mieste. Každý kód je možné použiť len raz."
+	},
+	"mfa.regenerate": {
+		"defaultMessage": "Znova vytvoriť"
+	},
+	"mfa.regenerate-backup": {
+		"defaultMessage": "Znova vytvoriť záložné kódy"
+	},
+	"mfa.regenerate-instructions": {
+		"defaultMessage": "Zadajte overovací kód, aby sa vytvorili nové záložné kódy. Vaše staré kódy budú neplatné."
+	},
+	"mfa.title": {
+		"defaultMessage": "MFA"
+	},
 	"nginx-config.label": {
 		"defaultMessage": "Vlastná Nginx konfigurácia"
 	},
@@ -659,12 +677,6 @@
 	"test": {
 		"defaultMessage": "Test"
 	},
-	"mfa.backup-codes-remaining": {
-		"defaultMessage": "Počet zostávajúcich záložných kódov: {count}"
-	},
-	"mfa.backup-warning": {
-		"defaultMessage": "Tieto záložné kódy si uložte na bezpečnom mieste. Každý kód je možné použiť len raz."
-	},
 	"totp.disable": {
 		"defaultMessage": "Vypnúť TOTP"
 	},
@@ -692,15 +704,6 @@
 	"totp.enter-code-disable": {
 		"defaultMessage": "Zadajte overovací kód na vypnutie"
 	},
-	"mfa.regenerate": {
-		"defaultMessage": "Znova vytvoriť"
-	},
-	"mfa.regenerate-backup": {
-		"defaultMessage": "Znova vytvoriť záložné kódy"
-	},
-	"mfa.regenerate-instructions": {
-		"defaultMessage": "Zadajte overovací kód, aby sa vytvorili nové záložné kódy. Vaše staré kódy budú neplatné."
-	},
 	"totp.secret-key": {
 		"defaultMessage": "Tajný kľúč"
 	},
@@ -709,9 +712,6 @@
 	},
 	"totp.status": {
 		"defaultMessage": "Stav"
-	},
-	"mfa.title": {
-		"defaultMessage": "MFA"
 	},
 	"totp.verify-enable": {
 		"defaultMessage": "Overiť a zapnúť"
@@ -743,6 +743,9 @@
 	"user.logout": {
 		"defaultMessage": "Odhlásiť sa"
 	},
+	"user.mfa": {
+		"defaultMessage": "Dvojfakt. overenie"
+	},
 	"user.new-password": {
 		"defaultMessage": "Nové heslo"
 	},
@@ -760,9 +763,6 @@
 	},
 	"user.switch-light": {
 		"defaultMessage": "Prepnúť na svetlý režim"
-	},
-	"user.mfa": {
-		"defaultMessage": "Dvojfakt. overenie"
 	},
 	"username": {
 		"defaultMessage": "Používateľské meno"

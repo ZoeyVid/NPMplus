@@ -422,6 +422,24 @@
 	"login.totp-verify": {
 		"defaultMessage": "Vérifier"
 	},
+	"mfa.backup-codes-remaining": {
+		"defaultMessage": "Codes de secours restants : {count}"
+	},
+	"mfa.backup-warning": {
+		"defaultMessage": "Sauvegardez ces codes de secours dans un endroit sûr. Chaque code ne peut être utilisé qu'une seule fois."
+	},
+	"mfa.regenerate": {
+		"defaultMessage": "Régénérer"
+	},
+	"mfa.regenerate-backup": {
+		"defaultMessage": "Régénérer les codes de secours"
+	},
+	"mfa.regenerate-instructions": {
+		"defaultMessage": "Entrez un code de vérification pour générer de nouveaux codes de secours. Vos anciens codes seront invalidés."
+	},
+	"mfa.title": {
+		"defaultMessage": "MFA"
+	},
 	"nginx-config.label": {
 		"defaultMessage": "Configuration Nginx personnalisée"
 	},
@@ -662,12 +680,6 @@
 	"test": {
 		"defaultMessage": "Test"
 	},
-	"mfa.backup-codes-remaining": {
-		"defaultMessage": "Codes de secours restants : {count}"
-	},
-	"mfa.backup-warning": {
-		"defaultMessage": "Sauvegardez ces codes de secours dans un endroit sûr. Chaque code ne peut être utilisé qu'une seule fois."
-	},
 	"totp.disable": {
 		"defaultMessage": "Désactiver TOTP"
 	},
@@ -695,15 +707,6 @@
 	"totp.enter-code-disable": {
 		"defaultMessage": "Entrez le code de vérification pour désactiver"
 	},
-	"mfa.regenerate": {
-		"defaultMessage": "Régénérer"
-	},
-	"mfa.regenerate-backup": {
-		"defaultMessage": "Régénérer les codes de secours"
-	},
-	"mfa.regenerate-instructions": {
-		"defaultMessage": "Entrez un code de vérification pour générer de nouveaux codes de secours. Vos anciens codes seront invalidés."
-	},
 	"totp.secret-key": {
 		"defaultMessage": "Clé secrète"
 	},
@@ -712,9 +715,6 @@
 	},
 	"totp.status": {
 		"defaultMessage": "Statut"
-	},
-	"mfa.title": {
-		"defaultMessage": "MFA"
 	},
 	"totp.verify-enable": {
 		"defaultMessage": "Vérifier et activer"
@@ -746,6 +746,9 @@
 	"user.logout": {
 		"defaultMessage": "Déconnexion"
 	},
+	"user.mfa": {
+		"defaultMessage": "MFA"
+	},
 	"user.new-password": {
 		"defaultMessage": "Nouveau mot de passe"
 	},
@@ -763,9 +766,6 @@
 	},
 	"user.switch-light": {
 		"defaultMessage": "Passer au mode Lumineux"
-	},
-	"user.mfa": {
-		"defaultMessage": "MFA"
 	},
 	"username": {
 		"defaultMessage": "Nom d'utilisateur"

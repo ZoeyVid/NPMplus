@@ -416,6 +416,24 @@
 	"login.totp-verify": {
 		"defaultMessage": "Ellenőrzés"
 	},
+	"mfa.backup-codes-remaining": {
+		"defaultMessage": "Hátralévő tartalék kódok: {count}"
+	},
+	"mfa.backup-warning": {
+		"defaultMessage": "Mentse el ezeket a tartalék kódokat biztonságos helyre. Minden kód csak egyszer használható."
+	},
+	"mfa.regenerate": {
+		"defaultMessage": "Újragenerálás"
+	},
+	"mfa.regenerate-backup": {
+		"defaultMessage": "Tartalék kódok újragenerálása"
+	},
+	"mfa.regenerate-instructions": {
+		"defaultMessage": "Adjon meg egy ellenőrző kódot az új tartalék kódok generálásához. A régi kódok érvénytelenné válnak."
+	},
+	"mfa.title": {
+		"defaultMessage": "MFA"
+	},
 	"nginx-config.label": {
 		"defaultMessage": "Egyéni Nginx konfiguráció"
 	},
@@ -656,12 +674,6 @@
 	"test": {
 		"defaultMessage": "Teszt"
 	},
-	"mfa.backup-codes-remaining": {
-		"defaultMessage": "Hátralévő tartalék kódok: {count}"
-	},
-	"mfa.backup-warning": {
-		"defaultMessage": "Mentse el ezeket a tartalék kódokat biztonságos helyre. Minden kód csak egyszer használható."
-	},
 	"totp.disable": {
 		"defaultMessage": "TOTP letiltása"
 	},
@@ -689,15 +701,6 @@
 	"totp.enter-code-disable": {
 		"defaultMessage": "Adja meg az ellenőrző kódot a letiltáshoz"
 	},
-	"mfa.regenerate": {
-		"defaultMessage": "Újragenerálás"
-	},
-	"mfa.regenerate-backup": {
-		"defaultMessage": "Tartalék kódok újragenerálása"
-	},
-	"mfa.regenerate-instructions": {
-		"defaultMessage": "Adjon meg egy ellenőrző kódot az új tartalék kódok generálásához. A régi kódok érvénytelenné válnak."
-	},
 	"totp.secret-key": {
 		"defaultMessage": "Titkos kulcs"
 	},
@@ -706,9 +709,6 @@
 	},
 	"totp.status": {
 		"defaultMessage": "Állapot"
-	},
-	"mfa.title": {
-		"defaultMessage": "MFA"
 	},
 	"totp.verify-enable": {
 		"defaultMessage": "Ellenőrzés és engedélyezés"
@@ -740,6 +740,9 @@
 	"user.logout": {
 		"defaultMessage": "Kijelentkezés"
 	},
+	"user.mfa": {
+		"defaultMessage": "MFA"
+	},
 	"user.new-password": {
 		"defaultMessage": "Új jelszó"
 	},
@@ -757,9 +760,6 @@
 	},
 	"user.switch-light": {
 		"defaultMessage": "Váltás világos módra"
-	},
-	"user.mfa": {
-		"defaultMessage": "MFA"
 	},
 	"username": {
 		"defaultMessage": "Felhasználónév"

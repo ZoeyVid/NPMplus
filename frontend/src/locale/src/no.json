@@ -422,6 +422,24 @@
 	"login.totp-verify": {
 		"defaultMessage": "Verifiser"
 	},
+	"mfa.backup-codes-remaining": {
+		"defaultMessage": "Gjenstående backup-koder: {count}"
+	},
+	"mfa.backup-warning": {
+		"defaultMessage": "Lagre disse backup-kodene på et sikkert sted. Hver kode kan kun brukes én gang."
+	},
+	"mfa.regenerate": {
+		"defaultMessage": "Regenerer"
+	},
+	"mfa.regenerate-backup": {
+		"defaultMessage": "Generer nye backup-koder"
+	},
+	"mfa.regenerate-instructions": {
+		"defaultMessage": "Angi en verifiseringskode for å generere nye backup-koder. Dine gamle koder vil bli ugyldige."
+	},
+	"mfa.title": {
+		"defaultMessage": "MFA"
+	},
 	"nginx-config.label": {
 		"defaultMessage": "Egendefinert Nginx-konfigurasjon"
 	},
@@ -662,12 +680,6 @@
 	"test": {
 		"defaultMessage": "Test"
 	},
-	"mfa.backup-codes-remaining": {
-		"defaultMessage": "Gjenstående backup-koder: {count}"
-	},
-	"mfa.backup-warning": {
-		"defaultMessage": "Lagre disse backup-kodene på et sikkert sted. Hver kode kan kun brukes én gang."
-	},
 	"totp.disable": {
 		"defaultMessage": "Deaktiver TOTP"
 	},
@@ -695,15 +707,6 @@
 	"totp.enter-code-disable": {
 		"defaultMessage": "Angi verifiseringskode for å deaktivere"
 	},
-	"mfa.regenerate": {
-		"defaultMessage": "Regenerer"
-	},
-	"mfa.regenerate-backup": {
-		"defaultMessage": "Generer nye backup-koder"
-	},
-	"mfa.regenerate-instructions": {
-		"defaultMessage": "Angi en verifiseringskode for å generere nye backup-koder. Dine gamle koder vil bli ugyldige."
-	},
 	"totp.secret-key": {
 		"defaultMessage": "Hemmelig nøkkel"
 	},
@@ -712,9 +715,6 @@
 	},
 	"totp.status": {
 		"defaultMessage": "Status"
-	},
-	"mfa.title": {
-		"defaultMessage": "MFA"
 	},
 	"totp.verify-enable": {
 		"defaultMessage": "Verifiser og aktiver"
@@ -746,6 +746,9 @@
 	"user.logout": {
 		"defaultMessage": "Logg ut"
 	},
+	"user.mfa": {
+		"defaultMessage": "MFA"
+	},
 	"user.new-password": {
 		"defaultMessage": "Nytt passord"
 	},
@@ -763,9 +766,6 @@
 	},
 	"user.switch-light": {
 		"defaultMessage": "Bytt til lys modus"
-	},
-	"user.mfa": {
-		"defaultMessage": "MFA"
 	},
 	"username": {
 		"defaultMessage": "Brukernavn"

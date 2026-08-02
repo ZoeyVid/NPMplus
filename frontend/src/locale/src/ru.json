@@ -425,6 +425,24 @@
 	"login.totp-verify": {
 		"defaultMessage": "Проверить"
 	},
+	"mfa.backup-codes-remaining": {
+		"defaultMessage": "Осталось резервных кодов: {count}"
+	},
+	"mfa.backup-warning": {
+		"defaultMessage": "Сохраните коды в надежном месте. Они одноразовые."
+	},
+	"mfa.regenerate": {
+		"defaultMessage": "Перевыпустить"
+	},
+	"mfa.regenerate-backup": {
+		"defaultMessage": "Перевыпустить резервные коды"
+	},
+	"mfa.regenerate-instructions": {
+		"defaultMessage": "Введите код проверки, чтобы создать новые резервные коды. Прежние перестанут работать."
+	},
+	"mfa.title": {
+		"defaultMessage": "MFA"
+	},
 	"nginx-config.label": {
 		"defaultMessage": "Своя Nginx-конфигурация"
 	},
@@ -665,12 +683,6 @@
 	"test": {
 		"defaultMessage": "Проверить"
 	},
-	"mfa.backup-codes-remaining": {
-		"defaultMessage": "Осталось резервных кодов: {count}"
-	},
-	"mfa.backup-warning": {
-		"defaultMessage": "Сохраните коды в надежном месте. Они одноразовые."
-	},
 	"totp.disable": {
 		"defaultMessage": "Выключить TOTP"
 	},
@@ -698,15 +710,6 @@
 	"totp.enter-code-disable": {
 		"defaultMessage": "Введите код проверки для выключения"
 	},
-	"mfa.regenerate": {
-		"defaultMessage": "Перевыпустить"
-	},
-	"mfa.regenerate-backup": {
-		"defaultMessage": "Перевыпустить резервные коды"
-	},
-	"mfa.regenerate-instructions": {
-		"defaultMessage": "Введите код проверки, чтобы создать новые резервные коды. Прежние перестанут работать."
-	},
 	"totp.secret-key": {
 		"defaultMessage": "Секретный ключ"
 	},
@@ -715,9 +718,6 @@
 	},
 	"totp.status": {
 		"defaultMessage": "Статус"
-	},
-	"mfa.title": {
-		"defaultMessage": "MFA"
 	},
 	"totp.verify-enable": {
 		"defaultMessage": "Проверить и включить"
@@ -749,6 +749,9 @@
 	"user.logout": {
 		"defaultMessage": "Выйти"
 	},
+	"user.mfa": {
+		"defaultMessage": "Настроить MFA"
+	},
 	"user.new-password": {
 		"defaultMessage": "Новый пароль"
 	},
@@ -766,9 +769,6 @@
 	},
 	"user.switch-light": {
 		"defaultMessage": "Включить светлую тему"
-	},
-	"user.mfa": {
-		"defaultMessage": "Настроить MFA"
 	},
 	"username": {
 		"defaultMessage": "Имя пользователя"

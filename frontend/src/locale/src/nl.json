@@ -425,6 +425,24 @@
 	"login.totp-verify": {
 		"defaultMessage": "Verifiëren"
 	},
+	"mfa.backup-codes-remaining": {
+		"defaultMessage": "Resterende back-upcodes: {count}"
+	},
+	"mfa.backup-warning": {
+		"defaultMessage": "Bewaar deze back-upcodes op een veilige plaats. Elke code kan slechts één keer worden gebruikt."
+	},
+	"mfa.regenerate": {
+		"defaultMessage": "Opnieuw genereren"
+	},
+	"mfa.regenerate-backup": {
+		"defaultMessage": "Back-upcodes opnieuw genereren"
+	},
+	"mfa.regenerate-instructions": {
+		"defaultMessage": "Voer een verificatiecode in om nieuwe back-upcodes te genereren. Oude codes worden ongeldig gemaakt."
+	},
+	"mfa.title": {
+		"defaultMessage": "MFA"
+	},
 	"nginx-config.label": {
 		"defaultMessage": "Aangepaste Nginx-configuratie"
 	},
@@ -665,12 +683,6 @@
 	"test": {
 		"defaultMessage": "Testen"
 	},
-	"mfa.backup-codes-remaining": {
-		"defaultMessage": "Resterende back-upcodes: {count}"
-	},
-	"mfa.backup-warning": {
-		"defaultMessage": "Bewaar deze back-upcodes op een veilige plaats. Elke code kan slechts één keer worden gebruikt."
-	},
 	"totp.disable": {
 		"defaultMessage": "TOTP uitschakelen"
 	},
@@ -698,15 +710,6 @@
 	"totp.enter-code-disable": {
 		"defaultMessage": "Verificatiecode invoeren om uit te schakelen"
 	},
-	"mfa.regenerate": {
-		"defaultMessage": "Opnieuw genereren"
-	},
-	"mfa.regenerate-backup": {
-		"defaultMessage": "Back-upcodes opnieuw genereren"
-	},
-	"mfa.regenerate-instructions": {
-		"defaultMessage": "Voer een verificatiecode in om nieuwe back-upcodes te genereren. Oude codes worden ongeldig gemaakt."
-	},
 	"totp.secret-key": {
 		"defaultMessage": "Geheime sleutel"
 	},
@@ -715,9 +718,6 @@
 	},
 	"totp.status": {
 		"defaultMessage": "Status"
-	},
-	"mfa.title": {
-		"defaultMessage": "MFA"
 	},
 	"totp.verify-enable": {
 		"defaultMessage": "Verifiëren en inschakelen"
@@ -749,6 +749,9 @@
 	"user.logout": {
 		"defaultMessage": "Uitloggen"
 	},
+	"user.mfa": {
+		"defaultMessage": "MFA"
+	},
 	"user.new-password": {
 		"defaultMessage": "Nieuw wachtwoord"
 	},
@@ -766,9 +769,6 @@
 	},
 	"user.switch-light": {
 		"defaultMessage": "Lichte modus inschakelen"
-	},
-	"user.mfa": {
-		"defaultMessage": "MFA"
 	},
 	"username": {
 		"defaultMessage": "Gebruikersnaam"
