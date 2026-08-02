@@ -1,6 +1,6 @@
 {
-	"operationId": "setupUser2fa",
-	"summary": "Start 2FA setup, returns QR code URL",
+	"operationId": "setupUserTotp",
+	"summary": "Start TOTP setup, returns QR code URL",
 	"tags": ["users"],
 	"parameters": [
 		{
