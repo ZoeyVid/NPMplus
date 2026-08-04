@@ -33,8 +33,8 @@ importers:
         specifier: 5.2.1
         version: 5.2.1
       express-rate-limit:
-        specifier: 8.6.1
-        version: 8.6.1(express@5.2.1)
+        specifier: 8.6.2
+        version: 8.6.2(express@5.2.1)
       jsonwebtoken:
         specifier: 9.0.3
         version: 9.0.3
@@ -473,8 +473,8 @@ packages:
     resolution: {integrity: sha512-mQw+2fkQbALzQ7V0MY0IqdnXNOeTtP4r0lN9z7AAawCXgqea7bDii20AYrIBrFd/Hx0M2Ocz6S111CaFkUcb0Q==}
     engines: {node: '>=0.8.x'}
 
-  express-rate-limit@8.6.1:
-    resolution: {integrity: sha512-0D493aP61w0TJ2A0wy27riRsO7FMQ7FK+KUHOKCSfPvYo0R55aiC6emCVgFUeShH0fq0ICPVzNcgoS+BsbXQCA==}
+  express-rate-limit@8.6.2:
+    resolution: {integrity: sha512-YH4ru+eOJxQABscKFfRCy9R7x9QFGdezclVMwwgFFndzS2Xnm0uo6B0ABZsLhcpeptGv2qvuJVWlQr9gQZoC3A==}
     engines: {node: '>= 16'}
     peerDependencies:
       express: '>= 4.11'
@@ -1375,7 +1375,7 @@ snapshots:
 
   events@3.3.0: {}
 
-  express-rate-limit@8.6.1(express@5.2.1):
+  express-rate-limit@8.6.2(express@5.2.1):
     dependencies:
       debug: 4.4.3
       express: 5.2.1
