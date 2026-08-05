@@ -21,8 +21,8 @@ importers:
         specifier: 3.0.3
         version: 3.0.3
       better-sqlite3:
-        specifier: 13.0.2
-        version: 13.0.2
+        specifier: 13.0.3
+        version: 13.0.3
       cookie-parser:
         specifier: 1.4.7
         version: 1.4.7
@@ -40,7 +40,7 @@ importers:
         version: 9.0.3
       knex:
         specifier: 3.3.0
-        version: 3.3.0(better-sqlite3@13.0.2)(mysql2@3.23.2(@types/node@26.1.2))(pg@8.22.0)
+        version: 3.3.0(better-sqlite3@13.0.3)(mysql2@3.23.2(@types/node@26.1.2))(pg@8.22.0)
       liquidjs:
         specifier: 10.28.0
         version: 10.28.0
@@ -55,7 +55,7 @@ importers:
         version: 3.23.2(@types/node@26.1.2)
       objection:
         specifier: 3.1.5
-        version: 3.1.5(knex@3.3.0(better-sqlite3@13.0.2)(mysql2@3.23.2(@types/node@26.1.2))(pg@8.22.0))
+        version: 3.1.5(knex@3.3.0(better-sqlite3@13.0.3)(mysql2@3.23.2(@types/node@26.1.2))(pg@8.22.0))
       openid-client:
         specifier: 6.8.4
         version: 6.8.4
@@ -291,8 +291,8 @@ packages:
     resolution: {integrity: sha512-GlF5wPWnSa/X5LKM1o0wz0suXIINz1iHRLvTS+sLyi7XPbe5ycmYI3DlZqVGZZtDgl4DmasFg7gOB3JYbphV5g==}
     hasBin: true
 
-  better-sqlite3@13.0.2:
-    resolution: {integrity: sha512-jW6oufeDhXZaiX9Lw5A+oerVClx4iFrI6uDj1zu7SqUAjak9vbJvA0NEcKLNxHiQHb6kYCoFzzXYV0YOauhV3g==}
+  better-sqlite3@13.0.3:
+    resolution: {integrity: sha512-RbOBxmLBG8uvFUc15X9+9SFemKcQ0WBuISBVkpuiaUB2qblC8UWlHEjdWVoZ8AdhSwmoEgsiXKfopX0CQxaACQ==}
     engines: {node: '>=22'}
 
   body-parser@2.3.0:
@@ -1223,7 +1223,7 @@ snapshots:
 
   bcryptjs@3.0.3: {}
 
-  better-sqlite3@13.0.2:
+  better-sqlite3@13.0.3:
     dependencies:
       node-addon-api: 8.9.1
 
@@ -1543,7 +1543,7 @@ snapshots:
       jwa: 2.0.1
       safe-buffer: 5.2.1
 
-  knex@3.3.0(better-sqlite3@13.0.2)(mysql2@3.23.2(@types/node@26.1.2))(pg@8.22.0):
+  knex@3.3.0(better-sqlite3@13.0.3)(mysql2@3.23.2(@types/node@26.1.2))(pg@8.22.0):
     dependencies:
       colorette: 2.0.19
       commander: 10.0.1
@@ -1560,7 +1560,7 @@ snapshots:
       tarn: 3.1.2
       tildify: 2.0.0
     optionalDependencies:
-      better-sqlite3: 13.0.2
+      better-sqlite3: 13.0.3
       mysql2: 3.23.2(@types/node@26.1.2)
       pg: 8.22.0
     transitivePeerDependencies:
@@ -1655,12 +1655,12 @@ snapshots:
 
   object-inspect@1.13.4: {}
 
-  objection@3.1.5(knex@3.3.0(better-sqlite3@13.0.2)(mysql2@3.23.2(@types/node@26.1.2))(pg@8.22.0)):
+  objection@3.1.5(knex@3.3.0(better-sqlite3@13.0.3)(mysql2@3.23.2(@types/node@26.1.2))(pg@8.22.0)):
     dependencies:
       ajv: 8.20.0
       ajv-formats: 2.1.1(ajv@8.20.0)
       db-errors: 0.2.3
-      knex: 3.3.0(better-sqlite3@13.0.2)(mysql2@3.23.2(@types/node@26.1.2))(pg@8.22.0)
+      knex: 3.3.0(better-sqlite3@13.0.3)(mysql2@3.23.2(@types/node@26.1.2))(pg@8.22.0)
 
   on-finished@2.4.1:
     dependencies:
