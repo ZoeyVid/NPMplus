@@ -35,7 +35,7 @@
 		"@types/react": "19.2.18",
 		"@types/react-dom": "19.2.4",
 		"@vitejs/plugin-react": "6.0.5",
-		"happy-dom": "20.11.1",
+		"happy-dom": "20.11.2",
 		"tmp": "0.2.7",
 		"typescript": "7.0.2",
 		"vite": "8.2.1",
