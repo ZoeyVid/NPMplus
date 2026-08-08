@@ -187,7 +187,7 @@ RUN pnpm formatjs compile-folder src/locale/src src/locale/lang && \
     pnpm tsc -b && \
     pnpm vitest && \
     pnpm vite build && \
-    find /app/dist -type f ! -name "*.jpg" ! -name "*.png" -exec brotli -q 11 {} \:
+    find /app/dist -type f ! -name "*.jpg" ! -name "*.png" -exec brotli -q 11 {} \;
 
 FROM alpine:3.24.1@sha256:28bd5fe8b56d1bd048e5babf5b10710ebe0bae67db86916198a6eec434943f8b AS backend
 SHELL ["/bin/ash", "-eo", "pipefail", "-c"]
