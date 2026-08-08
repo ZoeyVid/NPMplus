@@ -25,7 +25,7 @@
 		"objection": "3.1.5",
 		"openid-client": "6.8.4",
 		"otplib": "13.4.1",
-		"pg": "8.22.0",
+		"pg": "8.23.0",
 		"swagger-ui-express": "5.0.1"
 	},
 	"devDependencies": {

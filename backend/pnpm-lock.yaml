@@ -40,7 +40,7 @@ importers:
         version: 9.0.3
       knex:
         specifier: 3.3.0
-        version: 3.3.0(better-sqlite3@13.0.3)(mysql2@3.23.2(@types/node@26.1.2))(pg@8.22.0)
+        version: 3.3.0(better-sqlite3@13.0.3)(mysql2@3.23.2(@types/node@26.1.2))(pg@8.23.0)
       liquidjs:
         specifier: 10.28.0
         version: 10.28.0
@@ -55,7 +55,7 @@ importers:
         version: 3.23.2(@types/node@26.1.2)
       objection:
         specifier: 3.1.5
-        version: 3.1.5(knex@3.3.0(better-sqlite3@13.0.3)(mysql2@3.23.2(@types/node@26.1.2))(pg@8.22.0))
+        version: 3.1.5(knex@3.3.0(better-sqlite3@13.0.3)(mysql2@3.23.2(@types/node@26.1.2))(pg@8.23.0))
       openid-client:
         specifier: 6.8.4
         version: 6.8.4
@@ -63,8 +63,8 @@ importers:
         specifier: 13.4.1
         version: 13.4.1
       pg:
-        specifier: 8.22.0
-        version: 8.22.0
+        specifier: 8.23.0
+        version: 8.23.0
       swagger-ui-express:
         specifier: 5.0.1
         version: 5.0.1(express@5.2.1)
@@ -803,15 +803,15 @@ packages:
     peerDependencies:
       pg: '>=8.0'
 
-  pg-protocol@1.15.0:
-    resolution: {integrity: sha512-cq9sECI5s0+uPUXjbz8ioyPJni6RzsRib0US67i5IoTZKw8fNeYlVE7u8F4dG7vEJJtc5wdD1K189lCCUwqWTQ==}
+  pg-protocol@1.16.0:
+    resolution: {integrity: sha512-sILXutLVjCLjcDuOmvhX5e2Z4cS5qG/6Bu3VkpFwdf/633ElGLpEh9bgmuI5I4sqKqkifQiGyiCcx1HdtrK7tg==}
 
   pg-types@2.2.0:
     resolution: {integrity: sha512-qTAAlrEsl8s4OiEQY69wDvcMIdQN6wdz5ojQiOy6YRMuynxenON0O5oCpJI6lshc6scgAY8qvJ2On/p+CXY0GA==}
     engines: {node: '>=4'}
 
-  pg@8.22.0:
-    resolution: {integrity: sha512-8wih1vVIBMxoUM2oB4soJsD9tDnDpLv4OXBJ+EJzFsvycD+lfyIreC2gGHq78f8jbLLt+bvlPTFdFZfJkOuzAA==}
+  pg@8.23.0:
+    resolution: {integrity: sha512-Ip2EQCngowJLGOfCwkFhPXU7/ljlhn6Rxlmy4XYfL2Y+vyRM59+8uR2xqRWKdYmbXmxCFOAmKxBuSUCdF34qLg==}
     engines: {node: '>= 16.0.0'}
     peerDependencies:
       pg-native: '>=3.0.1'
@@ -1543,7 +1543,7 @@ snapshots:
       jwa: 2.0.1
       safe-buffer: 5.2.1
 
-  knex@3.3.0(better-sqlite3@13.0.3)(mysql2@3.23.2(@types/node@26.1.2))(pg@8.22.0):
+  knex@3.3.0(better-sqlite3@13.0.3)(mysql2@3.23.2(@types/node@26.1.2))(pg@8.23.0):
     dependencies:
       colorette: 2.0.19
       commander: 10.0.1
@@ -1562,7 +1562,7 @@ snapshots:
     optionalDependencies:
       better-sqlite3: 13.0.3
       mysql2: 3.23.2(@types/node@26.1.2)
-      pg: 8.22.0
+      pg: 8.23.0
     transitivePeerDependencies:
       - supports-color
 
@@ -1655,12 +1655,12 @@ snapshots:
 
   object-inspect@1.13.4: {}
 
-  objection@3.1.5(knex@3.3.0(better-sqlite3@13.0.3)(mysql2@3.23.2(@types/node@26.1.2))(pg@8.22.0)):
+  objection@3.1.5(knex@3.3.0(better-sqlite3@13.0.3)(mysql2@3.23.2(@types/node@26.1.2))(pg@8.23.0)):
     dependencies:
       ajv: 8.20.0
       ajv-formats: 2.1.1(ajv@8.20.0)
       db-errors: 0.2.3
-      knex: 3.3.0(better-sqlite3@13.0.3)(mysql2@3.23.2(@types/node@26.1.2))(pg@8.22.0)
+      knex: 3.3.0(better-sqlite3@13.0.3)(mysql2@3.23.2(@types/node@26.1.2))(pg@8.23.0)
 
   on-finished@2.4.1:
     dependencies:
@@ -1701,11 +1701,11 @@ snapshots:
 
   pg-int8@1.0.1: {}
 
-  pg-pool@3.14.0(pg@8.22.0):
+  pg-pool@3.14.0(pg@8.23.0):
     dependencies:
-      pg: 8.22.0
+      pg: 8.23.0
 
-  pg-protocol@1.15.0: {}
+  pg-protocol@1.16.0: {}
 
   pg-types@2.2.0:
     dependencies:
@@ -1715,11 +1715,11 @@ snapshots:
       postgres-date: 1.0.7
       postgres-interval: 1.2.0
 
-  pg@8.22.0:
+  pg@8.23.0:
     dependencies:
       pg-connection-string: 2.14.0
-      pg-pool: 3.14.0(pg@8.22.0)
-      pg-protocol: 1.15.0
+      pg-pool: 3.14.0(pg@8.23.0)
+      pg-protocol: 1.16.0
       pg-types: 2.2.0
       pgpass: 1.0.5
     optionalDependencies:
