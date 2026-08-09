@@ -5,6 +5,12 @@ on:
       - develop
   pull_request:
   workflow_dispatch:
+permissions:
+  contents: write
+  pull-requests: write
+defaults:
+  run:
+    shell: bash
 jobs:
   lint-and-format:
     runs-on: ubuntu-slim
@@ -15,7 +21,7 @@ jobs:
       - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
         with:
           node-version: lts/*
-      - uses: pnpm/action-setup@0ebf47130e4866e96fce0953f49152a61190b271 # v6.0.9
+      - uses: pnpm/action-setup@0977fd99725f1db4007ccb2928dbb4e90d06cc86 # v6.0.10
         with:
           version: latest
       - name: backend
@@ -24,6 +30,7 @@ jobs:
           cd backend
           pnpm install --frozen-lockfile
           pnpm biome $BIOME --reporter=default --reporter=github | sed "s|,file=|,file=backend/|g" || echo "BIOME_FAILED=1" >> "$GITHUB_ENV"
+          node validate-schema.js
       - name: frontend
         run: |
           set -x
