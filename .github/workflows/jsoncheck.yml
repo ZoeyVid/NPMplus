@@ -5,6 +5,8 @@ on:
       - develop
   pull_request:
   workflow_dispatch:
+permissions:
+  contents: read
 jobs:
   jsoncheck:
     runs-on: ubuntu-latest
