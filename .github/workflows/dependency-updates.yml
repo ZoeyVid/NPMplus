@@ -427,7 +427,7 @@ jobs:
           commit-message: update vts version to ${{ steps.update.outputs.version }}
           branch: update-vts-version
           title: update vts version to ${{ steps.update.outputs.version }}
-          body: update vtsversion to ${{ steps.update.outputs.version }}
+          body: update vts version to ${{ steps.update.outputs.version }}
   nginx-ntlm-module-update:
     runs-on: ubuntu-slim
     steps:
