@@ -2,12 +2,11 @@ diff --git a/src/ngx_http_lua_common.h b/src/ngx_http_lua_common.h
 index 28538cc2..ce006401 100644
 --- a/src/ngx_http_lua_common.h
 +++ b/src/ngx_http_lua_common.h
-@@ -35,6 +35,8 @@
+@@ -35,6 +35,6 @@
  #define HAVE_LUA_PROXY_SSL  0
- #elif defined(OPENSSL_IS_BORINGSSL)
+-#elif defined(OPENSSL_IS_BORINGSSL)
++#elif defined(OPENSSL_IS_BORINGSSL) || defined(OPENSSL_IS_AWSLC)
  #define  HAVE_LUA_PROXY_SSL 0
-+#elif defined(OPENSSL_IS_AWSLC)
-+#define  HAVE_LUA_PROXY_SSL 1
  #elif defined(SSL_ERROR_WANT_RETRY_VERIFY) &&                                \
      OPENSSL_VERSION_NUMBER >= 0x30000020uL
  #define  HAVE_LUA_PROXY_SSL 1
