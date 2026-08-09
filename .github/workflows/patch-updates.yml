@@ -1,0 +1,226 @@
+name: patch-updates
+on:
+  push:
+    branches:
+      - develop
+  schedule:
+    - cron: "0 * * * *"
+  workflow_dispatch:
+permissions:
+  contents: write
+  pull-requests: write
+concurrency:
+  group: ${{ github.workflow }}
+  cancel-in-progress: false
+defaults:
+  run:
+    shell: bash
+jobs:
+  dynamic_tls_records-update:
+    runs-on: ubuntu-slim
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - name: update dynamic_tls_records version
+        id: update
+        run: |
+          git clone --depth 1 https://github.com/nginx-modules/ngx_http_tls_dyn_size ngx_http_tls_dyn_size
+          DTR_VER="$(
+          ls ngx_http_tls_dyn_size/nginx__dynamic_tls_records_*.patch \
+              | sed "s|ngx_http_tls_dyn_size/nginx__dynamic_tls_records_\([0-9.]\+\)+.patch|\1|g" \
+              | sort -V \
+              | tail -1
+          )"
+          rm -r ngx_http_tls_dyn_size
+          sed -i "s|ARG DTR_VER=.*|ARG DTR_VER=$DTR_VER|" Dockerfile
+          DTR_HASH="$(curl -sSfL https://raw.githubusercontent.com/nginx-modules/ngx_http_tls_dyn_size/master/nginx__dynamic_tls_records_"$DTR_VER"%2B.patch | sha256sum | cut -d" " -f1)"
+          sed -i "\|dynamic_tls_records|{n;s|[0-9a-f]\{64\}|$DTR_HASH|}" Dockerfile
+          echo "version=$DTR_VER" >> $GITHUB_OUTPUT
+      - uses: peter-evans/create-pull-request@5f6978faf089d4d20b00c7766989d076bb2fc7f1 # v8.1.1
+        with:
+          signoff: true
+          delete-branch: true
+          commit-message: update dynamic_tls_records version to ${{ steps.update.outputs.version }}
+          branch: update-dynamic_tls_records-version
+          title: update dynamic_tls_records version to ${{ steps.update.outputs.version }}
+          body: update dynamic_tls_records version to ${{ steps.update.outputs.version }}
+
+  resolver_conf_parsing-update:
+    runs-on: ubuntu-slim
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - name: update resolver_conf_parsing version
+        id: update
+        run: |
+          git clone --depth 1 https://github.com/openresty/openresty openresty
+          RCP_VER="$(
+          ls openresty/patches/nginx \
+              | sort -V \
+              | tail -1
+          )"
+          rm -r openresty
+          sed -i "s|ARG RCP_VER=.*|ARG RCP_VER=$RCP_VER|" Dockerfile
+          RCP_HASH="$(curl -sSfL https://raw.githubusercontent.com/openresty/openresty/master/patches/nginx/"$RCP_VER"/nginx-"$RCP_VER"-resolver_conf_parsing.patch | sha256sum | cut -d" " -f1)"
+          sed -i "\|resolver_conf_parsing|{n;s|[0-9a-f]\{64\}|$RCP_HASH|}" Dockerfile
+          echo "version=$RCP_VER" >> $GITHUB_OUTPUT
+      - uses: peter-evans/create-pull-request@5f6978faf089d4d20b00c7766989d076bb2fc7f1 # v8.1.1
+        with:
+          signoff: true
+          delete-branch: true
+          commit-message: update resolver_conf_parsing version to ${{ steps.update.outputs.version }}
+          branch: update-resolver_conf_parsing-version
+          title: update resolver_conf_parsing version to ${{ steps.update.outputs.version }}
+          body: update resolver_conf_parsing version to ${{ steps.update.outputs.version }}
+
+  zlib-ng-patch-update:
+    runs-on: ubuntu-slim
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - name: update zlib-ng-patch version
+        id: update
+        run: |
+          git clone --depth 1 https://github.com/zlib-ng/patches zlib-ng-patches
+          ZNP_VER="$(
+          ls zlib-ng-patches/nginx/*-zlib-ng.patch \
+              | sed "s|zlib-ng-patches/nginx/\([0-9.]\+\)-zlib-ng.patch|\1|g" \
+              | sort -V \
+              | tail -1
+          )"
+          rm -r zlib-ng-patches
+          sed -i "s|ARG ZNP_VER=.*|ARG ZNP_VER=$ZNP_VER|" Dockerfile
+          ZNP_HASH="$(curl -sSfL https://raw.githubusercontent.com/zlib-ng/patches/master/nginx/"$ZNP_VER"-zlib-ng.patch | sha256sum | cut -d" " -f1)"
+          sed -i "\|zlib-ng.patch|{n;s|[0-9a-f]\{64\}|$ZNP_HASH|}" Dockerfile
+          echo "version=$ZNP_VER" >> $GITHUB_OUTPUT
+      - uses: peter-evans/create-pull-request@5f6978faf089d4d20b00c7766989d076bb2fc7f1 # v8.1.1
+        with:
+          signoff: true
+          delete-branch: true
+          commit-message: update zlib-ng-patch version to ${{ steps.update.outputs.version }}
+          branch: update-zlib-ng-patch-version
+          title: update zlib-ng-patch version to ${{ steps.update.outputs.version }}
+          body: update zlib-ng-patch version to ${{ steps.update.outputs.version }}
+
+  nginx-689-patch-update:
+    runs-on: ubuntu-slim
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - name: update nginx 689 patch hash
+        run: |
+          HASH="$(curl -sSfL https://patch-diff.githubusercontent.com/raw/nginx/nginx/pull/689.patch | sha256sum | cut -d" " -f1)"
+          sed -i "\|pull/689.patch|{n;s|[0-9a-f]\{64\}|$HASH|}" Dockerfile
+      - uses: peter-evans/create-pull-request@5f6978faf089d4d20b00c7766989d076bb2fc7f1 # v8.1.1
+        with:
+          signoff: true
+          delete-branch: true
+          commit-message: update nginx 689 patch hash
+          branch: update-nginx-689-patch-hash
+          title: update nginx 689 patch hash
+          body: https://github.com/nginx/nginx/pull/689
+  nginx-1219-patch-update:
+    runs-on: ubuntu-slim
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - name: update nginx 1219 patch hash
+        run: |
+          HASH="$(curl -sSfL https://patch-diff.githubusercontent.com/raw/nginx/nginx/pull/1219.patch | sha256sum | cut -d" " -f1)"
+          sed -i "\|pull/1219.patch|{n;s|[0-9a-f]\{64\}|$HASH|}" Dockerfile
+      - uses: peter-evans/create-pull-request@5f6978faf089d4d20b00c7766989d076bb2fc7f1 # v8.1.1
+        with:
+          signoff: true
+          delete-branch: true
+          commit-message: update nginx 1219 patch hash
+          branch: update-nginx-1219-patch-hash
+          title: update nginx 1219 patch hash
+          body: https://github.com/nginx/nginx/pull/1219
+  nginx-1333-patch-update:
+    runs-on: ubuntu-slim
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - name: update nginx 1333 patch hash
+        run: |
+          HASH="$(curl -sSfL https://patch-diff.githubusercontent.com/raw/nginx/nginx/pull/1333.patch | sha256sum | cut -d" " -f1)"
+          sed -i "\|pull/1333.patch|{n;s|[0-9a-f]\{64\}|$HASH|}" Dockerfile
+      - uses: peter-evans/create-pull-request@5f6978faf089d4d20b00c7766989d076bb2fc7f1 # v8.1.1
+        with:
+          signoff: true
+          delete-branch: true
+          commit-message: update nginx 1333 patch hash
+          branch: update-nginx-1333-patch-hash
+          title: update nginx 1333 patch hash
+          body: https://github.com/nginx/nginx/pull/1333
+  nginx-1430-patch-update:
+    runs-on: ubuntu-slim
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - name: update nginx 1430 patch hash
+        run: |
+          HASH="$(curl -sSfL https://patch-diff.githubusercontent.com/raw/nginx/nginx/pull/1430.patch | sha256sum | cut -d" " -f1)"
+          sed -i "\|pull/1430.patch|{n;s|[0-9a-f]\{64\}|$HASH|}" Dockerfile
+      - uses: peter-evans/create-pull-request@5f6978faf089d4d20b00c7766989d076bb2fc7f1 # v8.1.1
+        with:
+          signoff: true
+          delete-branch: true
+          commit-message: update nginx 1430 patch hash
+          branch: update-nginx-1430-patch-hash
+          title: update nginx 1430 patch hash
+          body: https://github.com/nginx/nginx/pull/1430
+
+  fancyindex-176-patch-update:
+    runs-on: ubuntu-slim
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - name: update fancyindex 176 patch hash
+        run: |
+          HASH="$(curl -sSfL https://patch-diff.githubusercontent.com/raw/aperezdc/ngx-fancyindex/pull/176.patch | sha256sum | cut -d" " -f1)"
+          sed -i "\|pull/176.patch|{n;s|[0-9a-f]\{64\}|$HASH|}" Dockerfile
+      - uses: peter-evans/create-pull-request@5f6978faf089d4d20b00c7766989d076bb2fc7f1 # v8.1.1
+        with:
+          signoff: true
+          delete-branch: true
+          commit-message: update fancyindex 176 patch hash
+          branch: update-fancyindex-176-patch-hash
+          title: update fancyindex 176 patch hash
+          body: https://github.com/aperezdc/ngx-fancyindex/pull/176
+
+  certbot-ocsp-fetcher-update:
+    runs-on: ubuntu-slim
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - name: update certbot-ocsp-fetcher version
+        id: update
+        run: |
+          COF_SHA="$(git ls-remote https://github.com/tomwassenberg/certbot-ocsp-fetcher main | cut -f1)"
+          echo "compare=https://github.com/tomwassenberg/certbot-ocsp-fetcher/compare/$(sed -n 's|^ARG COF_VER=\(.*\) #.*|\1|p' Dockerfile)...$COF_SHA" >> $GITHUB_OUTPUT
+          sed -i "s|ARG COF_VER=.*|ARG COF_VER=$COF_SHA # main|" Dockerfile
+          COF_HASH="$(curl -sSfL https://raw.githubusercontent.com/tomwassenberg/certbot-ocsp-fetcher/"$COF_SHA"/certbot-ocsp-fetcher | sha256sum | cut -d" " -f1)"
+          sed -i "\|raw.githubusercontent.com/tomwassenberg|{n;s|[0-9a-f]\{64\}|$COF_HASH|}" Dockerfile
+      - uses: peter-evans/create-pull-request@5f6978faf089d4d20b00c7766989d076bb2fc7f1 # v8.1.1
+        with:
+          signoff: true
+          delete-branch: true
+          commit-message: update certbot-ocsp-fetcher version
+          branch: update-certbot-ocsp-fetcher-version
+          title: update certbot-ocsp-fetcher version
+          body: ${{ steps.update.outputs.compare }}
+  nginxbeautifier-update:
+    runs-on: ubuntu-slim
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - name: update nginxbeautifier version
+        id: update
+        run: |
+          NBF_SHA="$(git ls-remote https://github.com/vasilevich/nginxbeautifier master | cut -f1)"
+          if [ "$NBF_SHA" = "ac5fd769a49c79bf2d750b6456a4565c6c99578d" ]; then NBF_SHA="$(sed -n 's|^ARG NBF_VER=\(.*\) #.*|\1|p' Dockerfile)"; fi
+          echo "compare=https://github.com/vasilevich/nginxbeautifier/compare/$(sed -n 's|^ARG NBF_VER=\(.*\) #.*|\1|p' Dockerfile)...$NBF_SHA" >> $GITHUB_OUTPUT
+          sed -i "s|ARG NBF_VER=.*|ARG NBF_VER=$NBF_SHA # master|" Dockerfile
+          NBF_HASH="$(curl -sSfL https://raw.githubusercontent.com/vasilevich/nginxbeautifier/"$NBF_SHA"/index.js | sha256sum | cut -d" " -f1)"
+          sed -i "\|nginxbeautifier/\"\$NBF_VER\"/index.js|{n;s|[0-9a-f]\{64\}|$NBF_HASH|}" Dockerfile
+          NBF_HASH="$(curl -sSfL https://raw.githubusercontent.com/vasilevich/nginxbeautifier/"$NBF_SHA"/nginxbeautifier.js | sha256sum | cut -d" " -f1)"
+          sed -i "\|nginxbeautifier/\"\$NBF_VER\"/nginxbeautifier.js|{n;s|[0-9a-f]\{64\}|$NBF_HASH|}" Dockerfile
+      - uses: peter-evans/create-pull-request@5f6978faf089d4d20b00c7766989d076bb2fc7f1 # v8.1.1
+        with:
+          signoff: true
+          delete-branch: true
+          commit-message: update nginxbeautifier version
+          branch: update-nginxbeautifier-version
+          title: update nginxbeautifier version
+          body: ${{ steps.update.outputs.compare }}
