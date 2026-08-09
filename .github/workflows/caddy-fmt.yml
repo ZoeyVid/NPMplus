@@ -8,6 +8,12 @@ on:
       - caddy/Dockerfile
       - caddy/Caddyfile
   workflow_dispatch:
+permissions:
+  contents: write
+  pull-requests: write
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: false
 jobs:
   caddy-fmt:
     runs-on: ubuntu-latest
