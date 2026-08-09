@@ -6,6 +6,15 @@ on:
   schedule:
     - cron: "0 * * * *"
   workflow_dispatch:
+permissions:
+  contents: write
+  pull-requests: write
+concurrency:
+  group: ${{ github.workflow }}
+  cancel-in-progress: false
+defaults:
+  run:
+    shell: bash
 jobs:
   aws-lc-update:
     runs-on: ubuntu-slim
@@ -23,6 +32,7 @@ jobs:
               | tail -1
           )"
           AWSLC_SHA="$(git ls-remote https://github.com/aws/aws-lc "$AWSLC_VER" | cut -f1)"
+          echo "compare=https://github.com/aws/aws-lc/compare/$(sed -n 's|^ARG AWSLC_VER=\(.*\) #.*|\1|p' Dockerfile)...$AWSLC_SHA" >> $GITHUB_OUTPUT
           sed -i "s|ARG AWSLC_VER=.*|ARG AWSLC_VER=$AWSLC_SHA # $AWSLC_VER|" Dockerfile
           echo "version=$AWSLC_VER" >> $GITHUB_OUTPUT
       - uses: peter-evans/create-pull-request@5f6978faf089d4d20b00c7766989d076bb2fc7f1 # v8.1.1
@@ -32,7 +42,7 @@ jobs:
           commit-message: update aws-lc version to ${{ steps.update.outputs.version }}
           branch: update-aws-lc-version
           title: update aws-lc version to ${{ steps.update.outputs.version }}
-          body: update aws-lc version to ${{ steps.update.outputs.version }}
+          body: ${{ steps.update.outputs.compare }}
 
   nginx-update:
     runs-on: ubuntu-slim
@@ -50,6 +60,7 @@ jobs:
               | tail -1
           )"
           NGINX_SHA="$(git ls-remote https://github.com/nginx/nginx "$NGINX_VER" | cut -f1)"
+          echo "compare=https://github.com/nginx/nginx/compare/$(sed -n 's|^ARG NGINX_VER=\(.*\) #.*|\1|p' Dockerfile)...$NGINX_SHA" >> $GITHUB_OUTPUT
           sed -i "s|ARG NGINX_VER=.*|ARG NGINX_VER=$NGINX_SHA # $NGINX_VER|" Dockerfile
           echo "version=$NGINX_VER" >> $GITHUB_OUTPUT
       - uses: peter-evans/create-pull-request@5f6978faf089d4d20b00c7766989d076bb2fc7f1 # v8.1.1
@@ -59,82 +70,7 @@ jobs:
           commit-message: update nginx version to ${{ steps.update.outputs.version }}
           branch: update-nginx-version
           title: update nginx version to ${{ steps.update.outputs.version }}
-          body: update nginx version to ${{ steps.update.outputs.version }}
-
-  dynamic_tls_records-update:
-    runs-on: ubuntu-slim
-    steps:
-      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
-      - name: update dynamic_tls_records version
-        id: update
-        run: |
-          git clone --depth 1 https://github.com/nginx-modules/ngx_http_tls_dyn_size ngx_http_tls_dyn_size
-          DTR_VER="$(
-          ls ngx_http_tls_dyn_size/nginx__dynamic_tls_records_*.patch \
-              | sed "s|ngx_http_tls_dyn_size/nginx__dynamic_tls_records_\([0-9.]\+\)+.patch|\1|g" \
-              | sort -V \
-              | tail -1
-          )"
-          rm -r ngx_http_tls_dyn_size
-          sed -i "s|ARG DTR_VER=.*|ARG DTR_VER=$DTR_VER|" Dockerfile
-          echo "version=$DTR_VER" >> $GITHUB_OUTPUT
-      - uses: peter-evans/create-pull-request@5f6978faf089d4d20b00c7766989d076bb2fc7f1 # v8.1.1
-        with:
-          signoff: true
-          delete-branch: true
-          commit-message: update dynamic_tls_records version to ${{ steps.update.outputs.version }}
-          branch: update-dynamic_tls_records-version
-          title: update dynamic_tls_records version to ${{ steps.update.outputs.version }}
-          body: update dynamic_tls_records version to ${{ steps.update.outputs.version }}
-  resolver_conf_parsing-update:
-    runs-on: ubuntu-slim
-    steps:
-      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
-      - name: update resolver_conf_parsing version
-        id: update
-        run: |
-          git clone --depth 1 https://github.com/openresty/openresty openresty
-          RCP_VER="$(
-          ls openresty/patches/nginx \
-              | sort -V \
-              | tail -1
-          )"
-          rm -r openresty
-          sed -i "s|ARG RCP_VER=.*|ARG RCP_VER=$RCP_VER|" Dockerfile
-          echo "version=$RCP_VER" >> $GITHUB_OUTPUT
-      - uses: peter-evans/create-pull-request@5f6978faf089d4d20b00c7766989d076bb2fc7f1 # v8.1.1
-        with:
-          signoff: true
-          delete-branch: true
-          commit-message: update resolver_conf_parsing version to ${{ steps.update.outputs.version }}
-          branch: update-resolver_conf_parsing-version
-          title: update resolver_conf_parsing version to ${{ steps.update.outputs.version }}
-          body: update resolver_conf_parsing version to ${{ steps.update.outputs.version }}
-  zlib-ng-patch-update:
-    runs-on: ubuntu-slim
-    steps:
-      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
-      - name: update zlib-ng-patch version
-        id: update
-        run: |
-          git clone --depth 1 https://github.com/zlib-ng/patches zlib-ng-patches
-          ZNP_VER="$(
-          ls zlib-ng-patches/nginx/*-zlib-ng.patch \
-              | sed "s|zlib-ng-patches/nginx/\([0-9.]\+\)-zlib-ng.patch|\1|g" \
-              | sort -V \
-              | tail -1
-          )"
-          rm -r zlib-ng-patches
-          sed -i "s|ARG ZNP_VER=.*|ARG ZNP_VER=$ZNP_VER|" Dockerfile
-          echo "version=$ZNP_VER" >> $GITHUB_OUTPUT
-      - uses: peter-evans/create-pull-request@5f6978faf089d4d20b00c7766989d076bb2fc7f1 # v8.1.1
-        with:
-          signoff: true
-          delete-branch: true
-          commit-message: update zlib-ng-patch version to ${{ steps.update.outputs.version }}
-          branch: update-zlib-ng-patch-version
-          title: update zlib-ng-patch version to ${{ steps.update.outputs.version }}
-          body: update zlib-ng-patch version to ${{ steps.update.outputs.version }}
+          body: ${{ steps.update.outputs.compare }}
 
   ngx_http_brotli_module-update:
     runs-on: ubuntu-slim
@@ -153,6 +89,7 @@ jobs:
           )"
           if [ "$NB_VER" = "v1.0.0rc" ]; then NB_VER=master; fi
           NB_SHA="$(git ls-remote https://github.com/HanadaLee/ngx_http_brotli_module "$NB_VER" | cut -f1)"
+          echo "compare=https://github.com/HanadaLee/ngx_http_brotli_module/compare/$(sed -n 's|^ARG NB_VER=\(.*\) #.*|\1|p' Dockerfile)...$NB_SHA" >> $GITHUB_OUTPUT
           sed -i "s|ARG NB_VER=.*|ARG NB_VER=$NB_SHA # $NB_VER|" Dockerfile
           echo "version=$NB_VER" >> $GITHUB_OUTPUT
       - uses: peter-evans/create-pull-request@5f6978faf089d4d20b00c7766989d076bb2fc7f1 # v8.1.1
@@ -162,7 +99,7 @@ jobs:
           commit-message: update ngx_http_brotli_module version to ${{ steps.update.outputs.version }}
           branch: update-ngx_http_brotli_module-version
           title: update ngx_http_brotli_module version to ${{ steps.update.outputs.version }}
-          body: update ngx_http_brotli_module version to ${{ steps.update.outputs.version }}
+          body: ${{ steps.update.outputs.compare }}
   ngx_http_unbrotli_filter_module-update:
     runs-on: ubuntu-slim
     steps:
@@ -180,6 +117,7 @@ jobs:
           )"
           if [ -z "$NUB_VER" ]; then NUB_VER=main; fi
           NUB_SHA="$(git ls-remote https://github.com/HanadaLee/ngx_http_unbrotli_filter_module "$NUB_VER" | cut -f1)"
+          echo "compare=https://github.com/HanadaLee/ngx_http_unbrotli_filter_module/compare/$(sed -n 's|^ARG NUB_VER=\(.*\) #.*|\1|p' Dockerfile)...$NUB_SHA" >> $GITHUB_OUTPUT
           sed -i "s|ARG NUB_VER=.*|ARG NUB_VER=$NUB_SHA # $NUB_VER|" Dockerfile
           echo "version=$NUB_VER" >> $GITHUB_OUTPUT
       - uses: peter-evans/create-pull-request@5f6978faf089d4d20b00c7766989d076bb2fc7f1 # v8.1.1
@@ -189,7 +127,7 @@ jobs:
           commit-message: update ngx_http_unbrotli_filter_module version to ${{ steps.update.outputs.version }}
           branch: update-ngx_http_unbrotli_filter_module-version
           title: update ngx_http_unbrotli_filter_module version to ${{ steps.update.outputs.version }}
-          body: update ngx_http_unbrotli_filter_module version to ${{ steps.update.outputs.version }}
+          body: ${{ steps.update.outputs.compare }}
   zstd-nginx-module-update:
     runs-on: ubuntu-slim
     steps:
@@ -206,6 +144,7 @@ jobs:
               | tail -1
           )"
           ZNM_SHA="$(git ls-remote https://github.com/hsw/zstd-nginx-module "$ZNM_VER" | cut -f1)"
+          echo "compare=https://github.com/hsw/zstd-nginx-module/compare/$(sed -n 's|^ARG ZNM_VER=\(.*\) #.*|\1|p' Dockerfile)...$ZNM_SHA" >> $GITHUB_OUTPUT
           sed -i "s|ARG ZNM_VER=.*|ARG ZNM_VER=$ZNM_SHA # $ZNM_VER|" Dockerfile
           echo "version=$ZNM_VER" >> $GITHUB_OUTPUT
       - uses: peter-evans/create-pull-request@5f6978faf089d4d20b00c7766989d076bb2fc7f1 # v8.1.1
@@ -215,7 +154,7 @@ jobs:
           commit-message: update zstd-nginx-module version to ${{ steps.update.outputs.version }}
           branch: update-zstd-nginx-module-version
           title: update zstd-nginx-module version to ${{ steps.update.outputs.version }}
-          body: update zstd-nginx-module version to ${{ steps.update.outputs.version }}
+          body: ${{ steps.update.outputs.compare }}
   ngx_http_unzstd_filter_module-update:
     runs-on: ubuntu-slim
     steps:
@@ -233,6 +172,7 @@ jobs:
           )"
           if [ -z "$NHUZFM_VER" ]; then NHUZFM_VER=main; fi
           NHUZFM_SHA="$(git ls-remote https://github.com/HanadaLee/ngx_http_unzstd_filter_module "$NHUZFM_VER" | cut -f1)"
+          echo "compare=https://github.com/HanadaLee/ngx_http_unzstd_filter_module/compare/$(sed -n 's|^ARG NHUZFM_VER=\(.*\) #.*|\1|p' Dockerfile)...$NHUZFM_SHA" >> $GITHUB_OUTPUT
           sed -i "s|ARG NHUZFM_VER=.*|ARG NHUZFM_VER=$NHUZFM_SHA # $NHUZFM_VER|" Dockerfile
           echo "version=$NHUZFM_VER" >> $GITHUB_OUTPUT
       - uses: peter-evans/create-pull-request@5f6978faf089d4d20b00c7766989d076bb2fc7f1 # v8.1.1
@@ -242,7 +182,7 @@ jobs:
           commit-message: update ngx_http_unzstd_filter_module version to ${{ steps.update.outputs.version }}
           branch: update-ngx_http_unzstd_filter_module-version
           title: update ngx_http_unzstd_filter_module version to ${{ steps.update.outputs.version }}
-          body: update ngx_http_unzstd_filter_module version to ${{ steps.update.outputs.version }}
+          body: ${{ steps.update.outputs.compare }}
   ngx-fancyindex-update:
     runs-on: ubuntu-slim
     steps:
@@ -259,6 +199,7 @@ jobs:
               | tail -1
           )"
           NF_SHA="$(git ls-remote https://github.com/aperezdc/ngx-fancyindex "$NF_VER" | cut -f1)"
+          echo "compare=https://github.com/aperezdc/ngx-fancyindex/compare/$(sed -n 's|^ARG NF_VER=\(.*\) #.*|\1|p' Dockerfile)...$NF_SHA" >> $GITHUB_OUTPUT
           sed -i "s|ARG NF_VER=.*|ARG NF_VER=$NF_SHA # $NF_VER|" Dockerfile
           echo "version=$NF_VER" >> $GITHUB_OUTPUT
       - uses: peter-evans/create-pull-request@5f6978faf089d4d20b00c7766989d076bb2fc7f1 # v8.1.1
@@ -268,7 +209,7 @@ jobs:
           commit-message: update ngx-fancyindex version to ${{ steps.update.outputs.version }}
           branch: update-ngx-fancyindex-version
           title: update ngx-fancyindex version to ${{ steps.update.outputs.version }}
-          body: update ngx-fancyindex version to ${{ steps.update.outputs.version }}
+          body: ${{ steps.update.outputs.compare }}
   headers-more-nginx-module-update:
     runs-on: ubuntu-slim
     steps:
@@ -285,6 +226,7 @@ jobs:
               | tail -1
           )"
           HMNM_SHA="$(git ls-remote https://github.com/openresty/headers-more-nginx-module "$HMNM_VER" | cut -f1)"
+          echo "compare=https://github.com/openresty/headers-more-nginx-module/compare/$(sed -n 's|^ARG HMNM_VER=\(.*\) #.*|\1|p' Dockerfile)...$HMNM_SHA" >> $GITHUB_OUTPUT
           sed -i "s|ARG HMNM_VER=.*|ARG HMNM_VER=$HMNM_SHA # $HMNM_VER|" Dockerfile
           echo "version=$HMNM_VER" >> $GITHUB_OUTPUT
       - uses: peter-evans/create-pull-request@5f6978faf089d4d20b00c7766989d076bb2fc7f1 # v8.1.1
@@ -294,7 +236,7 @@ jobs:
           commit-message: update headers-more-nginx-module version to ${{ steps.update.outputs.version }}
           branch: update-headers-more-nginx-module-version
           title: update headers-more-nginx-module version to ${{ steps.update.outputs.version }}
-          body: update headers-more-nginx-module version to ${{ steps.update.outputs.version }}
+          body: ${{ steps.update.outputs.compare }}
   ngx_devel_kit-update:
     runs-on: ubuntu-slim
     steps:
@@ -311,6 +253,7 @@ jobs:
               | tail -1
           )"
           NDK_SHA="$(git ls-remote https://github.com/vision5/ngx_devel_kit "$NDK_VER" | cut -f1)"
+          echo "compare=https://github.com/vision5/ngx_devel_kit/compare/$(sed -n 's|^ARG NDK_VER=\(.*\) #.*|\1|p' Dockerfile)...$NDK_SHA" >> $GITHUB_OUTPUT
           sed -i "s|ARG NDK_VER=.*|ARG NDK_VER=$NDK_SHA # $NDK_VER|" Dockerfile
           echo "version=$NDK_VER" >> $GITHUB_OUTPUT
       - uses: peter-evans/create-pull-request@5f6978faf089d4d20b00c7766989d076bb2fc7f1 # v8.1.1
@@ -320,7 +263,7 @@ jobs:
           commit-message: update ngx_devel_kit version to ${{ steps.update.outputs.version }}
           branch: update-ngx_devel_kit-version
           title: update ngx_devel_kit version to ${{ steps.update.outputs.version }}
-          body: update ngx_devel_kit version to ${{ steps.update.outputs.version }}
+          body: ${{ steps.update.outputs.compare }}
   lua-nginx-module-update:
     runs-on: ubuntu-slim
     steps:
@@ -337,6 +280,7 @@ jobs:
               | tail -1
           )"
           LNM_SHA="$(git ls-remote https://github.com/openresty/lua-nginx-module "$LNM_VER" | cut -f1)"
+          echo "compare=https://github.com/openresty/lua-nginx-module/compare/$(sed -n 's|^ARG LNM_VER=\(.*\) #.*|\1|p' Dockerfile)...$LNM_SHA" >> $GITHUB_OUTPUT
           sed -i "s|ARG LNM_VER=.*|ARG LNM_VER=$LNM_SHA # $LNM_VER|" Dockerfile
           echo "version=$LNM_VER" >> $GITHUB_OUTPUT
       - uses: peter-evans/create-pull-request@5f6978faf089d4d20b00c7766989d076bb2fc7f1 # v8.1.1
@@ -346,7 +290,7 @@ jobs:
           commit-message: update lua-nginx-module version to ${{ steps.update.outputs.version }}
           branch: update-lua-nginx-module-version
           title: update lua-nginx-module version to ${{ steps.update.outputs.version }}
-          body: update lua-nginx-module version to ${{ steps.update.outputs.version }}
+          body: ${{ steps.update.outputs.compare }}
 
 
   njs-update:
@@ -365,6 +309,7 @@ jobs:
               | tail -1
           )"
           NJS_SHA="$(git ls-remote https://github.com/nginx/njs "$NJS_VER" | cut -f1)"
+          echo "compare=https://github.com/nginx/njs/compare/$(sed -n 's|^ARG NJS_VER=\(.*\) #.*|\1|p' Dockerfile)...$NJS_SHA" >> $GITHUB_OUTPUT
           sed -i "s|ARG NJS_VER=.*|ARG NJS_VER=$NJS_SHA # $NJS_VER|" Dockerfile
           echo "version=$NJS_VER" >> $GITHUB_OUTPUT
       - uses: peter-evans/create-pull-request@5f6978faf089d4d20b00c7766989d076bb2fc7f1 # v8.1.1
@@ -374,7 +319,7 @@ jobs:
           commit-message: update njs version to ${{ steps.update.outputs.version }}
           branch: update-njs-version
           title: update njs version to ${{ steps.update.outputs.version }}
-          body: update njs version to ${{ steps.update.outputs.version }}
+          body: ${{ steps.update.outputs.compare }}
   nginx-auth-ldap-update:
     runs-on: ubuntu-slim
     steps:
@@ -392,6 +337,7 @@ jobs:
           )"
           if [ "$NAL_VER" = "v0.1" ]; then NAL_VER=master; fi
           NAL_SHA="$(git ls-remote https://github.com/kvspb/nginx-auth-ldap "$NAL_VER" | cut -f1)"
+          echo "compare=https://github.com/kvspb/nginx-auth-ldap/compare/$(sed -n 's|^ARG NAL_VER=\(.*\) #.*|\1|p' Dockerfile)...$NAL_SHA" >> $GITHUB_OUTPUT
           sed -i "s|ARG NAL_VER=.*|ARG NAL_VER=$NAL_SHA # $NAL_VER|" Dockerfile
           echo "version=$NAL_VER" >> $GITHUB_OUTPUT
       - uses: peter-evans/create-pull-request@5f6978faf089d4d20b00c7766989d076bb2fc7f1 # v8.1.1
@@ -401,7 +347,7 @@ jobs:
           commit-message: update nginx-auth-ldap version to ${{ steps.update.outputs.version }}
           branch: update-nginx-auth-ldap-version
           title: update nginx-auth-ldap version to ${{ steps.update.outputs.version }}
-          body: update nginx-auth-ldap version to ${{ steps.update.outputs.version }}
+          body: ${{ steps.update.outputs.compare }}
   nginx-module-vts-update:
     runs-on: ubuntu-slim
     steps:
@@ -418,6 +364,7 @@ jobs:
               | tail -1
           )"
           VTS_SHA="$(git ls-remote https://github.com/vozlt/nginx-module-vts "$VTS_VER" | cut -f1)"
+          echo "compare=https://github.com/vozlt/nginx-module-vts/compare/$(sed -n 's|^ARG VTS_VER=\(.*\) #.*|\1|p' Dockerfile)...$VTS_SHA" >> $GITHUB_OUTPUT
           sed -i "s|ARG VTS_VER=.*|ARG VTS_VER=$VTS_SHA # $VTS_VER|" Dockerfile
           echo "version=$VTS_VER" >> $GITHUB_OUTPUT
       - uses: peter-evans/create-pull-request@5f6978faf089d4d20b00c7766989d076bb2fc7f1 # v8.1.1
@@ -427,7 +374,7 @@ jobs:
           commit-message: update vts version to ${{ steps.update.outputs.version }}
           branch: update-vts-version
           title: update vts version to ${{ steps.update.outputs.version }}
-          body: update vts version to ${{ steps.update.outputs.version }}
+          body: ${{ steps.update.outputs.compare }}
   nginx-ntlm-module-update:
     runs-on: ubuntu-slim
     steps:
@@ -445,6 +392,7 @@ jobs:
           )"
           if [ "$NNTLM_VER" = "v1.19.3-beta.1" ]; then NNTLM_VER=master; fi
           NNTLM_SHA="$(git ls-remote https://github.com/gabihodoroaga/nginx-ntlm-module "$NNTLM_VER" | cut -f1)"
+          echo "compare=https://github.com/gabihodoroaga/nginx-ntlm-module/compare/$(sed -n 's|^ARG NNTLM_VER=\(.*\) #.*|\1|p' Dockerfile)...$NNTLM_SHA" >> $GITHUB_OUTPUT
           sed -i "s|ARG NNTLM_VER=.*|ARG NNTLM_VER=$NNTLM_SHA # $NNTLM_VER|" Dockerfile
           echo "version=$NNTLM_VER" >> $GITHUB_OUTPUT
       - uses: peter-evans/create-pull-request@5f6978faf089d4d20b00c7766989d076bb2fc7f1 # v8.1.1
@@ -454,7 +402,7 @@ jobs:
           commit-message: update nginx-ntlm-module version to ${{ steps.update.outputs.version }}
           branch: update-nginx-ntlm-module-version
           title: update nginx-ntlm-module version to ${{ steps.update.outputs.version }}
-          body: update nginx-ntlm-module version to ${{ steps.update.outputs.version }}
+          body: ${{ steps.update.outputs.compare }}
   ngx_http_geoip2_module-update:
     runs-on: ubuntu-slim
     steps:
@@ -471,6 +419,7 @@ jobs:
               | tail -1
           )"
           NHG2M_SHA="$(git ls-remote https://github.com/leev/ngx_http_geoip2_module "$NHG2M_VER" | cut -f1)"
+          echo "compare=https://github.com/leev/ngx_http_geoip2_module/compare/$(sed -n 's|^ARG NHG2M_VER=\(.*\) #.*|\1|p' Dockerfile)...$NHG2M_SHA" >> $GITHUB_OUTPUT
           sed -i "s|ARG NHG2M_VER=.*|ARG NHG2M_VER=$NHG2M_SHA # $NHG2M_VER|" Dockerfile
           echo "version=$NHG2M_VER" >> $GITHUB_OUTPUT
       - uses: peter-evans/create-pull-request@5f6978faf089d4d20b00c7766989d076bb2fc7f1 # v8.1.1
@@ -480,7 +429,7 @@ jobs:
           commit-message: update ngx_http_geoip2_module version to ${{ steps.update.outputs.version }}
           branch: update-ngx_http_geoip2_module-version
           title: update ngx_http_geoip2_module version to ${{ steps.update.outputs.version }}
-          body: update ngx_http_geoip2_module version to ${{ steps.update.outputs.version }}
+          body: ${{ steps.update.outputs.compare }}
 
   lua-resty-core-update:
     runs-on: ubuntu-slim
@@ -498,6 +447,7 @@ jobs:
               | tail -1
           )"
           LRC_SHA="$(git ls-remote https://github.com/openresty/lua-resty-core "$LRC_VER" | cut -f1)"
+          echo "compare=https://github.com/openresty/lua-resty-core/compare/$(sed -n 's|^ARG LRC_VER=\(.*\) #.*|\1|p' Dockerfile)...$LRC_SHA" >> $GITHUB_OUTPUT
           sed -i "s|ARG LRC_VER=.*|ARG LRC_VER=$LRC_SHA # $LRC_VER|" Dockerfile
           echo "version=$LRC_VER" >> $GITHUB_OUTPUT
       - uses: peter-evans/create-pull-request@5f6978faf089d4d20b00c7766989d076bb2fc7f1 # v8.1.1
@@ -507,7 +457,7 @@ jobs:
           commit-message: update lua-resty-core version to ${{ steps.update.outputs.version }}
           branch: update-lua-resty-core-version
           title: update lua-resty-core version to ${{ steps.update.outputs.version }}
-          body: update lua-resty-core version to ${{ steps.update.outputs.version }}
+          body: ${{ steps.update.outputs.compare }}
   lua-resty-lrucache-update:
     runs-on: ubuntu-slim
     steps:
@@ -524,6 +474,7 @@ jobs:
               | tail -1
           )"
           LRL_SHA="$(git ls-remote https://github.com/openresty/lua-resty-lrucache "$LRL_VER" | cut -f1)"
+          echo "compare=https://github.com/openresty/lua-resty-lrucache/compare/$(sed -n 's|^ARG LRL_VER=\(.*\) #.*|\1|p' Dockerfile)...$LRL_SHA" >> $GITHUB_OUTPUT
           sed -i "s|ARG LRL_VER=.*|ARG LRL_VER=$LRL_SHA # $LRL_VER|" Dockerfile
           echo "version=$LRL_VER" >> $GITHUB_OUTPUT
       - uses: peter-evans/create-pull-request@5f6978faf089d4d20b00c7766989d076bb2fc7f1 # v8.1.1
@@ -533,7 +484,7 @@ jobs:
           commit-message: update lua-resty-lrucache version to ${{ steps.update.outputs.version }}
           branch: update-lua-resty-lrucache-version
           title: update lua-resty-lrucache version to ${{ steps.update.outputs.version }}
-          body: update lua-resty-lrucache version to ${{ steps.update.outputs.version }}
+          body: ${{ steps.update.outputs.compare }}
 
   lua-cs-bouncer-update:
     runs-on: ubuntu-slim
@@ -551,10 +502,10 @@ jobs:
               | tail -1
           )"
           LCSB_SHA="$(git ls-remote https://github.com/crowdsecurity/lua-cs-bouncer "$LCSB_VER" | cut -f1)"
+          echo "compare=https://github.com/crowdsecurity/lua-cs-bouncer/compare/$(sed -n 's|^ARG LCSB_VER=\(.*\) #.*|\1|p' Dockerfile)...$LCSB_SHA" >> $GITHUB_OUTPUT
           sed -i "s|ARG LCSB_VER=.*|ARG LCSB_VER=$LCSB_SHA # $LCSB_VER|" Dockerfile
           echo "version=$LCSB_VER" >> $GITHUB_OUTPUT
-          wget https://raw.githubusercontent.com/crowdsecurity/lua-cs-bouncer/refs/tags/"$LCSB_VER"/config_example.conf -O rootfs/etc/crowdsec.conf.original
-          wget https://raw.githubusercontent.com/crowdsecurity/cs-nginx-bouncer/refs/heads/main/nginx/crowdsec_nginx.conf -O rootfs/usr/local/nginx/conf/conf.d/crowdsec.conf.original
+          curl -sSfL https://raw.githubusercontent.com/crowdsecurity/lua-cs-bouncer/refs/tags/"$LCSB_VER"/config_example.conf -o rootfs/etc/crowdsec.conf.original
       - uses: peter-evans/create-pull-request@5f6978faf089d4d20b00c7766989d076bb2fc7f1 # v8.1.1
         with:
           signoff: true
@@ -562,4 +513,18 @@ jobs:
           commit-message: update lua-cs-bouncer version to ${{ steps.update.outputs.version }}
           branch: update-lua-cs-bouncer-version
           title: update lua-cs-bouncer version to ${{ steps.update.outputs.version }}
-          body: update lua-cs-bouncer version to ${{ steps.update.outputs.version }}
+          body: ${{ steps.update.outputs.compare }}
+  cs-nginx-bouncer-update:
+    runs-on: ubuntu-slim
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - name: update cs-nginx-bouncer config
+        run: curl -sSfL https://raw.githubusercontent.com/crowdsecurity/cs-nginx-bouncer/main/nginx/crowdsec_nginx.conf -o rootfs/usr/local/nginx/conf/conf.d/crowdsec.conf.original
+      - uses: peter-evans/create-pull-request@5f6978faf089d4d20b00c7766989d076bb2fc7f1 # v8.1.1
+        with:
+          signoff: true
+          delete-branch: true
+          commit-message: update cs-nginx-bouncer config
+          branch: update-cs-nginx-bouncer-config
+          title: update cs-nginx-bouncer config
+          body: https://github.com/crowdsecurity/cs-nginx-bouncer/commits/main/nginx/crowdsec_nginx.conf
