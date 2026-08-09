@@ -5,6 +5,8 @@ on:
       - develop
   pull_request:
   workflow_dispatch:
+permissions:
+  contents: read
 jobs:
   shellcheck:
     runs-on: ubuntu-slim
