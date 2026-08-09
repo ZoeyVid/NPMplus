@@ -8,6 +8,9 @@ on:
       - caddy/Dockerfile
       - caddy/Caddyfile
   workflow_dispatch:
+permissions:
+  contents: write
+  pull-requests: write
 jobs:
   caddy-fmt:
     runs-on: ubuntu-latest
