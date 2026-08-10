@@ -7,6 +7,9 @@ on:
         required: true
         type: string
 permissions: {}
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: false
 jobs:
   build-x86_64:
     runs-on: ubuntu-latest
