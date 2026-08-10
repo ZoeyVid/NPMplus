@@ -8,8 +8,20 @@
 	"access-list.auth-count": {
 		"defaultMessage": "{count} {count, plural, one {Gebruiker} other {Gebruikers}}"
 	},
+	"access-list.custom": {
+		"defaultMessage": "Aangepast"
+	},
+	"access-list.custom.subtitle": {
+		"defaultMessage": "Een aangepast type toegangslijst gebruiken"
+	},
+	"access-list.global": {
+		"defaultMessage": "Algemeen"
+	},
+	"access-list.global.subtitle": {
+		"defaultMessage": "Het algemene type toegangslijst gebruiken"
+	},
 	"access-list.help-rules-last": {
-		"defaultMessage": "Als er minimaal 1 regel bestaat, wordt deze regel als laatste toegevoegd"
+		"defaultMessage": "Deze laatste regel wordt alleen toegevoegd als er minstens één andere regel is"
 	},
 	"access-list.help.rules-order": {
 		"defaultMessage": "Houd er rekening mee dat de regels worden toegepast in de volgorde waarin ze zijn gedefinieerd."
@@ -83,6 +95,12 @@
 	"auto": {
 		"defaultMessage": "Autom."
 	},
+	"avatar.remove": {
+		"defaultMessage": "Avatar verwijderen"
+	},
+	"avatar.upload": {
+		"defaultMessage": "Avatar uploaden"
+	},
 	"cancel": {
 		"defaultMessage": "Annuleren"
 	},
@@ -144,7 +162,7 @@
 		"defaultMessage": "DNS-aanbieder"
 	},
 	"certificates.dns.provider.placeholder": {
-		"defaultMessage": "Kies een aanbieder..."
+		"defaultMessage": "Kies een aanbieder…"
 	},
 	"certificates.dns.warning": {
 		"defaultMessage": "Deze sectie vereist wat informatie over Certbot en zijn DNS plugins. Gebruik de documentatie van de bijbehorende plugins."
@@ -202,6 +220,9 @@
 	},
 	"column.custom-locations": {
 		"defaultMessage": "Aangepaste locaties"
+	},
+	"column.description": {
+		"defaultMessage": "Beschrijving"
 	},
 	"column.destination": {
 		"defaultMessage": "Doel"
@@ -269,6 +290,12 @@
 	"dead-host": {
 		"defaultMessage": "404-Host"
 	},
+	"dead-host.directory": {
+		"defaultMessage": "Groep"
+	},
+	"dead-host.no-directory": {
+		"defaultMessage": "Geen groep"
+	},
 	"dead-hosts": {
 		"defaultMessage": "404-Hosts"
 	},
@@ -285,7 +312,7 @@
 		"defaultMessage": "{count} domeinnamen toegestaan"
 	},
 	"domain-names.placeholder": {
-		"defaultMessage": "Voeg een domeinnaam toe..."
+		"defaultMessage": "Typ een domeinnaam…"
 	},
 	"domain-names.wildcards-not-permitted": {
 		"defaultMessage": "Wildcards zijn niet toegestaan voor dit type"
@@ -300,13 +327,22 @@
 		"defaultMessage": "HTTPS forceren"
 	},
 	"domains.hsts-enabled": {
-		"defaultMessage": "HSTS ingeschakeld"
+		"defaultMessage": "HSTS ingeschakeld (2 jaar)"
 	},
 	"domains.hsts-subdomains": {
 		"defaultMessage": "HSTS-subdomein"
 	},
 	"domains.http2-support": {
 		"defaultMessage": "HTTP/2-ondersteuning"
+	},
+	"domains.http3-support": {
+		"defaultMessage": "HTTP/3-ondersteuning"
+	},
+	"domains.mtls-verify-client-optional": {
+		"defaultMessage": "mTLS optioneel maken"
+	},
+	"domains.reuse-key": {
+		"defaultMessage": "Sleutel hergebruiken (niet aanbevolen)"
 	},
 	"domains.trust-forwarded-proto": {
 		"defaultMessage": "Forwarded-Proto-headers van upstream vertrouwen"
@@ -333,13 +369,16 @@
 		"defaultMessage": "Gebruikersnamen moeten uniek zijn"
 	},
 	"error.invalid-auth": {
-		"defaultMessage": "Ongeldig e-mail of wachtwoord"
+		"defaultMessage": "Ongeldig e-mailadres of wachtwoord"
 	},
 	"error.invalid-domain": {
 		"defaultMessage": "Ongeldige domeinnaam: {domain}"
 	},
 	"error.invalid-email": {
 		"defaultMessage": "Ongeldig e-mailadres"
+	},
+	"error.invalid-upstream-url": {
+		"defaultMessage": "Moet een geldige URL zijn met schema, host en poort (geen pad)"
 	},
 	"error.max-character-length": {
 		"defaultMessage": "Maximale lengte is {max} teken{max, plural, one {} other {s}}"
@@ -365,20 +404,53 @@
 	"expires.on": {
 		"defaultMessage": "Verloopt: {date}"
 	},
+	"footer.github": {
+		"defaultMessage": "Repo op Github"
+	},
 	"footer.github-fork": {
-		"defaultMessage": "Maak een Fork op Github"
+		"defaultMessage": "Fork me on Github"
+	},
+	"help": {
+		"defaultMessage": "Hulp"
+	},
+	"host.auth-request": {
+		"defaultMessage": "Auth Request"
+	},
+	"host.auth-request-upstream": {
+		"defaultMessage": "Auth Request Upstream"
 	},
 	"host.flags.block-exploits": {
 		"defaultMessage": "Veelvoorkomende kwetsbaarheden blokkeren"
 	},
 	"host.flags.cache-assets": {
-		"defaultMessage": "Assets opslaan"
+		"defaultMessage": "Cache Assets"
+	},
+	"host.flags.disable-crowdsec-appsec": {
+		"defaultMessage": "Crowdsec Appsec uitschakelen"
+	},
+	"host.flags.disable-request-buffering": {
+		"defaultMessage": "Request Buffering uitschakelen"
+	},
+	"host.flags.disable-response-buffering": {
+		"defaultMessage": "Response Buffering uitschakelen"
+	},
+	"host.flags.disable-uri-sanitisation": {
+		"defaultMessage": "URI Sanitisation uitschakelen (niet aanbevolen)"
+	},
+	"host.flags.fancyindex": {
+		"defaultMessage": "Fancyindex inschakelen"
 	},
 	"host.flags.preserve-path": {
 		"defaultMessage": "Pad behouden"
 	},
 	"host.flags.protocols": {
 		"defaultMessage": "Protocollen"
+	},
+	"host.flags.send-noindex": {
+		"defaultMessage": "Noindex-header versturen en sommige user agents blokkeren"
+	},
+	"host.flags.upstream-compression": {
+		"defaultMessage": "Compressie via upstream inschakelen (niet aanbevolen)"
 	},
 	"host.flags.websockets-upgrade": {
 		"defaultMessage": "Websockets-ondersteuning"
@@ -443,6 +515,9 @@
 	"mfa.title": {
 		"defaultMessage": "MFA"
 	},
+	"mtls-certificate": {
+		"defaultMessage": "mTLS-certificaat"
+	},
 	"nginx-config.label": {
 		"defaultMessage": "Aangepaste Nginx-configuratie"
 	},
@@ -451,6 +526,9 @@
 	},
 	"no-permission-error": {
 		"defaultMessage": "Je hebt geen toegang om dit te bekijken."
+	},
+	"no-tls": {
+		"defaultMessage": "Geen TLS"
 	},
 	"notfound.action": {
 		"defaultMessage": "Thuis"
@@ -527,6 +605,9 @@
 	"options": {
 		"defaultMessage": "Opties"
 	},
+	"or": {
+		"defaultMessage": "of"
+	},
 	"password": {
 		"defaultMessage": "Wachtwoord"
 	},
@@ -558,10 +639,28 @@
 		"defaultMessage": "Alleen aangemaakte items"
 	},
 	"proxy-host": {
-		"defaultMessage": "Proxyhost"
+		"defaultMessage": "Proxy Host"
+	},
+	"proxy-host.access-lists": {
+		"defaultMessage": "Toegangslijsten"
+	},
+	"proxy-host.directory": {
+		"defaultMessage": "Groep"
 	},
 	"proxy-host.forward-host": {
 		"defaultMessage": "Hostname / IP Doorsturen"
+	},
+	"proxy-host.forward-host-path": {
+		"defaultMessage": "Hostname / IP / Pad doorsturen"
+	},
+	"proxy-host.global-access-lists": {
+		"defaultMessage": "Algemene toegangslijsten"
+	},
+	"proxy-host.location-no-trailing-slash-warning": {
+		"defaultMessage": "Een locatie zonder schuine streep aan het einde wordt gematcht als een byte-prefix, niet als een padsegment, wat kan leiden tot teveel matchen en/of paddoorloop. Voeg een schuine streep toe aan het einde tenzij je echt prefix-matching wilt."
+	},
+	"proxy-host.no-directory": {
+		"defaultMessage": "Geen groep"
 	},
 	"proxy-hosts": {
 		"defaultMessage": "Proxyhosts"
@@ -575,11 +674,17 @@
 	"redirection-host": {
 		"defaultMessage": "Omleidingshost"
 	},
+	"redirection-host.directory": {
+		"defaultMessage": "Groep"
+	},
 	"redirection-host.forward-domain": {
 		"defaultMessage": "Doorgestuurd Domein"
 	},
 	"redirection-host.forward-http-code": {
 		"defaultMessage": "HTTP-code"
+	},
+	"redirection-host.no-directory": {
+		"defaultMessage": "Geen groep"
 	},
 	"redirection-hosts": {
 		"defaultMessage": "Omgeleide Hosts"
@@ -653,11 +758,23 @@
 	"sign-in": {
 		"defaultMessage": "Inloggen"
 	},
+	"sign-in-with-oidc": {
+		"defaultMessage": "Inloggen met OIDC"
+	},
 	"ssl-certificate": {
 		"defaultMessage": "TLS-certificaat"
 	},
 	"stream": {
 		"defaultMessage": "Stream"
+	},
+	"stream.description": {
+		"defaultMessage": "Beschrijving"
+	},
+	"stream.description.placeholder": {
+		"defaultMessage": "Optionele beschrijving voor deze stream"
+	},
+	"stream.directory": {
+		"defaultMessage": "Groep"
 	},
 	"stream.forward-host": {
 		"defaultMessage": "Doelhost"
@@ -668,14 +785,23 @@
 	"stream.incoming-port": {
 		"defaultMessage": "Inkomende poort"
 	},
+	"stream.no-directory": {
+		"defaultMessage": "Geen groep"
+	},
 	"streams": {
 		"defaultMessage": "Streams"
 	},
 	"streams.count": {
 		"defaultMessage": "{count} {count, plural, one {Stream} other {Streams}}"
 	},
+	"streams.pp": {
+		"defaultMessage": "Proxy Protocol v1"
+	},
 	"streams.tcp": {
 		"defaultMessage": "TCP"
+	},
+	"streams.tls": {
+		"defaultMessage": "TLS naar upstream"
 	},
 	"streams.udp": {
 		"defaultMessage": "UDP"
@@ -690,7 +816,7 @@
 		"defaultMessage": "TOTP uitschakelen"
 	},
 	"totp.disable-warning": {
-		"defaultMessage": "Als je TOTP uitschakelt, wordt je account minder beveiligd."
+		"defaultMessage": "Zonder TOTP is je account minder goed beveiligd."
 	},
 	"totp.disabled": {
 		"defaultMessage": "Uitgeschakeld"
@@ -714,7 +840,7 @@
 		"defaultMessage": "Geheime sleutel"
 	},
 	"totp.setup-instructions": {
-		"defaultMessage": "Scan deze QR-code met je authenticator-app, of voer de code handmatig in."
+		"defaultMessage": "Scan deze QR-code met je authenticator-app of voer de code handmatig in."
 	},
 	"totp.status": {
 		"defaultMessage": "Status"
@@ -749,6 +875,9 @@
 	"user.logout": {
 		"defaultMessage": "Uitloggen"
 	},
+	"user.logout-everywhere": {
+		"defaultMessage": "Overal uitloggen"
+	},
 	"user.mfa": {
 		"defaultMessage": "MFA"
 	},
@@ -757,6 +886,18 @@
 	},
 	"user.nickname": {
 		"defaultMessage": "Bijnaam"
+	},
+	"user.reset-mfa": {
+		"defaultMessage": "MFA herstellen"
+	},
+	"user.reset-mfa.content": {
+		"defaultMessage": "Hiermee wordt MFA uitgeschakeld voor deze gebruiker zonder hun herstelcode. Ze kunnen het daarna weer instellen. Doorgaan?"
+	},
+	"user.revoke-sessions": {
+		"defaultMessage": "Sessies intrekken"
+	},
+	"user.revoke-sessions.content": {
+		"defaultMessage": "Hiermee wordt de gebruiker uit al zijn sessies op elk apparaat uitgelogd. Doorgaan?"
 	},
 	"user.set-password": {
 		"defaultMessage": "Wachtwoord instellen"
