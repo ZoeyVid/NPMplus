@@ -1,6 +1,8 @@
 import {
 	IconBook,
+	IconChartBar,
 	IconDeviceDesktop,
+	IconExternalLink,
 	IconHome,
 	IconLock,
 	IconSettings,
@@ -10,6 +12,7 @@ import {
 import cn from "clsx";
 import React from "react";
 import { HasPermission, NavLink } from "src/components";
+import { useUser } from "src/hooks";
 import { T } from "src/locale";
 import {
 	ACCESS_LISTS,
@@ -28,6 +31,7 @@ interface MenuItem {
 	label: string;
 	icon?: React.ElementType;
 	to?: string;
+	href?: string;
 	items?: MenuItem[];
 	permissionSection?: Section | typeof ADMIN;
 	permission?: typeof VIEW | typeof MANAGE;
@@ -116,12 +120,13 @@ const getMenuItem = (item: MenuItem, onClick?: () => void) => {
 			hideError
 		>
 			<li className="nav-item">
-				<NavLink to={item.to} onClick={onClick}>
+				<NavLink to={item.to} href={item.href} onClick={onClick}>
 					<span className="nav-link-icon d-md-none d-lg-inline-block">
 						{item.icon && React.createElement(item.icon, { height: 24, width: 24 })}
 					</span>
 					<span className="nav-link-title">
-						<T id={item.label} />
+						{item.href ? item.label : <T id={item.label} />}
+						{item.href && <IconExternalLink height={16} width={16} />}
 					</span>
 				</NavLink>
 			</li>
@@ -175,6 +180,8 @@ const getMenuDropown = (item: MenuItem, onClick?: () => void) => {
 };
 
 export function SiteMenu() {
+	const { data: user } = useUser("me");
+
 	const closeMenu = () =>
 		setTimeout(() => {
 			const navbarToggler = document.querySelector<HTMLElement>(".navbar-toggler");
@@ -192,10 +199,21 @@ export function SiteMenu() {
 						<div className="row flex-column flex-md-row flex-fill align-items-center">
 							<div className="col">
 								<ul className="navbar-nav">
-									{menuItems.length > 0 &&
-										menuItems.map((item) => {
-											return getMenuItem(item, closeMenu);
-										})}
+									{[
+										...menuItems,
+										...(user?.goaccess
+											? ([
+													{
+														href: "/goaccess",
+														icon: IconChartBar,
+														label: "GoAccess",
+														permissionSection: ADMIN,
+													},
+												] as MenuItem[])
+											: []),
+									].map((item) => {
+										return getMenuItem(item, closeMenu);
+									})}
 								</ul>
 							</div>
 						</div>
