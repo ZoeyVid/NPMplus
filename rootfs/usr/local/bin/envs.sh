@@ -91,16 +91,12 @@ export CUSTOM_OCSP_STAPLING="${CUSTOM_OCSP_STAPLING:-false}"
 export PUID="${PUID:-0}"
 export PGID="${PGID:-0}"
 export NPM_PORT="${NPM_PORT:-81}"
-export GOA_PORT="${GOA_PORT:-91}"
 export IPV4_BINDING="${IPV4_BINDING:-0.0.0.0}"
 export NPM_IPV4_BINDING="${NPM_IPV4_BINDING:-0.0.0.0}"
-export GOA_IPV4_BINDING="${GOA_IPV4_BINDING:-0.0.0.0}"
 export IPV6_BINDING="${IPV6_BINDING:-[::]}"
 export NPM_IPV6_BINDING="${NPM_IPV6_BINDING:-[::]}"
-export GOA_IPV6_BINDING="${GOA_IPV6_BINDING:-[::]}"
 export DISABLE_IPV6="${DISABLE_IPV6:-false}"
 export NPM_LISTEN_LOCALHOST="${NPM_LISTEN_LOCALHOST:-false}"
-export GOA_LISTEN_LOCALHOST="${GOA_LISTEN_LOCALHOST:-false}"
 export DEFAULT_CERT_ID="${DEFAULT_CERT_ID:-0}"
 export HTTP_PORT="${HTTP_PORT:-80}"
 export HTTPS_PORT="${HTTPS_PORT:-443}"
@@ -151,8 +147,8 @@ if [ -n "$NPM_DISABLE_IPV6" ]; then
     sleep inf
 fi
 #tmp
-if [ -n "$GOA_DISABLE_IPV6" ]; then
-    echo "GOA_DISABLE_IPV6 env is not supported. DISABLE_IPV6 now also disables IPv6 for goaccess."
+if [ -n "$GOA_DISABLE_IPV6" ] || [ -n "$GOA_PORT" ] || [ -n "$GOA_IPV4_BINDING" ] || [ -n "$GOA_IPV6_BINDING" ] || [ -n "$GOA_LISTEN_LOCALHOST" ]; then
+    echo "GOA_DISABLE_IPV6, GOA_PORT, GOA_IPV4_BINDING, GOA_IPV6_BINDING and GOA_LISTEN_LOCALHOST envs are not supported. goaccess is now served under /goaccess of the NPMplus web UI."
     sleep inf
 fi
 #tmp
@@ -403,11 +399,6 @@ if ! echo "$NPM_PORT" | grep -q "^[0-9]\+$"; then
     sleep inf
 fi
 
-if ! echo "$GOA_PORT" | grep -q "^[0-9]\+$"; then
-    echo "GOA_PORT needs to be a number."
-    sleep inf
-fi
-
 
 if ! echo "$NPM_LISTEN_LOCALHOST" | grep -q "^true$\|^false$"; then
     echo "NPM_LISTEN_LOCALHOST needs to be true or false."
@@ -419,16 +410,6 @@ if [ "$NPM_LISTEN_LOCALHOST" = "true" ]; then
     export NPM_IPV6_BINDING="[::1]"
 fi
 
-
-if ! echo "$GOA_LISTEN_LOCALHOST" | grep -q "^true$\|^false$"; then
-    echo "GOA_LISTEN_LOCALHOST needs to be true or false."
-    sleep inf
-fi
-
-if [ "$GOA_LISTEN_LOCALHOST" = "true" ]; then
-    export GOA_IPV4_BINDING="127.0.0.1"
-    export GOA_IPV6_BINDING="[::1]"
-fi
 
 
 if ! echo "$HTTP_PORT" | grep -q "^[0-9]\+$"; then
@@ -451,11 +432,6 @@ if ! echo "$NPM_IPV4_BINDING" | grep -q "^[0-9]\{1,3\}\.[0-9]\{1,3\}\.[0-9]\{1,3
     sleep inf
 fi
 
-if ! echo "$GOA_IPV4_BINDING" | grep -q "^[0-9]\{1,3\}\.[0-9]\{1,3\}\.[0-9]\{1,3\}\.[0-9]\{1,3\}$"; then
-    echo "GOA_IPV4_BINDING needs to be a IPv4-Address: four blocks of numbers separated by dots."
-    sleep inf
-fi
-
 
 if ! echo "$IPV6_BINDING" | grep -q "^\[[0-9a-f:]\+\]$"; then
     echo "IPV6_BINDING needs to be a IPv6-Address inside []: lower letters a-f, numbers 0-9 and colons."
@@ -464,11 +440,6 @@ fi
 
 if ! echo "$NPM_IPV6_BINDING" | grep -q "^\[[0-9a-f:]\+\]$"; then
     echo "NPM_IPV6_BINDING needs to be a IPv6-Address inside []: lower letters a-f, numbers 0-9 and colons."
-    sleep inf
-fi
-
-if ! echo "$GOA_IPV6_BINDING" | grep -q "^\[[0-9a-f:]\+\]$"; then
-    echo "GOA_IPV6_BINDING needs to be a IPv6-Address inside []: lower letters a-f, numbers 0-9 and colons."
     sleep inf
 fi
 

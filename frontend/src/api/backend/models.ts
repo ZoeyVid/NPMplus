@@ -22,6 +22,7 @@ export interface User {
 	nickname: string;
 	avatar: string;
 	roles: string[];
+	goaccess?: boolean;
 	permissions?: UserPermissions;
 }
 

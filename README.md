@@ -22,7 +22,7 @@ If you don't need the web GUI of NPMplus, you may also have a look at caddy: htt
 - smaller image based on alpine
 - ML-KEM support (also hardened TLS settings enforced)
 - https for the NPMplus interface
-- Goaccess included
+- Goaccess included, served under /goaccess of the web UI for logged in admins
 - easier punycode domain support
 - zstd and brotli compression
 - basic security headers always send
