@@ -313,6 +313,10 @@ const internalUser = {
 				if (!row?.id) {
 					throw new errs.ItemNotFoundError(thisData.id);
 				}
+
+				if (row.id === access.token.getUserId(0)) {
+					row.goaccess = process.env.GOA === "true" && row.roles.includes("admin");
+				}
 				// Custom omissions
 				if (typeof thisData.omit !== "undefined" && thisData.omit !== null) {
 					return _.omit(row, thisData.omit);

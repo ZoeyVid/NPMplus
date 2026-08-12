@@ -52,6 +52,14 @@ router.get("/api/auth", jwtdecode(), (_, res) => {
 	res.sendStatus(res.locals.access?.token.getUserId(0) ? 200 : 401);
 });
 
+/**
+ * Admin Auth Check, used by the nginx auth_request directive
+ * GET /api/auth/admin
+ */
+router.get("/api/auth/admin", jwtdecode(), async (_, res) => {
+	res.sendStatus((await res.locals.access.can("admin:access").catch(() => false)) ? 200 : 401);
+});
+
 router.use("/api/docs", docsRoutes);
 router.use("/api/schema", schemaRoutes);
 router.use("/api/tokens", tokensRoutes);
