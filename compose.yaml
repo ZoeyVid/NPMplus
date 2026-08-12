@@ -49,16 +49,12 @@ services:
 #      - "PUID=1000" # set user id, needs to be a number greater or equal to 99, or equal to 0, default 0 (root), if network mode host is used and PUID changed, you may need to set sysctl net.ipv4.ip_unprivileged_port_start=0 to bind ports like 80 or 443, please note that this will allow all non-root services to bind ports below 1024
 #      - "PGID=1000" # set group id, needs to be a number greater or equal to 99, or equal to 0, default 0 (root), requires non-zero PUID
 #      - "NPM_PORT=82" # Port the NPM UI should be bound to, default 81, change this if you want to run multiple npm instances in network mode host
-#      - "GOA_PORT=92" # Port for goaccess, default 91, change this if you want to run multiple npm with goaccess instances in network mode host
 #      - "IPV4_BINDING=127.0.0.1" # IPv4 address to bind, defaults to all
 #      - "NPM_IPV4_BINDING=127.0.0.1" # IPv4 address to bind for the NPM UI, defaults to all
-#      - "GOA_IPV4_BINDING=127.0.0.1" # IPv4 address to bind for goaccess, defaults to all
 #      - "IPV6_BINDING=[::1]" # IPv6 address to bind, defaults to all
 #      - "NPM_IPV6_BINDING=[::1]" # IPv6 address to bind for the NPM UI, defaults to all
-#      - "GOA_IPV6_BINDING=[::1]" # IPv6 address to bind for goaccess, defaults to all
-#      - "DISABLE_IPV6=true" # fully disables listening on IPv6 and the IPv6 resolver of nginx, overrides IPV6_BINDING/NPM_IPV6_BINDING/GOA_IPV6_BINDING, default false
+#      - "DISABLE_IPV6=true" # fully disables listening on IPv6 and the IPv6 resolver of nginx, overrides IPV6_BINDING/NPM_IPV6_BINDING, default false
 #      - "NPM_LISTEN_LOCALHOST=true" # Binds the NPM UI only to localhost (IPv4+IPv6), overrides NPM_IPV4_BINDING/NPM_IPV6_BINDING, default false
-#      - "GOA_LISTEN_LOCALHOST=true" # Binds goaccess only to localhost (IPv4+IPv6), overrides GOA_IPV4_BINDING/GOA_IPV6_BINDING, default false
 #      - "DEFAULT_CERT_ID=1" # ID of cert to use instead of dummycerts, default 0/unset/dummycerts
 #      - "HTTP_PORT=8080" # tcp port to use for http traffic, changing this may break certbot http challenge, default 80
 #      - "HTTPS_PORT=8443" # udp and tcp port to use for https traffic, changing this may break certbot http challenge, default 443
@@ -83,7 +79,7 @@ services:
 #      - "TRUST_CLOUDFLARE=true" # Enables fetching/whitelisting IPs from cloudflare, so nginx will see the real client IPs, default false
 #      - "CERTBOT_RUN_INTERVAL=72" # Set how many hours should be between certbot trying to renew your certs if needed, default 3
 #      - "ECH_ROTATION_INTERVAL=3" # Set how many hours should be between the runs of your ech cron script, default 1
-#      - "GOA=true" # Enables goaccess (and overrides LOGROTATE to true), default false --- if you download the GeoLite2-Country.mmdb, GeoLite2-City.mmdb AND GeoLite2-ASN.mmdb file from MaxMind and place them in /opt/npmplus/goaccess/geoip it will automatically enable GeoIP in goaccess after restarting NPMplus (no need to change GOACLA below), you may also enable the geoipupdate container below (please change the timezone)
+#      - "GOA=true" # Enables goaccess (and overrides LOGROTATE to true), served under /goaccess of the NPMplus web UI, only reachable for logged in admins, default false --- if you download the GeoLite2-Country.mmdb, GeoLite2-City.mmdb AND GeoLite2-ASN.mmdb file from MaxMind and place them in /opt/npmplus/goaccess/geoip it will automatically enable GeoIP in goaccess after restarting NPMplus (no need to change GOACLA below), you may also enable the geoipupdate container below (please change the timezone)
 #      - "GOACLA=--agent-list --real-os --double-decode --anonymize-ip --anonymize-level=2 --keep-last=7 --with-output-resolver --no-query-string" # Arguments that should be passed to goaccess, default: --agent-list --real-os --double-decode --anonymize-ip --anonymize-level=1 --keep-last=30 --with-output-resolver --no-query-string
 #      - "PHP83=true" # Activate PHP83, default false, supported, but not recommended, you should prefer to use a dedicated php-fpm container
 #      - "PHP83_APKS=php83-curl php83-openssl" # Add php extensions, also enables PHP83, see available packages here: https://pkgs.alpinelinux.org/packages?branch=v3.21&repo=community&arch=x86_64&name=php83-*, default none, requires PHP83

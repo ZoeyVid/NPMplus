@@ -68,6 +68,11 @@
 				"type": "string"
 			}
 		},
+		"goaccess": {
+			"type": "boolean",
+			"description": "Is goaccess enabled, only sent for the requesting user itself",
+			"example": true
+		},
 		"permissions": {
 			"type": "object",
 			"description": "Permissions if expanded in request",
