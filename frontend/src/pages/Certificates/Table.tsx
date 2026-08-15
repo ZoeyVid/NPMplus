@@ -1,5 +1,14 @@
 import { IconDotsVertical, IconDownload, IconEdit, IconFlask, IconRefresh, IconTrash } from "@tabler/icons-react";
-import { createColumnHelper, getCoreRowModel, getSortedRowModel, useReactTable } from "@tanstack/react-table";
+import {
+	createColumnHelper,
+	createSortedRowModel,
+	rowSortingFeature,
+	sortFn_alphanumeric,
+	sortFn_datetime,
+	sortFn_text,
+	tableFeatures,
+	useTable,
+} from "@tanstack/react-table";
 import { useMemo } from "react";
 import type { Certificate } from "src/api/backend";
 import {
@@ -14,6 +23,12 @@ import { TableLayout } from "src/components/Table/TableLayout";
 import { intl, T } from "src/locale";
 import { showCustomCertificateModal, showDNSCertificateModal, showHTTPCertificateModal } from "src/modals";
 import { CERTIFICATES, MANAGE } from "src/modules/Permissions";
+
+const features = tableFeatures({
+	rowSortingFeature,
+	sortedRowModel: createSortedRowModel(),
+	sortFns: { alphanumeric: sortFn_alphanumeric, datetime: sortFn_datetime, text: sortFn_text },
+});
 
 interface Props {
 	data: Certificate[];
@@ -55,7 +70,7 @@ export default function Table({
 		}
 	}
 
-	const columnHelper = createColumnHelper<Certificate>();
+	const columnHelper = createColumnHelper<typeof features, Certificate>();
 	const columns = useMemo(
 		() => [
 			columnHelper.accessor((row: any) => row.owner.name, {
@@ -294,12 +309,10 @@ export default function Table({
 		[columnHelper, mtlsInUseIds, onDelete, onRenew, onDownload, onTest, onEdit, allData],
 	);
 
-	const tableInstance = useReactTable<Certificate>({
-		columns,
+	const tableInstance = useTable({
+		features,
+		columns: columnHelper.columns(columns),
 		data,
-		getCoreRowModel: getCoreRowModel(),
-		getSortedRowModel: getSortedRowModel(),
-		rowCount: data.length,
 		meta: {
 			isFetching,
 		},

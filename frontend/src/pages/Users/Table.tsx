@@ -8,7 +8,16 @@ import {
 	IconShieldOff,
 	IconTrash,
 } from "@tabler/icons-react";
-import { createColumnHelper, getCoreRowModel, getSortedRowModel, useReactTable } from "@tanstack/react-table";
+import {
+	createColumnHelper,
+	createSortedRowModel,
+	rowSortingFeature,
+	sortFn_alphanumeric,
+	sortFn_datetime,
+	sortFn_text,
+	tableFeatures,
+	useTable,
+} from "@tanstack/react-table";
 import { useMemo } from "react";
 import type { User } from "src/api/backend";
 import {
@@ -21,6 +30,12 @@ import {
 } from "src/components";
 import { TableLayout } from "src/components/Table/TableLayout";
 import { intl, T } from "src/locale";
+
+const features = tableFeatures({
+	rowSortingFeature,
+	sortedRowModel: createSortedRowModel(),
+	sortFns: { alphanumeric: sortFn_alphanumeric, datetime: sortFn_datetime, text: sortFn_text },
+});
 
 interface Props {
 	data: User[];
@@ -50,7 +65,7 @@ export default function Table({
 	onDisableToggle,
 	onNewUser,
 }: Props) {
-	const columnHelper = createColumnHelper<User>();
+	const columnHelper = createColumnHelper<typeof features, User>();
 	const columns = useMemo(
 		() => [
 			columnHelper.accessor((row: any) => row.name, {
@@ -232,12 +247,10 @@ export default function Table({
 		],
 	);
 
-	const tableInstance = useReactTable<User>({
-		columns,
+	const tableInstance = useTable({
+		features,
+		columns: columnHelper.columns(columns),
 		data,
-		getCoreRowModel: getCoreRowModel(),
-		getSortedRowModel: getSortedRowModel(),
-		rowCount: data.length,
 		meta: {
 			isFetching,
 		},

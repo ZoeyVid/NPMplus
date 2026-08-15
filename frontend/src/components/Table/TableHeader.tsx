@@ -1,7 +1,8 @@
 import { IconChevronDown, IconChevronUp } from "@tabler/icons-react";
+import type { RowData, TableFeatures } from "@tanstack/react-table";
 import type { TableLayoutProps } from "src/components";
 
-function TableHeader<T>(props: TableLayoutProps<T>) {
+function TableHeader<TFeatures extends TableFeatures, T extends RowData>(props: TableLayoutProps<TFeatures, T>) {
 	const { tableInstance } = props;
 	const headerGroups = tableInstance.getHeaderGroups();
 
