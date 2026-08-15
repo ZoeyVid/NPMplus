@@ -3,8 +3,9 @@ import { useState } from "react";
 import Alert from "react-bootstrap/Alert";
 import { type Certificate, deleteCertificate, downloadCertificate } from "src/api/backend";
 import { Button, HasPermission, LoadingPage } from "src/components";
+import { useLocaleState } from "src/context";
 import { useCertificates } from "src/hooks";
-import { T } from "src/locale";
+import { formatDateTime, T } from "src/locale";
 import {
 	showCustomCertificateModal,
 	showDeleteConfirmModal,
@@ -19,6 +20,7 @@ import { showError, showObjectSuccess } from "src/notifications";
 import Table from "./Table";
 
 export default function TableWrapper() {
+	const { locale } = useLocaleState();
 	const [search, setSearch] = useState("");
 	const { isFetching, isLoading, isError, error, data } = useCertificates([
 		"owner",
@@ -161,14 +163,44 @@ export default function TableWrapper() {
 					onDownload={handleDownload}
 					onEdit={(cert: Certificate) => showCustomCertificateModal(cert)}
 					onTest={(domains: string[]) => showReachabilityModal(domains)}
-					onDelete={(id: number) =>
+					onDelete={(id: number) => {
+						const certificate = data?.find((item) => item.id === id);
+						const domainNames = certificate?.domainNames.join(", ");
 						showDeleteConfirmModal({
 							title: <T id="object.delete" tData={{ object: "certificate" }} />,
 							onConfirm: () => handleDelete(id),
 							invalidations: [["certificates"], ["certificate", id]],
 							children: <T id="object.delete.content" tData={{ object: "certificate" }} />,
-						})
-					}
+							subject: domainNames || certificate?.niceName,
+							details: certificate ? (
+								<>
+									{domainNames && certificate.niceName !== domainNames ? (
+										<div>{certificate.niceName}</div>
+									) : null}
+									<div>
+										<T
+											id={
+												certificate.provider === "letsencrypt"
+													? "lets-encrypt"
+													: certificate.provider === "other"
+														? "certificates.custom"
+														: "mtls-certificate"
+											}
+										/>
+										{certificate.meta?.dnsProvider ? ` – ${certificate.meta.dnsProvider}` : null}
+									</div>
+									{certificate.expiresOn ? (
+										<div>
+											<T
+												id="expires.on"
+												data={{ date: formatDateTime(certificate.expiresOn, locale) }}
+											/>
+										</div>
+									) : null}
+								</>
+							) : null,
+						});
+					}}
 				/>
 			</div>
 		</div>
