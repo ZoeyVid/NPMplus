@@ -103,30 +103,39 @@ export default function TableWrapper() {
 					onEditUser={(id: number) => showUserModal(id)}
 					onEditPermissions={(id: number) => showPermissionsModal(id)}
 					onSetPassword={(id: number) => showSetPasswordModal(id)}
-					onResetMfa={(id: number) =>
+					onResetMfa={(id: number) => {
+						const user = data?.find((item) => item.id === id);
 						showDeleteConfirmModal({
 							tTitle: "user.reset-mfa",
 							children: <T id="user.reset-mfa.content" />,
+							subject: user?.name,
+							details: user?.email,
 							onConfirm: () => handleResetMfa(id),
 							invalidations: [["users"], ["user", id]],
-						})
-					}
-					onRevokeSessions={(id: number) =>
+						});
+					}}
+					onRevokeSessions={(id: number) => {
+						const user = data?.find((item) => item.id === id);
 						showDeleteConfirmModal({
 							tTitle: "user.revoke-sessions",
 							children: <T id="user.revoke-sessions.content" />,
+							subject: user?.name,
+							details: user?.email,
 							onConfirm: () => handleRevokeSessions(id),
 							invalidations: [["users"], ["user", id]],
-						})
-					}
-					onDeleteUser={(id: number) =>
+						});
+					}}
+					onDeleteUser={(id: number) => {
+						const user = data?.find((item) => item.id === id);
 						showDeleteConfirmModal({
 							title: <T id="object.delete" tData={{ object: "user" }} />,
 							onConfirm: () => handleDelete(id),
 							invalidations: [["users"], ["user", id]],
 							children: <T id="object.delete.content" tData={{ object: "user" }} />,
-						})
-					}
+							subject: user?.name,
+							details: user?.email,
+						});
+					}}
 					onDisableToggle={handleDisableToggle}
 					onNewUser={() => showUserModal("new")}
 				/>

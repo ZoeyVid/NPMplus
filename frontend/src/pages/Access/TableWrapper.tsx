@@ -88,14 +88,19 @@ export default function TableWrapper() {
 					isFetching={isFetching}
 					isFiltered={!!filtered}
 					onEdit={(id: number) => showAccessListModal(id)}
-					onDelete={(id: number) =>
+					onDelete={(id: number) => {
+						const accessList = data?.find((item) => item.id === id);
 						showDeleteConfirmModal({
 							title: <T id="object.delete" tData={{ object: "access-list" }} />,
 							onConfirm: () => handleDelete(id),
 							invalidations: [["access-lists"], ["access-list", id], ["proxy-hosts"], ["proxy-host"]],
 							children: <T id="object.delete.content" tData={{ object: "access-list" }} />,
-						})
-					}
+							subject: accessList?.name,
+							details: accessList?.proxyHostCount ? (
+								<T id="proxy-hosts.count" data={{ count: accessList.proxyHostCount }} />
+							) : null,
+						});
+					}}
 					onNew={() => showAccessListModal("new")}
 				/>
 			</div>
