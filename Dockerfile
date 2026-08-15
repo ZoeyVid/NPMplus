@@ -281,7 +281,6 @@ RUN apk upgrade --no-cache -a && \
     \
     ln -s /usr/local/nginx/sbin/nginx /usr/local/bin/nginx && \
     ln -s /app/password-reset.js /usr/local/bin/password-reset.js && \
-    ln -s /app/sqlite-vaccum.js /usr/local/bin/sqlite-vaccum.js && \
     ln -s /app/index.js /usr/local/bin/index.js && \
     \
     chmod +x /usr/local/bin/*

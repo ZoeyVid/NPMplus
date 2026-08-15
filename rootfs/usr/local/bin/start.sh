@@ -168,10 +168,6 @@ if [ -s /data/database.sqlite ]; then
     mv -vn /data/database.sqlite /data/npmplus/database.sqlite
 fi
 
-if [ -s /data/npmplus/database.sqlite ]; then
-    sqlite-vaccum.js
-fi
-
 
 if [ -n "$(ls -A /data/nginx/default_www 2> /dev/null)" ]; then
     cp -van /data/nginx/default_www/* /data/html
