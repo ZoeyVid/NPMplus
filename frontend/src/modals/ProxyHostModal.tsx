@@ -20,7 +20,7 @@ import { useDirectorySuggestions, useProxyHost, useProxyHosts, useSetProxyHost, 
 import { intl, T } from "src/locale";
 import EasyModal, { type InnerModalProps } from "src/modules/easyModal";
 import { MANAGE, PROXY_HOSTS } from "src/modules/Permissions";
-import { validateNumber, validateUpstreamUrl } from "src/modules/Validations";
+import { showTabOfInvalid, validateNumber, validateUpstreamUrl } from "src/modules/Validations";
 import { showObjectSuccess } from "src/notifications";
 
 interface Props extends InnerModalProps {
@@ -158,7 +158,7 @@ const ProxyHostModal = EasyModal.create(({ id, isClone = false, visible, remove 
 					onSubmit={onSubmit}
 				>
 					{({ values }: any) => (
-						<Form>
+						<Form onInvalid={showTabOfInvalid}>
 							<Modal.Header closeButton>
 								<Modal.Title>
 									<T

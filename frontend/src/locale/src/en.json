@@ -56,6 +56,9 @@
 	"action.allow": {
 		"defaultMessage": "Allow"
 	},
+	"action.clear": {
+		"defaultMessage": "Clear"
+	},
 	"action.clone": {
 		"defaultMessage": "Clone"
 	},
@@ -478,6 +481,9 @@
 	},
 	"loading": {
 		"defaultMessage": "Loading…"
+	},
+	"location.filter": {
+		"defaultMessage": "Filter by path or destination"
 	},
 	"login.title": {
 		"defaultMessage": "Login to your account"

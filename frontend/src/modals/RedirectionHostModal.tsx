@@ -15,7 +15,7 @@ import {
 import { useDirectorySuggestions, useRedirectionHost, useRedirectionHosts, useSetRedirectionHost } from "src/hooks";
 import { T } from "src/locale";
 import EasyModal, { type InnerModalProps } from "src/modules/easyModal";
-import { validateString } from "src/modules/Validations";
+import { showTabOfInvalid, validateString } from "src/modules/Validations";
 import { showObjectSuccess } from "src/notifications";
 
 const showRedirectionHostModal = (id: number | "new") => {
@@ -116,7 +116,7 @@ const RedirectionHostModal = EasyModal.create(({ id, visible, remove }: Props) =
 					onSubmit={onSubmit}
 				>
 					{({ values }: any) => (
-						<Form>
+						<Form onInvalid={showTabOfInvalid}>
 							<Modal.Header closeButton>
 								<Modal.Title>
 									<T
