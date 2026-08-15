@@ -10,27 +10,24 @@ const migrateName = "forward_host";
  * @param   {Object}  knex
  * @returns {Promise}
  */
-const up = (knex) => {
+const up = async (knex) => {
 	logger.info(`[${migrateName}] Migrating Up...`);
 
-	return knex.schema
-		.table("proxy_host", (proxy_host) => {
-			proxy_host.renameColumn("forward_ip", "forward_host");
-		})
-		.then(() => {
-			logger.info(`[${migrateName}] proxy_host Table altered`);
-		});
+	await knex.schema.table("proxy_host", (proxy_host) => {
+		proxy_host.renameColumn("forward_ip", "forward_host");
+	});
+
+	logger.info(`[${migrateName}] proxy_host Table altered`);
 };
 
 /**
  * Undo Migrate
  *
- * @param   {Object}  knex
+ * @param   {Object} _knex
  * @returns {Promise}
  */
 const down = (_knex) => {
-	logger.warn(`[${migrateName}] You can't migrate down this one.`);
-	return Promise.resolve(true);
+	throw new Error(`[${migrateName}] You can't migrate down this one.`);
 };
 
 export { down, up };

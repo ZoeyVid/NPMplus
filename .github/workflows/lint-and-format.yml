@@ -33,6 +33,7 @@ jobs:
           cd backend
           pnpm install --frozen-lockfile
           pnpm biome $BIOME --reporter=default --reporter=github | sed "s|,file=|,file=backend/|g" || echo "BIOME_FAILED=1" >> "$GITHUB_ENV"
+          node validate-schema.js
       - name: frontend
         run: |
           set -x

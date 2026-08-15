@@ -10,34 +10,24 @@ const migrateName = "redirection_status_code";
  * @param   {Object} knex
  * @returns {Promise}
  */
-const up = (knex) => {
+const up = async (knex) => {
 	logger.info(`[${migrateName}] Migrating Up...`);
 
-	return knex.schema
-		.table("redirection_host", (table) => {
-			table.integer("forward_http_code").notNull().unsigned().defaultTo(302);
-		})
-		.then(() => {
-			logger.info(`[${migrateName}] redirection_host Table altered`);
-		});
+	await knex.schema.table("redirection_host", (table) => {
+		table.integer("forward_http_code").notNull().unsigned().defaultTo(302);
+	});
+
+	logger.info(`[${migrateName}] redirection_host Table altered`);
 };
 
 /**
  * Undo Migrate
  *
- * @param   {Object} knex
+ * @param   {Object} _knex
  * @returns {Promise}
  */
-const down = (knex) => {
-	logger.info(`[${migrateName}] Migrating Down...`);
-
-	return knex.schema
-		.table("redirection_host", (table) => {
-			table.dropColumn("forward_http_code");
-		})
-		.then(() => {
-			logger.info(`[${migrateName}] redirection_host Table altered`);
-		});
+const down = (_knex) => {
+	throw new Error(`[${migrateName}] You can't migrate down this one.`);
 };
 
 export { down, up };

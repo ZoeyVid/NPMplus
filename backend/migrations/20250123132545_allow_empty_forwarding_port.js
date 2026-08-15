@@ -10,34 +10,24 @@ const migrateName = "allow_empty_forwarding_port";
  * @param   {Object} knex
  * @returns {Promise}
  */
-const up = (knex) => {
+const up = async (knex) => {
 	logger.info(`[${migrateName}] Migrating Up...`);
 
-	return knex.schema
-		.alterTable("proxy_host", (table) => {
-			table.integer("forward_port").unsigned().alter();
-		})
-		.then(() => {
-			logger.info(`[${migrateName}] proxy Table altered`);
-		});
+	await knex.schema.alterTable("proxy_host", (table) => {
+		table.integer("forward_port").unsigned().alter();
+	});
+
+	logger.info(`[${migrateName}] proxy Table altered`);
 };
 
 /**
  * Undo Migrate
  *
- * @param   {Object} knex
+ * @param   {Object} _knex
  * @returns {Promise}
  */
-const down = (knex) => {
-	logger.info(`[${migrateName}] Migrating Down...`);
-
-	return knex.schema
-		.alterTable("proxy_host", (table) => {
-			table.integer("forward_port").notNull().unsigned().alter();
-		})
-		.then(() => {
-			logger.info(`[${migrateName}] proxy Table altered`);
-		});
+const down = (_knex) => {
+	throw new Error(`[${migrateName}] You can't migrate down this one.`);
 };
 
 export { down, up };

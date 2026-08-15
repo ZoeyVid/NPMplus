@@ -10,16 +10,14 @@ const migrateName = "token_valid_after";
  * @param   {Object} knex
  * @returns {Promise}
  */
-const up = (knex) => {
+const up = async (knex) => {
 	logger.info(`[${migrateName}] Migrating Up...`);
 
-	return knex.schema
-		.table("user", (user) => {
-			user.bigInteger("npmplus_token_valid_after").notNull().unsigned().defaultTo(0);
-		})
-		.then(() => {
-			logger.info(`[${migrateName}] user Table altered`);
-		});
+	await knex.schema.table("user", (user) => {
+		user.bigInteger("npmplus_token_valid_after").notNull().unsigned().defaultTo(0);
+	});
+
+	logger.info(`[${migrateName}] user Table altered`);
 };
 
 /**
@@ -29,8 +27,7 @@ const up = (knex) => {
  * @returns {Promise}
  */
 const down = (_knex) => {
-	logger.warn(`[${migrateName}] You can't migrate down this one.`);
-	return Promise.resolve(true);
+	throw new Error(`[${migrateName}] You can't migrate down this one.`);
 };
 
 export { down, up };

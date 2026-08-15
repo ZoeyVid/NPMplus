@@ -10,42 +10,41 @@ import { getCompiledSchema } from "./schema/index.js";
 import setup from "./setup.js";
 
 async function appStart() {
-	return migrateUp()
-		.then(setup)
-		.then(getCompiledSchema)
-		.then(() => {
-			if (process.env.TRUST_CLOUDFLARE === "false") {
-				logger.info("Cloudflares IPs are NOT trusted");
-				return internalIpRanges.generateConfig([]);
-			}
+	try {
+		await migrateUp();
+		await setup();
+		await getCompiledSchema();
+
+		if (process.env.TRUST_CLOUDFLARE === "false") {
+			logger.info("Cloudflares IPs are NOT trusted");
+			await internalIpRanges.generateConfig([]);
+		} else {
 			logger.info("Cloudflares IPs are trusted");
 			internalIpRanges.initTimer();
-			return internalIpRanges.fetch();
-		})
-		.then(() => {
-			internalCertificate.initTimer();
-			internalNginx.reload();
+			await internalIpRanges.fetch();
+		}
+		internalCertificate.initTimer();
+		await internalNginx.reload();
 
-			const server = app.listen("/run/npmplus.sock", () => {
-				logger.info(`Backend PID ${process.pid} listening on unix socket...`);
+		const server = app.listen("/run/npmplus.sock", () => {
+			logger.info(`Backend PID ${process.pid} listening on unix socket...`);
 
-				process.on("SIGTERM", () => {
-					logger.info(`PID ${process.pid} received SIGTERM`);
-					server.close(() => {
-						logger.info("Stopping.");
-						process.exit(0);
-					});
+			process.on("SIGTERM", () => {
+				logger.info(`PID ${process.pid} received SIGTERM`);
+				server.close(() => {
+					logger.info("Stopping.");
+					process.exit(0);
 				});
 			});
-		})
-		.catch((err) => {
-			logger.error(`Startup Error: ${err.message}`, err);
-			setTimeout(appStart, 1000);
 		});
+	} catch (err) {
+		logger.error(`Startup Error: ${err.message}`, err);
+		setTimeout(appStart, 1000);
+	}
 }
 
 try {
-	appStart();
+	await appStart();
 } catch (err) {
 	logger.fatal(err);
 	process.exit(1);

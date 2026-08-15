@@ -12,11 +12,10 @@ Model.knex(db());
 
 const boolFields = ["is_deleted"];
 
-function encryptPassword() {
+async function encryptPassword() {
 	if (this.type === "password" && this.secret) {
-		return bcrypt.hash(this.secret, 13).then((hash) => {
-			this.secret = hash;
-		});
+		this.secret = await bcrypt.hash(this.secret, 13);
+		return;
 	}
 
 	return null;

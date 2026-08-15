@@ -13,7 +13,6 @@ const access = createLogger("Access        ");
 const nginx = createLogger("Nginx         ");
 const ssl = createLogger("TLS           ");
 const certbot = createLogger("Certbot       ");
-const importer = createLogger("Importer      ");
 const setup = createLogger("Setup         ");
 const ipRanges = createLogger("IP Ranges     ");
 const remoteVersion = createLogger("Remote Version");
@@ -24,19 +23,4 @@ const debug = (logger, ...args) => {
 	if (logger !== express) logger.debug(...args);
 };
 
-export {
-	access,
-	certbot,
-	debug,
-	express,
-	global,
-	gravatar,
-	importer,
-	ipRanges,
-	migrate,
-	nginx,
-	oidc,
-	remoteVersion,
-	setup,
-	ssl,
-};
+export { access, certbot, debug, express, global, gravatar, ipRanges, migrate, nginx, oidc, remoteVersion, setup, ssl };

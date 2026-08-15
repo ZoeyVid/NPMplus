@@ -17,11 +17,6 @@ import streamModel from "./models/stream.js";
 import userModel from "./models/user.js";
 import userPermissionModel from "./models/user_permission.js";
 
-export const isSetup = async () => {
-	const row = await userModel.query().select("id").where("is_deleted", 0).first();
-	return row?.id > 0;
-};
-
 /**
  * Creates a default admin users if one doesn't already exist in the database
  *
@@ -37,7 +32,7 @@ const setupDefaultUser = async () => {
 	// I'm keeping this legacy behavior in case some people are automating deployments.
 
 	if (!initialAdminEmail || !initialAdminPassword) {
-		return Promise.resolve();
+		return;
 	}
 
 	const userIsetup = await isSetup();
@@ -109,9 +104,8 @@ const setupDefaultSettings = async () => {
 const setupCertbotPlugins = async () => {
 	const certificates = await certificateModel.query().where("is_deleted", 0).andWhere("provider", "letsencrypt");
 
-	if (certificates?.length) {
+	if (certificates?.length > 0) {
 		const plugins = [];
-		const promises = [];
 
 		for (const certificate of certificates) {
 			if (certificate.meta && certificate.meta.dns_challenge === true) {
@@ -129,8 +123,7 @@ const setupCertbotPlugins = async () => {
 
 		await installPlugins(plugins);
 
-		if (promises.length) {
-			await Promise.all(promises);
+		if (plugins.length > 0) {
 			logger.info(`Added Certbot plugins ${plugins.join(", ")}`);
 		}
 	}
@@ -149,7 +142,7 @@ const regenerateAllHosts = async () => {
 			.andWhere("enabled", 1)
 			.withGraphFetched(proxyModel.defaultAllowGraph);
 
-		if (proxyHosts?.length) {
+		if (proxyHosts?.length > 0) {
 			// locations dont contain access list objects, so prepopulate them before generating the nginx files
 			const updatedProxyHosts = await Promise.all(
 				proxyHosts.map((host) => {
@@ -167,7 +160,7 @@ const regenerateAllHosts = async () => {
 			.andWhere("enabled", 1)
 			.withGraphFetched(redirectionModel.defaultAllowGraph);
 
-		if (redirectionHosts?.length) {
+		if (redirectionHosts?.length > 0) {
 			await internalNginx.bulkGenerateConfigs(redirectionModel, "redirection_host", redirectionHosts, {
 				skipReload: true,
 			});
@@ -179,7 +172,7 @@ const regenerateAllHosts = async () => {
 			.andWhere("enabled", 1)
 			.withGraphFetched(deadModel.defaultAllowGraph);
 
-		if (deadHosts?.length) {
+		if (deadHosts?.length > 0) {
 			await internalNginx.bulkGenerateConfigs(deadModel, "dead_host", deadHosts, { skipReload: true });
 		}
 
@@ -189,7 +182,7 @@ const regenerateAllHosts = async () => {
 			.andWhere("enabled", 1)
 			.withGraphFetched(streamModel.defaultAllowGraph);
 
-		if (streamHosts?.length) {
+		if (streamHosts?.length > 0) {
 			await internalNginx.bulkGenerateConfigs(streamModel, "stream", streamHosts, { skipReload: true });
 		}
 
@@ -229,5 +222,15 @@ const setupAio = async () => {
 	}
 };
 
-export default () =>
-	setupDefaultUser().then(setupDefaultSettings).then(setupCertbotPlugins).then(regenerateAllHosts).then(setupAio);
+export const isSetup = async () => {
+	const row = await userModel.query().select("id").where("is_deleted", 0).first();
+	return row?.id > 0;
+};
+
+export default async () => {
+	await setupDefaultUser();
+	await setupDefaultSettings();
+	await setupCertbotPlugins();
+	await regenerateAllHosts();
+	await setupAio();
+};

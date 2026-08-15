@@ -10,34 +10,24 @@ const migrateName = "pass_auth";
  * @param   {Object}  knex
  * @returns {Promise}
  */
-const up = (knex) => {
+const up = async (knex) => {
 	logger.info(`[${migrateName}] Migrating Up...`);
 
-	return knex.schema
-		.table("access_list", (access_list) => {
-			access_list.integer("pass_auth").notNull().defaultTo(1);
-		})
-		.then(() => {
-			logger.info(`[${migrateName}] access_list Table altered`);
-		});
+	await knex.schema.table("access_list", (access_list) => {
+		access_list.integer("pass_auth").notNull().defaultTo(1);
+	});
+
+	logger.info(`[${migrateName}] access_list Table altered`);
 };
 
 /**
  * Undo Migrate
  *
- * @param {Object} knex
+ * @param   {Object} _knex
  * @returns {Promise}
  */
-const down = (knex) => {
-	logger.info(`[${migrateName}] Migrating Down...`);
-
-	return knex.schema
-		.table("access_list", (access_list) => {
-			access_list.dropColumn("pass_auth");
-		})
-		.then(() => {
-			logger.info(`[${migrateName}] access_list pass_auth Column dropped`);
-		});
+const down = (_knex) => {
+	throw new Error(`[${migrateName}] You can't migrate down this one.`);
 };
 
 export { down, up };
