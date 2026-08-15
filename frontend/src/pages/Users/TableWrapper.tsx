@@ -1,8 +1,8 @@
 import { IconSearch } from "@tabler/icons-react";
 import { useQueryClient } from "@tanstack/react-query";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Alert from "react-bootstrap/Alert";
-import { adminDisableMfa, deleteUser, revokeSessions, toggleUser } from "src/api/backend";
+import { adminDisableMfa, deleteUser, revokeSessions, toggleUser, type User } from "src/api/backend";
 import { Button, LoadingPage } from "src/components";
 import { useUser, useUsers } from "src/hooks";
 import { T } from "src/locale";
@@ -14,6 +14,13 @@ export default function TableWrapper() {
 	const queryClient = useQueryClient();
 	const [search, setSearch] = useState("");
 	const { isFetching, isLoading, isError, error, data } = useUsers(["permissions"]);
+
+	useEffect(() => {
+		// this can happen if someone deletes the last item while searching
+		if (search !== "" && !data) {
+			setSearch("");
+		}
+	});
 	const { data: currentUser } = useUser("me");
 
 	if (isLoading) {
@@ -46,18 +53,14 @@ export default function TableWrapper() {
 		showObjectSuccess("user", "updated");
 	};
 
-	let filtered = null;
+	let filtered: User[] | null = null;
 	if (search && data) {
-		filtered = data?.filter((item) => {
-			return (
+		filtered = data?.filter(
+			(item) =>
 				item.name.toLowerCase().includes(search) ||
 				item.nickname.toLowerCase().includes(search) ||
-				item.email.toLowerCase().includes(search)
-			);
-		});
-	} else if (search !== "") {
-		// this can happen if someone deletes the last item while searching
-		setSearch("");
+				item.email.toLowerCase().includes(search),
+		);
 	}
 
 	return (
@@ -79,7 +82,6 @@ export default function TableWrapper() {
 											<IconSearch size={16} />
 										</span>
 										<input
-											id="advanced-table-search"
 											type="text"
 											className="form-control form-control-sm"
 											autoComplete="off"
@@ -97,7 +99,7 @@ export default function TableWrapper() {
 				</div>
 				<Table
 					data={filtered ?? data ?? []}
-					isFiltered={!!search}
+					isFiltered={Boolean(search)}
 					isFetching={isFetching}
 					currentUserId={currentUser?.id}
 					onEditUser={(id: number) => showUserModal(id)}

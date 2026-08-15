@@ -1,5 +1,6 @@
 import { IconArrowsCross, IconBolt, IconBoltOff, IconDisc, IconLock, IconShield, IconUser } from "@tabler/icons-react";
 import cn from "clsx";
+import type { ReactNode } from "react";
 import type { AuditLog } from "src/api/backend";
 import { useLocaleState } from "src/context";
 import { formatDateTime, T } from "src/locale";
@@ -35,7 +36,7 @@ const getColorForAction = (action: string) => {
 
 const getIcon = (row: AuditLog) => {
 	const c = cn(getColorForAction(row.action), "me-1");
-	let ico = null;
+	let ico: ReactNode = null;
 	switch (row.objectType) {
 		case "user":
 			ico = <IconUser size={16} className={c} />;
@@ -57,6 +58,8 @@ const getIcon = (row: AuditLog) => {
 			break;
 		case "certificate":
 			ico = <IconShield size={16} className={c} />;
+			break;
+		default:
 			break;
 	}
 

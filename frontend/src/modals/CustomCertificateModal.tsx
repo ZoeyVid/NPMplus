@@ -25,7 +25,7 @@ const CustomCertificateModal = EasyModal.create(
 		const queryClient = useQueryClient();
 		const [errorMsg, setErrorMsg] = useState<ReactNode | null>(null);
 		const [isSubmitting, setIsSubmitting] = useState(false);
-		const isEdit = !!cert;
+		const isEdit = Boolean(cert);
 		const isMtls = (cert?.provider ?? provider) === "mtls";
 
 		const onSubmit = async (values: any, { setSubmitting }: any) => {
@@ -99,7 +99,12 @@ const CustomCertificateModal = EasyModal.create(
 								</Modal.Title>
 							</Modal.Header>
 							<Modal.Body className="p-0">
-								<Alert variant="danger" show={!!errorMsg} onClose={() => setErrorMsg(null)} dismissible>
+								<Alert
+									variant="danger"
+									show={Boolean(errorMsg)}
+									onClose={() => setErrorMsg(null)}
+									dismissible
+								>
 									{errorMsg}
 								</Alert>
 								<div className="card m-0 border-0">

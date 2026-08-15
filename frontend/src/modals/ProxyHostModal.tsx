@@ -38,7 +38,7 @@ const ProxyHostModal = EasyModal.create(({ id, isClone = false, visible, remove 
 	const [isSubmitting, setIsSubmitting] = useState(false);
 	const [advVisible, setAdvVisible] = useState(false);
 
-	const onSubmit = async (values: any, { setSubmitting }: any) => {
+	const onSubmit = (values: any, { setSubmitting }: any) => {
 		if (isSubmitting) return;
 		setIsSubmitting(true);
 		setErrorMsg(null);
@@ -125,13 +125,13 @@ const ProxyHostModal = EasyModal.create(({ id, isClone = false, visible, remove 
 							npmplusAccessListType: data?.npmplusAccessListType || "public",
 							cachingEnabled: data?.cachingEnabled || false,
 							blockExploits: data?.blockExploits || false,
-							allowWebsocketUpgrade: data?.allowWebsocketUpgrade || true,
+							allowWebsocketUpgrade: data?.allowWebsocketUpgrade ?? true,
 							// Locations tab
 							locations: data?.locations || [],
 							// SSL tab
 							certificateId: data?.certificateId || 0,
 							sslForced: data?.sslForced || false,
-							http2Support: data?.http2Support || true,
+							http2Support: data?.http2Support ?? true,
 							npmplusHttp3Support: data?.npmplusHttp3Support || false,
 							hstsEnabled: data?.hstsEnabled || false,
 							hstsSubdomains: data?.hstsSubdomains || false,
@@ -162,13 +162,18 @@ const ProxyHostModal = EasyModal.create(({ id, isClone = false, visible, remove 
 							<Modal.Header closeButton>
 								<Modal.Title>
 									<T
-										id={isClone ? "object.add" : data?.id ? "object.edit" : "object.add"}
+										id={data?.id && !isClone ? "object.edit" : "object.add"}
 										tData={{ object: "proxy-host" }}
 									/>
 								</Modal.Title>
 							</Modal.Header>
 							<Modal.Body className="p-0">
-								<Alert variant="danger" show={!!errorMsg} onClose={() => setErrorMsg(null)} dismissible>
+								<Alert
+									variant="danger"
+									show={Boolean(errorMsg)}
+									onClose={() => setErrorMsg(null)}
+									dismissible
+								>
 									{errorMsg}
 								</Alert>
 								<div className="card m-0 border-0">
@@ -243,7 +248,7 @@ const ProxyHostModal = EasyModal.create(({ id, isClone = false, visible, remove 
 																	</label>
 																	<select
 																		id="forwardScheme"
-																		className={`form-select ${form.errors.forwardScheme && form.touched.forwardScheme ? "is-invalid" : ""}`}
+																		className="form-select"
 																		required
 																		{...field}
 																		onChange={(e) => {
@@ -284,14 +289,6 @@ const ProxyHostModal = EasyModal.create(({ id, isClone = false, visible, remove 
 																		<option value="grpc">grpc://</option>
 																		<option value="grpcs">grpcs://</option>
 																	</select>
-																	{form.errors.forwardScheme ? (
-																		<div className="invalid-feedback">
-																			{form.errors.forwardScheme &&
-																			form.touched.forwardScheme
-																				? form.errors.forwardScheme
-																				: null}
-																		</div>
-																	) : null}
 																</div>
 															)}
 														</Field>
@@ -386,7 +383,7 @@ const ProxyHostModal = EasyModal.create(({ id, isClone = false, visible, remove 
 																<span className="col-auto">
 																	<Field name="cachingEnabled" type="checkbox">
 																		{({ field }: any) => (
-																			<label className="form-check form-check-single form-switch">
+																			<span className="form-check form-check-single form-switch">
 																				<input
 																					{...field}
 																					id="cachingEnabled"
@@ -395,7 +392,7 @@ const ProxyHostModal = EasyModal.create(({ id, isClone = false, visible, remove 
 																					})}
 																					type="checkbox"
 																				/>
-																			</label>
+																			</span>
 																		)}
 																	</Field>
 																</span>
@@ -409,7 +406,7 @@ const ProxyHostModal = EasyModal.create(({ id, isClone = false, visible, remove 
 																<span className="col-auto">
 																	<Field name="blockExploits" type="checkbox">
 																		{({ field }: any) => (
-																			<label className="form-check form-check-single form-switch">
+																			<span className="form-check form-check-single form-switch">
 																				<input
 																					{...field}
 																					id="blockExploits"
@@ -418,7 +415,7 @@ const ProxyHostModal = EasyModal.create(({ id, isClone = false, visible, remove 
 																					})}
 																					type="checkbox"
 																				/>
-																			</label>
+																			</span>
 																		)}
 																	</Field>
 																</span>
@@ -432,7 +429,7 @@ const ProxyHostModal = EasyModal.create(({ id, isClone = false, visible, remove 
 																<span className="col-auto">
 																	<Field name="allowWebsocketUpgrade" type="checkbox">
 																		{({ field }: any) => (
-																			<label className="form-check form-check-single form-switch">
+																			<span className="form-check form-check-single form-switch">
 																				<input
 																					{...field}
 																					id="allowWebsocketUpgrade"
@@ -441,7 +438,7 @@ const ProxyHostModal = EasyModal.create(({ id, isClone = false, visible, remove 
 																					})}
 																					type="checkbox"
 																				/>
-																			</label>
+																			</span>
 																		)}
 																	</Field>
 																</span>
@@ -455,7 +452,7 @@ const ProxyHostModal = EasyModal.create(({ id, isClone = false, visible, remove 
 																<span className="col-auto">
 																	<Field name="npmplusNoindex" type="checkbox">
 																		{({ field }: any) => (
-																			<label className="form-check form-check-single form-switch">
+																			<span className="form-check form-check-single form-switch">
 																				<input
 																					{...field}
 																					id="npmplusNoindex"
@@ -464,7 +461,7 @@ const ProxyHostModal = EasyModal.create(({ id, isClone = false, visible, remove 
 																					})}
 																					type="checkbox"
 																				/>
-																			</label>
+																			</span>
 																		)}
 																	</Field>
 																</span>
@@ -478,7 +475,7 @@ const ProxyHostModal = EasyModal.create(({ id, isClone = false, visible, remove 
 																<span className="col-auto">
 																	<Field name="npmplusCrowdsecAppsec" type="checkbox">
 																		{({ field, form }: any) => (
-																			<label className="form-check form-check-single form-switch">
+																			<span className="form-check form-check-single form-switch">
 																				<input
 																					{...field}
 																					id="npmplusCrowdsecAppsec"
@@ -495,7 +492,7 @@ const ProxyHostModal = EasyModal.create(({ id, isClone = false, visible, remove 
 																							);
 																					}}
 																				/>
-																			</label>
+																			</span>
 																		)}
 																	</Field>
 																</span>
@@ -515,7 +512,7 @@ const ProxyHostModal = EasyModal.create(({ id, isClone = false, visible, remove 
 																		type="checkbox"
 																	>
 																		{({ field, form }: any) => (
-																			<label className="form-check form-check-single form-switch">
+																			<span className="form-check form-check-single form-switch">
 																				<input
 																					{...field}
 																					id="npmplusProxyRequestBuffering"
@@ -538,7 +535,7 @@ const ProxyHostModal = EasyModal.create(({ id, isClone = false, visible, remove 
 																							"https"
 																					}
 																				/>
-																			</label>
+																			</span>
 																		)}
 																	</Field>
 																</span>
@@ -558,7 +555,7 @@ const ProxyHostModal = EasyModal.create(({ id, isClone = false, visible, remove 
 																		type="checkbox"
 																	>
 																		{({ field, form }: any) => (
-																			<label className="form-check form-check-single form-switch">
+																			<span className="form-check form-check-single form-switch">
 																				<input
 																					{...field}
 																					id="npmplusProxyResponseBuffering"
@@ -573,7 +570,7 @@ const ProxyHostModal = EasyModal.create(({ id, isClone = false, visible, remove 
 																							"https"
 																					}
 																				/>
-																			</label>
+																			</span>
 																		)}
 																	</Field>
 																</span>
@@ -590,7 +587,7 @@ const ProxyHostModal = EasyModal.create(({ id, isClone = false, visible, remove 
 																		type="checkbox"
 																	>
 																		{({ field, form }: any) => (
-																			<label className="form-check form-check-single form-switch">
+																			<span className="form-check form-check-single form-switch">
 																				<input
 																					{...field}
 																					id="npmplusUpstreamCompression"
@@ -605,7 +602,7 @@ const ProxyHostModal = EasyModal.create(({ id, isClone = false, visible, remove 
 																						form.values.forwardScheme,
 																					)}
 																				/>
-																			</label>
+																			</span>
 																		)}
 																	</Field>
 																</span>
@@ -625,7 +622,7 @@ const ProxyHostModal = EasyModal.create(({ id, isClone = false, visible, remove 
 																		type="checkbox"
 																	>
 																		{({ field, form }: any) => (
-																			<label className="form-check form-check-single form-switch">
+																			<span className="form-check form-check-single form-switch">
 																				<input
 																					{...field}
 																					id="npmplusDisableUriSanitisation"
@@ -643,7 +640,7 @@ const ProxyHostModal = EasyModal.create(({ id, isClone = false, visible, remove 
 																						).includes("/")
 																					}
 																				/>
-																			</label>
+																			</span>
 																		)}
 																	</Field>
 																</span>
@@ -657,7 +654,7 @@ const ProxyHostModal = EasyModal.create(({ id, isClone = false, visible, remove 
 																<span className="col-auto">
 																	<Field name="npmplusFancyindex" type="checkbox">
 																		{({ field, form }: any) => (
-																			<label className="form-check form-check-single form-switch">
+																			<span className="form-check form-check-single form-switch">
 																				<input
 																					{...field}
 																					id="npmplusFancyindex"
@@ -670,7 +667,7 @@ const ProxyHostModal = EasyModal.create(({ id, isClone = false, visible, remove 
 																						"path"
 																					}
 																				/>
-																			</label>
+																			</span>
 																		)}
 																	</Field>
 																</span>
@@ -681,35 +678,22 @@ const ProxyHostModal = EasyModal.create(({ id, isClone = false, visible, remove 
 																<span className="col">X-Frame-Options</span>
 																<span className="col-auto">
 																	<Field name="npmplusXFrameOptions">
-																		{({ field, form }: any) => (
-																			<label>
-																				<select
-																					id="npmplusXFrameOptions"
-																					className={`form-select ${form.errors.npmplusXFrameOptions && form.touched.npmplusXFrameOptions ? "is-invalid" : ""}`}
-																					required
-																					{...field}
-																				>
-																					<option value="SAMEORIGIN">
-																						SAMEORIGIN
-																					</option>
-																					<option value="DENY">DENY</option>
-																					<option value="none">none</option>
-																					<option value="upstream">
-																						upstream
-																					</option>
-																				</select>
-																				{form.errors.npmplusXFrameOptions ? (
-																					<div className="invalid-feedback">
-																						{form.errors
-																							.npmplusXFrameOptions &&
-																						form.touched
-																							.npmplusXFrameOptions
-																							? form.errors
-																									.npmplusXFrameOptions
-																							: null}
-																					</div>
-																				) : null}
-																			</label>
+																		{({ field }: any) => (
+																			<select
+																				id="npmplusXFrameOptions"
+																				className="form-select"
+																				required
+																				{...field}
+																			>
+																				<option value="SAMEORIGIN">
+																					SAMEORIGIN
+																				</option>
+																				<option value="DENY">DENY</option>
+																				<option value="none">none</option>
+																				<option value="upstream">
+																					upstream
+																				</option>
+																			</select>
 																		)}
 																	</Field>
 																</span>
@@ -722,48 +706,34 @@ const ProxyHostModal = EasyModal.create(({ id, isClone = false, visible, remove 
 																</span>
 																<span className="col-auto">
 																	<Field name="npmplusAuthRequest">
-																		{({ field, form }: any) => (
-																			<label>
-																				<select
-																					id="npmplusAuthRequest"
-																					className={`form-select ${form.errors.npmplusAuthRequest && form.touched.npmplusAuthRequest ? "is-invalid" : ""}`}
-																					required
-																					{...field}
-																				>
-																					<option value="none">none</option>
-																					<option value="anubis">
-																						anubis
-																					</option>
-																					<option value="tinyauth">
-																						tinyauth
-																					</option>
-																					<option value="oauth2proxy">
-																						oauth2proxy
-																					</option>
-																					<option value="voidauth">
-																						voidauth
-																					</option>
-																					<option value="authelia">
-																						authelia (modern)
-																					</option>
-																					<option value="authentik">
-																						authentik
-																					</option>
-																					<option value="authentik-send-basic-auth">
-																						authentik-send-basic-auth
-																					</option>
-																				</select>
-																				{form.errors.npmplusAuthRequest ? (
-																					<div className="invalid-feedback">
-																						{form.errors
-																							.npmplusAuthRequest &&
-																						form.touched.npmplusAuthRequest
-																							? form.errors
-																									.npmplusAuthRequest
-																							: null}
-																					</div>
-																				) : null}
-																			</label>
+																		{({ field }: any) => (
+																			<select
+																				id="npmplusAuthRequest"
+																				className="form-select"
+																				required
+																				{...field}
+																			>
+																				<option value="none">none</option>
+																				<option value="anubis">anubis</option>
+																				<option value="tinyauth">
+																					tinyauth
+																				</option>
+																				<option value="oauth2proxy">
+																					oauth2proxy
+																				</option>
+																				<option value="voidauth">
+																					voidauth
+																				</option>
+																				<option value="authelia">
+																					authelia (modern)
+																				</option>
+																				<option value="authentik">
+																					authentik
+																				</option>
+																				<option value="authentik-send-basic-auth">
+																					authentik-send-basic-auth
+																				</option>
+																			</select>
 																		)}
 																	</Field>
 																</span>
@@ -784,7 +754,7 @@ const ProxyHostModal = EasyModal.create(({ id, isClone = false, visible, remove 
 																			validate={validateUpstreamUrl()}
 																		>
 																			{({ field, form }: any) => (
-																				<label>
+																				<>
 																					<input
 																						id="npmplusAuthRequestUpstream"
 																						type="text"
@@ -805,7 +775,7 @@ const ProxyHostModal = EasyModal.create(({ id, isClone = false, visible, remove 
 																								: null}
 																						</div>
 																					) : null}
-																				</label>
+																				</>
 																			)}
 																		</Field>
 																	</span>
@@ -822,7 +792,7 @@ const ProxyHostModal = EasyModal.create(({ id, isClone = false, visible, remove 
 														initialAccessListType={data?.npmplusAccessListType || "public"}
 														initialAccessListIds={data?.npmplusAccessListIds || []}
 														name="npmplusAccessListIds"
-														type="npmplusAccessListType"
+														typeFieldName="npmplusAccessListType"
 													/>
 												</div>
 												<Field name="npmplusLocationConfig">

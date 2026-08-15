@@ -1,0 +1,51 @@
+{
+	"$schema": "./node_modules/@biomejs/biome/configuration_schema.json",
+	"vcs": {
+		"enabled": true,
+		"clientKind": "git",
+		"useIgnoreFile": true
+	},
+	"files": {
+		"ignoreUnknown": false,
+		"includes": ["**", "!**/*.svg"]
+	},
+	"formatter": {
+		"enabled": false
+	},
+	"linter": {
+		"enabled": true,
+		"rules": {
+			"preset": "all",
+			"complexity": {
+				"noVoid": "off"
+			},
+			"correctness": {
+				"noSolidDestructuredProps": "off",
+				"noUndeclaredDependencies": "warn",
+				"noUnresolvedImports": "warn",
+				"useImageSize": "warn",
+				"useQwikValidLexicalScope": "off",
+				"useUniqueElementIds": "warn"
+			},
+			"nursery": {
+				"noFloatingPromises": "warn"
+			},
+			"suspicious": {
+				"noArrayIndexKey": "warn",
+				"noReactSpecificProps": "off"
+			},
+			"performance": {
+				"noImgElement": "off",
+				"useSolidForComponent": "off"
+			}
+		}
+	},
+	"javascript": {
+		"formatter": {
+			"quoteStyle": "double"
+		}
+	},
+	"assist": {
+		"enabled": false
+	}
+}

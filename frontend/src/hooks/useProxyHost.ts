@@ -69,12 +69,14 @@ const useSetProxyHost = () => {
 		},
 		onError: (_, __, rollback: any) => rollback(),
 		onSuccess: async ({ id }: ProxyHost) => {
-			queryClient.invalidateQueries({ queryKey: ["proxy-host", id] });
-			queryClient.invalidateQueries({ queryKey: ["proxy-hosts"] });
-			queryClient.invalidateQueries({ queryKey: ["audit-logs"] });
-			queryClient.invalidateQueries({ queryKey: ["host-report"] });
-			queryClient.invalidateQueries({ queryKey: ["certificates"] });
-			queryClient.invalidateQueries({ queryKey: ["access-lists"] });
+			await Promise.all([
+				queryClient.invalidateQueries({ queryKey: ["proxy-host", id] }),
+				queryClient.invalidateQueries({ queryKey: ["proxy-hosts"] }),
+				queryClient.invalidateQueries({ queryKey: ["audit-logs"] }),
+				queryClient.invalidateQueries({ queryKey: ["host-report"] }),
+				queryClient.invalidateQueries({ queryKey: ["certificates"] }),
+				queryClient.invalidateQueries({ queryKey: ["access-lists"] }),
+			]);
 		},
 	});
 };

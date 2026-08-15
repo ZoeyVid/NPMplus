@@ -6,7 +6,7 @@ export interface HealthResponse {
 }
 
 export interface TokenResponse {
-	expires: number;
+	expires: string;
 }
 
 export interface ValidatedCertificateResponse {

@@ -44,9 +44,11 @@ const useSetUser = () => {
 		},
 		onError: (_, __, rollback: any) => rollback(),
 		onSuccess: async ({ id }: User) => {
-			queryClient.invalidateQueries({ queryKey: ["user", id] });
-			queryClient.invalidateQueries({ queryKey: ["users"] });
-			queryClient.invalidateQueries({ queryKey: ["audit-logs"] });
+			await Promise.all([
+				queryClient.invalidateQueries({ queryKey: ["user", id] }),
+				queryClient.invalidateQueries({ queryKey: ["users"] }),
+				queryClient.invalidateQueries({ queryKey: ["audit-logs"] }),
+			]);
 		},
 	});
 };

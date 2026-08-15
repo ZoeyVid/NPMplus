@@ -24,7 +24,7 @@ const StreamModal = EasyModal.create(({ id, visible, remove }: Props) => {
 	const [errorMsg, setErrorMsg] = useState<ReactNode | null>(null);
 	const [isSubmitting, setIsSubmitting] = useState(false);
 
-	const onSubmit = async (values: any, { setSubmitting }: any) => {
+	const onSubmit = (values: any, { setSubmitting }: any) => {
 		if (isSubmitting) return;
 		setIsSubmitting(true);
 		setErrorMsg(null);
@@ -109,7 +109,12 @@ const StreamModal = EasyModal.create(({ id, visible, remove }: Props) => {
 								</Modal.Title>
 							</Modal.Header>
 							<Modal.Body className="p-0">
-								<Alert variant="danger" show={!!errorMsg} onClose={() => setErrorMsg(null)} dismissible>
+								<Alert
+									variant="danger"
+									show={Boolean(errorMsg)}
+									onClose={() => setErrorMsg(null)}
+									dismissible
+								>
 									{errorMsg}
 								</Alert>
 
@@ -168,8 +173,8 @@ const StreamModal = EasyModal.create(({ id, visible, remove }: Props) => {
 															<input
 																id="incomingPort"
 																type="text"
-																minlength={1}
-																maxlength={11}
+																minLength={1}
+																maxLength={11}
 																className={`form-control ${form.errors.incomingPort && form.touched.incomingPort ? "is-invalid" : ""}`}
 																required
 																placeholder="eg: 8080"
@@ -259,7 +264,7 @@ const StreamModal = EasyModal.create(({ id, visible, remove }: Props) => {
 																	<input
 																		id="forwardingPort"
 																		type="text"
-																		maxlength={12}
+																		maxLength={12}
 																		className={`form-control ${form.errors.forwardingPort && form.touched.forwardingPort ? "is-invalid" : ""}`}
 																		placeholder="eg: 8081"
 																		{...field}
@@ -290,7 +295,7 @@ const StreamModal = EasyModal.create(({ id, visible, remove }: Props) => {
 																<span className="col-auto">
 																	<Field name="tcpForwarding" type="checkbox">
 																		{({ field }: any) => (
-																			<label className="form-check form-check-single form-switch">
+																			<span className="form-check form-check-single form-switch">
 																				<input
 																					id="tcpForwarding"
 																					className="form-check-input"
@@ -322,7 +327,7 @@ const StreamModal = EasyModal.create(({ id, visible, remove }: Props) => {
 																						}
 																					}}
 																				/>
-																			</label>
+																			</span>
 																		)}
 																	</Field>
 																</span>
@@ -336,7 +341,7 @@ const StreamModal = EasyModal.create(({ id, visible, remove }: Props) => {
 																<span className="col-auto">
 																	<Field name="udpForwarding" type="checkbox">
 																		{({ field }: any) => (
-																			<label className="form-check form-check-single form-switch">
+																			<span className="form-check form-check-single form-switch">
 																				<input
 																					id="udpForwarding"
 																					className="form-check-input"
@@ -380,7 +385,7 @@ const StreamModal = EasyModal.create(({ id, visible, remove }: Props) => {
 																						}
 																					}}
 																				/>
-																			</label>
+																			</span>
 																		)}
 																	</Field>
 																</span>
@@ -400,7 +405,7 @@ const StreamModal = EasyModal.create(({ id, visible, remove }: Props) => {
 																		type="checkbox"
 																	>
 																		{({ field }: any) => (
-																			<label className="form-check form-check-single form-switch">
+																			<span className="form-check form-check-single form-switch">
 																				<input
 																					id="npmplusProxyProtocolForwarding"
 																					className="form-check-input"
@@ -415,7 +420,7 @@ const StreamModal = EasyModal.create(({ id, visible, remove }: Props) => {
 																						);
 																					}}
 																				/>
-																			</label>
+																			</span>
 																		)}
 																	</Field>
 																</span>
@@ -429,7 +434,7 @@ const StreamModal = EasyModal.create(({ id, visible, remove }: Props) => {
 																<span className="col-auto">
 																	<Field name="npmplusProxyTls" type="checkbox">
 																		{({ field }: any) => (
-																			<label className="form-check form-check-single form-switch">
+																			<span className="form-check form-check-single form-switch">
 																				<input
 																					id="npmplusProxyTls"
 																					className="form-check-input"
@@ -444,7 +449,7 @@ const StreamModal = EasyModal.create(({ id, visible, remove }: Props) => {
 																						);
 																					}}
 																				/>
-																			</label>
+																			</span>
 																		)}
 																	</Field>
 																</span>

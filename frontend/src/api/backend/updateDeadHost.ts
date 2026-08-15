@@ -7,6 +7,6 @@ export async function updateDeadHost(item: DeadHost): Promise<DeadHost> {
 
 	return await api.put({
 		url: `/nginx/dead-hosts/${id}`,
-		data: data,
+		data,
 	});
 }

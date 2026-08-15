@@ -1,7 +1,10 @@
 import NiceModal, { useModal } from "@ebay/nice-modal-react";
 import type { FC } from "react";
 
-export type InnerModalProps = { visible: boolean; remove: () => void };
+export interface InnerModalProps {
+	visible: boolean;
+	remove: () => void;
+}
 
 const create = <P extends InnerModalProps>(Comp: FC<P>) =>
 	NiceModal.create((props: Omit<P, keyof InnerModalProps>) => {

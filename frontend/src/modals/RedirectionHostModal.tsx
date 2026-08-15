@@ -33,7 +33,7 @@ const RedirectionHostModal = EasyModal.create(({ id, visible, remove }: Props) =
 	const [errorMsg, setErrorMsg] = useState<ReactNode | null>(null);
 	const [isSubmitting, setIsSubmitting] = useState(false);
 
-	const onSubmit = async (values: any, { setSubmitting }: any) => {
+	const onSubmit = (values: any, { setSubmitting }: any) => {
 		if (isSubmitting) return;
 		setIsSubmitting(true);
 		setErrorMsg(null);
@@ -104,7 +104,7 @@ const RedirectionHostModal = EasyModal.create(({ id, visible, remove }: Props) =
 							// SSL tab
 							certificateId: data?.certificateId || 0,
 							sslForced: data?.sslForced || false,
-							http2Support: data?.http2Support || true,
+							http2Support: data?.http2Support ?? true,
 							npmplusHttp3Support: data?.npmplusHttp3Support || false,
 							hstsEnabled: data?.hstsEnabled || false,
 							hstsSubdomains: data?.hstsSubdomains || false,
@@ -126,7 +126,12 @@ const RedirectionHostModal = EasyModal.create(({ id, visible, remove }: Props) =
 								</Modal.Title>
 							</Modal.Header>
 							<Modal.Body className="p-0">
-								<Alert variant="danger" show={!!errorMsg} onClose={() => setErrorMsg(null)} dismissible>
+								<Alert
+									variant="danger"
+									show={Boolean(errorMsg)}
+									onClose={() => setErrorMsg(null)}
+									dismissible
+								>
 									{errorMsg}
 								</Alert>
 								<div className="card m-0 border-0">
@@ -178,7 +183,7 @@ const RedirectionHostModal = EasyModal.create(({ id, visible, remove }: Props) =
 												<div className="row">
 													<div className="col-md-4">
 														<Field name="forwardScheme">
-															{({ field, form }: any) => (
+															{({ field }: any) => (
 																<div className="mb-3">
 																	<label
 																		className="form-label"
@@ -188,7 +193,7 @@ const RedirectionHostModal = EasyModal.create(({ id, visible, remove }: Props) =
 																	</label>
 																	<select
 																		id="forwardScheme"
-																		className={`form-select ${form.errors.forwardScheme && form.touched.forwardScheme ? "is-invalid" : ""}`}
+																		className="form-select"
 																		required
 																		{...field}
 																	>
@@ -196,14 +201,6 @@ const RedirectionHostModal = EasyModal.create(({ id, visible, remove }: Props) =
 																		<option value="http">http</option>
 																		<option value="https">https</option>
 																	</select>
-																	{form.errors.forwardScheme ? (
-																		<div className="invalid-feedback">
-																			{form.errors.forwardScheme &&
-																			form.touched.forwardScheme
-																				? form.errors.forwardScheme
-																				: null}
-																		</div>
-																	) : null}
 																</div>
 															)}
 														</Field>
@@ -243,14 +240,14 @@ const RedirectionHostModal = EasyModal.create(({ id, visible, remove }: Props) =
 													</div>
 												</div>
 												<Field name="forwardHttpCode">
-													{({ field, form }: any) => (
+													{({ field }: any) => (
 														<div className="mb-3">
 															<label className="form-label" htmlFor="forwardHttpCode">
 																<T id="redirection-host.forward-http-code" />
 															</label>
 															<select
 																id="forwardHttpCode"
-																className={`form-select ${form.errors.forwardHttpCode && form.touched.forwardHttpCode ? "is-invalid" : ""}`}
+																className="form-select"
 																required
 																{...field}
 															>
@@ -273,14 +270,6 @@ const RedirectionHostModal = EasyModal.create(({ id, visible, remove }: Props) =
 																	<T id="redirection-hosts.http-code.308" />
 																</option>
 															</select>
-															{form.errors.forwardHttpCode ? (
-																<div className="invalid-feedback">
-																	{form.errors.forwardHttpCode &&
-																	form.touched.forwardHttpCode
-																		? form.errors.forwardHttpCode
-																		: null}
-																</div>
-															) : null}
 														</div>
 													)}
 												</Field>
@@ -297,7 +286,7 @@ const RedirectionHostModal = EasyModal.create(({ id, visible, remove }: Props) =
 																<span className="col-auto">
 																	<Field name="preservePath" type="checkbox">
 																		{({ field }: any) => (
-																			<label className="form-check form-check-single form-switch">
+																			<span className="form-check form-check-single form-switch">
 																				<input
 																					{...field}
 																					id="preservePath"
@@ -306,7 +295,7 @@ const RedirectionHostModal = EasyModal.create(({ id, visible, remove }: Props) =
 																					})}
 																					type="checkbox"
 																				/>
-																			</label>
+																			</span>
 																		)}
 																	</Field>
 																</span>
@@ -320,7 +309,7 @@ const RedirectionHostModal = EasyModal.create(({ id, visible, remove }: Props) =
 																<span className="col-auto">
 																	<Field name="blockExploits" type="checkbox">
 																		{({ field }: any) => (
-																			<label className="form-check form-check-single form-switch">
+																			<span className="form-check form-check-single form-switch">
 																				<input
 																					{...field}
 																					id="blockExploits"
@@ -329,7 +318,7 @@ const RedirectionHostModal = EasyModal.create(({ id, visible, remove }: Props) =
 																					})}
 																					type="checkbox"
 																				/>
-																			</label>
+																			</span>
 																		)}
 																	</Field>
 																</span>

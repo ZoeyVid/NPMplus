@@ -4,7 +4,7 @@ import type { User } from "./models";
 export async function updateAuth(userId: number | "me", newPassword: string, current?: string): Promise<User> {
 	const data = {
 		type: "password",
-		current: current,
+		current,
 		secret: newPassword,
 	};
 	if (userId === "me") {

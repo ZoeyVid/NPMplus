@@ -65,7 +65,7 @@ export interface AccessListItem {
 	meta?: Record<string, any>;
 }
 
-export type AccessListClient = {
+export interface AccessListClient {
 	id?: number;
 	createdOn?: string;
 	modifiedOn?: string;
@@ -73,7 +73,7 @@ export type AccessListClient = {
 	address: string;
 	directive: "allow" | "deny";
 	meta?: Record<string, any>;
-};
+}
 
 export interface Certificate {
 	id: number;

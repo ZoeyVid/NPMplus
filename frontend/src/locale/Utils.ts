@@ -14,7 +14,7 @@ const isUnixTimestamp = (value: unknown): boolean => {
 const parseDate = (value: string | number): Date | null => {
 	if (typeof value !== "number" && typeof value !== "string") return null;
 	try {
-		return isUnixTimestamp(value) ? fromUnixTime(+value) : parseISO(`${value}`);
+		return isUnixTimestamp(value) ? fromUnixTime(Number(value)) : parseISO(`${value}`);
 	} catch {
 		return null;
 	}
@@ -58,4 +58,4 @@ const getFlagCodeForLocale = (locale?: string) => {
 	return thisLocale.toUpperCase();
 };
 
-export { formatDateTime, getFlagCodeForLocale, isUnixTimestamp, parseDate };
+export { formatDateTime, getFlagCodeForLocale, parseDate };

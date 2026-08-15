@@ -60,11 +60,13 @@ const useSetRedirectionHost = () => {
 		},
 		onError: (_, __, rollback: any) => rollback(),
 		onSuccess: async ({ id }: RedirectionHost) => {
-			queryClient.invalidateQueries({ queryKey: ["redirection-host", id] });
-			queryClient.invalidateQueries({ queryKey: ["redirection-hosts"] });
-			queryClient.invalidateQueries({ queryKey: ["audit-logs"] });
-			queryClient.invalidateQueries({ queryKey: ["host-report"] });
-			queryClient.invalidateQueries({ queryKey: ["certificates"] });
+			await Promise.all([
+				queryClient.invalidateQueries({ queryKey: ["redirection-host", id] }),
+				queryClient.invalidateQueries({ queryKey: ["redirection-hosts"] }),
+				queryClient.invalidateQueries({ queryKey: ["audit-logs"] }),
+				queryClient.invalidateQueries({ queryKey: ["host-report"] }),
+				queryClient.invalidateQueries({ queryKey: ["certificates"] }),
+			]);
 		},
 	});
 };

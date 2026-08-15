@@ -40,12 +40,11 @@ const PermissionsModal = EasyModal.create(({ id, visible, remove }: Props) => {
 		setIsSubmitting(false);
 	};
 
-	const getClasses = (active: boolean) => {
-		return cn("btn", active ? styles.active : null, {
+	const getClasses = (active: boolean) =>
+		cn("btn", active ? styles.active : null, {
 			active,
 			"bg-orange-lt": active,
 		});
-	};
 
 	// given the field and clicked permission, intelligently set the value, and
 	// other values that depends on it.
@@ -163,13 +162,18 @@ const PermissionsModal = EasyModal.create(({ id, visible, remove }: Props) => {
 								</Modal.Title>
 							</Modal.Header>
 							<Modal.Body>
-								<Alert variant="danger" show={!!error} onClose={() => setErrorMsg(null)} dismissible>
+								<Alert
+									variant="danger"
+									show={Boolean(error)}
+									onClose={() => setErrorMsg(null)}
+									dismissible
+								>
 									{errorMsg}
 								</Alert>
 								<div className="mb-3">
-									<label htmlFor="asd" className="form-label">
+									<div className="form-label">
 										<T id="permissions.visibility.title" />
-									</label>
+									</div>
 									<Field name="visibility">
 										{({ field, form }: any) => (
 											<fieldset className="btn-group w-100">
@@ -212,49 +216,49 @@ const PermissionsModal = EasyModal.create(({ id, visible, remove }: Props) => {
 								{!isAdmin && (
 									<>
 										<div className="mb-3">
-											<label htmlFor="ignored" className="form-label">
+											<div className="form-label">
 												<T id="proxy-hosts" />
-											</label>
+											</div>
 											<Field name="proxyHosts">
 												{({ field, form }: any) => getPermissionButtons(field, form)}
 											</Field>
 										</div>
 										<div className="mb-3">
-											<label htmlFor="ignored" className="form-label">
+											<div className="form-label">
 												<T id="redirection-hosts" />
-											</label>
+											</div>
 											<Field name="redirectionHosts">
 												{({ field, form }: any) => getPermissionButtons(field, form)}
 											</Field>
 										</div>
 										<div className="mb-3">
-											<label htmlFor="ignored" className="form-label">
+											<div className="form-label">
 												<T id="dead-hosts" />
-											</label>
+											</div>
 											<Field name="deadHosts">
 												{({ field, form }: any) => getPermissionButtons(field, form)}
 											</Field>
 										</div>
 										<div className="mb-3">
-											<label htmlFor="ignored" className="form-label">
+											<div className="form-label">
 												<T id="streams" />
-											</label>
+											</div>
 											<Field name="streams">
 												{({ field, form }: any) => getPermissionButtons(field, form)}
 											</Field>
 										</div>
 										<div className="mb-3">
-											<label htmlFor="ignored" className="form-label">
+											<div className="form-label">
 												<T id="access-lists" />
-											</label>
+											</div>
 											<Field name="accessLists">
 												{({ field, form }: any) => getPermissionButtons(field, form)}
 											</Field>
 										</div>
 										<div className="mb-3">
-											<label htmlFor="ignored" className="form-label">
+											<div className="form-label">
 												<T id="certificates" />
-											</label>
+											</div>
 											<Field name="certificates">
 												{({ field, form }: any) => getPermissionButtons(field, form)}
 											</Field>

@@ -24,8 +24,8 @@ export function DNSProviderFields({ showBoundaryBox = false }: Props) {
 	const v: any = values || {};
 
 	const handleChange = (newValue: any, _actionMeta: ActionMeta<DNSProviderOption>) => {
-		setFieldValue("meta.dnsProvider", newValue?.value);
-		setFieldValue("meta.dnsProviderCredentials", newValue?.credentials);
+		void setFieldValue("meta.dnsProvider", newValue?.value);
+		void setFieldValue("meta.dnsProviderCredentials", newValue?.credentials);
 		setDnsProviderId(newValue?.value);
 	};
 
@@ -53,7 +53,7 @@ export function DNSProviderFields({ showBoundaryBox = false }: Props) {
 							className="react-select-container"
 							classNamePrefix="react-select"
 							name={field.name}
-							id="dnsProvider"
+							inputId="dnsProvider"
 							closeMenuOnSelect={true}
 							isClearable={false}
 							placeholder={intl.formatMessage({ id: "certificates.dns.provider.placeholder" })}
