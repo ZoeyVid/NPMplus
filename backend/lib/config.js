@@ -76,6 +76,14 @@ const configure = () => {
 					filename: envSqliteFile,
 				},
 				useNullAsDefault: true,
+				pool: {
+					afterCreate: (conn, done) => {
+						conn.pragma("synchronous = NORMAL");
+						conn.pragma("temp_store = MEMORY");
+						conn.pragma("optimize = 0x10002");
+						done(null, conn);
+					},
+				},
 			},
 		},
 		keys: getKeys(),
