@@ -1,9 +1,9 @@
-import type { Table as ReactTable } from "@tanstack/react-table";
+import type { Table as ReactTable, RowData, TableFeatures } from "@tanstack/react-table";
 import { TableBody } from "./TableBody";
 import { TableHeader } from "./TableHeader";
 
-interface TableLayoutProps<TFields> {
-	tableInstance: ReactTable<TFields>;
+interface TableLayoutProps<TFeatures extends TableFeatures, TFields extends RowData> {
+	tableInstance: ReactTable<TFeatures, TFields>;
 	emptyState?: React.ReactNode;
 	extraStyles?: {
 		row: (rowData: TFields) => any | undefined;
@@ -12,7 +12,9 @@ interface TableLayoutProps<TFields> {
 	groupBy?: (row: TFields) => string;
 	renderGroupLabel?: (key: string) => React.ReactNode;
 }
-function TableLayout<TFields>(props: TableLayoutProps<TFields>) {
+function TableLayout<TFeatures extends TableFeatures, TFields extends RowData>(
+	props: TableLayoutProps<TFeatures, TFields>,
+) {
 	const hasRows = props.tableInstance.getRowModel().rows.length > 0;
 	const showHeader = props.showHeader ?? true;
 	return (
