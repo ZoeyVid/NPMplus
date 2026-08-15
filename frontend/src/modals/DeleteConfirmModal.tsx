@@ -10,6 +10,8 @@ interface ShowProps {
 	title?: ReactNode;
 	tTitle?: string;
 	children: ReactNode;
+	subject?: ReactNode;
+	details?: ReactNode;
 	onConfirm: () => Promise<void> | void;
 	invalidations?: any[];
 }
@@ -21,7 +23,7 @@ const showDeleteConfirmModal = (props: ShowProps) => {
 };
 
 const DeleteConfirmModal = EasyModal.create(
-	({ title, tTitle, children, onConfirm, invalidations, visible, remove }: Props) => {
+	({ title, tTitle, children, subject, details, onConfirm, invalidations, visible, remove }: Props) => {
 		const queryClient = useQueryClient();
 		const [error, setError] = useState<ReactNode | null>(null);
 		const [isSubmitting, setIsSubmitting] = useState(false);
@@ -72,7 +74,11 @@ const DeleteConfirmModal = EasyModal.create(
 							<path d="M5 19h14a2 2 0 0 0 1.84 -2.75l-7.1 -12.25a2 2 0 0 0 -3.5 0l-7.1 12.25a2 2 0 0 0 1.75 2.75" />
 						</svg>
 					</div>
-					<div className="text-center mb-3">{children}</div>
+					<div className="text-center mb-3">
+						{children}
+						{subject ? <div className="mt-2 fw-bold text-break">{subject}</div> : null}
+						{details ? <div className="mt-1 text-muted small text-break">{details}</div> : null}
+					</div>
 				</Modal.Body>
 				<Modal.Footer>
 					<Button data-bs-dismiss="modal" onClick={remove} disabled={isSubmitting}>
