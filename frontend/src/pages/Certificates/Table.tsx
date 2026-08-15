@@ -125,9 +125,7 @@ export default function Table({
 			columnHelper.accessor((row: any) => row.expiresOn, {
 				id: "expiresOn",
 				header: intl.formatMessage({ id: "column.expires" }),
-				cell: (info: any) => {
-					return <DateFormatter value={info.getValue()} highlightPast />;
-				},
+				cell: (info: any) => <DateFormatter value={info.getValue()} highlightPast />,
 			}),
 			columnHelper.accessor(
 				(row: Certificate) =>
@@ -224,76 +222,71 @@ export default function Table({
 								</span>
 
 								{row.provider === "letsencrypt" && !row.meta?.dnsProvider && (
-									<a
+									<button
+										type="button"
 										className="dropdown-item"
-										href="#"
-										onClick={(e) => {
-											e.preventDefault();
+										onClick={() => {
 											onTest?.(row.domainNames);
 										}}
 									>
 										<IconFlask size={16} />
 										<T id="test" />
-									</a>
+									</button>
 								)}
 
 								<HasPermission section={CERTIFICATES} permission={MANAGE} hideError>
 									{(row.provider === "other" || row.provider === "mtls") && (
-										<a
+										<button
+											type="button"
 											className="dropdown-item"
-											href="#"
-											onClick={(e) => {
-												e.preventDefault();
+											onClick={() => {
 												onEdit?.(row);
 											}}
 										>
 											<IconEdit size={16} />
 											<T id="action.edit" />
-										</a>
+										</button>
 									)}
 
 									{row.provider === "letsencrypt" && (
 										<>
-											<a
+											<button
+												type="button"
 												className="dropdown-item"
-												href="#"
-												onClick={(e) => {
-													e.preventDefault();
+												onClick={() => {
 													onRenew?.(row.id);
 												}}
 											>
 												<IconRefresh size={16} />
 												<T id="action.renew" />
-											</a>
+											</button>
 
-											<a
+											<button
+												type="button"
 												className="dropdown-item"
-												href="#"
-												onClick={(e) => {
-													e.preventDefault();
+												onClick={() => {
 													onDownload?.(row.id);
 												}}
 											>
 												<IconDownload size={16} />
 												<T id="action.download" />
-											</a>
+											</button>
 										</>
 									)}
 
 									{!inUse && (
 										<>
 											<div className="dropdown-divider" />
-											<a
+											<button
+												type="button"
 												className="dropdown-item"
-												href="#"
-												onClick={(e) => {
-													e.preventDefault();
+												onClick={() => {
 													onDelete?.(row.id);
 												}}
 											>
 												<IconTrash size={16} />
 												<T id="action.delete" />
-											</a>
+											</button>
 										</>
 									)}
 								</HasPermission>
@@ -325,48 +318,44 @@ export default function Table({
 				<T id="object.add" tData={{ object: "certificate" }} />
 			</button>
 			<div className="dropdown-menu">
-				<a
+				<button
+					type="button"
 					className="dropdown-item"
-					href="#"
-					onClick={(e) => {
-						e.preventDefault();
+					onClick={() => {
 						showHTTPCertificateModal();
 					}}
 				>
 					<T id="lets-encrypt-via-http" />
-				</a>
-				<a
+				</button>
+				<button
+					type="button"
 					className="dropdown-item"
-					href="#"
-					onClick={(e) => {
-						e.preventDefault();
+					onClick={() => {
 						showDNSCertificateModal();
 					}}
 				>
 					<T id="lets-encrypt-via-dns" />
-				</a>
+				</button>
 				<div className="dropdown-divider" />
-				<a
+				<button
+					type="button"
 					className="dropdown-item"
-					href="#"
-					onClick={(e) => {
-						e.preventDefault();
+					onClick={() => {
 						showCustomCertificateModal();
 					}}
 				>
 					<T id="certificates.custom" />
-				</a>
+				</button>
 				<div className="dropdown-divider" />
-				<a
+				<button
+					type="button"
 					className="dropdown-item"
-					href="#"
-					onClick={(e) => {
-						e.preventDefault();
+					onClick={() => {
 						showCustomCertificateModal(undefined, "mtls");
 					}}
 				>
 					mTLS
-				</a>
+				</button>
 			</div>
 		</div>
 	);

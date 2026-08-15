@@ -71,7 +71,7 @@ export default function Setup() {
 					<img className={styles.logo} src="/images/logo-text-horizontal-grey.png" alt="NPMplus" />
 				</div>
 				<div className="card card-md">
-					<Alert variant="danger" show={!!errorMsg} onClose={() => setErrorMsg(null)} dismissible>
+					<Alert variant="danger" show={Boolean(errorMsg)} onClose={() => setErrorMsg(null)} dismissible>
 						{errorMsg}
 					</Alert>
 					<Formik

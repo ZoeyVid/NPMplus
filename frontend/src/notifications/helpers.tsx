@@ -35,4 +35,4 @@ const showObjectSuccess = (obj: string, action: string) => {
 	);
 };
 
-export { showError, showObjectSuccess, showSuccess };
+export { showError, showObjectSuccess };

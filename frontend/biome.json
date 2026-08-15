@@ -14,21 +14,79 @@
 		"indentStyle": "tab",
 		"indentWidth": 4,
 		"lineWidth": 120,
-		"formatWithErrors": true
+		"formatWithErrors": false
 	},
 	"linter": {
 		"enabled": true,
 		"rules": {
-			"preset": "recommended",
-			"suspicious": {
-				"noExplicitAny": "off",
-				"noArrayIndexKey": "off"
-			},
-			"a11y": {
-				"useValidAnchor": "off"
-			},
+			"preset": "all",
 			"complexity": {
-				"noImportantStyles": "off"
+				"noExcessiveCognitiveComplexity": "off",
+				"noExcessiveLinesPerFunction": "off",
+				"noForEach": "off",
+				"noImportantStyles": "off",
+				"noVoid": "off",
+				"useSimplifiedLogicExpression": "off"
+			},
+			"correctness": {
+				"noNodejsModules": "off",
+				"noProcessGlobal": "off",
+				"noSolidDestructuredProps": "off",
+				"noUndeclaredDependencies": "off",
+				"noUnresolvedImports": "off",
+				"useImageSize": "off",
+				"useImportExtensions": "off",
+				"useQwikValidLexicalScope": "off",
+				"useUniqueElementIds": "off"
+			},
+			"nursery": {
+				"noFloatingPromises": "error"
+			},
+			"performance": {
+				"noBarrelFile": "off",
+				"noDelete": "off",
+				"noImgElement": "off",
+				"noJsxPropsBind": "off",
+				"noNamespaceImport": "off",
+				"noReExportAll": "off",
+				"useSolidForComponent": "off"
+			},
+			"security": {
+				"noSecrets": "off"
+			},
+			"style": {
+				"noDefaultExport": "off",
+				"noExcessiveLinesPerFile": "off",
+				"noHexColors": "off",
+				"noImplicitBoolean": "off",
+				"noIncrementDecrement": "off",
+				"noJsxLiterals": "off",
+				"noMagicNumbers": "off",
+				"noNegationElse": "off",
+				"noNestedTernary": "off",
+				"noTernary": "off",
+				"useAtIndex": "off",
+				"useBlockStatements": "off",
+				"useComponentExportOnlyModules": "off",
+				"useDestructuring": "off",
+				"useExplicitLengthCheck": "off",
+				"useExportsLast": "off",
+				"useFilenamingConvention": "off",
+				"useGlobalThis": "off",
+				"useNamingConvention": "off",
+				"useNumericSeparators": "off",
+				"useObjectSpread": "off"
+			},
+			"suspicious": {
+				"noArrayIndexKey": "off",
+				"noConsole": "off",
+				"noEmptyBlockStatements": "off",
+				"noExplicitAny": "off",
+				"noImportCycles": "off",
+				"noLeakedRender": "off",
+				"noReactSpecificProps": "off",
+				"noUnnecessaryConditions": "off",
+				"useStrictMode": "off"
 			}
 		}
 	},

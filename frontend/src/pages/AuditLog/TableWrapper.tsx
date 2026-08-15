@@ -1,6 +1,7 @@
 import { IconSearch } from "@tabler/icons-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Alert from "react-bootstrap/Alert";
+import type { AuditLog } from "src/api/backend";
 import { LoadingPage } from "src/components";
 import { useAuditLogs } from "src/hooks";
 import { T } from "src/locale";
@@ -11,6 +12,13 @@ export default function TableWrapper() {
 	const [search, setSearch] = useState("");
 	const { isFetching, isLoading, isError, error, data } = useAuditLogs(["user"]);
 
+	useEffect(() => {
+		// this can happen if someone deletes the last item while searching
+		if (search !== "" && !data) {
+			setSearch("");
+		}
+	});
+
 	if (isLoading) {
 		return <LoadingPage />;
 	}
@@ -19,7 +27,7 @@ export default function TableWrapper() {
 		return <Alert variant="danger">{error?.message || "Unknown error"}</Alert>;
 	}
 
-	let filtered = null;
+	let filtered: AuditLog[] | null = null;
 	if (search && data) {
 		filtered = data.filter((item) => {
 			const metaText = JSON.stringify(item.meta || {}).toLowerCase();
@@ -27,9 +35,6 @@ export default function TableWrapper() {
 
 			return value.includes(search);
 		});
-	} else if (search !== "") {
-		// this can happen if someone deletes the last item while searching
-		setSearch("");
 	}
 
 	return (
@@ -51,7 +56,6 @@ export default function TableWrapper() {
 											<IconSearch size={16} />
 										</span>
 										<input
-											id="advanced-table-search"
 											type="text"
 											className="form-control form-control-sm"
 											autoComplete="off"

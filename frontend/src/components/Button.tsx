@@ -40,7 +40,7 @@ function Button({
 	disabled,
 }: Props) {
 	const myOnClick = () => {
-		!isLoading && onClick && onClick();
+		if (!isLoading) onClick?.();
 	};
 
 	const cns = cn(

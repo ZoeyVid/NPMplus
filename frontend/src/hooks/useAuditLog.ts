@@ -1,9 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
 import { type AuditLog, getAuditLog } from "src/api/backend";
 
-const fetchAuditLog = (id: number) => {
-	return getAuditLog(id, ["user"]);
-};
+const fetchAuditLog = (id: number) => getAuditLog(id, ["user"]);
 
 const useAuditLog = (id: number, options = {}) => {
 	return useQuery<AuditLog, Error>({

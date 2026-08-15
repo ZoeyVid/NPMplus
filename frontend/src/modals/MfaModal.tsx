@@ -43,7 +43,7 @@ const MfaModal = EasyModal.create(({ id, visible, remove }: Props) => {
 	}, [id]);
 
 	useEffect(() => {
-		loadStatus();
+		void loadStatus();
 	}, [loadStatus]);
 
 	const handleStartSetup = async () => {
@@ -105,7 +105,7 @@ const MfaModal = EasyModal.create(({ id, visible, remove }: Props) => {
 	const handleBackupDone = () => {
 		setIsEnabled(true);
 		setBackupCodes([]);
-		loadStatus();
+		void loadStatus();
 	};
 
 	const renderContent = () => {
@@ -396,7 +396,7 @@ const MfaModal = EasyModal.create(({ id, visible, remove }: Props) => {
 				</Modal.Title>
 			</Modal.Header>
 			<Modal.Body>
-				<Alert variant="danger" show={!!error} onClose={() => setError(null)} dismissible>
+				<Alert variant="danger" show={Boolean(error)} onClose={() => setError(null)} dismissible>
 					{error}
 				</Alert>
 				{renderContent()}
