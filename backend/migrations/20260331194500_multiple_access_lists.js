@@ -52,7 +52,7 @@ const up = async (knex) => {
 
 		const updateData = {
 			npmplus_access_list_ids: JSON.stringify(npmplus_access_list_ids),
-			npmplus_access_list_type: npmplus_access_list_type,
+			npmplus_access_list_type,
 		};
 
 		if (Array.isArray(locations) && locations.length > 0) {
@@ -62,17 +62,17 @@ const up = async (knex) => {
 				npmplus_access_list_type: loc.npmplus_access_list_type ?? "global",
 			}));
 			let count = 0;
-			migratedLocations.forEach((location) => {
+			for (const location of migratedLocations) {
 				location.id = count++;
 				if (Array.isArray(location.npmplus_access_list_ids)) {
-					location.npmplus_access_list_ids.forEach((aclId) => {
+					for (const aclId of location.npmplus_access_list_ids) {
 						acl_hosts[`${row.id}_${aclId}`] = {
 							proxy_host_id: row.id,
 							access_list_id: aclId,
 						};
-					});
+					}
 				}
-			});
+			}
 			updateData.locations = JSON.stringify(migratedLocations);
 		}
 
@@ -89,12 +89,11 @@ const up = async (knex) => {
 /**
  * Undo Migrate
  *
- * @param   {Object} knex
+ * @param   {Object} _knex
  * @returns {Promise}
  */
 const down = (_knex) => {
-	logger.warn(`[${migrateName}] You can't migrate down this one.`);
-	return Promise.resolve(true);
+	throw new Error(`[${migrateName}] You can't migrate down this one.`);
 };
 
 export { down, up };

@@ -11,9 +11,13 @@ import pjson from "../package.json" with { type: "json" };
 import internalAuditLog from "./audit-log.js";
 import internalToken from "./token.js";
 
-const omissions = () => {
-	return ["is_deleted", "permissions.id", "permissions.user_id", "permissions.created_on", "permissions.modified_on"];
-};
+const omissions = () => [
+	"is_deleted",
+	"permissions.id",
+	"permissions.user_id",
+	"permissions.created_on",
+	"permissions.modified_on",
+];
 
 const avatarExts = ["png", "jpg", "gif", "webp"];
 
@@ -82,13 +86,13 @@ const internalUser = {
 						ext = "png";
 						break;
 					case "image/jpeg":
-						ext = "jpeg";
+						ext = "jpg";
 						break;
 					case "image/gif":
 						ext = "gif";
 						break;
 					default:
-						throw new Error();
+						throw new Error(`Unsupported content-type: ${response.headers.get("content-type")}`);
 				}
 
 				const buffer = await response.arrayBuffer();
@@ -101,7 +105,7 @@ const internalUser = {
 			}
 		}
 
-		let user = await userModel.query().insertAndFetch(data).then(utils.omitRow(omissions()));
+		let user = utils.omitRow(omissions())(await userModel.query().insertAndFetch(data));
 		if (auth) {
 			await authModel.query().insert({
 				user_id: user.id,
@@ -164,118 +168,97 @@ const internalUser = {
 	 * @param  {String}  [data.name]
 	 * @return {Promise}
 	 */
-	update: (access, data) => {
+	update: async (access, data) => {
 		if (typeof data.is_disabled !== "undefined") {
 			data.is_disabled = data.is_disabled ? 1 : 0;
 		}
 
-		return access
-			.can("users:permissions", data.id)
-			.catch(() => {
-				delete data.roles;
-			})
-			.then(() => {
-				return access.can("users:update", data.id);
-			})
-			.then(() => {
-				// Make sure that the user being updated doesn't change their email to another user that is already using it
-				// 1. get user we want to update
-				return internalUser.get(access, { id: data.id }).then((user) => {
-					// 2. if email is to be changed, find other users with that email
-					if (typeof data.email !== "undefined") {
-						data.email = data.email.toLowerCase().trim();
+		try {
+			await access.can("users:permissions", data.id);
+		} catch {
+			delete data.roles;
+		}
 
-						if (user.email !== data.email) {
-							return internalUser.isEmailAvailable(data.email, data.id).then((available) => {
-								if (!available) {
-									throw new errs.ValidationError(`Email address already in use - ${data.email}`);
-								}
-								return user;
-							});
-						}
-					}
+		await access.can("users:update", data.id);
+		const existingUser = await internalUser.get(access, { id: data.id });
+		// 2. if email is to be changed, find other users with that email
+		if (typeof data.email !== "undefined") {
+			data.email = data.email.toLowerCase().trim();
 
-					// No change to email:
-					return user;
-				});
-			})
-			.then(async (user) => {
-				if (user.id !== data.id) {
-					// Sanity check that something crazy hasn't happened
-					throw new errs.InternalValidationError(
-						`User could not be updated, IDs do not match: ${user.id} !== ${data.id}`,
-					);
+			if (existingUser.email !== data.email && !(await internalUser.isEmailAvailable(data.email, data.id))) {
+				throw new errs.ValidationError(`Email address already in use - ${data.email}`);
+			}
+		}
+
+		if (existingUser.id !== data.id) {
+			// Sanity check that something crazy hasn't happened
+			throw new errs.InternalValidationError(
+				`User could not be updated, IDs do not match: ${existingUser.id} !== ${data.id}`,
+			);
+		}
+
+		if (existingUser.avatar?.startsWith("/images/avatar/")) {
+			data.avatar = existingUser.avatar;
+		} else if (process.env.DISABLE_GRAVATAR === "true") {
+			data.avatar = "/images/default-avatar.jpg";
+		} else {
+			try {
+				const hash = crypto
+					.createHash("sha256")
+					.update((data.email || existingUser.email).trim().toLowerCase())
+					.digest("hex");
+				const response = await fetch(
+					`https://www.gravatar.com/avatar/${hash}?s=64&default=initials&name=${encodeURIComponent(
+						(data.name || existingUser.name)
+							.split(" ")
+							.map((n) => n[0])
+							.join(""),
+					)}`,
+					{
+						headers: {
+							"User-Agent": `NPMplus/${pjson.version}`,
+						},
+					},
+				);
+
+				if (!response.ok) throw new Error(`Status code: ${response.status}`);
+
+				let ext;
+				switch (response.headers.get("content-type")) {
+					case "image/png":
+						ext = "png";
+						break;
+					case "image/jpeg":
+						ext = "jpg";
+						break;
+					case "image/gif":
+						ext = "gif";
+						break;
+					default:
+						throw new Error(`Unsupported content-type: ${response.headers.get("content-type")}`);
 				}
 
-				if (user.avatar?.startsWith("/images/avatar/")) {
-					data.avatar = user.avatar;
-				} else if (process.env.DISABLE_GRAVATAR === "true") {
-					data.avatar = "/images/default-avatar.jpg";
-				} else {
-					try {
-						const hash = crypto
-							.createHash("sha256")
-							.update((data.email || user.email).trim().toLowerCase())
-							.digest("hex");
-						const response = await fetch(
-							`https://www.gravatar.com/avatar/${hash}?s=64&default=initials&name=${encodeURIComponent(
-								(data.name || user.name)
-									.split(" ")
-									.map((n) => n[0])
-									.join(""),
-							)}`,
-							{
-								headers: {
-									"User-Agent": `NPMplus/${pjson.version}`,
-								},
-							},
-						);
+				const buffer = await response.arrayBuffer();
+				await writeFile(`/data/npmplus/gravatar/${hash}.${ext}`, Buffer.from(buffer));
 
-						if (!response.ok) throw new Error(`Status code: ${response.status}`);
+				data.avatar = `/images/gravatar/${hash}.${ext}`;
+			} catch (err) {
+				logger.error(`Error downloading gravatar: ${err.message}`);
+				data.avatar = "/images/default-avatar.jpg";
+			}
+		}
 
-						let ext;
-						switch (response.headers.get("content-type")) {
-							case "image/png":
-								ext = "png";
-								break;
-							case "image/jpeg":
-								ext = "jpg";
-								break;
-							case "image/gif":
-								ext = "gif";
-								break;
-							default:
-								throw new Error();
-						}
+		await userModel.query().patchAndFetchById(existingUser.id, data);
+		const user = await internalUser.get(access, { id: data.id });
 
-						const buffer = await response.arrayBuffer();
-						await writeFile(`/data/npmplus/gravatar/${hash}.${ext}`, Buffer.from(buffer));
+		await internalAuditLog.add(access, {
+			action: "updated",
+			object_type: "user",
+			object_id: user.id,
+			meta: { ...data, id: user.id, name: user.name },
+		});
 
-						data.avatar = `/images/gravatar/${hash}.${ext}`;
-					} catch (err) {
-						logger.error(`Error downloading gravatar: ${err.message}`);
-						data.avatar = "/images/default-avatar.jpg";
-					}
-				}
-
-				return userModel.query().patchAndFetchById(user.id, data).then(utils.omitRow(omissions()));
-			})
-			.then(() => {
-				return internalUser.get(access, { id: data.id });
-			})
-			.then((user) => {
-				// Add to audit log
-				return internalAuditLog
-					.add(access, {
-						action: "updated",
-						object_type: "user",
-						object_id: user.id,
-						meta: { ...data, id: user.id, name: user.name },
-					})
-					.then(() => {
-						return user;
-					});
-			});
+		return user;
 	},
 
 	/**
@@ -286,48 +269,44 @@ const internalUser = {
 	 * @param  {Array}    [data.omit]
 	 * @return {Promise}
 	 */
-	get: (access, data) => {
+	get: async (access, data) => {
 		const thisData = data || {};
 
 		if (typeof thisData.id === "undefined" || !thisData.id) {
 			thisData.id = access.token.getUserId(0);
 		}
 
-		return access
-			.can("users:get", thisData.id)
-			.then(() => {
-				const query = userModel
-					.query()
-					.where("is_deleted", 0)
-					.andWhere("id", thisData.id)
-					.allowGraph("[permissions]")
-					.first();
+		await access.can("users:get", thisData.id);
 
-				if (typeof thisData.expand !== "undefined" && thisData.expand !== null) {
-					query.withGraphFetched(`[${thisData.expand.join(", ")}]`);
-				}
+		const query = userModel
+			.query()
+			.where("is_deleted", 0)
+			.andWhere("id", thisData.id)
+			.allowGraph("[permissions]")
+			.first();
 
-				return query.then(utils.omitRow(omissions()));
-			})
-			.then((row) => {
-				if (!row?.id) {
-					throw new errs.ItemNotFoundError(thisData.id);
-				}
+		if (typeof thisData.expand !== "undefined" && thisData.expand !== null) {
+			query.withGraphFetched(`[${thisData.expand.join(", ")}]`);
+		}
 
-				if (row.id === access.token.getUserId(0)) {
-					row.goaccess = process.env.GOA === "true" && row.roles.includes("admin");
-				}
-				// Custom omissions
-				if (typeof thisData.omit !== "undefined" && thisData.omit !== null) {
-					return _.omit(row, thisData.omit);
-				}
+		const row = utils.omitRow(omissions())(await query);
+		if (!row?.id) {
+			throw new errs.ItemNotFoundError(thisData.id);
+		}
 
-				if (row.avatar === "") {
-					row.avatar = "/images/default-avatar.jpg";
-				}
+		if (row.id === access.token.getUserId(0)) {
+			row.goaccess = process.env.GOA === "true" && row.roles.includes("admin");
+		}
+		// Custom omissions
+		if (typeof thisData.omit !== "undefined" && thisData.omit !== null) {
+			return _.omit(row, thisData.omit);
+		}
 
-				return row;
-			});
+		if (row.avatar === "") {
+			row.avatar = "/images/default-avatar.jpg";
+		}
+
+		return row;
 	},
 
 	/**
@@ -337,16 +316,16 @@ const internalUser = {
 	 * @param email
 	 * @param user_id
 	 */
-	isEmailAvailable: (email, user_id) => {
+	isEmailAvailable: async (email, user_id) => {
 		const query = userModel.query().where("email", "=", email.toLowerCase().trim()).where("is_deleted", 0).first();
 
 		if (typeof user_id !== "undefined") {
 			query.where("id", "!=", user_id);
 		}
 
-		return query.then((user) => {
-			return !user;
-		});
+		const user = await query;
+
+		return !user;
 	},
 
 	/**
@@ -356,41 +335,31 @@ const internalUser = {
 	 * @param {String}  [data.reason]
 	 * @returns {Promise}
 	 */
-	delete: (access, data) => {
-		return access
-			.can("users:delete", data.id)
-			.then(() => {
-				return internalUser.get(access, { id: data.id });
-			})
-			.then((user) => {
-				if (!user) {
-					throw new errs.ItemNotFoundError(data.id);
-				}
+	delete: async (access, data) => {
+		await access.can("users:delete", data.id);
 
-				// Make sure user can't delete themselves
-				if (user.id === access.token.getUserId(0)) {
-					throw new errs.PermissionError("You cannot delete yourself.");
-				}
+		const user = await internalUser.get(access, { id: data.id });
+		if (!user) {
+			throw new errs.ItemNotFoundError(data.id);
+		}
 
-				return userModel
-					.query()
-					.where("id", user.id)
-					.patch({
-						is_deleted: 1,
-					})
-					.then(() => {
-						// Add to audit log
-						return internalAuditLog.add(access, {
-							action: "deleted",
-							object_type: "user",
-							object_id: user.id,
-							meta: _.omit(user, omissions()),
-						});
-					});
-			})
-			.then(() => {
-				return true;
-			});
+		// Make sure user can't delete themselves
+		if (user.id === access.token.getUserId(0)) {
+			throw new errs.PermissionError("You cannot delete yourself.");
+		}
+
+		await userModel.query().where("id", user.id).patch({
+			is_deleted: 1,
+		});
+
+		await internalAuditLog.add(access, {
+			action: "deleted",
+			object_type: "user",
+			object_id: user.id,
+			meta: _.omit(user, omissions()),
+		});
+
+		return true;
 	},
 
 	/**
@@ -400,28 +369,20 @@ const internalUser = {
 	 * @param   {String}  [search_query]
 	 * @returns {*}
 	 */
-	getCount: (access, search_query) => {
-		return access
-			.can("users:list")
-			.then(() => {
-				const query = userModel.query().count("id as count").where("is_deleted", 0).first();
+	getCount: async (access, search_query) => {
+		await access.can("users:list");
 
-				// Query is used for searching
-				if (typeof search_query === "string") {
-					query.where(function () {
-						this.where("user.name", "like", `%${search_query}%`).orWhere(
-							"user.email",
-							"like",
-							`%${search_query}%`,
-						);
-					});
-				}
+		const query = userModel.query().count("id as count").where("is_deleted", 0).first();
 
-				return query;
-			})
-			.then((row) => {
-				return Number.parseInt(row.count, 10);
+		// Query is used for searching
+		if (typeof search_query === "string") {
+			query.where(function () {
+				this.where("user.name", "like", `%${search_query}%`).orWhere("user.email", "like", `%${search_query}%`);
 			});
+		}
+
+		const row = await query;
+		return Number.parseInt(row.count, 10);
 	},
 
 	/**
@@ -479,78 +440,57 @@ const internalUser = {
 	 * @param  {String}  data.secret
 	 * @return {Promise}
 	 */
-	setPassword: (access, data) => {
-		return access
-			.can("users:password", data.id)
-			.then(() => {
-				return internalUser.get(access, { id: data.id });
-			})
-			.then((user) => {
-				if (user.id !== data.id) {
-					// Sanity check that something crazy hasn't happened
-					throw new errs.InternalValidationError(
-						`User could not be updated, IDs do not match: ${user.id} !== ${data.id}`,
-					);
-				}
+	setPassword: async (access, data) => {
+		await access.can("users:password", data.id);
 
-				if (user.id === access.token.getUserId(0)) {
-					// they're setting their own password. Make sure their current password is correct
-					if (typeof data.current === "undefined" || !data.current) {
-						throw new errs.ValidationError("Current password was not supplied");
-					}
+		const user = await internalUser.get(access, { id: data.id });
+		if (user.id !== data.id) {
+			// Sanity check that something crazy hasn't happened
+			throw new errs.InternalValidationError(
+				`User could not be updated, IDs do not match: ${user.id} !== ${data.id}`,
+			);
+		}
 
-					return internalToken
-						.getTokenFromEmail({
-							identity: user.email.toLowerCase().trim(),
-							secret: data.current,
-						})
-						.then(() => {
-							return user;
-						});
-				}
+		if (user.id === access.token.getUserId(0)) {
+			// they're setting their own password. Make sure their current password is correct
+			if (typeof data.current === "undefined" || !data.current) {
+				throw new errs.ValidationError("Current password was not supplied");
+			}
 
-				return user;
-			})
-			.then((user) => {
-				// Get auth, patch if it exists
-				return authModel
-					.query()
-					.where("user_id", user.id)
-					.andWhere("type", data.type)
-					.first()
-					.then((existing_auth) => {
-						if (existing_auth) {
-							// patch
-							return authModel.query().where("user_id", user.id).andWhere("type", data.type).patch({
-								type: data.type, // This is required for the model to encrypt on save
-								secret: data.secret,
-							});
-						}
-						// insert
-						return authModel.query().insert({
-							user_id: user.id,
-							type: data.type,
-							secret: data.secret,
-							meta: {},
-						});
-					})
-					.then(() => {
-						// Add to Audit Log
-						return internalAuditLog.add(access, {
-							action: "updated",
-							object_type: "user",
-							object_id: user.id,
-							meta: {
-								name: user.name,
-								password_changed: true,
-								auth_type: data.type,
-							},
-						});
-					});
-			})
-			.then(() => {
-				return true;
+			await internalToken.getTokenFromEmail({
+				identity: user.email.toLowerCase().trim(),
+				secret: data.current,
 			});
+		}
+
+		const existing_auth = await authModel.query().where("user_id", user.id).andWhere("type", data.type).first();
+
+		if (existing_auth) {
+			await authModel.query().where("user_id", user.id).andWhere("type", data.type).patch({
+				type: data.type, // This is required for the model to encrypt on save
+				secret: data.secret,
+			});
+		} else {
+			await authModel.query().insert({
+				user_id: user.id,
+				type: data.type,
+				secret: data.secret,
+				meta: {},
+			});
+		}
+
+		await internalAuditLog.add(access, {
+			action: "updated",
+			object_type: "user",
+			object_id: user.id,
+			meta: {
+				name: user.name,
+				password_changed: true,
+				auth_type: data.type,
+			},
+		});
+
+		return true;
 	},
 
 	/**
@@ -558,55 +498,41 @@ const internalUser = {
 	 * @param  {Object}  data
 	 * @return {Promise}
 	 */
-	setPermissions: (access, data) => {
-		return access
-			.can("users:permissions", data.id)
-			.then(() => {
-				return internalUser.get(access, { id: data.id });
-			})
-			.then((user) => {
-				if (user.id !== data.id) {
-					// Sanity check that something crazy hasn't happened
-					throw new errs.InternalValidationError(
-						`User could not be updated, IDs do not match: ${user.id} !== ${data.id}`,
-					);
-				}
+	setPermissions: async (access, data) => {
+		await access.can("users:permissions", data.id);
 
-				return user;
-			})
-			.then((user) => {
-				// Get perms row, patch if it exists
-				return userPermissionModel
-					.query()
-					.where("user_id", user.id)
-					.first()
-					.then((existing_auth) => {
-						if (existing_auth) {
-							// patch
-							return userPermissionModel
-								.query()
-								.where("user_id", user.id)
-								.patchAndFetchById(existing_auth.id, { user_id: user.id, ...data });
-						}
-						// insert
-						return userPermissionModel.query().insertAndFetch({ user_id: user.id, ...data });
-					})
-					.then((permissions) => {
-						// Add to Audit Log
-						return internalAuditLog.add(access, {
-							action: "updated",
-							object_type: "user",
-							object_id: user.id,
-							meta: {
-								name: user.name,
-								permissions: permissions,
-							},
-						});
-					});
-			})
-			.then(() => {
-				return true;
-			});
+		const user = await internalUser.get(access, { id: data.id });
+		if (user.id !== data.id) {
+			// Sanity check that something crazy hasn't happened
+			throw new errs.InternalValidationError(
+				`User could not be updated, IDs do not match: ${user.id} !== ${data.id}`,
+			);
+		}
+
+		let permissions;
+
+		const existing_auth = await userPermissionModel.query().where("user_id", user.id).first();
+
+		if (existing_auth) {
+			permissions = await userPermissionModel
+				.query()
+				.where("user_id", user.id)
+				.patchAndFetchById(existing_auth.id, { user_id: user.id, ...data });
+		} else {
+			permissions = await userPermissionModel.query().insertAndFetch({ user_id: user.id, ...data });
+		}
+
+		await internalAuditLog.add(access, {
+			action: "updated",
+			object_type: "user",
+			object_id: user.id,
+			meta: {
+				name: user.name,
+				permissions,
+			},
+		});
+
+		return true;
 	},
 
 	revokeSessions: async (access, userId) => {

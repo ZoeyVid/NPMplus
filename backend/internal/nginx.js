@@ -60,9 +60,7 @@ const internalNginx = {
 	/**
 	 * @returns {Promise}
 	 */
-	test: async () => {
-		return utils.execFile("nginx", ["-tq"]);
-	},
+	test: () => utils.execFile("nginx", ["-tq"]),
 
 	/**
 	 * @returns {Promise}
@@ -123,7 +121,7 @@ const internalNginx = {
 				encoding: "utf8",
 			});
 		} catch (err) {
-			throw new errs.ConfigurationError(err.message);
+			throw new errs.ConfigurationError(err.message, err);
 		}
 
 		const renderEngine = utils.getRenderEngine();
@@ -170,7 +168,7 @@ const internalNginx = {
 				encoding: "utf8",
 			});
 		} catch (err) {
-			throw new errs.ConfigurationError(err.message);
+			throw new errs.ConfigurationError(err.message, err);
 		}
 
 		const renderEngine = utils.getRenderEngine();
@@ -245,7 +243,7 @@ const internalNginx = {
 		try {
 			template = await readFile(`${__dirname}/../templates/${nice_host_type}.conf`, { encoding: "utf8" });
 		} catch (err) {
-			throw new errs.ConfigurationError(err.message);
+			throw new errs.ConfigurationError(err.message, err);
 		}
 
 		host.env = process.env;
@@ -382,7 +380,7 @@ const internalNginx = {
 			return true;
 		} catch (err) {
 			debug(logger, `Could not write ${filename}:`, err.message);
-			throw new errs.ConfigurationError(err.message);
+			throw new errs.ConfigurationError(err.message, err);
 		}
 	},
 
@@ -391,9 +389,7 @@ const internalNginx = {
 	 * @param   {String} host_type
 	 * @returns String
 	 */
-	getFileFriendlyHostType: (host_type) => {
-		return host_type.replace(/-/g, "_");
-	},
+	getFileFriendlyHostType: (host_type) => host_type.replace(/-/g, "_"),
 
 	/**
 	 * @param   {String}  host_type

@@ -67,9 +67,7 @@ const omitRow = (omissions) => {
 	 * @param   {Object} row
 	 * @returns {Object}
 	 */
-	return (row) => {
-		return _.omit(row, omissions);
-	};
+	return (row) => _.omit(row, omissions);
 };
 
 /**
@@ -83,12 +81,7 @@ const omitRows = (omissions) => {
 	 * @param   {Array} rows
 	 * @returns {Object}
 	 */
-	return (rows) => {
-		rows.forEach((row, idx) => {
-			rows[idx] = _.omit(row, omissions);
-		});
-		return rows;
-	};
+	return (rows) => rows.map((row) => _.omit(row, omissions));
 };
 
 /**

@@ -61,7 +61,7 @@ router
 	 */
 	.post(async (req, res, next) => {
 		try {
-			const payload = await apiValidator(getValidationSchema("/nginx/redirection-hosts", "post"), req.body);
+			const payload = apiValidator(getValidationSchema("/nginx/redirection-hosts", "post"), req.body);
 			const result = await internalRedirectionHost.create(res.locals.access, payload);
 			res.status(201).send(result);
 		} catch (err) {
@@ -125,10 +125,7 @@ router
 	 */
 	.put(async (req, res, next) => {
 		try {
-			const payload = await apiValidator(
-				getValidationSchema("/nginx/redirection-hosts/{hostID}", "put"),
-				req.body,
-			);
+			const payload = apiValidator(getValidationSchema("/nginx/redirection-hosts/{hostID}", "put"), req.body);
 			payload.id = Number.parseInt(req.params.host_id, 10);
 			const result = await internalRedirectionHost.update(res.locals.access, payload);
 			res.status(200).send(result);

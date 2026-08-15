@@ -62,7 +62,7 @@ router
 	 */
 	.post(async (req, res, next) => {
 		try {
-			const payload = await apiValidator(getValidationSchema("/nginx/proxy-hosts", "post"), req.body);
+			const payload = apiValidator(getValidationSchema("/nginx/proxy-hosts", "post"), req.body);
 			const result = await internalProxyHost.create(res.locals.access, payload);
 			res.status(201).send(result);
 		} catch (err) {
@@ -129,7 +129,7 @@ router
 	 */
 	.put(async (req, res, next) => {
 		try {
-			const payload = await apiValidator(getValidationSchema("/nginx/proxy-hosts/{hostID}", "put"), req.body);
+			const payload = apiValidator(getValidationSchema("/nginx/proxy-hosts/{hostID}", "put"), req.body);
 			payload.id = Number.parseInt(req.params.host_id, 10);
 			const result = await internalProxyHost.update(res.locals.access, payload);
 			res.status(200).send(result);

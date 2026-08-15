@@ -10,34 +10,24 @@ const migrateName = "stream_domain";
  * @param   {Object} knex
  * @returns {Promise}
  */
-const up = (knex) => {
+const up = async (knex) => {
 	logger.info(`[${migrateName}] Migrating Up...`);
 
-	return knex.schema
-		.table("stream", (table) => {
-			table.renameColumn("forward_ip", "forwarding_host");
-		})
-		.then(() => {
-			logger.info(`[${migrateName}] stream Table altered`);
-		});
+	await knex.schema.table("stream", (table) => {
+		table.renameColumn("forward_ip", "forwarding_host");
+	});
+
+	logger.info(`[${migrateName}] stream Table altered`);
 };
 
 /**
  * Undo Migrate
  *
- * @param   {Object} knex
+ * @param   {Object} _knex
  * @returns {Promise}
  */
-const down = (knex) => {
-	logger.info(`[${migrateName}] Migrating Down...`);
-
-	return knex.schema
-		.table("stream", (table) => {
-			table.renameColumn("forwarding_host", "forward_ip");
-		})
-		.then(() => {
-			logger.info(`[${migrateName}] stream Table altered`);
-		});
+const down = (_knex) => {
+	throw new Error(`[${migrateName}] You can't migrate down this one.`);
 };
 
 export { down, up };
