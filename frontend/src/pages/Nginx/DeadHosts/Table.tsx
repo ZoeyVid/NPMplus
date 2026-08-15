@@ -1,11 +1,15 @@
 import { IconDotsVertical, IconEdit, IconPower, IconTrash } from "@tabler/icons-react";
 import {
 	createColumnHelper,
-	getCoreRowModel,
-	getSortedRowModel,
+	createSortedRowModel,
 	type OnChangeFn,
+	rowSortingFeature,
 	type SortingState,
-	useReactTable,
+	sortFn_alphanumeric,
+	sortFn_datetime,
+	sortFn_text,
+	tableFeatures,
+	useTable,
 } from "@tanstack/react-table";
 import { type ReactNode, useMemo } from "react";
 import type { DeadHost } from "src/api/backend";
@@ -20,6 +24,12 @@ import {
 import { TableLayout } from "src/components/Table/TableLayout";
 import { intl, T } from "src/locale";
 import { DEAD_HOSTS, MANAGE } from "src/modules/Permissions";
+
+const features = tableFeatures({
+	rowSortingFeature,
+	sortedRowModel: createSortedRowModel(),
+	sortFns: { alphanumeric: sortFn_alphanumeric, datetime: sortFn_datetime, text: sortFn_text },
+});
 
 interface Props {
 	data: DeadHost[];
@@ -49,7 +59,7 @@ export default function Table({
 	groupBy,
 	renderGroupLabel,
 }: Props) {
-	const columnHelper = createColumnHelper<DeadHost>();
+	const columnHelper = createColumnHelper<typeof features, DeadHost>();
 	const columns = useMemo(
 		() => [
 			columnHelper.accessor((row: any) => row.owner.name, {
@@ -175,12 +185,10 @@ export default function Table({
 		[columnHelper, onDelete, onEdit, onDisableToggle],
 	);
 
-	const tableInstance = useReactTable<DeadHost>({
-		columns,
+	const tableInstance = useTable({
+		features,
+		columns: columnHelper.columns(columns),
 		data,
-		getCoreRowModel: getCoreRowModel(),
-		getSortedRowModel: getSortedRowModel(),
-		rowCount: data.length,
 		meta: {
 			isFetching,
 		},

@@ -1,12 +1,12 @@
-import type { Table as ReactTable } from "@tanstack/react-table";
+import type { Table as ReactTable, RowData, TableFeatures } from "@tanstack/react-table";
 import cn from "clsx";
 import type { ReactNode } from "react";
 import { Button, HasPermission } from "src/components";
 import { T } from "src/locale";
 import { type ADMIN, MANAGE, type Permission, type Section } from "src/modules/Permissions";
 
-interface Props {
-	tableInstance: ReactTable<any>;
+interface Props<TFeatures extends TableFeatures, TFields extends RowData> {
+	tableInstance: ReactTable<TFeatures, TFields>;
 	onNew?: () => void;
 	isFiltered?: boolean;
 	object: string;
@@ -16,7 +16,7 @@ interface Props {
 	permissionSection?: Section | typeof ADMIN;
 	permission?: Permission;
 }
-function EmptyData({
+function EmptyData<TFeatures extends TableFeatures, TFields extends RowData>({
 	tableInstance,
 	onNew,
 	isFiltered,
@@ -26,10 +26,10 @@ function EmptyData({
 	customAddBtn,
 	permissionSection,
 	permission,
-}: Props) {
+}: Props<TFeatures, TFields>) {
 	return (
 		<tr>
-			<td colSpan={tableInstance.getVisibleFlatColumns().length}>
+			<td colSpan={tableInstance.getAllFlatColumns().length}>
 				<div className="text-center my-4">
 					{isFiltered ? (
 						<h2>
