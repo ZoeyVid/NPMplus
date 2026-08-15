@@ -1,27 +1,27 @@
 import { createIntl, createIntlCache } from "react-intl";
-import langBg from "./lang/bg.json";
-import langCs from "./lang/cs.json";
-import langDe from "./lang/de.json";
-import langEn from "./lang/en.json";
-import langEs from "./lang/es.json";
-import langEt from "./lang/et.json";
-import langFr from "./lang/fr.json";
-import langGa from "./lang/ga.json";
-import langHu from "./lang/hu.json";
-import langId from "./lang/id.json";
-import langIt from "./lang/it.json";
-import langJa from "./lang/ja.json";
-import langKo from "./lang/ko.json";
-import langList from "./lang/lang-list.json";
-import langNl from "./lang/nl.json";
-import langNo from "./lang/no.json";
-import langPl from "./lang/pl.json";
-import langPt from "./lang/pt.json";
-import langRu from "./lang/ru.json";
-import langSk from "./lang/sk.json";
-import langTr from "./lang/tr.json";
-import langVi from "./lang/vi.json";
-import langZh from "./lang/zh.json";
+import langBg from "./lang/bg.json" with { type: "json" };
+import langCs from "./lang/cs.json" with { type: "json" };
+import langDe from "./lang/de.json" with { type: "json" };
+import langEn from "./lang/en.json" with { type: "json" };
+import langEs from "./lang/es.json" with { type: "json" };
+import langEt from "./lang/et.json" with { type: "json" };
+import langFr from "./lang/fr.json" with { type: "json" };
+import langGa from "./lang/ga.json" with { type: "json" };
+import langHu from "./lang/hu.json" with { type: "json" };
+import langId from "./lang/id.json" with { type: "json" };
+import langIt from "./lang/it.json" with { type: "json" };
+import langJa from "./lang/ja.json" with { type: "json" };
+import langKo from "./lang/ko.json" with { type: "json" };
+import langList from "./lang/lang-list.json" with { type: "json" };
+import langNl from "./lang/nl.json" with { type: "json" };
+import langNo from "./lang/no.json" with { type: "json" };
+import langPl from "./lang/pl.json" with { type: "json" };
+import langPt from "./lang/pt.json" with { type: "json" };
+import langRu from "./lang/ru.json" with { type: "json" };
+import langSk from "./lang/sk.json" with { type: "json" };
+import langTr from "./lang/tr.json" with { type: "json" };
+import langVi from "./lang/vi.json" with { type: "json" };
+import langZh from "./lang/zh.json" with { type: "json" };
 
 // first item of each array should be the language code,
 // not the country code
@@ -56,7 +56,7 @@ const loadMessages = (locale?: string): typeof langList & typeof langEn => {
 
 	// ensure this lang exists in localeOptions above, otherwise fallback to en
 	if (thisLocale === "en" || !localeOptions.some(([code]) => code === thisLocale)) {
-		return Object.assign({}, langList, langEn);
+		return { ...langList, ...langEn };
 	}
 
 	return Object.assign({}, langList, langEn, localeOptions.find(([code]) => code === thisLocale)?.[2]);
@@ -97,9 +97,9 @@ const T = ({
 	const translatedData: Record<string, string> = {};
 	if (tData) {
 		// iterate over tData and translate each value
-		Object.entries(tData).forEach(([key, value]) => {
+		for (const [key, value] of Object.entries(tData)) {
 			translatedData[key] = intl.formatMessage({ id: value });
-		});
+		}
 	}
 	return (
 		<span data-translation-id={id}>
@@ -116,4 +116,4 @@ const T = ({
 
 //console.log("L:", localeOptions);
 
-export { changeLocale, createIntl, getLocale, intl, localeOptions, T };
+export { changeLocale, getLocale, intl, localeOptions, T };

@@ -22,7 +22,8 @@ const HelpModal = EasyModal.create(({ section, visible, remove }: Props) => {
 			const docFile = getHelpFile(lang, section) as any;
 			fetch(docFile)
 				.then((response) => response.text())
-				.then(setMarkdownText);
+				.then(setMarkdownText)
+				.catch((ex: any) => setMarkdownText(`**ERROR:** ${ex.message}`));
 		} catch (ex: any) {
 			setMarkdownText(`**ERROR:** ${ex.message}`);
 		}

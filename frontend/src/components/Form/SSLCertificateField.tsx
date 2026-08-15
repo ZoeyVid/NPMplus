@@ -13,18 +13,16 @@ interface CertOption {
 	readonly icon: React.ReactNode;
 }
 
-const Option = (props: OptionProps<CertOption>) => {
-	return (
-		<components.Option {...props}>
-			<div className="flex-fill">
-				<div className="font-weight-medium">
-					{props.data.icon} <strong>{props.data.label}</strong>
-				</div>
-				<div className="text-secondary mt-1 ps-3">{props.data.subLabel}</div>
+const Option = (props: OptionProps<CertOption>) => (
+	<components.Option {...props}>
+		<div className="flex-fill">
+			<div className="font-weight-medium">
+				{props.data.icon} <strong>{props.data.label}</strong>
 			</div>
-		</components.Option>
-	);
-};
+			<div className="text-secondary mt-1 ps-3">{props.data.subLabel}</div>
+		</div>
+	</components.Option>
+);
 
 interface Props {
 	id?: string;
@@ -52,11 +50,11 @@ export function SSLCertificateField({
 	const v: any = values || {};
 
 	const handleChange = (newValue: any, _actionMeta: ActionMeta<CertOption>) => {
-		setFieldValue(name, newValue?.value);
+		void setFieldValue(name, newValue?.value);
 
 		if (!(newValue?.value > 0)) {
-			setFieldValue(mtlsName, 0);
-			setFieldValue("meta.npmplusMtlsVerifyClientOptional", false);
+			void setFieldValue(mtlsName, 0);
+			void setFieldValue("meta.npmplusMtlsVerifyClientOptional", false);
 		}
 
 		const {
@@ -71,17 +69,17 @@ export function SSLCertificateField({
 			propagationSeconds,
 		} = v;
 		if (forHttp && !newValue?.value) {
-			sslForced && setFieldValue("sslForced", false);
-			npmplusHttp3Support && setFieldValue("npmplusHttp3Support", false);
-			hstsEnabled && setFieldValue("hstsEnabled", false);
-			hstsSubdomains && setFieldValue("hstsSubdomains", false);
+			if (sslForced) void setFieldValue("sslForced", false);
+			if (npmplusHttp3Support) void setFieldValue("npmplusHttp3Support", false);
+			if (hstsEnabled) void setFieldValue("hstsEnabled", false);
+			if (hstsSubdomains) void setFieldValue("hstsSubdomains", false);
 		}
 		if (newValue?.value !== "new") {
-			reuseKey && setFieldValue("reuseKey", undefined);
-			dnsChallenge && setFieldValue("dnsChallenge", undefined);
-			dnsProvider && setFieldValue("dnsProvider", undefined);
-			dnsProviderCredentials && setFieldValue("dnsProviderCredentials", undefined);
-			propagationSeconds && setFieldValue("propagationSeconds", undefined);
+			if (reuseKey) void setFieldValue("reuseKey", undefined);
+			if (dnsChallenge) void setFieldValue("dnsChallenge", undefined);
+			if (dnsProvider) void setFieldValue("dnsProvider", undefined);
+			if (dnsProviderCredentials) void setFieldValue("dnsProviderCredentials", undefined);
+			if (propagationSeconds) void setFieldValue("propagationSeconds", undefined);
 		}
 	};
 
@@ -146,6 +144,7 @@ export function SSLCertificateField({
 						{isError ? <div className="invalid-feedback">{`${error}`}</div> : null}
 						{!isLoading && !isError ? (
 							<Select
+								inputId={id}
 								className="react-select-container"
 								classNamePrefix="react-select"
 								value={options.find((o) => o.value === field.value) || options[0]}
@@ -172,13 +171,14 @@ export function SSLCertificateField({
 			<Field name={mtlsName}>
 				{({ field, form }: any) => (
 					<div className="mb-3">
-						<label className="form-label" htmlFor={mtlsName}>
+						<label className="form-label" htmlFor="mtlsCertificate">
 							<T id={mtlsLabel} />
 						</label>
 						{isLoading ? <div className="placeholder placeholder-lg col-12 my-3 placeholder-glow" /> : null}
 						{isError ? <div className="invalid-feedback">{`${error}`}</div> : null}
 						{!isLoading && !isError ? (
 							<Select
+								inputId="mtlsCertificate"
 								className="react-select-container"
 								classNamePrefix="react-select"
 								value={mtlsOptions.find((o) => o.value === field.value) || mtlsOptions[0]}
@@ -191,9 +191,9 @@ export function SSLCertificateField({
 									}),
 								}}
 								onChange={(newValue: any) => {
-									setFieldValue(mtlsName, newValue?.value);
+									void setFieldValue(mtlsName, newValue?.value);
 									if (!(newValue?.value > 0)) {
-										setFieldValue("meta.npmplusMtlsVerifyClientOptional", false);
+										void setFieldValue("meta.npmplusMtlsVerifyClientOptional", false);
 									}
 								}}
 								isDisabled={v?.udpForwarding || !(v?.certificateId > 0)}

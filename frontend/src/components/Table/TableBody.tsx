@@ -5,7 +5,7 @@ import { EmptyRow } from "./EmptyRow";
 
 function TableBody<TFeatures extends TableFeatures, T extends RowData>(props: TableLayoutProps<TFeatures, T>) {
 	const { tableInstance, extraStyles, emptyState, groupBy, renderGroupLabel } = props;
-	const rows = tableInstance.getRowModel().rows;
+	const { rows } = tableInstance.getRowModel();
 
 	if (rows.length === 0) {
 		return (

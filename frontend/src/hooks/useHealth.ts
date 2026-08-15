@@ -15,4 +15,4 @@ const useHealth = (options = {}) => {
 	});
 };
 
-export { fetchHealth, useHealth };
+export { useHealth };

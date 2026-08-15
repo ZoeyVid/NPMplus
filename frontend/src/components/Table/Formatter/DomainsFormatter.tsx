@@ -58,7 +58,7 @@ export function DomainsFormatter({ domains, createdOn, niceName, provider, color
 	}
 
 	if (domains) {
-		domains.map((domain: string) => elms.push(<DomainLink key={domain} domain={domain} color={color} />));
+		elms.push(...domains.map((domain: string) => <DomainLink key={domain} domain={domain} color={color} />));
 	}
 
 	return (

@@ -5,11 +5,11 @@ import CreatableSelect from "react-select/creatable";
 import { intl, T } from "src/locale";
 import { validateDomain, validateDomains } from "src/modules/Validations";
 
-type SelectOption = {
+interface SelectOption {
 	label: string;
 	value: string;
 	color?: string;
-};
+}
 
 interface Props {
 	id?: string;
@@ -32,10 +32,8 @@ export function DomainNamesField({
 	const { setFieldValue } = useFormikContext();
 
 	const handleChange = (v: MultiValue<SelectOption>, _actionMeta: ActionMeta<SelectOption>) => {
-		const doms = v?.map((i: SelectOption) => {
-			return i.value;
-		});
-		setFieldValue(name, doms);
+		const doms = v?.map((i: SelectOption) => i.value);
+		void setFieldValue(name, doms);
 		onChange?.(doms);
 	};
 

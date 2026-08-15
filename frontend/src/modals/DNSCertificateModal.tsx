@@ -73,7 +73,12 @@ const DNSCertificateModal = EasyModal.create(({ visible, remove }: InnerModalPro
 							</Modal.Title>
 						</Modal.Header>
 						<Modal.Body className="p-0">
-							<Alert variant="danger" show={!!errorMsg} onClose={() => setErrorMsg(null)} dismissible>
+							<Alert
+								variant="danger"
+								show={Boolean(errorMsg)}
+								onClose={() => setErrorMsg(null)}
+								dismissible
+							>
 								{errorMsg}
 							</Alert>
 							<div className="card m-0 border-0">

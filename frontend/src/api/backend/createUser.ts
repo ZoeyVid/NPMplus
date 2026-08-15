@@ -1,12 +1,12 @@
 import * as api from "./base";
 import type { User } from "./models";
 
-export interface AuthOptions {
+interface AuthOptions {
 	type: string;
 	secret: string;
 }
 
-export interface NewUser {
+interface NewUser {
 	name: string;
 	nickname: string;
 	email: string;

@@ -7,6 +7,6 @@ export async function updateAccessList(item: AccessList): Promise<AccessList> {
 
 	return await api.put({
 		url: `/nginx/access-lists/${id}`,
-		data: data,
+		data,
 	});
 }

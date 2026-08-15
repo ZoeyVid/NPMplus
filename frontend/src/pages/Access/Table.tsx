@@ -81,54 +81,50 @@ export default function Table({ data, isFetching, isFiltered, onEdit, onDelete, 
 			}),
 			columnHelper.display({
 				id: "actions",
-				cell: (info: any) => {
-					return (
-						<span className="dropdown">
+				cell: (info: any) => (
+					<span className="dropdown">
+						<button
+							type="button"
+							className="btn dropdown-toggle btn-action btn-sm px-1"
+							data-bs-boundary="viewport"
+							data-bs-toggle="dropdown"
+						>
+							<IconDotsVertical />
+						</button>
+						<div className="dropdown-menu dropdown-menu-end">
+							<span className="dropdown-header">
+								<T
+									id="object.actions-title"
+									tData={{ object: "access-list" }}
+									data={{ id: info.row.original.id }}
+								/>
+							</span>
 							<button
 								type="button"
-								className="btn dropdown-toggle btn-action btn-sm px-1"
-								data-bs-boundary="viewport"
-								data-bs-toggle="dropdown"
+								className="dropdown-item"
+								onClick={() => {
+									onEdit?.(info.row.original.id);
+								}}
 							>
-								<IconDotsVertical />
+								<IconEdit size={16} />
+								<T id="action.edit" />
 							</button>
-							<div className="dropdown-menu dropdown-menu-end">
-								<span className="dropdown-header">
-									<T
-										id="object.actions-title"
-										tData={{ object: "access-list" }}
-										data={{ id: info.row.original.id }}
-									/>
-								</span>
-								<a
+							<HasPermission section={ACCESS_LISTS} permission={MANAGE} hideError>
+								<div className="dropdown-divider" />
+								<button
+									type="button"
 									className="dropdown-item"
-									href="#"
-									onClick={(e) => {
-										e.preventDefault();
-										onEdit?.(info.row.original.id);
+									onClick={() => {
+										onDelete?.(info.row.original.id);
 									}}
 								>
-									<IconEdit size={16} />
-									<T id="action.edit" />
-								</a>
-								<HasPermission section={ACCESS_LISTS} permission={MANAGE} hideError>
-									<div className="dropdown-divider" />
-									<a
-										className="dropdown-item"
-										href="#"
-										onClick={(e) => {
-											e.preventDefault();
-											onDelete?.(info.row.original.id);
-										}}
-									>
-										<IconTrash size={16} />
-										<T id="action.delete" />
-									</a>
-								</HasPermission>
-							</div>
-						</span>
-					);
-				},
+									<IconTrash size={16} />
+									<T id="action.delete" />
+								</button>
+							</HasPermission>
+						</div>
+					</span>
+				),
 				meta: {
 					className: "text-end w-1",
 				},

@@ -1,7 +1,7 @@
 import { IconHelp, IconSearch } from "@tabler/icons-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Alert from "react-bootstrap/Alert";
-import { deleteAccessList } from "src/api/backend";
+import { type AccessList, deleteAccessList } from "src/api/backend";
 import { Button, HasPermission, LoadingPage } from "src/components";
 import { useAccessLists } from "src/hooks";
 import { T } from "src/locale";
@@ -13,6 +13,13 @@ import Table from "./Table";
 export default function TableWrapper() {
 	const [search, setSearch] = useState("");
 	const { isFetching, isLoading, isError, error, data } = useAccessLists(["owner", "items", "clients"]);
+
+	useEffect(() => {
+		// this can happen if someone deletes the last item while searching
+		if (search !== "" && !data) {
+			setSearch("");
+		}
+	});
 
 	if (isLoading) {
 		return <LoadingPage />;
@@ -27,14 +34,9 @@ export default function TableWrapper() {
 		showObjectSuccess("access-list", "deleted");
 	};
 
-	let filtered = null;
+	let filtered: AccessList[] | null = null;
 	if (search && data) {
-		filtered = data?.filter((item) => {
-			return item.name.toLowerCase().includes(search);
-		});
-	} else if (search !== "") {
-		// this can happen if someone deletes the last item while searching
-		setSearch("");
+		filtered = data?.filter((item) => item.name.toLowerCase().includes(search));
 	}
 
 	return (
@@ -57,7 +59,6 @@ export default function TableWrapper() {
 											<IconSearch size={16} />
 										</span>
 										<input
-											id="advanced-table-search"
 											type="text"
 											className="form-control form-control-sm"
 											autoComplete="off"
@@ -86,7 +87,7 @@ export default function TableWrapper() {
 				<Table
 					data={filtered ?? data ?? []}
 					isFetching={isFetching}
-					isFiltered={!!filtered}
+					isFiltered={Boolean(filtered)}
 					onEdit={(id: number) => showAccessListModal(id)}
 					onDelete={(id: number) => {
 						const accessList = data?.find((item) => item.id === id);

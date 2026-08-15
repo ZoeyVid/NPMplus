@@ -1,7 +1,7 @@
 import type { UserPermissions } from "src/api/backend";
 
 export const ADMIN = "admin";
-export const VISIBILITY = "visibility";
+const VISIBILITY = "visibility";
 export const PROXY_HOSTS = "proxyHosts";
 export const REDIRECTION_HOSTS = "redirectionHosts";
 export const DEAD_HOSTS = "deadHosts";
@@ -11,10 +11,7 @@ export const ACCESS_LISTS = "accessLists";
 
 export const MANAGE = "manage";
 export const VIEW = "view";
-export const HIDDEN = "hidden";
-
-export const ALL = "all";
-export const USER = "user";
+const HIDDEN = "hidden";
 
 export type Section =
 	| typeof ADMIN
@@ -42,8 +39,6 @@ const hasPermission = (
 	return acceptable.indexOf(v) !== -1;
 };
 
-const isAdmin = (roles: string[] | undefined): boolean => {
-	return roles?.includes("admin") || false;
-};
+const isAdmin = (roles: string[] | undefined): boolean => roles?.includes("admin") || false;
 
-export { hasPermission, isAdmin };
+export { hasPermission };
