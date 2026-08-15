@@ -13,6 +13,8 @@ function Msg({ data }: any) {
 		case "error":
 			icon = <IconExclamationCircle className="text-red mr-1" size={16} />;
 			break;
+		default:
+			break;
 	}
 
 	return (

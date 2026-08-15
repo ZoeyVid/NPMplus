@@ -7,6 +7,6 @@ export async function updateSetting(item: Setting): Promise<Setting> {
 
 	return await api.put({
 		url: `/settings/${id}`,
-		data: data,
+		data,
 	});
 }

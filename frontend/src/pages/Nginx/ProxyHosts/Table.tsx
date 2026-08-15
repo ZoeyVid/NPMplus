@@ -89,21 +89,17 @@ export default function Table({
 				{
 					id: "forwardHost",
 					header: intl.formatMessage({ id: "column.destination" }),
-					cell: (info: any) => {
-						return (
-							<a href={info.getValue()} target="_blank" rel="noopener">
-								{info.getValue()}
-							</a>
-						);
-					},
+					cell: (info: any) => (
+						<a href={info.getValue()} target="_blank" rel="noopener">
+							{info.getValue()}
+						</a>
+					),
 				},
 			),
 			columnHelper.accessor((row: any) => (row.certificate ? row.certificate.provider : "http-only"), {
 				id: "certificate",
 				header: intl.formatMessage({ id: "column.ssl" }),
-				cell: (info: any) => {
-					return <CertificateFormatter certificate={info.row.original.certificate} />;
-				},
+				cell: (info: any) => <CertificateFormatter certificate={info.row.original.certificate} />,
 			}),
 			columnHelper.accessor(
 				(row: any) => {
@@ -119,16 +115,14 @@ export default function Table({
 				{
 					id: "accessList",
 					header: intl.formatMessage({ id: "column.access" }),
-					cell: (info: any) => {
-						return (
-							<AccessListFormatter
-								proxyHostId={info.row.original.id}
-								locations={info.row.original.locations}
-								access={info.row.original.accessLists}
-								type={info.row.original.npmplusAccessListType}
-							/>
-						);
-					},
+					cell: (info: any) => (
+						<AccessListFormatter
+							proxyHostId={info.row.original.id}
+							locations={info.row.original.locations}
+							access={info.row.original.accessLists}
+							type={info.row.original.npmplusAccessListType}
+						/>
+					),
 				},
 			),
 			columnHelper.accessor(
@@ -162,76 +156,70 @@ export default function Table({
 			}),
 			columnHelper.display({
 				id: "actions",
-				cell: (info: any) => {
-					return (
-						<span className="dropdown">
+				cell: (info: any) => (
+					<span className="dropdown">
+						<button
+							type="button"
+							className="btn dropdown-toggle btn-action btn-sm px-1"
+							data-bs-boundary="viewport"
+							data-bs-toggle="dropdown"
+						>
+							<IconDotsVertical />
+						</button>
+						<div className="dropdown-menu dropdown-menu-end">
+							<span className="dropdown-header">
+								<T
+									id="object.actions-title"
+									tData={{ object: "proxy-host" }}
+									data={{ id: info.row.original.id }}
+								/>
+							</span>
 							<button
 								type="button"
-								className="btn dropdown-toggle btn-action btn-sm px-1"
-								data-bs-boundary="viewport"
-								data-bs-toggle="dropdown"
+								className="dropdown-item"
+								onClick={() => {
+									onEdit?.(info.row.original.id);
+								}}
 							>
-								<IconDotsVertical />
+								<IconEdit size={16} />
+								<T id="action.edit" />
 							</button>
-							<div className="dropdown-menu dropdown-menu-end">
-								<span className="dropdown-header">
-									<T
-										id="object.actions-title"
-										tData={{ object: "proxy-host" }}
-										data={{ id: info.row.original.id }}
-									/>
-								</span>
-								<a
+							<button
+								type="button"
+								className="dropdown-item"
+								onClick={() => {
+									onClone?.(info.row.original.id);
+								}}
+							>
+								<IconCopy size={16} />
+								<T id="action.clone" />
+							</button>
+							<HasPermission section={PROXY_HOSTS} permission={MANAGE} hideError>
+								<button
+									type="button"
 									className="dropdown-item"
-									href="#"
-									onClick={(e) => {
-										e.preventDefault();
-										onEdit?.(info.row.original.id);
+									onClick={() => {
+										onDisableToggle?.(info.row.original.id, !info.row.original.enabled);
 									}}
 								>
-									<IconEdit size={16} />
-									<T id="action.edit" />
-								</a>
-								<a
+									<IconPower size={16} />
+									<T id={info.row.original.enabled ? "action.disable" : "action.enable"} />
+								</button>
+								<div className="dropdown-divider" />
+								<button
+									type="button"
 									className="dropdown-item"
-									href="#"
-									onClick={(e) => {
-										e.preventDefault();
-										onClone?.(info.row.original.id);
+									onClick={() => {
+										onDelete?.(info.row.original.id);
 									}}
 								>
-									<IconCopy size={16} />
-									<T id="action.clone" />
-								</a>
-								<HasPermission section={PROXY_HOSTS} permission={MANAGE} hideError>
-									<a
-										className="dropdown-item"
-										href="#"
-										onClick={(e) => {
-											e.preventDefault();
-											onDisableToggle?.(info.row.original.id, !info.row.original.enabled);
-										}}
-									>
-										<IconPower size={16} />
-										<T id={info.row.original.enabled ? "action.disable" : "action.enable"} />
-									</a>
-									<div className="dropdown-divider" />
-									<a
-										className="dropdown-item"
-										href="#"
-										onClick={(e) => {
-											e.preventDefault();
-											onDelete?.(info.row.original.id);
-										}}
-									>
-										<IconTrash size={16} />
-										<T id="action.delete" />
-									</a>
-								</HasPermission>
-							</div>
-						</span>
-					);
-				},
+									<IconTrash size={16} />
+									<T id="action.delete" />
+								</button>
+							</HasPermission>
+						</div>
+					</span>
+				),
 				meta: {
 					className: "text-end w-1",
 				},

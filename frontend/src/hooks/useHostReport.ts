@@ -15,4 +15,4 @@ const useHostReport = (options = {}) => {
 	});
 };
 
-export { fetchHostReport, useHostReport };
+export { useHostReport };

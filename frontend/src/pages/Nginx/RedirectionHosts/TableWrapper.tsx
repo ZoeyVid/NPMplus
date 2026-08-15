@@ -1,9 +1,9 @@
 import { IconHelp, IconSearch } from "@tabler/icons-react";
 import { useQueryClient } from "@tanstack/react-query";
 import type { SortingState } from "@tanstack/react-table";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Alert from "react-bootstrap/Alert";
-import { deleteRedirectionHost, toggleRedirectionHost } from "src/api/backend";
+import { deleteRedirectionHost, type RedirectionHost, toggleRedirectionHost } from "src/api/backend";
 import { Button, HasPermission, LoadingPage } from "src/components";
 import { getDirectory, useRedirectionHosts } from "src/hooks";
 import { T } from "src/locale";
@@ -17,6 +17,13 @@ export default function TableWrapper() {
 	const [search, setSearch] = useState("");
 	const [sorting, setSorting] = useState<SortingState>([]);
 	const { isFetching, isLoading, isError, error, data } = useRedirectionHosts(["owner", "certificate"]);
+
+	useEffect(() => {
+		// this can happen if someone deletes the last item while searching
+		if (search !== "" && !data) {
+			setSearch("");
+		}
+	});
 
 	if (isLoading) {
 		return <LoadingPage />;
@@ -38,7 +45,7 @@ export default function TableWrapper() {
 		showObjectSuccess("redirection-host", enabled ? "enabled" : "disabled");
 	};
 
-	let filtered = null;
+	let filtered: RedirectionHost[] | null = null;
 	if (search && data) {
 		filtered = data?.filter((item) => {
 			const directory = getDirectory(item).toLowerCase();
@@ -48,16 +55,13 @@ export default function TableWrapper() {
 				directory.includes(search)
 			);
 		});
-	} else if (search !== "") {
-		// this can happen if someone deletes the last item while searching
-		setSearch("");
 	}
 
 	const displayedHosts = filtered ?? data ?? [];
 	const groupingActive = displayedHosts.some((item) => getDirectory(item));
 
 	const sharedTableProps = {
-		isFiltered: !!search,
+		isFiltered: Boolean(search),
 		isFetching,
 		sorting,
 		onSortingChange: setSorting,
@@ -100,7 +104,6 @@ export default function TableWrapper() {
 											<IconSearch size={16} />
 										</span>
 										<input
-											id="advanced-table-search"
 											type="text"
 											className="form-control form-control-sm"
 											autoComplete="off"

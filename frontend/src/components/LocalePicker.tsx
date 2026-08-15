@@ -10,12 +10,11 @@ interface Props {
 }
 
 function LocalePicker({ menuAlign = "start" }: Props) {
-	const { locale, setLocale } = useLocaleState();
+	const { locale } = useLocaleState();
 	const { getTheme } = useTheme();
 
 	const changeTo = (lang: string) => {
 		changeLocale(lang);
-		setLocale(lang);
 		location.reload();
 	};
 
@@ -34,17 +33,16 @@ function LocalePicker({ menuAlign = "start" }: Props) {
 				style={{ maxHeight: "50vh" }}
 			>
 				{localeOptions.map((item: any) => (
-					<a
+					<button
+						type="button"
 						className="dropdown-item"
-						href={`/locale/${item[0]}`}
 						key={`locale-${item[0]}`}
-						onClick={(e) => {
-							e.preventDefault();
+						onClick={() => {
 							changeTo(item[0]);
 						}}
 					>
 						<Flag countryCode={getFlagCodeForLocale(item[0])} /> <T id={`locale-${item[1]}`} />
-					</a>
+					</button>
 				))}
 			</div>
 		</div>

@@ -62,7 +62,7 @@ const RenewCertificateModal = EasyModal.create(({ id, visible, remove }: Props) 
 				</Modal.Title>
 			</Modal.Header>
 			<Modal.Body>
-				<Alert variant="danger" show={!!errorMsg}>
+				<Alert variant="danger" show={Boolean(errorMsg)}>
 					{errorMsg}
 				</Alert>
 				{isLoading && <Loading noLogo />}

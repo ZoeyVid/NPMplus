@@ -40,7 +40,7 @@ const AccessListModal = EasyModal.create(({ id, visible, remove }: Props) => {
 		return null;
 	};
 
-	const onSubmit = async (values: any, { setSubmitting }: any) => {
+	const onSubmit = (values: any, { setSubmitting }: any) => {
 		if (isSubmitting) return;
 
 		const vErr = validate(values);
@@ -114,7 +114,12 @@ const AccessListModal = EasyModal.create(({ id, visible, remove }: Props) => {
 								</Modal.Title>
 							</Modal.Header>
 							<Modal.Body className="p-0">
-								<Alert variant="danger" show={!!errorMsg} onClose={() => setErrorMsg(null)} dismissible>
+								<Alert
+									variant="danger"
+									show={Boolean(errorMsg)}
+									onClose={() => setErrorMsg(null)}
+									dismissible
+								>
 									{errorMsg}
 								</Alert>
 								<div className="card m-0 border-0">
@@ -197,7 +202,7 @@ const AccessListModal = EasyModal.create(({ id, visible, remove }: Props) => {
 																<span className="col-auto">
 																	<Field name="satisfyAny" type="checkbox">
 																		{({ field }: any) => (
-																			<label className="form-check form-check-single form-switch">
+																			<span className="form-check form-check-single form-switch">
 																				<input
 																					id="satisfyAny"
 																					className={
@@ -215,7 +220,7 @@ const AccessListModal = EasyModal.create(({ id, visible, remove }: Props) => {
 																						);
 																					}}
 																				/>
-																			</label>
+																			</span>
 																		)}
 																	</Field>
 																</span>
@@ -229,7 +234,7 @@ const AccessListModal = EasyModal.create(({ id, visible, remove }: Props) => {
 																<span className="col-auto">
 																	<Field name="passAuth" type="checkbox">
 																		{({ field }: any) => (
-																			<label className="form-check form-check-single form-switch">
+																			<span className="form-check form-check-single form-switch">
 																				<input
 																					id="passAuth"
 																					className={
@@ -247,7 +252,7 @@ const AccessListModal = EasyModal.create(({ id, visible, remove }: Props) => {
 																						);
 																					}}
 																				/>
-																			</label>
+																			</span>
 																		)}
 																	</Field>
 																</span>

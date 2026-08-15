@@ -2,26 +2,20 @@ import { createContext, type ReactNode, useContext, useState } from "react";
 import { getLocale } from "src/locale";
 
 // Context
-export interface LocaleContextType {
-	setLocale: (locale: string) => void;
+interface LocaleContextType {
 	locale?: string;
 }
 
-const initalValue = null;
-const LocaleContext = createContext<LocaleContextType | null>(initalValue);
+const LocaleContext = createContext<LocaleContextType | null>(null);
 
 // Provider
 interface Props {
 	children?: ReactNode;
 }
 function LocaleProvider({ children }: Props) {
-	const [locale, setLocaleValue] = useState(getLocale());
+	const [locale] = useState(getLocale());
 
-	const setLocale = async (locale: string) => {
-		setLocaleValue(locale);
-	};
-
-	const value = { locale, setLocale };
+	const value = { locale };
 
 	return <LocaleContext.Provider value={value}>{children}</LocaleContext.Provider>;
 }
@@ -35,4 +29,3 @@ function useLocaleState() {
 }
 
 export { LocaleProvider, useLocaleState };
-export default LocaleContext;

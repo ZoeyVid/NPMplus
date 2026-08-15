@@ -2,11 +2,11 @@ import type React from "react";
 import { createContext, type ReactNode, useContext, useEffect, useState } from "react";
 
 const StorageKey = "tabler-theme";
-export const Light = "light";
-export const Dark = "dark";
+const Light = "light";
+const Dark = "dark";
 
 // Define theme types
-export type Theme = "light" | "dark";
+type Theme = "light" | "dark";
 
 interface ThemeContextType {
 	theme: Theme;
@@ -30,12 +30,9 @@ const getBrowserDefault = (): Theme => {
 
 export const ThemeProvider: React.FC<ThemeProviderProps> = ({ children }) => {
 	const [theme, setThemeState] = useState<Theme>(() => {
-		// Try to read theme from localStorage or use 'light' as default
-		if (typeof window !== "undefined") {
-			const stored = localStorage.getItem(StorageKey) as Theme | null;
-			return stored || getBrowserDefault();
-		}
-		return getBrowserDefault();
+		// Try to read theme from localStorage or use the browser default
+		const stored = localStorage.getItem(StorageKey) as Theme | null;
+		return stored || getBrowserDefault();
 	});
 
 	useEffect(() => {
@@ -53,9 +50,7 @@ export const ThemeProvider: React.FC<ThemeProviderProps> = ({ children }) => {
 		setThemeState(newTheme);
 	};
 
-	const getTheme = () => {
-		return theme;
-	};
+	const getTheme = () => theme;
 
 	document.documentElement.setAttribute("data-bs-theme", theme);
 	return <ThemeContext.Provider value={{ theme, toggleTheme, setTheme, getTheme }}>{children}</ThemeContext.Provider>;

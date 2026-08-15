@@ -45,7 +45,7 @@ export function AccessClientFields({ initialValues, name = "clients" }: Props) {
 
 	const setFormField = (newValues: AccessListClient[]) => {
 		const filtered = newValues.filter((v: AccessListClient) => v?.address?.trim() !== "");
-		setFieldValue(name, filtered);
+		void setFieldValue(name, filtered);
 	};
 
 	return (

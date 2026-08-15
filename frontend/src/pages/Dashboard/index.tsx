@@ -24,7 +24,7 @@ const Dashboard = () => {
 									className="card card-sm card-link card-link-pop"
 									onClick={(e) => {
 										e.preventDefault();
-										navigate("/nginx/proxy");
+										void navigate("/nginx/proxy");
 									}}
 								>
 									<div className="card-body">
@@ -51,7 +51,7 @@ const Dashboard = () => {
 									className="card card-sm card-link card-link-pop"
 									onClick={(e) => {
 										e.preventDefault();
-										navigate("/nginx/redirection");
+										void navigate("/nginx/redirection");
 									}}
 								>
 									<div className="card-body">
@@ -79,7 +79,7 @@ const Dashboard = () => {
 									className="card card-sm card-link card-link-pop"
 									onClick={(e) => {
 										e.preventDefault();
-										navigate("/nginx/stream");
+										void navigate("/nginx/stream");
 									}}
 								>
 									<div className="card-body">
@@ -104,7 +104,7 @@ const Dashboard = () => {
 									className="card card-sm card-link card-link-pop"
 									onClick={(e) => {
 										e.preventDefault();
-										navigate("/nginx/404");
+										void navigate("/nginx/404");
 									}}
 								>
 									<div className="card-body">

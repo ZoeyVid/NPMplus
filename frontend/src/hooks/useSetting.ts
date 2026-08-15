@@ -1,9 +1,7 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { getSetting, type Setting, updateSetting } from "src/api/backend";
 
-const fetchSetting = (id: string) => {
-	return getSetting(id);
-};
+const fetchSetting = (id: string) => getSetting(id);
 
 const useSetting = (id: string, options = {}) => {
 	return useQuery<Setting, Error>({
@@ -31,8 +29,10 @@ const useSetSetting = () => {
 		},
 		onError: (_, __, rollback: any) => rollback(),
 		onSuccess: async ({ id }: Setting) => {
-			queryClient.invalidateQueries({ queryKey: ["setting", id] });
-			queryClient.invalidateQueries({ queryKey: ["audit-logs"] });
+			await Promise.all([
+				queryClient.invalidateQueries({ queryKey: ["setting", id] }),
+				queryClient.invalidateQueries({ queryKey: ["audit-logs"] }),
+			]);
 		},
 	});
 };
