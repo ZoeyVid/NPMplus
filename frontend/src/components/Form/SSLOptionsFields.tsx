@@ -1,5 +1,6 @@
 import cn from "clsx";
 import { Field, useFormikContext } from "formik";
+import { useEffect } from "react";
 import { DNSProviderFields, DomainNamesField } from "src/components";
 import { T } from "src/locale";
 
@@ -25,9 +26,11 @@ export function SSLOptionsFields({
 	const { sslForced, http2Support, npmplusHttp3Support, hstsEnabled, hstsSubdomains, trustForwardedProto, meta } = v;
 	const { dnsChallenge, reuseKey } = meta || {};
 
-	if (forceDNSForNew && newCertificate && !dnsChallenge) {
-		setFieldValue("meta.dnsChallenge", true);
-	}
+	useEffect(() => {
+		if (forceDNSForNew && newCertificate && !dnsChallenge) {
+			setFieldValue("meta.dnsChallenge", true);
+		}
+	});
 
 	const handleToggleChange = (e: any, fieldName: string) => {
 		setFieldValue(fieldName, e.target.checked);
@@ -59,7 +62,7 @@ export function SSLOptionsFields({
 								<input
 									className={sslForced ? toggleEnabled : toggleClasses}
 									type="checkbox"
-									checked={!!sslForced}
+									checked={Boolean(sslForced)}
 									onChange={(e) => handleToggleChange(e, field.name)}
 									disabled={!hasCertificate}
 								/>
@@ -77,7 +80,7 @@ export function SSLOptionsFields({
 								<input
 									className={http2Support ? toggleEnabled : toggleClasses}
 									type="checkbox"
-									checked={!!http2Support}
+									checked={Boolean(http2Support)}
 									onChange={(e) => handleToggleChange(e, field.name)}
 								/>
 								<span className="form-check-label">
@@ -94,7 +97,7 @@ export function SSLOptionsFields({
 								<input
 									className={npmplusHttp3Support ? toggleEnabled : toggleClasses}
 									type="checkbox"
-									checked={!!npmplusHttp3Support}
+									checked={Boolean(npmplusHttp3Support)}
 									onChange={(e) => handleToggleChange(e, field.name)}
 									disabled={!hasCertificate}
 								/>
@@ -114,7 +117,7 @@ export function SSLOptionsFields({
 								<input
 									className={hstsEnabled ? toggleEnabled : toggleClasses}
 									type="checkbox"
-									checked={!!hstsEnabled}
+									checked={Boolean(hstsEnabled)}
 									onChange={(e) => handleToggleChange(e, field.name)}
 									disabled={!hasCertificate || !sslForced}
 								/>
@@ -132,7 +135,7 @@ export function SSLOptionsFields({
 								<input
 									className={hstsSubdomains ? toggleEnabled : toggleClasses}
 									type="checkbox"
-									checked={!!hstsSubdomains}
+									checked={Boolean(hstsSubdomains)}
 									onChange={(e) => handleToggleChange(e, field.name)}
 									disabled={!hasCertificate || !hstsEnabled}
 								/>
@@ -161,7 +164,7 @@ export function SSLOptionsFields({
 									<input
 										className={trustForwardedProto ? toggleEnabled : toggleClasses}
 										type="checkbox"
-										checked={!!trustForwardedProto}
+										checked={Boolean(trustForwardedProto)}
 										onChange={(e) => handleToggleChange(e, field.name)}
 										disabled={!hasCertificate || !sslForced}
 									/>
@@ -211,7 +214,7 @@ export function SSLOptionsFields({
 									<input
 										className={reuseKey ? toggleEnabled : toggleClasses}
 										type="checkbox"
-										checked={!!reuseKey}
+										checked={Boolean(reuseKey)}
 										onChange={(e) => handleToggleChange(e, field.name)}
 									/>
 									<span className="form-check-label">
@@ -228,7 +231,7 @@ export function SSLOptionsFields({
 									<input
 										className={dnsChallenge ? toggleEnabled : toggleClasses}
 										type="checkbox"
-										checked={forceDNSForNew ? true : !!dnsChallenge}
+										checked={forceDNSForNew ? true : Boolean(dnsChallenge)}
 										disabled={forceDNSForNew}
 										onChange={(e) => handleToggleChange(e, field.name)}
 									/>

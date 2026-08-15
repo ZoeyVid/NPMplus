@@ -42,26 +42,22 @@ export default function Table({ data, isFetching, onSelectItem }: Props) {
 			columnHelper.accessor((row: AuditLog) => row.createdOn, {
 				id: "log",
 				header: intl.formatMessage({ id: "column.event" }),
-				cell: (info: any) => {
-					return <EventFormatter row={info.row.original} />;
-				},
+				cell: (info: any) => <EventFormatter row={info.row.original} />,
 			}),
 			columnHelper.display({
 				id: "details",
-				cell: (info: any) => {
-					return (
-						<button
-							type="button"
-							className="btn btn-action btn-sm px-1"
-							onClick={(e) => {
-								e.preventDefault();
-								onSelectItem?.(info.row.original.id);
-							}}
-						>
-							<T id="action.view-details" />
-						</button>
-					);
-				},
+				cell: (info: any) => (
+					<button
+						type="button"
+						className="btn btn-action btn-sm px-1"
+						onClick={(e) => {
+							e.preventDefault();
+							onSelectItem?.(info.row.original.id);
+						}}
+					>
+						<T id="action.view-details" />
+					</button>
+				),
 				meta: {
 					className: "text-end w-1",
 				},

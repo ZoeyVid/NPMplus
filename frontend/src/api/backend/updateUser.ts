@@ -7,6 +7,6 @@ export async function updateUser(item: User): Promise<User> {
 
 	return await api.put({
 		url: `/users/${id}`,
-		data: data,
+		data,
 	});
 }

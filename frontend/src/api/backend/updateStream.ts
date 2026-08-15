@@ -7,6 +7,6 @@ export async function updateStream(item: Stream): Promise<Stream> {
 
 	return await api.put({
 		url: `/nginx/streams/${id}`,
-		data: data,
+		data,
 	});
 }

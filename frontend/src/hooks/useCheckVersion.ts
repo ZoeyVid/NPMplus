@@ -15,4 +15,4 @@ const useCheckVersion = (options = {}) => {
 	});
 };
 
-export { fetchVersion, useCheckVersion };
+export { useCheckVersion };

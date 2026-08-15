@@ -36,9 +36,9 @@ const DeleteConfirmModal = EasyModal.create(
 				await onConfirm();
 				remove();
 				// invalidate caches as requested
-				invalidations?.forEach((inv) => {
+				for (const inv of invalidations ?? []) {
 					queryClient.invalidateQueries({ queryKey: inv });
-				});
+				}
 			} catch (err: any) {
 				setError(<T id={err.message} />);
 			}
@@ -48,10 +48,10 @@ const DeleteConfirmModal = EasyModal.create(
 		return (
 			<Modal show={visible} onHide={remove}>
 				<Modal.Header closeButton>
-					<Modal.Title>{tTitle ? <T id={tTitle} /> : title ? title : null}</Modal.Title>
+					<Modal.Title>{tTitle ? <T id={tTitle} /> : title}</Modal.Title>
 				</Modal.Header>
 				<Modal.Body>
-					<Alert variant="danger" show={!!error} onClose={() => setError(null)} dismissible>
+					<Alert variant="danger" show={Boolean(error)} onClose={() => setError(null)} dismissible>
 						{error}
 					</Alert>
 					<div className="text-center mb-3">
@@ -63,11 +63,11 @@ const DeleteConfirmModal = EasyModal.create(
 							width="24"
 							height="24"
 							viewBox="0 0 24 24"
-							stroke-width="2"
+							strokeWidth="2"
 							stroke="currentColor"
 							fill="none"
-							stroke-linecap="round"
-							stroke-linejoin="round"
+							strokeLinecap="round"
+							strokeLinejoin="round"
 						>
 							<path stroke="none" d="M0 0h24v24H0z" fill="none" />
 							<path d="M12 9v2m0 4v.01" />

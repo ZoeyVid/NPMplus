@@ -48,11 +48,13 @@ const useSetStream = () => {
 		},
 		onError: (_, __, rollback: any) => rollback(),
 		onSuccess: async ({ id }: Stream) => {
-			queryClient.invalidateQueries({ queryKey: ["stream", id] });
-			queryClient.invalidateQueries({ queryKey: ["streams"] });
-			queryClient.invalidateQueries({ queryKey: ["audit-logs"] });
-			queryClient.invalidateQueries({ queryKey: ["host-report"] });
-			queryClient.invalidateQueries({ queryKey: ["certificates"] });
+			await Promise.all([
+				queryClient.invalidateQueries({ queryKey: ["stream", id] }),
+				queryClient.invalidateQueries({ queryKey: ["streams"] }),
+				queryClient.invalidateQueries({ queryKey: ["audit-logs"] }),
+				queryClient.invalidateQueries({ queryKey: ["host-report"] }),
+				queryClient.invalidateQueries({ queryKey: ["certificates"] }),
+			]);
 		},
 	});
 };

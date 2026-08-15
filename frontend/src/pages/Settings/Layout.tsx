@@ -20,13 +20,12 @@ export default function Layout() {
 					<div className="col-12 col-md-3 border-end">
 						<div className="card-body mt-0 pt-0">
 							<div className="list-group list-group-transparent">
-								<a
-									href="#"
+								<button
+									type="button"
 									className="list-group-item list-group-item-action d-flex align-items-center active"
-									onClick={(e) => e.preventDefault()}
 								>
 									<T id="settings.default-site" />
-								</a>
+								</button>
 							</div>
 						</div>
 					</div>

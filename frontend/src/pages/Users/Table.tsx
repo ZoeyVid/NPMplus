@@ -96,23 +96,17 @@ export default function Table({
 			columnHelper.accessor((row: any) => row.email, {
 				id: "email",
 				header: intl.formatMessage({ id: "column.email" }),
-				cell: (info: any) => {
-					return <EmailFormatter email={info.getValue()} />;
-				},
+				cell: (info: any) => <EmailFormatter email={info.getValue()} />,
 			}),
 			columnHelper.accessor((row: any) => row.roles.join(", "), {
 				id: "roles",
 				header: intl.formatMessage({ id: "column.roles" }),
-				cell: (info: any) => {
-					return <RolesFormatter roles={info.row.original.roles} />;
-				},
+				cell: (info: any) => <RolesFormatter roles={info.row.original.roles} />,
 			}),
 			columnHelper.accessor((row: any) => row.isDisabled, {
 				id: "isDisabled",
 				header: intl.formatMessage({ id: "column.status" }),
-				cell: (info: any) => {
-					return <TrueFalseFormatter value={!info.getValue()} />;
-				},
+				cell: (info: any) => <TrueFalseFormatter value={!info.getValue()} />,
 			}),
 			columnHelper.accessor((row: any) => row.id, {
 				id: "id",
@@ -124,111 +118,102 @@ export default function Table({
 			}),
 			columnHelper.display({
 				id: "actions",
-				cell: (info: any) => {
-					return (
-						<span className="dropdown">
+				cell: (info: any) => (
+					<span className="dropdown">
+						<button
+							type="button"
+							className="btn dropdown-toggle btn-action btn-sm px-1"
+							data-bs-boundary="viewport"
+							data-bs-toggle="dropdown"
+						>
+							<IconDotsVertical />
+						</button>
+						<div className="dropdown-menu dropdown-menu-end">
+							<span className="dropdown-header">
+								<T
+									id="object.actions-title"
+									tData={{ object: "user" }}
+									data={{ id: info.row.original.id }}
+								/>
+							</span>
 							<button
 								type="button"
-								className="btn dropdown-toggle btn-action btn-sm px-1"
-								data-bs-boundary="viewport"
-								data-bs-toggle="dropdown"
+								className="dropdown-item"
+								onClick={() => {
+									onEditUser?.(info.row.original.id);
+								}}
 							>
-								<IconDotsVertical />
+								<IconEdit size={16} />
+								<T id="action.edit" />
 							</button>
-							<div className="dropdown-menu dropdown-menu-end">
-								<span className="dropdown-header">
-									<T
-										id="object.actions-title"
-										tData={{ object: "user" }}
-										data={{ id: info.row.original.id }}
-									/>
-								</span>
-								<a
-									className="dropdown-item"
-									href="#"
-									onClick={(e) => {
-										e.preventDefault();
-										onEditUser?.(info.row.original.id);
-									}}
-								>
-									<IconEdit size={16} />
-									<T id="action.edit" />
-								</a>
-								{currentUserId !== info.row.original.id ? (
-									<>
-										<a
-											className="dropdown-item"
-											href="#"
-											onClick={(e) => {
-												e.preventDefault();
-												onEditPermissions?.(info.row.original.id);
-											}}
-										>
-											<IconShield size={16} />
-											<T id="action.permissions" />
-										</a>
-										<a
-											className="dropdown-item"
-											href="#"
-											onClick={(e) => {
-												e.preventDefault();
-												onSetPassword?.(info.row.original.id);
-											}}
-										>
-											<IconLock size={16} />
-											<T id="user.set-password" />
-										</a>
-										<a
-											className="dropdown-item"
-											href="#"
-											onClick={(e) => {
-												e.preventDefault();
-												onResetMfa?.(info.row.original.id);
-											}}
-										>
-											<IconShieldOff size={16} />
-											<T id="user.reset-mfa" />
-										</a>
-										<a
-											className="dropdown-item"
-											href="#"
-											onClick={(e) => {
-												e.preventDefault();
-												onRevokeSessions?.(info.row.original.id);
-											}}
-										>
-											<IconDevicesX size={16} />
-											<T id="user.revoke-sessions" />
-										</a>
-										<a
-											className="dropdown-item"
-											href="#"
-											onClick={(e) => {
-												e.preventDefault();
-												onDisableToggle?.(info.row.original.id, info.row.original.isDisabled);
-											}}
-										>
-											<IconPower size={16} />
-											<T id={info.row.original.isDisabled ? "action.enable" : "action.disable"} />
-										</a>
-										<div className="dropdown-divider" />
-										<a
-											className="dropdown-item"
-											href="#"
-											onClick={(e) => {
-												e.preventDefault();
-												onDeleteUser?.(info.row.original.id);
-											}}
-										>
-											<IconTrash size={16} />
-											<T id="action.delete" />
-										</a>
-									</>
-								) : null}
-							</div>
-						</span>
-					);
-				},
+							{currentUserId !== info.row.original.id ? (
+								<>
+									<button
+										type="button"
+										className="dropdown-item"
+										onClick={() => {
+											onEditPermissions?.(info.row.original.id);
+										}}
+									>
+										<IconShield size={16} />
+										<T id="action.permissions" />
+									</button>
+									<button
+										type="button"
+										className="dropdown-item"
+										onClick={() => {
+											onSetPassword?.(info.row.original.id);
+										}}
+									>
+										<IconLock size={16} />
+										<T id="user.set-password" />
+									</button>
+									<button
+										type="button"
+										className="dropdown-item"
+										onClick={() => {
+											onResetMfa?.(info.row.original.id);
+										}}
+									>
+										<IconShieldOff size={16} />
+										<T id="user.reset-mfa" />
+									</button>
+									<button
+										type="button"
+										className="dropdown-item"
+										onClick={() => {
+											onRevokeSessions?.(info.row.original.id);
+										}}
+									>
+										<IconDevicesX size={16} />
+										<T id="user.revoke-sessions" />
+									</button>
+									<button
+										type="button"
+										className="dropdown-item"
+										onClick={() => {
+											onDisableToggle?.(info.row.original.id, info.row.original.isDisabled);
+										}}
+									>
+										<IconPower size={16} />
+										<T id={info.row.original.isDisabled ? "action.enable" : "action.disable"} />
+									</button>
+									<div className="dropdown-divider" />
+									<button
+										type="button"
+										className="dropdown-item"
+										onClick={() => {
+											onDeleteUser?.(info.row.original.id);
+										}}
+									>
+										<IconTrash size={16} />
+										<T id="action.delete" />
+									</button>
+								</>
+							) : null}
+						</div>
+					</span>
+				),
 				meta: {
 					className: "text-end w-1",
 				},

@@ -19,16 +19,70 @@
 	"linter": {
 		"enabled": true,
 		"rules": {
-			"preset": "recommended",
-			"suspicious": {
-				"noExplicitAny": "off",
-				"noArrayIndexKey": "off"
-			},
-			"a11y": {
-				"useValidAnchor": "off"
-			},
+			"preset": "all",
 			"complexity": {
-				"noImportantStyles": "off"
+				"noExcessiveCognitiveComplexity": "warn",
+				"noExcessiveLinesPerFunction": "warn",
+				"noForEach": "warn",
+				"noImportantStyles": "warn",
+				"useSimplifiedLogicExpression": "warn"
+			},
+			"correctness": {
+				"noNodejsModules": "warn",
+				"noProcessGlobal": "warn",
+				"noSolidDestructuredProps": "warn",
+				"noUndeclaredDependencies": "warn",
+				"noUnresolvedImports": "warn",
+				"useImageSize": "warn",
+				"useImportExtensions": "warn",
+				"useQwikValidLexicalScope": "warn",
+				"useUniqueElementIds": "warn"
+			},
+			"performance": {
+				"noBarrelFile": "warn",
+				"noDelete": "warn",
+				"noImgElement": "warn",
+				"noJsxPropsBind": "warn",
+				"noNamespaceImport": "warn",
+				"noReExportAll": "warn",
+				"useSolidForComponent": "warn"
+			},
+			"security": {
+				"noSecrets": "warn"
+			},
+			"style": {
+				"noDefaultExport": "warn",
+				"noExcessiveLinesPerFile": "warn",
+				"noHexColors": "warn",
+				"noImplicitBoolean": "warn",
+				"noIncrementDecrement": "warn",
+				"noJsxLiterals": "warn",
+				"noMagicNumbers": "warn",
+				"noNegationElse": "warn",
+				"noNestedTernary": "warn",
+				"noTernary": "warn",
+				"useAtIndex": "warn",
+				"useBlockStatements": "warn",
+				"useComponentExportOnlyModules": "warn",
+				"useDestructuring": "warn",
+				"useExplicitLengthCheck": "warn",
+				"useExportsLast": "warn",
+				"useFilenamingConvention": "warn",
+				"useGlobalThis": "warn",
+				"useNamingConvention": "warn",
+				"useNumericSeparators": "warn",
+				"useObjectSpread": "warn"
+			},
+			"suspicious": {
+				"noArrayIndexKey": "warn",
+				"noConsole": "warn",
+				"noEmptyBlockStatements": "warn",
+				"noExplicitAny": "warn",
+				"noImportCycles": "warn",
+				"noLeakedRender": "warn",
+				"noReactSpecificProps": "warn",
+				"noUnnecessaryConditions": "warn",
+				"useStrictMode": "warn"
 			}
 		}
 	},

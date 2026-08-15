@@ -13,7 +13,7 @@ export default function DefaultSite() {
 	const [errorMsg, setErrorMsg] = useState<ReactNode | null>(null);
 	const [isSubmitting, setIsSubmitting] = useState(false);
 
-	const onSubmit = async (values: any, { setSubmitting }: any) => {
+	const onSubmit = (values: any, { setSubmitting }: any) => {
 		if (isSubmitting) return;
 		setIsSubmitting(true);
 		setErrorMsg(null);
@@ -75,15 +75,15 @@ export default function DefaultSite() {
 			{({ values }) => (
 				<Form>
 					<div className="card-body">
-						<Alert variant="danger" show={!!errorMsg} onClose={() => setErrorMsg(null)} dismissible>
+						<Alert variant="danger" show={Boolean(errorMsg)} onClose={() => setErrorMsg(null)} dismissible>
 							{errorMsg}
 						</Alert>
 						<Field name="value">
 							{({ field, form }: any) => (
 								<div className="mb-3">
-									<label className="form-label" htmlFor="setting-host-unknown">
+									<div className="form-label">
 										<T id="settings.default-site.description" />
-									</label>
+									</div>
 									<div className="form-selectgroup form-selectgroup-boxes d-flex flex-column">
 										<label className="form-selectgroup-item flex-fill">
 											<input
@@ -183,7 +183,7 @@ export default function DefaultSite() {
 							<Field name="redirect" validate={validateString(1, 255)}>
 								{({ field, form }: any) => (
 									<div className="mt-5 mb-3">
-										<label className="form-label" htmlFor="setting-host-unknown">
+										<label className="form-label" htmlFor="redirect">
 											<T id="settings.default-site.redirect" />
 										</label>
 										<div>
@@ -212,11 +212,12 @@ export default function DefaultSite() {
 							<Field name="html" validate={validateString(1)}>
 								{({ field, form }: any) => (
 									<div className="mt-5 mb-3">
-										<label className="form-label" htmlFor="setting-host-unknown">
+										<label className="form-label" htmlFor="html">
 											<T id="settings.default-site.html" />
 										</label>
 										<div>
 											<textarea
+												id="html"
 												className="form-control"
 												spellCheck={false}
 												placeholder={intl.formatMessage({

@@ -32,7 +32,7 @@ const DeadHostModal = EasyModal.create(({ id, visible, remove }: Props) => {
 	const [errorMsg, setErrorMsg] = useState<ReactNode | null>(null);
 	const [isSubmitting, setIsSubmitting] = useState(false);
 
-	const onSubmit = async (values: any, { setSubmitting }: any) => {
+	const onSubmit = (values: any, { setSubmitting }: any) => {
 		if (isSubmitting) return;
 		setIsSubmitting(true);
 		setErrorMsg(null);
@@ -114,7 +114,12 @@ const DeadHostModal = EasyModal.create(({ id, visible, remove }: Props) => {
 								</Modal.Title>
 							</Modal.Header>
 							<Modal.Body className="p-0">
-								<Alert variant="danger" show={!!errorMsg} onClose={() => setErrorMsg(null)} dismissible>
+								<Alert
+									variant="danger"
+									show={Boolean(errorMsg)}
+									onClose={() => setErrorMsg(null)}
+									dismissible
+								>
 									{errorMsg}
 								</Alert>
 								<div className="card m-0 border-0">
