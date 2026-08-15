@@ -1,11 +1,26 @@
 import { IconDotsVertical, IconEdit, IconTrash } from "@tabler/icons-react";
-import { createColumnHelper, getCoreRowModel, getSortedRowModel, useReactTable } from "@tanstack/react-table";
+import {
+	createColumnHelper,
+	createSortedRowModel,
+	rowSortingFeature,
+	sortFn_alphanumeric,
+	sortFn_datetime,
+	sortFn_text,
+	tableFeatures,
+	useTable,
+} from "@tanstack/react-table";
 import { useMemo } from "react";
 import type { AccessList } from "src/api/backend";
 import { EmptyData, GravatarFormatter, HasPermission, ValueWithDateFormatter } from "src/components";
 import { TableLayout } from "src/components/Table/TableLayout";
 import { intl, T } from "src/locale";
 import { ACCESS_LISTS, MANAGE } from "src/modules/Permissions";
+
+const features = tableFeatures({
+	rowSortingFeature,
+	sortedRowModel: createSortedRowModel(),
+	sortFns: { alphanumeric: sortFn_alphanumeric, datetime: sortFn_datetime, text: sortFn_text },
+});
 
 interface Props {
 	data: AccessList[];
@@ -16,7 +31,7 @@ interface Props {
 	onNew?: () => void;
 }
 export default function Table({ data, isFetching, isFiltered, onEdit, onDelete, onNew }: Props) {
-	const columnHelper = createColumnHelper<AccessList>();
+	const columnHelper = createColumnHelper<typeof features, AccessList>();
 	const columns = useMemo(
 		() => [
 			columnHelper.accessor((row: any) => row.owner.name, {
@@ -122,12 +137,10 @@ export default function Table({ data, isFetching, isFiltered, onEdit, onDelete, 
 		[columnHelper, onEdit, onDelete],
 	);
 
-	const tableInstance = useReactTable<AccessList>({
+	const tableInstance = useTable({
+		features,
 		columns,
 		data,
-		getCoreRowModel: getCoreRowModel(),
-		getSortedRowModel: getSortedRowModel(),
-		rowCount: data.length,
 		meta: {
 			isFetching,
 		},

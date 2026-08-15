@@ -1,9 +1,24 @@
-import { createColumnHelper, getCoreRowModel, getSortedRowModel, useReactTable } from "@tanstack/react-table";
+import {
+	createColumnHelper,
+	createSortedRowModel,
+	rowSortingFeature,
+	sortFn_alphanumeric,
+	sortFn_datetime,
+	sortFn_text,
+	tableFeatures,
+	useTable,
+} from "@tanstack/react-table";
 import { useMemo } from "react";
 import type { AuditLog } from "src/api/backend";
 import { EventFormatter, GravatarFormatter } from "src/components";
 import { TableLayout } from "src/components/Table/TableLayout";
 import { intl, T } from "src/locale";
+
+const features = tableFeatures({
+	rowSortingFeature,
+	sortedRowModel: createSortedRowModel(),
+	sortFns: { alphanumeric: sortFn_alphanumeric, datetime: sortFn_datetime, text: sortFn_text },
+});
 
 interface Props {
 	data: AuditLog[];
@@ -11,7 +26,7 @@ interface Props {
 	onSelectItem?: (id: number) => void;
 }
 export default function Table({ data, isFetching, onSelectItem }: Props) {
-	const columnHelper = createColumnHelper<AuditLog>();
+	const columnHelper = createColumnHelper<typeof features, AuditLog>();
 	const columns = useMemo(
 		() => [
 			columnHelper.accessor((row: AuditLog) => row.user?.name, {
@@ -55,12 +70,10 @@ export default function Table({ data, isFetching, onSelectItem }: Props) {
 		[columnHelper, onSelectItem],
 	);
 
-	const tableInstance = useReactTable<AuditLog>({
-		columns,
+	const tableInstance = useTable({
+		features,
+		columns: columnHelper.columns(columns),
 		data,
-		getCoreRowModel: getCoreRowModel(),
-		getSortedRowModel: getSortedRowModel(),
-		rowCount: data.length,
 		meta: {
 			isFetching,
 		},

@@ -1,9 +1,9 @@
-import { flexRender } from "@tanstack/react-table";
+import { flexRender, type RowData, type TableFeatures } from "@tanstack/react-table";
 import { Fragment } from "react";
 import type { TableLayoutProps } from "src/components";
 import { EmptyRow } from "./EmptyRow";
 
-function TableBody<T>(props: TableLayoutProps<T>) {
+function TableBody<TFeatures extends TableFeatures, T extends RowData>(props: TableLayoutProps<TFeatures, T>) {
 	const { tableInstance, extraStyles, emptyState, groupBy, renderGroupLabel } = props;
 	const rows = tableInstance.getRowModel().rows;
 
@@ -17,7 +17,7 @@ function TableBody<T>(props: TableLayoutProps<T>) {
 
 	const renderRow = (row: any) => (
 		<tr key={row.id} {...extraStyles?.row(row.original)}>
-			{row.getVisibleCells().map((cell: any) => {
+			{row.getAllCells().map((cell: any) => {
 				const { className } = (cell.column.columnDef.meta as any) ?? {};
 				return (
 					<td key={cell.id} className={className}>
@@ -40,7 +40,7 @@ function TableBody<T>(props: TableLayoutProps<T>) {
 		else groups.set(key, [row]);
 	}
 	const orderedKeys = [...groups.keys()].sort((a, b) => (a === "" ? 1 : b === "" ? -1 : a.localeCompare(b)));
-	const colSpan = tableInstance.getVisibleLeafColumns().length;
+	const colSpan = tableInstance.getAllLeafColumns().length;
 
 	return (
 		<tbody className="table-tbody">
