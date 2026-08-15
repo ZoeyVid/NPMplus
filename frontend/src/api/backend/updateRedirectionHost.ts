@@ -7,6 +7,6 @@ export async function updateRedirectionHost(item: RedirectionHost): Promise<Redi
 
 	return await api.put({
 		url: `/nginx/redirection-hosts/${id}`,
-		data: data,
+		data,
 	});
 }

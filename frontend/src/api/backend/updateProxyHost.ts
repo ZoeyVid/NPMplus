@@ -7,6 +7,6 @@ export async function updateProxyHost(item: ProxyHost): Promise<ProxyHost> {
 
 	return await api.put({
 		url: `/nginx/proxy-hosts/${id}`,
-		data: data,
+		data,
 	});
 }

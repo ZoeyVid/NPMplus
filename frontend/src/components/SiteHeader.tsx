@@ -71,7 +71,7 @@ export function SiteHeader() {
 							</a>
 							<div className="dropdown-menu dropdown-menu-end dropdown-menu-arrow">
 								<div className="d-md-none">
-									{/* biome-ignore lint/a11y/noStaticElementInteractions lint/a11y/useKeyWithClickEvents: This div is not interactive. */}
+									{/* biome-ignore lint/a11y/noStaticElementInteractions lint/a11y/useKeyWithClickEvents lint/a11y/noNoninteractiveElementInteractions: onClick only stops propagation so clicking the user info does not close the dropdown. */}
 									<div
 										className="p-2 pb-1 pe-1 d-flex align-items-center"
 										onClick={(e) => e.stopPropagation()}

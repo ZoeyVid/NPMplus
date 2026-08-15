@@ -12,6 +12,7 @@ import * as it from "./it/index";
 import * as ja from "./ja/index";
 import * as ko from "./ko/index";
 import * as nl from "./nl/index";
+import * as no from "./no/index";
 import * as pl from "./pl/index";
 import * as pt from "./pt/index";
 import * as ru from "./ru/index";
@@ -20,7 +21,7 @@ import * as tr from "./tr/index";
 import * as vi from "./vi/index";
 import * as zh from "./zh/index";
 
-const items: any = { en, bg, cs, de, es, et, fr, ga, hu, id, it, ja, ko, nl, pl, pt, ru, sk, tr, vi, zh };
+const items: any = { en, bg, cs, de, es, et, fr, ga, hu, id, it, ja, ko, nl, no, pl, pt, ru, sk, tr, vi, zh };
 
 const fallbackLang = "en";
 
@@ -34,5 +35,3 @@ export const getHelpFile = (lang: string, section: string): string => {
 	}
 	throw new Error(`Cannot load help doc for ${lang}-${section}`);
 };
-
-export default items;

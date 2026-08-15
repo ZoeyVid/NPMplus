@@ -1,8 +1,10 @@
 import { IconEye, IconEyeOff, IconX } from "@tabler/icons-react";
 import { useFormikContext } from "formik";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import type { AccessListItem } from "src/api/backend";
 import { T } from "src/locale";
+
+const blankItem: AccessListItem = { username: "", password: "" };
 
 interface Props {
 	initialValues: AccessListItem[];
@@ -13,11 +15,11 @@ export function BasicAuthFields({ initialValues, name = "items" }: Props) {
 	const [revealed, setRevealed] = useState<Record<number, boolean>>({});
 	const { setFieldValue } = useFormikContext();
 
-	const blankItem: AccessListItem = { username: "", password: "" };
-
-	if (values?.length === 0) {
-		setValues([blankItem]);
-	}
+	useEffect(() => {
+		if (values.length === 0) {
+			setValues([blankItem]);
+		}
+	});
 
 	const handleAdd = () => {
 		setValues([...values, blankItem]);
@@ -47,14 +49,14 @@ export function BasicAuthFields({ initialValues, name = "items" }: Props) {
 		<>
 			<div className="row">
 				<div className="col-6">
-					<label className="form-label" htmlFor="...">
+					<div className="form-label">
 						<T id="username" />
-					</label>
+					</div>
 				</div>
 				<div className="col-6">
-					<label className="form-label" htmlFor="...">
+					<div className="form-label">
 						<T id="password" />
-					</label>
+					</div>
 				</div>
 			</div>
 			{values.map((item: AccessListItem, idx: number) => (

@@ -25,7 +25,7 @@
 				"noArrayIndexKey": "off"
 			},
 			"a11y": {
-				"useValidAnchor": "off"
+				"noNoninteractiveElementInteractions": "error"
 			},
 			"complexity": {
 				"noImportantStyles": "off"

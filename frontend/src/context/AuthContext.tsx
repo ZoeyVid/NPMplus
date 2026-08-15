@@ -5,7 +5,7 @@ import { deleteToken, getToken, refreshToken, revokeSessions, type TokenResponse
 import AuthStore from "src/modules/AuthStore";
 
 // Context
-export interface AuthContextType {
+interface AuthContextType {
 	authenticated: boolean;
 	totpChallenge: boolean;
 	login: (username: string, password: string) => Promise<void>;
@@ -15,8 +15,7 @@ export interface AuthContextType {
 	logoutEverywhere: () => void;
 }
 
-const initalValue = null;
-const AuthContext = createContext<AuthContextType | null>(initalValue);
+const AuthContext = createContext<AuthContextType | null>(null);
 
 const getCookie = (name: string): string | undefined => {
 	const value = `; ${document.cookie}`;
@@ -125,4 +124,3 @@ function useAuthState() {
 }
 
 export { AuthProvider, useAuthState };
-export default AuthContext;

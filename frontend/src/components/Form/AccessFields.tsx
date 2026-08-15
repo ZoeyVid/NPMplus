@@ -12,7 +12,7 @@ interface Props {
 	initialAccessListType: ProxyLocation["npmplusAccessListType"];
 	initialAccessListIds: number[];
 	name: string;
-	type: string;
+	typeFieldName: string;
 	onChange?: (next: {
 		npmplusAccessListIds?: number[];
 		npmplusAccessListType?: ProxyLocation["npmplusAccessListType"];
@@ -43,46 +43,49 @@ const OptionContent = (label: string, subLabel: string, icon?: ReactNode) => (
 	</div>
 );
 
-const Option = (props: OptionProps<AccessOption>) => {
-	return <components.Option {...props}>{OptionContent(props.data.label, props.data.subLabel)}</components.Option>;
-};
+const Option = (props: OptionProps<AccessOption>) => (
+	<components.Option {...props}>{OptionContent(props.data.label, props.data.subLabel)}</components.Option>
+);
 
-const TypeOption = (props: OptionProps<AccessTypeOption>) => {
-	return (
-		<components.Option {...props}>
-			{OptionContent(props.data.label, props.data.subLabel, props.data.icon)}
-		</components.Option>
-	);
-};
+const TypeOption = (props: OptionProps<AccessTypeOption>) => (
+	<components.Option {...props}>
+		{OptionContent(props.data.label, props.data.subLabel, props.data.icon)}
+	</components.Option>
+);
 
-export function AccessFields({ initialAccessListType, location, initialAccessListIds, name, type, onChange }: Props) {
+export function AccessFields({
+	initialAccessListType,
+	location,
+	initialAccessListIds,
+	name,
+	typeFieldName,
+	onChange,
+}: Props) {
 	const [values, setValues] = useState(initialAccessListIds || []);
 	const [aclValue, setAclValue] = useState(initialAccessListType);
 	const { locale } = useLocaleState();
 	const { setFieldValue } = useFormikContext();
 	const { isLoading, isError, error, data } = useAccessLists(["owner", "items", "clients"]);
 
-	const createDefaultItem = (item: AccessList): AccessOption => {
-		return {
-			value: item.id || 0,
-			label: item.name,
-			subLabel: intl.formatMessage(
-				{ id: "access-list.subtitle" },
-				{
-					users: item?.items?.length,
-					rules: item?.clients?.length,
-					date: item?.createdOn ? formatDateTime(item?.createdOn, locale) : "N/A",
-				},
-			),
-			meta: item,
-		};
-	};
+	const createDefaultItem = (item: AccessList): AccessOption => ({
+		value: item.id || 0,
+		label: item.name,
+		subLabel: intl.formatMessage(
+			{ id: "access-list.subtitle" },
+			{
+				users: item?.items?.length,
+				rules: item?.clients?.length,
+				date: item?.createdOn ? formatDateTime(item?.createdOn, locale) : "N/A",
+			},
+		),
+		meta: item,
+	});
 
 	const createOption = (type: ProxyLocation["npmplusAccessListType"]): AccessTypeOption => {
 		if (type === "global") {
 			return {
 				icon: <IconWorld size={14} className="text-cyan" />,
-				type: type,
+				type,
 				label: intl.formatMessage({ id: "access-list.global" }),
 				subLabel: intl.formatMessage({ id: "access-list.global.subtitle" }),
 			};
@@ -90,14 +93,14 @@ export function AccessFields({ initialAccessListType, location, initialAccessLis
 		if (type === "custom") {
 			return {
 				icon: <IconLock size={14} className="text-lime" />,
-				type: type,
+				type,
 				label: intl.formatMessage({ id: "access-list.custom" }),
 				subLabel: intl.formatMessage({ id: "access-list.custom.subtitle" }),
 			};
 		}
 		return {
 			icon: <IconLockOpen2 size={14} className="text-red" />,
-			type: type,
+			type,
 			label: intl.formatMessage({ id: "access-list.public" }),
 			subLabel: intl.formatMessage({ id: "access-list.public.subtitle" }),
 		};
@@ -119,9 +122,7 @@ export function AccessFields({ initialAccessListType, location, initialAccessLis
 		return ret;
 	};
 
-	const findFirstAvailableOption = (): AccessOption | null => {
-		return options.length > 0 ? options[0] : null;
-	};
+	const findFirstAvailableOption = (): AccessOption | null => (options.length > 0 ? options[0] : null);
 
 	const applyUpdatedValues = (newValues: number[]) => {
 		setValues(newValues);
@@ -193,7 +194,7 @@ export function AccessFields({ initialAccessListType, location, initialAccessLis
 								if (!e || Array.isArray(e)) return;
 								const value = e.type;
 								setAclValue(value);
-								setFieldValue(type, value);
+								setFieldValue(typeFieldName, value);
 								onChange?.({ npmplusAccessListType: value });
 							}}
 						/>

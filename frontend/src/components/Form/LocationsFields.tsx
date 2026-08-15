@@ -15,6 +15,7 @@ import { flushSync } from "react-dom";
 import type { ProxyLocation } from "src/api/backend";
 import { AccessFields } from "src/components";
 import { intl, T } from "src/locale";
+import { upstreamUrlPattern } from "src/modules/Validations";
 import styles from "./LocationsFields.module.css";
 
 interface Props {
@@ -143,12 +144,13 @@ export function LocationsFields({ initialValues, name = "locations" }: Props) {
 
 	const locationLabel = (item: UiLocation) => `${item.locationType ?? ""}${item.path ?? ""}`;
 
-	const forwardSummary = ({ forwardScheme, forwardHost, forwardPort }: UiLocation) =>
-		!forwardHost || forwardScheme === "empty"
-			? ""
-			: forwardScheme && forwardScheme !== "path"
-				? `${forwardScheme}://${forwardHost}${forwardPort ? `:${forwardPort}` : ""}`
-				: forwardHost;
+	const forwardSummary = ({ forwardScheme, forwardHost, forwardPort }: UiLocation) => {
+		if (!forwardHost || forwardScheme === "empty") return "";
+		if (forwardScheme && forwardScheme !== "path") {
+			return `${forwardScheme}://${forwardHost}${forwardPort ? `:${forwardPort}` : ""}`;
+		}
+		return forwardHost;
+	};
 
 	const matchesFilter = (item: UiLocation) =>
 		`${locationLabel(item)} ${forwardSummary(item)}`.toLowerCase().includes(filter.trim().toLowerCase());
@@ -262,7 +264,7 @@ export function LocationsFields({ initialValues, name = "locations" }: Props) {
 									<T id="enabled" />
 								</span>
 								<span className="col-auto">
-									<label className="form-check form-check-single form-switch">
+									<span className="form-check form-check-single form-switch">
 										<input
 											id={`npmplusEnabled-${item.uiKey}`}
 											className={cn("form-check-input", {
@@ -272,7 +274,7 @@ export function LocationsFields({ initialValues, name = "locations" }: Props) {
 											checked={item.npmplusEnabled !== false}
 											onChange={(e) => handleChange(idx, "npmplusEnabled", e.target.checked)}
 										/>
-									</label>
+									</span>
 								</span>
 							</label>
 						</div>
@@ -387,7 +389,7 @@ export function LocationsFields({ initialValues, name = "locations" }: Props) {
 												<T id="host.flags.send-noindex" />
 											</span>
 											<span className="col-auto">
-												<label className="form-check form-check-single form-switch">
+												<span className="form-check form-check-single form-switch">
 													<input
 														id={`npmplusNoindex-${item.uiKey}`}
 														className={cn("form-check-input", {
@@ -399,7 +401,7 @@ export function LocationsFields({ initialValues, name = "locations" }: Props) {
 															handleChange(idx, "npmplusNoindex", e.target.checked)
 														}
 													/>
-												</label>
+												</span>
 											</span>
 										</label>
 									</div>
@@ -409,7 +411,7 @@ export function LocationsFields({ initialValues, name = "locations" }: Props) {
 												<T id="host.flags.disable-crowdsec-appsec" />
 											</span>
 											<span className="col-auto">
-												<label className="form-check form-check-single form-switch">
+												<span className="form-check form-check-single form-switch">
 													<input
 														id={`npmplusCrowdsecAppsec-${item.uiKey}`}
 														className={cn("form-check-input", {
@@ -421,7 +423,7 @@ export function LocationsFields({ initialValues, name = "locations" }: Props) {
 															handleChange(idx, "npmplusCrowdsecAppsec", e.target.checked)
 														}
 													/>
-												</label>
+												</span>
 											</span>
 										</label>
 									</div>
@@ -431,7 +433,7 @@ export function LocationsFields({ initialValues, name = "locations" }: Props) {
 												<T id="host.flags.disable-request-buffering" />
 											</span>
 											<span className="col-auto">
-												<label className="form-check form-check-single form-switch">
+												<span className="form-check form-check-single form-switch">
 													<input
 														id={`npmplusProxyRequestBuffering-${item.uiKey}`}
 														className={cn("form-check-input", {
@@ -448,7 +450,7 @@ export function LocationsFields({ initialValues, name = "locations" }: Props) {
 														}
 														disabled={!["http", "https"].includes(item.forwardScheme)}
 													/>
-												</label>
+												</span>
 											</span>
 										</label>
 									</div>
@@ -458,7 +460,7 @@ export function LocationsFields({ initialValues, name = "locations" }: Props) {
 												<T id="host.flags.disable-response-buffering" />
 											</span>
 											<span className="col-auto">
-												<label className="form-check form-check-single form-switch">
+												<span className="form-check form-check-single form-switch">
 													<input
 														id={`npmplusProxyResponseBuffering-${item.uiKey}`}
 														className={cn("form-check-input", {
@@ -475,7 +477,7 @@ export function LocationsFields({ initialValues, name = "locations" }: Props) {
 														}
 														disabled={!["http", "https"].includes(item.forwardScheme)}
 													/>
-												</label>
+												</span>
 											</span>
 										</label>
 									</div>
@@ -485,7 +487,7 @@ export function LocationsFields({ initialValues, name = "locations" }: Props) {
 												<T id="host.flags.upstream-compression" />
 											</span>
 											<span className="col-auto">
-												<label className="form-check form-check-single form-switch">
+												<span className="form-check form-check-single form-switch">
 													<input
 														id={`npmplusUpstreamCompression-${item.uiKey}`}
 														className={cn("form-check-input", {
@@ -502,7 +504,7 @@ export function LocationsFields({ initialValues, name = "locations" }: Props) {
 														}
 														disabled={["path", "empty"].includes(item.forwardScheme)}
 													/>
-												</label>
+												</span>
 											</span>
 										</label>
 									</div>
@@ -512,7 +514,7 @@ export function LocationsFields({ initialValues, name = "locations" }: Props) {
 												<T id="host.flags.disable-uri-sanitisation" />
 											</span>
 											<span className="col-auto">
-												<label className="form-check form-check-single form-switch">
+												<span className="form-check form-check-single form-switch">
 													<input
 														id={`npmplusDisableUriSanitisation-${item.uiKey}`}
 														className={cn("form-check-input", {
@@ -532,7 +534,7 @@ export function LocationsFields({ initialValues, name = "locations" }: Props) {
 															(item.forwardHost || "").includes("/")
 														}
 													/>
-												</label>
+												</span>
 											</span>
 										</label>
 									</div>
@@ -542,7 +544,7 @@ export function LocationsFields({ initialValues, name = "locations" }: Props) {
 												<T id="host.flags.fancyindex" />
 											</span>
 											<span className="col-auto">
-												<label className="form-check form-check-single form-switch">
+												<span className="form-check form-check-single form-switch">
 													<input
 														id={`npmplusFancyindex-${item.uiKey}`}
 														className={cn("form-check-input", {
@@ -555,7 +557,7 @@ export function LocationsFields({ initialValues, name = "locations" }: Props) {
 														}
 														disabled={item.forwardScheme !== "path"}
 													/>
-												</label>
+												</span>
 											</span>
 										</label>
 									</div>
@@ -563,21 +565,19 @@ export function LocationsFields({ initialValues, name = "locations" }: Props) {
 										<label className="row" htmlFor={`npmplusXFrameOptions-${item.uiKey}`}>
 											<span className="col">X-Frame-Options</span>
 											<span className="col-auto">
-												<label className="form-check form-check-single form-switch">
-													<select
-														id={`npmplusXFrameOptions-${item.uiKey}`}
-														className="form-select"
-														value={item.npmplusXFrameOptions}
-														onChange={(e) =>
-															handleChange(idx, "npmplusXFrameOptions", e.target.value)
-														}
-													>
-														<option value="SAMEORIGIN">SAMEORIGIN</option>
-														<option value="DENY">DENY</option>
-														<option value="none">none</option>
-														<option value="upstream">upstream</option>
-													</select>
-												</label>
+												<select
+													id={`npmplusXFrameOptions-${item.uiKey}`}
+													className="form-select"
+													value={item.npmplusXFrameOptions}
+													onChange={(e) =>
+														handleChange(idx, "npmplusXFrameOptions", e.target.value)
+													}
+												>
+													<option value="SAMEORIGIN">SAMEORIGIN</option>
+													<option value="DENY">DENY</option>
+													<option value="none">none</option>
+													<option value="upstream">upstream</option>
+												</select>
 											</span>
 										</label>
 									</div>
@@ -587,27 +587,25 @@ export function LocationsFields({ initialValues, name = "locations" }: Props) {
 												<T id="host.auth-request" />
 											</span>
 											<span className="col-auto">
-												<label className="form-check form-check-single form-switch">
-													<select
-														id={`npmplusAuthRequest-${item.uiKey}`}
-														className="form-select"
-														value={item.npmplusAuthRequest}
-														onChange={(e) =>
-															handleChange(idx, "npmplusAuthRequest", e.target.value)
-														}
-													>
-														<option value="none">none</option>
-														<option value="anubis">anubis</option>
-														<option value="tinyauth">tinyauth</option>
-														<option value="oauth2proxy">oauth2proxy</option>
-														<option value="voidauth">voidauth</option>
-														<option value="authelia">authelia (modern)</option>
-														<option value="authentik">authentik</option>
-														<option value="authentik-send-basic-auth">
-															authentik-send-basic-auth
-														</option>
-													</select>
-												</label>
+												<select
+													id={`npmplusAuthRequest-${item.uiKey}`}
+													className="form-select"
+													value={item.npmplusAuthRequest}
+													onChange={(e) =>
+														handleChange(idx, "npmplusAuthRequest", e.target.value)
+													}
+												>
+													<option value="none">none</option>
+													<option value="anubis">anubis</option>
+													<option value="tinyauth">tinyauth</option>
+													<option value="oauth2proxy">oauth2proxy</option>
+													<option value="voidauth">voidauth</option>
+													<option value="authelia">authelia (modern)</option>
+													<option value="authentik">authentik</option>
+													<option value="authentik-send-basic-auth">
+														authentik-send-basic-auth
+													</option>
+												</select>
 											</span>
 										</label>
 									</div>
@@ -621,7 +619,7 @@ export function LocationsFields({ initialValues, name = "locations" }: Props) {
 													<input
 														id={`npmplusAuthRequestUpstream-${item.uiKey}`}
 														type="text"
-														className={`form-control ${item.npmplusAuthRequestUpstream && !/^https?:\/\/([^/:]+|\[[a-fA-F0-9:]+\]):[0-9]+$/.test(item.npmplusAuthRequestUpstream) ? "is-invalid" : ""}`}
+														className={`form-control ${item.npmplusAuthRequestUpstream && !upstreamUrlPattern.test(item.npmplusAuthRequestUpstream) ? "is-invalid" : ""}`}
 														placeholder="keep empty to reuse env value"
 														pattern="^https?://([^/:]+|\[[a-fA-F0-9:]+\]):[0-9]+$"
 														value={item.npmplusAuthRequestUpstream || ""}
@@ -634,9 +632,7 @@ export function LocationsFields({ initialValues, name = "locations" }: Props) {
 														}
 													/>
 													{item.npmplusAuthRequestUpstream &&
-													!/^https?:\/\/([^/:]+|\[[a-fA-F0-9:]+\]):[0-9]+$/.test(
-														item.npmplusAuthRequestUpstream,
-													) ? (
+													!upstreamUrlPattern.test(item.npmplusAuthRequestUpstream) ? (
 														<div className="invalid-feedback">
 															<T id="error.invalid-upstream-url" />
 														</div>
@@ -656,7 +652,7 @@ export function LocationsFields({ initialValues, name = "locations" }: Props) {
 									location={item.path}
 									initialAccessListIds={item?.npmplusAccessListIds || []}
 									name={`locations[${idx}].npmplusAccessListIds`}
-									type={`locations[${idx}].npmplusAccessListType`}
+									typeFieldName={`locations[${idx}].npmplusAccessListType`}
 									onChange={(changes) => handleAccessFieldsChange(idx, changes)}
 								/>
 							</div>

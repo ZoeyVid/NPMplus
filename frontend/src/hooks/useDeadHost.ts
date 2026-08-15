@@ -49,11 +49,13 @@ const useSetDeadHost = () => {
 		},
 		onError: (_, __, rollback: any) => rollback(),
 		onSuccess: async ({ id }: DeadHost) => {
-			queryClient.invalidateQueries({ queryKey: ["dead-host", id] });
-			queryClient.invalidateQueries({ queryKey: ["dead-hosts"] });
-			queryClient.invalidateQueries({ queryKey: ["audit-logs"] });
-			queryClient.invalidateQueries({ queryKey: ["host-report"] });
-			queryClient.invalidateQueries({ queryKey: ["certificates"] });
+			await Promise.all([
+				queryClient.invalidateQueries({ queryKey: ["dead-host", id] }),
+				queryClient.invalidateQueries({ queryKey: ["dead-hosts"] }),
+				queryClient.invalidateQueries({ queryKey: ["audit-logs"] }),
+				queryClient.invalidateQueries({ queryKey: ["host-report"] }),
+				queryClient.invalidateQueries({ queryKey: ["certificates"] }),
+			]);
 		},
 	});
 };

@@ -49,10 +49,12 @@ const useSetAccessList = () => {
 		},
 		onError: (_, __, rollback: any) => rollback(),
 		onSuccess: async ({ id }: AccessList) => {
-			queryClient.invalidateQueries({ queryKey: ["access-list", id] });
-			queryClient.invalidateQueries({ queryKey: ["access-lists"] });
-			queryClient.invalidateQueries({ queryKey: ["audit-logs"] });
-			queryClient.invalidateQueries({ queryKey: ["proxy-hosts"] });
+			await Promise.all([
+				queryClient.invalidateQueries({ queryKey: ["access-list", id] }),
+				queryClient.invalidateQueries({ queryKey: ["access-lists"] }),
+				queryClient.invalidateQueries({ queryKey: ["audit-logs"] }),
+				queryClient.invalidateQueries({ queryKey: ["proxy-hosts"] }),
+			]);
 		},
 	});
 };

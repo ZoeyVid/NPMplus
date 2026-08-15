@@ -1,8 +1,8 @@
 import { IconHelp, IconSearch } from "@tabler/icons-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Alert from "react-bootstrap/Alert";
 import { type Certificate, deleteCertificate, downloadCertificate } from "src/api/backend";
-import { Button, HasPermission, LoadingPage } from "src/components";
+import { Button, certificateProviderTranslation, HasPermission, LoadingPage } from "src/components";
 import { useLocaleState } from "src/context";
 import { useCertificates } from "src/hooks";
 import { formatDateTime, T } from "src/locale";
@@ -21,6 +21,7 @@ import Table from "./Table";
 
 export default function TableWrapper() {
 	const { locale } = useLocaleState();
+
 	const [search, setSearch] = useState("");
 	const { isFetching, isLoading, isError, error, data } = useCertificates([
 		"owner",
@@ -29,6 +30,13 @@ export default function TableWrapper() {
 		"redirection_hosts",
 		"streams",
 	]);
+
+	useEffect(() => {
+		// this can happen if someone deletes the last item while searching
+		if (search !== "" && !data) {
+			setSearch("");
+		}
+	});
 
 	if (isLoading) {
 		return <LoadingPage />;
@@ -51,16 +59,13 @@ export default function TableWrapper() {
 		}
 	};
 
-	let filtered = null;
+	let filtered: Certificate[] | null = null;
 	if (search && data) {
 		filtered = data?.filter(
 			(item) =>
 				item.domainNames.some((domain: string) => domain.toLowerCase().includes(search)) ||
 				item.niceName.toLowerCase().includes(search),
 		);
-	} else if (search !== "") {
-		// this can happen if someone deletes the last item while searching
-		setSearch("");
 	}
 
 	return (
@@ -82,7 +87,6 @@ export default function TableWrapper() {
 											<IconSearch size={16} />
 										</span>
 										<input
-											id="advanced-table-search"
 											type="text"
 											className="form-control form-control-sm"
 											autoComplete="off"
@@ -104,48 +108,44 @@ export default function TableWrapper() {
 												<T id="object.add" tData={{ object: "certificate" }} />
 											</button>
 											<div className="dropdown-menu">
-												<a
+												<button
+													type="button"
 													className="dropdown-item"
-													href="#"
-													onClick={(e) => {
-														e.preventDefault();
+													onClick={() => {
 														showHTTPCertificateModal();
 													}}
 												>
 													<T id="lets-encrypt-via-http" />
-												</a>
-												<a
+												</button>
+												<button
+													type="button"
 													className="dropdown-item"
-													href="#"
-													onClick={(e) => {
-														e.preventDefault();
+													onClick={() => {
 														showDNSCertificateModal();
 													}}
 												>
 													<T id="lets-encrypt-via-dns" />
-												</a>
+												</button>
 												<div className="dropdown-divider" />
-												<a
+												<button
+													type="button"
 													className="dropdown-item"
-													href="#"
-													onClick={(e) => {
-														e.preventDefault();
+													onClick={() => {
 														showCustomCertificateModal();
 													}}
 												>
 													<T id="certificates.custom" />
-												</a>
+												</button>
 												<div className="dropdown-divider" />
-												<a
+												<button
+													type="button"
 													className="dropdown-item"
-													href="#"
-													onClick={(e) => {
-														e.preventDefault();
+													onClick={() => {
 														showCustomCertificateModal(undefined, "mtls");
 													}}
 												>
 													mTLS
-												</a>
+												</button>
 											</div>
 										</div>
 									) : null}
@@ -157,7 +157,7 @@ export default function TableWrapper() {
 				<Table
 					data={filtered ?? data ?? []}
 					allData={data ?? []}
-					isFiltered={!!search}
+					isFiltered={Boolean(search)}
 					isFetching={isFetching}
 					onRenew={showRenewCertificateModal}
 					onDownload={handleDownload}
@@ -178,15 +178,7 @@ export default function TableWrapper() {
 										<div>{certificate.niceName}</div>
 									) : null}
 									<div>
-										<T
-											id={
-												certificate.provider === "letsencrypt"
-													? "lets-encrypt"
-													: certificate.provider === "other"
-														? "certificates.custom"
-														: "mtls-certificate"
-											}
-										/>
+										<T id={certificateProviderTranslation(certificate.provider)} />
 										{certificate.meta?.dnsProvider ? ` – ${certificate.meta.dnsProvider}` : null}
 									</div>
 									{certificate.expiresOn ? (

@@ -1,6 +1,11 @@
 import type { InvalidEvent } from "react";
 import { intl } from "src/locale";
 
+const emailPattern = /@/;
+const domainPattern = /^(?!.*:[0-9]+$).+$/;
+const ipv4Pattern = /^[0-9.]+$/;
+const upstreamUrlPattern = /^https?:\/\/([^/:]+|\[[a-fA-F0-9:]+\]):[0-9]+$/;
+
 const validateString = (minLength = 0, maxLength = 0) => {
 	if (minLength <= 0 && maxLength <= 0) {
 		// this doesn't require translation
@@ -8,7 +13,7 @@ const validateString = (minLength = 0, maxLength = 0) => {
 	}
 
 	return (value: string): string | undefined => {
-		if (minLength && (typeof value === "undefined" || !value.length)) {
+		if (minLength && (typeof value === "undefined" || value.length === 0)) {
 			return intl.formatMessage({ id: "error.required" });
 		}
 		if (minLength && value.length < minLength) {
@@ -27,7 +32,7 @@ const validateNumber = (min = -1, max = -1) => {
 	}
 
 	return (value: string): string | undefined => {
-		const int: number = +value;
+		const int: number = Number(value);
 		if (min > -1 && !int) {
 			return intl.formatMessage({ id: "error.required" });
 		}
@@ -40,16 +45,16 @@ const validateNumber = (min = -1, max = -1) => {
 	};
 };
 
-const validateEmail = () => {
-	return (value: string): string | undefined => {
-		if (!value.length) {
+const validateEmail =
+	() =>
+	(value: string): string | undefined => {
+		if (value.length === 0) {
 			return intl.formatMessage({ id: "error.required" });
 		}
-		if (!/@/.test(value)) {
+		if (!emailPattern.test(value)) {
 			return intl.formatMessage({ id: "error.invalid-email" });
 		}
 	};
-};
 
 const validateDomain = (allowWildcards = false) => {
 	return (d: string): boolean => {
@@ -60,20 +65,20 @@ const validateDomain = (allowWildcards = false) => {
 			if (dom.includes("*")) {
 				return false;
 			}
-		} /*else {
+		} else {
 			// Block IPv6
 			if (dom.startsWith("[") && dom.endsWith("]")) {
 				return false;
 			}
 
 			// Block IPv4
-			if (/^[0-9.]+$/.test(dom)) {
+			if (ipv4Pattern.test(dom)) {
 				return false;
 			}
-		}*/
+		}
 
 		// This will match *.com type domains,
-		return /^(?!.*:[0-9]+$).+$/.test(dom);
+		return domainPattern.test(dom);
 	};
 };
 
@@ -91,9 +96,9 @@ const validateDomains = (allowWildcards = false, maxDomains?: number) => {
 		}
 
 		// validate each domain
-		for (let i = 0; i < value?.length; i++) {
-			if (!vDom(value[i])) {
-				return intl.formatMessage({ id: "error.invalid-domain" }, { domain: value[i] });
+		for (const domain of value ?? []) {
+			if (!vDom(domain)) {
+				return intl.formatMessage({ id: "error.invalid-domain" }, { domain });
 			}
 		}
 	};
@@ -106,16 +111,17 @@ const showTabOfInvalid = ({ currentTarget }: InvalidEvent<HTMLFormElement>) => {
 	field?.scrollIntoView({ block: "center" });
 };
 
-const validateUpstreamUrl = () => {
-	return (value: string): string | undefined => {
-		if (value && !/^https?:\/\/([^/:]+|\[[a-fA-F0-9:]+\]):[0-9]+$/.test(value)) {
+const validateUpstreamUrl =
+	() =>
+	(value: string): string | undefined => {
+		if (value && !upstreamUrlPattern.test(value)) {
 			return intl.formatMessage({ id: "error.invalid-upstream-url" });
 		}
 	};
-};
 
 export {
 	showTabOfInvalid,
+	upstreamUrlPattern,
 	validateDomain,
 	validateDomains,
 	validateEmail,

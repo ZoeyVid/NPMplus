@@ -1,9 +1,9 @@
 import { IconHelp, IconSearch } from "@tabler/icons-react";
 import { useQueryClient } from "@tanstack/react-query";
 import type { SortingState } from "@tanstack/react-table";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Alert from "react-bootstrap/Alert";
-import { deleteStream, toggleStream } from "src/api/backend";
+import { deleteStream, type Stream, toggleStream } from "src/api/backend";
 import { Button, HasPermission, LoadingPage } from "src/components";
 import { getDirectory, useStreams } from "src/hooks";
 import { T } from "src/locale";
@@ -18,6 +18,13 @@ export default function TableWrapper() {
 	const [sorting, setSorting] = useState<SortingState>([]);
 	const [_deleteId, _setDeleteIdd] = useState(0);
 	const { isFetching, isLoading, isError, error, data } = useStreams(["owner", "certificate"]);
+
+	useEffect(() => {
+		// this can happen if someone deletes the last item while searching
+		if (search !== "" && !data) {
+			setSearch("");
+		}
+	});
 
 	if (isLoading) {
 		return <LoadingPage />;
@@ -39,7 +46,7 @@ export default function TableWrapper() {
 		showObjectSuccess("stream", enabled ? "enabled" : "disabled");
 	};
 
-	let filtered = null;
+	let filtered: Stream[] | null = null;
 	if (search && data) {
 		filtered = data?.filter((item) => {
 			const directory = getDirectory(item).toLowerCase();
@@ -51,16 +58,13 @@ export default function TableWrapper() {
 				directory.includes(search)
 			);
 		});
-	} else if (search !== "") {
-		// this can happen if someone deletes the last item while searching
-		setSearch("");
 	}
 
 	const displayedStreams = filtered ?? data ?? [];
 	const groupingActive = displayedStreams.some((item) => getDirectory(item));
 
 	const sharedTableProps = {
-		isFiltered: !!search,
+		isFiltered: Boolean(search),
 		isFetching,
 		sorting,
 		onSortingChange: setSorting,
@@ -99,7 +103,6 @@ export default function TableWrapper() {
 											<IconSearch size={16} />
 										</span>
 										<input
-											id="advanced-table-search"
 											type="text"
 											className="form-control form-control-sm"
 											autoComplete="off"

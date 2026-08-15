@@ -54,7 +54,7 @@ const ReachabilityModal = EasyModal.create(({ visible, remove, domains }: InnerM
 							messageComponent = <T id="certificates.http.reachability-wrong-data" />;
 							break;
 						default: {
-							const code = status.substring(6);
+							const code = status.slice(6);
 							messageComponent = <T id="certificates.http.reachability-other" data={{ code }} />;
 							break;
 						}
@@ -78,7 +78,7 @@ const ReachabilityModal = EasyModal.create(({ visible, remove, domains }: InnerM
 				</Modal.Title>
 			</Modal.Header>
 			<Modal.Body className="p-0">
-				<Alert variant="danger" show={!!errorMsg} onClose={() => setErrorMsg(null)} dismissible>
+				<Alert variant="danger" show={Boolean(errorMsg)} onClose={() => setErrorMsg(null)} dismissible>
 					{errorMsg}
 				</Alert>
 				<div className="card m-0 border-0">
