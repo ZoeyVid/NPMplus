@@ -1,3 +1,4 @@
+import type { InvalidEvent } from "react";
 import { intl } from "src/locale";
 
 const validateString = (minLength = 0, maxLength = 0) => {
@@ -98,6 +99,13 @@ const validateDomains = (allowWildcards = false, maxDomains?: number) => {
 	};
 };
 
+const showTabOfInvalid = ({ currentTarget }: InvalidEvent<HTMLFormElement>) => {
+	const field = currentTarget.querySelector(":invalid");
+	const pane = field?.closest(".tab-pane:not(.active)");
+	if (pane) currentTarget.querySelector<HTMLElement>(`[data-bs-toggle="tab"][href="#${pane.id}"]`)?.click();
+	field?.scrollIntoView({ block: "center" });
+};
+
 const validateUpstreamUrl = () => {
 	return (value: string): string | undefined => {
 		if (value && !/^https?:\/\/([^/:]+|\[[a-fA-F0-9:]+\]):[0-9]+$/.test(value)) {
@@ -106,4 +114,12 @@ const validateUpstreamUrl = () => {
 	};
 };
 
-export { validateDomain, validateDomains, validateEmail, validateNumber, validateString, validateUpstreamUrl };
+export {
+	showTabOfInvalid,
+	validateDomain,
+	validateDomains,
+	validateEmail,
+	validateNumber,
+	validateString,
+	validateUpstreamUrl,
+};

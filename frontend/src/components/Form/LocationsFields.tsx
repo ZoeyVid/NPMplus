@@ -1,7 +1,17 @@
-import { IconAlertTriangle, IconSettings } from "@tabler/icons-react";
+import {
+	IconAlertTriangle,
+	IconChevronDown,
+	IconChevronRight,
+	IconPlus,
+	IconSearch,
+	IconSettings,
+	IconTrash,
+	IconX,
+} from "@tabler/icons-react";
 import cn from "clsx";
 import { useFormikContext } from "formik";
 import { useRef, useState } from "react";
+import { flushSync } from "react-dom";
 import type { ProxyLocation } from "src/api/backend";
 import { AccessFields } from "src/components";
 import { intl, T } from "src/locale";
@@ -28,6 +38,9 @@ export function LocationsFields({ initialValues, name = "locations" }: Props) {
 	const [values, setValues] = useState<UiLocation[]>((initialValues || []).map(createUiLocation));
 	const { setFieldValue } = useFormikContext();
 	const [advVisible, setAdvVisible] = useState<number[]>([]);
+	const [expanded, setExpanded] = useState<number[]>([]);
+	const [filter, setFilter] = useState("");
+	const scrollToKey = useRef<number | null>(null);
 
 	const blankItem: ProxyLocation = {
 		npmplusEnabled: true,
@@ -55,14 +68,17 @@ export function LocationsFields({ initialValues, name = "locations" }: Props) {
 		id: null,
 	};
 
-	const toggleAdvVisible = (idx: number) => {
-		setAdvVisible(advVisible.includes(idx) ? advVisible.filter((i) => i !== idx) : [...advVisible, idx]);
-	};
+	const toggle = (key: number, list: number[], set: (value: number[]) => void) =>
+		set(list.includes(key) ? list.filter((i) => i !== key) : [...list, key]);
 
 	const handleAdd = () => {
-		const newValues = [...values, createUiLocation(blankItem)];
+		const item = createUiLocation(blankItem);
+		const newValues = [...values, item];
 		setValues(newValues);
 		setFormField(newValues);
+		setExpanded([...expanded, item.uiKey]);
+		setFilter("");
+		scrollToKey.current = item.uiKey;
 	};
 
 	const handleRemove = (idx: number) => {
@@ -123,6 +139,20 @@ export function LocationsFields({ initialValues, name = "locations" }: Props) {
 		setFieldValue(name, filtered);
 	};
 
+	const isOpen = (item: UiLocation) => expanded.includes(item.uiKey);
+
+	const locationLabel = (item: UiLocation) => `${item.locationType ?? ""}${item.path ?? ""}`;
+
+	const forwardSummary = ({ forwardScheme, forwardHost, forwardPort }: UiLocation) =>
+		!forwardHost || forwardScheme === "empty"
+			? ""
+			: forwardScheme && forwardScheme !== "path"
+				? `${forwardScheme}://${forwardHost}${forwardPort ? `:${forwardPort}` : ""}`
+				: forwardHost;
+
+	const matchesFilter = (item: UiLocation) =>
+		`${locationLabel(item)} ${forwardSummary(item)}`.toLowerCase().includes(filter.trim().toLowerCase());
+
 	if (values.length === 0) {
 		return (
 			<div className="text-center">
@@ -135,9 +165,97 @@ export function LocationsFields({ initialValues, name = "locations" }: Props) {
 
 	return (
 		<>
+			<div className="row g-2 mb-3">
+				<div className="col">
+					<div className="input-group">
+						<span className="input-group-text">
+							<IconSearch size={16} />
+						</span>
+						<input
+							type="text"
+							className="form-control"
+							autoComplete="off"
+							placeholder={intl.formatMessage({ id: "location.filter" })}
+							aria-label={intl.formatMessage({ id: "location.filter" })}
+							value={filter}
+							onChange={(e) => setFilter(e.target.value)}
+						/>
+						<button
+							type="button"
+							className="btn btn-icon"
+							title={intl.formatMessage({ id: "action.clear" })}
+							aria-label={intl.formatMessage({ id: "action.clear" })}
+							onClick={() => setFilter("")}
+						>
+							<IconX size={16} />
+						</button>
+					</div>
+				</div>
+				<div className="col-auto">
+					<button type="button" className="btn" onClick={handleAdd}>
+						<IconPlus size={16} className="me-1" />
+						<T id="action.add-location" />
+					</button>
+				</div>
+			</div>
+			{!values.some(matchesFilter) && (
+				<div className="text-secondary text-center my-3">
+					<T id="empty-search" />
+				</div>
+			)}
 			{values.map((item: UiLocation, idx: number) => (
-				<div key={item.uiKey} className={cn("card", "card-active", "mb-3", styles.locationCard)}>
-					<div className="card-body">
+				<div
+					key={item.uiKey}
+					ref={(node) => {
+						if (node && scrollToKey.current === item.uiKey) {
+							scrollToKey.current = null;
+							node.scrollIntoView({ block: "nearest" });
+						}
+					}}
+					className={cn("card", "card-active", "mb-2", !matchesFilter(item) && "d-none", styles.locationCard)}
+				>
+					<div className={cn("card-header", "p-2", !isOpen(item) && "border-bottom-0")}>
+						<button
+							type="button"
+							className="d-flex flex-fill align-self-stretch align-items-center overflow-hidden p-0 text-start text-body bg-transparent border-0"
+							aria-expanded={isOpen(item)}
+							aria-controls={`location-body-${item.uiKey}`}
+							onClick={() => toggle(item.uiKey, expanded, setExpanded)}
+						>
+							{isOpen(item) ? <IconChevronDown size={16} /> : <IconChevronRight size={16} />}
+							<span className="ms-2 fw-medium text-nowrap">{locationLabel(item)}</span>
+							<span className="ms-2 text-secondary text-truncate">{forwardSummary(item)}</span>
+							{item.advancedConfig?.trim() && (
+								<span
+									className="ms-2 text-secondary d-flex align-items-center flex-shrink-0"
+									role="img"
+									title={intl.formatMessage({ id: "nginx-config.label" })}
+									aria-label={intl.formatMessage({ id: "nginx-config.label" })}
+								>
+									<IconSettings size={16} />
+								</span>
+							)}
+						</button>
+						<button
+							type="button"
+							className="btn btn-action ms-2"
+							title={intl.formatMessage({ id: "action.delete" })}
+							aria-label={intl.formatMessage({ id: "action.delete" })}
+							onClick={() => handleRemove(idx)}
+						>
+							<IconTrash size={16} className="icon" />
+						</button>
+					</div>
+					<div
+						className={cn("card-body", !isOpen(item) && "d-none")}
+						id={`location-body-${item.uiKey}`}
+						onInvalid={() =>
+							flushSync(() => {
+								setFilter("");
+								setExpanded((keys) => (keys.includes(item.uiKey) ? keys : [...keys, item.uiKey]));
+							})
+						}
+					>
 						<div className="row mb-3">
 							<label className="row" htmlFor={`npmplusEnabled-${item.uiKey}`}>
 								<span className="col">
@@ -190,7 +308,7 @@ export function LocationsFields({ initialValues, name = "locations" }: Props) {
 									type="button"
 									className="btn p-0"
 									title="Advanced"
-									onClick={() => toggleAdvVisible(idx)}
+									onClick={() => toggle(item.uiKey, advVisible, setAdvVisible)}
 								>
 									<IconSettings size={20} />
 									{item?.advancedConfig?.trim() ? "*" : ""}
@@ -543,7 +661,7 @@ export function LocationsFields({ initialValues, name = "locations" }: Props) {
 								/>
 							</div>
 						</div>
-						{advVisible.includes(idx) && (
+						{advVisible.includes(item.uiKey) && (
 							<div className="">
 								<textarea
 									className="form-control"
@@ -560,25 +678,9 @@ export function LocationsFields({ initialValues, name = "locations" }: Props) {
 								/>
 							</div>
 						)}
-						<div className="mt-1">
-							<a
-								href="#"
-								onClick={(e) => {
-									e.preventDefault();
-									handleRemove(idx);
-								}}
-							>
-								<T id="action.delete" />
-							</a>
-						</div>
 					</div>
 				</div>
 			))}
-			<div>
-				<button type="button" className="btn btn-sm" onClick={handleAdd}>
-					<T id="action.add-location" />
-				</button>
-			</div>
 		</>
 	);
 }
