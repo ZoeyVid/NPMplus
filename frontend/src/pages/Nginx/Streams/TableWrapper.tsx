@@ -65,13 +65,17 @@ export default function TableWrapper() {
 		sorting,
 		onSortingChange: setSorting,
 		onEdit: (id: number) => showStreamModal(id),
-		onDelete: (id: number) =>
+		onDelete: (id: number) => {
+			const stream = data?.find((item) => item.id === id);
 			showDeleteConfirmModal({
 				title: <T id="object.delete" tData={{ object: "stream" }} />,
 				onConfirm: () => handleDelete(id),
 				invalidations: [["streams"], ["stream", id]],
 				children: <T id="object.delete.content" tData={{ object: "stream" }} />,
-			}),
+				subject: stream ? `${stream.incomingPort} → ${stream.forwardingHost}:${stream.forwardingPort}` : null,
+				details: stream?.npmplusDescription,
+			});
+		},
 		onDisableToggle: handleDisableToggle,
 		onNew: () => showStreamModal("new"),
 	};

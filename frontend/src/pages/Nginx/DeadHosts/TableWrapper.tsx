@@ -61,13 +61,16 @@ export default function TableWrapper() {
 		sorting,
 		onSortingChange: setSorting,
 		onEdit: (id: number) => showDeadHostModal(id),
-		onDelete: (id: number) =>
+		onDelete: (id: number) => {
+			const host = data?.find((item) => item.id === id);
 			showDeleteConfirmModal({
 				title: <T id="object.delete" tData={{ object: "dead-host" }} />,
 				onConfirm: () => handleDelete(id),
 				invalidations: [["dead-hosts"], ["dead-host", id]],
 				children: <T id="object.delete.content" tData={{ object: "dead-host" }} />,
-			}),
+				subject: host?.domainNames.join(", "),
+			});
+		},
 		onDisableToggle: handleDisableToggle,
 		onNew: () => showDeadHostModal("new"),
 	};
