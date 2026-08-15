@@ -38,28 +38,6 @@ export default function TableWrapper() {
 		showObjectSuccess("proxy-host", enabled ? "enabled" : "disabled");
 	};
 
-	const handleDeleteClick = (id: number) => {
-		const host = data?.find((h) => h.id === id);
-		showDeleteConfirmModal({
-			title: <T id="object.delete" tData={{ object: "proxy-host" }} />,
-			onConfirm: () => handleDelete(id),
-			invalidations: [["proxy-hosts"], ["proxy-host", id]],
-			children: (
-				<>
-					<T id="object.delete.content" tData={{ object: "proxy-host" }} />
-					{host?.domainNames?.length ? (
-						<div className="mt-2 fw-bold text-break">{host.domainNames.join(", ")}</div>
-					) : null}
-					{host?.forwardHost ? (
-						<div className="mt-1 text-muted small">
-							({host.forwardScheme}://{host.forwardHost}:{host.forwardPort})
-						</div>
-					) : null}
-				</>
-			),
-		});
-	};
-
 	let filtered = null;
 	if (search && data) {
 		filtered = data?.filter((item) => {
@@ -86,7 +64,19 @@ export default function TableWrapper() {
 		onSortingChange: setSorting,
 		onEdit: (id: number) => showProxyHostModal(id),
 		onClone: (id: number) => showProxyHostModal(id, true),
-		onDelete: handleDeleteClick,
+		onDelete: (id: number) => {
+			const host = data?.find((item) => item.id === id);
+			showDeleteConfirmModal({
+				title: <T id="object.delete" tData={{ object: "proxy-host" }} />,
+				onConfirm: () => handleDelete(id),
+				invalidations: [["proxy-hosts"], ["proxy-host", id]],
+				children: <T id="object.delete.content" tData={{ object: "proxy-host" }} />,
+				subject: host?.domainNames.join(", "),
+				details: host?.forwardHost
+					? `${host.forwardScheme}://${host.forwardHost}${host.forwardPort ? `:${host.forwardPort}` : ""}`
+					: null,
+			});
+		},
 		onDisableToggle: handleDisableToggle,
 		onNew: () => showProxyHostModal("new"),
 	};

@@ -62,13 +62,21 @@ export default function TableWrapper() {
 		sorting,
 		onSortingChange: setSorting,
 		onEdit: (id: number) => showRedirectionHostModal(id),
-		onDelete: (id: number) =>
+		onDelete: (id: number) => {
+			const host = data?.find((item) => item.id === id);
 			showDeleteConfirmModal({
 				title: <T id="object.delete" tData={{ object: "redirection-host" }} />,
 				onConfirm: () => handleDelete(id),
 				invalidations: [["redirection-hosts"], ["redirection-host", id]],
 				children: <T id="object.delete.content" tData={{ object: "redirection-host" }} />,
-			}),
+				subject: host?.domainNames.join(", "),
+				details:
+					host &&
+					(host.forwardScheme === "$scheme"
+						? host.forwardDomainName
+						: `${host.forwardScheme}://${host.forwardDomainName}`),
+			});
+		},
 		onDisableToggle: handleDisableToggle,
 		onNew: () => showRedirectionHostModal("new"),
 	};
