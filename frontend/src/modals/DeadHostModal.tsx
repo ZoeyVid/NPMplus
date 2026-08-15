@@ -14,6 +14,7 @@ import {
 import { useDeadHost, useDeadHosts, useDirectorySuggestions, useSetDeadHost } from "src/hooks";
 import { T } from "src/locale";
 import EasyModal, { type InnerModalProps } from "src/modules/easyModal";
+import { showTabOfInvalid } from "src/modules/Validations";
 import { showObjectSuccess } from "src/notifications";
 
 const showDeadHostModal = (id: number | "new") => {
@@ -106,7 +107,7 @@ const DeadHostModal = EasyModal.create(({ id, visible, remove }: Props) => {
 					onSubmit={onSubmit}
 				>
 					{({ values }: any) => (
-						<Form>
+						<Form onInvalid={showTabOfInvalid}>
 							<Modal.Header closeButton>
 								<Modal.Title>
 									<T id={data?.id ? "object.edit" : "object.add"} tData={{ object: "dead-host" }} />

@@ -8,7 +8,7 @@ import { AccessClientFields, BasicAuthFields, Button, Loading } from "src/compon
 import { useAccessList, useSetAccessList } from "src/hooks";
 import { intl, T } from "src/locale";
 import EasyModal, { type InnerModalProps } from "src/modules/easyModal";
-import { validateString } from "src/modules/Validations";
+import { showTabOfInvalid, validateString } from "src/modules/Validations";
 import { showObjectSuccess } from "src/notifications";
 
 const showAccessListModal = (id: number | "new") => {
@@ -107,7 +107,7 @@ const AccessListModal = EasyModal.create(({ id, visible, remove }: Props) => {
 					onSubmit={onSubmit}
 				>
 					{({ setFieldValue }: any) => (
-						<Form>
+						<Form onInvalid={showTabOfInvalid}>
 							<Modal.Header closeButton>
 								<Modal.Title>
 									<T id={data?.id ? "object.edit" : "object.add"} tData={{ object: "access-list" }} />
