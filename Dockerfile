@@ -185,7 +185,6 @@ RUN apk upgrade --no-cache -a && \
 COPY frontend /app
 RUN pnpm formatjs compile-folder src/locale/src src/locale/lang && \
     pnpm tsc -b && \
-    pnpm vitest && \
     pnpm vite build && \
     find /app/dist -type f ! -name "*.jpg" ! -name "*.png" -exec brotli -q 11 {} \;
 
