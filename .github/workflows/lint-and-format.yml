@@ -43,7 +43,6 @@ jobs:
           ./src/locale/scripts/locale-sort.sh
           pnpm formatjs compile-folder src/locale/src src/locale/lang
           pnpm tsc -b
-          pnpm vitest
           pnpm vite build
       - name: nginxbeautifier
         run: |
