@@ -14,7 +14,7 @@ const ajv = new Ajv({
  * @param {Object} payload
  * @returns {Promise}
  */
-const apiValidator = async (schema, payload /*, description*/) => {
+const apiValidator = (schema, payload /*, description*/) => {
 	if (!schema) {
 		throw new errs.ValidationError("Schema is undefined");
 	}

@@ -1,6 +1,15 @@
 import express from "express";
 import { rateLimit } from "express-rate-limit";
-import * as client from "openid-client";
+import {
+	authorizationCodeGrant,
+	buildAuthorizationUrl,
+	calculatePKCECodeChallenge,
+	discovery,
+	fetchUserInfo,
+	randomNonce,
+	randomPKCECodeVerifier,
+	randomState,
+} from "openid-client";
 import internalToken from "../internal/token.js";
 import errs from "../lib/error.js";
 import { oidc as logger } from "../logger.js";
@@ -36,20 +45,20 @@ router
 	 */
 	.get(async (_, res) => {
 		try {
-			const config = await client.discovery(
+			const config = await discovery(
 				new URL(process.env.OIDC_ISSUER_URL),
 				process.env.OIDC_CLIENT_ID,
 				process.env.OIDC_CLIENT_SECRET,
 			);
 
-			const code_verifier = client.randomPKCECodeVerifier();
+			const code_verifier = randomPKCECodeVerifier();
 			const parameters = {
 				redirect_uri: `https://${process.env.OIDC_REDIRECT_DOMAIN}/api/oidc/callback`,
 				scope: "openid email",
-				state: client.randomState(),
-				nonce: client.randomNonce(),
+				state: randomState(),
+				nonce: randomNonce(),
 				code_challenge_method: "S256",
-				code_challenge: await client.calculatePKCECodeChallenge(code_verifier),
+				code_challenge: await calculatePKCECodeChallenge(code_verifier),
 			};
 
 			res.cookie("__Host-npmplus_oidc_no_redirect", "true", {
@@ -79,7 +88,7 @@ router
 				maxAge: 15 * 60 * 1000,
 			});
 
-			res.redirect(await client.buildAuthorizationUrl(config, parameters).toString());
+			res.redirect(buildAuthorizationUrl(config, parameters).toString());
 		} catch (err) {
 			logger.error(`Callback error: ${err.message}`);
 			res.cookie("__Host-npmplus_oidc_no_redirect", "true", {
@@ -119,13 +128,13 @@ router
 	 */
 	.get(async (req, res) => {
 		try {
-			const config = await client.discovery(
+			const config = await discovery(
 				new URL(process.env.OIDC_ISSUER_URL),
 				process.env.OIDC_CLIENT_ID,
 				process.env.OIDC_CLIENT_SECRET,
 			);
 
-			const tokens = await client.authorizationCodeGrant(
+			const tokens = await authorizationCodeGrant(
 				config,
 				new URL(`${req.protocol}://${req.host}${req.originalUrl}`),
 				{
@@ -140,7 +149,7 @@ router
 
 			let claims = idTokenClaims;
 			if (!idTokenClaims.email) {
-				const userinfo = await client.fetchUserInfo(config, tokens.access_token, idTokenClaims.sub);
+				const userinfo = await fetchUserInfo(config, tokens.access_token, idTokenClaims.sub);
 				claims = { ...idTokenClaims, ...userinfo };
 			}
 

@@ -34,7 +34,7 @@ const internalTotp = {
 		const otpauth_url = generateURI({
 			issuer: APP_NAME,
 			label: user.email,
-			secret: secret,
+			secret,
 		});
 		const auth = await authModel.getPasswordAuth(userId);
 

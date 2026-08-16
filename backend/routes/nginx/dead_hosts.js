@@ -61,7 +61,7 @@ router
 	 */
 	.post(async (req, res, next) => {
 		try {
-			const payload = await apiValidator(getValidationSchema("/nginx/dead-hosts", "post"), req.body);
+			const payload = apiValidator(getValidationSchema("/nginx/dead-hosts", "post"), req.body);
 			const result = await internalDeadHost.create(res.locals.access, payload);
 			res.status(201).send(result);
 		} catch (err) {
@@ -125,7 +125,7 @@ router
 	 */
 	.put(async (req, res, next) => {
 		try {
-			const payload = await apiValidator(getValidationSchema("/nginx/dead-hosts/{hostID}", "put"), req.body);
+			const payload = apiValidator(getValidationSchema("/nginx/dead-hosts/{hostID}", "put"), req.body);
 			payload.id = Number.parseInt(req.params.host_id, 10);
 			const result = await internalDeadHost.update(res.locals.access, payload);
 			res.status(200).send(result);

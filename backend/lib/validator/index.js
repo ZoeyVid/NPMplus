@@ -19,8 +19,8 @@ const ajv = new Ajv({
  * @param   {Object} payload
  * @returns {Promise}
  */
-const validator = (schema, payload) => {
-	return new Promise((resolve, reject) => {
+const validator = (schema, payload) =>
+	new Promise((resolve, reject) => {
 		if (!payload) {
 			reject(new errs.InternalValidationError("Payload is falsy"));
 		} else {
@@ -39,6 +39,5 @@ const validator = (schema, payload) => {
 			}
 		}
 	});
-};
 
 export default validator;

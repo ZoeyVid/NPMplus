@@ -10,28 +10,25 @@ const migrateName = "stream_rename_pp_and_tls";
  * @param   {Object} knex
  * @returns {Promise}
  */
-const up = (knex) => {
+const up = async (knex) => {
 	logger.info(`[${migrateName}] Migrating Up...`);
 
-	return knex.schema
-		.table("stream", (stream) => {
-			stream.renameColumn("proxy_protocol_forwarding", "npmplus_proxy_protocol_forwarding");
-			stream.renameColumn("proxy_ssl", "npmplus_proxy_tls");
-		})
-		.then(() => {
-			logger.info(`[${migrateName}] stream Table altered`);
-		});
+	await knex.schema.table("stream", (stream) => {
+		stream.renameColumn("proxy_protocol_forwarding", "npmplus_proxy_protocol_forwarding");
+		stream.renameColumn("proxy_ssl", "npmplus_proxy_tls");
+	});
+
+	logger.info(`[${migrateName}] stream Table altered`);
 };
 
 /**
  * Undo Migrate
  *
- * @param   {Object} knex
+ * @param   {Object} _knex
  * @returns {Promise}
  */
 const down = (_knex) => {
-	logger.warn(`[${migrateName}] You can't migrate down this one.`);
-	return Promise.resolve(true);
+	throw new Error(`[${migrateName}] You can't migrate down this one.`);
 };
 
 export { down, up };

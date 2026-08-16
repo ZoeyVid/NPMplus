@@ -10,34 +10,24 @@ const migrateName = "trust_forwarded_proto";
  * @param   {Object} knex
  * @returns {Promise}
  */
-const up = (knex) => {
+const up = async (knex) => {
 	logger.info(`[${migrateName}] Migrating Up...`);
 
-	return knex.schema
-		.alterTable("proxy_host", (table) => {
-			table.tinyint("trust_forwarded_proto").notNullable().defaultTo(0);
-		})
-		.then(() => {
-			logger.info(`[${migrateName}] proxy_host Table altered`);
-		});
+	await knex.schema.alterTable("proxy_host", (table) => {
+		table.tinyint("trust_forwarded_proto").notNullable().defaultTo(0);
+	});
+
+	logger.info(`[${migrateName}] proxy_host Table altered`);
 };
 
 /**
  * Undo Migrate
  *
- * @param   {Object} knex
+ * @param   {Object} _knex
  * @returns {Promise}
  */
-const down = (knex) => {
-	logger.info(`[${migrateName}] Migrating Down...`);
-
-	return knex.schema
-		.alterTable("proxy_host", (table) => {
-			table.dropColumn("trust_forwarded_proto");
-		})
-		.then(() => {
-			logger.info(`[${migrateName}] proxy_host Table altered`);
-		});
+const down = (_knex) => {
+	throw new Error(`[${migrateName}] You can't migrate down this one.`);
 };
 
 export { down, up };

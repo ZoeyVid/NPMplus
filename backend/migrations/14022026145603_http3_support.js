@@ -6,18 +6,14 @@
  * @param   {Object}  knex
  * @returns {Promise}
  */
-const up = (_knex) => {
-	return Promise.resolve(true);
-};
+const up = (_knex) => Promise.resolve(true);
 
 /**
  * Undo Migrate
  *
- * @param   {Object}  knex
+ * @param   {Object} _knex
  * @returns {Promise}
  */
-const down = (_knex) => {
-	return Promise.resolve(true);
-};
+const down = (_knex) => Promise.resolve(true);
 
 export { down, up };

@@ -88,7 +88,7 @@ router
 	 */
 	.put(async (req, res, next) => {
 		try {
-			const payload = await apiValidator(getValidationSchema("/settings/{settingID}", "put"), req.body);
+			const payload = apiValidator(getValidationSchema("/settings/{settingID}", "put"), req.body);
 			payload.id = req.params.setting_id;
 			const result = await internalSetting.update(res.locals.access, payload);
 			res.status(200).send(result);

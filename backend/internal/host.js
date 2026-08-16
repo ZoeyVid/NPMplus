@@ -3,6 +3,35 @@ import deadHostModel from "../models/dead_host.js";
 import proxyHostModel from "../models/proxy_host.js";
 import redirectionHostModel from "../models/redirection_host.js";
 
+/**
+ * @param   {String}  hostname
+ * @param   {Array}   existingRows
+ * @param   {Integer} [ignoreId]
+ * @returns {Boolean}
+ */
+const checkHostnameRecordsTaken = (hostname, existingRows, ignoreId) =>
+	(existingRows || []).some(
+		(existingRow) =>
+			(!ignoreId || ignoreId !== existingRow.id) &&
+			// Does this domain match?
+			existingRow.domain_names.some(
+				(existingHostname) => existingHostname.toLowerCase() === hostname.toLowerCase(),
+			),
+	);
+
+/**
+ * @param   {Array}   hosts
+ * @param   {Array}   domainNames
+ * @returns {Array}
+ */
+const getHostsWithDomains = (hosts, domainNames) => {
+	const wanted = new Set(domainNames.map((domainName) => domainName.toLowerCase()));
+
+	return (hosts || []).filter((host) =>
+		host.domain_names.some((hostDomainName) => wanted.has(hostDomainName.toLowerCase())),
+	);
+};
+
 const internalHost = {
 	/**
 	 * Makes sure that the ssl_* and hsts_* fields play nicely together.
@@ -35,12 +64,11 @@ const internalHost = {
 	 * @returns {Array}
 	 */
 	cleanAllRowsCertificateMeta: (rows) => {
-		rows.map((_, idx) => {
-			if (typeof rows[idx].certificate !== "undefined" && rows[idx].certificate) {
-				rows[idx].certificate.meta = {};
+		for (const row of rows) {
+			if (row.certificate) {
+				row.certificate.meta = {};
 			}
-			return true;
-		});
+		}
 
 		return rows;
 	},
@@ -75,15 +103,15 @@ const internalHost = {
 		};
 
 		const proxyRes = await proxyHostModel.query().where("is_deleted", 0);
-		responseObject.proxy_hosts = internalHost._getHostsWithDomains(proxyRes, domainNames);
+		responseObject.proxy_hosts = getHostsWithDomains(proxyRes, domainNames);
 		responseObject.total_count += responseObject.proxy_hosts.length;
 
 		const redirRes = await redirectionHostModel.query().where("is_deleted", 0);
-		responseObject.redirection_hosts = internalHost._getHostsWithDomains(redirRes, domainNames);
+		responseObject.redirection_hosts = getHostsWithDomains(redirRes, domainNames);
 		responseObject.total_count += responseObject.redirection_hosts.length;
 
 		const deadRes = await deadHostModel.query().where("is_deleted", 0);
-		responseObject.dead_hosts = internalHost._getHostsWithDomains(deadRes, domainNames);
+		responseObject.dead_hosts = getHostsWithDomains(deadRes, domainNames);
 		responseObject.total_count += responseObject.dead_hosts.length;
 
 		return responseObject;
@@ -97,7 +125,7 @@ const internalHost = {
 	 * @param   {Integer}  [ignore_id]     Must be supplied if type was also supplied
 	 * @returns {Promise}
 	 */
-	isHostnameTaken: (hostname, ignore_type, ignore_id) => {
+	isHostnameTaken: async (hostname, ignore_type, ignore_id) => {
 		const promises = [
 			proxyHostModel
 				.query()
@@ -116,116 +144,49 @@ const internalHost = {
 				.andWhere(castJsonIfNeed("domain_names"), "like", `%${hostname}%`),
 		];
 
-		return Promise.all(promises).then((promises_results) => {
-			let is_taken = false;
+		const promises_results = await Promise.all(promises);
+		let is_taken = false;
 
-			if (promises_results[0]) {
-				// Proxy Hosts
-				if (
-					internalHost._checkHostnameRecordsTaken(
-						hostname,
-						promises_results[0],
-						ignore_type === "proxy" && ignore_id ? ignore_id : 0,
-					)
-				) {
-					is_taken = true;
-				}
-			}
-
-			if (promises_results[1]) {
-				// Redirection Hosts
-				if (
-					internalHost._checkHostnameRecordsTaken(
-						hostname,
-						promises_results[1],
-						ignore_type === "redirection" && ignore_id ? ignore_id : 0,
-					)
-				) {
-					is_taken = true;
-				}
-			}
-
-			if (promises_results[2]) {
-				// Dead Hosts
-				if (
-					internalHost._checkHostnameRecordsTaken(
-						hostname,
-						promises_results[2],
-						ignore_type === "dead" && ignore_id ? ignore_id : 0,
-					)
-				) {
-					is_taken = true;
-				}
-			}
-
-			return {
-				hostname: hostname,
-				is_taken: is_taken,
-			};
-		});
-	},
-
-	/**
-	 * Private call only
-	 *
-	 * @param   {String}  hostname
-	 * @param   {Array}   existingRows
-	 * @param   {Integer} [ignoreId]
-	 * @returns {Boolean}
-	 */
-	_checkHostnameRecordsTaken: (hostname, existingRows, ignoreId) => {
-		let isTaken = false;
-
-		if (existingRows?.length) {
-			existingRows.map((existingRow) => {
-				existingRow.domain_names.map((existingHostname) => {
-					// Does this domain match?
-					if (existingHostname.toLowerCase() === hostname.toLowerCase()) {
-						if (!ignoreId || ignoreId !== existingRow.id) {
-							isTaken = true;
-						}
-					}
-					return true;
-				});
-				return true;
-			});
+		// Proxy Hosts
+		if (
+			promises_results[0] &&
+			checkHostnameRecordsTaken(
+				hostname,
+				promises_results[0],
+				ignore_type === "proxy" && ignore_id ? ignore_id : 0,
+			)
+		) {
+			is_taken = true;
 		}
 
-		return isTaken;
-	},
-
-	/**
-	 * Private call only
-	 *
-	 * @param   {Array}   hosts
-	 * @param   {Array}   domainNames
-	 * @returns {Array}
-	 */
-	_getHostsWithDomains: (hosts, domainNames) => {
-		const response = [];
-
-		if (hosts?.length) {
-			hosts.map((host) => {
-				let hostMatches = false;
-
-				domainNames.map((domainName) => {
-					host.domain_names.map((hostDomainName) => {
-						if (domainName.toLowerCase() === hostDomainName.toLowerCase()) {
-							hostMatches = true;
-						}
-						return true;
-					});
-					return true;
-				});
-
-				if (hostMatches) {
-					response.push(host);
-				}
-				return true;
-			});
+		// Redirection Hosts
+		if (
+			promises_results[1] &&
+			checkHostnameRecordsTaken(
+				hostname,
+				promises_results[1],
+				ignore_type === "redirection" && ignore_id ? ignore_id : 0,
+			)
+		) {
+			is_taken = true;
 		}
 
-		return response;
+		// Dead Hosts
+		if (
+			promises_results[2] &&
+			checkHostnameRecordsTaken(
+				hostname,
+				promises_results[2],
+				ignore_type === "dead" && ignore_id ? ignore_id : 0,
+			)
+		) {
+			is_taken = true;
+		}
+
+		return {
+			hostname,
+			is_taken,
+		};
 	},
 };
 
