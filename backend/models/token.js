@@ -29,7 +29,7 @@ export default () => {
 				expiresIn: payload.expiresIn || "1d",
 			};
 
-			payload.jti = crypto.randomBytes(12).toString("base64").substring(-8);
+			payload.jti = crypto.randomBytes(12).toString("base64url");
 
 			return new Promise((resolve, reject) => {
 				jwt.sign(payload, getPrivateKey(), options, (err, token) => {
@@ -38,8 +38,8 @@ export default () => {
 					} else {
 						tokenData = payload;
 						resolve({
-							token: token,
-							payload: payload,
+							token,
+							payload,
 						});
 					}
 				});
@@ -66,7 +66,7 @@ export default () => {
 							(err, result) => {
 								if (err) {
 									if (err.name === "TokenExpiredError") {
-										reject(new errs.AuthError("Token has expired", err));
+										reject(new errs.AuthError("Token has expired", undefined, err));
 									} else {
 										reject(err);
 									}

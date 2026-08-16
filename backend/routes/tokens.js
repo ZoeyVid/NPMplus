@@ -88,7 +88,7 @@ router
 				throw new errs.AuthError("Non OIDC login is disabled");
 			}
 
-			const data = await apiValidator(getValidationSchema("/tokens", "post"), req.body);
+			const data = apiValidator(getValidationSchema("/tokens", "post"), req.body);
 			const result = await internalToken.getTokenFromEmail(data);
 			const { token, ...responseBody } = result;
 
@@ -122,7 +122,7 @@ router
 	 *
 	 * Delete the Token
 	 */
-	.delete(async (req, res, next) => {
+	.delete((req, res, next) => {
 		try {
 			res.clearCookie("__Host-Http-token", {
 				httpOnly: true,
@@ -154,7 +154,7 @@ router
 	 */
 	.post(async (req, res, next) => {
 		try {
-			const { code } = await apiValidator(getValidationSchema("/tokens/totp", "post"), req.body);
+			const { code } = apiValidator(getValidationSchema("/tokens/totp", "post"), req.body);
 			const result = await internalToken.verifyTotp(req.signedCookies?.["__Host-Http-challenge_token"], code);
 			const { token, ...responseBody } = result;
 

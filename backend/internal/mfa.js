@@ -138,7 +138,7 @@ const internalMfa = {
 
 		// TOTP codes are 6 chars, backup codes are 8 chars
 		if (tokenTrim.length === 6) {
-			return await totp.verifyCode(userId, tokenTrim);
+			return totp.verifyCode(userId, tokenTrim);
 		}
 
 		if (tokenTrim.length === 8) {

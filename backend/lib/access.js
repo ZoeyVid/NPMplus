@@ -122,11 +122,15 @@ export default function (tokenString) {
 						objects = rows.map((ruleRow) => ruleRow.id);
 
 						// enum should not have less than 1 item
-						if (!objects.length) {
+						if (objects.length === 0) {
 							objects.push(0);
 						}
 						break;
 					}
+
+					// All other object types are unrestricted by ID
+					default:
+						break;
 				}
 				objectCache[objectType] = objects;
 			}
@@ -191,9 +195,9 @@ export default function (tokenString) {
 		 * @param   {Boolean}  [allowInternal]
 		 * @returns {Promise}
 		 */
-		load: async (allowInternal) => {
+		load: (allowInternal) => {
 			if (tokenString) {
-				return await this.init();
+				return this.init();
 			}
 			allowInternalAccess = allowInternal;
 			return allowInternal || null;
@@ -218,7 +222,7 @@ export default function (tokenString) {
 
 				const dataSchema = {
 					[permission]: {
-						data: data,
+						data,
 						scope: Token.get("scope"),
 						roles: userRoles,
 						permission_visibility: permissions.visibility,

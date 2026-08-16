@@ -81,7 +81,7 @@ router
 	 * Create a new User
 	 */
 	.post(async (req, res, next) => {
-		const body = req.body;
+		const { body } = req;
 
 		try {
 			// If we are in setup mode, we don't check access for current user
@@ -103,7 +103,7 @@ router
 				}
 			}
 
-			const payload = await apiValidator(getValidationSchema("/users", "post"), body);
+			const payload = apiValidator(getValidationSchema("/users", "post"), body);
 			const user = await internalUser.create(res.locals.access, payload);
 			res.status(201).send(user);
 		} catch (err) {
@@ -170,7 +170,7 @@ router
 	 */
 	.put(async (req, res, next) => {
 		try {
-			const payload = await apiValidator(getValidationSchema("/users/{userID}", "put"), req.body);
+			const payload = apiValidator(getValidationSchema("/users/{userID}", "put"), req.body);
 			payload.id = req.params.user_id;
 			const result = await internalUser.update(res.locals.access, payload);
 			res.status(200).send(result);
@@ -217,7 +217,7 @@ router
 	 */
 	.put(async (req, res, next) => {
 		try {
-			const payload = await apiValidator(getValidationSchema("/users/{userID}/auth", "put"), req.body);
+			const payload = apiValidator(getValidationSchema("/users/{userID}/auth", "put"), req.body);
 			payload.id = req.params.user_id;
 			const result = await internalUser.setPassword(res.locals.access, payload);
 			res.status(200).send(result);
@@ -247,7 +247,7 @@ router
 	 */
 	.put(async (req, res, next) => {
 		try {
-			const payload = await apiValidator(getValidationSchema("/users/{userID}/permissions", "put"), req.body);
+			const payload = apiValidator(getValidationSchema("/users/{userID}/permissions", "put"), req.body);
 			payload.id = req.params.user_id;
 			const result = await internalUser.setPermissions(res.locals.access, payload);
 			res.status(200).send(result);
@@ -365,10 +365,7 @@ router
 	 */
 	.post(async (req, res, next) => {
 		try {
-			const { code } = await apiValidator(
-				getValidationSchema("/users/{userID}/mfa/totp/enable", "post"),
-				req.body,
-			);
+			const { code } = apiValidator(getValidationSchema("/users/{userID}/mfa/totp/enable", "post"), req.body);
 			const result = await internalMfa.enableTotp(res.locals.access, req.params.user_id, code);
 			res.status(200).send(result);
 		} catch (err) {
@@ -397,10 +394,7 @@ router
 	 */
 	.post(async (req, res, next) => {
 		try {
-			const { code } = await apiValidator(
-				getValidationSchema("/users/{userID}/mfa/backup-codes", "post"),
-				req.body,
-			);
+			const { code } = apiValidator(getValidationSchema("/users/{userID}/mfa/backup-codes", "post"), req.body);
 			const result = await internalMfa.regenerateBackupCodes(res.locals.access, req.params.user_id, code);
 			res.status(200).send(result);
 		} catch (err) {

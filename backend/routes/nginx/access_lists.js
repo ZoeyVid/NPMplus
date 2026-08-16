@@ -61,7 +61,7 @@ router
 	 */
 	.post(async (req, res, next) => {
 		try {
-			const payload = await apiValidator(getValidationSchema("/nginx/access-lists", "post"), req.body);
+			const payload = apiValidator(getValidationSchema("/nginx/access-lists", "post"), req.body);
 			const result = await internalAccessList.create(res.locals.access, payload);
 			res.status(201).send(result);
 		} catch (err) {
@@ -125,7 +125,7 @@ router
 	 */
 	.put(async (req, res, next) => {
 		try {
-			const payload = await apiValidator(getValidationSchema("/nginx/access-lists/{listID}", "put"), req.body);
+			const payload = apiValidator(getValidationSchema("/nginx/access-lists/{listID}", "put"), req.body);
 			payload.id = Number.parseInt(req.params.list_id, 10);
 			const result = await internalAccessList.update(res.locals.access, payload);
 			res.status(200).send(result);

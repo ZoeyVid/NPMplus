@@ -31,10 +31,10 @@ const internalIpRanges = {
 		});
 
 		if (!res.ok) {
-			throw new Error(`Status code: ${response.status}`);
+			throw new Error(`Status code: ${res.status}`);
 		}
 
-		return await res.text();
+		return res.text();
 	},
 
 	/**
@@ -83,7 +83,7 @@ const internalIpRanges = {
 		try {
 			const renderEngine = utils.getRenderEngine();
 			const template = await readFile(`${__dirname}/../templates/ip_ranges.conf`, { encoding: "utf8" });
-			const newConfig = await renderEngine.parseAndRender(template, { ip_ranges: ip_ranges, env: process.env });
+			const newConfig = await renderEngine.parseAndRender(template, { ip_ranges, env: process.env });
 			const filePath = "/usr/local/nginx/conf/conf.d/ip_ranges.conf";
 
 			try {

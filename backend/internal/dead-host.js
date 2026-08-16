@@ -8,9 +8,7 @@ import internalCertificate from "./certificate.js";
 import internalHost from "./host.js";
 import internalNginx from "./nginx.js";
 
-const omissions = () => {
-	return ["is_deleted"];
-};
+const omissions = () => ["is_deleted"];
 
 const internalDeadHost = {
 	/**
@@ -28,21 +26,14 @@ const internalDeadHost = {
 		await access.can("dead_hosts:create", data);
 
 		// Get a list of the domain names and check each of them against existing records
-		const domainNameCheckPromises = [];
 
-		data.domain_names.map((domain_name) => {
-			domainNameCheckPromises.push(internalHost.isHostnameTaken(domain_name));
-			return true;
-		});
-
-		await Promise.all(domainNameCheckPromises).then((check_results) => {
-			check_results.map((result) => {
-				if (result.is_taken) {
-					throw new errs.ValidationError(`${result.hostname} is already in use`);
-				}
-				return true;
-			});
-		});
+		const checkResults = await Promise.all(
+			data.domain_names.map((domain_name) => internalHost.isHostnameTaken(domain_name)),
+		);
+		const taken = checkResults.find((result) => result.is_taken);
+		if (taken) {
+			throw new errs.ValidationError(`${taken.hostname} is already in use`);
+		}
 
 		// At this point the domains should have been checked
 		data.owner_user_id = access.token.getUserId(1);
@@ -54,7 +45,7 @@ const internalDeadHost = {
 			thisData.advanced_config = "";
 		}
 
-		const row = await deadHostModel.query().insertAndFetch(thisData).then(utils.omitRow(omissions()));
+		const row = utils.omitRow(omissions())(await deadHostModel.query().insertAndFetch(thisData));
 
 		// Add to audit log
 		await internalAuditLog.add(access, {
@@ -106,20 +97,14 @@ const internalDeadHost = {
 		await access.can("dead_hosts:update", data.id);
 
 		// Get a list of the domain names and check each of them against existing records
-		const domainNameCheckPromises = [];
 		if (typeof data.domain_names !== "undefined") {
-			data.domain_names.map((domainName) => {
-				domainNameCheckPromises.push(internalHost.isHostnameTaken(domainName, "dead", data.id));
-				return true;
-			});
-
-			const checkResults = await Promise.all(domainNameCheckPromises);
-			checkResults.map((result) => {
-				if (result.is_taken) {
-					throw new errs.ValidationError(`${result.hostname} is already in use`);
-				}
-				return true;
-			});
+			const checkResults = await Promise.all(
+				data.domain_names.map((domainName) => internalHost.isHostnameTaken(domainName, "dead", data.id)),
+			);
+			const taken = checkResults.find((result) => result.is_taken);
+			if (taken) {
+				throw new errs.ValidationError(`${taken.hostname} is already in use`);
+			}
 		}
 		const row = await internalDeadHost.get(access, { id: data.id });
 
@@ -192,7 +177,7 @@ const internalDeadHost = {
 			query.withGraphFetched(`[${data.expand.join(", ")}]`);
 		}
 
-		const row = await query.then(utils.omitRow(omissions()));
+		const row = utils.omitRow(omissions())(await query);
 		if (!row?.id) {
 			throw new errs.ItemNotFoundError(data.id);
 		}
@@ -255,19 +240,13 @@ const internalDeadHost = {
 			throw new errs.ValidationError("Host is already enabled");
 		}
 
-		const domainNameCheckPromises = [];
-		row.domain_names.map((domain_name) => {
-			domainNameCheckPromises.push(internalHost.isHostnameTaken(domain_name));
-			return true;
-		});
-		await Promise.all(domainNameCheckPromises).then((checkResults) => {
-			checkResults.map((result) => {
-				if (result.is_taken) {
-					throw new errs.ValidationError(`${result.hostname} is already in use by an active host`);
-				}
-				return true;
-			});
-		});
+		const checkResults = await Promise.all(
+			row.domain_names.map((domain_name) => internalHost.isHostnameTaken(domain_name)),
+		);
+		const taken = checkResults.find((result) => result.is_taken);
+		if (taken) {
+			throw new errs.ValidationError(`${taken.hostname} is already in use by an active host`);
+		}
 
 		row.enabled = 1;
 
@@ -357,7 +336,7 @@ const internalDeadHost = {
 			query.withGraphFetched(`[${expand.join(", ")}]`);
 		}
 
-		const rows = await query.then(utils.omitRows(omissions()));
+		const rows = utils.omitRows(omissions())(await query);
 		if (typeof expand !== "undefined" && expand !== null && expand.indexOf("certificate") !== -1) {
 			internalHost.cleanAllRowsCertificateMeta(rows);
 		}

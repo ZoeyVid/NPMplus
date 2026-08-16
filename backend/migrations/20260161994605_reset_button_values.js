@@ -25,12 +25,11 @@ const up = async (knex) => {
 /**
  * Undo Migrate
  *
- * @param   {Object} knex
+ * @param   {Object} _knex
  * @returns {Promise}
  */
 const down = (_knex) => {
-	logger.warn(`[${migrateName}] You can't migrate down this one.`);
-	return Promise.resolve(true);
+	throw new Error(`[${migrateName}] You can't migrate down this one.`);
 };
 
 export { down, up };

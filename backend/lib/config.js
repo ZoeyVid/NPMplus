@@ -6,11 +6,12 @@ const keysFile = "/data/npmplus/keys-ec.json";
 const sqliteEngine = "better-sqlite3";
 const mysqlEngine = "mysql2";
 const postgresEngine = "pg";
+const truthyPattern = /^(1|true|yes|on)$/i;
 
 let instance = null;
 
 const configure = () => {
-	const toBool = (v) => /^(1|true|yes|on)$/i.test((v || "").trim());
+	const toBool = (v) => truthyPattern.test((v || "").trim());
 
 	const envMysqlHost = process.env.DB_MYSQL_HOST || null;
 	const envMysqlUser = process.env.DB_MYSQL_USER || null;
@@ -27,6 +28,9 @@ const configure = () => {
 	if (envMysqlHost && envMysqlUser && envMysqlName) {
 		// we have enough mysql creds to go with mysql
 		logger.info("Using MySQL configuration");
+		logger.warn(
+			"MariaDB/MySQL is unsupported, has no advantage over SQLite and is not recommended, note that you can't migrate to SQLite without a fresh install",
+		);
 		instance = {
 			database: {
 				engine: mysqlEngine,
@@ -50,6 +54,9 @@ const configure = () => {
 	if (envPostgresHost && envPostgresUser && envPostgresName) {
 		// we have enough postgres creds to go with postgres
 		logger.info("Using Postgres configuration");
+		logger.warn(
+			"PostgreSQL is unsupported, has no advantage over SQLite and is not recommended, note that you can't migrate to SQLite without a fresh install",
+		);
 		instance = {
 			database: {
 				engine: postgresEngine,
@@ -140,17 +147,17 @@ const generateKeys = () => {
  * @returns {boolean}
  */
 const configHas = (key) => {
-	instance === null && configure();
+	if (instance === null) configure();
 	const keys = key.split(".");
 	let level = instance;
 	let has = true;
-	keys.forEach((keyItem) => {
+	for (const keyItem of keys) {
 		if (typeof level[keyItem] === "undefined") {
 			has = false;
-		} else {
-			level = level[keyItem];
+			break;
 		}
-	});
+		level = level[keyItem];
+	}
 
 	return has;
 };
@@ -162,7 +169,7 @@ const configHas = (key) => {
  * @returns {*}
  */
 const configGet = (key) => {
-	instance === null && configure();
+	if (instance === null) configure();
 	if (key && typeof instance[key] !== "undefined") {
 		return instance[key];
 	}
@@ -175,8 +182,8 @@ const configGet = (key) => {
  * @returns {boolean}
  */
 const isSqlite = () => {
-	instance === null && configure();
-	return instance.database.knex && instance.database.knex.client === sqliteEngine;
+	if (instance === null) configure();
+	return instance.database.knex?.client === sqliteEngine;
 };
 
 /**
@@ -185,7 +192,7 @@ const isSqlite = () => {
  * @returns {boolean}
  */
 const isMysql = () => {
-	instance === null && configure();
+	if (instance === null) configure();
 	return instance.database.engine === mysqlEngine;
 };
 
@@ -195,7 +202,7 @@ const isMysql = () => {
  * @returns {boolean}
  */
 const isPostgres = () => {
-	instance === null && configure();
+	if (instance === null) configure();
 	return instance.database.engine === postgresEngine;
 };
 
@@ -205,7 +212,7 @@ const isPostgres = () => {
  * @returns {string}
  */
 const getPublicKey = () => {
-	instance === null && configure();
+	if (instance === null) configure();
 	return instance.keys.pub;
 };
 
@@ -215,7 +222,7 @@ const getPublicKey = () => {
  * @returns {string}
  */
 const getPrivateKey = () => {
-	instance === null && configure();
+	if (instance === null) configure();
 	return instance.keys.key;
 };
 

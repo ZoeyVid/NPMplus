@@ -87,7 +87,7 @@ router
 	 */
 	.post(async (req, res, next) => {
 		try {
-			const payload = await apiValidator(getValidationSchema("/nginx/certificates", "post"), req.body);
+			const payload = apiValidator(getValidationSchema("/nginx/certificates", "post"), req.body);
 			req.setTimeout(900000); // 15 minutes timeout
 			const result = await internalCertificate.create(res.locals.access, payload);
 			res.status(201).send(result);
@@ -112,7 +112,7 @@ router
 	 *
 	 * Get list of all supported DNS providers
 	 */
-	.get(async (req, res, next) => {
+	.get((req, res, next) => {
 		try {
 			if (!res.locals.access.token.getUserId()) {
 				throw new errs.PermissionError("Login required");
@@ -150,7 +150,7 @@ router
 	 */
 	.post(async (req, res, next) => {
 		try {
-			const payload = await apiValidator(getValidationSchema("/nginx/certificates/test-http", "post"), req.body);
+			const payload = apiValidator(getValidationSchema("/nginx/certificates/test-http", "post"), req.body);
 			req.setTimeout(60000); // 1 minute timeout
 
 			const result = await internalCertificate.testHttpsChallenge(res.locals.access, payload);

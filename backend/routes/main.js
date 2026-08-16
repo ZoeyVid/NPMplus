@@ -24,11 +24,11 @@ const router = express.Router({
 	mergeParams: true,
 });
 
-const isOIDCenabled = !!(
+const isOIDCenabled = Boolean(
 	process.env.OIDC_REDIRECT_DOMAIN &&
-	process.env.OIDC_ISSUER_URL &&
-	process.env.OIDC_CLIENT_ID &&
-	process.env.OIDC_CLIENT_SECRET
+		process.env.OIDC_ISSUER_URL &&
+		process.env.OIDC_CLIENT_ID &&
+		process.env.OIDC_CLIENT_SECRET,
 );
 
 /**

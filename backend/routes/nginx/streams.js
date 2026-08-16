@@ -61,7 +61,7 @@ router
 	 */
 	.post(async (req, res, next) => {
 		try {
-			const payload = await apiValidator(getValidationSchema("/nginx/streams", "post"), req.body);
+			const payload = apiValidator(getValidationSchema("/nginx/streams", "post"), req.body);
 			const result = await internalStream.create(res.locals.access, payload);
 			res.status(201).send(result);
 		} catch (err) {
@@ -125,7 +125,7 @@ router
 	 */
 	.put(async (req, res, next) => {
 		try {
-			const payload = await apiValidator(getValidationSchema("/nginx/streams/{streamID}", "put"), req.body);
+			const payload = apiValidator(getValidationSchema("/nginx/streams/{streamID}", "put"), req.body);
 			payload.id = Number.parseInt(req.params.stream_id, 10);
 			const result = await internalStream.update(res.locals.access, payload);
 			res.status(200).send(result);

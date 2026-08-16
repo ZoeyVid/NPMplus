@@ -10,34 +10,24 @@ const migrateName = "allow_empty_stream_forwarding_port";
  * @param   {Object} knex
  * @returns {Promise}
  */
-const up = (knex) => {
+const up = async (knex) => {
 	logger.info(`[${migrateName}] Migrating Up...`);
 
-	return knex.schema
-		.alterTable("stream", (table) => {
-			table.string("forwarding_port", 12).alter();
-		})
-		.then(() => {
-			logger.info(`[${migrateName}] stream Table altered`);
-		});
+	await knex.schema.alterTable("stream", (table) => {
+		table.string("forwarding_port", 12).alter();
+	});
+
+	logger.info(`[${migrateName}] stream Table altered`);
 };
 
 /**
  * Undo Migrate
  *
- * @param   {Object} knex
+ * @param   {Object} _knex
  * @returns {Promise}
  */
-const down = (knex) => {
-	logger.info(`[${migrateName}] Migrating Down...`);
-
-	return knex.schema
-		.alterTable("stream", (table) => {
-			table.string("forwarding_port", 12).notNull().alter();
-		})
-		.then(() => {
-			logger.info(`[${migrateName}] stream Table altered`);
-		});
+const down = (_knex) => {
+	throw new Error(`[${migrateName}] You can't migrate down this one.`);
 };
 
 export { down, up };

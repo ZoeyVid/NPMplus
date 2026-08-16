@@ -22,18 +22,14 @@ const getMergedItems = (accessLists) => {
 	return merged;
 };
 
-const getHostFilePrefix = (proxyHost) => {
-	return `host-${proxyHost.id}`;
-};
+const getHostFilePrefix = (proxyHost) => `host-${proxyHost.id}`;
 
 /**
  *
  * @param {*} proxyHost
  * @returns
  */
-const getProxyHostFilename = (proxyHost) => {
-	return `${GENERATED_DIR}/${getHostFilePrefix(proxyHost)}`;
-};
+const getProxyHostFilename = (proxyHost) => `${GENERATED_DIR}/${getHostFilePrefix(proxyHost)}`;
 
 /**
  *
@@ -41,9 +37,8 @@ const getProxyHostFilename = (proxyHost) => {
  * @param {*} location
  * @returns
  */
-const getProxyLocationFilename = (proxyHost, location) => {
-	return `${GENERATED_DIR}/${getHostFilePrefix(proxyHost)}-location-${location.id}`;
-};
+const getProxyLocationFilename = (proxyHost, location) =>
+	`${GENERATED_DIR}/${getHostFilePrefix(proxyHost)}-location-${location.id}`;
 
 const findHostFiles = async (proxyHost) => {
 	const prefix = getHostFilePrefix(proxyHost);
@@ -77,7 +72,7 @@ const buildHostFile = async (proxyHost, accessLists) => {
 	const effectiveAccess = internalProxyHostAccessList.buildAclFile(accessLists);
 	const filename = getProxyHostFilename(proxyHost);
 
-	if (!effectiveAccess.items.length) {
+	if (effectiveAccess.items.length === 0) {
 		await rm(filename, { force: true });
 		return; // don't create an empty file
 	}
@@ -99,7 +94,7 @@ const buildLocationFile = async (proxyHost, location, accessLists) => {
 	const effectiveAccess = internalProxyHostAccessList.buildAclFile(accessLists);
 	const filename = getProxyLocationFilename(proxyHost, location);
 
-	if (!effectiveAccess.items.length) {
+	if (effectiveAccess.items.length === 0) {
 		await rm(filename, { force: true });
 		return; // don't create an empty file
 	}
@@ -129,9 +124,9 @@ const internalProxyHostAccessList = {
 		return {
 			items: getMergedItems(lists),
 			clients,
-			satisfy_any: first ? !!first.satisfy_any : false,
-			pass_auth: first ? !!first.pass_auth : false,
-			source_acl_ids: lists.map((list) => list.id).filter((id) => Number.isInteger(id)),
+			satisfy_any: first ? Boolean(first.satisfy_any) : false,
+			pass_auth: first ? Boolean(first.pass_auth) : false,
+			source_acl_ids: lists.map((l) => l.id).filter((id) => Number.isInteger(id)),
 		};
 	},
 
@@ -157,24 +152,24 @@ const internalProxyHostAccessList = {
 
 		// perform data sanitisation
 		if (data.npmplus_access_list_type === "custom" && Array.isArray(data.npmplus_access_list_ids)) {
-			data.npmplus_access_list_ids.forEach((id) => {
+			for (const id of data.npmplus_access_list_ids) {
 				if (Number.isInteger(id) && id > 0) {
 					relationIds.add(id);
 				}
-			});
+			}
 		}
 
 		// since locations is stored as a json, extract it and flatten it to store in the join table
 		if (Array.isArray(data.locations)) {
-			data.locations.forEach((location) => {
+			for (const location of data.locations) {
 				if (location.npmplus_access_list_type === "custom" && Array.isArray(location.npmplus_access_list_ids)) {
-					location.npmplus_access_list_ids.forEach((id) => {
+					for (const id of location.npmplus_access_list_ids) {
 						if (Number.isInteger(id) && id > 0) {
 							relationIds.add(id);
 						}
-					});
+					}
 				}
-			});
+			}
 		}
 		// now map the acls to proxy hosts
 		return Array.from(relationIds).map((access_list_id) => ({
@@ -308,28 +303,14 @@ const internalProxyHostAccessList = {
 			return proxyHost;
 		}
 
-		const maskAccessList = (accessList) =>
-			internalAccessList.maskItems({
-				...accessList,
-				items: Array.isArray(accessList.items)
-					? accessList.items.map((item) => ({ ...item }))
-					: accessList.items,
-			});
-
-		if (Array.isArray(proxyHost.access_lists)) {
-			proxyHost.access_lists = proxyHost.access_lists.map(maskAccessList);
-		}
-
-		if (Array.isArray(proxyHost.locations)) {
-			proxyHost.locations = proxyHost.locations.map((location) => ({
+		return {
+			...proxyHost,
+			access_lists: proxyHost.access_lists?.map((accessList) => internalAccessList.maskItems(accessList)),
+			locations: proxyHost.locations?.map((location) => ({
 				...location,
-				access_lists: Array.isArray(location.access_lists)
-					? location.access_lists.map(maskAccessList)
-					: location.access_lists,
-			}));
-		}
-
-		return proxyHost;
+				access_lists: location.access_lists?.map((accessList) => internalAccessList.maskItems(accessList)),
+			})),
+		};
 	},
 
 	/**
@@ -465,26 +446,21 @@ const internalProxyHostAccessList = {
 		if (Array.isArray(proxyHost.locations)) {
 			// generate the ids for a location (this is only used for the htpasswd file tracking with multi acls)
 			const existingIds = proxyHost.locations.map((location) => location.id).filter((id) => Number.isInteger(id));
-			let count = existingIds.length ? Math.max(...existingIds) + 1 : 0;
+			let count = existingIds.length > 0 ? Math.max(...existingIds) + 1 : 0;
 			// handle both snake and camel case
 			proxyHost.locations = proxyHost.locations.map((location) => {
-				if (!Number.isInteger(location.id)) {
-					location.id = count++;
-				}
+				const id = Number.isInteger(location.id) ? location.id : count++;
 
 				const accessListType = location.accessListType || location.npmplus_access_list_type || "global";
 				const accessListIds =
-					accessListType !== "custom"
-						? []
-						: Array.isArray(location.accessListIds)
-							? location.accessListIds
-							: Array.isArray(location.npmplus_access_list_ids)
-								? location.npmplus_access_list_ids
-								: [];
+					accessListType === "custom"
+						? [location.accessListIds, location.npmplus_access_list_ids].find(Array.isArray) || []
+						: [];
 				const { accessListIds: _accessListIds, accessListType: _accessListType, ...otherParameters } = location;
 
 				return {
 					...otherParameters,
+					id,
 					npmplus_access_list_ids: accessListIds,
 					npmplus_access_list_type: accessListType,
 				};
