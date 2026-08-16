@@ -25,7 +25,7 @@ import langZh from "./lang/zh.json" with { type: "json" };
 
 // first item of each array should be the language code,
 // not the country code
-// Remember when adding to this list, also update check-locales.js script
+// Remember when adding to this list, also update check-locales.mjs script
 const localeOptions = [
 	["en", "en-US", langEn],
 	["bg", "bg-BG", langBg],
