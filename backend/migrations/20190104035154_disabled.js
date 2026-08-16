@@ -10,48 +10,42 @@ const migrateName = "disabled";
  * @param   {Object}  knex
  * @returns {Promise}
  */
-const up = (knex) => {
+const up = async (knex) => {
 	logger.info(`[${migrateName}] Migrating Up...`);
 
-	return knex.schema
-		.table("proxy_host", (proxy_host) => {
-			proxy_host.integer("enabled").notNull().unsigned().defaultTo(1);
-		})
-		.then(() => {
-			logger.info(`[${migrateName}] proxy_host Table altered`);
+	await knex.schema.table("proxy_host", (proxy_host) => {
+		proxy_host.integer("enabled").notNull().unsigned().defaultTo(1);
+	});
 
-			return knex.schema.table("redirection_host", (redirection_host) => {
-				redirection_host.integer("enabled").notNull().unsigned().defaultTo(1);
-			});
-		})
-		.then(() => {
-			logger.info(`[${migrateName}] redirection_host Table altered`);
+	logger.info(`[${migrateName}] proxy_host Table altered`);
 
-			return knex.schema.table("dead_host", (dead_host) => {
-				dead_host.integer("enabled").notNull().unsigned().defaultTo(1);
-			});
-		})
-		.then(() => {
-			logger.info(`[${migrateName}] dead_host Table altered`);
+	await knex.schema.table("redirection_host", (redirection_host) => {
+		redirection_host.integer("enabled").notNull().unsigned().defaultTo(1);
+	});
 
-			return knex.schema.table("stream", (stream) => {
-				stream.integer("enabled").notNull().unsigned().defaultTo(1);
-			});
-		})
-		.then(() => {
-			logger.info(`[${migrateName}] stream Table altered`);
-		});
+	logger.info(`[${migrateName}] redirection_host Table altered`);
+
+	await knex.schema.table("dead_host", (dead_host) => {
+		dead_host.integer("enabled").notNull().unsigned().defaultTo(1);
+	});
+
+	logger.info(`[${migrateName}] dead_host Table altered`);
+
+	await knex.schema.table("stream", (stream) => {
+		stream.integer("enabled").notNull().unsigned().defaultTo(1);
+	});
+
+	logger.info(`[${migrateName}] stream Table altered`);
 };
 
 /**
  * Undo Migrate
  *
- * @param   {Object}  knex
+ * @param   {Object} _knex
  * @returns {Promise}
  */
 const down = (_knex) => {
-	logger.warn(`[${migrateName}] You can't migrate down this one.`);
-	return Promise.resolve(true);
+	throw new Error(`[${migrateName}] You can't migrate down this one.`);
 };
 
 export { down, up };

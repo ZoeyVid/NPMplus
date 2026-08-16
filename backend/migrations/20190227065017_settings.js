@@ -10,31 +10,28 @@ const migrateName = "settings";
  * @param   {Object}  knex
  * @returns {Promise}
  */
-const up = (knex) => {
+const up = async (knex) => {
 	logger.info(`[${migrateName}] Migrating Up...`);
 
-	return knex.schema
-		.createTable("setting", (table) => {
-			table.string("id").notNull().primary();
-			table.string("name", 100).notNull();
-			table.string("description", 255).notNull();
-			table.string("value", 255).notNull();
-			table.json("meta").notNull();
-		})
-		.then(() => {
-			logger.info(`[${migrateName}] setting Table created`);
-		});
+	await knex.schema.createTable("setting", (table) => {
+		table.string("id").notNull().primary();
+		table.string("name", 100).notNull();
+		table.string("description", 255).notNull();
+		table.string("value", 255).notNull();
+		table.json("meta").notNull();
+	});
+
+	logger.info(`[${migrateName}] setting Table created`);
 };
 
 /**
  * Undo Migrate
  *
- * @param   {Object}  knex
+ * @param   {Object} _knex
  * @returns {Promise}
  */
 const down = (_knex) => {
-	logger.warn(`[${migrateName}] You can't migrate down the initial data.`);
-	return Promise.resolve(true);
+	throw new Error(`[${migrateName}] You can't migrate down this one.`);
 };
 
 export { down, up };

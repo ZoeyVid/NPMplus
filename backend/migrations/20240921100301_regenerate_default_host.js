@@ -1,52 +1,19 @@
-import internalNginx from "../internal/nginx.js";
-import { migrate as logger } from "../logger.js";
-
-const migrateName = "regenerate_default_host";
-
-async function regenerateDefaultHost(knex) {
-	const row = await knex("setting").select("*").where("id", "default-site").first();
-
-	if (!row) {
-		return Promise.resolve();
-	}
-
-	return internalNginx
-		.deleteConfig("default")
-		.then(() => {
-			return internalNginx.generateConfig("default", row);
-		})
-		.then(() => {
-			return internalNginx.test();
-		})
-		.then(() => {
-			return internalNginx.reload();
-		});
-}
-
 /**
  * Migrate
  *
  * @see https://knexjs.org/guide/migrations.html#migration-api
  *
- * @param   {Object} knex
+ * @param   {Object}  knex
  * @returns {Promise}
  */
-const up = (knex) => {
-	logger.info(`[${migrateName}] Migrating Up...`);
-
-	return regenerateDefaultHost(knex);
-};
+const up = (_knex) => Promise.resolve(true);
 
 /**
  * Undo Migrate
  *
- * @param   {Object} knex
+ * @param   {Object} _knex
  * @returns {Promise}
  */
-const down = (knex) => {
-	logger.info(`[${migrateName}] Migrating Down...`);
-
-	return regenerateDefaultHost(knex);
-};
+const down = (_knex) => Promise.resolve(true);
 
 export { down, up };

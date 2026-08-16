@@ -8,29 +8,19 @@ const internalReport = {
 	 * @param  {Access}   access
 	 * @return {Promise}
 	 */
-	getHostsReport: (access) => {
-		return access
-			.can("reports:hosts", 1)
-			.then((access_data) => {
-				const userId = access.token.getUserId(1);
+	getHostsReport: async (access) => {
+		const access_data = await access.can("reports:hosts", 1);
 
-				const promises = [
-					internalProxyHost.getCount(userId, access_data.permission_visibility),
-					internalRedirectionHost.getCount(userId, access_data.permission_visibility),
-					internalStream.getCount(userId, access_data.permission_visibility),
-					internalDeadHost.getCount(userId, access_data.permission_visibility),
-				];
+		const userId = access.token.getUserId(1);
 
-				return Promise.all(promises);
-			})
-			.then((counts) => {
-				return {
-					proxy: counts.shift(),
-					redirection: counts.shift(),
-					stream: counts.shift(),
-					dead: counts.shift(),
-				};
-			});
+		const [proxy, redirection, stream, dead] = await Promise.all([
+			internalProxyHost.getCount(userId, access_data.permission_visibility),
+			internalRedirectionHost.getCount(userId, access_data.permission_visibility),
+			internalStream.getCount(userId, access_data.permission_visibility),
+			internalDeadHost.getCount(userId, access_data.permission_visibility),
+		]);
+
+		return { proxy, redirection, stream, dead };
 	},
 };
 

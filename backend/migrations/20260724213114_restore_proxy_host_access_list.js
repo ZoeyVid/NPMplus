@@ -23,7 +23,7 @@ const up = async (knex) => {
 				if (validIds.has(id)) relations.push({ proxy_host_id: row.id, access_list_id: id });
 		}
 	}
-	if (relations.length) await knex("npmplus_proxy_host_access_list").insert(relations).onConflict().ignore();
+	if (relations.length > 0) await knex("npmplus_proxy_host_access_list").insert(relations).onConflict().ignore();
 
 	logger.info(`[${migrateName}] npmplus_proxy_host_access_list Table restored`);
 };
@@ -35,8 +35,7 @@ const up = async (knex) => {
  * @returns {Promise}
  */
 const down = (_knex) => {
-	logger.warn(`[${migrateName}] You can't migrate down this one.`);
-	return Promise.resolve(true);
+	throw new Error(`[${migrateName}] You can't migrate down this one.`);
 };
 
 export { down, up };

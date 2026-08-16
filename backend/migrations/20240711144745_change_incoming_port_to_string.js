@@ -10,34 +10,24 @@ const migrateName = "change_incoming_port_to_string";
  * @param   {Object} knex
  * @returns {Promise}
  */
-const up = (knex) => {
+const up = async (knex) => {
 	logger.info(`[${migrateName}] Migrating Up...`);
 
-	return knex.schema
-		.alterTable("stream", (table) => {
-			table.string("incoming_port", 11).notNull().alter();
-		})
-		.then(() => {
-			logger.info(`[${migrateName}] stream Table altered`);
-		});
+	await knex.schema.alterTable("stream", (table) => {
+		table.string("incoming_port", 11).notNull().alter();
+	});
+
+	logger.info(`[${migrateName}] stream Table altered`);
 };
 
 /**
  * Undo Migrate
  *
- * @param   {Object} knex
+ * @param   {Object} _knex
  * @returns {Promise}
  */
-const down = (knex) => {
-	logger.info(`[${migrateName}] Migrating Down...`);
-
-	return knex.schema
-		.alterTable("stream", (table) => {
-			table.integer("incoming_port").notNull().unsigned().alter();
-		})
-		.then(() => {
-			logger.info(`[${migrateName}] stream Table altered`);
-		});
+const down = (_knex) => {
+	throw new Error(`[${migrateName}] You can't migrate down this one.`);
 };
 
 export { down, up };

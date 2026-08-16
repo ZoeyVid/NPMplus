@@ -14,12 +14,53 @@
 		"indentStyle": "tab",
 		"indentWidth": 4,
 		"lineWidth": 120,
-		"formatWithErrors": true
+		"formatWithErrors": false
 	},
 	"linter": {
 		"enabled": true,
 		"rules": {
-			"preset": "recommended"
+			"preset": "all",
+			"complexity": {
+				"noExcessiveCognitiveComplexity": "off",
+				"noExcessiveLinesPerFunction": "off",
+				"noVoid": "off",
+				"useSimplifiedLogicExpression": "off"
+			},
+			"correctness": {
+				"noNodejsModules": "off",
+				"noProcessGlobal": "off",
+				"noUnresolvedImports": "off",
+				"useQwikValidLexicalScope": "off"
+			},
+			"nursery": {
+				"noFloatingPromises": "error"
+			},
+			"performance": {
+				"noAwaitInLoops": "off",
+				"noDelete": "off"
+			},
+			"style": {
+				"noContinue": "off",
+				"noDefaultExport": "off",
+				"noExcessiveLinesPerFile": "off",
+				"noIncrementDecrement": "off",
+				"noMagicNumbers": "off",
+				"noNegationElse": "off",
+				"noProcessEnv": "off",
+				"noTernary": "off",
+				"useBlockStatements": "off",
+				"useConsistentObjectDefinitions": "off",
+				"useDestructuring": "off",
+				"useErrorCause": "off",
+				"useNamingConvention": "off",
+				"useNumericSeparators": "off"
+			},
+			"suspicious": {
+				"noConsole": "off",
+				"noEmptyBlockStatements": "off",
+				"noImportCycles": "off",
+				"noUnnecessaryConditions": "off"
+			}
 		}
 	},
 	"javascript": {

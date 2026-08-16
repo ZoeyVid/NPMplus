@@ -18,7 +18,7 @@ Arguments:
 }
 
 const args = process.argv.slice(2);
-const USER_EMAIL = args[0].toLowerCase().trim();
+const USER_EMAIL = args[0]?.toLowerCase().trim();
 const PASSWORD = args[1];
 
 if (!USER_EMAIL || !PASSWORD) {
