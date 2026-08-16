@@ -27,8 +27,8 @@ importers:
         specifier: 1.4.7
         version: 1.4.7
       dayjs:
-        specifier: 1.11.21
-        version: 1.11.21
+        specifier: 1.11.22
+        version: 1.11.22
       express:
         specifier: 5.2.1
         version: 5.2.1
@@ -389,8 +389,8 @@ packages:
     resolution: {integrity: sha512-IBWsY8xznyQrcHn8h4bC8/4ErNke5elzgG8GcqF4RFPw6aHkWWRc7Tgw6upjaTX/CT/yQgqYENkxYsTYN+hW2g==}
     engines: {node: '>=18'}
 
-  dayjs@1.11.21:
-    resolution: {integrity: sha512-98IT+HOahAisibz/yjKbzuOBwYcjJ7BCLPzARyHiyEBmRz4fatF+KPJszEHXsGYjUG234aH/cOjW1wwTbKUZlA==}
+  dayjs@1.11.22:
+    resolution: {integrity: sha512-1YRnxzt/AabP3GHxnaB9/b+ZScCKu5TeF+co+BWG+lnWVIwEcTFc1FVE0WLNmNO3sA6GGXL40i5qkHfbLzpwrg==}
 
   db-errors@0.2.3:
     resolution: {integrity: sha512-OOgqgDuCavHXjYSJoV2yGhv6SeG8nk42aoCSoyXLZUH7VwFG27rxbavU1z+VrZbZjphw5UkDQwUlD21MwZpUng==}
@@ -1315,7 +1315,7 @@ snapshots:
       crc-32: 1.2.2
       readable-stream: 4.7.0
 
-  dayjs@1.11.21: {}
+  dayjs@1.11.22: {}
 
   db-errors@0.2.3: {}
 
