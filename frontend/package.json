@@ -29,7 +29,7 @@
 	},
 	"devDependencies": {
 		"@biomejs/biome": "2.5.8",
-		"@formatjs/cli": "6.16.16",
+		"@formatjs/cli": "6.16.18",
 		"@tanstack/react-query-devtools": "5.101.4",
 		"@types/node": "25.9.5",
 		"@types/react": "19.2.18",
