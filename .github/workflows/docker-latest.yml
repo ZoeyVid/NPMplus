@@ -89,11 +89,17 @@ jobs:
           password: ${{ github.token }}
       - name: merge
         run: |
+          docker buildx imagetools create --tag npmplus/npmplus:beta ghcr.io/zoeyvid/npmplus:latest-x86_64 ghcr.io/zoeyvid/npmplus:latest-aarch64
           docker buildx imagetools create --tag zoeyvid/npmplus:beta ghcr.io/zoeyvid/npmplus:latest-x86_64 ghcr.io/zoeyvid/npmplus:latest-aarch64
           docker buildx imagetools create --tag ghcr.io/zoeyvid/npmplus:beta ghcr.io/zoeyvid/npmplus:latest-x86_64 ghcr.io/zoeyvid/npmplus:latest-aarch64
+          
+          docker buildx imagetools create --tag npmplus/npmplus:latest ghcr.io/zoeyvid/npmplus:latest-x86_64 ghcr.io/zoeyvid/npmplus:latest-aarch64
           docker buildx imagetools create --tag zoeyvid/npmplus:latest ghcr.io/zoeyvid/npmplus:latest-x86_64 ghcr.io/zoeyvid/npmplus:latest-aarch64
           docker buildx imagetools create --tag ghcr.io/zoeyvid/npmplus:latest ghcr.io/zoeyvid/npmplus:latest-x86_64 ghcr.io/zoeyvid/npmplus:latest-aarch64
+          
+          docker buildx imagetools create --tag npmplus/npmplus:${{ inputs.tag }} ghcr.io/zoeyvid/npmplus:latest-x86_64 ghcr.io/zoeyvid/npmplus:latest-aarch64
           docker buildx imagetools create --tag zoeyvid/npmplus:${{ inputs.tag }} ghcr.io/zoeyvid/npmplus:latest-x86_64 ghcr.io/zoeyvid/npmplus:latest-aarch64
           docker buildx imagetools create --tag ghcr.io/zoeyvid/npmplus:${{ inputs.tag }} ghcr.io/zoeyvid/npmplus:latest-x86_64 ghcr.io/zoeyvid/npmplus:latest-aarch64
+          
           docker buildx imagetools create --tag zoeyvid/nginx-proxy-manager:latest ghcr.io/zoeyvid/npmplus:latest-x86_64 ghcr.io/zoeyvid/npmplus:latest-aarch64
           docker buildx imagetools create --tag ghcr.io/zoeyvid/nginx-proxy-manager:latest ghcr.io/zoeyvid/npmplus:latest-x86_64 ghcr.io/zoeyvid/npmplus:latest-aarch64
