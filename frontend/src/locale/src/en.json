@@ -437,9 +437,6 @@
 	"host.flags.disable-response-buffering": {
 		"defaultMessage": "Disable Response Buffering"
 	},
-	"host.flags.disable-uri-sanitisation": {
-		"defaultMessage": "Disable URI Sanitisation, not recommended"
-	},
 	"host.flags.fancyindex": {
 		"defaultMessage": "Enable fancyindex"
 	},

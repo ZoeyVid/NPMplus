@@ -55,7 +55,6 @@
 									"npmplus_crowdsec_appsec": false,
 									"npmplus_proxy_request_buffering": false,
 									"npmplus_proxy_response_buffering": false,
-									"npmplus_disable_uri_sanitisation": false,
 									"npmplus_upstream_compression": false,
 									"npmplus_fancyindex": false,
 									"npmplus_x_frame_options": "DENY",

@@ -144,10 +144,6 @@ const ProxyHostModal = EasyModal.create(({ id, isClone = false, visible, remove 
 							npmplusCrowdsecAppsec: data?.npmplusCrowdsecAppsec || false,
 							npmplusProxyResponseBuffering: data?.npmplusProxyResponseBuffering || false,
 							npmplusProxyRequestBuffering: data?.npmplusProxyRequestBuffering || false,
-							npmplusDisableUriSanitisation:
-								(data?.npmplusDisableUriSanitisation || false) &&
-								["http", "https"].includes(data?.forwardScheme || "http") &&
-								!(data?.forwardHost || "").includes("/"),
 							npmplusUpstreamCompression: data?.npmplusUpstreamCompression || false,
 							npmplusFancyindex: data?.npmplusFancyindex || false,
 							npmplusXFrameOptions: data?.npmplusXFrameOptions || "SAMEORIGIN",
@@ -264,10 +260,6 @@ const ProxyHostModal = EasyModal.create(({ id, isClone = false, visible, remove 
 																					"npmplusProxyResponseBuffering",
 																					false,
 																				);
-																				form.setFieldValue(
-																					"npmplusDisableUriSanitisation",
-																					false,
-																				);
 																			}
 																			if (scheme === "path") {
 																				form.setFieldValue(
@@ -306,14 +298,6 @@ const ProxyHostModal = EasyModal.create(({ id, isClone = false, visible, remove 
 																		className={`form-control ${form.errors.forwardHost && form.touched.forwardHost ? "is-invalid" : ""}`}
 																		placeholder="example.com"
 																		{...field}
-																		onChange={(e) => {
-																			field.onChange(e);
-																			if (e.target.value.includes("/"))
-																				form.setFieldValue(
-																					"npmplusDisableUriSanitisation",
-																					false,
-																				);
-																		}}
 																	/>
 																	{form.errors.forwardHost ? (
 																		<div className="invalid-feedback">
@@ -609,44 +593,6 @@ const ProxyHostModal = EasyModal.create(({ id, isClone = false, visible, remove 
 															</label>
 														</div>
 														<div>
-															<label
-																className="row"
-																htmlFor="npmplusDisableUriSanitisation"
-															>
-																<span className="col">
-																	<T id="host.flags.disable-uri-sanitisation" />
-																</span>
-																<span className="col-auto">
-																	<Field
-																		name="npmplusDisableUriSanitisation"
-																		type="checkbox"
-																	>
-																		{({ field, form }: any) => (
-																			<span className="form-check form-check-single form-switch">
-																				<input
-																					{...field}
-																					id="npmplusDisableUriSanitisation"
-																					className={cn("form-check-input", {
-																						"bg-lime": field.checked,
-																					})}
-																					type="checkbox"
-																					disabled={
-																						!["http", "https"].includes(
-																							form.values.forwardScheme,
-																						) ||
-																						(
-																							form.values.forwardHost ||
-																							""
-																						).includes("/")
-																					}
-																				/>
-																			</span>
-																		)}
-																	</Field>
-																</span>
-															</label>
-														</div>
-														<div>
 															<label className="row" htmlFor="npmplusFancyindex">
 																<span className="col">
 																	<T id="host.flags.fancyindex" />
@@ -821,15 +767,7 @@ const ProxyHostModal = EasyModal.create(({ id, isClone = false, visible, remove 
 												</Field>
 											</div>
 											<div className="tab-pane" id="tab-locations" role="tabpanel">
-												<LocationsFields
-													initialValues={(data?.locations || []).map((loc: any) => ({
-														...loc,
-														npmplusDisableUriSanitisation:
-															(loc.npmplusDisableUriSanitisation ?? true) &&
-															["http", "https"].includes(loc.forwardScheme || "http") &&
-															!(loc.forwardHost || "").includes("/"),
-													}))}
-												/>
+												<LocationsFields initialValues={data?.locations || []} />
 											</div>
 											<div className="tab-pane" id="tab-ssl" role="tabpanel">
 												<SSLCertificateField

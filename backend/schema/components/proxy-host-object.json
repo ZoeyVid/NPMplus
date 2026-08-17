@@ -35,8 +35,7 @@
 		"npmplus_fancyindex",
 		"npmplus_x_frame_options",
 		"npmplus_auth_request",
-		"npmplus_auth_request_upstream",
-		"npmplus_disable_uri_sanitisation"
+		"npmplus_auth_request_upstream"
 	],
 	"properties": {
 		"id": {
@@ -99,9 +98,6 @@
 		},
 		"npmplus_proxy_response_buffering": {
 			"$ref": "../common.json#/properties/npmplus_proxy_response_buffering"
-		},
-		"npmplus_disable_uri_sanitisation": {
-			"$ref": "../common.json#/properties/npmplus_disable_uri_sanitisation"
 		},
 		"npmplus_upstream_compression": {
 			"$ref": "../common.json#/properties/npmplus_upstream_compression"
@@ -248,7 +244,9 @@
 						"$ref": "#/properties/npmplus_proxy_response_buffering"
 					},
 					"npmplus_disable_uri_sanitisation": {
-						"$ref": "#/properties/npmplus_disable_uri_sanitisation"
+						"description": "This just exists so that old custom locations don't break",
+						"type": "boolean",
+						"example": false
 					},
 					"npmplus_spoof_host_header": {
 						"description": "This just exists so that old custom locations don't break",

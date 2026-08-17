@@ -29,7 +29,6 @@ const boolFields = [
 	"npmplus_proxy_response_buffering",
 	"npmplus_upstream_compression",
 	"npmplus_fancyindex",
-	"npmplus_disable_uri_sanitisation",
 ];
 
 class ProxyHost extends Model {
