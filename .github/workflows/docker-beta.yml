@@ -89,6 +89,7 @@ jobs:
           password: ${{ github.token }}
       - name: merge
         run: |
+          docker buildx imagetools create --tag npmplus/npmplus:beta ghcr.io/zoeyvid/npmplus:beta-x86_64 ghcr.io/zoeyvid/npmplus:beta-aarch64
           docker buildx imagetools create --tag zoeyvid/npmplus:beta ghcr.io/zoeyvid/npmplus:beta-x86_64 ghcr.io/zoeyvid/npmplus:beta-aarch64
           docker buildx imagetools create --tag ghcr.io/zoeyvid/npmplus:beta ghcr.io/zoeyvid/npmplus:beta-x86_64 ghcr.io/zoeyvid/npmplus:beta-aarch64
           docker buildx imagetools create --tag zoeyvid/npmplus:${{ inputs.tag }} ghcr.io/zoeyvid/npmplus:beta-x86_64 ghcr.io/zoeyvid/npmplus:beta-aarch64
