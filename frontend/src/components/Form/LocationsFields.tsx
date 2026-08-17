@@ -59,7 +59,6 @@ export function LocationsFields({ initialValues, name = "locations" }: Props) {
 		npmplusCrowdsecAppsec: false,
 		npmplusProxyResponseBuffering: false,
 		npmplusProxyRequestBuffering: false,
-		npmplusDisableUriSanitisation: false,
 		npmplusUpstreamCompression: false,
 		npmplusFancyindex: false,
 		npmplusXFrameOptions: "SAMEORIGIN",
@@ -100,14 +99,10 @@ export function LocationsFields({ initialValues, name = "locations" }: Props) {
 			if (field === "npmplusProxyRequestBuffering" && fieldValue === true) {
 				updatedLocation.npmplusCrowdsecAppsec = true;
 			}
-			if (field === "forwardHost" && fieldValue.includes("/")) {
-				updatedLocation.npmplusDisableUriSanitisation = false;
-			}
 			if (field === "forwardScheme" && fieldValue !== "empty") {
 				if (!["http", "https"].includes(fieldValue)) {
 					updatedLocation.npmplusProxyRequestBuffering = false;
 					updatedLocation.npmplusProxyResponseBuffering = false;
-					updatedLocation.npmplusDisableUriSanitisation = false;
 				}
 				if (fieldValue === "path") {
 					updatedLocation.npmplusUpstreamCompression = false;
@@ -503,36 +498,6 @@ export function LocationsFields({ initialValues, name = "locations" }: Props) {
 															)
 														}
 														disabled={["path", "empty"].includes(item.forwardScheme)}
-													/>
-												</span>
-											</span>
-										</label>
-									</div>
-									<div>
-										<label className="row" htmlFor={`npmplusDisableUriSanitisation-${item.uiKey}`}>
-											<span className="col">
-												<T id="host.flags.disable-uri-sanitisation" />
-											</span>
-											<span className="col-auto">
-												<span className="form-check form-check-single form-switch">
-													<input
-														id={`npmplusDisableUriSanitisation-${item.uiKey}`}
-														className={cn("form-check-input", {
-															"bg-lime": item.npmplusDisableUriSanitisation,
-														})}
-														type="checkbox"
-														checked={item.npmplusDisableUriSanitisation}
-														onChange={(e) =>
-															handleChange(
-																idx,
-																"npmplusDisableUriSanitisation",
-																e.target.checked,
-															)
-														}
-														disabled={
-															!["http", "https"].includes(item.forwardScheme) ||
-															(item.forwardHost || "").includes("/")
-														}
 													/>
 												</span>
 											</span>

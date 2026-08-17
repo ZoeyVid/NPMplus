@@ -88,9 +88,6 @@
 						"npmplus_proxy_response_buffering": {
 							"$ref": "../../../../components/proxy-host-object.json#/properties/npmplus_proxy_response_buffering"
 						},
-						"npmplus_disable_uri_sanitisation": {
-							"$ref": "../../../../components/proxy-host-object.json#/properties/npmplus_disable_uri_sanitisation"
-						},
 						"npmplus_upstream_compression": {
 							"$ref": "../../../../components/proxy-host-object.json#/properties/npmplus_upstream_compression"
 						},
@@ -160,7 +157,6 @@
 								"npmplus_crowdsec_appsec": false,
 								"npmplus_proxy_request_buffering": false,
 								"npmplus_proxy_response_buffering": false,
-								"npmplus_disable_uri_sanitisation": false,
 								"npmplus_upstream_compression": false,
 								"npmplus_fancyindex": false,
 								"npmplus_x_frame_options": "DENY",
