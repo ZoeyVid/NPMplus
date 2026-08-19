@@ -214,7 +214,7 @@ export interface Stream {
 	forwardingPort: number;
 	tcpForwarding: boolean;
 	udpForwarding: boolean;
-	npmplusProxyProtocolForwarding: boolean;
+	npmplusProxyProtocolForwarding: 0 | 1 | 2;
 	npmplusProxyTls: boolean;
 	npmplusAdvancedConfig: string;
 	meta: Record<string, any>;

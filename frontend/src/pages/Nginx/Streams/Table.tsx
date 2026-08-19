@@ -100,7 +100,8 @@ export default function Table({
 				(row: any) => {
 					const protocols: string[] = [];
 					if (row.tcpForwarding) protocols.push("TCP");
-					if (row.npmplusProxyProtocolForwarding) protocols.push("PP");
+					if (row.npmplusProxyProtocolForwarding)
+						protocols.push(row.npmplusProxyProtocolForwarding === 1 ? "PPv1" : "PPv2");
 					if (row.npmplusProxyTls) protocols.push("TLS");
 					if (row.udpForwarding) protocols.push("UDP");
 					return protocols.join(" ");
@@ -119,7 +120,13 @@ export default function Table({
 								) : null}
 								{value.npmplusProxyProtocolForwarding ? (
 									<span className="badge badge-lg domain-name">
-										<T id="streams.pp" />
+										<T
+											id={
+												value.npmplusProxyProtocolForwarding === 1
+													? "streams.pp.v1"
+													: "streams.pp.v2"
+											}
+										/>
 									</span>
 								) : null}
 								{value.npmplusProxyTls ? (

@@ -312,10 +312,15 @@ const StreamModal = EasyModal.create(({ id, visible, remove }: Props) => {
 																								"udpForwarding",
 																								true,
 																							);
-																							setFieldValue(
-																								"npmplusProxyProtocolForwarding",
-																								false,
-																							);
+																							if (
+																								values.npmplusProxyProtocolForwarding ===
+																								1
+																							) {
+																								setFieldValue(
+																									"npmplusProxyProtocolForwarding",
+																									0,
+																								);
+																							}
 																							setFieldValue(
 																								"npmplusProxyTls",
 																								false,
@@ -355,10 +360,15 @@ const StreamModal = EasyModal.create(({ id, visible, remove }: Props) => {
 																						);
 
 																						if (e.target.checked) {
-																							setFieldValue(
-																								"npmplusProxyProtocolForwarding",
-																								false,
-																							);
+																							if (
+																								values.npmplusProxyProtocolForwarding ===
+																								1
+																							) {
+																								setFieldValue(
+																									"npmplusProxyProtocolForwarding",
+																									0,
+																								);
+																							}
 																							setFieldValue(
 																								"npmplusProxyTls",
 																								false,
@@ -392,41 +402,6 @@ const StreamModal = EasyModal.create(({ id, visible, remove }: Props) => {
 															</label>
 														</div>
 														<div>
-															<label
-																className="row"
-																htmlFor="npmplusProxyProtocolForwarding"
-															>
-																<span className="col">
-																	<T id="streams.pp" />
-																</span>
-																<span className="col-auto">
-																	<Field
-																		name="npmplusProxyProtocolForwarding"
-																		type="checkbox"
-																	>
-																		{({ field }: any) => (
-																			<span className="form-check form-check-single form-switch">
-																				<input
-																					id="npmplusProxyProtocolForwarding"
-																					className="form-check-input"
-																					type="checkbox"
-																					name={field.name}
-																					checked={field.value}
-																					disabled={values.udpForwarding}
-																					onChange={(e: any) => {
-																						setFieldValue(
-																							field.name,
-																							e.target.checked,
-																						);
-																					}}
-																				/>
-																			</span>
-																		)}
-																	</Field>
-																</span>
-															</label>
-														</div>
-														<div>
 															<label className="row" htmlFor="npmplusProxyTls">
 																<span className="col">
 																	<T id="streams.tls" />
@@ -450,6 +425,53 @@ const StreamModal = EasyModal.create(({ id, visible, remove }: Props) => {
 																					}}
 																				/>
 																			</span>
+																		)}
+																	</Field>
+																</span>
+															</label>
+														</div>
+														<div>
+															<label
+																className="row"
+																htmlFor="npmplusProxyProtocolForwarding"
+															>
+																<span className="col">
+																	<T id="streams.pp" />
+																</span>
+																<span className="col-auto">
+																	<Field name="npmplusProxyProtocolForwarding">
+																		{({ field }: any) => (
+																			<select
+																				id="npmplusProxyProtocolForwarding"
+																				className="form-select w-auto"
+																				required
+																				{...field}
+																				onChange={(e: any) =>
+																					setFieldValue(
+																						field.name,
+																						Number(e.target.value),
+																					)
+																				}
+																			>
+																				<option value={0}>
+																					{intl.formatMessage({
+																						id: "streams.pp.off",
+																					})}
+																				</option>
+																				{values.tcpForwarding &&
+																				!values.udpForwarding ? (
+																					<option value={1}>
+																						{intl.formatMessage({
+																							id: "streams.pp.v1",
+																						})}
+																					</option>
+																				) : null}
+																				<option value={2}>
+																					{intl.formatMessage({
+																						id: "streams.pp.v2",
+																					})}
+																				</option>
+																			</select>
 																		)}
 																	</Field>
 																</span>

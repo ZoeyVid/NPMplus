@@ -798,7 +798,16 @@
 		"defaultMessage": "{count} {count, plural, one {Stream} other {Streams}}"
 	},
 	"streams.pp": {
+		"defaultMessage": "Proxy Protocol"
+	},
+	"streams.pp.off": {
+		"defaultMessage": "Off"
+	},
+	"streams.pp.v1": {
 		"defaultMessage": "Proxy Protocol v1"
+	},
+	"streams.pp.v2": {
+		"defaultMessage": "Proxy Protocol v2"
 	},
 	"streams.tcp": {
 		"defaultMessage": "TCP"

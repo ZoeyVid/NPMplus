@@ -57,8 +57,9 @@
 			"example": false
 		},
 		"npmplus_proxy_protocol_forwarding": {
-			"type": "boolean",
-			"example": false
+			"type": "integer",
+			"enum": [0, 1, 2],
+			"example": 0
 		},
 		"npmplus_proxy_tls": {
 			"type": "boolean",
