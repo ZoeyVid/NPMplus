@@ -7,7 +7,7 @@ ARG LUAJIT_LIB=/usr/lib
 
 ARG AWSLC_VER=991e67ff4cf04df4dd89e407f8b920c6936cb56a # v5.5.0
 
-ARG NGINX_VER=a885808aa592eea32c8064624717be3d94fbdfe7 # release-1.31.3
+ARG NGINX_VER=e3a08b626853a290a3592ad431f38babf44bf9a8 # release-1.31.4
 ARG DTR_VER=1.29.2
 ARG RCP_VER=1.31.3
 ARG ZNP_VER=1.30.0
@@ -78,12 +78,9 @@ RUN git-clone-commit.sh https://github.com/nginx/nginx "$NGINX_VER" /src/nginx &
     wget -q https://raw.githubusercontent.com/zlib-ng/patches/master/nginx/"$ZNP_VER"-zlib-ng.patch -O /src/nginx/6.patch && \
     echo "bcd0f2fb9723fc1f251f94cead8d5160e767f7d4a04365331396a72a9ba54c6b  /src/nginx/6.patch" | sha256sum -c - && \
     git apply /src/nginx/6.patch && \
-    wget -q https://github.com/nginx/nginx/commit/dea68dbf126f40a8acd09bac885a955be459162e.patch -O /src/nginx/7.patch && \
-    echo "35f1d899df53ef5507b3f490c99ce40fe903de01a425908544bd9de092b2460e  /src/nginx/7.patch" | sha256sum -c - && \
+    wget -q https://patch-diff.githubusercontent.com/raw/nginx/nginx/pull/1430.patch -O /src/nginx/7.patch && \
+    echo "c8e827d50314b6ec027677ae8c70b11f805408af3efb5175bf377071bd2a14a5  /src/nginx/7.patch" | sha256sum -c - && \
     git apply /src/nginx/7.patch && \
-    wget -q https://patch-diff.githubusercontent.com/raw/nginx/nginx/pull/1430.patch -O /src/nginx/8.patch && \
-    echo "c8e827d50314b6ec027677ae8c70b11f805408af3efb5175bf377071bd2a14a5  /src/nginx/8.patch" | sha256sum -c - && \
-    git apply /src/nginx/8.patch && \
     git apply /src/nginx-footer.patch && \
     git apply /src/nginx-ip-sni.patch && \
     git apply /src/nginx-buffer-log.patch && \
