@@ -89,7 +89,7 @@
 								"forwarding_port": 80,
 								"tcp_forwarding": true,
 								"udp_forwarding": false,
-								"npmplus_proxy_protocol_forwarding": false,
+								"npmplus_proxy_protocol_forwarding": 0,
 								"npmplus_proxy_tls": false,
 								"npmplus_advanced_config": "",
 								"meta": {

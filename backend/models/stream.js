@@ -7,14 +7,7 @@ import User from "./user.js";
 
 Model.knex(db());
 
-const boolFields = [
-	"is_deleted",
-	"enabled",
-	"tcp_forwarding",
-	"udp_forwarding",
-	"npmplus_proxy_protocol_forwarding",
-	"npmplus_proxy_tls",
-];
+const boolFields = ["is_deleted", "enabled", "tcp_forwarding", "udp_forwarding", "npmplus_proxy_tls"];
 
 class Stream extends Model {
 	$beforeInsert() {
