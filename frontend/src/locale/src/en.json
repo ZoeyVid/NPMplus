@@ -479,6 +479,27 @@
 	"loading": {
 		"defaultMessage": "Loading…"
 	},
+	"location.advanced-config": {
+		"defaultMessage": "Has custom Nginx configuration"
+	},
+	"location.filter": {
+		"defaultMessage": "Filter by path or destination"
+	},
+	"login.2fa-code": {
+		"defaultMessage": "Verification Code"
+	},
+	"login.2fa-code-placeholder": {
+		"defaultMessage": "Enter code"
+	},
+	"login.2fa-description": {
+		"defaultMessage": "Enter the code from your authenticator app"
+	},
+	"login.2fa-title": {
+		"defaultMessage": "Two-Factor Authentication"
+	},
+	"login.2fa-verify": {
+		"defaultMessage": "Verify"
+	},
 	"location.filter": {
 		"defaultMessage": "Filter by path or destination"
 	},
