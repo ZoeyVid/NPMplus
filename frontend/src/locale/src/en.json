@@ -500,9 +500,6 @@
 	"login.2fa-verify": {
 		"defaultMessage": "Verify"
 	},
-	"location.filter": {
-		"defaultMessage": "Filter by path or destination"
-	},
 	"login.title": {
 		"defaultMessage": "Login to your account"
 	},
