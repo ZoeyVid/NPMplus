@@ -9,8 +9,8 @@
 		"@ebay/nice-modal-react": "1.2.13",
 		"@tabler/core": "1.4.0",
 		"@tabler/icons-react": "3.46.0",
-		"@tanstack/react-query": "5.102.5",
-		"@tanstack/react-table": "9.1.2",
+		"@tanstack/react-query": "5.102.8",
+		"@tanstack/react-table": "9.2.4",
 		"clsx": "2.1.1",
 		"country-flag-icons": "1.6.20",
 		"date-fns": "4.4.0",
@@ -22,18 +22,18 @@
 		"react-bootstrap": "2.10.10",
 		"react-dom": "19.2.8",
 		"react-intl": "10.1.23",
-		"react-router": "8.3.0",
+		"react-router": "8.3.1",
 		"react-select": "5.10.2",
 		"react-toastify": "11.1.0",
 		"rooks": "9.9.0"
 	},
 	"devDependencies": {
 		"@biomejs/biome": "2.5.11",
-		"@formatjs/cli": "6.16.20",
+		"@formatjs/cli": "6.16.21",
 		"@types/node": "25.9.5",
 		"@types/react": "19.2.18",
 		"@types/react-dom": "19.2.5",
-		"@vitejs/plugin-react": "6.1.0",
+		"@vitejs/plugin-react": "6.1.1",
 		"typescript": "7.0.2",
 		"vite": "8.2.2"
 	}
