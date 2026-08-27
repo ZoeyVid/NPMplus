@@ -31,8 +31,10 @@ const UserModal = EasyModal.create(({ id, visible, remove }: Props) => {
 		setErrorMsg(null);
 		try {
 			await fn();
-			queryClient.invalidateQueries({ queryKey: ["user"] });
-			queryClient.invalidateQueries({ queryKey: ["users"] });
+			await Promise.all([
+				queryClient.invalidateQueries({ queryKey: ["user"] }),
+				queryClient.invalidateQueries({ queryKey: ["users"] }),
+			]);
 		} catch (err: any) {
 			setErrorMsg(err.message);
 		}

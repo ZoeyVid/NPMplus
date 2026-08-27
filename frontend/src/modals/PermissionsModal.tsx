@@ -31,8 +31,10 @@ const PermissionsModal = EasyModal.create(({ id, visible, remove }: Props) => {
 		try {
 			await setPermissions(id, values);
 			remove();
-			queryClient.invalidateQueries({ queryKey: ["users"] });
-			queryClient.invalidateQueries({ queryKey: ["user"] });
+			await Promise.all([
+				queryClient.invalidateQueries({ queryKey: ["users"] }),
+				queryClient.invalidateQueries({ queryKey: ["user"] }),
+			]);
 		} catch (err: any) {
 			setErrorMsg(<T id={err.message} />);
 		}

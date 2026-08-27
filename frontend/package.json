@@ -28,7 +28,7 @@
 		"rooks": "9.9.0"
 	},
 	"devDependencies": {
-		"@biomejs/biome": "2.5.10",
+		"@biomejs/biome": "2.5.11",
 		"@formatjs/cli": "6.16.20",
 		"@types/node": "25.9.5",
 		"@types/react": "19.2.18",

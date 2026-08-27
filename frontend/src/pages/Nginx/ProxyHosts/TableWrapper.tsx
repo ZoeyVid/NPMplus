@@ -40,8 +40,10 @@ export default function TableWrapper() {
 
 	const handleDisableToggle = async (id: number, enabled: boolean) => {
 		await toggleProxyHost(id, enabled);
-		queryClient.invalidateQueries({ queryKey: ["proxy-hosts"] });
-		queryClient.invalidateQueries({ queryKey: ["proxy-host", id] });
+		await Promise.all([
+			queryClient.invalidateQueries({ queryKey: ["proxy-hosts"] }),
+			queryClient.invalidateQueries({ queryKey: ["proxy-host", id] }),
+		]);
 		showObjectSuccess("proxy-host", enabled ? "enabled" : "disabled");
 	};
 

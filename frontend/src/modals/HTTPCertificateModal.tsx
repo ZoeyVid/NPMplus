@@ -46,7 +46,7 @@ const HTTPCertificateModal = EasyModal.create(({ visible, remove }: InnerModalPr
 				setErrorMsg(<T id={err.message} />);
 			}
 		}
-		queryClient.invalidateQueries({ queryKey: ["certificates"] });
+		await queryClient.invalidateQueries({ queryKey: ["certificates"] });
 		setIsSubmitting(false);
 		setSubmitting(false);
 	};

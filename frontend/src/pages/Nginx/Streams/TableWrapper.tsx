@@ -41,8 +41,10 @@ export default function TableWrapper() {
 
 	const handleDisableToggle = async (id: number, enabled: boolean) => {
 		await toggleStream(id, enabled);
-		queryClient.invalidateQueries({ queryKey: ["streams"] });
-		queryClient.invalidateQueries({ queryKey: ["stream", id] });
+		await Promise.all([
+			queryClient.invalidateQueries({ queryKey: ["streams"] }),
+			queryClient.invalidateQueries({ queryKey: ["stream", id] }),
+		]);
 		showObjectSuccess("stream", enabled ? "enabled" : "disabled");
 	};
 
