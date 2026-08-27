@@ -42,7 +42,7 @@ const DNSCertificateModal = EasyModal.create(({ visible, remove }: InnerModalPro
 				setErrorMsg(<T id={err.message} />);
 			}
 		}
-		queryClient.invalidateQueries({ queryKey: ["certificates"] });
+		await queryClient.invalidateQueries({ queryKey: ["certificates"] });
 		setIsSubmitting(false);
 		setSubmitting(false);
 	};

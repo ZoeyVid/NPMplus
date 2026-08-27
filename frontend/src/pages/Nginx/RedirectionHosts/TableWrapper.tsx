@@ -40,8 +40,10 @@ export default function TableWrapper() {
 
 	const handleDisableToggle = async (id: number, enabled: boolean) => {
 		await toggleRedirectionHost(id, enabled);
-		queryClient.invalidateQueries({ queryKey: ["redirection-hosts"] });
-		queryClient.invalidateQueries({ queryKey: ["redirection-host", id] });
+		await Promise.all([
+			queryClient.invalidateQueries({ queryKey: ["redirection-hosts"] }),
+			queryClient.invalidateQueries({ queryKey: ["redirection-host", id] }),
+		]);
 		showObjectSuccess("redirection-host", enabled ? "enabled" : "disabled");
 	};
 

@@ -36,9 +36,7 @@ const DeleteConfirmModal = EasyModal.create(
 				await onConfirm();
 				remove();
 				// invalidate caches as requested
-				for (const inv of invalidations ?? []) {
-					queryClient.invalidateQueries({ queryKey: inv });
-				}
+				await Promise.all((invalidations ?? []).map((inv) => queryClient.invalidateQueries({ queryKey: inv })));
 			} catch (err: any) {
 				setError(<T id={err.message} />);
 			}

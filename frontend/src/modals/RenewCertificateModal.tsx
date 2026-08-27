@@ -32,7 +32,7 @@ const RenewCertificateModal = EasyModal.create(({ id, visible, remove }: Props) 
 		renewCertificate(id)
 			.then(() => {
 				showObjectSuccess("certificate", "renewed");
-				queryClient.invalidateQueries({ queryKey: ["certificates"] });
+				void queryClient.invalidateQueries({ queryKey: ["certificates"] });
 				remove();
 			})
 			.catch((err: any) => {

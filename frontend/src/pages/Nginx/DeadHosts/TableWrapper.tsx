@@ -40,8 +40,10 @@ export default function TableWrapper() {
 
 	const handleDisableToggle = async (id: number, enabled: boolean) => {
 		await toggleDeadHost(id, enabled);
-		queryClient.invalidateQueries({ queryKey: ["dead-hosts"] });
-		queryClient.invalidateQueries({ queryKey: ["dead-host", id] });
+		await Promise.all([
+			queryClient.invalidateQueries({ queryKey: ["dead-hosts"] }),
+			queryClient.invalidateQueries({ queryKey: ["dead-host", id] }),
+		]);
 		showObjectSuccess("dead-host", enabled ? "enabled" : "disabled");
 	};
 

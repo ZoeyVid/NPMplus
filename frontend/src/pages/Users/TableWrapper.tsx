@@ -38,8 +38,10 @@ export default function TableWrapper() {
 
 	const handleDisableToggle = async (id: number, enabled: boolean) => {
 		await toggleUser(id, enabled);
-		queryClient.invalidateQueries({ queryKey: ["users"] });
-		queryClient.invalidateQueries({ queryKey: ["user", id] });
+		await Promise.all([
+			queryClient.invalidateQueries({ queryKey: ["users"] }),
+			queryClient.invalidateQueries({ queryKey: ["user", id] }),
+		]);
 		showObjectSuccess("user", enabled ? "enabled" : "disabled");
 	};
 
