@@ -50,6 +50,7 @@ const getFlagCodeForLocale = (locale?: string) => {
 		cs: "cz", // Czechia
 		ga: "ie", // Ireland (Irish)
 		et: "ee", // Estonia
+		uk: "ua", // Ukraine
 	};
 
 	if (specialCases[thisLocale]) {

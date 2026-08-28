@@ -42,6 +42,7 @@ const locales = [
 	["ru", "ru-RU"],
 	["sk", "sk-SK"],
 	["tr", "tr-TR"],
+	["uk", "uk-UA"],
 	["vi", "vi-VN"],
 	["zh", "zh-CN"],
 ].map(([code, fullCode]) => ({ code, fullCode, data: readJson(`src/${code}.json`) }));
