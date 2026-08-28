@@ -17,8 +17,8 @@ import * as pl from "./pl/index";
 import * as pt from "./pt/index";
 import * as ru from "./ru/index";
 import * as sk from "./sk/index";
-import * as uk from "./uk/index";
 import * as tr from "./tr/index";
+import * as uk from "./uk/index";
 import * as vi from "./vi/index";
 import * as zh from "./zh/index";
 
