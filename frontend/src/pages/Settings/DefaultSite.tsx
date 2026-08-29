@@ -24,6 +24,7 @@ export default function DefaultSite() {
 			meta: {
 				redirect: values.redirect,
 				html: values.html,
+				status: values.status ? Number(values.status) : undefined,
 			},
 		};
 
@@ -68,6 +69,7 @@ export default function DefaultSite() {
 					value: data?.value || "congratulations",
 					redirect: data?.meta?.redirect || "",
 					html: data?.meta?.html || "",
+					status: data?.meta?.status || "",
 				} as any
 			}
 			onSubmit={onSubmit}
@@ -209,38 +211,61 @@ export default function DefaultSite() {
 							</Field>
 						)}
 						{values.value === "html" && (
-							<Field name="html" validate={validateString(1)}>
-								{({ field, form }: any) => (
-									<div className="mt-5 mb-3">
-										<label className="form-label" htmlFor="html">
-											<T id="settings.default-site.html" />
-										</label>
-										<div>
-											<textarea
-												id="html"
+							<>
+								<Field name="html" validate={validateString(1)}>
+									{({ field, form }: any) => (
+										<div className="mt-5 mb-3">
+											<label className="form-label" htmlFor="html">
+												<T id="settings.default-site.html" />
+											</label>
+											<div>
+												<textarea
+													id="html"
+													className="form-control"
+													spellCheck={false}
+													placeholder={intl.formatMessage({
+														id: "settings.default-site.html.placeholder",
+													})}
+													style={{
+														fontFamily:
+															"ui-monospace,SFMono-Regular,SF Mono,Consolas,Liberation Mono,Menlo,monospace",
+														borderRadius: "0.3rem",
+														minHeight: "300px",
+														backgroundColor: "var(--tblr-bg-surface-dark)",
+													}}
+													{...field}
+												/>
+												{form.errors.html ? (
+													<div className="invalid-feedback">
+														{form.errors.html && form.touched.html
+															? form.errors.html
+															: null}
+													</div>
+												) : null}
+											</div>
+										</div>
+									)}
+								</Field>
+								<Field name="status">
+									{({ field }: any) => (
+										<div className="mb-3">
+											<label className="form-label" htmlFor="status">
+												<T id="settings.default-site.status" />
+											</label>
+											<input
+												id="status"
+												type="number"
+												min={400}
+												max={599}
+												placeholder="200"
+												autoComplete="off"
 												className="form-control"
-												spellCheck={false}
-												placeholder={intl.formatMessage({
-													id: "settings.default-site.html.placeholder",
-												})}
-												style={{
-													fontFamily:
-														"ui-monospace,SFMono-Regular,SF Mono,Consolas,Liberation Mono,Menlo,monospace",
-													borderRadius: "0.3rem",
-													minHeight: "300px",
-													backgroundColor: "var(--tblr-bg-surface-dark)",
-												}}
 												{...field}
 											/>
-											{form.errors.html ? (
-												<div className="invalid-feedback">
-													{form.errors.html && form.touched.html ? form.errors.html : null}
-												</div>
-											) : null}
 										</div>
-									</div>
-								)}
-							</Field>
+									)}
+								</Field>
+							</>
 						)}
 					</div>
 					<div className="card-footer bg-transparent mt-auto">

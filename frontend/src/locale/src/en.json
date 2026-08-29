@@ -764,6 +764,9 @@
 	"settings.default-site.redirect": {
 		"defaultMessage": "Redirect"
 	},
+	"settings.default-site.status": {
+		"defaultMessage": "HTTP Status Code (leave empty for 200)"
+	},
 	"setup.preamble": {
 		"defaultMessage": "Get started by creating your admin account."
 	},

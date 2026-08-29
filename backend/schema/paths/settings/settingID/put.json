@@ -58,6 +58,11 @@
 								},
 								"html": {
 									"type": "string"
+								},
+								"status": {
+									"type": "integer",
+									"minimum": 400,
+									"maximum": 599
 								}
 							},
 							"example": {
