@@ -15,7 +15,7 @@
 		"cookie-parser": "1.4.7",
 		"dayjs": "1.11.23",
 		"express": "5.2.1",
-		"express-rate-limit": "8.6.2",
+		"express-rate-limit": "8.7.0",
 		"jsonwebtoken": "9.0.3",
 		"knex": "3.3.0",
 		"liquidjs": "10.29.0",
