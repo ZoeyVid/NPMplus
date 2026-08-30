@@ -1,947 +1,317 @@
 {
-	"access-list": {
-		"defaultMessage": "Access List"
-	},
-	"access-list.access-count": {
-		"defaultMessage": "{count} {count, plural, one {Rule} other {Rules}}"
-	},
-	"access-list.auth-count": {
-		"defaultMessage": "{count} {count, plural, one {User} other {Users}}"
-	},
-	"access-list.custom": {
-		"defaultMessage": "Custom"
-	},
-	"access-list.custom.subtitle": {
-		"defaultMessage": "Use a custom access list type"
-	},
-	"access-list.global": {
-		"defaultMessage": "Global"
-	},
-	"access-list.global.subtitle": {
-		"defaultMessage": "Use the same as the Global Access List"
-	},
-	"access-list.help-rules-last": {
-		"defaultMessage": "When at least 1 rule exists, this deny all rule will be added last"
-	},
-	"access-list.help.rules-last": {
-		"defaultMessage": "This final rule will only be added if there is at least one other rule"
-	},
-	"access-list.help.rules-order": {
-		"defaultMessage": "Note that the allow and deny directives will be applied in the order they are defined."
-	},
-	"access-list.pass-auth": {
-		"defaultMessage": "Pass Auth to Upstream"
-	},
-	"access-list.public": {
-		"defaultMessage": "Publicly Accessible"
-	},
-	"access-list.public.subtitle": {
-		"defaultMessage": "No basic auth required"
-	},
-	"access-list.rule-source.placeholder": {
-		"defaultMessage": "192.168.1.100 or 192.168.1.0/24 or 2001:0db8::/32"
-	},
-	"access-list.satisfy-any": {
-		"defaultMessage": "Satisfy Any"
-	},
-	"access-list.subtitle": {
-		"defaultMessage": "{users} {users, plural, one {User} other {Users}}, {rules} {rules, plural, one {Rule} other {Rules}} - Created: {date}"
-	},
-	"access-lists": {
-		"defaultMessage": "Access Lists"
-	},
-	"action.add": {
-		"defaultMessage": "Add"
-	},
-	"action.add-location": {
-		"defaultMessage": "Add Location"
-	},
-	"action.allow": {
-		"defaultMessage": "Allow"
-	},
-	"action.clear": {
-		"defaultMessage": "Clear"
-	},
-	"action.clone": {
-		"defaultMessage": "Clone"
-	},
-	"action.close": {
-		"defaultMessage": "Close"
-	},
-	"action.delete": {
-		"defaultMessage": "Delete"
-	},
-	"action.deny": {
-		"defaultMessage": "Deny"
-	},
-	"action.disable": {
-		"defaultMessage": "Disable"
-	},
-	"action.download": {
-		"defaultMessage": "Download"
-	},
-	"action.edit": {
-		"defaultMessage": "Edit"
-	},
-	"action.enable": {
-		"defaultMessage": "Enable"
-	},
-	"action.permissions": {
-		"defaultMessage": "Permissions"
-	},
-	"action.renew": {
-		"defaultMessage": "Renew"
-	},
-	"action.view-details": {
-		"defaultMessage": "View Details"
-	},
-	"auditlogs": {
-		"defaultMessage": "Audit Logs"
-	},
-	"auto": {
-		"defaultMessage": "Auto"
-	},
-	"avatar.remove": {
-		"defaultMessage": "Remove avatar"
-	},
-	"avatar.upload": {
-		"defaultMessage": "Upload avatar"
-	},
-	"cancel": {
-		"defaultMessage": "Cancel"
-	},
-	"certificate": {
-		"defaultMessage": "Certificate"
-	},
-	"certificate.custom-certificate": {
-		"defaultMessage": "Certificate"
-	},
-	"certificate.custom-certificate-key": {
-		"defaultMessage": "Certificate Key"
-	},
-	"certificate.custom-intermediate": {
-		"defaultMessage": "Intermediate Certificate"
-	},
-	"certificate.in-use": {
-		"defaultMessage": "In Use"
-	},
-	"certificate.none.subtitle": {
-		"defaultMessage": "No certificate assigned"
-	},
-	"certificate.none.subtitle.for-http": {
-		"defaultMessage": "This host will not use HTTPS"
-	},
-	"certificate.none.title": {
-		"defaultMessage": "None"
-	},
-	"certificate.not-in-use": {
-		"defaultMessage": "Not Used"
-	},
-	"certificate.renew": {
-		"defaultMessage": "Renew Certificate"
-	},
-	"certificates": {
-		"defaultMessage": "Certificates"
-	},
-	"certificates.custom": {
-		"defaultMessage": "Custom Certificate"
-	},
-	"certificates.custom.warning": {
-		"defaultMessage": "Key files protected with a passphrase are not supported."
-	},
-	"certificates.dns.credentials": {
-		"defaultMessage": "Credentials File Content"
-	},
-	"certificates.dns.credentials-note": {
-		"defaultMessage": "This plugin requires a configuration file containing an API token or other credentials for your provider"
-	},
-	"certificates.dns.credentials-warning": {
-		"defaultMessage": "This data will be stored as plaintext in the database and in a file!"
-	},
-	"certificates.dns.propagation-seconds": {
-		"defaultMessage": "Propagation Seconds"
-	},
-	"certificates.dns.propagation-seconds-note": {
-		"defaultMessage": "Leave empty to use the plugins default value. Number of seconds to wait for DNS propagation."
-	},
-	"certificates.dns.provider": {
-		"defaultMessage": "DNS Provider"
-	},
-	"certificates.dns.provider.placeholder": {
-		"defaultMessage": "Select a Provider..."
-	},
-	"certificates.dns.warning": {
-		"defaultMessage": "This section requires some knowledge about Certbot and its DNS plugins. Please consult the respective plugins documentation."
-	},
-	"certificates.http.reachability-404": {
-		"defaultMessage": "There is a server found at this domain but it does not seem to be NPMplus. Please make sure your domain points to the IP where your NPMplus instance is running."
-	},
-	"certificates.http.reachability-failed-to-check": {
-		"defaultMessage": "Failed to check the reachability due to a communication error with site24x7.com."
-	},
-	"certificates.http.reachability-not-resolved": {
-		"defaultMessage": "There is no server available at this domain. Please make sure your domain exists and points to the IP where your NPMplus instance is running and if necessary port 80 is forwarded in your router."
-	},
-	"certificates.http.reachability-ok": {
-		"defaultMessage": "Your server is reachable and creating certificates should be possible."
-	},
-	"certificates.http.reachability-other": {
-		"defaultMessage": "There is a server found at this domain but it returned an unexpected status code {code}. Is it the NPMplus server? Please make sure your domain points to the IP where your NPMplus instance is running."
-	},
-	"certificates.http.reachability-wrong-data": {
-		"defaultMessage": "There is a server found at this domain but it returned an unexpected data. Is it the NPMplus server? Please make sure your domain points to the IP where your NPMplus instance is running."
-	},
-	"certificates.http.test-results": {
-		"defaultMessage": "Test Results"
-	},
-	"certificates.http.warning": {
-		"defaultMessage": "These domains must be already configured to point to this installation."
-	},
-	"certificates.key-type": {
-		"defaultMessage": "Key Type"
-	},
-	"certificates.key-type-description": {
-		"defaultMessage": "RSA is widely compatible, ECDSA is faster and more secure but may not be supported by older systems"
-	},
-	"certificates.key-type-ecdsa": {
-		"defaultMessage": "ECDSA 256"
-	},
-	"certificates.key-type-rsa": {
-		"defaultMessage": "RSA 2048"
-	},
-	"certificates.request.subtitle": {
-		"defaultMessage": "with Certbot"
-	},
-	"certificates.request.title": {
-		"defaultMessage": "Request a new Certificate"
-	},
-	"column.access": {
-		"defaultMessage": "Access"
-	},
-	"column.authorization": {
-		"defaultMessage": "Authorization"
-	},
-	"column.authorizations": {
-		"defaultMessage": "Authorizations"
-	},
-	"column.custom-locations": {
-		"defaultMessage": "Custom Locations"
-	},
-	"column.description": {
-		"defaultMessage": "Description"
-	},
-	"column.destination": {
-		"defaultMessage": "Destination"
-	},
-	"column.details": {
-		"defaultMessage": "Details"
-	},
-	"column.email": {
-		"defaultMessage": "Email"
-	},
-	"column.event": {
-		"defaultMessage": "Event"
-	},
-	"column.expires": {
-		"defaultMessage": "Expires"
-	},
-	"column.http-code": {
-		"defaultMessage": "HTTP Code"
-	},
-	"column.incoming-port": {
-		"defaultMessage": "Incoming Port"
-	},
-	"column.name": {
-		"defaultMessage": "Name"
-	},
-	"column.protocol": {
-		"defaultMessage": "Protocol"
-	},
-	"column.provider": {
-		"defaultMessage": "Provider"
-	},
-	"column.roles": {
-		"defaultMessage": "Roles"
-	},
-	"column.rules": {
-		"defaultMessage": "Rules"
-	},
-	"column.satisfy": {
-		"defaultMessage": "Satisfy"
-	},
-	"column.satisfy-all": {
-		"defaultMessage": "All"
-	},
-	"column.satisfy-any": {
-		"defaultMessage": "Any"
-	},
-	"column.scheme": {
-		"defaultMessage": "Scheme"
-	},
-	"column.source": {
-		"defaultMessage": "Source"
-	},
-	"column.ssl": {
-		"defaultMessage": "TLS"
-	},
-	"column.status": {
-		"defaultMessage": "Status"
-	},
-	"created-on": {
-		"defaultMessage": "Created: {date}"
-	},
-	"dashboard": {
-		"defaultMessage": "Dashboard"
-	},
-	"dead-host": {
-		"defaultMessage": "404 Host"
-	},
-	"dead-host.directory": {
-		"defaultMessage": "Group"
-	},
-	"dead-host.no-directory": {
-		"defaultMessage": "No group"
-	},
-	"dead-hosts": {
-		"defaultMessage": "404 Hosts"
-	},
-	"dead-hosts.count": {
-		"defaultMessage": "{count} {count, plural, one {404 Host} other {404 Hosts}}"
-	},
-	"disabled": {
-		"defaultMessage": "Disabled"
-	},
-	"domain-names": {
-		"defaultMessage": "Domain Names"
-	},
-	"domain-names.max": {
-		"defaultMessage": "{count} domain names maximum"
-	},
-	"domain-names.placeholder": {
-		"defaultMessage": "Start typing to add domain..."
-	},
-	"domain-names.wildcards-not-permitted": {
-		"defaultMessage": "Wildcards not permitted for this type"
-	},
-	"domain-names.wildcards-not-supported": {
-		"defaultMessage": "Wildcards not supported for this CA"
-	},
-	"domains.advanced": {
-		"defaultMessage": "Advanced"
-	},
-	"domains.force-ssl": {
-		"defaultMessage": "Force HTTPS"
-	},
-	"domains.hsts-enabled": {
-		"defaultMessage": "HSTS Enabled"
-	},
-	"domains.hsts-subdomains": {
-		"defaultMessage": "HSTS Sub-domains"
-	},
-	"domains.http2-support": {
-		"defaultMessage": "HTTP/2 Support"
-	},
-	"domains.http3-support": {
-		"defaultMessage": "HTTP/3 Support"
-	},
-	"domains.mtls-verify-client-optional": {
-		"defaultMessage": "Make mTLS Optional"
-	},
-	"domains.reuse-key": {
-		"defaultMessage": "Reuse Key (not recommended)"
-	},
-	"domains.trust-forwarded-proto": {
-		"defaultMessage": "Trust Upstream Forwarded Proto Headers"
-	},
-	"domains.use-dns": {
-		"defaultMessage": "Use DNS Challenge"
-	},
-	"email-address": {
-		"defaultMessage": "Email address"
-	},
-	"empty-search": {
-		"defaultMessage": "No results found"
-	},
-	"empty-subtitle": {
-		"defaultMessage": "Why don't you create one?"
-	},
-	"enabled": {
-		"defaultMessage": "Enabled"
-	},
-	"error.access.at-least-one": {
-		"defaultMessage": "Either one Authorization or one Access Rule is required"
-	},
-	"error.access.duplicate-usernames": {
-		"defaultMessage": "Authorization Usernames must be unique"
-	},
-	"error.invalid-auth": {
-		"defaultMessage": "Invalid email or password"
-	},
-	"error.invalid-domain": {
-		"defaultMessage": "Invalid domain: {domain}"
-	},
-	"error.invalid-email": {
-		"defaultMessage": "Invalid email address"
-	},
-	"error.invalid-upstream-url": {
-		"defaultMessage": "Must be a valid URL with scheme, host and port (no path)"
-	},
-	"error.max-character-length": {
-		"defaultMessage": "Maximum length is {max} character{max, plural, one {} other {s}}"
-	},
-	"error.max-domains": {
-		"defaultMessage": "Too many domains, max is {max}"
-	},
-	"error.maximum": {
-		"defaultMessage": "Maximum is {max}"
-	},
-	"error.min-character-length": {
-		"defaultMessage": "Minimum length is {min} character{min, plural, one {} other {s}}"
-	},
-	"error.minimum": {
-		"defaultMessage": "Minimum is {min}"
-	},
-	"error.passwords-must-match": {
-		"defaultMessage": "Passwords must match"
-	},
-	"error.required": {
-		"defaultMessage": "This is required"
-	},
-	"expires.on": {
-		"defaultMessage": "Expires: {date}"
-	},
-	"footer.github": {
-		"defaultMessage": "Repo on Github"
-	},
-	"footer.github-fork": {
-		"defaultMessage": "Fork me on Github"
-	},
-	"help": {
-		"defaultMessage": "Help"
-	},
-	"host.auth-request": {
-		"defaultMessage": "Auth Request"
-	},
-	"host.auth-request-upstream": {
-		"defaultMessage": "Auth Request Upstream"
-	},
-	"host.flags.block-exploits": {
-		"defaultMessage": "Block Common Exploits"
-	},
-	"host.flags.cache-assets": {
-		"defaultMessage": "Cache Assets"
-	},
-	"host.flags.disable-crowdsec-appsec": {
-		"defaultMessage": "Disable Crowdsec Appsec"
-	},
-	"host.flags.disable-request-buffering": {
-		"defaultMessage": "Disable Request Buffering"
-	},
-	"host.flags.disable-response-buffering": {
-		"defaultMessage": "Disable Response Buffering"
-	},
-	"host.flags.fancyindex": {
-		"defaultMessage": "Enable fancyindex"
-	},
-	"host.flags.hsts-enabled": {
-		"defaultMessage": "HSTS Enabled (2 Years)"
-	},
-	"host.flags.hsts-subdomains": {
-		"defaultMessage": "HSTS Subdomains+Preload"
-	},
-	"host.flags.preserve-path": {
-		"defaultMessage": "Preserve Path"
-	},
-	"host.flags.protocols": {
-		"defaultMessage": "Protocols"
-	},
-	"host.flags.send-noindex": {
-		"defaultMessage": "Send noindex header and block some user agents"
-	},
-	"host.flags.upstream-compression": {
-		"defaultMessage": "Enable compression by upstream"
-	},
-	"host.flags.websockets-upgrade": {
-		"defaultMessage": "Websockets Support"
-	},
-	"host.forward-port": {
-		"defaultMessage": "Forward Port"
-	},
-	"host.forward-scheme": {
-		"defaultMessage": "Scheme"
-	},
-	"hosts": {
-		"defaultMessage": "Hosts"
-	},
-	"http-only": {
-		"defaultMessage": "HTTP Only"
-	},
-	"lets-encrypt": {
-		"defaultMessage": "Certbot"
-	},
-	"lets-encrypt-via-dns": {
-		"defaultMessage": "Certbot via DNS"
-	},
-	"lets-encrypt-via-http": {
-		"defaultMessage": "Certbot via HTTP"
-	},
-	"loading": {
-		"defaultMessage": "Loading…"
-	},
-	"location.advanced-config": {
-		"defaultMessage": "Has custom Nginx configuration"
-	},
-	"location.filter": {
-		"defaultMessage": "Filter by path or destination"
-	},
-	"login.title": {
-		"defaultMessage": "Login to your account"
-	},
-	"login.totp-code": {
-		"defaultMessage": "Verification Code"
-	},
-	"login.totp-code-placeholder": {
-		"defaultMessage": "Enter code"
-	},
-	"login.totp-description": {
-		"defaultMessage": "Enter the code from your authenticator app"
-	},
-	"login.totp-title": {
-		"defaultMessage": "MFA"
-	},
-	"login.totp-verify": {
-		"defaultMessage": "Verify"
-	},
-	"mfa.backup-codes-remaining": {
-		"defaultMessage": "Backup codes remaining: {count}"
-	},
-	"mfa.backup-warning": {
-		"defaultMessage": "Save these backup codes in a secure place. Each code can only be used once."
-	},
-	"mfa.regenerate": {
-		"defaultMessage": "Regenerate"
-	},
-	"mfa.regenerate-backup": {
-		"defaultMessage": "Regenerate Backup Codes"
-	},
-	"mfa.regenerate-instructions": {
-		"defaultMessage": "Enter a verification code to generate new backup codes. Your old codes will be invalidated."
-	},
-	"mfa.title": {
-		"defaultMessage": "MFA"
-	},
-	"mtls-certificate": {
-		"defaultMessage": "mTLS Certificate"
-	},
-	"nginx-config.label": {
-		"defaultMessage": "Custom Nginx Configuration"
-	},
-	"nginx-config.placeholder": {
-		"defaultMessage": "# Enter your custom Nginx configuration here at your own risk!"
-	},
-	"no-permission-error": {
-		"defaultMessage": "You do not have access to view this."
-	},
-	"no-tls": {
-		"defaultMessage": "No TLS"
-	},
-	"notfound.action": {
-		"defaultMessage": "Take me home"
-	},
-	"notfound.content": {
-		"defaultMessage": "We are sorry but the page you are looking for was not found"
-	},
-	"notfound.title": {
-		"defaultMessage": "Oops… You just found an error page"
-	},
-	"notification.error": {
-		"defaultMessage": "Error"
-	},
-	"notification.object-deleted": {
-		"defaultMessage": "{object} has been deleted"
-	},
-	"notification.object-disabled": {
-		"defaultMessage": "{object} has been disabled"
-	},
-	"notification.object-enabled": {
-		"defaultMessage": "{object} has been enabled"
-	},
-	"notification.object-renewed": {
-		"defaultMessage": "{object} has been renewed"
-	},
-	"notification.object-saved": {
-		"defaultMessage": "{object} has been saved"
-	},
-	"notification.success": {
-		"defaultMessage": "Success"
-	},
-	"object.actions-title": {
-		"defaultMessage": "{object} #{id}"
-	},
-	"object.add": {
-		"defaultMessage": "Add {object}"
-	},
-	"object.delete": {
-		"defaultMessage": "Delete {object}"
-	},
-	"object.delete.content": {
-		"defaultMessage": "Are you sure you want to delete this {object}?"
-	},
-	"object.edit": {
-		"defaultMessage": "Edit {object}"
-	},
-	"object.empty": {
-		"defaultMessage": "There are no {objects}"
-	},
-	"object.event.created": {
-		"defaultMessage": "Created {object}"
-	},
-	"object.event.deleted": {
-		"defaultMessage": "Deleted {object}"
-	},
-	"object.event.disabled": {
-		"defaultMessage": "Disabled {object}"
-	},
-	"object.event.enabled": {
-		"defaultMessage": "Enabled {object}"
-	},
-	"object.event.renewed": {
-		"defaultMessage": "Renewed {object}"
-	},
-	"object.event.updated": {
-		"defaultMessage": "Updated {object}"
-	},
-	"offline": {
-		"defaultMessage": "Offline"
-	},
-	"online": {
-		"defaultMessage": "Online"
-	},
-	"options": {
-		"defaultMessage": "Options"
-	},
-	"or": {
-		"defaultMessage": "or"
-	},
-	"password": {
-		"defaultMessage": "Password"
-	},
-	"password.generate": {
-		"defaultMessage": "Generate random password"
-	},
-	"password.hide": {
-		"defaultMessage": "Hide Password"
-	},
-	"password.show": {
-		"defaultMessage": "Show Password"
-	},
-	"permissions.hidden": {
-		"defaultMessage": "Hidden"
-	},
-	"permissions.manage": {
-		"defaultMessage": "Manage"
-	},
-	"permissions.view": {
-		"defaultMessage": "View Only"
-	},
-	"permissions.visibility.all": {
-		"defaultMessage": "All Items"
-	},
-	"permissions.visibility.title": {
-		"defaultMessage": "Item Visibility"
-	},
-	"permissions.visibility.user": {
-		"defaultMessage": "Created Items Only"
-	},
-	"proxy-host": {
-		"defaultMessage": "Proxy Host"
-	},
-	"proxy-host.access-lists": {
-		"defaultMessage": "Access Lists"
-	},
-	"proxy-host.directory": {
-		"defaultMessage": "Group"
-	},
-	"proxy-host.forward-host": {
-		"defaultMessage": "Forward Hostname / IP"
-	},
-	"proxy-host.forward-host-path": {
-		"defaultMessage": "Forward Hostname / IP / Path"
-	},
-	"proxy-host.global-access-lists": {
-		"defaultMessage": "Global Access Lists"
-	},
-	"proxy-host.location-no-trailing-slash-warning": {
-		"defaultMessage": "A location without a trailing slash is matched as a byte prefix, not a path segment, which can lead to over-matching and/or path traversal. Add a trailing slash unless you intend prefix matching."
-	},
-	"proxy-host.no-directory": {
-		"defaultMessage": "No group"
-	},
-	"proxy-hosts": {
-		"defaultMessage": "Proxy Hosts"
-	},
-	"proxy-hosts.count": {
-		"defaultMessage": "{count} {count, plural, one {Proxy Host} other {Proxy Hosts}}"
-	},
-	"public": {
-		"defaultMessage": "Public"
-	},
-	"redirection-host": {
-		"defaultMessage": "Redirection Host"
-	},
-	"redirection-host.directory": {
-		"defaultMessage": "Group"
-	},
-	"redirection-host.forward-domain": {
-		"defaultMessage": "Forward Domain"
-	},
-	"redirection-host.forward-http-code": {
-		"defaultMessage": "HTTP Code"
-	},
-	"redirection-host.no-directory": {
-		"defaultMessage": "No group"
-	},
-	"redirection-hosts": {
-		"defaultMessage": "Redirection Hosts"
-	},
-	"redirection-hosts.count": {
-		"defaultMessage": "{count} {count, plural, one {Redirection Host} other {Redirection Hosts}}"
-	},
-	"redirection-hosts.http-code.300": {
-		"defaultMessage": "300 Multiple Choices"
-	},
-	"redirection-hosts.http-code.301": {
-		"defaultMessage": "301 Moved permanently"
-	},
-	"redirection-hosts.http-code.302": {
-		"defaultMessage": "302 Moved temporarily"
-	},
-	"redirection-hosts.http-code.303": {
-		"defaultMessage": "303 See other"
-	},
-	"redirection-hosts.http-code.307": {
-		"defaultMessage": "307 Temporary redirect"
-	},
-	"redirection-hosts.http-code.308": {
-		"defaultMessage": "308 Permanent redirect"
-	},
-	"role.admin": {
-		"defaultMessage": "Administrator"
-	},
-	"role.standard-user": {
-		"defaultMessage": "Standard User"
-	},
-	"save": {
-		"defaultMessage": "Save"
-	},
-	"setting": {
-		"defaultMessage": "Setting"
-	},
-	"settings": {
-		"defaultMessage": "Settings"
-	},
-	"settings.default-site": {
-		"defaultMessage": "Default Site"
-	},
-	"settings.default-site.404": {
-		"defaultMessage": "404 Page"
-	},
-	"settings.default-site.444": {
-		"defaultMessage": "No Response (444)"
-	},
-	"settings.default-site.congratulations": {
-		"defaultMessage": "Congratulations Page"
-	},
-	"settings.default-site.description": {
-		"defaultMessage": "What to show when Nginx is hit with an unknown Host"
-	},
-	"settings.default-site.html": {
-		"defaultMessage": "Custom HTML"
-	},
-	"settings.default-site.html.placeholder": {
-		"defaultMessage": "<!-- Enter your custom HTML content here -->"
-	},
-	"settings.default-site.redirect": {
-		"defaultMessage": "Redirect"
-	},
-	"settings.default-site.status": {
-		"defaultMessage": "HTTP Status Code (leave empty for 200)"
-	},
-	"setup.preamble": {
-		"defaultMessage": "Get started by creating your admin account."
-	},
-	"setup.title": {
-		"defaultMessage": "Welcome!"
-	},
-	"sign-in": {
-		"defaultMessage": "Sign in"
-	},
-	"sign-in-with-oidc": {
-		"defaultMessage": "Sign in with OIDC"
-	},
-	"ssl-certificate": {
-		"defaultMessage": "TLS Certificate"
-	},
-	"stream": {
-		"defaultMessage": "Stream"
-	},
-	"stream.description": {
-		"defaultMessage": "Description"
-	},
-	"stream.description.placeholder": {
-		"defaultMessage": "Optional description to identify this stream"
-	},
-	"stream.directory": {
-		"defaultMessage": "Group"
-	},
-	"stream.forward-host": {
-		"defaultMessage": "Forward Host"
-	},
-	"stream.forward-host.placeholder": {
-		"defaultMessage": "example.com or 10.0.0.1 or 2001:db8:3333:4444:5555:6666:7777:8888"
-	},
-	"stream.incoming-port": {
-		"defaultMessage": "Incoming Port"
-	},
-	"stream.no-directory": {
-		"defaultMessage": "No group"
-	},
-	"streams": {
-		"defaultMessage": "Streams"
-	},
-	"streams.count": {
-		"defaultMessage": "{count} {count, plural, one {Stream} other {Streams}}"
-	},
-	"streams.pp": {
-		"defaultMessage": "Proxy Protocol"
-	},
-	"streams.pp.off": {
-		"defaultMessage": "Off"
-	},
-	"streams.pp.v1": {
-		"defaultMessage": "Proxy Protocol v1"
-	},
-	"streams.pp.v2": {
-		"defaultMessage": "Proxy Protocol v2"
-	},
-	"streams.tcp": {
-		"defaultMessage": "TCP"
-	},
-	"streams.tls": {
-		"defaultMessage": "TLS to upstream"
-	},
-	"streams.udp": {
-		"defaultMessage": "UDP"
-	},
-	"test": {
-		"defaultMessage": "Test"
-	},
-	"totp.disable": {
-		"defaultMessage": "Disable TOTP"
-	},
-	"totp.disable-confirm": {
-		"defaultMessage": "Disable TOTP"
-	},
-	"totp.disable-warning": {
-		"defaultMessage": "Disabling TOTP will make your account less secure."
-	},
-	"totp.disabled": {
-		"defaultMessage": "Disabled"
-	},
-	"totp.done": {
-		"defaultMessage": "I have saved my backup codes"
-	},
-	"totp.enable": {
-		"defaultMessage": "Enable TOTP"
-	},
-	"totp.enabled": {
-		"defaultMessage": "Enabled"
-	},
-	"totp.enter-code": {
-		"defaultMessage": "Enter verification code"
-	},
-	"totp.enter-code-disable": {
-		"defaultMessage": "Enter verification code to disable"
-	},
-	"totp.secret-key": {
-		"defaultMessage": "Secret Key"
-	},
-	"totp.setup-instructions": {
-		"defaultMessage": "Scan this QR code with your authenticator app, or enter the secret manually."
-	},
-	"totp.status": {
-		"defaultMessage": "Status"
-	},
-	"totp.verify-enable": {
-		"defaultMessage": "Verify and Enable"
-	},
-	"update-available": {
-		"defaultMessage": "Update Available: {latestVersion}"
-	},
-	"user": {
-		"defaultMessage": "User"
-	},
-	"user.change-password": {
-		"defaultMessage": "Change Password"
-	},
-	"user.confirm-password": {
-		"defaultMessage": "Confirm Password"
-	},
-	"user.current-password": {
-		"defaultMessage": "Current Password"
-	},
-	"user.edit-profile": {
-		"defaultMessage": "Edit Profile"
-	},
-	"user.full-name": {
-		"defaultMessage": "Full Name"
-	},
-	"user.login-as": {
-		"defaultMessage": "Sign in as {name}"
-	},
-	"user.logout": {
-		"defaultMessage": "Logout"
-	},
-	"user.logout-everywhere": {
-		"defaultMessage": "Logout everywhere"
-	},
-	"user.mfa": {
-		"defaultMessage": "MFA"
-	},
-	"user.new-password": {
-		"defaultMessage": "New Password"
-	},
-	"user.nickname": {
-		"defaultMessage": "Nickname"
-	},
-	"user.reset-mfa": {
-		"defaultMessage": "Reset MFA"
-	},
-	"user.reset-mfa.content": {
-		"defaultMessage": "This disables MFA for this user without their recovery code. They can set it up again afterwards. Continue?"
-	},
-	"user.revoke-sessions": {
-		"defaultMessage": "Revoke sessions"
-	},
-	"user.revoke-sessions.content": {
-		"defaultMessage": "This logs the user out of all their sessions on every device. Continue?"
-	},
-	"user.set-password": {
-		"defaultMessage": "Set Password"
-	},
-	"user.set-permissions": {
-		"defaultMessage": "Set Permissions for {name}"
-	},
-	"user.switch-dark": {
-		"defaultMessage": "Switch to Dark mode"
-	},
-	"user.switch-light": {
-		"defaultMessage": "Switch to Light mode"
-	},
-	"username": {
-		"defaultMessage": "Username"
-	},
-	"users": {
-		"defaultMessage": "Users"
-	}
+	"access-list": "Access List",
+	"access-list.access-count": "{count} {count, plural, one {Rule} other {Rules}}",
+	"access-list.auth-count": "{count} {count, plural, one {User} other {Users}}",
+	"access-list.custom": "Custom",
+	"access-list.custom.subtitle": "Use a custom access list type",
+	"access-list.global": "Global",
+	"access-list.global.subtitle": "Use the same as the Global Access List",
+	"access-list.help-rules-last": "When at least 1 rule exists, this deny all rule will be added last",
+	"access-list.help.rules-last": "This final rule will only be added if there is at least one other rule",
+	"access-list.help.rules-order": "Note that the allow and deny directives will be applied in the order they are defined.",
+	"access-list.pass-auth": "Pass Auth to Upstream",
+	"access-list.public": "Publicly Accessible",
+	"access-list.public.subtitle": "No basic auth required",
+	"access-list.rule-source.placeholder": "192.168.1.100 or 192.168.1.0/24 or 2001:0db8::/32",
+	"access-list.satisfy-any": "Satisfy Any",
+	"access-list.subtitle": "{users} {users, plural, one {User} other {Users}}, {rules} {rules, plural, one {Rule} other {Rules}} - Created: {date}",
+	"access-lists": "Access Lists",
+	"action.add": "Add",
+	"action.add-location": "Add Location",
+	"action.allow": "Allow",
+	"action.clear": "Clear",
+	"action.clone": "Clone",
+	"action.close": "Close",
+	"action.delete": "Delete",
+	"action.deny": "Deny",
+	"action.disable": "Disable",
+	"action.download": "Download",
+	"action.edit": "Edit",
+	"action.enable": "Enable",
+	"action.permissions": "Permissions",
+	"action.renew": "Renew",
+	"action.view-details": "View Details",
+	"auditlogs": "Audit Logs",
+	"auto": "Auto",
+	"avatar.remove": "Remove avatar",
+	"avatar.upload": "Upload avatar",
+	"cancel": "Cancel",
+	"certificate": "Certificate",
+	"certificate.custom-certificate": "Certificate",
+	"certificate.custom-certificate-key": "Certificate Key",
+	"certificate.custom-intermediate": "Intermediate Certificate",
+	"certificate.in-use": "In Use",
+	"certificate.none.subtitle": "No certificate assigned",
+	"certificate.none.subtitle.for-http": "This host will not use HTTPS",
+	"certificate.none.title": "None",
+	"certificate.not-in-use": "Not Used",
+	"certificate.renew": "Renew Certificate",
+	"certificates": "Certificates",
+	"certificates.custom": "Custom Certificate",
+	"certificates.custom.warning": "Key files protected with a passphrase are not supported.",
+	"certificates.dns.credentials": "Credentials File Content",
+	"certificates.dns.credentials-note": "This plugin requires a configuration file containing an API token or other credentials for your provider",
+	"certificates.dns.credentials-warning": "This data will be stored as plaintext in the database and in a file!",
+	"certificates.dns.propagation-seconds": "Propagation Seconds",
+	"certificates.dns.propagation-seconds-note": "Leave empty to use the plugins default value. Number of seconds to wait for DNS propagation.",
+	"certificates.dns.provider": "DNS Provider",
+	"certificates.dns.provider.placeholder": "Select a Provider...",
+	"certificates.dns.warning": "This section requires some knowledge about Certbot and its DNS plugins. Please consult the respective plugins documentation.",
+	"certificates.http.reachability-404": "There is a server found at this domain but it does not seem to be NPMplus. Please make sure your domain points to the IP where your NPMplus instance is running.",
+	"certificates.http.reachability-failed-to-check": "Failed to check the reachability due to a communication error with site24x7.com.",
+	"certificates.http.reachability-not-resolved": "There is no server available at this domain. Please make sure your domain exists and points to the IP where your NPMplus instance is running and if necessary port 80 is forwarded in your router.",
+	"certificates.http.reachability-ok": "Your server is reachable and creating certificates should be possible.",
+	"certificates.http.reachability-other": "There is a server found at this domain but it returned an unexpected status code {code}. Is it the NPMplus server? Please make sure your domain points to the IP where your NPMplus instance is running.",
+	"certificates.http.reachability-wrong-data": "There is a server found at this domain but it returned an unexpected data. Is it the NPMplus server? Please make sure your domain points to the IP where your NPMplus instance is running.",
+	"certificates.http.test-results": "Test Results",
+	"certificates.http.warning": "These domains must be already configured to point to this installation.",
+	"certificates.key-type": "Key Type",
+	"certificates.key-type-description": "RSA is widely compatible, ECDSA is faster and more secure but may not be supported by older systems",
+	"certificates.key-type-ecdsa": "ECDSA 256",
+	"certificates.key-type-rsa": "RSA 2048",
+	"certificates.request.subtitle": "with Certbot",
+	"certificates.request.title": "Request a new Certificate",
+	"column.access": "Access",
+	"column.authorization": "Authorization",
+	"column.authorizations": "Authorizations",
+	"column.custom-locations": "Custom Locations",
+	"column.description": "Description",
+	"column.destination": "Destination",
+	"column.details": "Details",
+	"column.email": "Email",
+	"column.event": "Event",
+	"column.expires": "Expires",
+	"column.http-code": "HTTP Code",
+	"column.incoming-port": "Incoming Port",
+	"column.name": "Name",
+	"column.protocol": "Protocol",
+	"column.provider": "Provider",
+	"column.roles": "Roles",
+	"column.rules": "Rules",
+	"column.satisfy": "Satisfy",
+	"column.satisfy-all": "All",
+	"column.satisfy-any": "Any",
+	"column.scheme": "Scheme",
+	"column.source": "Source",
+	"column.ssl": "TLS",
+	"column.status": "Status",
+	"created-on": "Created: {date}",
+	"dashboard": "Dashboard",
+	"dead-host": "404 Host",
+	"dead-host.directory": "Group",
+	"dead-host.no-directory": "No group",
+	"dead-hosts": "404 Hosts",
+	"dead-hosts.count": "{count} {count, plural, one {404 Host} other {404 Hosts}}",
+	"disabled": "Disabled",
+	"domain-names": "Domain Names",
+	"domain-names.max": "{count} domain names maximum",
+	"domain-names.placeholder": "Start typing to add domain...",
+	"domain-names.wildcards-not-permitted": "Wildcards not permitted for this type",
+	"domain-names.wildcards-not-supported": "Wildcards not supported for this CA",
+	"domains.advanced": "Advanced",
+	"domains.force-ssl": "Force HTTPS",
+	"domains.hsts-enabled": "HSTS Enabled",
+	"domains.hsts-subdomains": "HSTS Sub-domains",
+	"domains.http2-support": "HTTP/2 Support",
+	"domains.http3-support": "HTTP/3 Support",
+	"domains.mtls-verify-client-optional": "Make mTLS Optional",
+	"domains.reuse-key": "Reuse Key (not recommended)",
+	"domains.trust-forwarded-proto": "Trust Upstream Forwarded Proto Headers",
+	"domains.use-dns": "Use DNS Challenge",
+	"email-address": "Email address",
+	"empty-search": "No results found",
+	"empty-subtitle": "Why don't you create one?",
+	"enabled": "Enabled",
+	"error.access.at-least-one": "Either one Authorization or one Access Rule is required",
+	"error.access.duplicate-usernames": "Authorization Usernames must be unique",
+	"error.invalid-auth": "Invalid email or password",
+	"error.invalid-domain": "Invalid domain: {domain}",
+	"error.invalid-email": "Invalid email address",
+	"error.invalid-upstream-url": "Must be a valid URL with scheme, host and port (no path)",
+	"error.max-character-length": "Maximum length is {max} character{max, plural, one {} other {s}}",
+	"error.max-domains": "Too many domains, max is {max}",
+	"error.maximum": "Maximum is {max}",
+	"error.min-character-length": "Minimum length is {min} character{min, plural, one {} other {s}}",
+	"error.minimum": "Minimum is {min}",
+	"error.passwords-must-match": "Passwords must match",
+	"error.required": "This is required",
+	"expires.on": "Expires: {date}",
+	"footer.github": "Repo on Github",
+	"footer.github-fork": "Fork me on Github",
+	"help": "Help",
+	"host.auth-request": "Auth Request",
+	"host.auth-request-upstream": "Auth Request Upstream",
+	"host.flags.block-exploits": "Block Common Exploits",
+	"host.flags.cache-assets": "Cache Assets",
+	"host.flags.disable-crowdsec-appsec": "Disable Crowdsec Appsec",
+	"host.flags.disable-request-buffering": "Disable Request Buffering",
+	"host.flags.disable-response-buffering": "Disable Response Buffering",
+	"host.flags.fancyindex": "Enable fancyindex",
+	"host.flags.hsts-enabled": "HSTS Enabled (2 Years)",
+	"host.flags.hsts-subdomains": "HSTS Subdomains+Preload",
+	"host.flags.preserve-path": "Preserve Path",
+	"host.flags.protocols": "Protocols",
+	"host.flags.send-noindex": "Send noindex header and block some user agents",
+	"host.flags.upstream-compression": "Enable compression by upstream",
+	"host.flags.websockets-upgrade": "Websockets Support",
+	"host.forward-port": "Forward Port",
+	"host.forward-scheme": "Scheme",
+	"hosts": "Hosts",
+	"http-only": "HTTP Only",
+	"lets-encrypt": "Certbot",
+	"lets-encrypt-via-dns": "Certbot via DNS",
+	"lets-encrypt-via-http": "Certbot via HTTP",
+	"loading": "Loading…",
+	"location.advanced-config": "Has custom Nginx configuration",
+	"location.filter": "Filter by path or destination",
+	"login.title": "Login to your account",
+	"login.totp-code": "Verification Code",
+	"login.totp-code-placeholder": "Enter code",
+	"login.totp-description": "Enter the code from your authenticator app",
+	"login.totp-title": "MFA",
+	"login.totp-verify": "Verify",
+	"mfa.backup-codes-remaining": "Backup codes remaining: {count}",
+	"mfa.backup-warning": "Save these backup codes in a secure place. Each code can only be used once.",
+	"mfa.regenerate": "Regenerate",
+	"mfa.regenerate-backup": "Regenerate Backup Codes",
+	"mfa.regenerate-instructions": "Enter a verification code to generate new backup codes. Your old codes will be invalidated.",
+	"mfa.title": "MFA",
+	"mtls-certificate": "mTLS Certificate",
+	"nginx-config.label": "Custom Nginx Configuration",
+	"nginx-config.placeholder": "# Enter your custom Nginx configuration here at your own risk!",
+	"no-permission-error": "You do not have access to view this.",
+	"no-tls": "No TLS",
+	"notfound.action": "Take me home",
+	"notfound.content": "We are sorry but the page you are looking for was not found",
+	"notfound.title": "Oops… You just found an error page",
+	"notification.error": "Error",
+	"notification.object-deleted": "{object} has been deleted",
+	"notification.object-disabled": "{object} has been disabled",
+	"notification.object-enabled": "{object} has been enabled",
+	"notification.object-renewed": "{object} has been renewed",
+	"notification.object-saved": "{object} has been saved",
+	"notification.success": "Success",
+	"object.actions-title": "{object} #{id}",
+	"object.add": "Add {object}",
+	"object.delete": "Delete {object}",
+	"object.delete.content": "Are you sure you want to delete this {object}?",
+	"object.edit": "Edit {object}",
+	"object.empty": "There are no {objects}",
+	"object.event.created": "Created {object}",
+	"object.event.deleted": "Deleted {object}",
+	"object.event.disabled": "Disabled {object}",
+	"object.event.enabled": "Enabled {object}",
+	"object.event.renewed": "Renewed {object}",
+	"object.event.updated": "Updated {object}",
+	"offline": "Offline",
+	"online": "Online",
+	"options": "Options",
+	"or": "or",
+	"password": "Password",
+	"password.generate": "Generate random password",
+	"password.hide": "Hide Password",
+	"password.show": "Show Password",
+	"permissions.hidden": "Hidden",
+	"permissions.manage": "Manage",
+	"permissions.view": "View Only",
+	"permissions.visibility.all": "All Items",
+	"permissions.visibility.title": "Item Visibility",
+	"permissions.visibility.user": "Created Items Only",
+	"proxy-host": "Proxy Host",
+	"proxy-host.access-lists": "Access Lists",
+	"proxy-host.directory": "Group",
+	"proxy-host.forward-host": "Forward Hostname / IP",
+	"proxy-host.forward-host-path": "Forward Hostname / IP / Path",
+	"proxy-host.global-access-lists": "Global Access Lists",
+	"proxy-host.location-no-trailing-slash-warning": "A location without a trailing slash is matched as a byte prefix, not a path segment, which can lead to over-matching and/or path traversal. Add a trailing slash unless you intend prefix matching.",
+	"proxy-host.no-directory": "No group",
+	"proxy-hosts": "Proxy Hosts",
+	"proxy-hosts.count": "{count} {count, plural, one {Proxy Host} other {Proxy Hosts}}",
+	"public": "Public",
+	"redirection-host": "Redirection Host",
+	"redirection-host.directory": "Group",
+	"redirection-host.forward-domain": "Forward Domain",
+	"redirection-host.forward-http-code": "HTTP Code",
+	"redirection-host.no-directory": "No group",
+	"redirection-hosts": "Redirection Hosts",
+	"redirection-hosts.count": "{count} {count, plural, one {Redirection Host} other {Redirection Hosts}}",
+	"redirection-hosts.http-code.300": "300 Multiple Choices",
+	"redirection-hosts.http-code.301": "301 Moved permanently",
+	"redirection-hosts.http-code.302": "302 Moved temporarily",
+	"redirection-hosts.http-code.303": "303 See other",
+	"redirection-hosts.http-code.307": "307 Temporary redirect",
+	"redirection-hosts.http-code.308": "308 Permanent redirect",
+	"role.admin": "Administrator",
+	"role.standard-user": "Standard User",
+	"save": "Save",
+	"setting": "Setting",
+	"settings": "Settings",
+	"settings.default-site": "Default Site",
+	"settings.default-site.404": "404 Page",
+	"settings.default-site.444": "No Response (444)",
+	"settings.default-site.congratulations": "Congratulations Page",
+	"settings.default-site.description": "What to show when Nginx is hit with an unknown Host",
+	"settings.default-site.html": "Custom HTML",
+	"settings.default-site.html.placeholder": "<!-- Enter your custom HTML content here -->",
+	"settings.default-site.redirect": "Redirect",
+	"settings.default-site.status": "HTTP Status Code (leave empty for 200)",
+	"setup.preamble": "Get started by creating your admin account.",
+	"setup.title": "Welcome!",
+	"sign-in": "Sign in",
+	"sign-in-with-oidc": "Sign in with OIDC",
+	"ssl-certificate": "TLS Certificate",
+	"stream": "Stream",
+	"stream.description": "Description",
+	"stream.description.placeholder": "Optional description to identify this stream",
+	"stream.directory": "Group",
+	"stream.forward-host": "Forward Host",
+	"stream.forward-host.placeholder": "example.com or 10.0.0.1 or 2001:db8:3333:4444:5555:6666:7777:8888",
+	"stream.incoming-port": "Incoming Port",
+	"stream.no-directory": "No group",
+	"streams": "Streams",
+	"streams.count": "{count} {count, plural, one {Stream} other {Streams}}",
+	"streams.pp": "Proxy Protocol",
+	"streams.pp.off": "Off",
+	"streams.pp.v1": "Proxy Protocol v1",
+	"streams.pp.v2": "Proxy Protocol v2",
+	"streams.tcp": "TCP",
+	"streams.tls": "TLS to upstream",
+	"streams.udp": "UDP",
+	"test": "Test",
+	"totp.disable": "Disable TOTP",
+	"totp.disable-confirm": "Disable TOTP",
+	"totp.disable-warning": "Disabling TOTP will make your account less secure.",
+	"totp.disabled": "Disabled",
+	"totp.done": "I have saved my backup codes",
+	"totp.enable": "Enable TOTP",
+	"totp.enabled": "Enabled",
+	"totp.enter-code": "Enter verification code",
+	"totp.enter-code-disable": "Enter verification code to disable",
+	"totp.secret-key": "Secret Key",
+	"totp.setup-instructions": "Scan this QR code with your authenticator app, or enter the secret manually.",
+	"totp.status": "Status",
+	"totp.verify-enable": "Verify and Enable",
+	"update-available": "Update Available: {latestVersion}",
+	"user": "User",
+	"user.change-password": "Change Password",
+	"user.confirm-password": "Confirm Password",
+	"user.current-password": "Current Password",
+	"user.edit-profile": "Edit Profile",
+	"user.full-name": "Full Name",
+	"user.login-as": "Sign in as {name}",
+	"user.logout": "Logout",
+	"user.logout-everywhere": "Logout everywhere",
+	"user.mfa": "MFA",
+	"user.new-password": "New Password",
+	"user.nickname": "Nickname",
+	"user.reset-mfa": "Reset MFA",
+	"user.reset-mfa.content": "This disables MFA for this user without their recovery code. They can set it up again afterwards. Continue?",
+	"user.revoke-sessions": "Revoke sessions",
+	"user.revoke-sessions.content": "This logs the user out of all their sessions on every device. Continue?",
+	"user.set-password": "Set Password",
+	"user.set-permissions": "Set Permissions for {name}",
+	"user.switch-dark": "Switch to Dark mode",
+	"user.switch-light": "Switch to Light mode",
+	"username": "Username",
+	"users": "Users"
 }
