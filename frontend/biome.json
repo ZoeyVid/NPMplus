@@ -23,14 +23,11 @@
 			"complexity": {
 				"noExcessiveCognitiveComplexity": "off",
 				"noExcessiveLinesPerFunction": "off",
-				"noForEach": "off",
 				"noImportantStyles": "off",
 				"noVoid": "off",
 				"useSimplifiedLogicExpression": "off"
 			},
 			"correctness": {
-				"noNodejsModules": "off",
-				"noProcessGlobal": "off",
 				"noSolidDestructuredProps": "off",
 				"noUndeclaredDependencies": "off",
 				"noUnresolvedImports": "off",
@@ -74,8 +71,7 @@
 				"useFilenamingConvention": "off",
 				"useGlobalThis": "off",
 				"useNamingConvention": "off",
-				"useNumericSeparators": "off",
-				"useObjectSpread": "off"
+				"useNumericSeparators": "off"
 			},
 			"suspicious": {
 				"noArrayIndexKey": "off",
@@ -85,8 +81,7 @@
 				"noImportCycles": "off",
 				"noLeakedRender": "off",
 				"noReactSpecificProps": "off",
-				"noUnnecessaryConditions": "off",
-				"useStrictMode": "off"
+				"noUnnecessaryConditions": "off"
 			}
 		}
 	},

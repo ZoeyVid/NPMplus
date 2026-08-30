@@ -24,8 +24,9 @@
 
 		"strict": true,
 		"paths": {
-			"src/*": ["./src/*"]
+			"src/*": ["./src/*"],
+			"translations/*": ["./translations/*"]
 		}
 	},
-	"include": ["src"]
+	"include": ["src", "translations"]
 }

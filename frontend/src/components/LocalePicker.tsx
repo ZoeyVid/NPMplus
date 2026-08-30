@@ -2,7 +2,7 @@ import cn from "clsx";
 import { Flag } from "src/components";
 import { useLocaleState } from "src/context";
 import { useTheme } from "src/hooks";
-import { changeLocale, getFlagCodeForLocale, localeOptions, T } from "src/locale";
+import { changeLocale, getFlagCodeForLocale, localeList, localeOptions } from "src/locale";
 import styles from "./LocalePicker.module.css";
 
 interface Props {
@@ -32,16 +32,16 @@ function LocalePicker({ menuAlign = "start" }: Props) {
 				})}
 				style={{ maxHeight: "50vh" }}
 			>
-				{localeOptions.map((item: any) => (
+				{localeOptions.map((item) => (
 					<button
 						type="button"
 						className="dropdown-item"
-						key={`locale-${item[0]}`}
+						key={item}
 						onClick={() => {
-							changeTo(item[0]);
+							changeTo(item);
 						}}
 					>
-						<Flag countryCode={getFlagCodeForLocale(item[0])} /> <T id={`locale-${item[1]}`} />
+						<Flag countryCode={getFlagCodeForLocale(item)} /> {localeList[item].name}
 					</button>
 				))}
 			</div>
