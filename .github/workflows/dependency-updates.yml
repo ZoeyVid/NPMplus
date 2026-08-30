@@ -315,3 +315,22 @@ jobs:
           branch: update-nginxbeautifier-version
           title: update nginxbeautifier version
           body: ${{ steps.update.outputs.compare }}
+
+  owasp-headers-remove-update:
+    runs-on: ubuntu-slim
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - name: update owasp headers-remove list
+        id: update
+        run: |
+          curl -sSfL https://raw.githubusercontent.com/OWASP/www-project-secure-headers/master/ci/headers_remove.json -o /tmp/headers_remove.json
+          jq -r '.headers[] | select(. != "Server") | "more_clear_headers \(tojson);"' /tmp/headers_remove.json > rootfs/usr/local/nginx/conf/headers-remove.conf
+          echo "version=$(jq -r .last_update_utc /tmp/headers_remove.json)" >> $GITHUB_OUTPUT
+      - uses: peter-evans/create-pull-request@5f6978faf089d4d20b00c7766989d076bb2fc7f1 # v8.1.1
+        with:
+          signoff: true
+          delete-branch: true
+          commit-message: update owasp headers-remove list to ${{ steps.update.outputs.version }}
+          branch: update-owasp-headers-remove-list
+          title: update owasp headers-remove list to ${{ steps.update.outputs.version }}
+          body: https://github.com/OWASP/www-project-secure-headers/commits/master/ci/headers_remove.json
