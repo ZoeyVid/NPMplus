@@ -761,6 +761,7 @@ const internalCertificate = {
 				: internalCertificate.renewCertbot;
 
 			await renewMethod(certificate);
+			await internalNginx.reload();
 			const certInfo = await internalCertificate.getCertificateInfoFromFile(
 				`${internalCertificate.getLiveCertPath(certificate.id)}/fullchain.pem`,
 			);
