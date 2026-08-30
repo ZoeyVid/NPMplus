@@ -334,7 +334,7 @@ router
 	/**
 	 * GET /api/nginx/certificates/123/download
 	 *
-	 * Renew certificate
+	 * Download certificate
 	 */
 	.get(downloadLimiter, async (req, res, next) => {
 		try {
