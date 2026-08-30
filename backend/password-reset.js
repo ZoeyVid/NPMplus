@@ -42,16 +42,16 @@ try {
 	db = new DatabaseSync("/data/npmplus/database.sqlite");
 
 	const auth = db
-	.prepare(
-		"SELECT auth.id, auth.meta FROM auth JOIN user ON user.id = auth.user_id WHERE auth.type = 'password' AND auth.is_deleted = 0 AND user.is_deleted = 0 AND user.email = ?",
-	)
-	.get(EMAIL);
+		.prepare(
+			"SELECT auth.id, auth.meta FROM auth JOIN user ON user.id = auth.user_id WHERE auth.type = 'password' AND auth.is_deleted = 0 AND user.is_deleted = 0 AND user.email = ?",
+		)
+		.get(EMAIL);
 
 	if (auth) {
 		if (PASSWORD) {
 			db.prepare("UPDATE auth SET secret = ?, modified_on = datetime('now','localtime') WHERE id = ?").run(
 				bcrypt.hashSync(PASSWORD, 13),
-																												 auth.id,
+				auth.id,
 			);
 			console.log(`Password for user ${EMAIL} has been reset.`);
 		}
@@ -62,7 +62,7 @@ try {
 				delete meta[key];
 			db.prepare("UPDATE auth SET meta = ?, modified_on = datetime('now','localtime') WHERE id = ?").run(
 				JSON.stringify(meta),
-																											   auth.id,
+				auth.id,
 			);
 			console.log(`MFA for user ${EMAIL} has been disabled.`);
 		}
