@@ -1,71 +1,25 @@
 {
-	"locale-bg-BG": {
-		"defaultMessage": "Български"
-	},
-	"locale-cs-CZ": {
-		"defaultMessage": "Čeština"
-	},
-	"locale-de-DE": {
-		"defaultMessage": "Deutsch"
-	},
-	"locale-en-US": {
-		"defaultMessage": "English"
-	},
-	"locale-es-ES": {
-		"defaultMessage": "Español"
-	},
-	"locale-et-EE": {
-		"defaultMessage": "Eesti"
-	},
-	"locale-fr-FR": {
-		"defaultMessage": "Français"
-	},
-	"locale-ga-IE": {
-		"defaultMessage": "Gaeilge"
-	},
-	"locale-hu-HU": {
-		"defaultMessage": "Magyar"
-	},
-	"locale-id-ID": {
-		"defaultMessage": "Bahasa Indonesia"
-	},
-	"locale-it-IT": {
-		"defaultMessage": "Italiano"
-	},
-	"locale-ja-JP": {
-		"defaultMessage": "日本語"
-	},
-	"locale-ko-KR": {
-		"defaultMessage": "한국어"
-	},
-	"locale-nl-NL": {
-		"defaultMessage": "Nederlands"
-	},
-	"locale-no-NO": {
-		"defaultMessage": "Norsk"
-	},
-	"locale-pl-PL": {
-		"defaultMessage": "Polski"
-	},
-	"locale-pt-PT": {
-		"defaultMessage": "Português (Europeu)"
-	},
-	"locale-ru-RU": {
-		"defaultMessage": "Русский"
-	},
-	"locale-sk-SK": {
-		"defaultMessage": "Slovenčina"
-	},
-	"locale-tr-TR": {
-		"defaultMessage": "Türkçe"
-	},
-	"locale-uk-UA": {
-		"defaultMessage": "Українська"
-	},
-	"locale-vi-VN": {
-		"defaultMessage": "Tiếng Việt"
-	},
-	"locale-zh-CN": {
-		"defaultMessage": "中文"
-	}
+	"locale-bg-BG": "Български",
+	"locale-cs-CZ": "Čeština",
+	"locale-de-DE": "Deutsch",
+	"locale-en-US": "English",
+	"locale-es-ES": "Español",
+	"locale-et-EE": "Eesti",
+	"locale-fr-FR": "Français",
+	"locale-ga-IE": "Gaeilge",
+	"locale-hu-HU": "Magyar",
+	"locale-id-ID": "Bahasa Indonesia",
+	"locale-it-IT": "Italiano",
+	"locale-ja-JP": "日本語",
+	"locale-ko-KR": "한국어",
+	"locale-nl-NL": "Nederlands",
+	"locale-no-NO": "Norsk",
+	"locale-pl-PL": "Polski",
+	"locale-pt-PT": "Português (Europeu)",
+	"locale-ru-RU": "Русский",
+	"locale-sk-SK": "Slovenčina",
+	"locale-tr-TR": "Türkçe",
+	"locale-uk-UA": "Українська",
+	"locale-vi-VN": "Tiếng Việt",
+	"locale-zh-CN": "中文"
 }
