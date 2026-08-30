@@ -14,34 +14,28 @@ If you don't need the web GUI of NPMplus, you may also have a look at caddy: htt
 
 ## List of some changes
 
-- Supports HTTP/3 (QUIC), requires you to expose https with udp
-- Support for crowdsec
-- Support for acme profiles (letsencrypt shortlived is used by default)
-- Improved support for different acme servers (like ocsp/must-staple)
-- OIDC support
-- smaller image based on alpine
-- ML-KEM support (also hardened TLS settings enforced)
-- https for the NPMplus interface
-- Goaccess included, served under /goaccess of the web UI for logged in admins
-- easier punycode domain support
-- zstd and brotli compression
-- basic security headers always send
-- allow empty ports to support loadbalancing
-- proxy protocol support
-- improved nginx build (with aws-lc and custom patches) and nginx templates with keep-alive to upstreams
-- tls certificate compression (zlib-ng+brotli) and optional encrypted client hello (ech) support
-- mTLS ca cert upload support
-- file and php server support (and fancyindex)
-- option to edit custom certs
-- gravatars are cached locally and fetched by the backend (better privacy by not exposing you directly to gravatar)
-- qrcodes for totp are generated locally in your browser instead of using a third-party api (better privacy/security by not exposing you and the secret to the third-party api)
-- re-added some things that where removed with upstreams new frontend
-- use secure cookied instead of local storage to save the token combined with a Content-Security-Policy
-- Password reset (only sqlite) using `docker exec -it npmplus password-reset.js USER_EMAIL PASSWORD`
-- Swagger UI under /api/docs
+- HTTP/3 (QUIC), needs https exposed over udp
+- crowdsec (and appsec) support
+- hardened TLS by default:
+  - patched nginx build with aws-lc compiled form source
+  - enforced cipher/curve order, certificate compression (zlib-ng+brotli)
+  - optional encrypted client hello (ech)
+- shortlived letsencrypt certificates by default, plus proper support for other acme servers
+- mTLS with client certificates per host
+- more ways to serve a host: grpc, proxy protocol, loadbalancing over multiple upstreams, and serving files or php directly with fancyindex support
+- built-in auth_request support for the common auth providers, no advanced config needed
+- OIDC login for the web UI
+- multiple access lists per host and per location
+- security headers always sent, fingerprinting headers stripped, based on the OWASP secure headers project
+- hardened web UI itself: https, strict CSP, httpOnly cookie instead of local storage, rate limits and more
+- opt-in logging
+- zstd and brotli compression in addition to gzip
+- Goaccess log analytics (/goaccess) and a Swagger UI (/api/docs) for the api, both in the web UI
+- password/mfa reset (only sqlite): `docker exec -it npmplus password-reset.js USER_EMAIL [PASSWORD] [--disable-mfa]`
+- alpine based, much smaller image
+- punycode domain support
+- option to replace custom certs
 - many other things, see this README.md and the compose.yaml
-- Proxy Locations can have access lists different to their host
-- Proxy Hosts and Proxy Locations can use multiple access lists
 
 ## Compatibility (to Upstream)
 - Supported architectures: x86_64-v2/amd64v2 (check with `/lib/ld-linux-x86-64.so.2 --help`, plain x86-64 is not supported only v2 and up) and aarch64/arm64 (other archs (including 64-bit ones) and any 32-bit arch (like armhf/armv7 (dropped), armel/armv6) are not supported, because of the duration to compile).
@@ -134,7 +128,7 @@ location ~* [^/]\.php(?:$|/) {
 - Disable Crowdsec Appsec: this will disable crowdsec appsec only for one host/one location, this will only do something if appsec is configured
 - Disable Response Buffering: Most time you want keep buffering enabled, you may want to disable this if you for example want to stream videos and you have a fast and stable connection to the upstream server, this effects the connection from the upstream server to NPMplus
 - Disable Request Buffering: Most time you want keep buffering enabled, request buffering will always be enabled if crowdsec appsec is enabled, you may want to disable this if you for example want to upload huge files and have a fast and stable connection to the upstream server, this effects the connection from the NPMplus to the upstream server
-- Enable compression by upstream: this will allow the backend to compress files, I recommend you to keep this disabled, there may be cases where this is needed since otherwise the upstream missbehaves for some reason (like collabora in nextcloud all-in-one)
+- Enable compression by upstream: this will allow the backend to compress files, I recommend you to keep this disabled unless your backend provides precompressed assets, there may be cases where this is needed since otherwise the upstream missbehaves for some reason (like collabora in nextcloud all-in-one)
 - Enable fancyindex: this will enabled fancyindex, which shows a index of all files in the folder if there is no index file, only enable this if you know what you are doing and you need the index
 - Websockets: this button was removed, websockets are now always enabled
 - Reuse Key: this will make the new cert always keep its key unless you force renew it, I recommend you to keep this disabled (not to keep the key), a reason to keep the key would be TLSA/pubkey pinning
