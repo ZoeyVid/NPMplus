@@ -1,6 +1,9 @@
 {
-	"name": "",
-	"short_name": "",
+	"id": "/",
+	"name": "NPMplus",
+	"short_name": "NPMplus",
+	"start_url": "/",
+	"scope": "/",
 	"icons": [
 		{
 			"src": "/images/favicon/android-chrome-192x192.png",
@@ -13,7 +16,11 @@
 			"type": "image/png"
 		}
 	],
-	"theme_color": "#ffffff",
-	"background_color": "#ffffff",
+	"theme_color": "#f9fafb",
+	"background_color": "#f9fafb",
+	"color_scheme_dark": {
+		"theme_color": "#111827",
+		"background_color": "#111827"
+	},
 	"display": "standalone"
 }
