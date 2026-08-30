@@ -54,8 +54,8 @@ importers:
         specifier: 19.2.8
         version: 19.2.8(react@19.2.8)
       react-intl:
-        specifier: 10.1.24
-        version: 10.1.24(@types/react@19.2.18)(react@19.2.8)
+        specifier: 10.1.25
+        version: 10.1.25(@types/react@19.2.18)(react@19.2.8)
       react-router:
         specifier: 8.3.1
         version: 8.3.1(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
@@ -260,8 +260,8 @@ packages:
   '@formatjs/icu-skeleton-parser@2.1.11':
     resolution: {integrity: sha512-j8cUmOJzVgkHuS0QiQ6ga76UIoLOFSAMWhs7aZJztH3aAdCOAE6vpC8KVvFB4cU10ON0y2/5oOVmPJ43s2lTwA==}
 
-  '@formatjs/intl@4.1.19':
-    resolution: {integrity: sha512-bZMROATl+rzfL8wsDZ53i8XWHx5e6rVr8QlGT5GDvHImEUro4WE9pxUd2dobzmI3CtD+zkt/wkEdqcb+3CK8Fg==}
+  '@formatjs/intl@4.1.20':
+    resolution: {integrity: sha512-q3gaFvc1mXrl0fcSY2QKSS+WzJxpbIXs48O+QLA3UsRtIwVhazvxtLrLGKEse5Mq4U8hAYyTB6Y9buU2ZRFz/w==}
 
   '@internationalized/date@3.12.3':
     resolution: {integrity: sha512-fuLX+3ZKLsxI73y8b01EG/WjHb6gE6weCqlfawPO27kBWGMh9G1yH6Csv1uU7/cac9H2GHmOMt6CjmuQ1aia4Q==}
@@ -978,8 +978,8 @@ packages:
   react-fast-compare@2.0.4:
     resolution: {integrity: sha512-suNP+J1VU1MWFKcyt7RtjiSWUjvidmQSlqu+eHslq+342xCbGTYmC0mEhPCOHxlW0CywylOC1u2DFAT+bv4dBw==}
 
-  react-intl@10.1.24:
-    resolution: {integrity: sha512-8hiXRnnmOMEPvE5xb1T1Ce1AsmuSWX2voosCsmiyOEGEq83d1mbHy2M1DeoGKt4yF5oPPkzp+aUwSOtf+NYKPA==}
+  react-intl@10.1.25:
+    resolution: {integrity: sha512-otONc4Dqk0HNDdM1xVtjVm1pfeADRDZUnNMOiDZBYCYTz4FxYcid6Y2PrzeY3+FspW6ieObXtc3+VFUJYbDDGg==}
     peerDependencies:
       '@types/react': '>=18.0.0'
       react: '>=18.0.0'
@@ -1343,7 +1343,7 @@ snapshots:
 
   '@formatjs/icu-skeleton-parser@2.1.11': {}
 
-  '@formatjs/intl@4.1.19':
+  '@formatjs/intl@4.1.20':
     dependencies:
       '@formatjs/fast-memoize': 3.1.7
       '@formatjs/icu-messageformat-parser': 3.5.17
@@ -1898,10 +1898,10 @@ snapshots:
 
   react-fast-compare@2.0.4: {}
 
-  react-intl@10.1.24(@types/react@19.2.18)(react@19.2.8):
+  react-intl@10.1.25(@types/react@19.2.18)(react@19.2.8):
     dependencies:
       '@formatjs/icu-messageformat-parser': 3.5.17
-      '@formatjs/intl': 4.1.19
+      '@formatjs/intl': 4.1.20
       '@types/react': 19.2.18
       intl-messageformat: 11.2.14
       react: 19.2.8
