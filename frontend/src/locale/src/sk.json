@@ -1,770 +1,258 @@
 {
-	"access-list": {
-		"defaultMessage": "zoznam prístupov"
-	},
-	"access-list.access-count": {
-		"defaultMessage": "{count} {count, plural, one {pravidlo} few {pravidlá} other {pravidiel}}"
-	},
-	"access-list.auth-count": {
-		"defaultMessage": "{count} {count, plural, one {používateľ} few {používatelia} other {používateľov}}"
-	},
-	"access-list.help-rules-last": {
-		"defaultMessage": "Keď existuje aspoň jedno pravidlo, toto pravidlo „zamietnuť všetko“ bude pridané ako posledné"
-	},
-	"access-list.help.rules-order": {
-		"defaultMessage": "Upozornenie: pravidlá povoliť a zamietnuť budú uplatňované v poradí, v akom sú definované."
-	},
-	"access-list.pass-auth": {
-		"defaultMessage": "Odoslať overenie na Upstream"
-	},
-	"access-list.public": {
-		"defaultMessage": "Verejne prístupné"
-	},
-	"access-list.public.subtitle": {
-		"defaultMessage": "Nie je potrebné základné overenie"
-	},
-	"access-list.rule-source.placeholder": {
-		"defaultMessage": "192.168.1.100 alebo 192.168.1.0/24 alebo 2001:0db8::/32"
-	},
-	"access-list.satisfy-any": {
-		"defaultMessage": "Splniť ktorékoľvek"
-	},
-	"access-list.subtitle": {
-		"defaultMessage": "{users} {users, plural, one {používateľ} few {používatelia} other {používateľov}}, {rules} {rules, plural, one {pravidlo} few {pravidlá} other {pravidiel}} - Vytvorené: {date}"
-	},
-	"access-lists": {
-		"defaultMessage": "Zoznamy prístupov"
-	},
-	"action.add": {
-		"defaultMessage": "Pridať"
-	},
-	"action.add-location": {
-		"defaultMessage": "Pridať umiestnenie"
-	},
-	"action.allow": {
-		"defaultMessage": "Povoliť"
-	},
-	"action.close": {
-		"defaultMessage": "Zavrieť"
-	},
-	"action.delete": {
-		"defaultMessage": "Vymazať"
-	},
-	"action.deny": {
-		"defaultMessage": "Zamietnuť"
-	},
-	"action.disable": {
-		"defaultMessage": "Deaktivovať"
-	},
-	"action.download": {
-		"defaultMessage": "Stiahnuť"
-	},
-	"action.edit": {
-		"defaultMessage": "Upraviť"
-	},
-	"action.enable": {
-		"defaultMessage": "Aktivovať"
-	},
-	"action.permissions": {
-		"defaultMessage": "Oprávnenia"
-	},
-	"action.renew": {
-		"defaultMessage": "Obnoviť"
-	},
-	"action.view-details": {
-		"defaultMessage": "Zobraziť podrobnosti"
-	},
-	"auditlogs": {
-		"defaultMessage": "Záznamy auditu"
-	},
-	"auto": {
-		"defaultMessage": "Automaticky"
-	},
-	"cancel": {
-		"defaultMessage": "Zrušiť"
-	},
-	"certificate": {
-		"defaultMessage": "certifikát"
-	},
-	"certificate.custom-certificate": {
-		"defaultMessage": "Certifikát"
-	},
-	"certificate.custom-certificate-key": {
-		"defaultMessage": "Kľúč certifikátu"
-	},
-	"certificate.custom-intermediate": {
-		"defaultMessage": "Sprostredkovateľský certifikát"
-	},
-	"certificate.in-use": {
-		"defaultMessage": "Používa sa"
-	},
-	"certificate.none.subtitle": {
-		"defaultMessage": "Nie je priradený žiadny certifikát"
-	},
-	"certificate.none.subtitle.for-http": {
-		"defaultMessage": "Tento hostiteľ nebude používať HTTPS"
-	},
-	"certificate.none.title": {
-		"defaultMessage": "Žiadny"
-	},
-	"certificate.not-in-use": {
-		"defaultMessage": "Nepoužíva sa"
-	},
-	"certificate.renew": {
-		"defaultMessage": "Obnoviť certifikát"
-	},
-	"certificates": {
-		"defaultMessage": "Certifikáty"
-	},
-	"certificates.custom": {
-		"defaultMessage": "Vlastný certifikát"
-	},
-	"certificates.custom.warning": {
-		"defaultMessage": "Súbory kľúčov chránené heslom nie sú podporované."
-	},
-	"certificates.dns.credentials": {
-		"defaultMessage": "Obsah súboru s prihlasovacími údajmi"
-	},
-	"certificates.dns.credentials-note": {
-		"defaultMessage": "Tento doplnok vyžaduje konfiguračný súbor obsahujúci API token alebo iné prihlasovacie údaje vášho poskytovateľa"
-	},
-	"certificates.dns.credentials-warning": {
-		"defaultMessage": "Tieto údaje budú uložené v databáze a v súbore ako obyčajný text!"
-	},
-	"certificates.dns.propagation-seconds": {
-		"defaultMessage": "Propagácia v sekundách"
-	},
-	"certificates.dns.propagation-seconds-note": {
-		"defaultMessage": "Ponechajte prázdne pre predvolenú hodnotu doplnku. Počet sekúnd, počas ktorých sa čaká na propagáciu DNS."
-	},
-	"certificates.dns.provider": {
-		"defaultMessage": "DNS poskytovateľ"
-	},
-	"certificates.dns.provider.placeholder": {
-		"defaultMessage": "Vyberte poskytovateľa..."
-	},
-	"certificates.dns.warning": {
-		"defaultMessage": "Táto sekcia vyžaduje znalosť Certbotu a jeho DNS doplnkov. Prosím, pozrite si dokumentáciu príslušného doplnku."
-	},
-	"certificates.http.reachability-404": {
-		"defaultMessage": "Na tejto doméne bol nájdený server, ale nezdá sa, že ide o NPMplus. Uistite sa, že vaša doména smeruje na IP, kde beží vaša inštancia NPMplus."
-	},
-	"certificates.http.reachability-failed-to-check": {
-		"defaultMessage": "Nepodarilo sa overiť dostupnosť kvôli chybe komunikácie so službou site24x7.com."
-	},
-	"certificates.http.reachability-not-resolved": {
-		"defaultMessage": "Na tejto doméne nie je dostupný žiadny server. Uistite sa, že doména existuje a smeruje na IP adresu s NPMplus a ak je to potrebné, port 80 je presmerovaný vo vašom smerovači."
-	},
-	"certificates.http.reachability-ok": {
-		"defaultMessage": "Váš server je dostupný a vytvorenie certifikátu by malo byť možné."
-	},
-	"certificates.http.reachability-other": {
-		"defaultMessage": "Na tejto doméne bol nájdený server, ale vrátil neočakávaný stavový kód {code}. Je to NPMplus server? Uistite sa prosím, že doména smeruje na IP, kde beží vaša inštancia NPMplus."
-	},
-	"certificates.http.reachability-wrong-data": {
-		"defaultMessage": "Na tejto doméne bol nájdený server, ale vrátil neočakávané údaje. Je to NPMplus server? Uistite sa, že doména smeruje na IP, kde beží vaša inštancia NPMplus."
-	},
-	"certificates.http.test-results": {
-		"defaultMessage": "Výsledky testu"
-	},
-	"certificates.http.warning": {
-		"defaultMessage": "Tieto domény musia byť už nakonfigurované tak, aby smerovali na túto inštaláciu."
-	},
-	"certificates.key-type": {
-		"defaultMessage": "Typ kľúča"
-	},
-	"certificates.key-type-description": {
-		"defaultMessage": "RSA je široko kompatibilný, ECDSA je rýchlejší a bezpečnejší, ale nemusí byť podporovaný staršími systémami"
-	},
-	"certificates.key-type-ecdsa": {
-		"defaultMessage": "ECDSA 256"
-	},
-	"certificates.key-type-rsa": {
-		"defaultMessage": "RSA 2048"
-	},
-	"certificates.request.subtitle": {
-		"defaultMessage": "pomocou Certbot"
-	},
-	"certificates.request.title": {
-		"defaultMessage": "Vyžiadať nový certifikát"
-	},
-	"column.access": {
-		"defaultMessage": "Prístup"
-	},
-	"column.authorization": {
-		"defaultMessage": "Autorizácia"
-	},
-	"column.authorizations": {
-		"defaultMessage": "Autorizácie"
-	},
-	"column.custom-locations": {
-		"defaultMessage": "Vlastné umiestnenia"
-	},
-	"column.destination": {
-		"defaultMessage": "Cieľ"
-	},
-	"column.details": {
-		"defaultMessage": "Podrobnosti"
-	},
-	"column.email": {
-		"defaultMessage": "Email"
-	},
-	"column.event": {
-		"defaultMessage": "Udalosť"
-	},
-	"column.expires": {
-		"defaultMessage": "Platnosť do"
-	},
-	"column.http-code": {
-		"defaultMessage": "Prístup"
-	},
-	"column.incoming-port": {
-		"defaultMessage": "Vstupný port"
-	},
-	"column.name": {
-		"defaultMessage": "Názov"
-	},
-	"column.protocol": {
-		"defaultMessage": "Protokol"
-	},
-	"column.provider": {
-		"defaultMessage": "Poskytovateľ"
-	},
-	"column.roles": {
-		"defaultMessage": "Roly"
-	},
-	"column.rules": {
-		"defaultMessage": "Pravidlá"
-	},
-	"column.satisfy": {
-		"defaultMessage": "Splniť"
-	},
-	"column.satisfy-all": {
-		"defaultMessage": "Všetky"
-	},
-	"column.satisfy-any": {
-		"defaultMessage": "Ktorékoľvek"
-	},
-	"column.scheme": {
-		"defaultMessage": "Schéma"
-	},
-	"column.source": {
-		"defaultMessage": "Zdroj"
-	},
-	"column.ssl": {
-		"defaultMessage": "TLS"
-	},
-	"column.status": {
-		"defaultMessage": "Stav"
-	},
-	"created-on": {
-		"defaultMessage": "Vytvorené: {date}"
-	},
-	"dashboard": {
-		"defaultMessage": "Panel"
-	},
-	"dead-host": {
-		"defaultMessage": "404 hostiteľa"
-	},
-	"dead-hosts": {
-		"defaultMessage": "404 Hostitelia"
-	},
-	"dead-hosts.count": {
-		"defaultMessage": "{count} {count, plural, one {404 hostiteľ} few {404 hostitelia} other {404 hostiteľov}}"
-	},
-	"disabled": {
-		"defaultMessage": "Deaktivované"
-	},
-	"domain-names": {
-		"defaultMessage": "Doménové mená"
-	},
-	"domain-names.max": {
-		"defaultMessage": "Maximálne {count} doménových mien"
-	},
-	"domain-names.placeholder": {
-		"defaultMessage": "Začnite písať pre pridanie domény..."
-	},
-	"domain-names.wildcards-not-permitted": {
-		"defaultMessage": "Wildcards nie sú pre tento typ povolené"
-	},
-	"domain-names.wildcards-not-supported": {
-		"defaultMessage": "Wildcards nie sú podporované pre túto certifikačnú autoritu"
-	},
-	"domains.force-ssl": {
-		"defaultMessage": "Vynútiť HTTPS"
-	},
-	"domains.hsts-enabled": {
-		"defaultMessage": "HSTS povolené"
-	},
-	"domains.hsts-subdomains": {
-		"defaultMessage": "HSTS pre subdomény"
-	},
-	"domains.http2-support": {
-		"defaultMessage": "Podpora HTTP/2"
-	},
-	"domains.use-dns": {
-		"defaultMessage": "Použiť DNS výzvu"
-	},
-	"email-address": {
-		"defaultMessage": "Emailová adresa"
-	},
-	"empty-search": {
-		"defaultMessage": "Nenašli sa žiadne výsledky"
-	},
-	"empty-subtitle": {
-		"defaultMessage": "Prečo nevytvoríte nejaký?"
-	},
-	"enabled": {
-		"defaultMessage": "Aktivované"
-	},
-	"error.access.at-least-one": {
-		"defaultMessage": "Je vyžadovaná aspoň jedna autorizácia alebo jedno prístupové pravidlo"
-	},
-	"error.access.duplicate-usernames": {
-		"defaultMessage": "Používateľské mená pre autorizáciu musia byť jedinečné"
-	},
-	"error.invalid-auth": {
-		"defaultMessage": "Neplatný email alebo heslo"
-	},
-	"error.invalid-domain": {
-		"defaultMessage": "Neplatná doména: {domain}"
-	},
-	"error.invalid-email": {
-		"defaultMessage": "Neplatná emailová adresa"
-	},
-	"error.max-character-length": {
-		"defaultMessage": "Maximálna dĺžka je {max} znak{max, plural, one {} few {y} other {ov}}"
-	},
-	"error.max-domains": {
-		"defaultMessage": "Príliš veľa domén, maximum je {max}"
-	},
-	"error.maximum": {
-		"defaultMessage": "Maximum je {max}"
-	},
-	"error.min-character-length": {
-		"defaultMessage": "Minimálna dĺžka je {min} znak{min, plural, one {} few {y} other {ov}}"
-	},
-	"error.minimum": {
-		"defaultMessage": "Minimum je {min}"
-	},
-	"error.passwords-must-match": {
-		"defaultMessage": "Heslá sa musia zhodovať"
-	},
-	"error.required": {
-		"defaultMessage": "Toto pole je povinné"
-	},
-	"expires.on": {
-		"defaultMessage": "Platnosť do: {date}"
-	},
-	"footer.github-fork": {
-		"defaultMessage": "Forknite ma na GitHube"
-	},
-	"host.flags.block-exploits": {
-		"defaultMessage": "Blokovať bežné exploity"
-	},
-	"host.flags.cache-assets": {
-		"defaultMessage": "Uložiť zdroje do vyrovnávacej pamäte"
-	},
-	"host.flags.preserve-path": {
-		"defaultMessage": "Zachovať cestu"
-	},
-	"host.flags.protocols": {
-		"defaultMessage": "Protokoly"
-	},
-	"host.flags.websockets-upgrade": {
-		"defaultMessage": "Podpora WebSockets"
-	},
-	"host.forward-port": {
-		"defaultMessage": "Port presmerovania"
-	},
-	"host.forward-scheme": {
-		"defaultMessage": "Schéma"
-	},
-	"hosts": {
-		"defaultMessage": "Hostitelia"
-	},
-	"http-only": {
-		"defaultMessage": "Len HTTP"
-	},
-	"lets-encrypt": {
-		"defaultMessage": "Certbot"
-	},
-	"lets-encrypt-via-dns": {
-		"defaultMessage": "Certbot cez DNS"
-	},
-	"lets-encrypt-via-http": {
-		"defaultMessage": "Certbot cez HTTP"
-	},
-	"loading": {
-		"defaultMessage": "Načítava sa…"
-	},
-	"login.title": {
-		"defaultMessage": "Prihláste sa do svojho účtu"
-	},
-	"login.totp-code": {
-		"defaultMessage": "Overovací kód"
-	},
-	"login.totp-code-placeholder": {
-		"defaultMessage": "Vložiť kód"
-	},
-	"login.totp-description": {
-		"defaultMessage": "Vložte kód z vašej overovacej aplikácie"
-	},
-	"login.totp-title": {
-		"defaultMessage": "MFA"
-	},
-	"login.totp-verify": {
-		"defaultMessage": "Overiť"
-	},
-	"mfa.backup-codes-remaining": {
-		"defaultMessage": "Počet zostávajúcich záložných kódov: {count}"
-	},
-	"mfa.backup-warning": {
-		"defaultMessage": "Tieto záložné kódy si uložte na bezpečnom mieste. Každý kód je možné použiť len raz."
-	},
-	"mfa.regenerate": {
-		"defaultMessage": "Znova vytvoriť"
-	},
-	"mfa.regenerate-backup": {
-		"defaultMessage": "Znova vytvoriť záložné kódy"
-	},
-	"mfa.regenerate-instructions": {
-		"defaultMessage": "Zadajte overovací kód, aby sa vytvorili nové záložné kódy. Vaše staré kódy budú neplatné."
-	},
-	"mfa.title": {
-		"defaultMessage": "MFA"
-	},
-	"nginx-config.label": {
-		"defaultMessage": "Vlastná Nginx konfigurácia"
-	},
-	"nginx-config.placeholder": {
-		"defaultMessage": "# Zadajte vlastnú Nginx konfiguráciu na vlastné riziko!"
-	},
-	"no-permission-error": {
-		"defaultMessage": "Nemáte oprávnenie na zobrazenie tohto obsahu."
-	},
-	"notfound.action": {
-		"defaultMessage": "Späť na hlavnú stránku"
-	},
-	"notfound.content": {
-		"defaultMessage": "Ľutujeme, stránka, ktorú hľadáte, nebola nájdená"
-	},
-	"notfound.title": {
-		"defaultMessage": "Ups… Našli ste chybovú stránku"
-	},
-	"notification.error": {
-		"defaultMessage": "Chyba"
-	},
-	"notification.object-deleted": {
-		"defaultMessage": "{object} bol odstránený"
-	},
-	"notification.object-disabled": {
-		"defaultMessage": "{object} bol deaktivovaný"
-	},
-	"notification.object-enabled": {
-		"defaultMessage": "{object} bol aktivovaný"
-	},
-	"notification.object-renewed": {
-		"defaultMessage": "{object} bol obnovený"
-	},
-	"notification.object-saved": {
-		"defaultMessage": "{object} bol uložený"
-	},
-	"notification.success": {
-		"defaultMessage": "Úspech"
-	},
-	"object.actions-title": {
-		"defaultMessage": "{object} #{id}"
-	},
-	"object.add": {
-		"defaultMessage": "Pridať {object}"
-	},
-	"object.delete": {
-		"defaultMessage": "Vymazať {object}"
-	},
-	"object.delete.content": {
-		"defaultMessage": "Naozaj chcete vymazať tento {object}?"
-	},
-	"object.edit": {
-		"defaultMessage": "Upraviť {object}"
-	},
-	"object.empty": {
-		"defaultMessage": "Nie sú {objects}"
-	},
-	"object.event.created": {
-		"defaultMessage": "Vytvorený {object}"
-	},
-	"object.event.deleted": {
-		"defaultMessage": "Vymazaný {object}"
-	},
-	"object.event.disabled": {
-		"defaultMessage": "Deaktivovaný {object}"
-	},
-	"object.event.enabled": {
-		"defaultMessage": "Aktivovaný {object}"
-	},
-	"object.event.renewed": {
-		"defaultMessage": "Obnovený {object}"
-	},
-	"object.event.updated": {
-		"defaultMessage": "Aktualizovaný {object}"
-	},
-	"offline": {
-		"defaultMessage": "Offline"
-	},
-	"online": {
-		"defaultMessage": "Online"
-	},
-	"options": {
-		"defaultMessage": "Možnosti"
-	},
-	"password": {
-		"defaultMessage": "Heslo"
-	},
-	"password.generate": {
-		"defaultMessage": "Vygenerovať náhodné heslo"
-	},
-	"password.hide": {
-		"defaultMessage": "Skryť heslo"
-	},
-	"password.show": {
-		"defaultMessage": "Zobraziť heslo"
-	},
-	"permissions.hidden": {
-		"defaultMessage": "Skryté"
-	},
-	"permissions.manage": {
-		"defaultMessage": "Spravovať"
-	},
-	"permissions.view": {
-		"defaultMessage": "Len na zobrazenie"
-	},
-	"permissions.visibility.all": {
-		"defaultMessage": "Všetky položky"
-	},
-	"permissions.visibility.title": {
-		"defaultMessage": "Viditeľnosť položky"
-	},
-	"permissions.visibility.user": {
-		"defaultMessage": "Len vytvorené položky"
-	},
-	"proxy-host": {
-		"defaultMessage": "proxy hostiteľa"
-	},
-	"proxy-host.forward-host": {
-		"defaultMessage": "Cieľový názov hostiteľa / IP"
-	},
-	"proxy-hosts": {
-		"defaultMessage": "Proxy hostitelia"
-	},
-	"proxy-hosts.count": {
-		"defaultMessage": "{count} {count, plural, one {proxy hostiteľ} few {proxy hostitelia} other {proxy hostiteľov}}"
-	},
-	"public": {
-		"defaultMessage": "Verejné"
-	},
-	"redirection-host": {
-		"defaultMessage": "presmerovacieho hostiteľa"
-	},
-	"redirection-host.forward-domain": {
-		"defaultMessage": "Cieľová doména"
-	},
-	"redirection-host.forward-http-code": {
-		"defaultMessage": "HTTP kód"
-	},
-	"redirection-hosts": {
-		"defaultMessage": "Presmerovací hostitelia"
-	},
-	"redirection-hosts.count": {
-		"defaultMessage": "{count} {count, plural, one {presmerovací hostiteľ} few {presmerovací hostitelia} other {presmerovacích hostiteľov}}"
-	},
-	"redirection-hosts.http-code.300": {
-		"defaultMessage": "300 Viacero možností"
-	},
-	"redirection-hosts.http-code.301": {
-		"defaultMessage": "301 Trvalo presunuté"
-	},
-	"redirection-hosts.http-code.302": {
-		"defaultMessage": "302 Dočasne presunuté"
-	},
-	"redirection-hosts.http-code.303": {
-		"defaultMessage": "303 Pozrieť iné"
-	},
-	"redirection-hosts.http-code.307": {
-		"defaultMessage": "307 Dočasné presmerovanie"
-	},
-	"redirection-hosts.http-code.308": {
-		"defaultMessage": "308 Trvalé presmerovanie"
-	},
-	"role.admin": {
-		"defaultMessage": "Administrátor"
-	},
-	"role.standard-user": {
-		"defaultMessage": "Bežný používateľ"
-	},
-	"save": {
-		"defaultMessage": "Uložiť"
-	},
-	"setting": {
-		"defaultMessage": "Nastavenie"
-	},
-	"settings": {
-		"defaultMessage": "Nastavenia"
-	},
-	"settings.default-site": {
-		"defaultMessage": "Predvolená stránka"
-	},
-	"settings.default-site.404": {
-		"defaultMessage": "Stránka 404"
-	},
-	"settings.default-site.444": {
-		"defaultMessage": "Bez odpovede (444)"
-	},
-	"settings.default-site.congratulations": {
-		"defaultMessage": "Gratulačná stránka"
-	},
-	"settings.default-site.description": {
-		"defaultMessage": "Čo zobraziť, keď Nginx zachytí neznámeho hostiteľa"
-	},
-	"settings.default-site.html": {
-		"defaultMessage": "Vlastné HTML"
-	},
-	"settings.default-site.html.placeholder": {
-		"defaultMessage": "<!-- Sem zadajte vlastný HTML obsah -->"
-	},
-	"settings.default-site.redirect": {
-		"defaultMessage": "Presmerovať"
-	},
-	"setup.preamble": {
-		"defaultMessage": "Začnite vytvorením administrátorského účtu."
-	},
-	"setup.title": {
-		"defaultMessage": "Vitajte!"
-	},
-	"sign-in": {
-		"defaultMessage": "Prihlásiť sa"
-	},
-	"ssl-certificate": {
-		"defaultMessage": "TLS certifikát"
-	},
-	"stream": {
-		"defaultMessage": "stream"
-	},
-	"stream.forward-host": {
-		"defaultMessage": "Cieľový hostiteľ"
-	},
-	"stream.forward-host.placeholder": {
-		"defaultMessage": "napriklad.sk alebo 10.0.0.1 alebo 2001:db8:3333:4444:5555:6666:7777:8888"
-	},
-	"stream.incoming-port": {
-		"defaultMessage": "Vstupný port"
-	},
-	"streams": {
-		"defaultMessage": "Streamy"
-	},
-	"streams.count": {
-		"defaultMessage": "{count} {count, plural, one {stream} few {streamy} other {streamov}}"
-	},
-	"streams.tcp": {
-		"defaultMessage": "TCP"
-	},
-	"streams.udp": {
-		"defaultMessage": "UDP"
-	},
-	"test": {
-		"defaultMessage": "Test"
-	},
-	"totp.disable": {
-		"defaultMessage": "Vypnúť TOTP"
-	},
-	"totp.disable-confirm": {
-		"defaultMessage": "Vypnúť TOTP"
-	},
-	"totp.disable-warning": {
-		"defaultMessage": "Vypnutím TOTP sa zníži bezpečnosť vášho účtu."
-	},
-	"totp.disabled": {
-		"defaultMessage": "Vypnuté"
-	},
-	"totp.done": {
-		"defaultMessage": "Uložil som si svoje záložné kódy."
-	},
-	"totp.enable": {
-		"defaultMessage": "Zapnúť TOTP"
-	},
-	"totp.enabled": {
-		"defaultMessage": "Zapnuté"
-	},
-	"totp.enter-code": {
-		"defaultMessage": "Zadajte overovací kód"
-	},
-	"totp.enter-code-disable": {
-		"defaultMessage": "Zadajte overovací kód na vypnutie"
-	},
-	"totp.secret-key": {
-		"defaultMessage": "Tajný kľúč"
-	},
-	"totp.setup-instructions": {
-		"defaultMessage": "Naskenujte tento QR kód pomocou svojej overovacej aplikácie alebo zadajte tajný kľúč ručne."
-	},
-	"totp.status": {
-		"defaultMessage": "Stav"
-	},
-	"totp.verify-enable": {
-		"defaultMessage": "Overiť a zapnúť"
-	},
-	"update-available": {
-		"defaultMessage": "Dostupná aktualizácia: {latestVersion}"
-	},
-	"user": {
-		"defaultMessage": "používateľa"
-	},
-	"user.change-password": {
-		"defaultMessage": "Zmeniť heslo"
-	},
-	"user.confirm-password": {
-		"defaultMessage": "Potvrdiť heslo"
-	},
-	"user.current-password": {
-		"defaultMessage": "Aktuálne heslo"
-	},
-	"user.edit-profile": {
-		"defaultMessage": "Upraviť profil"
-	},
-	"user.full-name": {
-		"defaultMessage": "Celé meno"
-	},
-	"user.login-as": {
-		"defaultMessage": "Prihlásiť sa ako {name}"
-	},
-	"user.logout": {
-		"defaultMessage": "Odhlásiť sa"
-	},
-	"user.mfa": {
-		"defaultMessage": "MFA"
-	},
-	"user.new-password": {
-		"defaultMessage": "Nové heslo"
-	},
-	"user.nickname": {
-		"defaultMessage": "Prezývka"
-	},
-	"user.set-password": {
-		"defaultMessage": "Nastaviť heslo"
-	},
-	"user.set-permissions": {
-		"defaultMessage": "Nastaviť oprávnenia pre {name}"
-	},
-	"user.switch-dark": {
-		"defaultMessage": "Prepnúť na tmavý režim"
-	},
-	"user.switch-light": {
-		"defaultMessage": "Prepnúť na svetlý režim"
-	},
-	"username": {
-		"defaultMessage": "Používateľské meno"
-	},
-	"users": {
-		"defaultMessage": "Používatelia"
-	}
+	"access-list": "zoznam prístupov",
+	"access-list.access-count": "{count} {count, plural, one {pravidlo} few {pravidlá} other {pravidiel}}",
+	"access-list.auth-count": "{count} {count, plural, one {používateľ} few {používatelia} other {používateľov}}",
+	"access-list.help-rules-last": "Keď existuje aspoň jedno pravidlo, toto pravidlo „zamietnuť všetko“ bude pridané ako posledné",
+	"access-list.help.rules-order": "Upozornenie: pravidlá povoliť a zamietnuť budú uplatňované v poradí, v akom sú definované.",
+	"access-list.pass-auth": "Odoslať overenie na Upstream",
+	"access-list.public": "Verejne prístupné",
+	"access-list.public.subtitle": "Nie je potrebné základné overenie",
+	"access-list.rule-source.placeholder": "192.168.1.100 alebo 192.168.1.0/24 alebo 2001:0db8::/32",
+	"access-list.satisfy-any": "Splniť ktorékoľvek",
+	"access-list.subtitle": "{users} {users, plural, one {používateľ} few {používatelia} other {používateľov}}, {rules} {rules, plural, one {pravidlo} few {pravidlá} other {pravidiel}} - Vytvorené: {date}",
+	"access-lists": "Zoznamy prístupov",
+	"action.add": "Pridať",
+	"action.add-location": "Pridať umiestnenie",
+	"action.allow": "Povoliť",
+	"action.close": "Zavrieť",
+	"action.delete": "Vymazať",
+	"action.deny": "Zamietnuť",
+	"action.disable": "Deaktivovať",
+	"action.download": "Stiahnuť",
+	"action.edit": "Upraviť",
+	"action.enable": "Aktivovať",
+	"action.permissions": "Oprávnenia",
+	"action.renew": "Obnoviť",
+	"action.view-details": "Zobraziť podrobnosti",
+	"auditlogs": "Záznamy auditu",
+	"auto": "Automaticky",
+	"cancel": "Zrušiť",
+	"certificate": "certifikát",
+	"certificate.custom-certificate": "Certifikát",
+	"certificate.custom-certificate-key": "Kľúč certifikátu",
+	"certificate.custom-intermediate": "Sprostredkovateľský certifikát",
+	"certificate.in-use": "Používa sa",
+	"certificate.none.subtitle": "Nie je priradený žiadny certifikát",
+	"certificate.none.subtitle.for-http": "Tento hostiteľ nebude používať HTTPS",
+	"certificate.none.title": "Žiadny",
+	"certificate.not-in-use": "Nepoužíva sa",
+	"certificate.renew": "Obnoviť certifikát",
+	"certificates": "Certifikáty",
+	"certificates.custom": "Vlastný certifikát",
+	"certificates.custom.warning": "Súbory kľúčov chránené heslom nie sú podporované.",
+	"certificates.dns.credentials": "Obsah súboru s prihlasovacími údajmi",
+	"certificates.dns.credentials-note": "Tento doplnok vyžaduje konfiguračný súbor obsahujúci API token alebo iné prihlasovacie údaje vášho poskytovateľa",
+	"certificates.dns.credentials-warning": "Tieto údaje budú uložené v databáze a v súbore ako obyčajný text!",
+	"certificates.dns.propagation-seconds": "Propagácia v sekundách",
+	"certificates.dns.propagation-seconds-note": "Ponechajte prázdne pre predvolenú hodnotu doplnku. Počet sekúnd, počas ktorých sa čaká na propagáciu DNS.",
+	"certificates.dns.provider": "DNS poskytovateľ",
+	"certificates.dns.provider.placeholder": "Vyberte poskytovateľa...",
+	"certificates.dns.warning": "Táto sekcia vyžaduje znalosť Certbotu a jeho DNS doplnkov. Prosím, pozrite si dokumentáciu príslušného doplnku.",
+	"certificates.http.reachability-404": "Na tejto doméne bol nájdený server, ale nezdá sa, že ide o NPMplus. Uistite sa, že vaša doména smeruje na IP, kde beží vaša inštancia NPMplus.",
+	"certificates.http.reachability-failed-to-check": "Nepodarilo sa overiť dostupnosť kvôli chybe komunikácie so službou site24x7.com.",
+	"certificates.http.reachability-not-resolved": "Na tejto doméne nie je dostupný žiadny server. Uistite sa, že doména existuje a smeruje na IP adresu s NPMplus a ak je to potrebné, port 80 je presmerovaný vo vašom smerovači.",
+	"certificates.http.reachability-ok": "Váš server je dostupný a vytvorenie certifikátu by malo byť možné.",
+	"certificates.http.reachability-other": "Na tejto doméne bol nájdený server, ale vrátil neočakávaný stavový kód {code}. Je to NPMplus server? Uistite sa prosím, že doména smeruje na IP, kde beží vaša inštancia NPMplus.",
+	"certificates.http.reachability-wrong-data": "Na tejto doméne bol nájdený server, ale vrátil neočakávané údaje. Je to NPMplus server? Uistite sa, že doména smeruje na IP, kde beží vaša inštancia NPMplus.",
+	"certificates.http.test-results": "Výsledky testu",
+	"certificates.http.warning": "Tieto domény musia byť už nakonfigurované tak, aby smerovali na túto inštaláciu.",
+	"certificates.key-type": "Typ kľúča",
+	"certificates.key-type-description": "RSA je široko kompatibilný, ECDSA je rýchlejší a bezpečnejší, ale nemusí byť podporovaný staršími systémami",
+	"certificates.key-type-ecdsa": "ECDSA 256",
+	"certificates.key-type-rsa": "RSA 2048",
+	"certificates.request.subtitle": "pomocou Certbot",
+	"certificates.request.title": "Vyžiadať nový certifikát",
+	"column.access": "Prístup",
+	"column.authorization": "Autorizácia",
+	"column.authorizations": "Autorizácie",
+	"column.custom-locations": "Vlastné umiestnenia",
+	"column.destination": "Cieľ",
+	"column.details": "Podrobnosti",
+	"column.email": "Email",
+	"column.event": "Udalosť",
+	"column.expires": "Platnosť do",
+	"column.http-code": "Prístup",
+	"column.incoming-port": "Vstupný port",
+	"column.name": "Názov",
+	"column.protocol": "Protokol",
+	"column.provider": "Poskytovateľ",
+	"column.roles": "Roly",
+	"column.rules": "Pravidlá",
+	"column.satisfy": "Splniť",
+	"column.satisfy-all": "Všetky",
+	"column.satisfy-any": "Ktorékoľvek",
+	"column.scheme": "Schéma",
+	"column.source": "Zdroj",
+	"column.ssl": "TLS",
+	"column.status": "Stav",
+	"created-on": "Vytvorené: {date}",
+	"dashboard": "Panel",
+	"dead-host": "404 hostiteľa",
+	"dead-hosts": "404 Hostitelia",
+	"dead-hosts.count": "{count} {count, plural, one {404 hostiteľ} few {404 hostitelia} other {404 hostiteľov}}",
+	"disabled": "Deaktivované",
+	"domain-names": "Doménové mená",
+	"domain-names.max": "Maximálne {count} doménových mien",
+	"domain-names.placeholder": "Začnite písať pre pridanie domény...",
+	"domain-names.wildcards-not-permitted": "Wildcards nie sú pre tento typ povolené",
+	"domain-names.wildcards-not-supported": "Wildcards nie sú podporované pre túto certifikačnú autoritu",
+	"domains.force-ssl": "Vynútiť HTTPS",
+	"domains.hsts-enabled": "HSTS povolené",
+	"domains.hsts-subdomains": "HSTS pre subdomény",
+	"domains.http2-support": "Podpora HTTP/2",
+	"domains.use-dns": "Použiť DNS výzvu",
+	"email-address": "Emailová adresa",
+	"empty-search": "Nenašli sa žiadne výsledky",
+	"empty-subtitle": "Prečo nevytvoríte nejaký?",
+	"enabled": "Aktivované",
+	"error.access.at-least-one": "Je vyžadovaná aspoň jedna autorizácia alebo jedno prístupové pravidlo",
+	"error.access.duplicate-usernames": "Používateľské mená pre autorizáciu musia byť jedinečné",
+	"error.invalid-auth": "Neplatný email alebo heslo",
+	"error.invalid-domain": "Neplatná doména: {domain}",
+	"error.invalid-email": "Neplatná emailová adresa",
+	"error.max-character-length": "Maximálna dĺžka je {max} znak{max, plural, one {} few {y} other {ov}}",
+	"error.max-domains": "Príliš veľa domén, maximum je {max}",
+	"error.maximum": "Maximum je {max}",
+	"error.min-character-length": "Minimálna dĺžka je {min} znak{min, plural, one {} few {y} other {ov}}",
+	"error.minimum": "Minimum je {min}",
+	"error.passwords-must-match": "Heslá sa musia zhodovať",
+	"error.required": "Toto pole je povinné",
+	"expires.on": "Platnosť do: {date}",
+	"footer.github-fork": "Forknite ma na GitHube",
+	"host.flags.block-exploits": "Blokovať bežné exploity",
+	"host.flags.cache-assets": "Uložiť zdroje do vyrovnávacej pamäte",
+	"host.flags.preserve-path": "Zachovať cestu",
+	"host.flags.protocols": "Protokoly",
+	"host.flags.websockets-upgrade": "Podpora WebSockets",
+	"host.forward-port": "Port presmerovania",
+	"host.forward-scheme": "Schéma",
+	"hosts": "Hostitelia",
+	"http-only": "Len HTTP",
+	"lets-encrypt": "Certbot",
+	"lets-encrypt-via-dns": "Certbot cez DNS",
+	"lets-encrypt-via-http": "Certbot cez HTTP",
+	"loading": "Načítava sa…",
+	"login.title": "Prihláste sa do svojho účtu",
+	"login.totp-code": "Overovací kód",
+	"login.totp-code-placeholder": "Vložiť kód",
+	"login.totp-description": "Vložte kód z vašej overovacej aplikácie",
+	"login.totp-title": "MFA",
+	"login.totp-verify": "Overiť",
+	"mfa.backup-codes-remaining": "Počet zostávajúcich záložných kódov: {count}",
+	"mfa.backup-warning": "Tieto záložné kódy si uložte na bezpečnom mieste. Každý kód je možné použiť len raz.",
+	"mfa.regenerate": "Znova vytvoriť",
+	"mfa.regenerate-backup": "Znova vytvoriť záložné kódy",
+	"mfa.regenerate-instructions": "Zadajte overovací kód, aby sa vytvorili nové záložné kódy. Vaše staré kódy budú neplatné.",
+	"mfa.title": "MFA",
+	"nginx-config.label": "Vlastná Nginx konfigurácia",
+	"nginx-config.placeholder": "# Zadajte vlastnú Nginx konfiguráciu na vlastné riziko!",
+	"no-permission-error": "Nemáte oprávnenie na zobrazenie tohto obsahu.",
+	"notfound.action": "Späť na hlavnú stránku",
+	"notfound.content": "Ľutujeme, stránka, ktorú hľadáte, nebola nájdená",
+	"notfound.title": "Ups… Našli ste chybovú stránku",
+	"notification.error": "Chyba",
+	"notification.object-deleted": "{object} bol odstránený",
+	"notification.object-disabled": "{object} bol deaktivovaný",
+	"notification.object-enabled": "{object} bol aktivovaný",
+	"notification.object-renewed": "{object} bol obnovený",
+	"notification.object-saved": "{object} bol uložený",
+	"notification.success": "Úspech",
+	"object.actions-title": "{object} #{id}",
+	"object.add": "Pridať {object}",
+	"object.delete": "Vymazať {object}",
+	"object.delete.content": "Naozaj chcete vymazať tento {object}?",
+	"object.edit": "Upraviť {object}",
+	"object.empty": "Nie sú {objects}",
+	"object.event.created": "Vytvorený {object}",
+	"object.event.deleted": "Vymazaný {object}",
+	"object.event.disabled": "Deaktivovaný {object}",
+	"object.event.enabled": "Aktivovaný {object}",
+	"object.event.renewed": "Obnovený {object}",
+	"object.event.updated": "Aktualizovaný {object}",
+	"offline": "Offline",
+	"online": "Online",
+	"options": "Možnosti",
+	"password": "Heslo",
+	"password.generate": "Vygenerovať náhodné heslo",
+	"password.hide": "Skryť heslo",
+	"password.show": "Zobraziť heslo",
+	"permissions.hidden": "Skryté",
+	"permissions.manage": "Spravovať",
+	"permissions.view": "Len na zobrazenie",
+	"permissions.visibility.all": "Všetky položky",
+	"permissions.visibility.title": "Viditeľnosť položky",
+	"permissions.visibility.user": "Len vytvorené položky",
+	"proxy-host": "proxy hostiteľa",
+	"proxy-host.forward-host": "Cieľový názov hostiteľa / IP",
+	"proxy-hosts": "Proxy hostitelia",
+	"proxy-hosts.count": "{count} {count, plural, one {proxy hostiteľ} few {proxy hostitelia} other {proxy hostiteľov}}",
+	"public": "Verejné",
+	"redirection-host": "presmerovacieho hostiteľa",
+	"redirection-host.forward-domain": "Cieľová doména",
+	"redirection-host.forward-http-code": "HTTP kód",
+	"redirection-hosts": "Presmerovací hostitelia",
+	"redirection-hosts.count": "{count} {count, plural, one {presmerovací hostiteľ} few {presmerovací hostitelia} other {presmerovacích hostiteľov}}",
+	"redirection-hosts.http-code.300": "300 Viacero možností",
+	"redirection-hosts.http-code.301": "301 Trvalo presunuté",
+	"redirection-hosts.http-code.302": "302 Dočasne presunuté",
+	"redirection-hosts.http-code.303": "303 Pozrieť iné",
+	"redirection-hosts.http-code.307": "307 Dočasné presmerovanie",
+	"redirection-hosts.http-code.308": "308 Trvalé presmerovanie",
+	"role.admin": "Administrátor",
+	"role.standard-user": "Bežný používateľ",
+	"save": "Uložiť",
+	"setting": "Nastavenie",
+	"settings": "Nastavenia",
+	"settings.default-site": "Predvolená stránka",
+	"settings.default-site.404": "Stránka 404",
+	"settings.default-site.444": "Bez odpovede (444)",
+	"settings.default-site.congratulations": "Gratulačná stránka",
+	"settings.default-site.description": "Čo zobraziť, keď Nginx zachytí neznámeho hostiteľa",
+	"settings.default-site.html": "Vlastné HTML",
+	"settings.default-site.html.placeholder": "<!-- Sem zadajte vlastný HTML obsah -->",
+	"settings.default-site.redirect": "Presmerovať",
+	"setup.preamble": "Začnite vytvorením administrátorského účtu.",
+	"setup.title": "Vitajte!",
+	"sign-in": "Prihlásiť sa",
+	"ssl-certificate": "TLS certifikát",
+	"stream": "stream",
+	"stream.forward-host": "Cieľový hostiteľ",
+	"stream.forward-host.placeholder": "napriklad.sk alebo 10.0.0.1 alebo 2001:db8:3333:4444:5555:6666:7777:8888",
+	"stream.incoming-port": "Vstupný port",
+	"streams": "Streamy",
+	"streams.count": "{count} {count, plural, one {stream} few {streamy} other {streamov}}",
+	"streams.tcp": "TCP",
+	"streams.udp": "UDP",
+	"test": "Test",
+	"totp.disable": "Vypnúť TOTP",
+	"totp.disable-confirm": "Vypnúť TOTP",
+	"totp.disable-warning": "Vypnutím TOTP sa zníži bezpečnosť vášho účtu.",
+	"totp.disabled": "Vypnuté",
+	"totp.done": "Uložil som si svoje záložné kódy.",
+	"totp.enable": "Zapnúť TOTP",
+	"totp.enabled": "Zapnuté",
+	"totp.enter-code": "Zadajte overovací kód",
+	"totp.enter-code-disable": "Zadajte overovací kód na vypnutie",
+	"totp.secret-key": "Tajný kľúč",
+	"totp.setup-instructions": "Naskenujte tento QR kód pomocou svojej overovacej aplikácie alebo zadajte tajný kľúč ručne.",
+	"totp.status": "Stav",
+	"totp.verify-enable": "Overiť a zapnúť",
+	"update-available": "Dostupná aktualizácia: {latestVersion}",
+	"user": "používateľa",
+	"user.change-password": "Zmeniť heslo",
+	"user.confirm-password": "Potvrdiť heslo",
+	"user.current-password": "Aktuálne heslo",
+	"user.edit-profile": "Upraviť profil",
+	"user.full-name": "Celé meno",
+	"user.login-as": "Prihlásiť sa ako {name}",
+	"user.logout": "Odhlásiť sa",
+	"user.mfa": "MFA",
+	"user.new-password": "Nové heslo",
+	"user.nickname": "Prezývka",
+	"user.set-password": "Nastaviť heslo",
+	"user.set-permissions": "Nastaviť oprávnenia pre {name}",
+	"user.switch-dark": "Prepnúť na tmavý režim",
+	"user.switch-light": "Prepnúť na svetlý režim",
+	"username": "Používateľské meno",
+	"users": "Používatelia"
 }

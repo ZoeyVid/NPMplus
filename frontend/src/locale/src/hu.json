@@ -1,770 +1,258 @@
 {
-	"access-list": {
-		"defaultMessage": "Hozzáférési lista"
-	},
-	"access-list.access-count": {
-		"defaultMessage": "{count} {count, plural, one {szabály} other {szabály}}"
-	},
-	"access-list.auth-count": {
-		"defaultMessage": "{count} {count, plural, one {felhasználó} other {felhasználó}}"
-	},
-	"access-list.help-rules-last": {
-		"defaultMessage": "Ha legalább 1 szabály létezik, ez a mindent tiltó szabály utolsóként lesz hozzáadva"
-	},
-	"access-list.help.rules-order": {
-		"defaultMessage": "Vegye figyelembe, hogy az engedélyező és tiltó direktívák a meghatározásuk sorrendjében lesznek alkalmazva."
-	},
-	"access-list.pass-auth": {
-		"defaultMessage": "Hitelesítés továbbítása az upstream felé"
-	},
-	"access-list.public": {
-		"defaultMessage": "Nyilvánosan elérhető"
-	},
-	"access-list.public.subtitle": {
-		"defaultMessage": "Alapszintű hitelesítés nem szükséges"
-	},
-	"access-list.rule-source.placeholder": {
-		"defaultMessage": "192.168.1.100 vagy 192.168.1.0/24 vagy 2001:0db8::/32"
-	},
-	"access-list.satisfy-any": {
-		"defaultMessage": "Bármely teljesítése"
-	},
-	"access-list.subtitle": {
-		"defaultMessage": "{users} {users, plural, one {felhasználó} other {felhasználó}}, {rules} {rules, plural, one {szabály} other {szabály}} - Létrehozva: {date}"
-	},
-	"access-lists": {
-		"defaultMessage": "Hozzáférési listák"
-	},
-	"action.add": {
-		"defaultMessage": "Hozzáadás"
-	},
-	"action.add-location": {
-		"defaultMessage": "Útvonal hozzáadása"
-	},
-	"action.allow": {
-		"defaultMessage": "Engedélyezés"
-	},
-	"action.close": {
-		"defaultMessage": "Bezárás"
-	},
-	"action.delete": {
-		"defaultMessage": "Törlés"
-	},
-	"action.deny": {
-		"defaultMessage": "Tiltás"
-	},
-	"action.disable": {
-		"defaultMessage": "Letiltás"
-	},
-	"action.download": {
-		"defaultMessage": "Letöltés"
-	},
-	"action.edit": {
-		"defaultMessage": "Szerkesztés"
-	},
-	"action.enable": {
-		"defaultMessage": "Engedélyezés"
-	},
-	"action.permissions": {
-		"defaultMessage": "Engedélyek"
-	},
-	"action.renew": {
-		"defaultMessage": "Megújítás"
-	},
-	"action.view-details": {
-		"defaultMessage": "Részletek megtekintése"
-	},
-	"auditlogs": {
-		"defaultMessage": "Audit naplók"
-	},
-	"auto": {
-		"defaultMessage": "Automatikus"
-	},
-	"cancel": {
-		"defaultMessage": "Mégse"
-	},
-	"certificate": {
-		"defaultMessage": "Tanúsítvány"
-	},
-	"certificate.custom-certificate": {
-		"defaultMessage": "Tanúsítvány"
-	},
-	"certificate.custom-certificate-key": {
-		"defaultMessage": "Tanúsítvány kulcs"
-	},
-	"certificate.custom-intermediate": {
-		"defaultMessage": "Köztes tanúsítvány"
-	},
-	"certificate.in-use": {
-		"defaultMessage": "Használatban"
-	},
-	"certificate.none.subtitle": {
-		"defaultMessage": "Nincs tanúsítvány hozzárendelve"
-	},
-	"certificate.none.subtitle.for-http": {
-		"defaultMessage": "Ez a kiszolgáló nem fog HTTPS-t használni"
-	},
-	"certificate.none.title": {
-		"defaultMessage": "Nincs"
-	},
-	"certificate.not-in-use": {
-		"defaultMessage": "Nincs használatban"
-	},
-	"certificate.renew": {
-		"defaultMessage": "Tanúsítvány megújítása"
-	},
-	"certificates": {
-		"defaultMessage": "Tanúsítványok"
-	},
-	"certificates.custom": {
-		"defaultMessage": "Egyéni tanúsítvány"
-	},
-	"certificates.custom.warning": {
-		"defaultMessage": "Jelszóval védett kulcsfájlok nem támogatottak."
-	},
-	"certificates.dns.credentials": {
-		"defaultMessage": "Hitelesítő fájl tartalma"
-	},
-	"certificates.dns.credentials-note": {
-		"defaultMessage": "Ez a plugin egy konfigurációs fájlt igényel, amely API tokent vagy egyéb hitelesítő adatokat tartalmaz a szolgáltatóhoz"
-	},
-	"certificates.dns.credentials-warning": {
-		"defaultMessage": "Ezek az adatok sima szövegként lesznek tárolva az adatbázisban és egy fájlban!"
-	},
-	"certificates.dns.propagation-seconds": {
-		"defaultMessage": "Propagálási másodpercek"
-	},
-	"certificates.dns.propagation-seconds-note": {
-		"defaultMessage": "Hagyja üresen a plugin alapértelmezett értékének használatához. Másodpercek száma a DNS propagálás megvárásához."
-	},
-	"certificates.dns.provider": {
-		"defaultMessage": "DNS szolgáltató"
-	},
-	"certificates.dns.provider.placeholder": {
-		"defaultMessage": "Válasszon szolgáltatót..."
-	},
-	"certificates.dns.warning": {
-		"defaultMessage": "Ez a szakasz némi ismeretet igényel a Certbot-ról és a DNS plugin-jeiről. Kérjük, olvassa el a megfelelő plugin dokumentációját."
-	},
-	"certificates.http.reachability-404": {
-		"defaultMessage": "Található szerver ezen a domain-en, de nem úgy tűnik, hogy NPMplus lenne. Kérjük, győződjön meg róla, hogy a domain arra az IP címre mutat, ahol az NPMplus példánya fut."
-	},
-	"certificates.http.reachability-failed-to-check": {
-		"defaultMessage": "Az elérhetőség ellenőrzése sikertelen a site24x7.com kommunikációs hiba miatt."
-	},
-	"certificates.http.reachability-not-resolved": {
-		"defaultMessage": "Nincs elérhető szerver ezen a domain-en. Kérjük, győződjön meg róla, hogy a domain létezik és arra az IP címre mutat, ahol az NPMplus példánya fut, és szükség esetén a 80-as port továbbítva van a routerében."
-	},
-	"certificates.http.reachability-ok": {
-		"defaultMessage": "A szerver elérhető és a tanúsítványok létrehozása lehetséges lesz."
-	},
-	"certificates.http.reachability-other": {
-		"defaultMessage": "Található szerver ezen a domain-en, de váratlan {code} státuszkódot adott vissza. Ez az NPMplus szerver? Kérjük, győződjön meg róla, hogy a domain arra az IP címre mutat, ahol az NPMplus példánya fut."
-	},
-	"certificates.http.reachability-wrong-data": {
-		"defaultMessage": "Található szerver ezen a domain-en, de váratlan adatot adott vissza. Ez az NPMplus szerver? Kérjük, győződjön meg róla, hogy a domain arra az IP címre mutat, ahol az NPMplus példánya fut."
-	},
-	"certificates.http.test-results": {
-		"defaultMessage": "Teszt eredmények"
-	},
-	"certificates.http.warning": {
-		"defaultMessage": "Ezeknek a domain-eknek már konfigurálva kell lenniük, hogy erre a telepítésre mutassanak."
-	},
-	"certificates.key-type": {
-		"defaultMessage": "Kulcs típus"
-	},
-	"certificates.key-type-description": {
-		"defaultMessage": "Az RSA széles körben kompatibilis, az ECDSA gyorsabb és biztonságosabb, de nem biztos, hogy régebbi rendszerek támogatják"
-	},
-	"certificates.key-type-ecdsa": {
-		"defaultMessage": "ECDSA 256"
-	},
-	"certificates.key-type-rsa": {
-		"defaultMessage": "RSA 2048"
-	},
-	"certificates.request.subtitle": {
-		"defaultMessage": "Certbot-tel"
-	},
-	"certificates.request.title": {
-		"defaultMessage": "Új tanúsítvány kérelmezése"
-	},
-	"column.access": {
-		"defaultMessage": "Hozzáférés"
-	},
-	"column.authorization": {
-		"defaultMessage": "Jogosultság"
-	},
-	"column.authorizations": {
-		"defaultMessage": "Jogosultságok"
-	},
-	"column.custom-locations": {
-		"defaultMessage": "Egyéni útvonalak"
-	},
-	"column.destination": {
-		"defaultMessage": "Cél"
-	},
-	"column.details": {
-		"defaultMessage": "Részletek"
-	},
-	"column.email": {
-		"defaultMessage": "E-mail"
-	},
-	"column.event": {
-		"defaultMessage": "Esemény"
-	},
-	"column.expires": {
-		"defaultMessage": "Lejár"
-	},
-	"column.http-code": {
-		"defaultMessage": "HTTP kód"
-	},
-	"column.incoming-port": {
-		"defaultMessage": "Bejövő port"
-	},
-	"column.name": {
-		"defaultMessage": "Név"
-	},
-	"column.protocol": {
-		"defaultMessage": "Protokoll"
-	},
-	"column.provider": {
-		"defaultMessage": "Szolgáltató"
-	},
-	"column.roles": {
-		"defaultMessage": "Szerepkörök"
-	},
-	"column.rules": {
-		"defaultMessage": "Szabályok"
-	},
-	"column.satisfy": {
-		"defaultMessage": "Teljesítés"
-	},
-	"column.satisfy-all": {
-		"defaultMessage": "Összes"
-	},
-	"column.satisfy-any": {
-		"defaultMessage": "Bármely"
-	},
-	"column.scheme": {
-		"defaultMessage": "Séma"
-	},
-	"column.source": {
-		"defaultMessage": "Forrás"
-	},
-	"column.ssl": {
-		"defaultMessage": "TLS"
-	},
-	"column.status": {
-		"defaultMessage": "Állapot"
-	},
-	"created-on": {
-		"defaultMessage": "Létrehozva: {date}"
-	},
-	"dashboard": {
-		"defaultMessage": "Vezérlőpult"
-	},
-	"dead-host": {
-		"defaultMessage": "404-es Kiszolgáló"
-	},
-	"dead-hosts": {
-		"defaultMessage": "404-es Kiszolgálók"
-	},
-	"dead-hosts.count": {
-		"defaultMessage": "{count} {count, plural, one {404-es Kiszolgáló} other {404-es Kiszolgálók}}"
-	},
-	"disabled": {
-		"defaultMessage": "Letiltva"
-	},
-	"domain-names": {
-		"defaultMessage": "Domain nevek"
-	},
-	"domain-names.max": {
-		"defaultMessage": "Maximum {count} domain név"
-	},
-	"domain-names.placeholder": {
-		"defaultMessage": "Kezdjen el gépelni domain hozzáadásához..."
-	},
-	"domain-names.wildcards-not-permitted": {
-		"defaultMessage": "Helyettesítő karakterek nem engedélyezettek ennél a típusnál"
-	},
-	"domain-names.wildcards-not-supported": {
-		"defaultMessage": "Helyettesítő karakterek nem támogatottak ennél a CA-nál"
-	},
-	"domains.force-ssl": {
-		"defaultMessage": "HTTPS kényszerítése"
-	},
-	"domains.hsts-enabled": {
-		"defaultMessage": "HSTS engedélyezve"
-	},
-	"domains.hsts-subdomains": {
-		"defaultMessage": "HSTS aldomain-ek"
-	},
-	"domains.http2-support": {
-		"defaultMessage": "HTTP/2 támogatás"
-	},
-	"domains.use-dns": {
-		"defaultMessage": "DNS Challenge használata"
-	},
-	"email-address": {
-		"defaultMessage": "E-mail cím"
-	},
-	"empty-search": {
-		"defaultMessage": "Nincs találat"
-	},
-	"empty-subtitle": {
-		"defaultMessage": "Miért nem hoz létre egyet?"
-	},
-	"enabled": {
-		"defaultMessage": "Engedélyezve"
-	},
-	"error.access.at-least-one": {
-		"defaultMessage": "Legalább egy jogosultság vagy egy hozzáférési szabály szükséges"
-	},
-	"error.access.duplicate-usernames": {
-		"defaultMessage": "A jogosultsági felhasználóneveknek egyedieknek kell lenniük"
-	},
-	"error.invalid-auth": {
-		"defaultMessage": "Érvénytelen e-mail vagy jelszó"
-	},
-	"error.invalid-domain": {
-		"defaultMessage": "Érvénytelen domain: {domain}"
-	},
-	"error.invalid-email": {
-		"defaultMessage": "Érvénytelen e-mail cím"
-	},
-	"error.max-character-length": {
-		"defaultMessage": "Maximális hossz {max} karakter"
-	},
-	"error.max-domains": {
-		"defaultMessage": "Túl sok domain, a maximum {max}"
-	},
-	"error.maximum": {
-		"defaultMessage": "A maximum {max}"
-	},
-	"error.min-character-length": {
-		"defaultMessage": "Minimális hossz {min} karakter"
-	},
-	"error.minimum": {
-		"defaultMessage": "A minimum {min}"
-	},
-	"error.passwords-must-match": {
-		"defaultMessage": "A jelszavaknak egyezniük kell"
-	},
-	"error.required": {
-		"defaultMessage": "Ez kötelező"
-	},
-	"expires.on": {
-		"defaultMessage": "Lejár: {date}"
-	},
-	"footer.github-fork": {
-		"defaultMessage": "Fork-olj a GitHub-on"
-	},
-	"host.flags.block-exploits": {
-		"defaultMessage": "Gyakori exploitok blokkolása"
-	},
-	"host.flags.cache-assets": {
-		"defaultMessage": "Erőforrások gyorsítótárazása"
-	},
-	"host.flags.preserve-path": {
-		"defaultMessage": "Útvonal megőrzése"
-	},
-	"host.flags.protocols": {
-		"defaultMessage": "Protokollok"
-	},
-	"host.flags.websockets-upgrade": {
-		"defaultMessage": "Websockets támogatás"
-	},
-	"host.forward-port": {
-		"defaultMessage": "Továbbító port"
-	},
-	"host.forward-scheme": {
-		"defaultMessage": "Séma"
-	},
-	"hosts": {
-		"defaultMessage": "Kiszolgálók"
-	},
-	"http-only": {
-		"defaultMessage": "Csak HTTP"
-	},
-	"lets-encrypt": {
-		"defaultMessage": "Certbot"
-	},
-	"lets-encrypt-via-dns": {
-		"defaultMessage": "Certbot DNS-en keresztül"
-	},
-	"lets-encrypt-via-http": {
-		"defaultMessage": "Certbot HTTP-n keresztül"
-	},
-	"loading": {
-		"defaultMessage": "Betöltés…"
-	},
-	"login.title": {
-		"defaultMessage": "Jelentkezzen be a fiókjába"
-	},
-	"login.totp-code": {
-		"defaultMessage": "Ellenőrző kód"
-	},
-	"login.totp-code-placeholder": {
-		"defaultMessage": "Adja meg a kódot"
-	},
-	"login.totp-description": {
-		"defaultMessage": "Adja meg a kódot a hitelesítő alkalmazásából"
-	},
-	"login.totp-title": {
-		"defaultMessage": "MFA"
-	},
-	"login.totp-verify": {
-		"defaultMessage": "Ellenőrzés"
-	},
-	"mfa.backup-codes-remaining": {
-		"defaultMessage": "Hátralévő tartalék kódok: {count}"
-	},
-	"mfa.backup-warning": {
-		"defaultMessage": "Mentse el ezeket a tartalék kódokat biztonságos helyre. Minden kód csak egyszer használható."
-	},
-	"mfa.regenerate": {
-		"defaultMessage": "Újragenerálás"
-	},
-	"mfa.regenerate-backup": {
-		"defaultMessage": "Tartalék kódok újragenerálása"
-	},
-	"mfa.regenerate-instructions": {
-		"defaultMessage": "Adjon meg egy ellenőrző kódot az új tartalék kódok generálásához. A régi kódok érvénytelenné válnak."
-	},
-	"mfa.title": {
-		"defaultMessage": "MFA"
-	},
-	"nginx-config.label": {
-		"defaultMessage": "Egyéni Nginx konfiguráció"
-	},
-	"nginx-config.placeholder": {
-		"defaultMessage": "# Adja meg az egyéni Nginx konfigurációját itt, saját felelősségére!"
-	},
-	"no-permission-error": {
-		"defaultMessage": "Nincs jogosultsága ennek megtekintéséhez."
-	},
-	"notfound.action": {
-		"defaultMessage": "Vigyen haza"
-	},
-	"notfound.content": {
-		"defaultMessage": "Sajnáljuk, de a keresett oldal nem található"
-	},
-	"notfound.title": {
-		"defaultMessage": "Hoppá… Hibás oldalra talált"
-	},
-	"notification.error": {
-		"defaultMessage": "Hiba"
-	},
-	"notification.object-deleted": {
-		"defaultMessage": "{object} törölve lett"
-	},
-	"notification.object-disabled": {
-		"defaultMessage": "{object} letiltva lett"
-	},
-	"notification.object-enabled": {
-		"defaultMessage": "{object} engedélyezve lett"
-	},
-	"notification.object-renewed": {
-		"defaultMessage": "{object} megújítva lett"
-	},
-	"notification.object-saved": {
-		"defaultMessage": "{object} mentve lett"
-	},
-	"notification.success": {
-		"defaultMessage": "Sikeres"
-	},
-	"object.actions-title": {
-		"defaultMessage": "{object} #{id}"
-	},
-	"object.add": {
-		"defaultMessage": "{object} hozzáadása"
-	},
-	"object.delete": {
-		"defaultMessage": "{object} törlése"
-	},
-	"object.delete.content": {
-		"defaultMessage": "Biztosan törölni szeretné ezt: {object}?"
-	},
-	"object.edit": {
-		"defaultMessage": "{object} szerkesztése"
-	},
-	"object.empty": {
-		"defaultMessage": "Nincsenek {objects}"
-	},
-	"object.event.created": {
-		"defaultMessage": "{object} létrehozva"
-	},
-	"object.event.deleted": {
-		"defaultMessage": "{object} törölve"
-	},
-	"object.event.disabled": {
-		"defaultMessage": "{object} letiltva"
-	},
-	"object.event.enabled": {
-		"defaultMessage": "{object} engedélyezve"
-	},
-	"object.event.renewed": {
-		"defaultMessage": "{object} megújítva"
-	},
-	"object.event.updated": {
-		"defaultMessage": "{object} frissítve"
-	},
-	"offline": {
-		"defaultMessage": "Offline"
-	},
-	"online": {
-		"defaultMessage": "Online"
-	},
-	"options": {
-		"defaultMessage": "Beállítások"
-	},
-	"password": {
-		"defaultMessage": "Jelszó"
-	},
-	"password.generate": {
-		"defaultMessage": "Véletlenszerű jelszó generálása"
-	},
-	"password.hide": {
-		"defaultMessage": "Jelszó elrejtése"
-	},
-	"password.show": {
-		"defaultMessage": "Jelszó megjelenítése"
-	},
-	"permissions.hidden": {
-		"defaultMessage": "Rejtett"
-	},
-	"permissions.manage": {
-		"defaultMessage": "Kezelés"
-	},
-	"permissions.view": {
-		"defaultMessage": "Csak megtekintés"
-	},
-	"permissions.visibility.all": {
-		"defaultMessage": "Összes elem"
-	},
-	"permissions.visibility.title": {
-		"defaultMessage": "Elemek láthatósága"
-	},
-	"permissions.visibility.user": {
-		"defaultMessage": "Csak létrehozott elemek"
-	},
-	"proxy-host": {
-		"defaultMessage": "Proxy Kiszolgáló"
-	},
-	"proxy-host.forward-host": {
-		"defaultMessage": "Továbbító hostnév / IP"
-	},
-	"proxy-hosts": {
-		"defaultMessage": "Proxy Kiszolgálók"
-	},
-	"proxy-hosts.count": {
-		"defaultMessage": "{count} {count, plural, one {Proxy Kiszolgáló} other {Proxy Kiszolgálók}}"
-	},
-	"public": {
-		"defaultMessage": "Nyilvános"
-	},
-	"redirection-host": {
-		"defaultMessage": "Átirányító Kiszolgáló"
-	},
-	"redirection-host.forward-domain": {
-		"defaultMessage": "Továbbító domain"
-	},
-	"redirection-host.forward-http-code": {
-		"defaultMessage": "HTTP kód"
-	},
-	"redirection-hosts": {
-		"defaultMessage": "Átirányító Kiszolgálók"
-	},
-	"redirection-hosts.count": {
-		"defaultMessage": "{count} {count, plural, one {Átirányító Kiszolgáló} other {Átirányító Kiszolgálók}}"
-	},
-	"redirection-hosts.http-code.300": {
-		"defaultMessage": "300 Többszörös választás"
-	},
-	"redirection-hosts.http-code.301": {
-		"defaultMessage": "301 Véglegesen áthelyezve"
-	},
-	"redirection-hosts.http-code.302": {
-		"defaultMessage": "302 Ideiglenesen áthelyezve"
-	},
-	"redirection-hosts.http-code.303": {
-		"defaultMessage": "303 Lásd másik"
-	},
-	"redirection-hosts.http-code.307": {
-		"defaultMessage": "307 Ideiglenes átirányítás"
-	},
-	"redirection-hosts.http-code.308": {
-		"defaultMessage": "308 Végleges átirányítás"
-	},
-	"role.admin": {
-		"defaultMessage": "Adminisztrátor"
-	},
-	"role.standard-user": {
-		"defaultMessage": "Általános felhasználó"
-	},
-	"save": {
-		"defaultMessage": "Mentés"
-	},
-	"setting": {
-		"defaultMessage": "Beállítás"
-	},
-	"settings": {
-		"defaultMessage": "Beállítások"
-	},
-	"settings.default-site": {
-		"defaultMessage": "Alapértelmezett oldal"
-	},
-	"settings.default-site.404": {
-		"defaultMessage": "404-es oldal"
-	},
-	"settings.default-site.444": {
-		"defaultMessage": "Nincs válasz (444)"
-	},
-	"settings.default-site.congratulations": {
-		"defaultMessage": "Gratulálunk oldal"
-	},
-	"settings.default-site.description": {
-		"defaultMessage": "Mit mutasson az Nginx ismeretlen Kiszolgáló esetén"
-	},
-	"settings.default-site.html": {
-		"defaultMessage": "Egyéni HTML"
-	},
-	"settings.default-site.html.placeholder": {
-		"defaultMessage": "<!-- Adja meg az egyéni HTML tartalmát itt -->"
-	},
-	"settings.default-site.redirect": {
-		"defaultMessage": "Átirányítás"
-	},
-	"setup.preamble": {
-		"defaultMessage": "Kezdje az admin fiók létrehozásával."
-	},
-	"setup.title": {
-		"defaultMessage": "Üdvözöljük!"
-	},
-	"sign-in": {
-		"defaultMessage": "Bejelentkezés"
-	},
-	"ssl-certificate": {
-		"defaultMessage": "TLS tanúsítvány"
-	},
-	"stream": {
-		"defaultMessage": "Stream"
-	},
-	"stream.forward-host": {
-		"defaultMessage": "Továbbító kiszolgáló"
-	},
-	"stream.forward-host.placeholder": {
-		"defaultMessage": "example.com vagy 10.0.0.1 vagy 2001:db8:3333:4444:5555:6666:7777:8888"
-	},
-	"stream.incoming-port": {
-		"defaultMessage": "Bejövő port"
-	},
-	"streams": {
-		"defaultMessage": "Streamek"
-	},
-	"streams.count": {
-		"defaultMessage": "{count} {count, plural, one {Stream} other {Stream}}"
-	},
-	"streams.tcp": {
-		"defaultMessage": "TCP"
-	},
-	"streams.udp": {
-		"defaultMessage": "UDP"
-	},
-	"test": {
-		"defaultMessage": "Teszt"
-	},
-	"totp.disable": {
-		"defaultMessage": "TOTP letiltása"
-	},
-	"totp.disable-confirm": {
-		"defaultMessage": "TOTP letiltása"
-	},
-	"totp.disable-warning": {
-		"defaultMessage": "A TOTP letiltása kevésbé teszi biztonságossá a fiókját."
-	},
-	"totp.disabled": {
-		"defaultMessage": "Letiltva"
-	},
-	"totp.done": {
-		"defaultMessage": "Elmentettem a tartalék kódjaimat"
-	},
-	"totp.enable": {
-		"defaultMessage": "TOTP engedélyezése"
-	},
-	"totp.enabled": {
-		"defaultMessage": "Engedélyezve"
-	},
-	"totp.enter-code": {
-		"defaultMessage": "Adja meg az ellenőrző kódot"
-	},
-	"totp.enter-code-disable": {
-		"defaultMessage": "Adja meg az ellenőrző kódot a letiltáshoz"
-	},
-	"totp.secret-key": {
-		"defaultMessage": "Titkos kulcs"
-	},
-	"totp.setup-instructions": {
-		"defaultMessage": "Olvassa be ezt a QR kódot a hitelesítő alkalmazásával, vagy adja meg a titkot manuálisan."
-	},
-	"totp.status": {
-		"defaultMessage": "Állapot"
-	},
-	"totp.verify-enable": {
-		"defaultMessage": "Ellenőrzés és engedélyezés"
-	},
-	"update-available": {
-		"defaultMessage": "Frissítés elérhető: {latestVersion}"
-	},
-	"user": {
-		"defaultMessage": "Felhasználó"
-	},
-	"user.change-password": {
-		"defaultMessage": "Jelszó megváltoztatása"
-	},
-	"user.confirm-password": {
-		"defaultMessage": "Jelszó megerősítése"
-	},
-	"user.current-password": {
-		"defaultMessage": "Jelenlegi jelszó"
-	},
-	"user.edit-profile": {
-		"defaultMessage": "Profil szerkesztése"
-	},
-	"user.full-name": {
-		"defaultMessage": "Teljes név"
-	},
-	"user.login-as": {
-		"defaultMessage": "Bejelentkezés mint {name}"
-	},
-	"user.logout": {
-		"defaultMessage": "Kijelentkezés"
-	},
-	"user.mfa": {
-		"defaultMessage": "MFA"
-	},
-	"user.new-password": {
-		"defaultMessage": "Új jelszó"
-	},
-	"user.nickname": {
-		"defaultMessage": "Becenév"
-	},
-	"user.set-password": {
-		"defaultMessage": "Jelszó beállítása"
-	},
-	"user.set-permissions": {
-		"defaultMessage": "Engedélyek beállítása {name} számára"
-	},
-	"user.switch-dark": {
-		"defaultMessage": "Váltás sötét módra"
-	},
-	"user.switch-light": {
-		"defaultMessage": "Váltás világos módra"
-	},
-	"username": {
-		"defaultMessage": "Felhasználónév"
-	},
-	"users": {
-		"defaultMessage": "Felhasználók"
-	}
+	"access-list": "Hozzáférési lista",
+	"access-list.access-count": "{count} {count, plural, one {szabály} other {szabály}}",
+	"access-list.auth-count": "{count} {count, plural, one {felhasználó} other {felhasználó}}",
+	"access-list.help-rules-last": "Ha legalább 1 szabály létezik, ez a mindent tiltó szabály utolsóként lesz hozzáadva",
+	"access-list.help.rules-order": "Vegye figyelembe, hogy az engedélyező és tiltó direktívák a meghatározásuk sorrendjében lesznek alkalmazva.",
+	"access-list.pass-auth": "Hitelesítés továbbítása az upstream felé",
+	"access-list.public": "Nyilvánosan elérhető",
+	"access-list.public.subtitle": "Alapszintű hitelesítés nem szükséges",
+	"access-list.rule-source.placeholder": "192.168.1.100 vagy 192.168.1.0/24 vagy 2001:0db8::/32",
+	"access-list.satisfy-any": "Bármely teljesítése",
+	"access-list.subtitle": "{users} {users, plural, one {felhasználó} other {felhasználó}}, {rules} {rules, plural, one {szabály} other {szabály}} - Létrehozva: {date}",
+	"access-lists": "Hozzáférési listák",
+	"action.add": "Hozzáadás",
+	"action.add-location": "Útvonal hozzáadása",
+	"action.allow": "Engedélyezés",
+	"action.close": "Bezárás",
+	"action.delete": "Törlés",
+	"action.deny": "Tiltás",
+	"action.disable": "Letiltás",
+	"action.download": "Letöltés",
+	"action.edit": "Szerkesztés",
+	"action.enable": "Engedélyezés",
+	"action.permissions": "Engedélyek",
+	"action.renew": "Megújítás",
+	"action.view-details": "Részletek megtekintése",
+	"auditlogs": "Audit naplók",
+	"auto": "Automatikus",
+	"cancel": "Mégse",
+	"certificate": "Tanúsítvány",
+	"certificate.custom-certificate": "Tanúsítvány",
+	"certificate.custom-certificate-key": "Tanúsítvány kulcs",
+	"certificate.custom-intermediate": "Köztes tanúsítvány",
+	"certificate.in-use": "Használatban",
+	"certificate.none.subtitle": "Nincs tanúsítvány hozzárendelve",
+	"certificate.none.subtitle.for-http": "Ez a kiszolgáló nem fog HTTPS-t használni",
+	"certificate.none.title": "Nincs",
+	"certificate.not-in-use": "Nincs használatban",
+	"certificate.renew": "Tanúsítvány megújítása",
+	"certificates": "Tanúsítványok",
+	"certificates.custom": "Egyéni tanúsítvány",
+	"certificates.custom.warning": "Jelszóval védett kulcsfájlok nem támogatottak.",
+	"certificates.dns.credentials": "Hitelesítő fájl tartalma",
+	"certificates.dns.credentials-note": "Ez a plugin egy konfigurációs fájlt igényel, amely API tokent vagy egyéb hitelesítő adatokat tartalmaz a szolgáltatóhoz",
+	"certificates.dns.credentials-warning": "Ezek az adatok sima szövegként lesznek tárolva az adatbázisban és egy fájlban!",
+	"certificates.dns.propagation-seconds": "Propagálási másodpercek",
+	"certificates.dns.propagation-seconds-note": "Hagyja üresen a plugin alapértelmezett értékének használatához. Másodpercek száma a DNS propagálás megvárásához.",
+	"certificates.dns.provider": "DNS szolgáltató",
+	"certificates.dns.provider.placeholder": "Válasszon szolgáltatót...",
+	"certificates.dns.warning": "Ez a szakasz némi ismeretet igényel a Certbot-ról és a DNS plugin-jeiről. Kérjük, olvassa el a megfelelő plugin dokumentációját.",
+	"certificates.http.reachability-404": "Található szerver ezen a domain-en, de nem úgy tűnik, hogy NPMplus lenne. Kérjük, győződjön meg róla, hogy a domain arra az IP címre mutat, ahol az NPMplus példánya fut.",
+	"certificates.http.reachability-failed-to-check": "Az elérhetőség ellenőrzése sikertelen a site24x7.com kommunikációs hiba miatt.",
+	"certificates.http.reachability-not-resolved": "Nincs elérhető szerver ezen a domain-en. Kérjük, győződjön meg róla, hogy a domain létezik és arra az IP címre mutat, ahol az NPMplus példánya fut, és szükség esetén a 80-as port továbbítva van a routerében.",
+	"certificates.http.reachability-ok": "A szerver elérhető és a tanúsítványok létrehozása lehetséges lesz.",
+	"certificates.http.reachability-other": "Található szerver ezen a domain-en, de váratlan {code} státuszkódot adott vissza. Ez az NPMplus szerver? Kérjük, győződjön meg róla, hogy a domain arra az IP címre mutat, ahol az NPMplus példánya fut.",
+	"certificates.http.reachability-wrong-data": "Található szerver ezen a domain-en, de váratlan adatot adott vissza. Ez az NPMplus szerver? Kérjük, győződjön meg róla, hogy a domain arra az IP címre mutat, ahol az NPMplus példánya fut.",
+	"certificates.http.test-results": "Teszt eredmények",
+	"certificates.http.warning": "Ezeknek a domain-eknek már konfigurálva kell lenniük, hogy erre a telepítésre mutassanak.",
+	"certificates.key-type": "Kulcs típus",
+	"certificates.key-type-description": "Az RSA széles körben kompatibilis, az ECDSA gyorsabb és biztonságosabb, de nem biztos, hogy régebbi rendszerek támogatják",
+	"certificates.key-type-ecdsa": "ECDSA 256",
+	"certificates.key-type-rsa": "RSA 2048",
+	"certificates.request.subtitle": "Certbot-tel",
+	"certificates.request.title": "Új tanúsítvány kérelmezése",
+	"column.access": "Hozzáférés",
+	"column.authorization": "Jogosultság",
+	"column.authorizations": "Jogosultságok",
+	"column.custom-locations": "Egyéni útvonalak",
+	"column.destination": "Cél",
+	"column.details": "Részletek",
+	"column.email": "E-mail",
+	"column.event": "Esemény",
+	"column.expires": "Lejár",
+	"column.http-code": "HTTP kód",
+	"column.incoming-port": "Bejövő port",
+	"column.name": "Név",
+	"column.protocol": "Protokoll",
+	"column.provider": "Szolgáltató",
+	"column.roles": "Szerepkörök",
+	"column.rules": "Szabályok",
+	"column.satisfy": "Teljesítés",
+	"column.satisfy-all": "Összes",
+	"column.satisfy-any": "Bármely",
+	"column.scheme": "Séma",
+	"column.source": "Forrás",
+	"column.ssl": "TLS",
+	"column.status": "Állapot",
+	"created-on": "Létrehozva: {date}",
+	"dashboard": "Vezérlőpult",
+	"dead-host": "404-es Kiszolgáló",
+	"dead-hosts": "404-es Kiszolgálók",
+	"dead-hosts.count": "{count} {count, plural, one {404-es Kiszolgáló} other {404-es Kiszolgálók}}",
+	"disabled": "Letiltva",
+	"domain-names": "Domain nevek",
+	"domain-names.max": "Maximum {count} domain név",
+	"domain-names.placeholder": "Kezdjen el gépelni domain hozzáadásához...",
+	"domain-names.wildcards-not-permitted": "Helyettesítő karakterek nem engedélyezettek ennél a típusnál",
+	"domain-names.wildcards-not-supported": "Helyettesítő karakterek nem támogatottak ennél a CA-nál",
+	"domains.force-ssl": "HTTPS kényszerítése",
+	"domains.hsts-enabled": "HSTS engedélyezve",
+	"domains.hsts-subdomains": "HSTS aldomain-ek",
+	"domains.http2-support": "HTTP/2 támogatás",
+	"domains.use-dns": "DNS Challenge használata",
+	"email-address": "E-mail cím",
+	"empty-search": "Nincs találat",
+	"empty-subtitle": "Miért nem hoz létre egyet?",
+	"enabled": "Engedélyezve",
+	"error.access.at-least-one": "Legalább egy jogosultság vagy egy hozzáférési szabály szükséges",
+	"error.access.duplicate-usernames": "A jogosultsági felhasználóneveknek egyedieknek kell lenniük",
+	"error.invalid-auth": "Érvénytelen e-mail vagy jelszó",
+	"error.invalid-domain": "Érvénytelen domain: {domain}",
+	"error.invalid-email": "Érvénytelen e-mail cím",
+	"error.max-character-length": "Maximális hossz {max} karakter",
+	"error.max-domains": "Túl sok domain, a maximum {max}",
+	"error.maximum": "A maximum {max}",
+	"error.min-character-length": "Minimális hossz {min} karakter",
+	"error.minimum": "A minimum {min}",
+	"error.passwords-must-match": "A jelszavaknak egyezniük kell",
+	"error.required": "Ez kötelező",
+	"expires.on": "Lejár: {date}",
+	"footer.github-fork": "Fork-olj a GitHub-on",
+	"host.flags.block-exploits": "Gyakori exploitok blokkolása",
+	"host.flags.cache-assets": "Erőforrások gyorsítótárazása",
+	"host.flags.preserve-path": "Útvonal megőrzése",
+	"host.flags.protocols": "Protokollok",
+	"host.flags.websockets-upgrade": "Websockets támogatás",
+	"host.forward-port": "Továbbító port",
+	"host.forward-scheme": "Séma",
+	"hosts": "Kiszolgálók",
+	"http-only": "Csak HTTP",
+	"lets-encrypt": "Certbot",
+	"lets-encrypt-via-dns": "Certbot DNS-en keresztül",
+	"lets-encrypt-via-http": "Certbot HTTP-n keresztül",
+	"loading": "Betöltés…",
+	"login.title": "Jelentkezzen be a fiókjába",
+	"login.totp-code": "Ellenőrző kód",
+	"login.totp-code-placeholder": "Adja meg a kódot",
+	"login.totp-description": "Adja meg a kódot a hitelesítő alkalmazásából",
+	"login.totp-title": "MFA",
+	"login.totp-verify": "Ellenőrzés",
+	"mfa.backup-codes-remaining": "Hátralévő tartalék kódok: {count}",
+	"mfa.backup-warning": "Mentse el ezeket a tartalék kódokat biztonságos helyre. Minden kód csak egyszer használható.",
+	"mfa.regenerate": "Újragenerálás",
+	"mfa.regenerate-backup": "Tartalék kódok újragenerálása",
+	"mfa.regenerate-instructions": "Adjon meg egy ellenőrző kódot az új tartalék kódok generálásához. A régi kódok érvénytelenné válnak.",
+	"mfa.title": "MFA",
+	"nginx-config.label": "Egyéni Nginx konfiguráció",
+	"nginx-config.placeholder": "# Adja meg az egyéni Nginx konfigurációját itt, saját felelősségére!",
+	"no-permission-error": "Nincs jogosultsága ennek megtekintéséhez.",
+	"notfound.action": "Vigyen haza",
+	"notfound.content": "Sajnáljuk, de a keresett oldal nem található",
+	"notfound.title": "Hoppá… Hibás oldalra talált",
+	"notification.error": "Hiba",
+	"notification.object-deleted": "{object} törölve lett",
+	"notification.object-disabled": "{object} letiltva lett",
+	"notification.object-enabled": "{object} engedélyezve lett",
+	"notification.object-renewed": "{object} megújítva lett",
+	"notification.object-saved": "{object} mentve lett",
+	"notification.success": "Sikeres",
+	"object.actions-title": "{object} #{id}",
+	"object.add": "{object} hozzáadása",
+	"object.delete": "{object} törlése",
+	"object.delete.content": "Biztosan törölni szeretné ezt: {object}?",
+	"object.edit": "{object} szerkesztése",
+	"object.empty": "Nincsenek {objects}",
+	"object.event.created": "{object} létrehozva",
+	"object.event.deleted": "{object} törölve",
+	"object.event.disabled": "{object} letiltva",
+	"object.event.enabled": "{object} engedélyezve",
+	"object.event.renewed": "{object} megújítva",
+	"object.event.updated": "{object} frissítve",
+	"offline": "Offline",
+	"online": "Online",
+	"options": "Beállítások",
+	"password": "Jelszó",
+	"password.generate": "Véletlenszerű jelszó generálása",
+	"password.hide": "Jelszó elrejtése",
+	"password.show": "Jelszó megjelenítése",
+	"permissions.hidden": "Rejtett",
+	"permissions.manage": "Kezelés",
+	"permissions.view": "Csak megtekintés",
+	"permissions.visibility.all": "Összes elem",
+	"permissions.visibility.title": "Elemek láthatósága",
+	"permissions.visibility.user": "Csak létrehozott elemek",
+	"proxy-host": "Proxy Kiszolgáló",
+	"proxy-host.forward-host": "Továbbító hostnév / IP",
+	"proxy-hosts": "Proxy Kiszolgálók",
+	"proxy-hosts.count": "{count} {count, plural, one {Proxy Kiszolgáló} other {Proxy Kiszolgálók}}",
+	"public": "Nyilvános",
+	"redirection-host": "Átirányító Kiszolgáló",
+	"redirection-host.forward-domain": "Továbbító domain",
+	"redirection-host.forward-http-code": "HTTP kód",
+	"redirection-hosts": "Átirányító Kiszolgálók",
+	"redirection-hosts.count": "{count} {count, plural, one {Átirányító Kiszolgáló} other {Átirányító Kiszolgálók}}",
+	"redirection-hosts.http-code.300": "300 Többszörös választás",
+	"redirection-hosts.http-code.301": "301 Véglegesen áthelyezve",
+	"redirection-hosts.http-code.302": "302 Ideiglenesen áthelyezve",
+	"redirection-hosts.http-code.303": "303 Lásd másik",
+	"redirection-hosts.http-code.307": "307 Ideiglenes átirányítás",
+	"redirection-hosts.http-code.308": "308 Végleges átirányítás",
+	"role.admin": "Adminisztrátor",
+	"role.standard-user": "Általános felhasználó",
+	"save": "Mentés",
+	"setting": "Beállítás",
+	"settings": "Beállítások",
+	"settings.default-site": "Alapértelmezett oldal",
+	"settings.default-site.404": "404-es oldal",
+	"settings.default-site.444": "Nincs válasz (444)",
+	"settings.default-site.congratulations": "Gratulálunk oldal",
+	"settings.default-site.description": "Mit mutasson az Nginx ismeretlen Kiszolgáló esetén",
+	"settings.default-site.html": "Egyéni HTML",
+	"settings.default-site.html.placeholder": "<!-- Adja meg az egyéni HTML tartalmát itt -->",
+	"settings.default-site.redirect": "Átirányítás",
+	"setup.preamble": "Kezdje az admin fiók létrehozásával.",
+	"setup.title": "Üdvözöljük!",
+	"sign-in": "Bejelentkezés",
+	"ssl-certificate": "TLS tanúsítvány",
+	"stream": "Stream",
+	"stream.forward-host": "Továbbító kiszolgáló",
+	"stream.forward-host.placeholder": "example.com vagy 10.0.0.1 vagy 2001:db8:3333:4444:5555:6666:7777:8888",
+	"stream.incoming-port": "Bejövő port",
+	"streams": "Streamek",
+	"streams.count": "{count} {count, plural, one {Stream} other {Stream}}",
+	"streams.tcp": "TCP",
+	"streams.udp": "UDP",
+	"test": "Teszt",
+	"totp.disable": "TOTP letiltása",
+	"totp.disable-confirm": "TOTP letiltása",
+	"totp.disable-warning": "A TOTP letiltása kevésbé teszi biztonságossá a fiókját.",
+	"totp.disabled": "Letiltva",
+	"totp.done": "Elmentettem a tartalék kódjaimat",
+	"totp.enable": "TOTP engedélyezése",
+	"totp.enabled": "Engedélyezve",
+	"totp.enter-code": "Adja meg az ellenőrző kódot",
+	"totp.enter-code-disable": "Adja meg az ellenőrző kódot a letiltáshoz",
+	"totp.secret-key": "Titkos kulcs",
+	"totp.setup-instructions": "Olvassa be ezt a QR kódot a hitelesítő alkalmazásával, vagy adja meg a titkot manuálisan.",
+	"totp.status": "Állapot",
+	"totp.verify-enable": "Ellenőrzés és engedélyezés",
+	"update-available": "Frissítés elérhető: {latestVersion}",
+	"user": "Felhasználó",
+	"user.change-password": "Jelszó megváltoztatása",
+	"user.confirm-password": "Jelszó megerősítése",
+	"user.current-password": "Jelenlegi jelszó",
+	"user.edit-profile": "Profil szerkesztése",
+	"user.full-name": "Teljes név",
+	"user.login-as": "Bejelentkezés mint {name}",
+	"user.logout": "Kijelentkezés",
+	"user.mfa": "MFA",
+	"user.new-password": "Új jelszó",
+	"user.nickname": "Becenév",
+	"user.set-password": "Jelszó beállítása",
+	"user.set-permissions": "Engedélyek beállítása {name} számára",
+	"user.switch-dark": "Váltás sötét módra",
+	"user.switch-light": "Váltás világos módra",
+	"username": "Felhasználónév",
+	"users": "Felhasználók"
 }
