@@ -78,7 +78,7 @@
 		"defaultMessage": "Logboeken"
 	},
 	"auto": {
-		"defaultMessage": "Autom."
+		"defaultMessage": "Automatisch"
 	},
 	"cancel": {
 		"defaultMessage": "Annuleren"
@@ -141,7 +141,7 @@
 		"defaultMessage": "DNS-aanbieder"
 	},
 	"certificates.dns.provider.placeholder": {
-		"defaultMessage": "Kies een aanbieder..."
+		"defaultMessage": "Kies een aanbieder…"
 	},
 	"certificates.dns.warning": {
 		"defaultMessage": "Deze sectie vereist wat informatie over Certbot en zijn DNS plugins. Gebruik de documentatie van de bijbehorende plugins."
@@ -282,7 +282,7 @@
 		"defaultMessage": "{count} domeinnamen toegestaan"
 	},
 	"domain-names.placeholder": {
-		"defaultMessage": "Voeg een domeinnaam toe..."
+		"defaultMessage": "Voer een domeinnaam in…"
 	},
 	"domain-names.wildcards-not-permitted": {
 		"defaultMessage": "Wildcards zijn niet toegestaan voor dit type"
@@ -321,7 +321,7 @@
 		"defaultMessage": "Waarom maak je er geen aan?"
 	},
 	"enabled": {
-		"defaultMessage": "Aangezet"
+		"defaultMessage": "Ingeschakeld"
 	},
 	"error.access.at-least-one": {
 		"defaultMessage": "Minstens één authorisatie- of één toegangsregel is vereist"
@@ -687,7 +687,7 @@
 		"defaultMessage": "TOTP uitschakelen"
 	},
 	"totp.disable-warning": {
-		"defaultMessage": "Als je TOTP uitschakelt, wordt je account minder beveiligd."
+		"defaultMessage": "Als je TOTP uitschakelt, is je account minder goed beschermd."
 	},
 	"totp.disabled": {
 		"defaultMessage": "Uitgeschakeld"
@@ -711,7 +711,7 @@
 		"defaultMessage": "Geheime sleutel"
 	},
 	"totp.setup-instructions": {
-		"defaultMessage": "Scan deze QR-code met je authenticator-app, of voer de code handmatig in."
+		"defaultMessage": "Scan deze QR-code met je authenticator-app, of neem de code handmatig over."
 	},
 	"totp.status": {
 		"defaultMessage": "Status"
@@ -774,3 +774,4 @@
 		"defaultMessage": "Gebruikers"
 	}
 }
+
