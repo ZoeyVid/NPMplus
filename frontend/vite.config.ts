@@ -9,5 +9,4 @@ export default defineConfig({
 	resolve: {
 		tsconfigPaths: true,
 	},
-	assetsInclude: ["**/*.md"],
 });

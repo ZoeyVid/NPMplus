@@ -1,8 +1,6 @@
 import Markdown from "markdown-to-jsx";
-import { useEffect, useState } from "react";
 import Modal from "react-bootstrap/Modal";
-import { getLocale, T } from "src/locale";
-import { getHelpFile } from "src/locale/src/HelpDoc";
+import { getHelpFile, getLocale, T } from "src/locale";
 import EasyModal, { type InnerModalProps } from "src/modules/easyModal";
 
 interface Props extends InnerModalProps {
@@ -14,20 +12,7 @@ const showHelpModal = (section: string) => {
 };
 
 const HelpModal = EasyModal.create(({ section, visible, remove }: Props) => {
-	const [markdownText, setMarkdownText] = useState("");
-	const lang = getLocale(true);
-
-	useEffect(() => {
-		void (async () => {
-			try {
-				const docFile = getHelpFile(lang, section) as any;
-				const response = await fetch(docFile);
-				setMarkdownText(await response.text());
-			} catch (ex: any) {
-				setMarkdownText(`**ERROR:** ${ex.message}`);
-			}
-		})();
-	}, [lang, section]);
+	const markdownText = getHelpFile(getLocale(), section);
 
 	return (
 		<Modal show={visible} onHide={remove}>

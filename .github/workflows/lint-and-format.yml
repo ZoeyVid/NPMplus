@@ -40,7 +40,7 @@ jobs:
           cd frontend
           pnpm install --frozen-lockfile
           pnpm biome $BIOME --reporter=default --reporter=github | sed "s|,file=|,file=frontend/|g" || echo "BIOME_FAILED=1" >> "$GITHUB_ENV"
-          ./src/locale/sort-locale.sh
+          ./translations/sort-locale.sh
           pnpm tsc -b
           pnpm vite build
       - name: nginxbeautifier
