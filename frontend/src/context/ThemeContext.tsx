@@ -40,6 +40,8 @@ export const ThemeProvider: React.FC<ThemeProviderProps> = ({ children }) => {
 		document.body.classList.remove(theme === Light ? Dark : Light);
 		document.body.classList.add(theme);
 		localStorage.setItem(StorageKey, theme);
+		for (const meta of document.querySelectorAll<HTMLMetaElement>('meta[name="theme-color"]'))
+			meta.media = meta.dataset.theme === theme ? "all" : "not all";
 	}, [theme]);
 
 	const toggleTheme = () => {
