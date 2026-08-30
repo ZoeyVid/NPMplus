@@ -1,776 +1,260 @@
 {
-	"access-list": {
-		"defaultMessage": "Tilgangsliste"
-	},
-	"access-list.access-count": {
-		"defaultMessage": "{count} {count, plural, one {regel} other {regler}}"
-	},
-	"access-list.auth-count": {
-		"defaultMessage": "{count} {count, plural, one {bruker} other {brukere}}"
-	},
-	"access-list.help-rules-last": {
-		"defaultMessage": "Når minst én regel finnes, legges denne \"deny all\"-regelen til sist"
-	},
-	"access-list.help.rules-order": {
-		"defaultMessage": "Merk at tillat- og nekt-direktivene brukes i den rekkefølgen de er definert."
-	},
-	"access-list.pass-auth": {
-		"defaultMessage": "Send autentisering til upstream"
-	},
-	"access-list.public": {
-		"defaultMessage": "Offentlig tilgjengelig"
-	},
-	"access-list.public.subtitle": {
-		"defaultMessage": "Ingen grunnleggende autentisering kreves"
-	},
-	"access-list.rule-source.placeholder": {
-		"defaultMessage": "192.168.1.100 eller 192.168.1.0/24 eller 2001:0db8::/32"
-	},
-	"access-list.satisfy-any": {
-		"defaultMessage": "Oppfyll en av kravene"
-	},
-	"access-list.subtitle": {
-		"defaultMessage": "{users} {users, plural, one {bruker} other {brukere}}, {rules} {rules, plural, one {regel} other {regler}} - Opprettet: {date}"
-	},
-	"access-lists": {
-		"defaultMessage": "Tilgangslister"
-	},
-	"action.add": {
-		"defaultMessage": "Legg til"
-	},
-	"action.add-location": {
-		"defaultMessage": "Legg til plassering"
-	},
-	"action.allow": {
-		"defaultMessage": "Tillat"
-	},
-	"action.close": {
-		"defaultMessage": "Lukk"
-	},
-	"action.delete": {
-		"defaultMessage": "Slett"
-	},
-	"action.deny": {
-		"defaultMessage": "Nekt"
-	},
-	"action.disable": {
-		"defaultMessage": "Deaktiver"
-	},
-	"action.download": {
-		"defaultMessage": "Last ned"
-	},
-	"action.edit": {
-		"defaultMessage": "Rediger"
-	},
-	"action.enable": {
-		"defaultMessage": "Aktiver"
-	},
-	"action.permissions": {
-		"defaultMessage": "Tillatelser"
-	},
-	"action.renew": {
-		"defaultMessage": "Forny"
-	},
-	"action.view-details": {
-		"defaultMessage": "Vis detaljer"
-	},
-	"auditlogs": {
-		"defaultMessage": "Revisjonslogger"
-	},
-	"auto": {
-		"defaultMessage": "Auto"
-	},
-	"cancel": {
-		"defaultMessage": "Avbryt"
-	},
-	"certificate": {
-		"defaultMessage": "Sertifikat"
-	},
-	"certificate.custom-certificate": {
-		"defaultMessage": "Egendefinert Sertifikat"
-	},
-	"certificate.custom-certificate-key": {
-		"defaultMessage": "Egendefinert Sertifikat nøkkel"
-	},
-	"certificate.custom-intermediate": {
-		"defaultMessage": "Egendefinert Intermediate Sertifikat"
-	},
-	"certificate.in-use": {
-		"defaultMessage": "I bruk"
-	},
-	"certificate.none.subtitle": {
-		"defaultMessage": "Ingen sertifikat tildelt"
-	},
-	"certificate.none.subtitle.for-http": {
-		"defaultMessage": "Denne verten vil ikke bruke HTTPS"
-	},
-	"certificate.none.title": {
-		"defaultMessage": "Ingen"
-	},
-	"certificate.not-in-use": {
-		"defaultMessage": "Ikke i bruk"
-	},
-	"certificate.renew": {
-		"defaultMessage": "Forny sertifikat"
-	},
-	"certificates": {
-		"defaultMessage": "Sertifikater"
-	},
-	"certificates.custom": {
-		"defaultMessage": "Egendefinert Sertifikat"
-	},
-	"certificates.custom.warning": {
-		"defaultMessage": "Nøkkelfiler beskyttet med passordfrase støttes ikke."
-	},
-	"certificates.dns.credentials": {
-		"defaultMessage": "Innhold i legitimasjonsfil"
-	},
-	"certificates.dns.credentials-note": {
-		"defaultMessage": "Denne pluginen krever en konfigurasjonsfil som inneholder en API-token eller andre legitimasjoner for leverandøren din"
-	},
-	"certificates.dns.credentials-warning": {
-		"defaultMessage": "Disse dataene vil bli lagret som ren tekst i databasen og i en fil!"
-	},
-	"certificates.dns.propagation-seconds": {
-		"defaultMessage": "Propageringsekunder"
-	},
-	"certificates.dns.propagation-seconds-note": {
-		"defaultMessage": "La stå tomt for å bruke pluginens standardverdi. Antall sekunder å vente på DNS-propagasjon."
-	},
-	"certificates.dns.provider": {
-		"defaultMessage": "DNS-leverandør"
-	},
-	"certificates.dns.provider.placeholder": {
-		"defaultMessage": "Velg en leverandør..."
-	},
-	"certificates.dns.warning": {
-		"defaultMessage": "Denne seksjonen krever noe kunnskap om Certbot og dets DNS-plugins. Vennligst konsulter dokumentasjonen for de respektive pluginene."
-	},
-	"certificates.http.reachability-404": {
-		"defaultMessage": "Det finnes en server på dette domenet, men det ser ikke ut til å være NPMplus. Vennligst sørg for at domenet ditt peker til IP-en der NPMplus-instansen kjører."
-	},
-	"certificates.http.reachability-failed-to-check": {
-		"defaultMessage": "Kunne ikke sjekke tilgjengeligheten på grunn av en kommunikasjonsfeil med site24x7.com."
-	},
-	"certificates.http.reachability-not-resolved": {
-		"defaultMessage": "Det finnes ingen server tilgjengelig på dette domenet. Vennligst sørg for at domenet ditt eksisterer og peker til IP-en der NPMplus-instansen kjører, og om nødvendig at port 80 er videresendt i ruteren din."
-	},
-	"certificates.http.reachability-ok": {
-		"defaultMessage": "Serveren din er tilgjengelig, og det bør være mulig å opprette sertifikater."
-	},
-	"certificates.http.reachability-other": {
-		"defaultMessage": "Det finnes en server på dette domenet, men den returnerte en uventet statuskode {code}. Er det NPMplus-serveren? Vennligst sørg for at domenet ditt peker til IP-en der NPMplus-instansen kjører."
-	},
-	"certificates.http.reachability-wrong-data": {
-		"defaultMessage": "Det finnes en server på dette domenet, men den returnerte uventet data. Er det NPMplus-serveren? Vennligst sørg for at domenet ditt peker til IP-en der NPMplus-instansen kjører."
-	},
-	"certificates.http.test-results": {
-		"defaultMessage": "Testresultater"
-	},
-	"certificates.http.warning": {
-		"defaultMessage": "Disse domenene må allerede være konfigurert til å peke til denne installasjonen."
-	},
-	"certificates.key-type": {
-		"defaultMessage": "Nøkkeltype"
-	},
-	"certificates.key-type-description": {
-		"defaultMessage": "RSA er bredt kompatibel, ECDSA er raskere og mer sikker, men støttes kanskje ikke av eldre systemer"
-	},
-	"certificates.key-type-ecdsa": {
-		"defaultMessage": "ECDSA 256"
-	},
-	"certificates.key-type-rsa": {
-		"defaultMessage": "RSA 2048"
-	},
-	"certificates.request.subtitle": {
-		"defaultMessage": "med Certbot"
-	},
-	"certificates.request.title": {
-		"defaultMessage": "Be om et nytt sertifikat"
-	},
-	"column.access": {
-		"defaultMessage": "Tilgang"
-	},
-	"column.authorization": {
-		"defaultMessage": "Autorisasjon"
-	},
-	"column.authorizations": {
-		"defaultMessage": "Autorisasjoner"
-	},
-	"column.custom-locations": {
-		"defaultMessage": "Egendefinerte plasseringer"
-	},
-	"column.destination": {
-		"defaultMessage": "Destinasjon"
-	},
-	"column.details": {
-		"defaultMessage": "Detaljer"
-	},
-	"column.email": {
-		"defaultMessage": "E-post"
-	},
-	"column.event": {
-		"defaultMessage": "Hendelse"
-	},
-	"column.expires": {
-		"defaultMessage": "Utløper"
-	},
-	"column.http-code": {
-		"defaultMessage": "HTTP-kode"
-	},
-	"column.incoming-port": {
-		"defaultMessage": "Innkommende port"
-	},
-	"column.name": {
-		"defaultMessage": "Navn"
-	},
-	"column.protocol": {
-		"defaultMessage": "Protokoll"
-	},
-	"column.provider": {
-		"defaultMessage": "Leverandør"
-	},
-	"column.roles": {
-		"defaultMessage": "Roller"
-	},
-	"column.rules": {
-		"defaultMessage": "Regler"
-	},
-	"column.satisfy": {
-		"defaultMessage": "Oppfylle"
-	},
-	"column.satisfy-all": {
-		"defaultMessage": "Alle"
-	},
-	"column.satisfy-any": {
-		"defaultMessage": "Noen"
-	},
-	"column.scheme": {
-		"defaultMessage": "Skjema"
-	},
-	"column.source": {
-		"defaultMessage": "Kilde"
-	},
-	"column.ssl": {
-		"defaultMessage": "TLS"
-	},
-	"column.status": {
-		"defaultMessage": "Status"
-	},
-	"created-on": {
-		"defaultMessage": "Opprettet: {date}"
-	},
-	"dashboard": {
-		"defaultMessage": "Dashboard"
-	},
-	"dead-host": {
-		"defaultMessage": "404 Tjener ikke funnet"
-	},
-	"dead-hosts": {
-		"defaultMessage": "404 Tjenere ikke funnet"
-	},
-	"dead-hosts.count": {
-		"defaultMessage": "{count} {count, plural, one {404 Tjener} other {404 Tjenere}}"
-	},
-	"disabled": {
-		"defaultMessage": "Deaktivert"
-	},
-	"domain-names": {
-		"defaultMessage": "Domener"
-	},
-	"domain-names.max": {
-		"defaultMessage": "{count} domener maksimum"
-	},
-	"domain-names.placeholder": {
-		"defaultMessage": "Begynn å skrive for å legge til domene..."
-	},
-	"domain-names.wildcards-not-permitted": {
-		"defaultMessage": "Wildcards er ikke tillatt for denne typen"
-	},
-	"domain-names.wildcards-not-supported": {
-		"defaultMessage": "Wildcards støttes ikke for denne CA-en"
-	},
-	"domains.advanced": {
-		"defaultMessage": "Avansert"
-	},
-	"domains.force-ssl": {
-		"defaultMessage": "Tving HTTPS"
-	},
-	"domains.hsts-enabled": {
-		"defaultMessage": "HSTS Aktivert"
-	},
-	"domains.hsts-subdomains": {
-		"defaultMessage": "HSTS Underdomener"
-	},
-	"domains.http2-support": {
-		"defaultMessage": "HTTP/2 Støtte"
-	},
-	"domains.trust-forwarded-proto": {
-		"defaultMessage": "Stol på Upstream Forwarded Proto Headers"
-	},
-	"domains.use-dns": {
-		"defaultMessage": "Bruk DNS Utfordring"
-	},
-	"email-address": {
-		"defaultMessage": "E-postadresse"
-	},
-	"empty-search": {
-		"defaultMessage": "Ingen resultater funnet"
-	},
-	"empty-subtitle": {
-		"defaultMessage": "Hvorfor ikke opprette en?"
-	},
-	"enabled": {
-		"defaultMessage": "Aktivert"
-	},
-	"error.access.at-least-one": {
-		"defaultMessage": "Enten en autorisasjon eller en tilgangsregel er påkrevd"
-	},
-	"error.access.duplicate-usernames": {
-		"defaultMessage": "Autorisasjonsbrukernavn må være unike"
-	},
-	"error.invalid-auth": {
-		"defaultMessage": "Ugyldig e-post eller passord"
-	},
-	"error.invalid-domain": {
-		"defaultMessage": "Ugyldig domene: {domain}"
-	},
-	"error.invalid-email": {
-		"defaultMessage": "Ugyldig e-postadresse"
-	},
-	"error.max-character-length": {
-		"defaultMessage": "Maksimal lengde er {max} tegn"
-	},
-	"error.max-domains": {
-		"defaultMessage": "For mange domener, maks er {max}"
-	},
-	"error.maximum": {
-		"defaultMessage": "Maksimum er {max}"
-	},
-	"error.min-character-length": {
-		"defaultMessage": "Minimum lengde er {min} tegn"
-	},
-	"error.minimum": {
-		"defaultMessage": "Minimum er {min}"
-	},
-	"error.passwords-must-match": {
-		"defaultMessage": "Passordene må være like"
-	},
-	"error.required": {
-		"defaultMessage": "Dette er påkrevd"
-	},
-	"expires.on": {
-		"defaultMessage": "Utløper: {date}"
-	},
-	"footer.github-fork": {
-		"defaultMessage": "Fork meg på Github"
-	},
-	"host.flags.block-exploits": {
-		"defaultMessage": "Blokker vanlige utnyttelser"
-	},
-	"host.flags.cache-assets": {
-		"defaultMessage": "Mellomlagre ressurser"
-	},
-	"host.flags.preserve-path": {
-		"defaultMessage": "Behold sti"
-	},
-	"host.flags.protocols": {
-		"defaultMessage": "Protokoller"
-	},
-	"host.flags.websockets-upgrade": {
-		"defaultMessage": "Websockets-støtte"
-	},
-	"host.forward-port": {
-		"defaultMessage": "Viderekoble Port"
-	},
-	"host.forward-scheme": {
-		"defaultMessage": "Skjema"
-	},
-	"hosts": {
-		"defaultMessage": "Vertsnavn"
-	},
-	"http-only": {
-		"defaultMessage": "Kun HTTP"
-	},
-	"lets-encrypt": {
-		"defaultMessage": "Certbot"
-	},
-	"lets-encrypt-via-dns": {
-		"defaultMessage": "Certbot via DNS"
-	},
-	"lets-encrypt-via-http": {
-		"defaultMessage": "Certbot via HTTP"
-	},
-	"loading": {
-		"defaultMessage": "Laster…"
-	},
-	"login.title": {
-		"defaultMessage": "Logg på kontoen din"
-	},
-	"login.totp-code": {
-		"defaultMessage": "Verifikasjonskode"
-	},
-	"login.totp-code-placeholder": {
-		"defaultMessage": "Skriv inn kode"
-	},
-	"login.totp-description": {
-		"defaultMessage": "Skriv inn koden fra autentiseringsappen din"
-	},
-	"login.totp-title": {
-		"defaultMessage": "MFA"
-	},
-	"login.totp-verify": {
-		"defaultMessage": "Verifiser"
-	},
-	"mfa.backup-codes-remaining": {
-		"defaultMessage": "Gjenstående backup-koder: {count}"
-	},
-	"mfa.backup-warning": {
-		"defaultMessage": "Lagre disse backup-kodene på et sikkert sted. Hver kode kan kun brukes én gang."
-	},
-	"mfa.regenerate": {
-		"defaultMessage": "Regenerer"
-	},
-	"mfa.regenerate-backup": {
-		"defaultMessage": "Generer nye backup-koder"
-	},
-	"mfa.regenerate-instructions": {
-		"defaultMessage": "Angi en verifiseringskode for å generere nye backup-koder. Dine gamle koder vil bli ugyldige."
-	},
-	"mfa.title": {
-		"defaultMessage": "MFA"
-	},
-	"nginx-config.label": {
-		"defaultMessage": "Egendefinert Nginx-konfigurasjon"
-	},
-	"nginx-config.placeholder": {
-		"defaultMessage": "# Skriv inn din egendefinerte Nginx-konfigurasjon her på egen risiko!"
-	},
-	"no-permission-error": {
-		"defaultMessage": "Du har ikke tilgang til å se dette."
-	},
-	"notfound.action": {
-		"defaultMessage": "Ta meg hjem"
-	},
-	"notfound.content": {
-		"defaultMessage": "Beklager, siden du leter etter ble ikke funnet"
-	},
-	"notfound.title": {
-		"defaultMessage": "Oops… Du har nettopp funnet en feilsiden"
-	},
-	"notification.error": {
-		"defaultMessage": "Feil"
-	},
-	"notification.object-deleted": {
-		"defaultMessage": "{object} har blitt slettet"
-	},
-	"notification.object-disabled": {
-		"defaultMessage": "{object} har blitt deaktivert"
-	},
-	"notification.object-enabled": {
-		"defaultMessage": "{object} har blitt aktivert"
-	},
-	"notification.object-renewed": {
-		"defaultMessage": "{object} har blitt fornyet"
-	},
-	"notification.object-saved": {
-		"defaultMessage": "{object} har blitt lagret"
-	},
-	"notification.success": {
-		"defaultMessage": "Suksess"
-	},
-	"object.actions-title": {
-		"defaultMessage": "{object} #{id}"
-	},
-	"object.add": {
-		"defaultMessage": "Legg til {object}"
-	},
-	"object.delete": {
-		"defaultMessage": "Slett {object}"
-	},
-	"object.delete.content": {
-		"defaultMessage": "Er du sikker på at du vil slette dette {object}?"
-	},
-	"object.edit": {
-		"defaultMessage": "Rediger {object}"
-	},
-	"object.empty": {
-		"defaultMessage": "Det finnes ingen {objects}"
-	},
-	"object.event.created": {
-		"defaultMessage": "Opprettet {object}"
-	},
-	"object.event.deleted": {
-		"defaultMessage": "Slettet {object}"
-	},
-	"object.event.disabled": {
-		"defaultMessage": "Deaktivert {object}"
-	},
-	"object.event.enabled": {
-		"defaultMessage": "Aktivert {object}"
-	},
-	"object.event.renewed": {
-		"defaultMessage": "Fornyet {object}"
-	},
-	"object.event.updated": {
-		"defaultMessage": "Oppdatert {object}"
-	},
-	"offline": {
-		"defaultMessage": "Utilgjengelig"
-	},
-	"online": {
-		"defaultMessage": "Tilgjengelig"
-	},
-	"options": {
-		"defaultMessage": "Alternativer"
-	},
-	"password": {
-		"defaultMessage": "Passord"
-	},
-	"password.generate": {
-		"defaultMessage": "Generer tilfeldig passord"
-	},
-	"password.hide": {
-		"defaultMessage": "Skjul passord"
-	},
-	"password.show": {
-		"defaultMessage": "Vis passord"
-	},
-	"permissions.hidden": {
-		"defaultMessage": "Skjult"
-	},
-	"permissions.manage": {
-		"defaultMessage": "Administrer"
-	},
-	"permissions.view": {
-		"defaultMessage": "Kun visning"
-	},
-	"permissions.visibility.all": {
-		"defaultMessage": "Alle elementer"
-	},
-	"permissions.visibility.title": {
-		"defaultMessage": "Element Synlighet"
-	},
-	"permissions.visibility.user": {
-		"defaultMessage": "Kun opprettede elementer"
-	},
-	"proxy-host": {
-		"defaultMessage": "Proxy Host"
-	},
-	"proxy-host.forward-host": {
-		"defaultMessage": "Forward Hostname / IP"
-	},
-	"proxy-hosts": {
-		"defaultMessage": "Proxy-verter"
-	},
-	"proxy-hosts.count": {
-		"defaultMessage": "{count} {count, plural, one {Proxy-vert} other {Proxy-verter}}"
-	},
-	"public": {
-		"defaultMessage": "Offentlig"
-	},
-	"redirection-host": {
-		"defaultMessage": "Omdirigeringsvert"
-	},
-	"redirection-host.forward-domain": {
-		"defaultMessage": "Viderekoble domene"
-	},
-	"redirection-host.forward-http-code": {
-		"defaultMessage": "HTTP-kode"
-	},
-	"redirection-hosts": {
-		"defaultMessage": "Omdirigeringsverter"
-	},
-	"redirection-hosts.count": {
-		"defaultMessage": "{count} {count, plural, one {Omdirigeringsvert} other {Omdirigeringsverter}}"
-	},
-	"redirection-hosts.http-code.300": {
-		"defaultMessage": "300 Multiple Choices"
-	},
-	"redirection-hosts.http-code.301": {
-		"defaultMessage": "301 Flyttet permanent"
-	},
-	"redirection-hosts.http-code.302": {
-		"defaultMessage": "302 Flyttet midlertidig"
-	},
-	"redirection-hosts.http-code.303": {
-		"defaultMessage": "303 Se andre"
-	},
-	"redirection-hosts.http-code.307": {
-		"defaultMessage": "307 Midlertidig omdirigering"
-	},
-	"redirection-hosts.http-code.308": {
-		"defaultMessage": "308 Permanent omdirigering"
-	},
-	"role.admin": {
-		"defaultMessage": "Administrator"
-	},
-	"role.standard-user": {
-		"defaultMessage": "Standardbruker"
-	},
-	"save": {
-		"defaultMessage": "Lagre"
-	},
-	"setting": {
-		"defaultMessage": "Innstilling"
-	},
-	"settings": {
-		"defaultMessage": "Innstillinger"
-	},
-	"settings.default-site": {
-		"defaultMessage": "Standardnettsted"
-	},
-	"settings.default-site.404": {
-		"defaultMessage": "404-side"
-	},
-	"settings.default-site.444": {
-		"defaultMessage": "Ingen respons (444)"
-	},
-	"settings.default-site.congratulations": {
-		"defaultMessage": "Gratulerer-side"
-	},
-	"settings.default-site.description": {
-		"defaultMessage": "Hva som skal vises når Nginx treffes med en ukjent vert"
-	},
-	"settings.default-site.html": {
-		"defaultMessage": "Egendefinert HTML"
-	},
-	"settings.default-site.html.placeholder": {
-		"defaultMessage": "<!-- Skriv inn ditt egendefinerte HTML-innhold her -->"
-	},
-	"settings.default-site.redirect": {
-		"defaultMessage": "Omdiriger"
-	},
-	"setup.preamble": {
-		"defaultMessage": "Kom i gang ved å opprette din administratorkonto."
-	},
-	"setup.title": {
-		"defaultMessage": "Velkommen!"
-	},
-	"sign-in": {
-		"defaultMessage": "Logg inn"
-	},
-	"ssl-certificate": {
-		"defaultMessage": "TLS-sertifikat"
-	},
-	"stream": {
-		"defaultMessage": "Strøm"
-	},
-	"stream.forward-host": {
-		"defaultMessage": "Viderekoble vert"
-	},
-	"stream.forward-host.placeholder": {
-		"defaultMessage": "example.com eller 10.0.0.1 eller 2001:db8:3333:4444:5555:6666:7777:8888"
-	},
-	"stream.incoming-port": {
-		"defaultMessage": "Innkommende port"
-	},
-	"streams": {
-		"defaultMessage": "Strømmer"
-	},
-	"streams.count": {
-		"defaultMessage": "{count} {count, plural, one {Strøm} other {Strømmer}}"
-	},
-	"streams.tcp": {
-		"defaultMessage": "TCP"
-	},
-	"streams.udp": {
-		"defaultMessage": "UDP"
-	},
-	"test": {
-		"defaultMessage": "Test"
-	},
-	"totp.disable": {
-		"defaultMessage": "Deaktiver TOTP"
-	},
-	"totp.disable-confirm": {
-		"defaultMessage": "Deaktiver TOTP"
-	},
-	"totp.disable-warning": {
-		"defaultMessage": "Å deaktivere TOTP vil gjøre kontoen din mindre sikker."
-	},
-	"totp.disabled": {
-		"defaultMessage": "Deaktivert"
-	},
-	"totp.done": {
-		"defaultMessage": "Jeg har lagret backup-kodene mine"
-	},
-	"totp.enable": {
-		"defaultMessage": "Aktiver TOTP"
-	},
-	"totp.enabled": {
-		"defaultMessage": "Aktivert"
-	},
-	"totp.enter-code": {
-		"defaultMessage": "Angi verifiseringskode"
-	},
-	"totp.enter-code-disable": {
-		"defaultMessage": "Angi verifiseringskode for å deaktivere"
-	},
-	"totp.secret-key": {
-		"defaultMessage": "Hemmelig nøkkel"
-	},
-	"totp.setup-instructions": {
-		"defaultMessage": "Skann denne QR-koden med autentiseringsappen din, eller skriv inn nøkkelen manuelt."
-	},
-	"totp.status": {
-		"defaultMessage": "Status"
-	},
-	"totp.verify-enable": {
-		"defaultMessage": "Verifiser og aktiver"
-	},
-	"update-available": {
-		"defaultMessage": "Oppdatering tilgjengelig: {latestVersion}"
-	},
-	"user": {
-		"defaultMessage": "Bruker"
-	},
-	"user.change-password": {
-		"defaultMessage": "Endre passord"
-	},
-	"user.confirm-password": {
-		"defaultMessage": "Bekreft passord"
-	},
-	"user.current-password": {
-		"defaultMessage": "Nåværende passord"
-	},
-	"user.edit-profile": {
-		"defaultMessage": "Rediger profil"
-	},
-	"user.full-name": {
-		"defaultMessage": "Fullt navn"
-	},
-	"user.login-as": {
-		"defaultMessage": "Logg inn som {name}"
-	},
-	"user.logout": {
-		"defaultMessage": "Logg ut"
-	},
-	"user.mfa": {
-		"defaultMessage": "MFA"
-	},
-	"user.new-password": {
-		"defaultMessage": "Nytt passord"
-	},
-	"user.nickname": {
-		"defaultMessage": "Kallenavn"
-	},
-	"user.set-password": {
-		"defaultMessage": "Angi passord"
-	},
-	"user.set-permissions": {
-		"defaultMessage": "Angi tillatelser for {name}"
-	},
-	"user.switch-dark": {
-		"defaultMessage": "Bytt til mørk modus"
-	},
-	"user.switch-light": {
-		"defaultMessage": "Bytt til lys modus"
-	},
-	"username": {
-		"defaultMessage": "Brukernavn"
-	},
-	"users": {
-		"defaultMessage": "Brukere"
-	}
+	"access-list": "Tilgangsliste",
+	"access-list.access-count": "{count} {count, plural, one {regel} other {regler}}",
+	"access-list.auth-count": "{count} {count, plural, one {bruker} other {brukere}}",
+	"access-list.help-rules-last": "Når minst én regel finnes, legges denne \"deny all\"-regelen til sist",
+	"access-list.help.rules-order": "Merk at tillat- og nekt-direktivene brukes i den rekkefølgen de er definert.",
+	"access-list.pass-auth": "Send autentisering til upstream",
+	"access-list.public": "Offentlig tilgjengelig",
+	"access-list.public.subtitle": "Ingen grunnleggende autentisering kreves",
+	"access-list.rule-source.placeholder": "192.168.1.100 eller 192.168.1.0/24 eller 2001:0db8::/32",
+	"access-list.satisfy-any": "Oppfyll en av kravene",
+	"access-list.subtitle": "{users} {users, plural, one {bruker} other {brukere}}, {rules} {rules, plural, one {regel} other {regler}} - Opprettet: {date}",
+	"access-lists": "Tilgangslister",
+	"action.add": "Legg til",
+	"action.add-location": "Legg til plassering",
+	"action.allow": "Tillat",
+	"action.close": "Lukk",
+	"action.delete": "Slett",
+	"action.deny": "Nekt",
+	"action.disable": "Deaktiver",
+	"action.download": "Last ned",
+	"action.edit": "Rediger",
+	"action.enable": "Aktiver",
+	"action.permissions": "Tillatelser",
+	"action.renew": "Forny",
+	"action.view-details": "Vis detaljer",
+	"auditlogs": "Revisjonslogger",
+	"auto": "Auto",
+	"cancel": "Avbryt",
+	"certificate": "Sertifikat",
+	"certificate.custom-certificate": "Egendefinert Sertifikat",
+	"certificate.custom-certificate-key": "Egendefinert Sertifikat nøkkel",
+	"certificate.custom-intermediate": "Egendefinert Intermediate Sertifikat",
+	"certificate.in-use": "I bruk",
+	"certificate.none.subtitle": "Ingen sertifikat tildelt",
+	"certificate.none.subtitle.for-http": "Denne verten vil ikke bruke HTTPS",
+	"certificate.none.title": "Ingen",
+	"certificate.not-in-use": "Ikke i bruk",
+	"certificate.renew": "Forny sertifikat",
+	"certificates": "Sertifikater",
+	"certificates.custom": "Egendefinert Sertifikat",
+	"certificates.custom.warning": "Nøkkelfiler beskyttet med passordfrase støttes ikke.",
+	"certificates.dns.credentials": "Innhold i legitimasjonsfil",
+	"certificates.dns.credentials-note": "Denne pluginen krever en konfigurasjonsfil som inneholder en API-token eller andre legitimasjoner for leverandøren din",
+	"certificates.dns.credentials-warning": "Disse dataene vil bli lagret som ren tekst i databasen og i en fil!",
+	"certificates.dns.propagation-seconds": "Propageringsekunder",
+	"certificates.dns.propagation-seconds-note": "La stå tomt for å bruke pluginens standardverdi. Antall sekunder å vente på DNS-propagasjon.",
+	"certificates.dns.provider": "DNS-leverandør",
+	"certificates.dns.provider.placeholder": "Velg en leverandør...",
+	"certificates.dns.warning": "Denne seksjonen krever noe kunnskap om Certbot og dets DNS-plugins. Vennligst konsulter dokumentasjonen for de respektive pluginene.",
+	"certificates.http.reachability-404": "Det finnes en server på dette domenet, men det ser ikke ut til å være NPMplus. Vennligst sørg for at domenet ditt peker til IP-en der NPMplus-instansen kjører.",
+	"certificates.http.reachability-failed-to-check": "Kunne ikke sjekke tilgjengeligheten på grunn av en kommunikasjonsfeil med site24x7.com.",
+	"certificates.http.reachability-not-resolved": "Det finnes ingen server tilgjengelig på dette domenet. Vennligst sørg for at domenet ditt eksisterer og peker til IP-en der NPMplus-instansen kjører, og om nødvendig at port 80 er videresendt i ruteren din.",
+	"certificates.http.reachability-ok": "Serveren din er tilgjengelig, og det bør være mulig å opprette sertifikater.",
+	"certificates.http.reachability-other": "Det finnes en server på dette domenet, men den returnerte en uventet statuskode {code}. Er det NPMplus-serveren? Vennligst sørg for at domenet ditt peker til IP-en der NPMplus-instansen kjører.",
+	"certificates.http.reachability-wrong-data": "Det finnes en server på dette domenet, men den returnerte uventet data. Er det NPMplus-serveren? Vennligst sørg for at domenet ditt peker til IP-en der NPMplus-instansen kjører.",
+	"certificates.http.test-results": "Testresultater",
+	"certificates.http.warning": "Disse domenene må allerede være konfigurert til å peke til denne installasjonen.",
+	"certificates.key-type": "Nøkkeltype",
+	"certificates.key-type-description": "RSA er bredt kompatibel, ECDSA er raskere og mer sikker, men støttes kanskje ikke av eldre systemer",
+	"certificates.key-type-ecdsa": "ECDSA 256",
+	"certificates.key-type-rsa": "RSA 2048",
+	"certificates.request.subtitle": "med Certbot",
+	"certificates.request.title": "Be om et nytt sertifikat",
+	"column.access": "Tilgang",
+	"column.authorization": "Autorisasjon",
+	"column.authorizations": "Autorisasjoner",
+	"column.custom-locations": "Egendefinerte plasseringer",
+	"column.destination": "Destinasjon",
+	"column.details": "Detaljer",
+	"column.email": "E-post",
+	"column.event": "Hendelse",
+	"column.expires": "Utløper",
+	"column.http-code": "HTTP-kode",
+	"column.incoming-port": "Innkommende port",
+	"column.name": "Navn",
+	"column.protocol": "Protokoll",
+	"column.provider": "Leverandør",
+	"column.roles": "Roller",
+	"column.rules": "Regler",
+	"column.satisfy": "Oppfylle",
+	"column.satisfy-all": "Alle",
+	"column.satisfy-any": "Noen",
+	"column.scheme": "Skjema",
+	"column.source": "Kilde",
+	"column.ssl": "TLS",
+	"column.status": "Status",
+	"created-on": "Opprettet: {date}",
+	"dashboard": "Dashboard",
+	"dead-host": "404 Tjener ikke funnet",
+	"dead-hosts": "404 Tjenere ikke funnet",
+	"dead-hosts.count": "{count} {count, plural, one {404 Tjener} other {404 Tjenere}}",
+	"disabled": "Deaktivert",
+	"domain-names": "Domener",
+	"domain-names.max": "{count} domener maksimum",
+	"domain-names.placeholder": "Begynn å skrive for å legge til domene...",
+	"domain-names.wildcards-not-permitted": "Wildcards er ikke tillatt for denne typen",
+	"domain-names.wildcards-not-supported": "Wildcards støttes ikke for denne CA-en",
+	"domains.advanced": "Avansert",
+	"domains.force-ssl": "Tving HTTPS",
+	"domains.hsts-enabled": "HSTS Aktivert",
+	"domains.hsts-subdomains": "HSTS Underdomener",
+	"domains.http2-support": "HTTP/2 Støtte",
+	"domains.trust-forwarded-proto": "Stol på Upstream Forwarded Proto Headers",
+	"domains.use-dns": "Bruk DNS Utfordring",
+	"email-address": "E-postadresse",
+	"empty-search": "Ingen resultater funnet",
+	"empty-subtitle": "Hvorfor ikke opprette en?",
+	"enabled": "Aktivert",
+	"error.access.at-least-one": "Enten en autorisasjon eller en tilgangsregel er påkrevd",
+	"error.access.duplicate-usernames": "Autorisasjonsbrukernavn må være unike",
+	"error.invalid-auth": "Ugyldig e-post eller passord",
+	"error.invalid-domain": "Ugyldig domene: {domain}",
+	"error.invalid-email": "Ugyldig e-postadresse",
+	"error.max-character-length": "Maksimal lengde er {max} tegn",
+	"error.max-domains": "For mange domener, maks er {max}",
+	"error.maximum": "Maksimum er {max}",
+	"error.min-character-length": "Minimum lengde er {min} tegn",
+	"error.minimum": "Minimum er {min}",
+	"error.passwords-must-match": "Passordene må være like",
+	"error.required": "Dette er påkrevd",
+	"expires.on": "Utløper: {date}",
+	"footer.github-fork": "Fork meg på Github",
+	"host.flags.block-exploits": "Blokker vanlige utnyttelser",
+	"host.flags.cache-assets": "Mellomlagre ressurser",
+	"host.flags.preserve-path": "Behold sti",
+	"host.flags.protocols": "Protokoller",
+	"host.flags.websockets-upgrade": "Websockets-støtte",
+	"host.forward-port": "Viderekoble Port",
+	"host.forward-scheme": "Skjema",
+	"hosts": "Vertsnavn",
+	"http-only": "Kun HTTP",
+	"lets-encrypt": "Certbot",
+	"lets-encrypt-via-dns": "Certbot via DNS",
+	"lets-encrypt-via-http": "Certbot via HTTP",
+	"loading": "Laster…",
+	"login.title": "Logg på kontoen din",
+	"login.totp-code": "Verifikasjonskode",
+	"login.totp-code-placeholder": "Skriv inn kode",
+	"login.totp-description": "Skriv inn koden fra autentiseringsappen din",
+	"login.totp-title": "MFA",
+	"login.totp-verify": "Verifiser",
+	"mfa.backup-codes-remaining": "Gjenstående backup-koder: {count}",
+	"mfa.backup-warning": "Lagre disse backup-kodene på et sikkert sted. Hver kode kan kun brukes én gang.",
+	"mfa.regenerate": "Regenerer",
+	"mfa.regenerate-backup": "Generer nye backup-koder",
+	"mfa.regenerate-instructions": "Angi en verifiseringskode for å generere nye backup-koder. Dine gamle koder vil bli ugyldige.",
+	"mfa.title": "MFA",
+	"nginx-config.label": "Egendefinert Nginx-konfigurasjon",
+	"nginx-config.placeholder": "# Skriv inn din egendefinerte Nginx-konfigurasjon her på egen risiko!",
+	"no-permission-error": "Du har ikke tilgang til å se dette.",
+	"notfound.action": "Ta meg hjem",
+	"notfound.content": "Beklager, siden du leter etter ble ikke funnet",
+	"notfound.title": "Oops… Du har nettopp funnet en feilsiden",
+	"notification.error": "Feil",
+	"notification.object-deleted": "{object} har blitt slettet",
+	"notification.object-disabled": "{object} har blitt deaktivert",
+	"notification.object-enabled": "{object} har blitt aktivert",
+	"notification.object-renewed": "{object} har blitt fornyet",
+	"notification.object-saved": "{object} har blitt lagret",
+	"notification.success": "Suksess",
+	"object.actions-title": "{object} #{id}",
+	"object.add": "Legg til {object}",
+	"object.delete": "Slett {object}",
+	"object.delete.content": "Er du sikker på at du vil slette dette {object}?",
+	"object.edit": "Rediger {object}",
+	"object.empty": "Det finnes ingen {objects}",
+	"object.event.created": "Opprettet {object}",
+	"object.event.deleted": "Slettet {object}",
+	"object.event.disabled": "Deaktivert {object}",
+	"object.event.enabled": "Aktivert {object}",
+	"object.event.renewed": "Fornyet {object}",
+	"object.event.updated": "Oppdatert {object}",
+	"offline": "Utilgjengelig",
+	"online": "Tilgjengelig",
+	"options": "Alternativer",
+	"password": "Passord",
+	"password.generate": "Generer tilfeldig passord",
+	"password.hide": "Skjul passord",
+	"password.show": "Vis passord",
+	"permissions.hidden": "Skjult",
+	"permissions.manage": "Administrer",
+	"permissions.view": "Kun visning",
+	"permissions.visibility.all": "Alle elementer",
+	"permissions.visibility.title": "Element Synlighet",
+	"permissions.visibility.user": "Kun opprettede elementer",
+	"proxy-host": "Proxy Host",
+	"proxy-host.forward-host": "Forward Hostname / IP",
+	"proxy-hosts": "Proxy-verter",
+	"proxy-hosts.count": "{count} {count, plural, one {Proxy-vert} other {Proxy-verter}}",
+	"public": "Offentlig",
+	"redirection-host": "Omdirigeringsvert",
+	"redirection-host.forward-domain": "Viderekoble domene",
+	"redirection-host.forward-http-code": "HTTP-kode",
+	"redirection-hosts": "Omdirigeringsverter",
+	"redirection-hosts.count": "{count} {count, plural, one {Omdirigeringsvert} other {Omdirigeringsverter}}",
+	"redirection-hosts.http-code.300": "300 Multiple Choices",
+	"redirection-hosts.http-code.301": "301 Flyttet permanent",
+	"redirection-hosts.http-code.302": "302 Flyttet midlertidig",
+	"redirection-hosts.http-code.303": "303 Se andre",
+	"redirection-hosts.http-code.307": "307 Midlertidig omdirigering",
+	"redirection-hosts.http-code.308": "308 Permanent omdirigering",
+	"role.admin": "Administrator",
+	"role.standard-user": "Standardbruker",
+	"save": "Lagre",
+	"setting": "Innstilling",
+	"settings": "Innstillinger",
+	"settings.default-site": "Standardnettsted",
+	"settings.default-site.404": "404-side",
+	"settings.default-site.444": "Ingen respons (444)",
+	"settings.default-site.congratulations": "Gratulerer-side",
+	"settings.default-site.description": "Hva som skal vises når Nginx treffes med en ukjent vert",
+	"settings.default-site.html": "Egendefinert HTML",
+	"settings.default-site.html.placeholder": "<!-- Skriv inn ditt egendefinerte HTML-innhold her -->",
+	"settings.default-site.redirect": "Omdiriger",
+	"setup.preamble": "Kom i gang ved å opprette din administratorkonto.",
+	"setup.title": "Velkommen!",
+	"sign-in": "Logg inn",
+	"ssl-certificate": "TLS-sertifikat",
+	"stream": "Strøm",
+	"stream.forward-host": "Viderekoble vert",
+	"stream.forward-host.placeholder": "example.com eller 10.0.0.1 eller 2001:db8:3333:4444:5555:6666:7777:8888",
+	"stream.incoming-port": "Innkommende port",
+	"streams": "Strømmer",
+	"streams.count": "{count} {count, plural, one {Strøm} other {Strømmer}}",
+	"streams.tcp": "TCP",
+	"streams.udp": "UDP",
+	"test": "Test",
+	"totp.disable": "Deaktiver TOTP",
+	"totp.disable-confirm": "Deaktiver TOTP",
+	"totp.disable-warning": "Å deaktivere TOTP vil gjøre kontoen din mindre sikker.",
+	"totp.disabled": "Deaktivert",
+	"totp.done": "Jeg har lagret backup-kodene mine",
+	"totp.enable": "Aktiver TOTP",
+	"totp.enabled": "Aktivert",
+	"totp.enter-code": "Angi verifiseringskode",
+	"totp.enter-code-disable": "Angi verifiseringskode for å deaktivere",
+	"totp.secret-key": "Hemmelig nøkkel",
+	"totp.setup-instructions": "Skann denne QR-koden med autentiseringsappen din, eller skriv inn nøkkelen manuelt.",
+	"totp.status": "Status",
+	"totp.verify-enable": "Verifiser og aktiver",
+	"update-available": "Oppdatering tilgjengelig: {latestVersion}",
+	"user": "Bruker",
+	"user.change-password": "Endre passord",
+	"user.confirm-password": "Bekreft passord",
+	"user.current-password": "Nåværende passord",
+	"user.edit-profile": "Rediger profil",
+	"user.full-name": "Fullt navn",
+	"user.login-as": "Logg inn som {name}",
+	"user.logout": "Logg ut",
+	"user.mfa": "MFA",
+	"user.new-password": "Nytt passord",
+	"user.nickname": "Kallenavn",
+	"user.set-password": "Angi passord",
+	"user.set-permissions": "Angi tillatelser for {name}",
+	"user.switch-dark": "Bytt til mørk modus",
+	"user.switch-light": "Bytt til lys modus",
+	"username": "Brukernavn",
+	"users": "Brukere"
 }

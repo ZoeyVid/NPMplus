@@ -1,776 +1,260 @@
 {
-	"access-list": {
-		"defaultMessage": "Toegangslijst"
-	},
-	"access-list.access-count": {
-		"defaultMessage": "{count} {count, plural, one {Regel} other {Regels}}"
-	},
-	"access-list.auth-count": {
-		"defaultMessage": "{count} {count, plural, one {Gebruiker} other {Gebruikers}}"
-	},
-	"access-list.help-rules-last": {
-		"defaultMessage": "Als er minimaal 1 regel bestaat, wordt deze regel als laatste toegevoegd"
-	},
-	"access-list.help.rules-order": {
-		"defaultMessage": "Houd er rekening mee dat de regels worden toegepast in de volgorde waarin ze zijn gedefinieerd."
-	},
-	"access-list.pass-auth": {
-		"defaultMessage": "Authenticatie naar upstream doorgeven"
-	},
-	"access-list.public": {
-		"defaultMessage": "Publiekelijk toegankelijk"
-	},
-	"access-list.public.subtitle": {
-		"defaultMessage": "Geen basisautentificatie vereist"
-	},
-	"access-list.rule-source.placeholder": {
-		"defaultMessage": "192.168.1.100 of 192.168.1.0/24 of 2001:0db8::/32"
-	},
-	"access-list.satisfy-any": {
-		"defaultMessage": "Voldoe aan elke"
-	},
-	"access-list.subtitle": {
-		"defaultMessage": "{users} {users, plural, one {Gebruiker} other {Gebruikers}}, {rules} {rules, plural, one {Regel} other {Regels}} - Aangemaakt: {date}"
-	},
-	"access-lists": {
-		"defaultMessage": "Toegangslijsten"
-	},
-	"action.add": {
-		"defaultMessage": "Toevoegen"
-	},
-	"action.add-location": {
-		"defaultMessage": "Locatie toevoegen"
-	},
-	"action.allow": {
-		"defaultMessage": "Toestaan"
-	},
-	"action.close": {
-		"defaultMessage": "Sluiten"
-	},
-	"action.delete": {
-		"defaultMessage": "Verwijderen"
-	},
-	"action.deny": {
-		"defaultMessage": "Afwijzen"
-	},
-	"action.disable": {
-		"defaultMessage": "Uitschakelen"
-	},
-	"action.download": {
-		"defaultMessage": "Downloaden"
-	},
-	"action.edit": {
-		"defaultMessage": "Bewerken"
-	},
-	"action.enable": {
-		"defaultMessage": "Inschakelen"
-	},
-	"action.permissions": {
-		"defaultMessage": "Machtigingen"
-	},
-	"action.renew": {
-		"defaultMessage": "Vernieuwen"
-	},
-	"action.view-details": {
-		"defaultMessage": "Details weergeven"
-	},
-	"auditlogs": {
-		"defaultMessage": "Logboeken"
-	},
-	"auto": {
-		"defaultMessage": "Automatisch"
-	},
-	"cancel": {
-		"defaultMessage": "Annuleren"
-	},
-	"certificate": {
-		"defaultMessage": "Certificaat"
-	},
-	"certificate.custom-certificate": {
-		"defaultMessage": "Certificaat"
-	},
-	"certificate.custom-certificate-key": {
-		"defaultMessage": "Certificaatsleutel"
-	},
-	"certificate.custom-intermediate": {
-		"defaultMessage": "Intermediate certificaat"
-	},
-	"certificate.in-use": {
-		"defaultMessage": "In gebruik"
-	},
-	"certificate.none.subtitle": {
-		"defaultMessage": "Geen certificaat toegewezen"
-	},
-	"certificate.none.subtitle.for-http": {
-		"defaultMessage": "Deze host gebruikt geen HTTPS"
-	},
-	"certificate.none.title": {
-		"defaultMessage": "Geen"
-	},
-	"certificate.not-in-use": {
-		"defaultMessage": "Niet gebruikt"
-	},
-	"certificate.renew": {
-		"defaultMessage": "Certificaat vernieuwen"
-	},
-	"certificates": {
-		"defaultMessage": "Certificaten"
-	},
-	"certificates.custom": {
-		"defaultMessage": "Aangepast certificaat"
-	},
-	"certificates.custom.warning": {
-		"defaultMessage": "Sleutels met een wachtwoordzin zijn niet ondersteund."
-	},
-	"certificates.dns.credentials": {
-		"defaultMessage": "Inloggegevens bestandsinhoud"
-	},
-	"certificates.dns.credentials-note": {
-		"defaultMessage": "Deze plugin vereist een configuratiebestand met een API-token of andere gegevens van je aanbieder."
-	},
-	"certificates.dns.credentials-warning": {
-		"defaultMessage": "Deze gegevens worden opgeslagen als plaintext in de database en in een bestand!"
-	},
-	"certificates.dns.propagation-seconds": {
-		"defaultMessage": "Verwerkingstijd (seconden)"
-	},
-	"certificates.dns.propagation-seconds-note": {
-		"defaultMessage": "Laat leeg om de standaardwaarde van de plugin te gebruiken. Aantal seconden om te wachten op DNS-propagatie."
-	},
-	"certificates.dns.provider": {
-		"defaultMessage": "DNS-aanbieder"
-	},
-	"certificates.dns.provider.placeholder": {
-		"defaultMessage": "Kies een aanbieder…"
-	},
-	"certificates.dns.warning": {
-		"defaultMessage": "Deze sectie vereist wat informatie over Certbot en zijn DNS plugins. Gebruik de documentatie van de bijbehorende plugins."
-	},
-	"certificates.http.reachability-404": {
-		"defaultMessage": "Er is een server gevonden op deze domeinnaam, maar dat lijkt niet NPMplus te zijn. Zorg ervoor dat je domein verwijst naar het IP waar je NPMplus-instantie draait."
-	},
-	"certificates.http.reachability-failed-to-check": {
-		"defaultMessage": "Bereikbaarheid kan niet worden bepaald door een communicatiefout met site24x7.com."
-	},
-	"certificates.http.reachability-not-resolved": {
-		"defaultMessage": "Er is geen server beschikbaar op dit domein. Zorg ervoor dat je domein bestaat en verwijst naar het IP waar je NPMplus-instantie draait en eventueel port 80 wordt doorgestuurd in je router."
-	},
-	"certificates.http.reachability-ok": {
-		"defaultMessage": "Je server is bereikbaar en certificaten kunnen worden aangemaakt."
-	},
-	"certificates.http.reachability-other": {
-		"defaultMessage": "Er is een server gevonden op deze domeinnaam, maar heeft een onverwachte statuscode ({code}) teruggegeven. Is dat de NPMplus-server? Zorg ervoor dat je domein verwijst naar het IP waar jouw NPMplus-instantie draait."
-	},
-	"certificates.http.reachability-wrong-data": {
-		"defaultMessage": "Er is een server gevonden op deze domeinnaam, maar heeft een onverwachte gegevens teruggegeven. Is dat de NPMplus-server? Zorg ervoor dat je domein verwijst naar het IP waar jouw NPMplus-instantie draait."
-	},
-	"certificates.http.test-results": {
-		"defaultMessage": "Testresultaten"
-	},
-	"certificates.http.warning": {
-		"defaultMessage": "Deze domeinen moeten al worden geconfigureerd om naar deze installatie te wijzen."
-	},
-	"certificates.key-type": {
-		"defaultMessage": "Sleuteltype"
-	},
-	"certificates.key-type-description": {
-		"defaultMessage": "RSA is algemeen toepasbaar, ECDSA is sneller en veiliger maar wordt mogelijk niet ondersteund door oudere systemen"
-	},
-	"certificates.key-type-ecdsa": {
-		"defaultMessage": "ECDSA 256"
-	},
-	"certificates.key-type-rsa": {
-		"defaultMessage": "RSA 2048"
-	},
-	"certificates.request.subtitle": {
-		"defaultMessage": "met Certbot"
-	},
-	"certificates.request.title": {
-		"defaultMessage": "Vraag een nieuw certificaat aan"
-	},
-	"column.access": {
-		"defaultMessage": "Toegang"
-	},
-	"column.authorization": {
-		"defaultMessage": "Authorisatie"
-	},
-	"column.authorizations": {
-		"defaultMessage": "Authorisaties"
-	},
-	"column.custom-locations": {
-		"defaultMessage": "Aangepaste locaties"
-	},
-	"column.destination": {
-		"defaultMessage": "Doel"
-	},
-	"column.details": {
-		"defaultMessage": "Details"
-	},
-	"column.email": {
-		"defaultMessage": "E-mail"
-	},
-	"column.event": {
-		"defaultMessage": "Gebeurtenis"
-	},
-	"column.expires": {
-		"defaultMessage": "Verloopt"
-	},
-	"column.http-code": {
-		"defaultMessage": "HTTP-code"
-	},
-	"column.incoming-port": {
-		"defaultMessage": "Inkomende poort"
-	},
-	"column.name": {
-		"defaultMessage": "Naam"
-	},
-	"column.protocol": {
-		"defaultMessage": "Protocol"
-	},
-	"column.provider": {
-		"defaultMessage": "Aanbieder"
-	},
-	"column.roles": {
-		"defaultMessage": "Rollen"
-	},
-	"column.rules": {
-		"defaultMessage": "Regels"
-	},
-	"column.satisfy": {
-		"defaultMessage": "Vervullen"
-	},
-	"column.satisfy-all": {
-		"defaultMessage": "Alle"
-	},
-	"column.satisfy-any": {
-		"defaultMessage": "Elke"
-	},
-	"column.scheme": {
-		"defaultMessage": "Schema"
-	},
-	"column.source": {
-		"defaultMessage": "Bron"
-	},
-	"column.ssl": {
-		"defaultMessage": "TLS"
-	},
-	"column.status": {
-		"defaultMessage": "Status"
-	},
-	"created-on": {
-		"defaultMessage": "Aangemaakt: {date}"
-	},
-	"dashboard": {
-		"defaultMessage": "Dashboard"
-	},
-	"dead-host": {
-		"defaultMessage": "404-Host"
-	},
-	"dead-hosts": {
-		"defaultMessage": "404-Hosts"
-	},
-	"dead-hosts.count": {
-		"defaultMessage": "{count} {count, plural, one {404-Host} other {404-Hosts}}"
-	},
-	"disabled": {
-		"defaultMessage": "Uitgeschakeld"
-	},
-	"domain-names": {
-		"defaultMessage": "Domeinnamen"
-	},
-	"domain-names.max": {
-		"defaultMessage": "{count} domeinnamen toegestaan"
-	},
-	"domain-names.placeholder": {
-		"defaultMessage": "Voer een domeinnaam in…"
-	},
-	"domain-names.wildcards-not-permitted": {
-		"defaultMessage": "Wildcards zijn niet toegestaan voor dit type"
-	},
-	"domain-names.wildcards-not-supported": {
-		"defaultMessage": "Wildcards zijn niet ondersteund voor deze CA"
-	},
-	"domains.advanced": {
-		"defaultMessage": "Geavanceerd"
-	},
-	"domains.force-ssl": {
-		"defaultMessage": "HTTPS forceren"
-	},
-	"domains.hsts-enabled": {
-		"defaultMessage": "HSTS ingeschakeld"
-	},
-	"domains.hsts-subdomains": {
-		"defaultMessage": "HSTS-subdomein"
-	},
-	"domains.http2-support": {
-		"defaultMessage": "HTTP/2-ondersteuning"
-	},
-	"domains.trust-forwarded-proto": {
-		"defaultMessage": "Forwarded-Proto-headers van upstream vertrouwen"
-	},
-	"domains.use-dns": {
-		"defaultMessage": "DNS-challenge gebruiken"
-	},
-	"email-address": {
-		"defaultMessage": "E-mailadres"
-	},
-	"empty-search": {
-		"defaultMessage": "Geen resultaten gevonden"
-	},
-	"empty-subtitle": {
-		"defaultMessage": "Waarom maak je er geen aan?"
-	},
-	"enabled": {
-		"defaultMessage": "Ingeschakeld"
-	},
-	"error.access.at-least-one": {
-		"defaultMessage": "Minstens één authorisatie- of één toegangsregel is vereist"
-	},
-	"error.access.duplicate-usernames": {
-		"defaultMessage": "Gebruikersnamen moeten uniek zijn"
-	},
-	"error.invalid-auth": {
-		"defaultMessage": "Ongeldig e-mail of wachtwoord"
-	},
-	"error.invalid-domain": {
-		"defaultMessage": "Ongeldige domeinnaam: {domain}"
-	},
-	"error.invalid-email": {
-		"defaultMessage": "Ongeldig e-mailadres"
-	},
-	"error.max-character-length": {
-		"defaultMessage": "Maximale lengte is {max} teken{max, plural, one {} other {s}}"
-	},
-	"error.max-domains": {
-		"defaultMessage": "Te veel domeinnamen, max is {max}"
-	},
-	"error.maximum": {
-		"defaultMessage": "Maximum is {max}"
-	},
-	"error.min-character-length": {
-		"defaultMessage": "Minimale lengte is {min} teken{min, plural, one {} other {s}}"
-	},
-	"error.minimum": {
-		"defaultMessage": "Minimum is {min}"
-	},
-	"error.passwords-must-match": {
-		"defaultMessage": "Wachtwoorden moeten overeenkomen"
-	},
-	"error.required": {
-		"defaultMessage": "Dit is verplicht"
-	},
-	"expires.on": {
-		"defaultMessage": "Verloopt: {date}"
-	},
-	"footer.github-fork": {
-		"defaultMessage": "Maak een Fork op Github"
-	},
-	"host.flags.block-exploits": {
-		"defaultMessage": "Veelvoorkomende kwetsbaarheden blokkeren"
-	},
-	"host.flags.cache-assets": {
-		"defaultMessage": "Assets opslaan"
-	},
-	"host.flags.preserve-path": {
-		"defaultMessage": "Pad behouden"
-	},
-	"host.flags.protocols": {
-		"defaultMessage": "Protocollen"
-	},
-	"host.flags.websockets-upgrade": {
-		"defaultMessage": "Websockets-ondersteuning"
-	},
-	"host.forward-port": {
-		"defaultMessage": "Poort doorsturen"
-	},
-	"host.forward-scheme": {
-		"defaultMessage": "Schema"
-	},
-	"hosts": {
-		"defaultMessage": "Hosts"
-	},
-	"http-only": {
-		"defaultMessage": "Alleen HTTP"
-	},
-	"lets-encrypt": {
-		"defaultMessage": "Certbot"
-	},
-	"lets-encrypt-via-dns": {
-		"defaultMessage": "Certbot via DNS"
-	},
-	"lets-encrypt-via-http": {
-		"defaultMessage": "Certbot via HTTP"
-	},
-	"loading": {
-		"defaultMessage": "Laden…"
-	},
-	"login.title": {
-		"defaultMessage": "Log in op je account"
-	},
-	"login.totp-code": {
-		"defaultMessage": "Verificatiecode"
-	},
-	"login.totp-code-placeholder": {
-		"defaultMessage": "Code invoeren"
-	},
-	"login.totp-description": {
-		"defaultMessage": "Voer de code in vanuit je Authenticator-app"
-	},
-	"login.totp-title": {
-		"defaultMessage": "MFA"
-	},
-	"login.totp-verify": {
-		"defaultMessage": "Verifiëren"
-	},
-	"mfa.backup-codes-remaining": {
-		"defaultMessage": "Resterende back-upcodes: {count}"
-	},
-	"mfa.backup-warning": {
-		"defaultMessage": "Bewaar deze back-upcodes op een veilige plaats. Elke code kan slechts één keer worden gebruikt."
-	},
-	"mfa.regenerate": {
-		"defaultMessage": "Opnieuw genereren"
-	},
-	"mfa.regenerate-backup": {
-		"defaultMessage": "Back-upcodes opnieuw genereren"
-	},
-	"mfa.regenerate-instructions": {
-		"defaultMessage": "Voer een verificatiecode in om nieuwe back-upcodes te genereren. Oude codes worden ongeldig gemaakt."
-	},
-	"mfa.title": {
-		"defaultMessage": "MFA"
-	},
-	"nginx-config.label": {
-		"defaultMessage": "Aangepaste Nginx-configuratie"
-	},
-	"nginx-config.placeholder": {
-		"defaultMessage": "# Voer hier je aangepaste Nginx-configuratie in op eigen risico!"
-	},
-	"no-permission-error": {
-		"defaultMessage": "Je hebt geen toegang om dit te bekijken."
-	},
-	"notfound.action": {
-		"defaultMessage": "Thuis"
-	},
-	"notfound.content": {
-		"defaultMessage": "De pagina waar je naar op zoek bent kan niet worden gevonden"
-	},
-	"notfound.title": {
-		"defaultMessage": "Oeps… Je hebt een foutpagina gevonden"
-	},
-	"notification.error": {
-		"defaultMessage": "Fout"
-	},
-	"notification.object-deleted": {
-		"defaultMessage": "{object} is verwijderd"
-	},
-	"notification.object-disabled": {
-		"defaultMessage": "{object} is uitgeschakeld"
-	},
-	"notification.object-enabled": {
-		"defaultMessage": "{object} is ingeschakeld"
-	},
-	"notification.object-renewed": {
-		"defaultMessage": "{object} is vernieuwd"
-	},
-	"notification.object-saved": {
-		"defaultMessage": "{object} is opgeslagen"
-	},
-	"notification.success": {
-		"defaultMessage": "Succes"
-	},
-	"object.actions-title": {
-		"defaultMessage": "{object} #{id}"
-	},
-	"object.add": {
-		"defaultMessage": "{object} toevoegen"
-	},
-	"object.delete": {
-		"defaultMessage": "{object} verwijderen"
-	},
-	"object.delete.content": {
-		"defaultMessage": "Weet je zeker dat je {object} wilt verwijderen?"
-	},
-	"object.edit": {
-		"defaultMessage": "{object} bewerken"
-	},
-	"object.empty": {
-		"defaultMessage": "Er zijn geen {objects}"
-	},
-	"object.event.created": {
-		"defaultMessage": "{object} is aangemaakt"
-	},
-	"object.event.deleted": {
-		"defaultMessage": "{object} is verwijderd"
-	},
-	"object.event.disabled": {
-		"defaultMessage": "{object} is uitgeschakeld"
-	},
-	"object.event.enabled": {
-		"defaultMessage": "{object} is ingeschakeld"
-	},
-	"object.event.renewed": {
-		"defaultMessage": "{object} is vernieuwd"
-	},
-	"object.event.updated": {
-		"defaultMessage": "{object} is bijgewerkt"
-	},
-	"offline": {
-		"defaultMessage": "Offline"
-	},
-	"online": {
-		"defaultMessage": "Online"
-	},
-	"options": {
-		"defaultMessage": "Opties"
-	},
-	"password": {
-		"defaultMessage": "Wachtwoord"
-	},
-	"password.generate": {
-		"defaultMessage": "Willekeurig wachtwoord genereren"
-	},
-	"password.hide": {
-		"defaultMessage": "Wachtwoord verbergen"
-	},
-	"password.show": {
-		"defaultMessage": "Wachtwoord weergeven"
-	},
-	"permissions.hidden": {
-		"defaultMessage": "Verborgen"
-	},
-	"permissions.manage": {
-		"defaultMessage": "Beheren"
-	},
-	"permissions.view": {
-		"defaultMessage": "Alleen weergeven"
-	},
-	"permissions.visibility.all": {
-		"defaultMessage": "Alle items"
-	},
-	"permissions.visibility.title": {
-		"defaultMessage": "Zichtbaarheid"
-	},
-	"permissions.visibility.user": {
-		"defaultMessage": "Alleen aangemaakte items"
-	},
-	"proxy-host": {
-		"defaultMessage": "Proxyhost"
-	},
-	"proxy-host.forward-host": {
-		"defaultMessage": "Hostname / IP Doorsturen"
-	},
-	"proxy-hosts": {
-		"defaultMessage": "Proxyhosts"
-	},
-	"proxy-hosts.count": {
-		"defaultMessage": "{count} {count, plural, one {Proxy Host} other {Proxy Hosts}}"
-	},
-	"public": {
-		"defaultMessage": "Openbaar"
-	},
-	"redirection-host": {
-		"defaultMessage": "Omleidingshost"
-	},
-	"redirection-host.forward-domain": {
-		"defaultMessage": "Doorgestuurd Domein"
-	},
-	"redirection-host.forward-http-code": {
-		"defaultMessage": "HTTP-code"
-	},
-	"redirection-hosts": {
-		"defaultMessage": "Omgeleide Hosts"
-	},
-	"redirection-hosts.count": {
-		"defaultMessage": "{count} {count, plural, one {Omgeleide Host} other {Omgeleide Hosts}}"
-	},
-	"redirection-hosts.http-code.300": {
-		"defaultMessage": "300 Meerkeuze"
-	},
-	"redirection-hosts.http-code.301": {
-		"defaultMessage": "301 Definitief verplaatst"
-	},
-	"redirection-hosts.http-code.302": {
-		"defaultMessage": "302 Tijdelijk verplaatst"
-	},
-	"redirection-hosts.http-code.303": {
-		"defaultMessage": "303 Zie andere"
-	},
-	"redirection-hosts.http-code.307": {
-		"defaultMessage": "307 Tijdelijke omleiding"
-	},
-	"redirection-hosts.http-code.308": {
-		"defaultMessage": "308 Definitieve omleiding"
-	},
-	"role.admin": {
-		"defaultMessage": "Beheerder"
-	},
-	"role.standard-user": {
-		"defaultMessage": "Standaardgebruiker"
-	},
-	"save": {
-		"defaultMessage": "Opslaan"
-	},
-	"setting": {
-		"defaultMessage": "Instelling"
-	},
-	"settings": {
-		"defaultMessage": "Instellingen"
-	},
-	"settings.default-site": {
-		"defaultMessage": "Standaardbestemming"
-	},
-	"settings.default-site.404": {
-		"defaultMessage": "404-pagina"
-	},
-	"settings.default-site.444": {
-		"defaultMessage": "Geen reactie (444)"
-	},
-	"settings.default-site.congratulations": {
-		"defaultMessage": "Felicitatiepagina"
-	},
-	"settings.default-site.description": {
-		"defaultMessage": "Wat als Nginx een onbekende Host ontvangt?"
-	},
-	"settings.default-site.html": {
-		"defaultMessage": "Aangepaste HTML"
-	},
-	"settings.default-site.html.placeholder": {
-		"defaultMessage": "<!-- Voer hier je aangepaste HTML in -->"
-	},
-	"settings.default-site.redirect": {
-		"defaultMessage": "Omleiden"
-	},
-	"setup.preamble": {
-		"defaultMessage": "Begin met het aanmaken van jouw beheerderaccount."
-	},
-	"setup.title": {
-		"defaultMessage": "Welkom!"
-	},
-	"sign-in": {
-		"defaultMessage": "Inloggen"
-	},
-	"ssl-certificate": {
-		"defaultMessage": "TLS-certificaat"
-	},
-	"stream": {
-		"defaultMessage": "Stream"
-	},
-	"stream.forward-host": {
-		"defaultMessage": "Doelhost"
-	},
-	"stream.forward-host.placeholder": {
-		"defaultMessage": "voorbeeld.nl of 10.0.0.1 of 2001:db8:3333:4444:5555:6666:7777:8888"
-	},
-	"stream.incoming-port": {
-		"defaultMessage": "Inkomende poort"
-	},
-	"streams": {
-		"defaultMessage": "Streams"
-	},
-	"streams.count": {
-		"defaultMessage": "{count} {count, plural, one {Stream} other {Streams}}"
-	},
-	"streams.tcp": {
-		"defaultMessage": "TCP"
-	},
-	"streams.udp": {
-		"defaultMessage": "UDP"
-	},
-	"test": {
-		"defaultMessage": "Testen"
-	},
-	"totp.disable": {
-		"defaultMessage": "TOTP uitschakelen"
-	},
-	"totp.disable-confirm": {
-		"defaultMessage": "TOTP uitschakelen"
-	},
-	"totp.disable-warning": {
-		"defaultMessage": "Als je TOTP uitschakelt, is je account minder goed beschermd."
-	},
-	"totp.disabled": {
-		"defaultMessage": "Uitgeschakeld"
-	},
-	"totp.done": {
-		"defaultMessage": "Ik heb mijn back-upcodes opgeslagen"
-	},
-	"totp.enable": {
-		"defaultMessage": "TOTP inschakelen"
-	},
-	"totp.enabled": {
-		"defaultMessage": "Ingeschakeld"
-	},
-	"totp.enter-code": {
-		"defaultMessage": "Verificatiecode invoeren"
-	},
-	"totp.enter-code-disable": {
-		"defaultMessage": "Verificatiecode invoeren om uit te schakelen"
-	},
-	"totp.secret-key": {
-		"defaultMessage": "Geheime sleutel"
-	},
-	"totp.setup-instructions": {
-		"defaultMessage": "Scan deze QR-code met je authenticator-app, of neem de code handmatig over."
-	},
-	"totp.status": {
-		"defaultMessage": "Status"
-	},
-	"totp.verify-enable": {
-		"defaultMessage": "Verifiëren en inschakelen"
-	},
-	"update-available": {
-		"defaultMessage": "Update beschikbaar: {latestVersion}"
-	},
-	"user": {
-		"defaultMessage": "Gebruiker"
-	},
-	"user.change-password": {
-		"defaultMessage": "Wachtwoord wijzigen"
-	},
-	"user.confirm-password": {
-		"defaultMessage": "Wachtwoord bevestigen"
-	},
-	"user.current-password": {
-		"defaultMessage": "Huidig wachtwoord"
-	},
-	"user.edit-profile": {
-		"defaultMessage": "Profiel bewerken"
-	},
-	"user.full-name": {
-		"defaultMessage": "Volledige naam"
-	},
-	"user.login-as": {
-		"defaultMessage": "Inloggen als {name}"
-	},
-	"user.logout": {
-		"defaultMessage": "Uitloggen"
-	},
-	"user.mfa": {
-		"defaultMessage": "MFA"
-	},
-	"user.new-password": {
-		"defaultMessage": "Nieuw wachtwoord"
-	},
-	"user.nickname": {
-		"defaultMessage": "Bijnaam"
-	},
-	"user.set-password": {
-		"defaultMessage": "Wachtwoord instellen"
-	},
-	"user.set-permissions": {
-		"defaultMessage": "Machtigingen instellen voor {name}"
-	},
-	"user.switch-dark": {
-		"defaultMessage": "Donkere modus inschakelen"
-	},
-	"user.switch-light": {
-		"defaultMessage": "Lichte modus inschakelen"
-	},
-	"username": {
-		"defaultMessage": "Gebruikersnaam"
-	},
-	"users": {
-		"defaultMessage": "Gebruikers"
-	}
+	"access-list": "Toegangslijst",
+	"access-list.access-count": "{count} {count, plural, one {Regel} other {Regels}}",
+	"access-list.auth-count": "{count} {count, plural, one {Gebruiker} other {Gebruikers}}",
+	"access-list.help-rules-last": "Als er minimaal 1 regel bestaat, wordt deze regel als laatste toegevoegd",
+	"access-list.help.rules-order": "Houd er rekening mee dat de regels worden toegepast in de volgorde waarin ze zijn gedefinieerd.",
+	"access-list.pass-auth": "Authenticatie naar upstream doorgeven",
+	"access-list.public": "Publiekelijk toegankelijk",
+	"access-list.public.subtitle": "Geen basisautentificatie vereist",
+	"access-list.rule-source.placeholder": "192.168.1.100 of 192.168.1.0/24 of 2001:0db8::/32",
+	"access-list.satisfy-any": "Voldoe aan elke",
+	"access-list.subtitle": "{users} {users, plural, one {Gebruiker} other {Gebruikers}}, {rules} {rules, plural, one {Regel} other {Regels}} - Aangemaakt: {date}",
+	"access-lists": "Toegangslijsten",
+	"action.add": "Toevoegen",
+	"action.add-location": "Locatie toevoegen",
+	"action.allow": "Toestaan",
+	"action.close": "Sluiten",
+	"action.delete": "Verwijderen",
+	"action.deny": "Afwijzen",
+	"action.disable": "Uitschakelen",
+	"action.download": "Downloaden",
+	"action.edit": "Bewerken",
+	"action.enable": "Inschakelen",
+	"action.permissions": "Machtigingen",
+	"action.renew": "Vernieuwen",
+	"action.view-details": "Details weergeven",
+	"auditlogs": "Logboeken",
+	"auto": "Automatisch",
+	"cancel": "Annuleren",
+	"certificate": "Certificaat",
+	"certificate.custom-certificate": "Certificaat",
+	"certificate.custom-certificate-key": "Certificaatsleutel",
+	"certificate.custom-intermediate": "Intermediate certificaat",
+	"certificate.in-use": "In gebruik",
+	"certificate.none.subtitle": "Geen certificaat toegewezen",
+	"certificate.none.subtitle.for-http": "Deze host gebruikt geen HTTPS",
+	"certificate.none.title": "Geen",
+	"certificate.not-in-use": "Niet gebruikt",
+	"certificate.renew": "Certificaat vernieuwen",
+	"certificates": "Certificaten",
+	"certificates.custom": "Aangepast certificaat",
+	"certificates.custom.warning": "Sleutels met een wachtwoordzin zijn niet ondersteund.",
+	"certificates.dns.credentials": "Inloggegevens bestandsinhoud",
+	"certificates.dns.credentials-note": "Deze plugin vereist een configuratiebestand met een API-token of andere gegevens van je aanbieder.",
+	"certificates.dns.credentials-warning": "Deze gegevens worden opgeslagen als plaintext in de database en in een bestand!",
+	"certificates.dns.propagation-seconds": "Verwerkingstijd (seconden)",
+	"certificates.dns.propagation-seconds-note": "Laat leeg om de standaardwaarde van de plugin te gebruiken. Aantal seconden om te wachten op DNS-propagatie.",
+	"certificates.dns.provider": "DNS-aanbieder",
+	"certificates.dns.provider.placeholder": "Kies een aanbieder…",
+	"certificates.dns.warning": "Deze sectie vereist wat informatie over Certbot en zijn DNS plugins. Gebruik de documentatie van de bijbehorende plugins.",
+	"certificates.http.reachability-404": "Er is een server gevonden op deze domeinnaam, maar dat lijkt niet NPMplus te zijn. Zorg ervoor dat je domein verwijst naar het IP waar je NPMplus-instantie draait.",
+	"certificates.http.reachability-failed-to-check": "Bereikbaarheid kan niet worden bepaald door een communicatiefout met site24x7.com.",
+	"certificates.http.reachability-not-resolved": "Er is geen server beschikbaar op dit domein. Zorg ervoor dat je domein bestaat en verwijst naar het IP waar je NPMplus-instantie draait en eventueel port 80 wordt doorgestuurd in je router.",
+	"certificates.http.reachability-ok": "Je server is bereikbaar en certificaten kunnen worden aangemaakt.",
+	"certificates.http.reachability-other": "Er is een server gevonden op deze domeinnaam, maar heeft een onverwachte statuscode ({code}) teruggegeven. Is dat de NPMplus-server? Zorg ervoor dat je domein verwijst naar het IP waar jouw NPMplus-instantie draait.",
+	"certificates.http.reachability-wrong-data": "Er is een server gevonden op deze domeinnaam, maar heeft een onverwachte gegevens teruggegeven. Is dat de NPMplus-server? Zorg ervoor dat je domein verwijst naar het IP waar jouw NPMplus-instantie draait.",
+	"certificates.http.test-results": "Testresultaten",
+	"certificates.http.warning": "Deze domeinen moeten al worden geconfigureerd om naar deze installatie te wijzen.",
+	"certificates.key-type": "Sleuteltype",
+	"certificates.key-type-description": "RSA is algemeen toepasbaar, ECDSA is sneller en veiliger maar wordt mogelijk niet ondersteund door oudere systemen",
+	"certificates.key-type-ecdsa": "ECDSA 256",
+	"certificates.key-type-rsa": "RSA 2048",
+	"certificates.request.subtitle": "met Certbot",
+	"certificates.request.title": "Vraag een nieuw certificaat aan",
+	"column.access": "Toegang",
+	"column.authorization": "Authorisatie",
+	"column.authorizations": "Authorisaties",
+	"column.custom-locations": "Aangepaste locaties",
+	"column.destination": "Doel",
+	"column.details": "Details",
+	"column.email": "E-mail",
+	"column.event": "Gebeurtenis",
+	"column.expires": "Verloopt",
+	"column.http-code": "HTTP-code",
+	"column.incoming-port": "Inkomende poort",
+	"column.name": "Naam",
+	"column.protocol": "Protocol",
+	"column.provider": "Aanbieder",
+	"column.roles": "Rollen",
+	"column.rules": "Regels",
+	"column.satisfy": "Vervullen",
+	"column.satisfy-all": "Alle",
+	"column.satisfy-any": "Elke",
+	"column.scheme": "Schema",
+	"column.source": "Bron",
+	"column.ssl": "TLS",
+	"column.status": "Status",
+	"created-on": "Aangemaakt: {date}",
+	"dashboard": "Dashboard",
+	"dead-host": "404-Host",
+	"dead-hosts": "404-Hosts",
+	"dead-hosts.count": "{count} {count, plural, one {404-Host} other {404-Hosts}}",
+	"disabled": "Uitgeschakeld",
+	"domain-names": "Domeinnamen",
+	"domain-names.max": "{count} domeinnamen toegestaan",
+	"domain-names.placeholder": "Voer een domeinnaam in…",
+	"domain-names.wildcards-not-permitted": "Wildcards zijn niet toegestaan voor dit type",
+	"domain-names.wildcards-not-supported": "Wildcards zijn niet ondersteund voor deze CA",
+	"domains.advanced": "Geavanceerd",
+	"domains.force-ssl": "HTTPS forceren",
+	"domains.hsts-enabled": "HSTS ingeschakeld",
+	"domains.hsts-subdomains": "HSTS-subdomein",
+	"domains.http2-support": "HTTP/2-ondersteuning",
+	"domains.trust-forwarded-proto": "Forwarded-Proto-headers van upstream vertrouwen",
+	"domains.use-dns": "DNS-challenge gebruiken",
+	"email-address": "E-mailadres",
+	"empty-search": "Geen resultaten gevonden",
+	"empty-subtitle": "Waarom maak je er geen aan?",
+	"enabled": "Ingeschakeld",
+	"error.access.at-least-one": "Minstens één authorisatie- of één toegangsregel is vereist",
+	"error.access.duplicate-usernames": "Gebruikersnamen moeten uniek zijn",
+	"error.invalid-auth": "Ongeldig e-mail of wachtwoord",
+	"error.invalid-domain": "Ongeldige domeinnaam: {domain}",
+	"error.invalid-email": "Ongeldig e-mailadres",
+	"error.max-character-length": "Maximale lengte is {max} teken{max, plural, one {} other {s}}",
+	"error.max-domains": "Te veel domeinnamen, max is {max}",
+	"error.maximum": "Maximum is {max}",
+	"error.min-character-length": "Minimale lengte is {min} teken{min, plural, one {} other {s}}",
+	"error.minimum": "Minimum is {min}",
+	"error.passwords-must-match": "Wachtwoorden moeten overeenkomen",
+	"error.required": "Dit is verplicht",
+	"expires.on": "Verloopt: {date}",
+	"footer.github-fork": "Maak een Fork op Github",
+	"host.flags.block-exploits": "Veelvoorkomende kwetsbaarheden blokkeren",
+	"host.flags.cache-assets": "Assets opslaan",
+	"host.flags.preserve-path": "Pad behouden",
+	"host.flags.protocols": "Protocollen",
+	"host.flags.websockets-upgrade": "Websockets-ondersteuning",
+	"host.forward-port": "Poort doorsturen",
+	"host.forward-scheme": "Schema",
+	"hosts": "Hosts",
+	"http-only": "Alleen HTTP",
+	"lets-encrypt": "Certbot",
+	"lets-encrypt-via-dns": "Certbot via DNS",
+	"lets-encrypt-via-http": "Certbot via HTTP",
+	"loading": "Laden…",
+	"login.title": "Log in op je account",
+	"login.totp-code": "Verificatiecode",
+	"login.totp-code-placeholder": "Code invoeren",
+	"login.totp-description": "Voer de code in vanuit je Authenticator-app",
+	"login.totp-title": "MFA",
+	"login.totp-verify": "Verifiëren",
+	"mfa.backup-codes-remaining": "Resterende back-upcodes: {count}",
+	"mfa.backup-warning": "Bewaar deze back-upcodes op een veilige plaats. Elke code kan slechts één keer worden gebruikt.",
+	"mfa.regenerate": "Opnieuw genereren",
+	"mfa.regenerate-backup": "Back-upcodes opnieuw genereren",
+	"mfa.regenerate-instructions": "Voer een verificatiecode in om nieuwe back-upcodes te genereren. Oude codes worden ongeldig gemaakt.",
+	"mfa.title": "MFA",
+	"nginx-config.label": "Aangepaste Nginx-configuratie",
+	"nginx-config.placeholder": "# Voer hier je aangepaste Nginx-configuratie in op eigen risico!",
+	"no-permission-error": "Je hebt geen toegang om dit te bekijken.",
+	"notfound.action": "Thuis",
+	"notfound.content": "De pagina waar je naar op zoek bent kan niet worden gevonden",
+	"notfound.title": "Oeps… Je hebt een foutpagina gevonden",
+	"notification.error": "Fout",
+	"notification.object-deleted": "{object} is verwijderd",
+	"notification.object-disabled": "{object} is uitgeschakeld",
+	"notification.object-enabled": "{object} is ingeschakeld",
+	"notification.object-renewed": "{object} is vernieuwd",
+	"notification.object-saved": "{object} is opgeslagen",
+	"notification.success": "Succes",
+	"object.actions-title": "{object} #{id}",
+	"object.add": "{object} toevoegen",
+	"object.delete": "{object} verwijderen",
+	"object.delete.content": "Weet je zeker dat je {object} wilt verwijderen?",
+	"object.edit": "{object} bewerken",
+	"object.empty": "Er zijn geen {objects}",
+	"object.event.created": "{object} is aangemaakt",
+	"object.event.deleted": "{object} is verwijderd",
+	"object.event.disabled": "{object} is uitgeschakeld",
+	"object.event.enabled": "{object} is ingeschakeld",
+	"object.event.renewed": "{object} is vernieuwd",
+	"object.event.updated": "{object} is bijgewerkt",
+	"offline": "Offline",
+	"online": "Online",
+	"options": "Opties",
+	"password": "Wachtwoord",
+	"password.generate": "Willekeurig wachtwoord genereren",
+	"password.hide": "Wachtwoord verbergen",
+	"password.show": "Wachtwoord weergeven",
+	"permissions.hidden": "Verborgen",
+	"permissions.manage": "Beheren",
+	"permissions.view": "Alleen weergeven",
+	"permissions.visibility.all": "Alle items",
+	"permissions.visibility.title": "Zichtbaarheid",
+	"permissions.visibility.user": "Alleen aangemaakte items",
+	"proxy-host": "Proxyhost",
+	"proxy-host.forward-host": "Hostname / IP Doorsturen",
+	"proxy-hosts": "Proxyhosts",
+	"proxy-hosts.count": "{count} {count, plural, one {Proxy Host} other {Proxy Hosts}}",
+	"public": "Openbaar",
+	"redirection-host": "Omleidingshost",
+	"redirection-host.forward-domain": "Doorgestuurd Domein",
+	"redirection-host.forward-http-code": "HTTP-code",
+	"redirection-hosts": "Omgeleide Hosts",
+	"redirection-hosts.count": "{count} {count, plural, one {Omgeleide Host} other {Omgeleide Hosts}}",
+	"redirection-hosts.http-code.300": "300 Meerkeuze",
+	"redirection-hosts.http-code.301": "301 Definitief verplaatst",
+	"redirection-hosts.http-code.302": "302 Tijdelijk verplaatst",
+	"redirection-hosts.http-code.303": "303 Zie andere",
+	"redirection-hosts.http-code.307": "307 Tijdelijke omleiding",
+	"redirection-hosts.http-code.308": "308 Definitieve omleiding",
+	"role.admin": "Beheerder",
+	"role.standard-user": "Standaardgebruiker",
+	"save": "Opslaan",
+	"setting": "Instelling",
+	"settings": "Instellingen",
+	"settings.default-site": "Standaardbestemming",
+	"settings.default-site.404": "404-pagina",
+	"settings.default-site.444": "Geen reactie (444)",
+	"settings.default-site.congratulations": "Felicitatiepagina",
+	"settings.default-site.description": "Wat als Nginx een onbekende Host ontvangt?",
+	"settings.default-site.html": "Aangepaste HTML",
+	"settings.default-site.html.placeholder": "<!-- Voer hier je aangepaste HTML in -->",
+	"settings.default-site.redirect": "Omleiden",
+	"setup.preamble": "Begin met het aanmaken van jouw beheerderaccount.",
+	"setup.title": "Welkom!",
+	"sign-in": "Inloggen",
+	"ssl-certificate": "TLS-certificaat",
+	"stream": "Stream",
+	"stream.forward-host": "Doelhost",
+	"stream.forward-host.placeholder": "voorbeeld.nl of 10.0.0.1 of 2001:db8:3333:4444:5555:6666:7777:8888",
+	"stream.incoming-port": "Inkomende poort",
+	"streams": "Streams",
+	"streams.count": "{count} {count, plural, one {Stream} other {Streams}}",
+	"streams.tcp": "TCP",
+	"streams.udp": "UDP",
+	"test": "Testen",
+	"totp.disable": "TOTP uitschakelen",
+	"totp.disable-confirm": "TOTP uitschakelen",
+	"totp.disable-warning": "Als je TOTP uitschakelt, is je account minder goed beschermd.",
+	"totp.disabled": "Uitgeschakeld",
+	"totp.done": "Ik heb mijn back-upcodes opgeslagen",
+	"totp.enable": "TOTP inschakelen",
+	"totp.enabled": "Ingeschakeld",
+	"totp.enter-code": "Verificatiecode invoeren",
+	"totp.enter-code-disable": "Verificatiecode invoeren om uit te schakelen",
+	"totp.secret-key": "Geheime sleutel",
+	"totp.setup-instructions": "Scan deze QR-code met je authenticator-app, of neem de code handmatig over.",
+	"totp.status": "Status",
+	"totp.verify-enable": "Verifiëren en inschakelen",
+	"update-available": "Update beschikbaar: {latestVersion}",
+	"user": "Gebruiker",
+	"user.change-password": "Wachtwoord wijzigen",
+	"user.confirm-password": "Wachtwoord bevestigen",
+	"user.current-password": "Huidig wachtwoord",
+	"user.edit-profile": "Profiel bewerken",
+	"user.full-name": "Volledige naam",
+	"user.login-as": "Inloggen als {name}",
+	"user.logout": "Uitloggen",
+	"user.mfa": "MFA",
+	"user.new-password": "Nieuw wachtwoord",
+	"user.nickname": "Bijnaam",
+	"user.set-password": "Wachtwoord instellen",
+	"user.set-permissions": "Machtigingen instellen voor {name}",
+	"user.switch-dark": "Donkere modus inschakelen",
+	"user.switch-light": "Lichte modus inschakelen",
+	"username": "Gebruikersnaam",
+	"users": "Gebruikers"
 }
