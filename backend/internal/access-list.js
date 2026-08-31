@@ -35,7 +35,7 @@ const internalAccessList = {
 
 		// Items
 		await Promise.all(
-			data.items.map((item) =>
+			(data.items ?? []).map((item) =>
 				accessListAuthModel.query().insert({
 					access_list_id: row.id,
 					username: item.username,
@@ -111,7 +111,11 @@ const internalAccessList = {
 		}
 
 		// patch name if specified
-		if (typeof data.name !== "undefined" && data.name) {
+		if (
+			typeof data.name !== "undefined" ||
+			typeof data.satisfy_any !== "undefined" ||
+			typeof data.pass_auth !== "undefined"
+		) {
 			await accessListModel.query().where({ id: data.id }).patch({
 				name: data.name,
 				satisfy_any: data.satisfy_any,
