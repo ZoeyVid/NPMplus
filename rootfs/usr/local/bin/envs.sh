@@ -553,7 +553,7 @@ if [ -n "$LOGROTATIONS" ] && ! echo "$LOGROTATIONS" | grep -q "^[0-9]\+$"; then
     sleep inf
 fi
 
-if ! echo "$CERTBOT_RUN_INTERVAL" | grep -q "^[0-9]\+$" || [ "$CERTBOT_RUN_INTERVAL" -ge 500 ]; then
+if ! echo "$CERTBOT_RUN_INTERVAL" | grep -q "^[0-9]\+$" || [ "$CERTBOT_RUN_INTERVAL" -lt 1 ] || [ "$CERTBOT_RUN_INTERVAL" -ge 500 ]; then
     echo "CERTBOT_RUN_INTERVAL must be a number below 500."
     sleep inf
 fi
