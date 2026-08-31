@@ -24,7 +24,7 @@ const internalAuditLog = {
 		// Query is used for searching
 		if (typeof searchQuery === "string" && searchQuery.length > 0) {
 			query.where(function () {
-				this.where(castJsonIfNeed("meta"), "like", `%${searchQuery}`);
+				this.where(castJsonIfNeed("meta"), "like", `%${searchQuery}%`);
 			});
 		}
 
