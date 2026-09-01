@@ -17,7 +17,7 @@
 		"formik": "2.4.9",
 		"markdown-to-jsx": "9.10.2",
 		"qrcode.react": "4.2.0",
-		"query-string": "9.5.0",
+		"query-string": "9.5.1",
 		"react": "19.2.8",
 		"react-bootstrap": "2.10.10",
 		"react-dom": "19.2.8",
