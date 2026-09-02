@@ -21,15 +21,15 @@
 		"liquidjs": "10.29.0",
 		"lodash": "4.18.1",
 		"multer": "2.3.0",
-		"mysql2": "3.24.2",
+		"mysql2": "3.24.3",
 		"objection": "3.1.5",
-		"openid-client": "6.8.7",
+		"openid-client": "6.8.8",
 		"otplib": "13.5.0",
 		"pg": "8.23.0",
 		"swagger-ui-express": "5.0.1"
 	},
 	"devDependencies": {
-		"@apidevtools/swagger-parser": "12.1.0",
-		"@biomejs/biome": "2.5.11"
+		"@apidevtools/swagger-parser": "13.0.0",
+		"@biomejs/biome": "2.5.12"
 	}
 }
