@@ -21,17 +21,17 @@
 		"react": "19.2.8",
 		"react-bootstrap": "2.10.10",
 		"react-dom": "19.2.8",
-		"react-intl": "10.1.25",
+		"react-intl": "10.1.26",
 		"react-router": "8.3.1",
 		"react-select": "5.10.2",
 		"react-toastify": "11.1.0",
 		"rooks": "9.9.0"
 	},
 	"devDependencies": {
-		"@biomejs/biome": "2.5.11",
+		"@biomejs/biome": "2.5.12",
 		"@types/node": "25.9.5",
 		"@types/react": "19.2.18",
-		"@types/react-dom": "19.2.5",
+		"@types/react-dom": "19.2.7",
 		"@vitejs/plugin-react": "6.1.1",
 		"typescript": "7.0.2",
 		"vite": "8.2.2"
