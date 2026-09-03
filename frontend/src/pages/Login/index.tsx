@@ -52,7 +52,7 @@ function TotpForm() {
 											<input
 												{...field}
 												ref={codeRef}
-												type={showCode ? "text" : "password"}
+												type={showCode || !field.value ? "text" : "password"}
 												autoComplete="one-time-code"
 												required
 												maxLength={8}
