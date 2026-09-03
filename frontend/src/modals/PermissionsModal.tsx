@@ -166,7 +166,7 @@ const PermissionsModal = EasyModal.create(({ id, visible, remove }: Props) => {
 							<Modal.Body>
 								<Alert
 									variant="danger"
-									show={Boolean(error)}
+									show={Boolean(errorMsg)}
 									onClose={() => setErrorMsg(null)}
 									dismissible
 								>

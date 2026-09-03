@@ -188,7 +188,7 @@ const MfaModal = EasyModal.create(({ id, visible, remove }: Props) => {
 											<div className="input-group input-group-flat">
 												<input
 													{...field}
-													type={showCode ? "text" : "password"}
+													type={showCode || !field.value ? "text" : "password"}
 													inputMode="numeric"
 													autoComplete="one-time-code"
 													className={`form-control ${form.errors.code && form.touched.code ? "is-invalid" : ""}`}
@@ -275,7 +275,7 @@ const MfaModal = EasyModal.create(({ id, visible, remove }: Props) => {
 											<div className="input-group input-group-flat">
 												<input
 													{...field}
-													type={showCode ? "text" : "password"}
+													type={showCode || !field.value ? "text" : "password"}
 													autoComplete="one-time-code"
 													className={`form-control ${form.errors.code && form.touched.code ? "is-invalid" : ""}`}
 													placeholder="000000"
@@ -339,7 +339,7 @@ const MfaModal = EasyModal.create(({ id, visible, remove }: Props) => {
 											<div className="input-group input-group-flat">
 												<input
 													{...field}
-													type={showCode ? "text" : "password"}
+													type={showCode || !field.value ? "text" : "password"}
 													autoComplete="one-time-code"
 													className={`form-control ${form.errors.code && form.touched.code ? "is-invalid" : ""}`}
 													placeholder="000000"
