@@ -242,40 +242,33 @@ else
 fi
 
 hdr "11. prometheus metrics (the community blocklist count source)"
-METRICS_URL=$(docker exec npmplus printenv CROWDSEC_METRICS_URL 2>/dev/null || true)
-if [[ -z $METRICS_URL ]]; then
-	METRICS_URL=http://127.0.0.1:6060/metrics
+# the backend fetches these from inside the npmplus container (the compose
+# service hostname is only resolvable there), so probe the same way
+metrics_env=$(docker exec npmplus printenv CROWDSEC_METRICS_URL 2>/dev/null || true)
+metrics_body=$(docker exec npmplus sh -c 'curl -sS -m 5 "$CROWDSEC_METRICS_URL"' 2>/dev/null || true)
+if [[ -n $metrics_env ]]; then
+	ok "CROWDSEC_METRICS_URL is set: $metrics_env"
+else
 	note "CROWDSEC_METRICS_URL is not set in the npmplus container;"
 	note "the backend falls back to the LAPI host with port 6060"
 fi
-metrics_code=$(curl -sS -m 5 -o /dev/null -w '%{http_code}' "$METRICS_URL" 2>/dev/null || echo 000)
-case $metrics_code in
-	200)
-		ok "metrics endpoint answers on $METRICS_URL"
-		if curl -sS -m 5 "$METRICS_URL" 2>/dev/null | grep -q '^cs_active_decisions{.*origin='; then
-			ok "cs_active_decisions carries origin labels (community count works)"
-		elif curl -sS -m 5 "$METRICS_URL" 2>/dev/null | grep -q '^cs_active_decisions'; then
-			bad "cs_active_decisions has no origin labels: set prometheus level to full"
-			note "edit /opt/crowdsec/conf/config.yaml -> prometheus: { enabled: true, level: full }"
-			note "then restart: docker restart crowdsec"
-			fail=1
-		else
-			bad "cs_active_decisions is missing from the metrics output"
-			note "set prometheus: { enabled: true, level: full } in /opt/crowdsec/conf/config.yaml"
-			fail=1
-		fi
-		;;
-	000)
-		bad "metrics endpoint unreachable at $METRICS_URL"
-		note "is the 127.0.0.1:6060 port publish up on the crowdsec service?"
-		note "updates from setup v1.18 add it automatically via --update"
-		fail=1
-		;;
-	*)
-		bad "metrics endpoint answered HTTP $metrics_code"
-		fail=1
-		;;
-esac
+if [[ -z $metrics_body ]]; then
+	bad "metrics fetch failed from inside the npmplus container"
+	note "is the 127.0.0.1:6060:6060 port publish up on the crowdsec service?"
+	note "updates from setup v1.18 add it automatically via --update"
+	fail=1
+elif grep -q '^cs_active_decisions{.*origin=' <<<"$metrics_body"; then
+	ok "cs_active_decisions carries origin labels (community count works)"
+elif grep -q '^cs_active_decisions' <<<"$metrics_body"; then
+	bad "cs_active_decisions has no origin labels: set prometheus level to full"
+	note "edit /opt/crowdsec/conf/config.yaml -> prometheus: { enabled: true, level: full }"
+	note "then restart: docker restart crowdsec"
+	fail=1
+else
+	bad "cs_active_decisions is missing from the metrics output"
+	note "set prometheus: { enabled: true, level: full } in /opt/crowdsec/conf/config.yaml"
+	fail=1
+fi
 
 if [[ $fail -eq 0 ]]; then
 	hdr "everything checks out"

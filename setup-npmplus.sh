@@ -11,7 +11,7 @@ set -euo pipefail
 
 # bump this on every meaningful change - the script compares it against the
 # copy on github at startup and tells the operator when theirs is stale
-SCRIPT_VERSION="1.38"
+SCRIPT_VERSION="1.39"
 
 DATA_DIR="/opt/npmplus"
 CROWDSEC_DIR="/opt/crowdsec"
@@ -933,6 +933,35 @@ run_crowdsec_doctor() (
 		printf '        %s\n' "${db_files//$'\n'/$'\n        '}"
 	else
 		doctor_note "no db files found at $CROWDSEC_DIR/data"
+	fi
+
+	doctor_header "11. prometheus metrics (the community blocklist count source)"
+	# the backend fetches these from inside the npmplus container (the compose
+	# service hostname is only resolvable there), so probe the same way
+	metrics_env=$(docker exec npmplus printenv CROWDSEC_METRICS_URL 2>/dev/null || true)
+	metrics_body=$(docker exec npmplus sh -c 'curl -sS -m 5 "$CROWDSEC_METRICS_URL"' 2>/dev/null || true)
+	if [[ -n $metrics_env ]]; then
+		doctor_ok "CROWDSEC_METRICS_URL is set: $metrics_env"
+	else
+		doctor_note "CROWDSEC_METRICS_URL is not set in the npmplus container;"
+		doctor_note "the backend falls back to the LAPI host with port 6060"
+	fi
+	if [[ -z $metrics_body ]]; then
+		doctor_bad "metrics fetch failed from inside the npmplus container"
+		doctor_note "is the 127.0.0.1:6060:6060 port publish up on the crowdsec service?"
+		doctor_note "updates from setup v1.18 add it automatically via --update"
+		fail=1
+	elif grep -q '^cs_active_decisions{.*origin=' <<<"$metrics_body"; then
+		doctor_ok "cs_active_decisions carries origin labels (community count works)"
+	elif grep -q '^cs_active_decisions' <<<"$metrics_body"; then
+		doctor_bad "cs_active_decisions has no origin labels: set prometheus level to full"
+		doctor_note "edit $CROWDSEC_DIR/conf/config.yaml -> prometheus: { enabled: true, level: full }"
+		doctor_note "then restart: docker restart crowdsec"
+		fail=1
+	else
+		doctor_bad "cs_active_decisions is missing from the metrics output"
+		doctor_note "set prometheus: { enabled: true, level: full } in $CROWDSEC_DIR/conf/config.yaml"
+		fail=1
 	fi
 
 	if [[ $fail -eq 0 ]]; then
