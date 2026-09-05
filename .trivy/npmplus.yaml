@@ -1,0 +1,10 @@
+vulnerabilities:
+  - id: CVE-2025-47273
+    expired_at: 2026-10-04
+    statement: "setuptools metadata match only; no installed setuptools distribution is present in the image. pip is kept for upstream-compatible runtime Certbot DNS plugin installs."
+  - id: CVE-2026-59890
+    expired_at: 2026-10-04
+    statement: "setuptools metadata match only; no installed setuptools distribution is present in the image. pip is kept for upstream-compatible runtime Certbot DNS plugin installs."
+  - id: GHSA-6v7p-g79w-8964
+    expired_at: 2026-10-04
+    statement: "msgpack is vendored inside pip 26.2.1's own wheel; not reachable from an NPMplus HTTP request. pip is kept for upstream-compatible runtime Certbot DNS plugin installs."

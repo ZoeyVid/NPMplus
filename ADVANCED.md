@@ -391,12 +391,12 @@ If you need to run scripts before NPMplus launches put them under: `/opt/npmplus
 - to this fork's GitHub commit API for an hourly cached update check while the UI is in use
 - if not disabled gravatar for profile pictures
 - if used to your OIDC
-- no runtime connection to PyPI; Certbot DNS plugins must be included in a reviewed custom image with pinned dependencies
+- if DNS challenges are used, a runtime connection to PyPI to install the required Certbot DNS plugin on first use (upstream NPMplus behavior)
 - if used to your dns provider for acme dns challenges
 - if used to www.site24x7.com for the reachability check
 - if enabled to cloudflare to download their IPs
 - if enabled to the crowdsec (container) lapi
-- if you see more/others please report them
+- if you see more/others please report them. (DNS challenges add a one-time PyPI connection when the provider plugin is first installed, matching upstream.)
 
 ## Access Lists
 When using multiple Access Lists on a Proxy Host or a Proxy Location, they are evaluated in a top-down order from the UI. 

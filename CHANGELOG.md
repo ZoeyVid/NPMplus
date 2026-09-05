@@ -4,7 +4,9 @@ All notable changes to the NPMplus Security Fork are documented here. The fork u
 
 ## Unreleased
 
-No unreleased changes.
+### Changed
+
+- Restored upstream NPMplus runtime Certbot DNS-plugin installation so Cloudflare and other DNS challenges work out of the box; pinned pip and Certbot stay in the image and the pip packaging-tool scan findings are carried under a reviewed, expiring `.trivy/npmplus.yaml` baseline.
 
 ## v2.15.1-mangyan1.rc.2 - 2026-09-05
 

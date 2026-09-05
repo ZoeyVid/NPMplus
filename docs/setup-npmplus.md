@@ -190,7 +190,7 @@ The activity chart includes readable time labels and a screen-reader summary. Da
 
 Use mounted secret files instead of literal secret values in Compose. NPMplus supports `_FILE` variants for `COOKIE_SECRET`, `OIDC_CLIENT_SECRET`, `INITIAL_ADMIN_PASSWORD`, `INITIAL_SETUP_TOKEN`, `ACME_EAB_HMAC_KEY`, `DB_MYSQL_PASSWORD`, and `DB_POSTGRES_PASSWORD`. The sample `compose.yaml` contains commented Compose-secret examples. Do not set both a value and its `_FILE` variant. A custom `INITIAL_SETUP_TOKEN` must contain at least 32 characters; operator-supplied secret files are not deleted by NPMplus.
 
-NPMplus does not install missing Certbot DNS plugins into the running application container. Build every required provider plugin into a reviewed custom image with pinned dependencies. A missing plugin is logged without keeping the API offline, but certificate requests and renewals that need it will fail until it is provided. The final image removes pip after Certbot is installed, which keeps mutable package-management code out of the live reverse-proxy container.
+NPMplus installs missing Certbot DNS plugins on demand into the running application container, matching upstream NPMplus. The first DNS-challenge request downloads the provider plugin from PyPI at that moment; keep this in mind when the server has restricted egress. Pip and Certbot itself are version-pinned in the image build, and the daily container scan keeps a reviewed, expiring baseline for the packaging-tool findings inside pip.
 
 ## Container vulnerability monitoring
 
@@ -198,7 +198,7 @@ GitHub Actions scans the published NPMplus, Caddy, CrowdSec, and latest stable A
 
 New high or critical findings fail the relevant job. The only exceptions are reviewed findings in upstream CrowdSec and Anubis binaries that this fork cannot safely patch without replacing those projects. Those exceptions are kept in separate files under `.trivy/`, explain the deployed mitigation, and expire after 30 days so they must be reviewed again. The downloadable, human-readable report includes suppressed findings for auditing, while the Security tab omits those accepted findings. NPMplus does not disable CrowdSec, AppSec, the firewall bouncer, or Anubis to make a scan pass.
 
-The optional Caddy image is built from the stable Caddy release with a patched Go toolchain and explicit patched versions of the affected Go modules. Its Alpine packages are upgraded during the build. The main NPMplus image removes pip after the pinned Certbot installation, so the packaging code previously reported by container scanners is absent from the runtime image.
+The optional Caddy image is built from the stable Caddy release with a patched Go toolchain and explicit patched versions of the affected Go modules. Its Alpine packages are upgraded during the build. The main NPMplus image keeps pinned pip and Certbot in the runtime image so DNS provider plugins can be installed on demand like upstream NPMplus; the pip packaging-tool findings are covered by a reviewed, expiring scan baseline.
 
 Reset a SQLite user's password without placing it in shell history or process arguments:
 

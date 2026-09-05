@@ -48,7 +48,7 @@ jobs:
         include:
           - name: npmplus
             image: ghcr.io/${{ github.repository_owner }}/npmplus:develop
-            ignore: ""
+            ignore: .trivy/npmplus.yaml
           - name: caddy
             image: ghcr.io/${{ github.repository_owner }}/npmplus:caddy
             ignore: ""

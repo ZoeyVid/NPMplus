@@ -319,7 +319,7 @@ The repository-controlled recommendations from the point-in-time rescan have bee
 | CVE-R01 — Caddy | Resolved in the fork image | Caddy 2.11.4 is rebuilt from stable source with Go 1.26.8, `x/crypto` 0.55.0, `x/net` 0.57.0, gRPC-Go 1.83.1, Caddy's reduced database build tags, and upgraded Alpine packages. The resulting Linux/AMD64 image has zero Trivy high/critical findings. |
 | CVE-R02 — CrowdSec | Upstream-blocked; monitored and mitigated | The deployment remains SQLite-based with APIs bound to loopback. A daily scan follows `crowdsecurity/crowdsec:latest`; reviewed upstream findings have documented exceptions that expire on 2026-10-04. New high/critical findings fail CI. Protection remains enabled. |
 | CVE-R03 — Anubis | Upstream-blocked; monitored and mitigated | The deployment remains per-host and loopback-only. CI resolves the latest stable Anubis release daily; reviewed upstream findings have documented exceptions that expire on 2026-10-04. New high/critical findings fail CI. Protection remains enabled. |
-| CVE-R04 — Python packaging tools | Resolved in the fork image | Pip is used only to install pinned Certbot during the image build and is then removed. Runtime Certbot plugin downloads and the unsafe compatibility environment switch were removed; provider plugins must be baked into a reviewed custom image. |
+| CVE-R04 — Python packaging tools | Accepted with reviewed baseline | Pip (pinned) and Certbot remain in the runtime image so DNS provider plugins install on demand, matching upstream NPMplus. The two setuptools matches are stale metadata with no installed distribution, and the msgpack code is vendored inside pip itself; none are reachable from an HTTP request. They are carried in `.trivy/npmplus.yaml` with an expiry that forces re-review. |
 
 Pull requests now scan the actual final Linux/AMD64 application image and changed Caddy image. A scheduled workflow scans all four published components, retains readable and SARIF reports, uploads SARIF to GitHub code scanning, and enforces the two separate expiring upstream baselines. SQLite remains the default; PostgreSQL and PHP-FPM were not added because neither is a CVE remediation for this deployment.
 
@@ -399,7 +399,7 @@ References: [Anubis releases](https://github.com/TecharoHQ/anubis/releases), [Go
 - Evidence: Trivy reports `setuptools` 70.3.0 for `CVE-2025-47273` and `CVE-2026-59890`, plus `msgpack` 1.1.2 for `GHSA-6v7p-g79w-8964`. Runtime inspection shows no installed `setuptools` distribution and no installed standalone `msgpack` distribution. The matching MessagePack code is vendored inside pip 26.2.1 under `pip/_vendor/msgpack`.
 - Impact: the setuptools path-traversal issue requires use of its package download machinery; that package is not installed. The MessagePack issue requires local pip code to reuse a malformed `Unpacker` after catching an error. Neither is reachable from an NPMplus HTTP request.
 - False-positive note: the setuptools entries are stale/metadata scanner matches rather than an importable runtime package. The msgpack code exists, but only inside the administrative pip tool, so this is not a web application CVE.
-- Recommended fix: remove pip/build tooling from the final runtime image when practical, or update the pip release after it vendors MessagePack 1.2.1. Keep custom Certbot provider plugins baked into reviewed images rather than installing them at runtime.
+- Recommended fix: update pip after it vendors MessagePack 1.2.1. Keep runtime Certbot DNS plugin installation upstream-compatible; the packaging-tool findings remain under the reviewed, expiring `.trivy/npmplus.yaml` baseline.
 
 References: [setuptools CVE-2025-47273](https://github.com/advisories/GHSA-5rjg-fvgr-3xxf), [MessagePack GHSA-6v7p-g79w-8964](https://github.com/advisories/GHSA-6v7p-g79w-8964).
 
@@ -442,7 +442,7 @@ This is a static dependency/container assessment, not a live penetration test. I
 All 12 findings from the security review have been addressed in the working tree. No known production finding remains open. Two changes require operator awareness:
 
 - Existing installations keep their current host-network/root-compatible Compose layout during `--update`; the safer bridge-network and UID/GID 1000 defaults apply automatically to newly generated stacks. This avoids silently breaking existing proxy targets or data ownership. Existing operators can migrate during a maintenance window.
-- Missing Certbot DNS plugins are not installed into the live container. Required provider plugins must be pinned in a reviewed custom image; the former runtime compatibility escape hatch was removed during the 2026-09-04 CVE remediation.
+- Certbot DNS provider plugins are installed on demand into the running container, matching upstream NPMplus. The image keeps pinned pip and Certbot for this; the pip packaging-tool findings are carried as a reviewed, expiring scan baseline.
 
 ## Remediation summary
 
@@ -452,7 +452,7 @@ All 12 findings from the security review have been addressed in the working tree
 | SEC-002 | High | Resolved | Raw Nginx fields, local filesystem targets, and syntax-bearing custom paths are administrator-only at the backend boundary. New non-admins receive view-only defaults, and host/domain input validation is stricter. |
 | SEC-003 | High | Resolved | Verified email checks fail closed. UserInfo is fetched when verification is missing, and OIDC identities are persistently bound to a unique hash of issuer plus subject rather than authorized by email on every login. |
 | SEC-004 | High | Resolved | Upstream synchronization now pushes to an automation branch and opens a pull request. Pull-request builds are read-only and cannot publish images; mutable formatter/tool execution was removed or digest/version pinned. Release tags are validated and passed to shells through quoted environment variables. |
-| SEC-005 | High | Resolved | Runtime Certbot plugin installation is unavailable. Certbot and LuaRocks build dependencies are version-pinned, pip is removed from the final image, and provider plugins must be baked into a reviewed custom image. |
+| SEC-005 | High | Replaced by upstream-compatible design | Runtime Certbot provider-plugin installation follows upstream NPMplus and installs on demand, so Cloudflare DNS challenges work without a custom image. Certbot and pip are version-pinned in the image build, and the pip packaging-tool scanner findings are kept under a reviewed, expiring `.trivy/npmplus.yaml` baseline rather than silently ignored. |
 | SEC-006 | Medium | Resolved | API errors no longer return stack traces or nested command failures. Clients receive a correlation ID while full diagnostics stay in server logs. JSON, form, avatar, and certificate-upload bodies are explicitly bounded. |
 | SEC-007 | Medium | Resolved | External requests use abort timeouts and bounded streaming readers. Cloudflare range refresh no longer blocks the backend listener during startup. |
 | SEC-008 | Medium | Resolved for defaults | The sample and fresh installer use a bridge network, explicit ports, loopback-only administration, UID/GID 1000, minimal required capabilities, and `no-new-privileges`. Host networking is opt-in. |
@@ -500,7 +500,7 @@ The final verification completed successfully:
 
 - Keep port 81 bound to host loopback and administer through an SSH tunnel.
 - Treat Docker access as root-equivalent even when application services drop privileges.
-- Bake required Certbot DNS plugins into a reviewed image before the next request or renewal for an installation that uses DNS challenges.
+- DNS-challenge certificates install their provider plugin from PyPI on first use, matching upstream NPMplus; review that dependency when the deployment has strict egress controls.
 - Review and merge the upstream-sync pull request only after CI and code review.
 - Protect older backups made before setup script v1.16 because they may contain legacy inline bootstrap credentials.
 
