@@ -951,6 +951,7 @@ const CrowdsecDashboard = () => {
 					: "crowdsec.notifications.off";
 	const partialRefreshFailed = insights.isRefetchError || metrics.isRefetchError || anubis.isRefetchError;
 	const secondarySourceUnavailable = (metrics.isError && !metrics.data) || (anubis.isError && !anubis.data);
+	const metricsDegraded = metrics.data && metrics.data.available === false;
 	const lastUpdatedAt = Math.max(
 		insights.data ? insights.dataUpdatedAt : 0,
 		metrics.data ? metrics.dataUpdatedAt : 0,
@@ -1096,6 +1097,11 @@ const CrowdsecDashboard = () => {
 							<T id="crowdsec.partial-unavailable" />
 						</Alert>
 					)}
+					{metricsDegraded && (
+						<Alert variant="warning">
+							<T id={metrics.data?.error || "crowdsec.metrics-unavailable"} />
+						</Alert>
+					)}
 					{insights.isError && !insights.data && (
 						<Alert variant="danger">
 							<T id="crowdsec.insights.error" />: <T id={insights.error?.message || "error.unknown"} />
@@ -1133,7 +1139,17 @@ const CrowdsecDashboard = () => {
 										label={<T id="crowdsec.kpi.community" />}
 										value={metrics.data?.communityActiveDecisions ?? "—"}
 										tone="green"
-										description={<T id="crowdsec.kpi.community-hint" />}
+										description={
+											<T
+												id={
+													metrics.data?.communityActiveDecisions !== undefined
+														? "crowdsec.kpi.community-hint"
+														: metrics.data?.available === false
+															? "crowdsec.kpi.community-metrics-degraded"
+															: "crowdsec.kpi.community-metrics-loading"
+												}
+											/>
+										}
 										onClick={() => setKpi("community")}
 									/>
 									<Metric

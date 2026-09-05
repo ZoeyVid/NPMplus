@@ -241,6 +241,42 @@ else
 	note "no db files found at /opt/crowdsec/data"
 fi
 
+hdr "11. prometheus metrics (the community blocklist count source)"
+METRICS_URL=$(docker exec npmplus printenv CROWDSEC_METRICS_URL 2>/dev/null || true)
+if [[ -z $METRICS_URL ]]; then
+	METRICS_URL=http://127.0.0.1:6060/metrics
+	note "CROWDSEC_METRICS_URL is not set in the npmplus container;"
+	note "the backend falls back to the LAPI host with port 6060"
+fi
+metrics_code=$(curl -sS -m 5 -o /dev/null -w '%{http_code}' "$METRICS_URL" 2>/dev/null || echo 000)
+case $metrics_code in
+	200)
+		ok "metrics endpoint answers on $METRICS_URL"
+		if curl -sS -m 5 "$METRICS_URL" 2>/dev/null | grep -q '^cs_active_decisions{.*origin='; then
+			ok "cs_active_decisions carries origin labels (community count works)"
+		elif curl -sS -m 5 "$METRICS_URL" 2>/dev/null | grep -q '^cs_active_decisions'; then
+			bad "cs_active_decisions has no origin labels: set prometheus level to full"
+			note "edit /opt/crowdsec/conf/config.yaml -> prometheus: { enabled: true, level: full }"
+			note "then restart: docker restart crowdsec"
+			fail=1
+		else
+			bad "cs_active_decisions is missing from the metrics output"
+			note "set prometheus: { enabled: true, level: full } in /opt/crowdsec/conf/config.yaml"
+			fail=1
+		fi
+		;;
+	000)
+		bad "metrics endpoint unreachable at $METRICS_URL"
+		note "is the 127.0.0.1:6060 port publish up on the crowdsec service?"
+		note "updates from setup v1.18 add it automatically via --update"
+		fail=1
+		;;
+	*)
+		bad "metrics endpoint answered HTTP $metrics_code"
+		fail=1
+		;;
+esac
+
 if [[ $fail -eq 0 ]]; then
 	hdr "everything checks out"
 	note "if the UI still shows the error: hard-refresh the page (ctrl-shift-r),"

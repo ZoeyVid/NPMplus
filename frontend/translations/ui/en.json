@@ -215,6 +215,8 @@
 	"crowdsec.kpi.community": "Community blocklist entries",
 	"crowdsec.kpi.community-help": "These CAPI and blocklist decisions are still downloaded and enforced. Individual community IPs are intentionally hidden here because removing one is temporary and it may be downloaded again.",
 	"crowdsec.kpi.community-hint": "Downloaded and enforced in the background",
+	"crowdsec.kpi.community-metrics-degraded": "Count unavailable: CrowdSec metrics are unreachable",
+	"crowdsec.kpi.community-metrics-loading": "Waiting for CrowdSec metrics…",
 	"crowdsec.kpi.honeypot": "Honeypot bans",
 	"crowdsec.kpi.local": "Local active bans",
 	"crowdsec.kpi.local-help": "Bans created from attacks observed by this instance, manual bans, and imported local decisions.",
