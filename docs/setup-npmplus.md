@@ -227,21 +227,44 @@ sudo bash setup-npmplus.sh --restore /path/to/npmplus-YYYY-MM-DD-HHMMSS.tar.gz
 
 The restore replaces data only. The current machine's Compose configuration (image digests, LAN binding, published ports, admin secret) is kept, which is what makes a server migration work: install NPMplus on the new machine, copy an archive from the old one, and restore it on top. The restore path is distro-agnostic (no apt/dpkg/systemd/UFW calls), so archives move freely between Debian and Ubuntu servers in either direction - the fresh install on the new machine sets up that machine's own host integration for its distro, and the restore only carries the data. Afterwards, log in with the account from the restored database. The restore requires the typed word `restore` as confirmation, keeps a copy of the replaced state in `/var/backups/npmplus/pre-restore-<timestamp>/`, and refuses archives that do not match the npmplus backup layout.
 
+A full migration to a new machine is therefore:
+
+```bash
+# 1. on the old machine: copy the newest archive out (the folder is root-only)
+sudo scp /var/backups/npmplus/npmplus-YYYY-MM-DD-HHMMSS.tar.gz user@newmachine:/tmp/
+
+# 2. on the new machine: install NPMplus first - that sets up Docker, UFW,
+#    CrowdSec, and the crons for THIS machine
+sudo bash setup-npmplus.sh        # menu option: Install
+
+# 3. then put the old data on top (menu option 5, or:)
+sudo /opt/npmplus/setup-npmplus.sh --restore /tmp/npmplus-YYYY-MM-DD-HHMMSS.tar.gz
+```
+
+Copying the whole `/var/backups/npmplus/` folder instead of one file works too: drop it at the same path on the new machine and the interactive picker lists every archive newest-first. Two caveats: transfer archives over SSH only (they contain TLS private keys and the full database; keep them mode `0600`), and point DNS at the new machine before the next certificate renewal so Let's Encrypt challenges reach the new address.
+
 The equivalent menu path is **Restore a backup** in the maintenance menu.
 
-For reference, the manual equivalent (stop the stack, extract at the filesystem root, promote the consistent database copy, start the stack) is:
+For reference, the manual equivalent (stop the stack, extract the data payloads, promote the consistent database copy, start the stack) is:
 
 ```bash
 sudo docker compose -f /opt/npmplus/compose.yaml down
-sudo tar -xzf /var/backups/npmplus/npmplus-YYYY-MM-DD-HHMMSS.tar.gz -C /
+# extract everything EXCEPT the old machine's compose file, setup script, and
+# admin secret: the new machine must keep its own
+sudo tar -xzf /var/backups/npmplus/npmplus-YYYY-MM-DD-HHMMSS.tar.gz -C / \
+  --exclude='opt/npmplus/compose.yaml' --exclude='opt/npmplus/setup-npmplus.sh'
 if sudo test -f /opt/npmplus/npmplus/database.backup.sqlite; then
   sudo cp -a /opt/npmplus/npmplus/database.backup.sqlite /opt/npmplus/npmplus/database.sqlite
+  # the consistent copy already contains the newest writes; the live file's
+  # write-ahead log must not replay on top of it
   sudo rm -f /opt/npmplus/npmplus/database.sqlite-wal /opt/npmplus/npmplus/database.sqlite-shm
 fi
+# without the consistent copy, leave the extracted -wal/-shm in place: the
+# database runs in WAL mode and its newest writes sit there until first open
 sudo docker compose -f /opt/npmplus/compose.yaml up -d
 ```
 
-Choose the archive explicitly and retain a copy until the restored stack has been verified.
+Choose the archive explicitly and retain a copy until the restored stack has been verified. Prefer the restore action over the manual path: it validates the archive, keeps a pre-restore snapshot, re-registers CrowdSec keys, and waits for the stack to become healthy.
 
 ## Uninstalling
 
