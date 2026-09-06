@@ -778,6 +778,7 @@ router
 			const alerts = normalizeCrowdsecAlerts(payload);
 			const countries = {};
 			const asns = {};
+			const ips = {};
 			const scenarios = {};
 			const targets = {};
 			const locationCounts = new Map();
@@ -787,6 +788,8 @@ router
 				if (country) countries[country] = (countries[country] ?? 0) + 1;
 				const asn = alert.source?.as_name || (alert.source?.as_number ? `AS${alert.source.as_number}` : "");
 				if (asn) asns[asn] = (asns[asn] ?? 0) + 1;
+				const ip = alert.source?.ip || alert.source?.value;
+				if (ip) ips[ip] = (ips[ip] ?? 0) + 1;
 				const target = crowdsecAlertTarget(alert);
 				if (target) targets[target] = (targets[target] ?? 0) + 1;
 				if (alert.source?.latitude !== null && alert.source?.longitude !== null) {
@@ -827,6 +830,7 @@ router
 				top_scenarios: topCounts(scenarios),
 				top_countries: topCounts(countries),
 				top_asns: topCounts(asns),
+				top_ips: topCounts(ips),
 				top_targets: topCounts(targets),
 			});
 		} catch (err) {

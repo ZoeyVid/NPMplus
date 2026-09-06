@@ -181,13 +181,15 @@ cs_appsec_reqs_total 12
 cs_appsec_block_total 3
 cs_lapi_request_duration_seconds_sum 1.5
 cs_lapi_request_duration_seconds_count 3
+cs_lapi_bouncer_requests_total{bouncer="npmplus"} 4
+cs_lapi_decisions_ok_total 3
 cs_active_decisions{origin="crowdsec",action="ban"} 2
 cs_active_decisions{origin="cscli",action="ban"} 1
 cs_active_decisions{origin="CAPI",action="ban"} 50000
 cs_active_decisions{origin="lists",action="ban"} 100
 not valid
 `);
-	assert.equal(samples.length, 10);
+	assert.equal(samples.length, 12);
 	assert.deepEqual(samples[0].labels, { source: "nginx" });
 	assert.deepEqual(summarizeCrowdsecMetrics(samples), {
 		active_decisions: 50103,
@@ -205,7 +207,8 @@ not valid
 		appsec_blocked: 3,
 		appsec_passed: 9,
 		appsec_block_rate: 0.25,
-		bouncer_requests: 0,
+		bouncer_requests: 4,
+		bouncer_decision_hits: 3,
 		machine_requests: 0,
 		parser_hits: 10,
 		parser_success_rate: 0.8,

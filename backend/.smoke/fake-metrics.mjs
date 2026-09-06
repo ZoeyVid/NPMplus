@@ -7,6 +7,7 @@ cs_parser_hits_ok_total{source="nginx"} 9
 cs_appsec_reqs_total 12
 cs_appsec_block_total 3
 cs_lapi_bouncer_requests_total{bouncer="npmplus"} 20
+cs_lapi_decisions_ok_total 12
 cs_lapi_machine_requests_total{machine="npmplus-ui"} 8
 cs_lapi_request_duration_seconds_sum 1.5
 cs_lapi_request_duration_seconds_count 3

@@ -243,6 +243,27 @@ button.metricCard:focus-visible {
 	background: var(--tblr-red);
 }
 
+.activityBars {
+	display: flex;
+	align-items: flex-end;
+	gap: 2px;
+	height: 3.25rem;
+}
+
+.activityBar,
+.activityBarNow {
+	flex: 1 1 0;
+	min-width: 2px;
+	min-height: 2px;
+	border-radius: 2px 2px 0 0;
+	background: var(--tblr-azure);
+}
+
+.activityBarNow {
+	/* the newest bucket shows whether an attack is happening right now */
+	background: var(--tblr-orange);
+}
+
 .quickFilter {
 	max-width: 100%;
 	white-space: normal;

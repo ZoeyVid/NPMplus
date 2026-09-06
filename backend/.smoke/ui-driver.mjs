@@ -217,6 +217,7 @@ const api = async (route) => {
 				{ name: "SG", count: 2 },
 			],
 			topAsns: [{ name: "Example Telecommunications and Hosting Provider ASN", count: 7 }],
+			topIps: [{ name: "203.0.113.9", count: 4 }],
 			topTargets: [{ name: "very-long-subdomain-for-responsive-testing.example.internal/.env", count: 4 }],
 		});
 	if (apiPath === "/crowdsec/history/alerts")
@@ -251,6 +252,7 @@ const api = async (route) => {
 			appsecPassed: 9,
 			appsecBlockRate: 0.25,
 			bouncerRequests: 20,
+			bouncerDecisionHits: 12,
 			machineRequests: 8,
 			parserHits: 10,
 			parserSuccessRate: 0.9,

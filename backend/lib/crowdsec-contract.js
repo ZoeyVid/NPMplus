@@ -271,6 +271,9 @@ const summarizeCrowdsecMetrics = (samples) => {
 		appsec_passed: Math.max(0, appsecRequests - appsecBlocked),
 		appsec_block_rate: ratio(appsecBlocked, appsecRequests),
 		bouncer_requests: sum("cs_lapi_bouncer_requests_total"),
+		// non-empty answers LAPI served to bouncers: the direct proof that
+		// decisions are actually reaching the reverse proxy for enforcement
+		bouncer_decision_hits: sum("cs_lapi_decisions_ok_total"),
 		machine_requests: sum("cs_lapi_machine_requests_total"),
 		parser_hits: parserHits,
 		parser_success_rate: ratio(parserOk, parserHits),

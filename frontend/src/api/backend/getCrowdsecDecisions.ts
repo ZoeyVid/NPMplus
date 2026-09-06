@@ -100,6 +100,7 @@ export interface CrowdsecInsights {
 	topScenarios: CrowdsecInsightsItem[];
 	topCountries: CrowdsecInsightsItem[];
 	topAsns: CrowdsecInsightsItem[];
+	topIps: CrowdsecInsightsItem[];
 	topTargets: CrowdsecInsightsItem[];
 }
 
@@ -140,6 +141,7 @@ export interface CrowdsecMetrics {
 	appsecPassed?: number;
 	appsecBlockRate?: number | null;
 	bouncerRequests?: number;
+	bouncerDecisionHits?: number;
 	machineRequests?: number;
 	parserHits?: number;
 	parserSuccessRate?: number | null;
