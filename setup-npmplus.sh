@@ -11,7 +11,7 @@ set -euo pipefail
 
 # bump this on every meaningful change - the script compares it against the
 # copy on github at startup and tells the operator when theirs is stale
-SCRIPT_VERSION="1.53"
+SCRIPT_VERSION="1.54"
 
 DATA_DIR="/opt/npmplus"
 CROWDSEC_DIR="/opt/crowdsec"
@@ -1462,6 +1462,22 @@ run_restore() (
 			password=$(register_machine npmplus-ui || true)
 			[[ -n "$password" ]] && { echo "$password" >"$DATA_DIR/crowdsec/lapi-ui-machine.key"; chmod 600 "$DATA_DIR/crowdsec/lapi-ui-machine.key"; }
 		fi
+		# the restored LAPI database has never seen this machine's host firewall
+		# bouncer key either, and a dead bouncer keeps the protected boot gate
+		# closed after the next reboot - heal it the same way as the UI keys
+		local fwconf=/etc/crowdsec/bouncers/crowdsec-firewall-bouncer.yaml fwkey
+		if [[ -f /var/lib/npmplus/installed-firewall-bouncer && -s "$fwconf" ]]; then
+			fwkey=$(sed -n 's/^api_key:[[:space:]]*//p' "$fwconf" | head -1)
+			if [[ -z "$fwkey" ]] || ! bouncer_key_works "$fwkey"; then
+				say "re-registering the host firewall bouncer key"
+				fwkey=$(register_bouncer npmplus-firewall || true)
+				if [[ -n "$fwkey" ]]; then
+					sed -i "s|^api_key:.*|api_key: $fwkey|" "$fwconf"
+					chmod 600 "$fwconf"
+					systemctl restart crowdsec-firewall-bouncer
+				fi
+			fi
+		fi
 	fi
 
 	# npmplus must come back with the restored database. Installs managed by
@@ -2735,6 +2751,30 @@ if [[ -s "$CONF" ]]; then
 			log "nginx bouncer healed, npmplus restarted"
 		else
 			log "nginx bouncer heal FAILED"
+		fi
+	fi
+fi
+
+# 4: the host firewall bouncer - a restored or rolled-back LAPI database rejects
+# its key, the bouncer stays dead, and the protected boot gate keeps the public
+# ports closed after every reboot until someone heals this by hand
+FWCONF=/etc/crowdsec/bouncers/crowdsec-firewall-bouncer.yaml
+if [[ -f /var/lib/npmplus/installed-firewall-bouncer && -s "$FWCONF" ]]; then
+	fwkey=$(sed -n 's/^api_key:[[:space:]]*//p' "$FWCONF" | head -1)
+	if [[ -z "$fwkey" ]] || ! bouncer_key_works "$fwkey"; then
+		log "host firewall bouncer key rejected - re-registering"
+		key=$(register_bouncer npmplus-firewall || true)
+		if [[ -n "$key" ]]; then
+			sed -i "s|^api_key:.*|api_key: $key|" "$FWCONF"
+			chmod 600 "$FWCONF"
+			systemctl restart crowdsec-firewall-bouncer
+			log "host firewall bouncer healed"
+			# a bouncer that was dead at boot left the protected gate failed and
+			# the public ports closed - now that enforcement is back, open them
+			systemctl start npmplus-public.service >/dev/null 2>&1 || true
+			log "protected startup re-attempted"
+		else
+			log "host firewall bouncer heal FAILED"
 		fi
 	fi
 fi
