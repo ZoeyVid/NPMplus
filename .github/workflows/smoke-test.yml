@@ -721,4 +721,11 @@ jobs:
             check "snapshot has the replaced database" grep -q 'debian-restore-test-database' /var/backups/npmplus/pre-restore-*/database.sqlite
           fi
 
+          # WAL replay: a live-file-only archive of a WAL-mode database carries
+          # its newest writes in the -wal companion. The restore must place the
+          # -wal/-shm next to the main file so the next open replays them.
+          if tar -tzf /tmp/oldmachine-backup.tar.gz | grep -q 'database.sqlite-wal'; then
+            check "restored -wal travels with the database" test -f /opt/npmplus/npmplus/database.sqlite-wal
+          fi
+
           test "$fail" -eq 0

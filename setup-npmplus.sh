@@ -11,7 +11,7 @@ set -euo pipefail
 
 # bump this on every meaningful change - the script compares it against the
 # copy on github at startup and tells the operator when theirs is stale
-SCRIPT_VERSION="1.45"
+SCRIPT_VERSION="1.46"
 
 DATA_DIR="/opt/npmplus"
 CROWDSEC_DIR="/opt/crowdsec"
@@ -1265,16 +1265,26 @@ run_restore() (
 	say "stopping the stack"
 	docker compose -f "$COMPOSE_FILE" stop >/dev/null 2>&1 || true
 
-	# replace the database: prefer the consistent hot copy from the backup run
+	# replace the database: prefer the consistent hot copy from the backup run -
+	# sqlite's backup API already folds the WAL content into it. without it, the
+	# live main file is stale on a WAL-mode database and its -wal/-shm must
+	# travel along, or the newest writes are silently lost on the next open.
 	if [[ -f "$extract/opt/npmplus/npmplus/database.backup.sqlite" ]]; then
 		mkdir -p "$DATA_DIR/npmplus"
+		rm -f "$DATA_DIR/npmplus/database.sqlite-wal" "$DATA_DIR/npmplus/database.sqlite-shm"
 		cp -a "$extract/opt/npmplus/npmplus/database.backup.sqlite" "$DATA_DIR/npmplus/database.sqlite"
 	elif [[ -f "$extract/opt/npmplus/npmplus/database.sqlite" ]]; then
 		mkdir -p "$DATA_DIR/npmplus"
+		rm -f "$DATA_DIR/npmplus/database.sqlite-wal" "$DATA_DIR/npmplus/database.sqlite-shm"
 		cp -a "$extract/opt/npmplus/npmplus/database.sqlite" "$DATA_DIR/npmplus/database.sqlite"
+		# replay the write-ahead log from the archive on the next open
+		local suffix
+		for suffix in wal shm; do
+			[[ -f "$extract/opt/npmplus/npmplus/database.sqlite-$suffix" ]] || continue
+			cp -a "$extract/opt/npmplus/npmplus/database.sqlite-$suffix" "$DATA_DIR/npmplus/database.sqlite-$suffix"
+		done
 	fi
 	chmod 600 "$DATA_DIR/npmplus/database.sqlite" 2>/dev/null || true
-	rm -f "$DATA_DIR/npmplus/database.sqlite-wal" "$DATA_DIR/npmplus/database.sqlite-shm"
 
 	# certificates, access lists and every other /data payload ride along with
 	# the data dir; the compose file, admin secret and host helpers are
