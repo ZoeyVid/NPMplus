@@ -11,7 +11,7 @@ set -euo pipefail
 
 # bump this on every meaningful change - the script compares it against the
 # copy on github at startup and tells the operator when theirs is stale
-SCRIPT_VERSION="1.42"
+SCRIPT_VERSION="1.43"
 
 DATA_DIR="/opt/npmplus"
 CROWDSEC_DIR="/opt/crowdsec"
@@ -291,6 +291,11 @@ normalize_firewall_bouncer_config() {
 repair_installer_firewall_bouncer() {
 	[[ -f /var/lib/npmplus/installed-firewall-bouncer ]] || return 0
 	command -v crowdsec-firewall-bouncer >/dev/null || return 0
+	# the sources entry may point at an unpublished suite (trixie), which
+	# breaks apt update for every later host operation - repair it first
+	local suite
+	suite=$(crowdsec_repo_suite) || true
+	[[ -z "$suite" ]] || repair_crowdsec_sources_suite "$suite"
 	DEBIAN_FRONTEND=noninteractive apt-get install -y -qq ipset iptables
 	normalize_firewall_bouncer_config
 	install_firewall_bouncer_boot_gate
@@ -1431,6 +1436,15 @@ crowdsec_repo_suite() {
 		fi
 	done
 	return 1
+}
+
+# repair a crowdsec sources entry that points at an unpublished suite
+# (e.g. trixie). packagecloud writes the path with a trailing slash
+# ('.../debian/ trixie main'), so the pattern must tolerate both forms.
+repair_crowdsec_sources_suite() { # repair_crowdsec_sources_suite SUITE
+	local suite="$1" list=/etc/apt/sources.list.d/crowdsec_crowdsec.list
+	[[ -s "$list" ]] || return 0
+	sed -i -E "s|(debian/? )[a-z-]+ main|\1${suite} main|g" "$list"
 }
 
 yaml_quote() { # quote YAML and escape $ so compose preserves it literally
@@ -3191,12 +3205,11 @@ EOF
 			# a codename CrowdSec does not publish (trixie) leaves a broken
 			# sources entry behind; repair it before apt touches it again
 			CROWDSEC_SUITE=$(crowdsec_repo_suite) || {
-				echo "could not determine a published CrowdSec apt suite for this system" >&2
+				echo "could not determine a published Crowdsec apt suite for this system" >&2
 				return 1
 			}
 			if [[ "$(. /etc/os-release && echo "${VERSION_CODENAME:-}")" != "$CROWDSEC_SUITE" ]]; then
-				sed -i "s|/debian [a-z]* main|/debian ${CROWDSEC_SUITE} main|" \
-					/etc/apt/sources.list.d/crowdsec_crowdsec.list 2>/dev/null || true
+				repair_crowdsec_sources_suite "$CROWDSEC_SUITE"
 			fi
 			dist="$CROWDSEC_SUITE" run_verified_script "$PACKAGECLOUD_INSTALL_URL" "$PACKAGECLOUD_INSTALL_SHA256" >/dev/null
 			# --no-install-recommends is load-bearing: the debian-packaged
