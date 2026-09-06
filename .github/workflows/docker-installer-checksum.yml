@@ -63,10 +63,11 @@ jobs:
           commit-message: refresh the Docker installer checksum
           branch: update-docker-installer-checksum
           title: refresh the Docker installer checksum
+          reviewers: copilot
           body: |
             The official Docker installer at https://get.docker.com changed.
 
             - Previous SHA-256: `${{ steps.update.outputs.old_hash }}`
             - New SHA-256: `${{ steps.update.outputs.new_hash }}`
 
-            This PR only updates the reviewed checksum pin. Run the required CI checks before merging; do not auto-merge this change.
+            This PR only updates the reviewed checksum pin. Copilot review is requested automatically; run the required CI checks and complete human review before merging. Do not auto-merge this change.
