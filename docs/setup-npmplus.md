@@ -138,6 +138,8 @@ Setup script v1.24 distinguishes an installed native CrowdSec daemon from Debian
 
 Setup script v1.25 replaces the ambiguous public-admin prompt with an optional private-LAN mode. It detects and confirms the VM's RFC1918 address and subnet, keeps Docker port 81 on loopback, and exposes the private address through a systemd socket relay governed by a source-subnet-limited UFW rule. This avoids Docker's ordinary UFW-bypass behavior. It also removes installer-owned legacy global port-81 UFW rules. The default remains loopback-only access through an SSH tunnel. Router port forwarding can still make the private address reachable externally, so port 81 must not be forwarded.
 
+Setup script v1.52 removes filename typing from migrations: `--backup` prints the ready-to-paste `scp` command with the real archive name (and a LAN pull variant), and `--restore` without a file searches `/var/backups/npmplus`, `/tmp`, and the current directory for archives and lists them newest-first. An explicit argument accepts any filename (the layout check is the gate), a directory (newest archive inside), or an unquoted glob.
+
 Setup script v1.51 rebuilds the recommended UFW set: SSH defaults to the detected private LAN subnet only (explicit `n` keeps it reachable from anywhere), plain HTTP port 80 becomes an explicit opt-in, and 443 opens for both HTTPS and HTTP/3. The recommended rules are therefore `443/tcp` and `443/udp` from anywhere, SSH and the admin UI `81/tcp` from the private LAN, and optional `80/tcp` for ACME http-01 challenges or redirect-only sites.
 
 Setup script v1.26 retains the safe SSH port-22 fallback when `sshd -T` cannot inspect an incomplete host configuration, rather than aborting UFW setup under shell `pipefail`.
@@ -238,15 +240,18 @@ The restore replaces data only. The current machine's Compose configuration (ima
 A full migration to a new machine is therefore:
 
 ```bash
-# 1. on the old machine: copy the newest archive out (the folder is root-only)
-sudo scp /var/backups/npmplus/npmplus-YYYY-MM-DD-HHMMSS.tar.gz user@newmachine:/tmp/
+# 1. on the old machine: create a fresh backup, then copy it out with the scp
+#    command the script prints (root-only folder, SSH only)
+sudo /opt/npmplus/setup-npmplus.sh --backup
+sudo scp /var/backups/npmplus/<newest-archive> user@newmachine:/tmp/
 
 # 2. on the new machine: install NPMplus first - that sets up Docker, UFW,
 #    CrowdSec, and the crons for THIS machine
 sudo bash setup-npmplus.sh        # menu option: Install
 
-# 3. then put the old data on top (menu option 6, or:)
-sudo /opt/npmplus/setup-npmplus.sh --restore /tmp/npmplus-YYYY-MM-DD-HHMMSS.tar.gz
+# 3. then put the old data on top - no filename typing: it finds the archive
+#    in /tmp and lists what it found (menu option 6, or:)
+sudo /opt/npmplus/setup-npmplus.sh --restore
 ```
 
 Copying the whole `/var/backups/npmplus/` folder instead of one file works too: drop it at the same path on the new machine and the interactive picker lists every archive newest-first. Two caveats: transfer archives over SSH only (they contain TLS private keys and the full database; keep them mode `0600`), and point DNS at the new machine before the next certificate renewal so Let's Encrypt challenges reach the new address.
@@ -259,7 +264,8 @@ For reference, the manual equivalent (stop the stack, extract the data payloads,
 sudo docker compose -f /opt/npmplus/compose.yaml down
 # extract everything EXCEPT the old machine's compose file, setup script, and
 # admin secret: the new machine must keep its own
-sudo tar -xzf /var/backups/npmplus/npmplus-YYYY-MM-DD-HHMMSS.tar.gz -C / \
+newest=$(sudo ls -1t /var/backups/npmplus/npmplus-*.tar.gz | head -1)
+sudo tar -xzf "$newest" -C / \
   --exclude='opt/npmplus/compose.yaml' --exclude='opt/npmplus/setup-npmplus.sh'
 if sudo test -f /opt/npmplus/npmplus/database.backup.sqlite; then
   sudo cp -a /opt/npmplus/npmplus/database.backup.sqlite /opt/npmplus/npmplus/database.sqlite

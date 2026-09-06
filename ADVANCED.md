@@ -160,6 +160,8 @@ labels:
 
 ## Use external PHP-FPM when serving PHP directly
 
+Project decision (2026-09-06): backup creation and restore remain host CLI actions driven by `setup-npmplus.sh`, and no backup/restore features will be added to the web UI. An archive contains the SQLite database (every host, password hash, and session token) plus TLS private keys, so a UI path would let any stolen admin session download total takeover material; the hardened containers (`cap_drop: ALL`, no Docker socket) cannot reach the root-only `/var/backups/npmplus` anyway; and a self-served restore could delete the running database mid-request. Tar/zip-bomb and key-exposure risks also concentrate in the UI's trust boundary. The safe ceiling for UI involvement is a read-only backups status panel; the CLI flow (now with archive discovery and printed `scp` commands) remains the supported path.
+
 Project decision (2026-09-04): this fork remains focused on reverse proxying and security. `setup-npmplus.sh` will not create, configure, update, or monitor PHP-FPM. When NPMplus only reverse-proxies an application, that application's own deployment must manage its PHP runtime; leave the NPMplus `PHP83`, `PHP84`, and `PHP85` options disabled, do not publish FastCGI port 9000, and do not mount application data into NPMplus.
 
 The example below is retained as advanced compatibility guidance for operators who deliberately use NPMplus to serve PHP files directly. In that situation, a separately isolated PHP-FPM container is preferred over the inbuilt option. Its private FastCGI listener must not be exposed to the host or internet.

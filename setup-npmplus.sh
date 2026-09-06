@@ -11,7 +11,7 @@ set -euo pipefail
 
 # bump this on every meaningful change - the script compares it against the
 # copy on github at startup and tells the operator when theirs is stale
-SCRIPT_VERSION="1.51"
+SCRIPT_VERSION="1.52"
 
 DATA_DIR="/opt/npmplus"
 CROWDSEC_DIR="/opt/crowdsec"
@@ -1247,25 +1247,85 @@ run_restore() (
 
 	local source="${1:-}" ts staging answer key password picked listing extract
 	local services=()
+	local -a candidates=()
 
-	if [[ -z "$source" ]]; then
-		local candidates=()
-		mapfile -t candidates < <(find /var/backups/npmplus -maxdepth 1 -type f -name 'npmplus-*.tar.gz' -printf '%T@ %f\n' 2>/dev/null | sort -rn | awk '{print $2}')
+	# search everywhere an operator plausibly left an archive: the backup dir
+	# (daily cron + --backup), /tmp (the documented scp landing spot), and the
+	# current directory. a root-only backup dir still lists fine as root.
+	collect_candidates() {
+		local dir
+		for dir in /var/backups/npmplus /tmp "$PWD"; do
+			[[ -d "$dir" ]] || continue
+			local found
+			while IFS= read -r found; do
+				[[ -n "$found" ]] || continue
+				# dedupe (the same file can be reachable twice)
+				local already=0 dup
+				for dup in "${candidates[@]}"; do
+					[[ "$dup" == "$found" ]] && { already=1; break; }
+				done
+				((already)) || candidates+=("$found")
+			done < <(find "$dir" -maxdepth 1 -type f -size +1k -name 'npmplus-*.tar.gz' -printf '%T@ %p\n' 2>/dev/null | sort -rn | cut -d' ' -f2-)
+		done
+	}
+
+	resolve_source() { # resolve_source "argument-or-empty"
+		local arg="${1:-}"
+		# explicit file (any name: the archive layout is validated later, so a
+		# renamed or extension-less archive works too)
+		if [[ -n "$arg" && -f "$arg" ]]; then
+			printf '%s\n' "$(readlink -f -- "$arg" 2>/dev/null || printf '%s' "$arg")"
+			return 0
+		fi
+		# a directory: pick the newest archive inside it
+		if [[ -n "$arg" && -d "$arg" ]]; then
+			local in_dir
+			in_dir=$(find "$arg" -maxdepth 1 -type f -size +1k -name 'npmplus-*.tar.gz' -printf '%T@ %p\n' 2>/dev/null | sort -rn | head -1 | cut -d' ' -f2-)
+			if [[ -n "$in_dir" ]]; then
+				printf '%s\n' "$in_dir"
+				return 0
+			fi
+		fi
+		# a glob the caller did not quote, or several files: use the newest match.
+		# the array expansion below performs the globbing intentionally
+		local expanded match newest_match=""
+		for match in $arg; do
+			[[ -f "$match" ]] || continue
+			if [[ -z "$newest_match" ]]; then
+				newest_match=$match
+			elif [[ "$match" -nt "$newest_match" ]]; then
+				newest_match=$match
+			fi
+		done
+		expanded=$newest_match
+		if [[ -n "$expanded" ]]; then
+			printf '%s\n' "$expanded"
+			return 0
+		fi
+		return 1
+	}
+
+	if [[ -n "$source" ]]; then
+		source=$(resolve_source "$source") || {
+			echo "no archive matches: $1" >&2
+			echo "run --restore without a file to list every archive found" >&2
+			return 1
+		}
+	else
+		collect_candidates
 		if ((${#candidates[@]} == 0)); then
-			echo "no backup given and none found in /var/backups/npmplus" >&2
-			echo "usage: setup-npmplus.sh --restore /path/to/npmplus-YYYY-MM-DD-HHMMSS.tar.gz" >&2
+			echo "no backup found in /var/backups/npmplus, /tmp, or the current directory" >&2
+			echo "copy the archive from the old machine, then run --restore without a file" >&2
 			return 1
 		fi
 		say "available backups (newest first):"
 		select picked in "${candidates[@]}" quit; do
 			[[ "$picked" == "quit" ]] && { echo "aborted" >&2; return 1; }
-			source="/var/backups/npmplus/$picked"
+			source="$picked"
 			break
 		done
 	fi
-	source=$(readlink -f -- "$source") || return 1
 	[[ -f "$source" && -s "$source" ]] || { echo "backup not found: $source" >&2; return 1; }
-	[[ "$source" == *.tar.gz ]] || { echo "expected a npmplus-*.tar.gz backup, got: $source" >&2; return 1; }
 
 	# validate the archive layout before touching anything: it must contain the
 	# data dir and a database to be worth applying
@@ -1471,7 +1531,18 @@ run_backup() (
 	say "backup created"
 	echo "  archive: $newest ($(du -h "$newest" | cut -f1))"
 	echo "  it contains the database, certificates, access lists, CrowdSec state, and the Anubis policy"
-	echo "  to migrate: copy it to the new machine (SSH only, it holds your private keys) and run --restore there"
+	echo
+	echo "  to move it to another machine (SSH only - the archive holds your private keys):"
+	echo "    sudo scp \"$newest\" user@NEW-MACHINE:/tmp/"
+	echo "  then on the new machine (after installing) restore it without typing the name:"
+	echo "    sudo bash setup-npmplus.sh --restore"
+	local lan_ip
+	lan_ip=$(detect_private_lan_ipv4 2>/dev/null || true)
+	if [[ -n "$lan_ip" ]]; then
+		echo
+		echo "  to copy it FROM this machine's LAN instead:"
+		echo "    sudo scp root@$lan_ip:\"$newest\" /tmp/"
+	fi
 	return 0
 )
 
@@ -1493,8 +1564,10 @@ Options:
   --boot-trace [FILE]       save a read-only startup diagnostic report
   --backup                  create a backup archive now (for a transfer or a
                             fresh restore point)
-  --restore [FILE]          restore data from a backup tar (migration or recovery);
-                            without FILE the newest backups are offered
+  --restore [FILE]          restore data from a backup archive (migration or recovery);
+                            without FILE every archive found in the backup dir,
+                            /tmp, and the current directory is offered; FILE may
+                            also be a directory, a glob, or any renamed archive
   --uninstall               back up and uninstall NPMplus
   --uninstall --no-backup   uninstall only when no final backup is possible
   --help                    show this help
@@ -2266,7 +2339,18 @@ revert() {
 		rm -f /opt/npmplus/npmplus/database.sqlite-wal /opt/npmplus/npmplus/database.sqlite-shm
 	fi
 	# --update refreshes these before touching images; roll them back as well.
-	[[ -s "$BACKUP/setup-npmplus.sh" ]] && cp -a "$BACKUP/setup-npmplus.sh" "$SETUP"
+	# the backup snapshots the script that made it, so on a restore it is often
+	# older than the installer already on disk - never downgrade it, or every
+	# later run nags about a stale script the operator cannot get rid of.
+	if [[ -s "$BACKUP/setup-npmplus.sh" ]]; then
+		script_version_of() { sed -n 's/^SCRIPT_VERSION="\([^"]*\)".*/\1/p' "$1" 2>/dev/null | head -1; }
+		local have want
+		have=$(script_version_of "$SETUP")
+		want=$(script_version_of "$BACKUP/setup-npmplus.sh")
+		if [[ -z "$have" ]] || [[ "$(printf '%s\n%s\n' "$have" "$want" | sort -V | tail -1)" == "$want" ]]; then
+			cp -a "$BACKUP/setup-npmplus.sh" "$SETUP"
+		fi
+	fi
 	rm -f /usr/local/bin/npmplus-safe-update /usr/local/bin/npmplus-backup \
 		/usr/local/bin/npmplus-crowdsec-heal
 	rm -f /etc/cron.d/npmplus-safe-update /etc/cron.d/npmplus-backup \

@@ -245,6 +245,11 @@ jobs:
           newest="$(sudo bash -c 'ls -1t /var/backups/npmplus/npmplus-*.tar.gz | head -1')"
           sudo test -s "$newest"
           sudo tar -tzf "$newest" | grep -q 'opt/npmplus/npmplus/database'
+          # the scp hint must carry the real archive name so the migration
+          # copy step can be pasted as-is (no timestamp typing)
+          grep -q "sudo scp \"$newest\" user@NEW-MACHINE:/tmp/" /tmp/npmplus-manual-backup.log
+          grep -q 'restore it without typing the name' /tmp/npmplus-manual-backup.log
+          grep -q -- '--restore' /tmp/npmplus-manual-backup.log
       # only the alternate variant sets INITIAL_ADMIN_EMAIL/PASSWORD; a working
       # login proves the env block was generated into the compose file correctly
       - name: admin login works (alternate)
@@ -694,6 +699,31 @@ jobs:
           printf 'sqlite-test-bytes' >/tmp/good/opt/npmplus/npmplus/database.sqlite
           tar -czf /tmp/npmplus-valid.tar.gz -C /tmp/good opt/npmplus
           check_refusal /tmp/npmplus-valid.tar.gz 'no installation found'
+
+          # discovery: an archive in /tmp must be found without typing its name
+          # (the documented scp landing spot). the picker lists it, but with no
+          # terminal stdin the select stays closed - proving it got that far
+          # without a shell error is the point.
+          head -c 2048 /dev/urandom >>/tmp/good/opt/npmplus/npmplus/database.sqlite
+          tar -czf /tmp/npmplus-20260906-120000.tar.gz -C /tmp/good opt/npmplus
+          output="$(bash setup-npmplus.sh --restore </dev/null 2>&1)"
+          grep -q 'available backups' <<<"$output" || { echo "picker did not list the /tmp archive: $output" >&2; exit 1; }
+          grep -q '/tmp/npmplus-20260906-120000.tar.gz' <<<"$output" || { echo "archive not in picker list: $output" >&2; exit 1; }
+          if grep -qE 'syntax error|operand expected|command not found|unary operator' <<<"$output"; then
+            echo "shell errors in the picker output:" >&2
+            exit 1
+          fi
+          echo "PASS: bare --restore discovers the /tmp archive"
+
+          # discovery: a directory argument picks the newest archive inside it
+          head -c 2048 /dev/urandom >>/tmp/good/opt/npmplus/npmplus/database.sqlite
+          tar -czf /tmp/npmplus-20260906-130000.tar.gz -C /tmp/good opt/npmplus
+          output="$(printf '\n' | bash setup-npmplus.sh --restore /tmp 2>&1)"
+          grep -q 'restore /tmp/npmplus-20260906-130000.tar.gz' <<<"$output" || { echo "directory arg did not resolve the newest archive: $output" >&2; exit 1; }
+          echo "PASS: directory argument resolves the newest archive"
+
+          # discovery: a mistyped path fails helpfully instead of silently
+          check_refusal /tmp/does-not-exist 'no archive matches'
 
           # the usage/help surfaces the restore action
           bash setup-npmplus.sh --help | grep -q -- '--restore'

@@ -101,19 +101,22 @@ Advanced opt-ins that an ordinary menu update deliberately preserves - enabling 
 Moving an installation to a new or more powerful machine is three steps: the daily backup archives already contain everything (database with all hosts, ports, IPs, access lists, certificates and settings, CrowdSec state, optional Anubis policy):
 
 ```bash
-# 1. old machine: copy the newest archive out (the folder is root-only;
-#    transfer over SSH only - archives contain your TLS private keys)
-sudo scp /var/backups/npmplus/npmplus-YYYY-MM-DD-HHMMSS.tar.gz user@newmachine:/tmp/
+# 1. old machine: create a fresh backup, then copy it out with the scp
+#    command the script prints (root-only folder, SSH only - archives
+#    contain your TLS private keys)
+sudo /opt/npmplus/setup-npmplus.sh --backup
+sudo scp /var/backups/npmplus/<newest-archive> user@newmachine:/tmp/
 
 # 2. new machine: install NPMplus first (sets up Docker, UFW, CrowdSec,
 #    crons for THAT machine)
 sudo bash setup-npmplus.sh        # menu: Install
 
-# 3. new machine: put the old data on top (menu option 6, or:)
-sudo /opt/npmplus/setup-npmplus.sh --restore /tmp/npmplus-YYYY-MM-DD-HHMMSS.tar.gz
+# 3. new machine: put the old data on top - no need to type the archive
+#    name, it lists every archive it finds (menu option 6, or:)
+sudo /opt/npmplus/setup-npmplus.sh --restore
 ```
 
-After the restore, log in with the **old machine's admin account**. Copying the whole `/var/backups/npmplus/` folder also works: drop it at the same path on the new machine and the restore picker lists every archive newest-first. Works between Debian and Ubuntu in either direction. Point DNS at the new machine before the next certificate renewal. Full details, safety behavior, and the manual equivalent: [Backups and restoration](docs/setup-npmplus.md#backups-and-restoration).
+The backup action prints the exact `scp` command with the real filename, and a pull variant for copying from another LAN machine. `--restore` then finds the archive wherever it landed - `/var/backups/npmplus`, `/tmp`, or the current directory - and lists candidates newest-first; it also accepts an explicit file, a directory, or an unquoted glob, so a renamed archive works too. After the restore, log in with the **old machine's admin account**. Copying the whole `/var/backups/npmplus/` folder also works: drop it at the same path on the new machine and the restore picker lists every archive newest-first. Works between Debian and Ubuntu in either direction. Point DNS at the new machine before the next certificate renewal. Full details, safety behavior, and the manual equivalent: [Backups and restoration](docs/setup-npmplus.md#backups-and-restoration).
 
 ## Status and logs
 
