@@ -129,7 +129,7 @@ Every listed service should say `Up`. The `npmplus` service should become `healt
 - NPMplus and its web dashboard, with loopback-only dashboard access by default.
 - Recommended CrowdSec, AppSec WAF, and firewall-bouncer protection, with per-host AppSec compatibility switches.
 - Protected startup that fails closed before opening public listeners when CrowdSec enforcement is unavailable.
-- Optional Cloudflare-only origin filtering, Anubis bot protection and honeypot bans, Caddy redirects, UFW, and unattended OS security updates.
+- Optional Cloudflare-only origin filtering, Anubis bot protection and honeypot bans, Caddy redirects, and a recommended UFW set: 443/tcp+udp public, SSH and the admin UI restricted to the private LAN, port 80 only by explicit choice.
 - Safe monthly updates with automatic rollback, daily backups (seven kept), and CrowdSec credential healing.
 - Hardened auxiliary containers: read-only root filesystems, dropped capabilities, `no-new-privileges`, health checks.
 

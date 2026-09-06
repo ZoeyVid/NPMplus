@@ -138,6 +138,8 @@ Setup script v1.24 distinguishes an installed native CrowdSec daemon from Debian
 
 Setup script v1.25 replaces the ambiguous public-admin prompt with an optional private-LAN mode. It detects and confirms the VM's RFC1918 address and subnet, keeps Docker port 81 on loopback, and exposes the private address through a systemd socket relay governed by a source-subnet-limited UFW rule. This avoids Docker's ordinary UFW-bypass behavior. It also removes installer-owned legacy global port-81 UFW rules. The default remains loopback-only access through an SSH tunnel. Router port forwarding can still make the private address reachable externally, so port 81 must not be forwarded.
 
+Setup script v1.51 rebuilds the recommended UFW set: SSH defaults to the detected private LAN subnet only (explicit `n` keeps it reachable from anywhere), plain HTTP port 80 becomes an explicit opt-in, and 443 opens for both HTTPS and HTTP/3. The recommended rules are therefore `443/tcp` and `443/udp` from anywhere, SSH and the admin UI `81/tcp` from the private LAN, and optional `80/tcp` for ACME http-01 challenges or redirect-only sites.
+
 Setup script v1.26 retains the safe SSH port-22 fallback when `sshd -T` cannot inspect an incomplete host configuration, rather than aborting UFW setup under shell `pipefail`.
 
 Setup script v1.27 locates `systemd-socket-proxyd` in both Debian/Ubuntu systemd library paths when the distribution does not place this helper on root's executable search path.

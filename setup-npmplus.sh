@@ -11,7 +11,7 @@ set -euo pipefail
 
 # bump this on every meaningful change - the script compares it against the
 # copy on github at startup and tells the operator when theirs is stale
-SCRIPT_VERSION="1.50"
+SCRIPT_VERSION="1.51"
 
 DATA_DIR="/opt/npmplus"
 CROWDSEC_DIR="/opt/crowdsec"
@@ -3032,6 +3032,8 @@ USE_UFW="n"
 EXPOSE_ADMIN="n"
 ADMIN_BIND_IP=""
 ADMIN_LAN_CIDR=""
+SSH_FROM=""
+ALLOW_HTTP="n"
 if ! command -v ufw >/dev/null; then
 	if confirm "ufw is not installed - install it via apt?" "y"; then
 		apt-get update -qq && apt-get install -y -qq ufw
@@ -3040,9 +3042,9 @@ if ! command -v ufw >/dev/null; then
 	fi
 fi
 if command -v ufw >/dev/null; then
-	confirm "Configure UFW firewall (allow SSH, 80, 443/tcp+udp)?" "y" && USE_UFW="y"
+	confirm "Configure UFW firewall (443/tcp+udp public, SSH+admin UI on the private LAN)?" "y" && USE_UFW="y"
 	if [[ "$USE_UFW" == "y" ]]; then
-		if confirm "Allow the admin UI on port 81 from your private LAN?" "n"; then
+		if confirm "Allow the admin UI on port 81 from your private LAN?" "y"; then
 			DETECTED_LAN_IP=$(detect_private_lan_ipv4 || true)
 			DETECTED_LAN_CIDR=$(detect_private_lan_cidr || true)
 			if [[ -z "$DETECTED_LAN_IP" || -z "$DETECTED_LAN_CIDR" ]]; then
@@ -3061,6 +3063,17 @@ if command -v ufw >/dev/null; then
 				EXPOSE_ADMIN="y"
 				echo "detected private LAN: admin https://$ADMIN_BIND_IP:81, allowed subnet $ADMIN_LAN_CIDR"
 			fi
+		fi
+		if confirm "Restrict SSH to your private LAN subnet?" "y"; then
+			DETECTED_SSH_CIDR=$(detect_private_lan_cidr || true)
+			SSH_FROM=$(ask "  subnet (blank = keep the detected LAN)" "$DETECTED_SSH_CIDR")
+			[[ "$SSH_FROM" =~ ^((25[0-5]|2[0-4][0-9]|1[0-9]{2}|[1-9]?[0-9])\.){3}(25[0-5]|2[0-4][0-9]|1[0-9]{2}|[1-9]?[0-9])(/([0-9]|[12][0-9]|3[0-2]))?$ ]] || SSH_FROM=""
+			[[ -z "$SSH_FROM" ]] && echo "  not a valid cidr - SSH stays reachable from anywhere"
+		fi
+		if confirm "Also allow plain HTTP on port 80 (ACME challenges / redirect-only sites)?" "n"; then
+			ALLOW_HTTP="y"
+		else
+			ALLOW_HTTP="n"
 		fi
 	fi
 fi
@@ -3578,7 +3591,7 @@ if [[ "$USE_UFW" == "y" ]]; then
 	# `ufw show added` exposes configured rules even while UFW is inactive and
 	# catches DENY/LIMIT-only rule sets too.
 	if ufw show added 2>/dev/null | grep -qE '^[[:space:]]*ufw[[:space:]]' && ! confirm "UFW already has rules - reset them to the recommended set?" "n"; then
-		echo "keeping existing UFW rules - only adding 80/443 if missing"
+		echo "keeping existing UFW rules - only adding 443 if missing"
 	else
 		SSH_PORT=22
 		if [[ -n "${SSH_CONNECTION:-}" ]]; then
@@ -3596,19 +3609,19 @@ if [[ "$USE_UFW" == "y" ]]; then
 			exit 1
 		}
 		ufw --force reset >/dev/null
-		SSH_FROM=""
-		if confirm "Restrict ssh to a source subnet (e.g. 192.168.1.0/24)?" "n"; then
-			read -r -p "  subnet (blank = anywhere): " SSH_FROM || true
-			[[ "$SSH_FROM" =~ ^((25[0-5]|2[0-4][0-9]|1[0-9]{2}|[1-9]?[0-9])\.){3}(25[0-5]|2[0-4][0-9]|1[0-9]{2}|[1-9]?[0-9])(/([0-9]|[12][0-9]|3[0-2]))?$ ]] || SSH_FROM=""
-			[[ -z "$SSH_FROM" ]] && echo "  not a valid cidr - ssh stays reachable from anywhere"
-		fi
+		# ssh first so you stay logged in; restricted to the LAN unless the
+		# operator explicitly chose to keep it reachable from anywhere
 		if [[ -n "$SSH_FROM" ]]; then
-			ufw allow from "$SSH_FROM" to any port "$SSH_PORT" proto tcp comment 'ssh' >/dev/null  # first, so you stay logged in
+			ufw allow from "$SSH_FROM" to any port "$SSH_PORT" proto tcp comment 'ssh' >/dev/null
+			echo "ssh rule: $SSH_FROM -> port $SSH_PORT"
 		else
-			ufw allow "$SSH_PORT"/tcp comment 'ssh' >/dev/null # first, so you stay logged in
+			ufw allow "$SSH_PORT"/tcp comment 'ssh' >/dev/null
+			echo "ssh rule: port $SSH_PORT (from anywhere)"
 		fi
 	fi
-	ufw allow 80/tcp comment 'http' >/dev/null
+	# public web listeners. plain 80 stays closed unless the operator opted in;
+	# Let's Encrypt http-01 then needs a DNS or tls-alpn challenge instead.
+	[[ "$ALLOW_HTTP" != "y" ]] || ufw allow 80/tcp comment 'http' >/dev/null
 	ufw allow 443/tcp comment 'https' >/dev/null
 	ufw allow 443/udp comment 'http3-quic' >/dev/null  # required for HTTP/3
 	# Remove only rules carrying the comment used by older versions of this
