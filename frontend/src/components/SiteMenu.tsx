@@ -129,7 +129,7 @@ const getMenuItem = (item: MenuItem, onClick?: () => void) => {
 			<li className="nav-item">
 				<NavLink to={item.to} href={item.href} onClick={onClick}>
 					<span className="nav-link-icon d-md-none d-lg-inline-block">
-						{item.icon && React.createElement(item.icon, { height: 24, width: 24 })}
+						{item.icon && React.createElement(item.icon, { size: 20 })}
 					</span>
 					<span className="nav-link-title d-flex align-items-center gap-1">
 						{item.href ? item.label : <T id={item.label} />}
@@ -158,7 +158,7 @@ const getMenuDropown = (item: MenuItem, onClick?: () => void) => {
 					aria-expanded="false"
 				>
 					<span className="nav-link-icon d-md-none d-lg-inline-block">
-						<IconDeviceDesktop height={24} width={24} />
+						<IconDeviceDesktop size={20} />
 					</span>
 					<span className="nav-link-title">
 						<T id={item.label} />

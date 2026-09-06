@@ -57,14 +57,16 @@ button.metricCard:focus-visible {
 }
 
 .donut {
-	flex: 0 0 10rem;
+	/* shrinkable inside narrow columns, but never below half the ring, so the
+	   center total never collides with the stroke */
+	flex: 0 1 10rem;
 	width: 10rem;
 	height: 10rem;
+	min-width: 6.5rem;
 }
 
 .donutTotal {
 	fill: currentColor;
-	font-size: 24px;
 	font-weight: 600;
 }
 
@@ -73,10 +75,19 @@ button.metricCard:focus-visible {
 	font-size: 12px;
 }
 
+.donutList {
+	/* allow shrinking below the intrinsic minimum of the rows (long scenario
+	   names would otherwise force this list wider than its column and spill
+	   over the neighbouring cards); the name truncates instead */
+	flex: 1 1 12rem;
+	min-width: 0;
+}
+
 .donutRow {
 	display: flex;
 	align-items: center;
 	gap: 0.5rem;
+	min-width: 0;
 	padding: 0.375rem 0;
 	border-bottom: 1px solid var(--tblr-border-color);
 }
@@ -93,7 +104,7 @@ button.metricCard:focus-visible {
 }
 
 .donutName {
-	flex: 1;
+	flex: 1 1 0;
 	min-width: 0;
 	overflow: hidden;
 	padding: 0;

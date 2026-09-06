@@ -78,6 +78,11 @@ const AttackMix = ({
 }) => {
 	const segments = attackMixSegments(items, total);
 	const summary = intl.formatMessage({ id: "crowdsec.attack-mix.summary" }, { total, hours: windowHours });
+	// the center total is formatted with locale grouping, so long attack counts
+	// can outgrow the donut at the default size - step the font down instead of
+	// letting the number collide with the ring or the label below it
+	const totalLabel = intl.formatNumber(total);
+	const totalFontSize = totalLabel.length <= 6 ? 24 : totalLabel.length <= 9 ? 19 : totalLabel.length <= 12 ? 16 : 13;
 	let offset = 0;
 	return (
 		<figure className="mb-0">
@@ -117,14 +122,22 @@ const AttackMix = ({
 								return element;
 							})}
 						</g>
-						<text x="60" y="57" textAnchor="middle" className={styles.donutTotal}>
-							{intl.formatNumber(total)}
+						<text
+							x="60"
+							y="54"
+							textAnchor="middle"
+							className={styles.donutTotal}
+							style={{ fontSize: totalFontSize }}
+						>
+							{totalLabel}
 						</text>
-						<text x="60" y="74" textAnchor="middle" className={styles.donutLabel}>
+						<text x="60" y="76" textAnchor="middle" className={styles.donutLabel}>
 							{intl.formatMessage({ id: "crowdsec.attack-mix" })}
 						</text>
 					</svg>
-					<ul className="list-unstyled mb-0 flex-fill min-w-0">
+					{/* shrinkable: long scenario names must truncate inside the list
+					    rather than pushing the legend wider than its card column */}
+					<ul className={`list-unstyled mb-0 ${styles.donutList}`}>
 						{segments.map((segment) => {
 							const color =
 								segment.color >= 0
