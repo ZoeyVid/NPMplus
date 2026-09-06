@@ -11,7 +11,7 @@ set -euo pipefail
 
 # bump this on every meaningful change - the script compares it against the
 # copy on github at startup and tells the operator when theirs is stale
-SCRIPT_VERSION="1.43"
+SCRIPT_VERSION="1.44"
 
 DATA_DIR="/opt/npmplus"
 CROWDSEC_DIR="/opt/crowdsec"
@@ -1418,9 +1418,9 @@ crowdsec_repo_suite() {
 	local dists_base="${PACKAGECLOUD_INSTALL_URL#*install/repositories/}"
 	dists_base="${dists_base%%/*}" # crowdsec/crowdsec
 	local codename fallback
-	suite_published() { # single probe, no retry loop: 404 must fail fast
-		curl -sSfL --connect-timeout 10 --max-time 30 -o /dev/null \
-			"https://packagecloud.io/${dists_base}/debian/dists/${1}/Release"
+	suite_published() { # single probe, no retry loop: 404 must fail fast and stay silent
+		curl -sfL --connect-timeout 10 --max-time 30 -o /dev/null \
+			"https://packagecloud.io/${dists_base}/debian/dists/${1}/Release" 2>/dev/null
 	}
 	codename=$(. /etc/os-release && echo "${VERSION_CODENAME:-}")
 	[[ -n "$codename" ]] || codename=$(lsb_release -cs 2>/dev/null || true)
