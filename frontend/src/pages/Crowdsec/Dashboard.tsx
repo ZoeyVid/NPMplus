@@ -103,7 +103,9 @@ const AttackMix = ({
 										fill="none"
 										strokeWidth="16"
 										stroke={
-											segment.color >= 0 ? DONUT_COLORS[segment.color % DONUT_COLORS.length] : "var(--tblr-secondary)"
+											segment.color >= 0
+												? DONUT_COLORS[segment.color % DONUT_COLORS.length]
+												: "var(--tblr-secondary)"
 										}
 										strokeDasharray={`${visible} ${DONUT_CIRCUMFERENCE - visible}`}
 										strokeDashoffset={-offset}
@@ -125,11 +127,17 @@ const AttackMix = ({
 					<ul className="list-unstyled mb-0 flex-fill min-w-0">
 						{segments.map((segment) => {
 							const color =
-								segment.color >= 0 ? DONUT_COLORS[segment.color % DONUT_COLORS.length] : "var(--tblr-secondary)";
+								segment.color >= 0
+									? DONUT_COLORS[segment.color % DONUT_COLORS.length]
+									: "var(--tblr-secondary)";
 							const label = segment.name || intl.formatMessage({ id: "crowdsec.attack-mix.other" });
 							return (
 								<li key={segment.name || "other"} className={styles.donutRow}>
-									<span className={styles.donutDot} style={{ background: color }} aria-hidden="true" />
+									<span
+										className={styles.donutDot}
+										style={{ background: color }}
+										aria-hidden="true"
+									/>
 									{segment.name ? (
 										<button
 											type="button"
@@ -145,9 +153,14 @@ const AttackMix = ({
 									) : (
 										<span className="text-secondary text-truncate">{label}</span>
 									)}
-									<span className="badge bg-secondary-lt flex-shrink-0">{intl.formatNumber(segment.count)}</span>
+									<span className="badge bg-secondary-lt flex-shrink-0">
+										{intl.formatNumber(segment.count)}
+									</span>
 									<span className="text-secondary small flex-shrink-0">
-										{intl.formatNumber(segment.share, { style: "percent", maximumFractionDigits: 1 })}
+										{intl.formatNumber(segment.share, {
+											style: "percent",
+											maximumFractionDigits: 1,
+										})}
 									</span>
 								</li>
 							);

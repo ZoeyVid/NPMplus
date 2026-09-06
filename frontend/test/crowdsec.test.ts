@@ -40,8 +40,14 @@ test("attack mix shares sum to one and skip empty scenarios", () => {
 		],
 		2,
 	);
-	assert.equal(segments.reduce((sum, item) => sum + item.share, 0), 1);
-	assert.deepEqual(segments.map(({ name }) => name), ["http-probing", "ssh-bruteforce"]);
+	assert.equal(
+		segments.reduce((sum, item) => sum + item.share, 0),
+		1,
+	);
+	assert.deepEqual(
+		segments.map(({ name }) => name),
+		["http-probing", "ssh-bruteforce"],
+	);
 	assert.deepEqual(attackMixSegments([{ name: "http-probing", count: 3 }], 0), []);
 });
 

@@ -67,14 +67,14 @@ export const filterCrowdsecDecisions = (
 	});
 };
 
-export type AttackMixSegment = {
+export interface AttackMixSegment {
 	// empty name marks the residual "other" slice covering alerts not in the top list
 	name: string;
 	count: number;
 	share: number;
 	// palette index; -1 marks the residual slice rendered in secondary grey
 	color: number;
-};
+}
 
 // donut segments from the top-scenario counts; alerts not covered by the top
 // list collapse into a residual "other" slice so the shares always sum to 1
