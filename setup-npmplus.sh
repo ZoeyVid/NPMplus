@@ -11,7 +11,7 @@ set -euo pipefail
 
 # bump this on every meaningful change - the script compares it against the
 # copy on github at startup and tells the operator when theirs is stale
-SCRIPT_VERSION="1.49"
+SCRIPT_VERSION="1.50"
 
 DATA_DIR="/opt/npmplus"
 CROWDSEC_DIR="/opt/crowdsec"
@@ -1183,6 +1183,58 @@ run_boot_trace() (
 	echo "Review it for hostnames and IP addresses before sharing it."
 )
 
+# crowdsec key helpers: these must be defined before run_restore - the
+# early --restore dispatch calls them during post-restore key healing
+register_bouncer() { # $1 = name -> key on stdout (empty on failure)
+	local key="" _
+	# a heal can hit a name that still exists in the lapi while its key is dead
+	# (rolled-back sqlite); cscli add refuses duplicates, so clear the corpse first
+	docker exec crowdsec cscli bouncers delete "$1" >/dev/null 2>&1 || true
+	for _ in $(seq 1 30); do
+		key=$(docker exec crowdsec cscli bouncers add "$1" -o raw 2>/dev/null || true)
+		# cscli without -o raw support: pull the key out of the human table
+		[[ -n "$key" ]] || key=$(docker exec crowdsec cscli bouncers add "$1" 2>/dev/null | grep -oE '[[:alnum:]]{20,}' || true)
+		[[ -n "$key" ]] && { echo "$key"; return 0; }
+		sleep 2
+	done
+	return 1
+}
+
+# a key file can exist and still be dead: an unclean shutdown can roll back or
+# corrupt crowdsec's sqlite, and then the lapi no longer knows the registration.
+# verify = ask the lapi, so a heal only fires on a key it actually rejects.
+bouncer_key_works() { # $1 = bouncer key -> 0 when the lapi accepts it
+	[[ -n "$1" ]] || return 1
+	printf 'header = "X-Api-Key: %s"\n' "$1" | \
+		curl -sS -m 5 -o /dev/null -w '%{http_code}' --config - \
+		"http://127.0.0.1:8080/v1/decisions?limit=1" 2>/dev/null | grep -q '^200'
+}
+
+machine_key_works() { # $1 = machine id, $2 = password -> 0 on a working login
+	[[ -n "$2" ]] || return 1
+	printf '{"machine_id":"%s","password":"%s"}' "$1" "$2" | \
+		curl -sS -m 5 -o /dev/null -w '%{http_code}' -H "Content-Type: application/json" \
+		--data-binary @- "http://127.0.0.1:8080/v1/watchers/login" 2>/dev/null | grep -q '^200'
+}
+
+register_machine() { # $1 = name -> machine password on stdout (empty on failure)
+	local out="" password="" _
+	for _ in $(seq 1 30); do
+		# -a generates the password, -f - dumps the credentials as yaml;
+		# the yaml goes to stderr on newer cscli and stdout on older, so merge
+		out=$(docker exec crowdsec cscli machines add "$1" -a -f - --force 2>&1 || true)
+		# cscli without --force support: plain add, the machine exists case just fails
+		password=$(sed -n 's/^password:[[:space:]]*//p' <<<"$out" | head -1)
+		if [[ -z "$password" ]]; then
+			out=$(docker exec crowdsec cscli machines add "$1" -a -f - 2>&1 || true)
+			password=$(sed -n 's/^password:[[:space:]]*//p' <<<"$out" | head -1)
+		fi
+		[[ -n "$password" ]] && { echo "$password"; return 0; }
+		sleep 2
+	done
+	return 1
+}
+
 run_restore() (
 	# Restore application data from a backup produced by the daily backup cron
 	# (npmplus-backup) or by hand with the same tar layout. Restores data only:
@@ -2134,55 +2186,6 @@ anubis_policy() { # anubis_policy <version> [challenge_all]
 	[[ "${2:-}" != "y" ]] || grep -q "name: everything-else" /opt/anubis.yaml || { echo "anubis policy $1: catchall rule did not apply - upstream format changed" >&2; exit 1; }
 }
 
-register_bouncer() { # $1 = name -> key on stdout (empty on failure)
-	local key="" _
-	# a heal can hit a name that still exists in the lapi while its key is dead
-	# (rolled-back sqlite); cscli add refuses duplicates, so clear the corpse first
-	docker exec crowdsec cscli bouncers delete "$1" >/dev/null 2>&1 || true
-	for _ in $(seq 1 30); do
-		key=$(docker exec crowdsec cscli bouncers add "$1" -o raw 2>/dev/null || true)
-		# cscli without -o raw support: pull the key out of the human table
-		[[ -n "$key" ]] || key=$(docker exec crowdsec cscli bouncers add "$1" 2>/dev/null | grep -oE '[[:alnum:]]{20,}' || true)
-		[[ -n "$key" ]] && { echo "$key"; return 0; }
-		sleep 2
-	done
-	return 1
-}
-
-# a key file can exist and still be dead: an unclean shutdown can roll back or
-# corrupt crowdsec's sqlite, and then the lapi no longer knows the registration.
-# verify = ask the lapi, so a heal only fires on a key it actually rejects.
-bouncer_key_works() { # $1 = bouncer key -> 0 when the lapi accepts it
-	[[ -n "$1" ]] || return 1
-	printf 'header = "X-Api-Key: %s"\n' "$1" | \
-		curl -sS -m 5 -o /dev/null -w '%{http_code}' --config - \
-		"http://127.0.0.1:8080/v1/decisions?limit=1" 2>/dev/null | grep -q '^200'
-}
-
-machine_key_works() { # $1 = machine id, $2 = password -> 0 on a working login
-	[[ -n "$2" ]] || return 1
-	printf '{"machine_id":"%s","password":"%s"}' "$1" "$2" | \
-		curl -sS -m 5 -o /dev/null -w '%{http_code}' -H "Content-Type: application/json" \
-		--data-binary @- "http://127.0.0.1:8080/v1/watchers/login" 2>/dev/null | grep -q '^200'
-}
-
-register_machine() { # $1 = name -> machine password on stdout (empty on failure)
-	local out="" password="" _
-	for _ in $(seq 1 30); do
-		# -a generates the password, -f - dumps the credentials as yaml;
-		# the yaml goes to stderr on newer cscli and stdout on older, so merge
-		out=$(docker exec crowdsec cscli machines add "$1" -a -f - --force 2>&1 || true)
-		# cscli without --force support: plain add, the machine exists case just fails
-		password=$(sed -n 's/^password:[[:space:]]*//p' <<<"$out" | head -1)
-		if [[ -z "$password" ]]; then
-			out=$(docker exec crowdsec cscli machines add "$1" -a -f - 2>&1 || true)
-			password=$(sed -n 's/^password:[[:space:]]*//p' <<<"$out" | head -1)
-		fi
-		[[ -n "$password" ]] && { echo "$password"; return 0; }
-		sleep 2
-	done
-	return 1
-}
 
 # a native crowdsec daemon binds 127.0.0.1:8080 before the container's
 # publish can and then rejects every key this stack registers - the

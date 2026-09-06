@@ -194,6 +194,23 @@ jobs:
           sudo env NPMPLUS_RESOLV_CONF="$resolver_test" /usr/local/sbin/npmplus-wait-for-dns
           test "$(( $(date +%s) - start ))" -ge 2
           rm -f "$resolver_test"
+      - name: restore helpers are defined before the early dispatch
+        if: matrix.name == 'defaults'
+        run: |
+          # --restore dispatches before the update path; its crowdsec key
+          # healing must not depend on functions defined later in the file.
+          # a regression here printed "command not found" on real restores.
+          dispatch_line=$(grep -n '^case "${1:-}" in' setup-npmplus.sh | head -1 | cut -d: -f1)
+          test -n "$dispatch_line" || { echo "dispatch not found" >&2; exit 1; }
+          missing=0
+          for fn in register_bouncer bouncer_key_works machine_key_works register_machine; do
+            def_line=$(grep -n "^${fn}()" setup-npmplus.sh | head -1 | cut -d: -f1)
+            if [ -z "$def_line" ] || [ "$def_line" -ge "$dispatch_line" ]; then
+              echo "function $fn is missing or defined after the dispatch (line ${def_line:-none})" >&2
+              missing=1
+            fi
+          done
+          test "$missing" -eq 0
       - name: unified maintenance menu is available
         run: |
           sudo /opt/npmplus/setup-npmplus.sh --help | grep -q -- '--doctor'
