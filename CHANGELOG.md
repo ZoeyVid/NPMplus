@@ -29,6 +29,47 @@ All notable changes to the NPMplus Security Fork are documented here. The fork u
 
 - Restored upstream NPMplus runtime Certbot DNS-plugin installation so Cloudflare and other DNS challenges work out of the box; pinned pip and Certbot stay in the image and the pip packaging-tool scan findings are carried under a reviewed, expiring `.trivy/npmplus.yaml` baseline.
 
+## v2.15.1-mangyan1.rc.4 - 2026-09-05
+
+Fourth public release candidate of the security-focused fork.
+
+### Fixed
+
+- Made the installer-managed LAN dashboard listener survive reboots with `FreeBind` and explicit network-online ordering, and migrated existing RC3 listeners during safe update.
+- Fixed the host CrowdSec firewall-bouncer configuration rejected by current packages because its required logging mode was absent.
+- Added Ubuntu firewall-bouncer service-mode support.
+- Made fresh installation fail visibly when the firewall bouncer does not validate or start, instead of silently continuing without kernel-level enforcement.
+
+### Changed
+
+- Added a bounded systemd startup gate so the host firewall bouncer waits for the containerized CrowdSec LAPI after reboot.
+- Updated Compose hardening syntax to the current `no-new-privileges=true` form and added CI coverage for both reboot defects and their upgrade repairs.
+- Expanded the CrowdSec doctor and boot trace to report the LAN listener and firewall-bouncer configuration, status, and boot logs.
+
+See the [release notes](.github/release-notes/v2.15.1-mangyan1.rc.4.md) for installation and validation guidance.
+
+## v2.15.1-mangyan1.rc.3 - 2026-09-05
+
+Third public release candidate of the security-focused fork.
+
+### Fixed
+
+- Fixed a reboot failure caused by an old NPMplus container retaining the deleted one-time administrator-password mount from `/run`.
+- Made fresh installations remove bootstrap credentials safely by recreating NPMplus from the sanitized Compose configuration before deleting the temporary secret, and added automatic repair of affected existing installations during safe update.
+- Made the integrated and standalone CrowdSec doctor report Docker startup failures before secondary key checks.
+
+### Changed
+
+- Hardened CrowdSec, Anubis, and Caddy containers with read-only root filesystems, dropped Linux capabilities, `no-new-privileges`, bounded temporary storage, and service health checks.
+- Updated the custom Caddy build dependencies, disabled its administration endpoint and configuration persistence, and moved its runtime to an unprivileged user.
+- Expanded CI to cover installation, Docker restart, failed-update rollback, database integrity, uninstall, clean reinstall, and another restart.
+
+### Security
+
+- Added release gates for the exact recommended Caddy, CrowdSec, and Anubis images on AMD64 and ARM64, plus identity-backed attestations for release assets and container images.
+
+See the [release notes](.github/release-notes/v2.15.1-mangyan1.rc.3.md) for installation and validation guidance.
+
 ## v2.15.1-mangyan1.rc.2 - 2026-09-05
 
 Second public release candidate of the security-focused fork.
