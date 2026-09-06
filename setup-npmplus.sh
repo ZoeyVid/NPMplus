@@ -11,7 +11,7 @@ set -euo pipefail
 
 # bump this on every meaningful change - the script compares it against the
 # copy on github at startup and tells the operator when theirs is stale
-SCRIPT_VERSION="1.47"
+SCRIPT_VERSION="1.48"
 
 DATA_DIR="/opt/npmplus"
 CROWDSEC_DIR="/opt/crowdsec"
@@ -1396,22 +1396,28 @@ run_backup() (
 	# archive must have been written after this action started. A same-second
 	# filename collision (two backups within one second overwrite the same
 	# name) is fine - the archive itself is still fresh.
-	local started_at out mtime
+	local started_at newest newest_mtime
 	started_at=$(date +%s)
 	if ! /usr/local/bin/npmplus-backup; then
 		echo "backup failed - see /var/log/npmplus-backup.log" >&2
 		return 1
 	fi
-	out=$(find /var/backups/npmplus -maxdepth 1 -type f -name 'npmplus-*.tar.gz' -printf '%T@ %p\n' 2>/dev/null | sort -rn | head -1 | cut -d' ' -f2-)
-	mtime=${out%% *}
-	# strip back to whole seconds for comparison
-	mtime=${mtime%.*}
-	if [[ -z "$out" || -z "$mtime" || "$mtime" -lt "$started_at" ]]; then
+	# find prints "<mtime> <path>"; keep the two fields separate instead of
+	# re-deriving one from the other (paths contain dots that broke that)
+	newest=$(find /var/backups/npmplus -maxdepth 1 -type f -name 'npmplus-*.tar.gz' -printf '%T@ %p\n' 2>/dev/null | sort -rn | head -1)
+	newest_mtime=${newest%% *}
+	newest_mtime=${newest_mtime%.*}
+	newest=${newest#* }
+	if [[ -z "$newest" || -z "$newest_mtime" ]] || ! [[ "$newest_mtime" =~ ^[0-9]+$ ]]; then
+		echo "backup completed but no new archive was found - see /var/log/npmplus-backup.log" >&2
+		return 1
+	fi
+	if (( newest_mtime < started_at )); then
 		echo "backup completed but no new archive was found - see /var/log/npmplus-backup.log" >&2
 		return 1
 	fi
 	say "backup created"
-	echo "  archive: $out ($(du -h "$out" | cut -f1))"
+	echo "  archive: $newest ($(du -h "$newest" | cut -f1))"
 	echo "  it contains the database, certificates, access lists, CrowdSec state, and the Anubis policy"
 	echo "  to migrate: copy it to the new machine (SSH only, it holds your private keys) and run --restore there"
 	return 0

@@ -215,6 +215,13 @@ jobs:
           before="$(sudo bash -c 'ls -1 /var/backups/npmplus/npmplus-*.tar.gz 2>/dev/null | wc -l')"
           sudo /opt/npmplus/setup-npmplus.sh --backup 2>&1 | tee /tmp/npmplus-manual-backup.log
           grep -q 'backup created' /tmp/npmplus-manual-backup.log
+          # a broken verification check once printed a bash syntax error while
+          # still reporting success - shell errors must fail the step loudly
+          if grep -qE 'syntax error|operand expected|command not found|unary operator' /tmp/npmplus-manual-backup.log; then
+            echo "shell errors in the backup output:" >&2
+            grep -E 'syntax error|operand expected|command not found|unary operator' /tmp/npmplus-manual-backup.log >&2
+            exit 1
+          fi
           after="$(sudo bash -c 'ls -1 /var/backups/npmplus/npmplus-*.tar.gz 2>/dev/null | wc -l')"
           test "$after" -gt "$before"
           newest="$(sudo bash -c 'ls -1t /var/backups/npmplus/npmplus-*.tar.gz | head -1')"
