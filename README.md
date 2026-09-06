@@ -2,9 +2,20 @@
 
 NPMplus gives you a web dashboard for publishing services securely through Nginx. This security-focused fork is maintained by [mangyan1](https://github.com/mangyan1) and adds a guided server installer, CrowdSec protection, automatic backups, safe updates with rollback, and additional security fixes.
 
-It is based on [ZoeyVid/NPMplus](https://github.com/ZoeyVid/NPMplus) and the original [Nginx Proxy Manager](https://github.com/NginxProxyManager/nginx-proxy-manager).
+It is based on [ZoeyVid/NPMplus](https://github.com/ZoeyVid/NPMplus) and the original [Nginx Proxy Manager](https://github.com/NginxProxyManager/nginx-proxy-manager). [Project website](https://mangyan1.github.io/NPMplus/)
 
-[Project website](https://mangyan1.github.io/NPMplus/) · [Install NPMplus](#new-installation) · [See the main features](#main-features) · [Releases](https://github.com/mangyan1/NPMplus/releases)
+## Contents
+
+| Task | Section |
+| --- | --- |
+| Install on a new server | [New installation](#new-installation) |
+| Open the dashboard | [Open the dashboard](#open-the-dashboard) |
+| Update, repair, restore, uninstall | [Maintenance menu](#maintenance-menu) |
+| Move to a new machine | [Migrate to a new server](#migrate-to-a-new-server) |
+| Check it is running | [Status and logs](#status-and-logs) |
+| Something broke | [Troubleshooting](#troubleshooting) |
+| Feature overview | [Main features](#main-features) |
+| Everything else (updates, boot, backups internals, diagnostics) | [Setup and operations guide](docs/setup-npmplus.md) · [Advanced reference](ADVANCED.md) |
 
 The current versioned build is **v2.15.1-mangyan1.rc.4**. It is a release candidate for test servers; no stable fork release has been published yet. Every versioned release includes a pinned installer and SHA-256 checksum on the [Releases page](https://github.com/mangyan1/NPMplus/releases).
 
@@ -34,10 +45,6 @@ sudo bash setup-npmplus.sh
 This command installs the named version instead of silently following later changes. Advanced testers who deliberately want the newest rolling development build can use the [develop installer](https://raw.githubusercontent.com/mangyan1/NPMplus/develop/setup-npmplus.sh).
 
 Select **Install NPMplus**, then answer the questions shown by the installer. If you are unsure, press Enter to accept the displayed default. The recommended defaults enable CrowdSec, CrowdSec AppSec web-application protection, the firewall bouncer, and Anubis. Anubis's global catch-all challenge defaults off so APIs, licensing servers, webhooks, monitors, and other non-browser clients continue to work. AppSec can still be turned off for an individual proxy host if an application has a confirmed compatibility problem.
-
-RC4 remains unchanged while it is tested on real websites. The rolling `develop` installer adds post-RC4 boot hardening: a pre-Docker packet guard blocks external ports 80/443 until verified CrowdSec host/Docker-forwarding rules and healthy public services are ready. A deliberately optional Cloudflare origin lock can also reject direct public traffic while preserving private-LAN access.
-
-After installation, one short local command opens the maintenance menu for safe updates, CrowdSec checks, reboot diagnostics, reconfiguration, and uninstalling. You do not need to memorize a different command for each task.
 
 For the easiest first login, provide an administrator email and password when the installer asks. The password is handled as a temporary secret and is not saved in `compose.yaml`.
 
@@ -71,77 +78,65 @@ sudo docker exec npmplus cat /data/npmplus/setup-token
 
 Enter that token in the setup page. It is removed after the first administrator is created.
 
-## Maintain or troubleshoot NPMplus
+## Maintenance menu
 
-After installation, reopen the matching maintenance menu with one short command:
+After installation, one short command opens the maintenance menu for safe updates, CrowdSec checks, reboot diagnostics, restore, reconfiguration, and uninstalling:
 
 ```bash
 sudo /opt/npmplus/setup-npmplus.sh
 ```
 
-To move to a newer release later, use the installation command shown on that release's page. A `develop` installation should download the current [develop installer](https://raw.githubusercontent.com/mangyan1/NPMplus/develop/setup-npmplus.sh) before maintenance so it receives the latest host-management logic.
+- **Safe update** - snapshot, new images, full health checks, automatic rollback on failure.
+- **Check or repair CrowdSec** - tests containers, API, credentials, and registration; repairs rejected keys.
+- **Startup/reboot diagnostic report** - read-only service, network, Docker, and container details to a private `/tmp` report.
+- **Reconfigure installation** - reruns the advanced installation questions.
+- **Restore a backup** - applies a backup archive onto this machine (see [Migrate to a new server](#migrate-to-a-new-server)).
+- **Uninstall** - final backup, clear description, typed confirmation.
 
-Choose the action you need from the numbered menu:
+To move to a newer release later, use the installation command shown on that release's page. A `develop` installation should download the current [develop installer](https://raw.githubusercontent.com/mangyan1/NPMplus/develop/setup-npmplus.sh) before maintenance.
 
-- **Safe update** creates a snapshot, installs the new images, checks the complete stack, and automatically restores the previous working version if the update fails.
-- **Check or repair CrowdSec** tests the containers, API, credentials, and registration, then offers a repair when a key is rejected.
-- **Startup/reboot diagnostic report** collects read-only service, network, Docker, container, port, and resource details into a private report under `/tmp`.
-- **Reconfigure installation** reruns the advanced installation questions.
-- **Restore a backup** applies a daily-backup archive onto this installation: the database (every proxy host, port, IP, access list, certificate, and setting), CrowdSec state, and optional Anubis policy come back, while this machine's own configuration is kept. This is the server-migration path: fresh install on the new machine, copy an archive over (SSH only - it contains your private keys), restore, then log in with your old admin account.
-- **Uninstall** takes a final backup, clearly describes what will be removed, and requires typed confirmation.
+Advanced opt-ins that an ordinary menu update deliberately preserves - enabling AppSec, protected startup, or the Cloudflare origin lock on an existing installation - each need one explicit command: see [Updating](docs/setup-npmplus.md#updating) in the operations guide.
 
-An ordinary menu update keeps your existing AppSec choice. Advanced users can enable AppSec on an existing installer-managed server with this one-time command:
+## Migrate to a new server
 
-```bash
-wget -qO setup-npmplus.sh https://raw.githubusercontent.com/mangyan1/NPMplus/develop/setup-npmplus.sh &&
-sudo bash setup-npmplus.sh --update --enable-appsec
-```
-
-For an existing rolling-`develop` installation with the installer-managed firewall bouncer, enable protected startup with:
+Moving an installation to a new or more powerful machine is three steps: the daily backup archives already contain everything (database with all hosts, ports, IPs, access lists, certificates and settings, CrowdSec state, optional Anubis policy):
 
 ```bash
-wget -qO setup-npmplus.sh https://raw.githubusercontent.com/mangyan1/NPMplus/develop/setup-npmplus.sh &&
-sudo bash setup-npmplus.sh --update --enable-strict-boot
+# 1. old machine: copy the newest archive out (the folder is root-only;
+#    transfer over SSH only - archives contain your TLS private keys)
+sudo scp /var/backups/npmplus/npmplus-YYYY-MM-DD-HHMMSS.tar.gz user@newmachine:/tmp/
+
+# 2. new machine: install NPMplus first (sets up Docker, UFW, CrowdSec,
+#    crons for THAT machine)
+sudo bash setup-npmplus.sh        # menu: Install
+
+# 3. new machine: put the old data on top (menu option 5, or:)
+sudo /opt/npmplus/setup-npmplus.sh --restore /tmp/npmplus-YYYY-MM-DD-HHMMSS.tar.gz
 ```
 
-If every public hostname on this IP is Cloudflare orange-clouded, you may also add the origin lock. DNS-only records on ports 80/443 will stop working, so this remains explicit rather than automatic:
+After the restore, log in with the **old machine's admin account**. Copying the whole `/var/backups/npmplus/` folder also works: drop it at the same path on the new machine and the restore picker lists every archive newest-first. Works between Debian and Ubuntu in either direction. Point DNS at the new machine before the next certificate renewal. Full details, safety behavior, and the manual equivalent: [Backups and restoration](docs/setup-npmplus.md#backups-and-restoration).
 
-```bash
-wget -qO setup-npmplus.sh https://raw.githubusercontent.com/mangyan1/NPMplus/develop/setup-npmplus.sh &&
-sudo bash setup-npmplus.sh --update --enable-strict-boot --enable-cloudflare-origin-lock
-```
-
-The origin lock blocks direct probes before Nginx, so those packets will not appear as CrowdSec dashboard attacks. Leave it off while evaluating RC4's direct-scan visibility; RC4 itself is unchanged.
-
-## Check that it is running
+## Status and logs
 
 ```bash
 sudo docker compose -f /opt/npmplus/compose.yaml ps
 ```
 
-Every listed service should say `Up`. The `npmplus` service should become `healthy` after startup.
-
-The installer enables Docker and configures the stack to return automatically after a server restart. With protected startup enabled, a pre-Docker guard blocks external web traffic, CrowdSec starts, the host bouncer must prove that both host and Docker-forwarded traffic are covered, and the guard is removed only after the public services pass health checks. A supplied initial administrator password is removed after first use, and NPMplus is recreated without the temporary secret mount before that file is deleted. This prevents the container from depending on a `/run` file that disappears during reboot.
+Every listed service should say `Up`. The `npmplus` service should become `healthy` after startup. The stack returns automatically after a server restart; with protected startup, a pre-Docker guard keeps public ports closed until CrowdSec enforcement and service health are proven. Details: [Updating](docs/setup-npmplus.md#updating) in the operations guide.
 
 ## What the installer handles
 
-- One interactive menu for installation, updates, diagnostics, and uninstalling.
-- NPMplus and its web dashboard.
-- Recommended CrowdSec, AppSec WAF, and firewall-bouncer protection, with AppSec compatibility exceptions per proxy host.
+- One interactive menu for installation, updates, diagnostics, restore, and uninstalling.
+- NPMplus and its web dashboard, with loopback-only dashboard access by default.
+- Recommended CrowdSec, AppSec WAF, and firewall-bouncer protection, with per-host AppSec compatibility switches.
 - Protected startup that fails closed before opening public listeners when CrowdSec enforcement is unavailable.
-- Optional Cloudflare-only origin filtering for ports 80/443, with private/local networks retained for administration and testing.
-- Optional Anubis bot protection and honeypot bans.
-- Optional Caddy HTTP-to-HTTPS redirect service.
-- Safe monthly updates with automatic rollback.
-- Daily backups with the latest seven archives retained.
-- CrowdSec credential checks and automatic repair.
-- Optional UFW firewall and unattended operating-system security updates.
-- Loopback-only dashboard access and non-root services by default.
-- Read-only root filesystems, dropped Linux capabilities, `no-new-privileges`, and health checks for the optional CrowdSec, Anubis, and Caddy services.
+- Optional Cloudflare-only origin filtering, Anubis bot protection and honeypot bans, Caddy redirects, UFW, and unattended OS security updates.
+- Safe monthly updates with automatic rollback, daily backups (seven kept), and CrowdSec credential healing.
+- Hardened auxiliary containers: read-only root filesystems, dropped capabilities, `no-new-privileges`, health checks.
 
-Backups are stored under `/var/backups/npmplus`. The latest update snapshot is stored under `/var/backups/npmplus-last-good`.
+Backups are stored under `/var/backups/npmplus`; the update snapshot under `/var/backups/npmplus-last-good`.
 
-## If something goes wrong
+## Troubleshooting
 
 Show recent logs:
 
@@ -149,9 +144,7 @@ Show recent logs:
 sudo docker compose -f /opt/npmplus/compose.yaml logs --tail=200
 ```
 
-If an update refuses to start, it usually means a service is already stopped or unhealthy. The updater does this to avoid creating a bad rollback snapshot.
-
-Run the same setup command and select a diagnostic option when you need help. For recovery and backup restoration, see the [setup and operations guide](docs/setup-npmplus.md).
+If an update refuses to start, it usually means a service is already stopped or unhealthy - the updater refuses to build a rollback snapshot from a broken stack. For recovery, backup restoration, CrowdSec diagnosis, or reboot reports, open the maintenance menu (option 2 or 3) and see the [setup and operations guide](docs/setup-npmplus.md#diagnostics).
 
 When requesting help, share the command output but remove public IP addresses, domains, email addresses, and secrets first.
 
@@ -159,7 +152,7 @@ When requesting help, share the command output but remove public IP addresses, d
 
 - Proxy hosts, redirects, streams, access lists, certificates, and a modern admin dashboard.
 - HTTP/3, modern TLS, mTLS, OIDC, `auth_request`, load balancing, and multiple access lists.
-- Integrated CrowdSec and Anubis security dashboard with a compact overview, clickable KPI details, a scenario attack-mix donut with a per-interval activity strip, a WAF verdict card showing blocked traffic, top attacker IP/scenario/country/ASN/target filters, a lightweight animated geographic attack map, explicit CrowdSec/Anubis/honeypot status, bouncer enforcement status proving bans are served to the proxy, paginated local alert and ban views, engine metrics, optional browser alerts while the page is open, manual bans, exact-decision unban, and audit logging. The map renders at most 12 aggregated origins with inline SVG and CSS—no WebGL, map-tile downloads, or browser-side IP lookup. CrowdSec community blocklists remain fully enforced but are summarized as metrics instead of flooding the page with remote IP entries.
+- Integrated CrowdSec and Anubis security dashboard: a compact overview with clickable KPI details, a scenario attack-mix donut with a per-interval activity strip, a WAF verdict card, attacker filters (IP/scenario/country/ASN/target), a lightweight animated attack map (no WebGL or map-tile downloads), bouncer enforcement status, paginated local alerts and bans, engine metrics, optional browser alerts, manual bans, exact-decision unban, and audit logging. Community blocklists stay enforced but are summarized as metrics instead of flooding the page with remote IP entries.
 - Dedicated AppSec WAF monitoring shows whether protection is configured, inspected/passed/blocked request totals, block rate, and the active compatibility policy.
 - Security headers, strict browser policy, protected session cookies, rate limits, and safer defaults.
 - Daily container CVE monitoring, pull-request image gates, and a patched Caddy build from the stable release source.
