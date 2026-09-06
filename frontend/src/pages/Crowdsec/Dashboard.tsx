@@ -37,6 +37,7 @@ import ActiveBans from "./ActiveBans";
 import AnimatedLogo from "./AnimatedLogo";
 import styles from "./Dashboard.module.css";
 import { MetricsSkeleton, OverviewSkeleton, TableSkeleton } from "./LoadingSkeleton";
+import { attackMixSegments } from "./utils";
 
 const AttackMap = lazy(() => import("./AttackMap"));
 
@@ -54,74 +55,107 @@ const alertTarget = (alert: CrowdsecAlert) => {
 };
 const alertSource = (alert: CrowdsecAlert) => alert.source.ip || alert.source.value || alert.source.rdns || "—";
 
-const ActivityChart = ({ items, windowHours }: { items: { start: string; count: number }[]; windowHours: number }) => {
-	const width = 720;
-	const height = 184;
-	const plotHeight = 148;
-	const max = Math.max(1, ...items.map((item) => item.count));
-	const total = items.reduce((sum, item) => sum + item.count, 0);
-	const barWidth = Math.max(1, width / Math.max(1, items.length) - 2);
-	const labelIndexes = [...new Set([0, Math.floor((items.length - 1) / 2), items.length - 1])].filter(
-		(index) => index >= 0,
-	);
-	const bucketLabel = (start: string) =>
-		intl.formatDate(
-			new Date(start),
-			windowHours >= 168 ? { month: "short", day: "numeric" } : { hour: "numeric", minute: "2-digit" },
-		);
-	const summary = intl.formatMessage(
-		{ id: "crowdsec.activity.summary" },
-		{ total, hours: windowHours, peak: Math.max(0, ...items.map((item) => item.count)) },
-	);
+const DONUT_COLORS = [
+	"var(--tblr-azure)",
+	"var(--tblr-purple)",
+	"var(--tblr-pink)",
+	"var(--tblr-orange)",
+	"var(--tblr-blue)",
+];
+const DONUT_RADIUS = 48;
+const DONUT_CIRCUMFERENCE = 2 * Math.PI * DONUT_RADIUS;
+
+const AttackMix = ({
+	items,
+	total,
+	windowHours,
+	onSelect,
+}: {
+	items: CrowdsecInsightsItem[];
+	total: number;
+	windowHours: number;
+	onSelect: (value: string) => void;
+}) => {
+	const segments = attackMixSegments(items, total);
+	const summary = intl.formatMessage({ id: "crowdsec.attack-mix.summary" }, { total, hours: windowHours });
+	let offset = 0;
 	return (
 		<figure className="mb-0">
-			<svg className={styles.chart} viewBox={`0 0 ${width} ${height}`} role="img" aria-label={summary}>
-				<title>{summary}</title>
-				<text x="0" y="12" className={styles.chartLabel}>
-					{intl.formatNumber(max)}
-				</text>
-				<line x1="0" y1={plotHeight} x2={width} y2={plotHeight} stroke="currentColor" opacity="0.2" />
-				{items.map((item, index) => {
-					const barHeight = (item.count / max) * (plotHeight - 18);
-					return (
-						<rect
-							key={item.start}
-							x={index * (width / Math.max(1, items.length))}
-							y={plotHeight - barHeight}
-							width={barWidth}
-							height={barHeight}
-							rx="2"
-							fill="var(--tblr-azure)"
-						>
-							<title>{`${formatDateTime(item.start)}: ${item.count}`}</title>
-						</rect>
-					);
-				})}
-				{labelIndexes.map((index) => (
-					<text
-						key={items[index].start}
-						x={(index / Math.max(1, items.length - 1)) * width}
-						y="176"
-						textAnchor={index === 0 ? "start" : index === items.length - 1 ? "end" : "middle"}
-						className={styles.chartLabel}
-					>
-						{bucketLabel(items[index].start)}
-					</text>
-				))}
-			</svg>
-			{total === 0 && (
-				<div className="text-secondary text-center small mt-2">
+			{segments.length === 0 ? (
+				<div className="text-secondary text-center small py-5">
 					<T id="crowdsec.activity.empty" />
 				</div>
+			) : (
+				<div className="d-flex flex-wrap align-items-center gap-4">
+					<svg className={styles.donut} viewBox="0 0 120 120" role="img" aria-label={summary}>
+						<title>{summary}</title>
+						<g transform="rotate(-90 60 60)">
+							{segments.map((segment) => {
+								const length = segment.share * DONUT_CIRCUMFERENCE;
+								// shave a hair off each slice so neighbours stay separated
+								const visible = Math.max(0, length - 1.5);
+								const element = (
+									<circle
+										key={segment.name || "other"}
+										cx="60"
+										cy="60"
+										r={DONUT_RADIUS}
+										fill="none"
+										strokeWidth="16"
+										stroke={
+											segment.color >= 0 ? DONUT_COLORS[segment.color % DONUT_COLORS.length] : "var(--tblr-secondary)"
+										}
+										strokeDasharray={`${visible} ${DONUT_CIRCUMFERENCE - visible}`}
+										strokeDashoffset={-offset}
+									>
+										<title>{`${segment.name || intl.formatMessage({ id: "crowdsec.attack-mix.other" })}: ${intl.formatNumber(segment.count)}`}</title>
+									</circle>
+								);
+								offset += length;
+								return element;
+							})}
+						</g>
+						<text x="60" y="57" textAnchor="middle" className={styles.donutTotal}>
+							{intl.formatNumber(total)}
+						</text>
+						<text x="60" y="74" textAnchor="middle" className={styles.donutLabel}>
+							{intl.formatMessage({ id: "crowdsec.attack-mix" })}
+						</text>
+					</svg>
+					<ul className="list-unstyled mb-0 flex-fill min-w-0">
+						{segments.map((segment) => {
+							const color =
+								segment.color >= 0 ? DONUT_COLORS[segment.color % DONUT_COLORS.length] : "var(--tblr-secondary)";
+							const label = segment.name || intl.formatMessage({ id: "crowdsec.attack-mix.other" });
+							return (
+								<li key={segment.name || "other"} className={styles.donutRow}>
+									<span className={styles.donutDot} style={{ background: color }} aria-hidden="true" />
+									{segment.name ? (
+										<button
+											type="button"
+											className={styles.donutName}
+											title={intl.formatMessage(
+												{ id: "crowdsec.attack-mix.filter" },
+												{ scenario: segment.name },
+											)}
+											onClick={() => onSelect(segment.name)}
+										>
+											{segment.name}
+										</button>
+									) : (
+										<span className="text-secondary text-truncate">{label}</span>
+									)}
+									<span className="badge bg-secondary-lt flex-shrink-0">{intl.formatNumber(segment.count)}</span>
+									<span className="text-secondary small flex-shrink-0">
+										{intl.formatNumber(segment.share, { style: "percent", maximumFractionDigits: 1 })}
+									</span>
+								</li>
+							);
+						})}
+					</ul>
+				</div>
 			)}
-			<figcaption className="visually-hidden">
-				{summary}
-				<ol>
-					{items.map((item) => (
-						<li key={item.start}>{`${formatDateTime(item.start)}: ${item.count}`}</li>
-					))}
-				</ol>
-			</figcaption>
+			<figcaption className="visually-hidden">{summary}</figcaption>
 		</figure>
 	);
 };
@@ -1163,9 +1197,14 @@ const CrowdsecDashboard = () => {
 								<div className="row g-4">
 									<div className="col-lg-7">
 										<h3>
-											<T id="crowdsec.activity" />
+											<T id="crowdsec.attack-mix" />
 										</h3>
-										<ActivityChart items={insights.data.activity} windowHours={windowHours} />
+										<AttackMix
+											items={insights.data.topScenarios}
+											total={insights.data.alertCount}
+											windowHours={windowHours}
+											onSelect={(value) => quickFilter(setScenario, value)}
+										/>
 									</div>
 									<div className="col-lg-5">
 										<h3>

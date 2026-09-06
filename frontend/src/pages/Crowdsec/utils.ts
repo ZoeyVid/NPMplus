@@ -67,6 +67,28 @@ export const filterCrowdsecDecisions = (
 	});
 };
 
+export type AttackMixSegment = {
+	// empty name marks the residual "other" slice covering alerts not in the top list
+	name: string;
+	count: number;
+	share: number;
+	// palette index; -1 marks the residual slice rendered in secondary grey
+	color: number;
+};
+
+// donut segments from the top-scenario counts; alerts not covered by the top
+// list collapse into a residual "other" slice so the shares always sum to 1
+export const attackMixSegments = (items: { name: string; count: number }[], total: number): AttackMixSegment[] => {
+	if (total <= 0) return [];
+	const segments = items
+		.filter((item) => item.name && item.count > 0)
+		.map((item, index) => ({ name: item.name, count: item.count, share: item.count / total, color: index }));
+	const named = segments.reduce((sum, item) => sum + item.count, 0);
+	const other = total - named;
+	if (other > 0) segments.push({ name: "", count: other, share: other / total, color: -1 });
+	return segments;
+};
+
 export const sortCrowdsecDecisions = (
 	decisions: CrowdsecDecision[],
 	key: CrowdsecSortKey,

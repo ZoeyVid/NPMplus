@@ -3,7 +3,12 @@ import assert from "node:assert/strict";
 // biome-ignore lint/correctness/noNodejsModules: this file is executed by Node's test runner.
 import test from "node:test";
 import type { CrowdsecDecision } from "../src/api/backend/getCrowdsecDecisions.ts";
-import { decisionTarget, filterCrowdsecDecisions, sortCrowdsecDecisions } from "../src/pages/Crowdsec/utils.ts";
+import {
+	attackMixSegments,
+	decisionTarget,
+	filterCrowdsecDecisions,
+	sortCrowdsecDecisions,
+} from "../src/pages/Crowdsec/utils.ts";
 
 const decision = (id: number, value: string, scenario = "http-probing"): CrowdsecDecision => ({
 	id,
@@ -17,6 +22,27 @@ const decision = (id: number, value: string, scenario = "http-probing"): Crowdse
 	createdAt: "",
 	until: "",
 	simulated: false,
+});
+
+test("attack mix segments add a residual other slice", () => {
+	assert.deepEqual(attackMixSegments([{ name: "http-probing", count: 6 }], 10), [
+		{ name: "http-probing", count: 6, share: 0.6, color: 0 },
+		{ name: "", count: 4, share: 0.4, color: -1 },
+	]);
+});
+
+test("attack mix shares sum to one and skip empty scenarios", () => {
+	const segments = attackMixSegments(
+		[
+			{ name: "http-probing", count: 1 },
+			{ name: "", count: 5 },
+			{ name: "ssh-bruteforce", count: 1 },
+		],
+		2,
+	);
+	assert.equal(segments.reduce((sum, item) => sum + item.share, 0), 1);
+	assert.deepEqual(segments.map(({ name }) => name), ["http-probing", "ssh-bruteforce"]);
+	assert.deepEqual(attackMixSegments([{ name: "http-probing", count: 3 }], 0), []);
 });
 
 test("decision target includes non-IP scopes", () => {

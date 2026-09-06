@@ -56,15 +56,59 @@ button.metricCard:focus-visible {
 	min-height: 1.25rem;
 }
 
-.chart {
-	display: block;
-	width: 100%;
-	height: auto;
+.donut {
+	flex: 0 0 10rem;
+	width: 10rem;
+	height: 10rem;
 }
 
-.chartLabel {
+.donutTotal {
 	fill: currentColor;
+	font-size: 24px;
+	font-weight: 600;
+}
+
+.donutLabel {
+	fill: var(--tblr-secondary);
 	font-size: 12px;
+}
+
+.donutRow {
+	display: flex;
+	align-items: center;
+	gap: 0.5rem;
+	padding: 0.375rem 0;
+	border-bottom: 1px solid var(--tblr-border-color);
+}
+
+.donutRow:last-child {
+	border-bottom: 0;
+}
+
+.donutDot {
+	flex-shrink: 0;
+	width: 0.625rem;
+	height: 0.625rem;
+	border-radius: 50%;
+}
+
+.donutName {
+	flex: 1;
+	min-width: 0;
+	overflow: hidden;
+	padding: 0;
+	border: 0;
+	background: none;
+	color: inherit;
+	text-align: left;
+	white-space: nowrap;
+	text-overflow: ellipsis;
+}
+
+.donutName:hover,
+.donutName:focus-visible {
+	color: var(--tblr-primary);
+	text-decoration: underline;
 }
 
 .worldMap {
