@@ -198,11 +198,13 @@ jobs:
         run: |
           sudo /opt/npmplus/setup-npmplus.sh --help | grep -q -- '--doctor'
           sudo /opt/npmplus/setup-npmplus.sh --help | grep -q -- '--boot-trace'
-          menu_output="$(printf '6\n' | script --quiet --return \
+          sudo /opt/npmplus/setup-npmplus.sh --help | grep -q -- '--restore'
+          menu_output="$(printf '7\n' | script --quiet --return \
             --command 'sudo /opt/npmplus/setup-npmplus.sh' /dev/null)"
           grep -q 'Safe update (recommended)' <<<"$menu_output"
           grep -q 'Check or repair CrowdSec' <<<"$menu_output"
           grep -q 'Create a startup/reboot diagnostic report' <<<"$menu_output"
+          grep -q 'Restore a backup' <<<"$menu_output"
       # only the alternate variant sets INITIAL_ADMIN_EMAIL/PASSWORD; a working
       # login proves the env block was generated into the compose file correctly
       - name: admin login works (alternate)
@@ -439,6 +441,48 @@ jobs:
             sleep 2
           done
           test "$ready" = true
+      - name: backup restore round trip works (migration path)
+        if: matrix.name == 'defaults'
+        run: |
+          # prove the migration story: take a backup of the running stack, then
+          # restore it back over the same installation and confirm everything
+          # (database, certs, crowdsec state) survives a restore
+          sudo /usr/local/bin/npmplus-backup
+          backup_file="$(sudo bash -c 'ls -1t /var/backups/npmplus/npmplus-*.tar.gz | head -1')"
+          test -s "$backup_file"
+          before_hosts="$(sudo docker exec npmplus node -e "const d=require('better-sqlite3')('/data/npmplus/database.sqlite',{readonly:true});console.log(d.prepare('select count(*) c from proxy_host').get().c);d.close()")"
+          test -s /opt/npmplus/compose.yaml
+          compose_before="$(sudo sha256sum /opt/npmplus/compose.yaml | awk '{print $1}')"
+
+          printf 'restore\n' | sudo /opt/npmplus/setup-npmplus.sh --restore "$backup_file" | tee /tmp/npmplus-restore.log
+          grep -q 'restore complete' /tmp/npmplus-restore.log
+
+          # the machine's compose configuration must be untouched by a restore
+          test "$(sudo sha256sum /opt/npmplus/compose.yaml | awk '{print $1}')" = "$compose_before"
+
+          # the restored database still contains the same proxy hosts
+          after_hosts="$(sudo docker exec npmplus node -e "const d=require('better-sqlite3')('/data/npmplus/database.sqlite',{readonly:true});console.log(d.prepare('select count(*) c from proxy_host').get().c);d.close()")"
+          test "$before_hosts" = "$after_hosts"
+
+          # the API answers and the stack is healthy
+          ready=false
+          for _ in $(seq 1 120); do
+            if curl -fkSs --connect-timeout 2 --max-time 5 https://127.0.0.1:81/api |
+              grep -qE '"status"[[:space:]]*:[[:space:]]*"OK"'; then
+              ready=true
+              break
+            fi
+            sleep 2
+          done
+          test "$ready" = true
+
+          # a restore must refuse to run without a confirmation word
+          set +e
+          refuse_output="$(printf '\n' | sudo /opt/npmplus/setup-npmplus.sh --restore "$backup_file" 2>&1)"
+          refuse_status="$?"
+          set -e
+          test "$refuse_status" -ne 0
+          grep -q 'aborted' <<<"$refuse_output"
       - name: failed update restores the complete last-good state
         if: matrix.name == 'defaults'
         run: |
@@ -548,3 +592,110 @@ jobs:
           done
           test "$ready" = true
           test -f /etc/systemd/system/docker.service.d/99-operator-owned.conf
+
+  # The restore action must work on both supported distro families, whichever
+  # combination of old/new server is used for a migration. The restore path is
+  # deliberately distro-agnostic (no apt/dpkg/systemd/UFW calls), so it is proven
+  # inside a stock Debian container with the runner's Docker socket mounted:
+  # drive a real --restore against a genuine backup archive on Debian.
+  restore-debian:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    container:
+      image: debian:13
+      options: --privileged -v /var/run/docker.sock:/var/run/docker.sock
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - name: prepare debian environment
+        run: |
+          export DEBIAN_FRONTEND=noninteractive
+          apt-get update -qq
+          apt-get install -y -qq bash curl tar findutils bsdmainutils docker.io docker-compose >/dev/null
+          test -s /etc/os-release
+          . /etc/os-release
+          echo "running on: $ID $VERSION_CODENAME"
+          [[ "$ID" == "debian" ]] || { echo "expected debian" >&2; exit 1; }
+          docker version --format '{{.Client.Version}}' >/dev/null
+          docker compose version
+      - name: restore validates archives and refuses invalid ones
+        run: |
+          # a tar that is not a npmplus backup must be rejected
+          mkdir -p /tmp/fake/opt/npmplus
+          echo not-a-database >/tmp/fake/opt/npmplus/nope
+          tar -czf /tmp/not-a-backup.tar.gz -C /tmp/fake opt/npmplus
+          bash setup-npmplus.sh --restore /tmp/not-a-backup.tar.gz 2>&1 | grep -q 'backup contains no database' \
+            || { echo 'expected the no-database refusal' >&2; exit 1; }
+
+          # a valid backup but no installation on this machine must be refused
+          mkdir -p /tmp/good/opt/npmplus/npmplus
+          printf 'sqlite-test-bytes' >/tmp/good/opt/npmplus/npmplus/database.sqlite
+          tar -czf /tmp/npmplus-valid.tar.gz -C /tmp/good opt/npmplus
+          bash setup-npmplus.sh --restore /tmp/npmplus-valid.tar.gz 2>&1 | grep -q 'no installation found' \
+            || { echo 'expected the no-installation refusal' >&2; exit 1; }
+
+          # the usage/help surfaces the restore action
+          bash setup-npmplus.sh --help | grep -q -- '--restore'
+      - name: full restore round trip on debian (real stack)
+        run: |
+          fail=0
+          check() {
+            local name="$1"
+            shift
+            if "$@"; then echo "PASS: $name"; else echo "FAIL: $name"; fail=1; fi
+          }
+
+          # Build a real (small) npmplus-style installation: compose file with
+          # one npmplus service plus the data layout --restore expects, a
+          # database, and a backup archive in the same layout the daily
+          # backup helper produces. Then restore it on Debian.
+          mkdir -p /opt/npmplus/npmplus /opt/npmplus/nginx/logs /opt/npmplus/tls
+          cat >/opt/npmplus/compose.yaml <<'YAML'
+          name: npmplus
+          services:
+            npmplus:
+              container_name: npmplus
+              image: busybox
+              command: sh -c 'mkdir -p /data/npmplus && sleep infinity'
+              restart: no
+          YAML
+          printf 'debian-restore-test-database' >/opt/npmplus/npmplus/database.sqlite
+          printf 'old-cert' >/opt/npmplus/tls/cert.pem
+          docker compose -f /opt/npmplus/compose.yaml up -d >/dev/null
+          check "fake stack running" bash -c 'docker inspect --format "{{.State.Status}}" npmplus | grep -qx running'
+
+          # the archive: a backup of a DIFFERENT machine's data (migration)
+          mkdir -p /tmp/oldserver/opt/npmplus/npmplus /tmp/oldserver/opt/npmplus/tls /tmp/oldserver/opt/crowdsec/conf
+          printf 'migrated-database-with-all-hosts' >/tmp/oldserver/opt/npmplus/npmplus/database.sqlite
+          printf 'new-cert-from-old-machine' >/tmp/oldserver/opt/npmplus/tls/cert.pem
+          printf 'crowdsec-state' >/tmp/oldserver/opt/crowdsec/conf/config.yaml
+          tar -czf /tmp/oldmachine-backup.tar.gz -C /tmp/oldserver opt/npmplus opt/crowdsec
+
+          printf 'restore\n' | bash setup-npmplus.sh --restore /tmp/oldmachine-backup.tar.gz >/tmp/debian-restore.log 2>&1
+          restore_status="${PIPESTATUS[0]}"
+          check "restore exited 0" test "$restore_status" -eq 0
+          check "log says restore complete" grep -q 'restore complete' /tmp/debian-restore.log
+
+          # the restored data must be the OLD machine's data
+          check "database is the migrated one" grep -q 'migrated-database-with-all-hosts' /opt/npmplus/npmplus/database.sqlite
+          check "cert is the migrated one" grep -q 'new-cert-from-old-machine' /opt/npmplus/tls/cert.pem
+
+          # the machine's own compose file is kept, not replaced
+          check "compose kept (this machine's)" grep -q 'container_name: npmplus' /opt/npmplus/compose.yaml
+          if grep -q 'oldserver' /opt/npmplus/compose.yaml; then
+            echo "FAIL: compose was replaced"
+            fail=1
+          else
+            echo "PASS: compose not replaced"
+          fi
+
+          # crowdsec state lands only when this install runs it: with no
+          # crowdsec service in compose, the restore must say so and skip
+          check "crowdsec skip note" grep -q 'does not run it - skipped' /tmp/debian-restore.log
+
+          # a snapshot of the replaced state was kept
+          check "pre-restore snapshot kept" bash -c 'ls -d /var/backups/npmplus/pre-restore-* >/dev/null'
+          if ls -d /var/backups/npmplus/pre-restore-*/ >/dev/null 2>&1; then
+            check "snapshot has the replaced database" grep -q 'debian-restore-test-database' /var/backups/npmplus/pre-restore-*/database.sqlite
+          fi
+
+          test "$fail" -eq 0

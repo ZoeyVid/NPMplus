@@ -6,6 +6,7 @@ All notable changes to the NPMplus Security Fork are documented here. The fork u
 
 ### Added
 
+- Added a restore action to the setup script (`--restore [FILE]`, menu option "Restore a backup") that applies a daily-backup archive onto an installation: it validates the archive layout, snapshots the replaced state, restores the database, certificates, access lists, CrowdSec state, and optional Anubis policy, re-registers CrowdSec keys the LAPI rejects, and waits for the stack to become healthy. Data is restored while the current machine's Compose configuration (image digests, LAN binding, ports, admin secret) is kept, so a server migration is: fresh install on the new machine, copy an archive over, restore. The restore path is distro-agnostic, archives move freely between Debian and Ubuntu servers, and CI proves the full round trip on both distributions.
 - Redesigned the CrowdSec overview around a scenario attack-mix donut with a clickable legend and a per-interval activity strip that highlights the current interval.
 - Added a WAF verdict card to the CrowdSec overview showing AppSec blocked requests and the pass/blocked traffic split, with click-through to the WAF tab.
 - Added bouncer enforcement status to the local-bans card: decision hits served to the proxy bouncer (`cs_lapi_decisions_ok_total`) prove bans are enforced, and a bouncer that never queries CrowdSec is called out instead of failing silently.

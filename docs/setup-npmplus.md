@@ -215,7 +215,21 @@ Append `--disable-mfa` when both the password and MFA need to be reset.
 
 Daily archives are written to `/var/backups/npmplus/npmplus-YYYY-MM-DD-HHMMSS.tar.gz`, mode `0600`, with the newest seven retained. They contain NPMplus data and certificates, CrowdSec state, the generated Compose file, and optional Anubis policy. While NPMplus is running, the helper creates `npmplus/database.backup.sqlite` through SQLite's backup API and includes it in the archive.
 
-To restore an archive, stop the stack, extract the selected archive at the filesystem root, promote the consistent database copy when present, and start the stack:
+To restore an archive, run the setup script's restore action. It validates the archive, snapshots the state it replaces, restores the database, certificates, access lists, CrowdSec state, and optional Anubis policy, re-registers any CrowdSec key the LAPI rejects, restarts the stack, and waits for it to become healthy. Without a file argument it offers the newest archives found under `/var/backups/npmplus`:
+
+```bash
+# interactive: pick one of the listed archives
+sudo bash setup-npmplus.sh --restore
+
+# explicit archive (for automation or a file copied from another server)
+sudo bash setup-npmplus.sh --restore /path/to/npmplus-YYYY-MM-DD-HHMMSS.tar.gz
+```
+
+The restore replaces data only. The current machine's Compose configuration (image digests, LAN binding, published ports, admin secret) is kept, which is what makes a server migration work: install NPMplus on the new machine, copy an archive from the old one, and restore it on top. The restore path is distro-agnostic (no apt/dpkg/systemd/UFW calls), so archives move freely between Debian and Ubuntu servers in either direction - the fresh install on the new machine sets up that machine's own host integration for its distro, and the restore only carries the data. Afterwards, log in with the account from the restored database. The restore requires the typed word `restore` as confirmation, keeps a copy of the replaced state in `/var/backups/npmplus/pre-restore-<timestamp>/`, and refuses archives that do not match the npmplus backup layout.
+
+The equivalent menu path is **Restore a backup** in the maintenance menu.
+
+For reference, the manual equivalent (stop the stack, extract at the filesystem root, promote the consistent database copy, start the stack) is:
 
 ```bash
 sudo docker compose -f /opt/npmplus/compose.yaml down

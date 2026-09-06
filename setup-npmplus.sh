@@ -11,7 +11,7 @@ set -euo pipefail
 
 # bump this on every meaningful change - the script compares it against the
 # copy on github at startup and tells the operator when theirs is stale
-SCRIPT_VERSION="1.44"
+SCRIPT_VERSION="1.45"
 
 DATA_DIR="/opt/npmplus"
 CROWDSEC_DIR="/opt/crowdsec"
@@ -1183,6 +1183,188 @@ run_boot_trace() (
 	echo "Review it for hostnames and IP addresses before sharing it."
 )
 
+run_restore() (
+	# Restore application data from a backup produced by the daily backup cron
+	# (npmplus-backup) or by hand with the same tar layout. Restores data only:
+	# the database (all hosts/ports/IPs/certificates/access lists/settings),
+	# the CrowdSec state, and the Anubis policy. The current machine's Compose
+	# configuration (image digests, LAN binding, admin secret, ports) is kept,
+	# so a restore works across servers: fresh install on the new machine, then
+	# restore the old data on top of it.
+	set -uo pipefail
+
+	local source="${1:-}" ts staging answer key password picked listing extract
+	local services=()
+
+	if [[ -z "$source" ]]; then
+		local candidates=()
+		mapfile -t candidates < <(find /var/backups/npmplus -maxdepth 1 -type f -name 'npmplus-*.tar.gz' -printf '%T@ %f\n' 2>/dev/null | sort -rn | awk '{print $2}')
+		if ((${#candidates[@]} == 0)); then
+			echo "no backup given and none found in /var/backups/npmplus" >&2
+			echo "usage: setup-npmplus.sh --restore /path/to/npmplus-YYYY-MM-DD-HHMMSS.tar.gz" >&2
+			return 1
+		fi
+		say "available backups (newest first):"
+		select picked in "${candidates[@]}" quit; do
+			[[ "$picked" == "quit" ]] && { echo "aborted" >&2; return 1; }
+			source="/var/backups/npmplus/$picked"
+			break
+		done
+	fi
+	source=$(readlink -f -- "$source") || return 1
+	[[ -f "$source" && -s "$source" ]] || { echo "backup not found: $source" >&2; return 1; }
+	[[ "$source" == *.tar.gz ]] || { echo "expected a npmplus-*.tar.gz backup, got: $source" >&2; return 1; }
+
+	# validate the archive layout before touching anything: it must contain the
+	# data dir and a database to be worth applying
+	listing=$(tar -tzf "$source" 2>/dev/null) || { echo "cannot read the backup tar: $source" >&2; return 1; }
+	grep -qE '^opt/npmplus/$' <<<"$listing" || { echo "backup does not contain opt/npmplus/ - not an npmplus backup?" >&2; return 1; }
+	if ! grep -qE '^opt/npmplus/npmplus/(database|database.backup).sqlite$' <<<"$listing"; then
+		echo "backup contains no database - nothing to restore" >&2
+		return 1
+	fi
+	local has_crowdsec=0 has_anubis_policy=0
+	grep -qE '^opt/crowdsec/' <<<"$listing" && has_crowdsec=1
+	grep -qE '^opt/anubis.yaml$' <<<"$listing" && has_anubis_policy=1
+
+	if [[ ! -s "$COMPOSE_FILE" ]]; then
+		echo "no installation found - run --install first, then --restore" >&2
+		return 1
+	fi
+	mapfile -t services < <(docker compose -f "$COMPOSE_FILE" config --services 2>/dev/null)
+	((${#services[@]} > 0)) || { echo "cannot list the compose services" >&2; return 1; }
+
+	say "restore $source onto this installation"
+	[[ "$has_crowdsec" == 1 ]] && echo "  - CrowdSec state (decisions, alerts, keys)"
+	[[ "$has_anubis_policy" == 1 ]] && echo "  - Anubis policy"
+	echo "  - the NPMplus database: every proxy host, port, IP, access list, certificate and setting"
+	echo "  - the current Compose configuration and this machine's admin secret are kept"
+	echo
+	echo "  The current database and CrowdSec state will be REPLACED."
+	answer=$(ask "type the word restore to continue" "")
+	[[ "$answer" == "restore" ]] || { echo "aborted" >&2; return 1; }
+
+	# snapshot the replaced state first so a bad restore is itself recoverable
+	ts=$(date +%F-%H%M%S)
+	staging="/var/backups/npmplus/pre-restore-$ts"
+	mkdir -p "$staging" || return 1
+	chmod 700 "$staging"
+	[[ -f "$DATA_DIR/npmplus/database.sqlite" ]] && cp -a "$DATA_DIR/npmplus/database.sqlite" "$staging/database.sqlite" 2>/dev/null || true
+	[[ -d "$CROWDSEC_DIR" ]] && cp -a "$CROWDSEC_DIR" "$staging/crowdsec" 2>/dev/null || true
+	[[ -f /opt/anubis.yaml ]] && cp -a /opt/anubis.yaml "$staging/anubis.yaml" 2>/dev/null || true
+
+	# extract into a staging dir first; only a complete extraction is applied
+	extract="/var/backups/npmplus/restore-extract-$ts"
+	mkdir -p "$extract" || return 1
+	if ! tar -xzf "$source" -C "$extract"; then
+		rm -rf "$extract"
+		echo "extraction failed - nothing was changed" >&2
+		return 1
+	fi
+
+	say "stopping the stack"
+	docker compose -f "$COMPOSE_FILE" stop >/dev/null 2>&1 || true
+
+	# replace the database: prefer the consistent hot copy from the backup run
+	if [[ -f "$extract/opt/npmplus/npmplus/database.backup.sqlite" ]]; then
+		mkdir -p "$DATA_DIR/npmplus"
+		cp -a "$extract/opt/npmplus/npmplus/database.backup.sqlite" "$DATA_DIR/npmplus/database.sqlite"
+	elif [[ -f "$extract/opt/npmplus/npmplus/database.sqlite" ]]; then
+		mkdir -p "$DATA_DIR/npmplus"
+		cp -a "$extract/opt/npmplus/npmplus/database.sqlite" "$DATA_DIR/npmplus/database.sqlite"
+	fi
+	chmod 600 "$DATA_DIR/npmplus/database.sqlite" 2>/dev/null || true
+	rm -f "$DATA_DIR/npmplus/database.sqlite-wal" "$DATA_DIR/npmplus/database.sqlite-shm"
+
+	# certificates, access lists and every other /data payload ride along with
+	# the data dir; the compose file, admin secret and host helpers are
+	# new-machine state and are deliberately NOT restored
+	local item
+	for item in tls certs access-lists custom_nginx htpasswd lets-encrypt crowdsec nginx; do
+		[[ -e "$extract/opt/npmplus/$item" ]] || continue
+		rm -rf -- "${DATA_DIR:?}/${item:?}"
+		cp -a "$extract/opt/npmplus/$item" "$DATA_DIR/$item"
+	done
+	# the restored nginx log mount must exist for the crowdsec acquisition
+	mkdir -p "$DATA_DIR/nginx/logs"
+
+	# crowdsec state: only when the backup carries it and this install runs it
+	if [[ "$has_crowdsec" == 1 && -d "$extract/opt/crowdsec" ]]; then
+		if docker compose -f "$COMPOSE_FILE" config --services | grep -qx crowdsec; then
+			rm -rf "$CROWDSEC_DIR"
+			cp -a "$extract/opt/crowdsec" "$CROWDSEC_DIR"
+		else
+			echo "note: backup contains CrowdSec but this install does not run it - skipped" >&2
+		fi
+	fi
+	if [[ "$has_anubis_policy" == 1 && -f "$extract/opt/anubis.yaml" ]]; then
+		if grep -q "npmplus-anubis" "$COMPOSE_FILE" 2>/dev/null; then
+			cp -a "$extract/opt/anubis.yaml" /opt/anubis.yaml
+		else
+			echo "note: backup contains an Anubis policy but this install does not run Anubis - skipped" >&2
+		fi
+	fi
+
+	rm -rf "$extract"
+
+	say "starting the stack"
+	if ! docker compose -f "$COMPOSE_FILE" up -d >/dev/null; then
+		echo "the stack did not start after the restore - check: docker compose logs" >&2
+		echo "the replaced state is kept in $staging" >&2
+		return 1
+	fi
+
+	# a restored crowdsec sqlite can have lost key registrations (the classic
+	# rollback case) - re-register anything the LAPI rejects, like --update does
+	if docker compose -f "$COMPOSE_FILE" config --services | grep -qx crowdsec; then
+		for _ in $(seq 1 60); do
+			docker exec crowdsec cscli lapi status >/dev/null 2>&1 && break
+			sleep 2
+		done
+		if [[ ! -s "$DATA_DIR/crowdsec/lapi-ui.key" ]] || ! bouncer_key_works "$(cat "$DATA_DIR/crowdsec/lapi-ui.key" 2>/dev/null)"; then
+			say "re-registering the admin UI bouncer key"
+			key=$(register_bouncer npmplus-ui || true)
+			[[ -n "$key" ]] && { echo "$key" >"$DATA_DIR/crowdsec/lapi-ui.key"; chmod 600 "$DATA_DIR/crowdsec/lapi-ui.key"; }
+		fi
+		if [[ ! -s "$DATA_DIR/crowdsec/lapi-ui-machine.key" ]] || ! machine_key_works npmplus-ui "$(cat "$DATA_DIR/crowdsec/lapi-ui-machine.key" 2>/dev/null)"; then
+			say "re-registering the admin UI machine key"
+			password=$(register_machine npmplus-ui || true)
+			[[ -n "$password" ]] && { echo "$password" >"$DATA_DIR/crowdsec/lapi-ui-machine.key"; chmod 600 "$DATA_DIR/crowdsec/lapi-ui-machine.key"; }
+		fi
+	fi
+
+	# npmplus must come back with the restored database. Installs managed by
+	# this script publish 443 on the host, so probe the public listener; a
+	# compose file without published ports (minimal/dev layouts) is verified
+	# through its container state instead.
+	local published state
+	published=$(docker compose -f "$COMPOSE_FILE" port npmplus 443 2>/dev/null || true)
+	for _ in $(seq 1 60); do
+		if [[ -n "$published" ]]; then
+			if curl -fkSs --connect-timeout 5 --max-time 10 -o /dev/null https://127.0.0.1/ 2>/dev/null; then
+				say "restore complete"
+				echo "  restored from: $source"
+				echo "  a copy of the replaced state is in $staging"
+				echo "  log in with the OLD machine's admin account"
+				return 0
+			fi
+		else
+			state=$(docker inspect --format '{{.State.Status}}' npmplus 2>/dev/null || true)
+			if [[ "$state" == "running" ]]; then
+				say "restore complete (no published 443 in this compose - container verified)"
+				echo "  restored from: $source"
+				echo "  a copy of the replaced state is in $staging"
+				echo "  log in with the OLD machine's admin account"
+				return 0
+			fi
+		fi
+		sleep 2
+	done
+	echo "npmplus did not become healthy after the restore - check: docker logs npmplus" >&2
+	echo "the replaced state is kept in $staging" >&2
+	return 1
+)
+
 show_usage() {
 	cat <<'EOF'
 Usage: sudo bash setup-npmplus.sh [option]
@@ -1199,6 +1381,8 @@ Options:
                             accept public web traffic only from Cloudflare/LANs
   --doctor                  check and optionally repair CrowdSec
   --boot-trace [FILE]       save a read-only startup diagnostic report
+  --restore [FILE]          restore data from a backup tar (migration or recovery);
+                            without FILE the newest backups are offered
   --uninstall               back up and uninstall NPMplus
   --uninstall --no-backup   uninstall only when no final backup is possible
   --help                    show this help
@@ -1214,8 +1398,9 @@ show_main_menu() {
   2) Check or repair CrowdSec
   3) Create a startup/reboot diagnostic report
   4) Reconfigure installation (advanced)
-  5) Uninstall
-  6) Exit
+  5) Restore a backup (replace data, keep this machine's config)
+  6) Uninstall
+  7) Exit
 EOF
 		choice=$(ask "Select an option" "1")
 		case $choice in
@@ -1223,8 +1408,9 @@ EOF
 			2) set -- --doctor ;;
 			3) set -- --boot-trace ;;
 			4) set -- --install ;;
-			5) set -- --uninstall ;;
-			6) exit 0 ;;
+			5) set -- --restore ;;
+			6) set -- --uninstall ;;
+			7) exit 0 ;;
 			*) echo "invalid selection: $choice" >&2; exit 2 ;;
 		esac
 	else
@@ -1232,14 +1418,16 @@ EOF
   1) Install NPMplus (recommended)
   2) Check CrowdSec
   3) Create a startup/reboot diagnostic report
-  4) Exit
+  4) Restore a backup onto this machine (after installing)
+  5) Exit
 EOF
 		choice=$(ask "Select an option" "1")
 		case $choice in
 			1) set -- --install ;;
 			2) set -- --doctor ;;
 			3) set -- --boot-trace ;;
-			4) exit 0 ;;
+			4) set -- --restore ;;
+			5) exit 0 ;;
 			*) echo "invalid selection: $choice" >&2; exit 2 ;;
 		esac
 	fi
@@ -1270,6 +1458,12 @@ case "${1:-}" in
 		shift
 		[[ $# -le 1 ]] || { echo "--boot-trace accepts at most one output file" >&2; exit 2; }
 		run_boot_trace "${1:-}"
+		exit $?
+		;;
+	--restore)
+		shift
+		[[ $# -le 1 ]] || { echo "--restore accepts at most one backup file" >&2; exit 2; }
+		run_restore "${1:-}"
 		exit $?
 		;;
 	--help|-h)

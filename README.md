@@ -87,6 +87,7 @@ Choose the action you need from the numbered menu:
 - **Check or repair CrowdSec** tests the containers, API, credentials, and registration, then offers a repair when a key is rejected.
 - **Startup/reboot diagnostic report** collects read-only service, network, Docker, container, port, and resource details into a private report under `/tmp`.
 - **Reconfigure installation** reruns the advanced installation questions.
+- **Restore a backup** applies a daily-backup archive onto this installation: the database (every proxy host, port, IP, access list, certificate, and setting), CrowdSec state, and optional Anubis policy come back, while this machine's own configuration is kept. This is the server-migration path: fresh install on the new machine, copy an archive from the old one, restore.
 - **Uninstall** takes a final backup, clearly describes what will be removed, and requires typed confirmation.
 
 An ordinary menu update keeps your existing AppSec choice. Advanced users can enable AppSec on an existing installer-managed server with this one-time command:
