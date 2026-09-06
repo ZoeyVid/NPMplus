@@ -248,7 +248,43 @@ else
 	note "no db files found at /opt/crowdsec/data"
 fi
 
-hdr "11. prometheus metrics (the community blocklist count source)"
+hdr "11. community blocklist pull (CAPI)"
+# enrolled-but-empty is its own failure mode: the pull goroutine reads its
+# credentials only at daemon start, so a capi register that happens while the
+# container runs leaves the community blocklist at zero until a restart
+capi_status=$(docker exec crowdsec cscli capi status 2>&1 || true)
+if grep -q "successfully interact" <<<"$capi_status"; then
+	ok "enrolled with the Central API"
+	if grep -q "Pulling community blocklist is enabled" <<<"$capi_status"; then
+		ok "community blocklist pull is enabled"
+		key=$(cat "$KEY" 2>/dev/null || true)
+		community=""
+		if [[ -n "$key" ]]; then
+			community=$(curl -sS -m 5 -H "X-Api-Key: $key" \
+				"$LAPI/v1/decisions?origins=capi,lists&limit=1" 2>/dev/null || true)
+		fi
+		if [[ -z "$key" ]]; then
+			bad "cannot check community decisions: the bouncer key is unreadable (see section 3)"
+			fail=1
+		elif [[ "$community" == "[]" || -z "$community" ]]; then
+			bad "CAPI is enrolled and pulling, but no community decisions exist"
+			note "the puller only reads its credentials when crowdsec starts,"
+			note "so a register without a restart never begins pulling."
+			note "fix: sudo docker restart crowdsec, then wait a few minutes"
+			fail=1
+		else
+			ok "community blocklist decisions are present"
+		fi
+	else
+		note "community blocklist pull is disabled on the CAPI side"
+	fi
+else
+	note "not enrolled with the Central API; this is optional. To receive the"
+	note "community blocklist: sudo docker exec -it crowdsec cscli capi register"
+	note "open the printed URL, then: sudo docker restart crowdsec"
+fi
+
+hdr "12. prometheus metrics (the community blocklist count source)"
 # the backend fetches these from inside the npmplus container (the compose
 # service hostname is only resolvable there), so probe the same way
 metrics_env=$(docker exec npmplus printenv CROWDSEC_METRICS_URL 2>/dev/null || true)
