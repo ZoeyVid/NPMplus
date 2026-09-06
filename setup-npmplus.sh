@@ -1416,25 +1416,38 @@ run_verified_script() { # url sha256: download, verify, then execute
 # "does not have a Release file" on the unsupported codename.
 crowdsec_repo_suite() {
 	local dists_base="${PACKAGECLOUD_INSTALL_URL#*install/repositories/}"
-	dists_base="${dists_base%%/*}" # crowdsec/crowdsec
-	local codename fallback
+	dists_base="${dists_base%/*}" # crowdsec/crowdsec
+	local codename fallback distro_dir
 	suite_published() { # single probe, no retry loop: 404 must fail fast and stay silent
 		curl -sfL --connect-timeout 10 --max-time 30 -o /dev/null \
-			"https://packagecloud.io/${dists_base}/debian/dists/${1}/Release" 2>/dev/null
+			"https://packagecloud.io/${dists_base}/${distro_dir}/dists/${1}/Release" 2>/dev/null
 	}
-	codename=$(. /etc/os-release && echo "${VERSION_CODENAME:-}")
+	# shellcheck disable=SC1091
+	distro_dir=$(. /etc/os-release 2>/dev/null; echo "${ID:-debian}")
+	[[ "$distro_dir" == "debian" || "$distro_dir" == "ubuntu" || "$distro_dir" == "raspbian" ]] || distro_dir="debian"
+	# shellcheck disable=SC1091
+	codename=$(. /etc/os-release 2>/dev/null; echo "${VERSION_CODENAME:-}")
 	[[ -n "$codename" ]] || codename=$(lsb_release -cs 2>/dev/null || true)
 	if [[ -n "$codename" ]] && suite_published "$codename"; then
 		echo "$codename"
 		return 0
 	fi
-	# fall back to the newest published Debian suite; verify before using it
-	for fallback in bookworm bullseye; do
-		if suite_published "$fallback"; then
-			echo "$fallback"
-			return 0
-		fi
-	done
+	# fall back to the newest published suite of the same distribution; verify before using it
+	if [[ "$distro_dir" == "debian" ]]; then
+		for fallback in bookworm bullseye; do
+			if suite_published "$fallback"; then
+				echo "$fallback"
+				return 0
+			fi
+		done
+	else
+		for fallback in noble jammy focal; do
+			if suite_published "$fallback"; then
+				echo "$fallback"
+				return 0
+			fi
+		done
+	fi
 	return 1
 }
 
@@ -3208,7 +3221,9 @@ EOF
 				echo "could not determine a published Crowdsec apt suite for this system" >&2
 				return 1
 			}
-			if [[ "$(. /etc/os-release && echo "${VERSION_CODENAME:-}")" != "$CROWDSEC_SUITE" ]]; then
+			# shellcheck disable=SC1091
+			CROWDSEC_CODENAME=$(. /etc/os-release 2>/dev/null; echo "${VERSION_CODENAME:-}")
+			if [[ "$CROWDSEC_CODENAME" != "$CROWDSEC_SUITE" ]]; then
 				repair_crowdsec_sources_suite "$CROWDSEC_SUITE"
 			fi
 			dist="$CROWDSEC_SUITE" run_verified_script "$PACKAGECLOUD_INSTALL_URL" "$PACKAGECLOUD_INSTALL_SHA256" >/dev/null
