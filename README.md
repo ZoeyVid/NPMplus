@@ -90,7 +90,8 @@ sudo /opt/npmplus/setup-npmplus.sh
 - **Check or repair CrowdSec** - tests containers, API, credentials, and registration; repairs rejected keys.
 - **Startup/reboot diagnostic report** - read-only service, network, Docker, and container details to a private `/tmp` report.
 - **Reconfigure installation** - reruns the advanced installation questions.
-- **Restore a backup** - applies a backup archive onto this machine (see [Migrate to a new server](#migrate-to-a-new-server)).
+- **Create a backup now** - a fresh archive immediately (before a migration, or after changes), using the same helper as the daily cron.
+- **Restore a backup from an archive** - put old data back onto this machine (see [Migrate to a new server](#migrate-to-a-new-server)).
 - **Uninstall** - final backup, clear description, typed confirmation.
 
 To move to a newer release later, use the installation command shown on that release's page. A `develop` installation should download the current [develop installer](https://raw.githubusercontent.com/mangyan1/NPMplus/develop/setup-npmplus.sh) before maintenance.
@@ -110,7 +111,7 @@ sudo scp /var/backups/npmplus/npmplus-YYYY-MM-DD-HHMMSS.tar.gz user@newmachine:/
 #    crons for THAT machine)
 sudo bash setup-npmplus.sh        # menu: Install
 
-# 3. new machine: put the old data on top (menu option 5, or:)
+# 3. new machine: put the old data on top (menu option 6, or:)
 sudo /opt/npmplus/setup-npmplus.sh --restore /tmp/npmplus-YYYY-MM-DD-HHMMSS.tar.gz
 ```
 

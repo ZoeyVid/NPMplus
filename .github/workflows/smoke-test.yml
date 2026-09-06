@@ -199,12 +199,27 @@ jobs:
           sudo /opt/npmplus/setup-npmplus.sh --help | grep -q -- '--doctor'
           sudo /opt/npmplus/setup-npmplus.sh --help | grep -q -- '--boot-trace'
           sudo /opt/npmplus/setup-npmplus.sh --help | grep -q -- '--restore'
-          menu_output="$(printf '7\n' | script --quiet --return \
+          sudo /opt/npmplus/setup-npmplus.sh --help | grep -q -- '--backup'
+          menu_output="$(printf '8\n' | script --quiet --return \
             --command 'sudo /opt/npmplus/setup-npmplus.sh' /dev/null)"
           grep -q 'Safe update (recommended)' <<<"$menu_output"
           grep -q 'Check or repair CrowdSec' <<<"$menu_output"
           grep -q 'Create a startup/reboot diagnostic report' <<<"$menu_output"
-          grep -q 'Restore a backup' <<<"$menu_output"
+          grep -q 'Create a backup now' <<<"$menu_output"
+          grep -q 'Restore a backup from an archive' <<<"$menu_output"
+      - name: manual backup creates a fresh archive
+        if: matrix.name == 'defaults'
+        run: |
+          # the on-demand backup must produce a NEW archive right away, not
+          # wait for the 02:17 cron - this is the "transfer now" path
+          before="$(sudo bash -c 'ls -1 /var/backups/npmplus/npmplus-*.tar.gz 2>/dev/null | wc -l')"
+          sudo /opt/npmplus/setup-npmplus.sh --backup 2>&1 | tee /tmp/npmplus-manual-backup.log
+          grep -q 'backup created' /tmp/npmplus-manual-backup.log
+          after="$(sudo bash -c 'ls -1 /var/backups/npmplus/npmplus-*.tar.gz 2>/dev/null | wc -l')"
+          test "$after" -gt "$before"
+          newest="$(sudo bash -c 'ls -1t /var/backups/npmplus/npmplus-*.tar.gz | head -1')"
+          sudo test -s "$newest"
+          sudo tar -tzf "$newest" | grep -q 'opt/npmplus/npmplus/database'
       # only the alternate variant sets INITIAL_ADMIN_EMAIL/PASSWORD; a working
       # login proves the env block was generated into the compose file correctly
       - name: admin login works (alternate)

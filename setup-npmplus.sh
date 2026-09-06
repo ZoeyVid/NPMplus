@@ -11,7 +11,7 @@ set -euo pipefail
 
 # bump this on every meaningful change - the script compares it against the
 # copy on github at startup and tells the operator when theirs is stale
-SCRIPT_VERSION="1.46"
+SCRIPT_VERSION="1.47"
 
 DATA_DIR="/opt/npmplus"
 CROWDSEC_DIR="/opt/crowdsec"
@@ -1375,6 +1375,48 @@ run_restore() (
 	return 1
 )
 
+run_backup() (
+	# Create a backup archive now, using the same helper the daily cron runs.
+	# For "I changed something and want a fresh archive" or "I am migrating this
+	# server right now and need the newest state" - the daily 02:17 cron otherwise
+	# only archives once a day.
+	set -uo pipefail
+
+	if [[ ! -x /usr/local/bin/npmplus-backup ]]; then
+		echo "the backup helper is not installed - run --install or --update first" >&2
+		return 1
+	fi
+	if [[ ! -s "$COMPOSE_FILE" ]]; then
+		echo "no installation found - run --install first" >&2
+		return 1
+	fi
+
+	say "creating a backup archive now"
+	# the helper logs to its own file. Verify success by mtime: the newest
+	# archive must have been written after this action started. A same-second
+	# filename collision (two backups within one second overwrite the same
+	# name) is fine - the archive itself is still fresh.
+	local started_at out mtime
+	started_at=$(date +%s)
+	if ! /usr/local/bin/npmplus-backup; then
+		echo "backup failed - see /var/log/npmplus-backup.log" >&2
+		return 1
+	fi
+	out=$(find /var/backups/npmplus -maxdepth 1 -type f -name 'npmplus-*.tar.gz' -printf '%T@ %p\n' 2>/dev/null | sort -rn | head -1 | cut -d' ' -f2-)
+	mtime=${out%% *}
+	# strip back to whole seconds for comparison
+	mtime=${mtime%.*}
+	if [[ -z "$out" || -z "$mtime" || "$mtime" -lt "$started_at" ]]; then
+		echo "backup completed but no new archive was found - see /var/log/npmplus-backup.log" >&2
+		return 1
+	fi
+	say "backup created"
+	echo "  archive: $out ($(du -h "$out" | cut -f1))"
+	echo "  it contains the database, certificates, access lists, CrowdSec state, and the Anubis policy"
+	echo "  to migrate: copy it to the new machine (SSH only, it holds your private keys) and run --restore there"
+	return 0
+)
+
 show_usage() {
 	cat <<'EOF'
 Usage: sudo bash setup-npmplus.sh [option]
@@ -1391,6 +1433,8 @@ Options:
                             accept public web traffic only from Cloudflare/LANs
   --doctor                  check and optionally repair CrowdSec
   --boot-trace [FILE]       save a read-only startup diagnostic report
+  --backup                  create a backup archive now (for a transfer or a
+                            fresh restore point)
   --restore [FILE]          restore data from a backup tar (migration or recovery);
                             without FILE the newest backups are offered
   --uninstall               back up and uninstall NPMplus
@@ -1408,9 +1452,10 @@ show_main_menu() {
   2) Check or repair CrowdSec
   3) Create a startup/reboot diagnostic report
   4) Reconfigure installation (advanced)
-  5) Restore a backup (replace data, keep this machine's config)
-  6) Uninstall
-  7) Exit
+  5) Create a backup now (for a transfer or a fresh restore point)
+  6) Restore a backup from an archive
+  7) Uninstall
+  8) Exit
 EOF
 		choice=$(ask "Select an option" "1")
 		case $choice in
@@ -1418,9 +1463,10 @@ EOF
 			2) set -- --doctor ;;
 			3) set -- --boot-trace ;;
 			4) set -- --install ;;
-			5) set -- --restore ;;
-			6) set -- --uninstall ;;
-			7) exit 0 ;;
+			5) set -- --backup ;;
+			6) set -- --restore ;;
+			7) set -- --uninstall ;;
+			8) exit 0 ;;
 			*) echo "invalid selection: $choice" >&2; exit 2 ;;
 		esac
 	else
@@ -1468,6 +1514,12 @@ case "${1:-}" in
 		shift
 		[[ $# -le 1 ]] || { echo "--boot-trace accepts at most one output file" >&2; exit 2; }
 		run_boot_trace "${1:-}"
+		exit $?
+		;;
+	--backup)
+		shift
+		[[ $# -eq 0 ]] || { echo "--backup does not accept another option" >&2; exit 2; }
+		run_backup
 		exit $?
 		;;
 	--restore)

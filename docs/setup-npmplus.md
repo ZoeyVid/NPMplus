@@ -225,6 +225,14 @@ sudo bash setup-npmplus.sh --restore
 sudo bash setup-npmplus.sh --restore /path/to/npmplus-YYYY-MM-DD-HHMMSS.tar.gz
 ```
 
+To create a fresh archive immediately - before a migration, after configuration changes, or whenever the newest state matters more than the daily 02:17 schedule - run:
+
+```bash
+sudo /opt/npmplus/setup-npmplus.sh --backup
+```
+
+It uses the same helper as the daily cron, takes the consistent database copy, and prints the new archive's path and size. The interactive menu lists it as **Create a backup now** (option 5) and the restore as **Restore a backup from an archive** (option 6).
+
 The restore replaces data only. The current machine's Compose configuration (image digests, LAN binding, published ports, admin secret) is kept, which is what makes a server migration work: install NPMplus on the new machine, copy an archive from the old one, and restore it on top. The restore path is distro-agnostic (no apt/dpkg/systemd/UFW calls), so archives move freely between Debian and Ubuntu servers in either direction - the fresh install on the new machine sets up that machine's own host integration for its distro, and the restore only carries the data. Afterwards, log in with the account from the restored database. The restore requires the typed word `restore` as confirmation, keeps a copy of the replaced state in `/var/backups/npmplus/pre-restore-<timestamp>/`, and refuses archives that do not match the npmplus backup layout.
 
 A full migration to a new machine is therefore:
@@ -237,7 +245,7 @@ sudo scp /var/backups/npmplus/npmplus-YYYY-MM-DD-HHMMSS.tar.gz user@newmachine:/
 #    CrowdSec, and the crons for THIS machine
 sudo bash setup-npmplus.sh        # menu option: Install
 
-# 3. then put the old data on top (menu option 5, or:)
+# 3. then put the old data on top (menu option 6, or:)
 sudo /opt/npmplus/setup-npmplus.sh --restore /tmp/npmplus-YYYY-MM-DD-HHMMSS.tar.gz
 ```
 
