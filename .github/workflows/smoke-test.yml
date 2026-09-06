@@ -388,6 +388,56 @@ jobs:
           sudo test -s /var/lib/npmplus/cloudflare-ips-v4
           sudo test -s /var/lib/npmplus/cloudflare-ips-v6
 
+      - name: backup restore round trip works (migration path)
+        if: matrix.name == 'defaults'
+        run: |
+          # prove the migration story against the freshly-updated healthy stack:
+          # take a backup with the real helper, then restore it and confirm the
+          # database, certificates, and crowdsec state survive
+          set -x
+          test -x /usr/local/bin/npmplus-backup || { echo "backup helper missing"; exit 1; }
+          sudo /usr/local/bin/npmplus-backup
+          sudo tail -n 20 /var/log/npmplus-backup.log
+          backup_file="$(sudo bash -c 'ls -1t /var/backups/npmplus/npmplus-*.tar.gz | head -1')"
+          test -s "$backup_file" || { echo "no backup archive produced"; sudo ls -la /var/backups/npmplus; exit 1; }
+          before_hosts="$(sudo docker exec npmplus node -e "const d=require('better-sqlite3')('/data/npmplus/database.sqlite',{readonly:true});console.log(d.prepare('select count(*) c from proxy_host').get().c);d.close()")" \
+            || { echo "cannot read the proxy host count before the restore"; exit 1; }
+          test -s /opt/npmplus/compose.yaml
+          compose_before="$(sudo sha256sum /opt/npmplus/compose.yaml | awk '{print $1}')"
+
+          printf 'restore\n' | sudo /opt/npmplus/setup-npmplus.sh --restore "$backup_file" >/tmp/npmplus-restore.log 2>&1
+          restore_status="${PIPESTATUS[1]}"
+          cat /tmp/npmplus-restore.log
+          test "$restore_status" -eq 0 || { echo "restore exited $restore_status"; exit 1; }
+          grep -q 'restore complete' /tmp/npmplus-restore.log
+
+          # the machine's compose configuration must be untouched by a restore
+          test "$(sudo sha256sum /opt/npmplus/compose.yaml | awk '{print $1}')" = "$compose_before"
+
+          # the restored database still contains the same proxy hosts
+          after_hosts="$(sudo docker exec npmplus node -e "const d=require('better-sqlite3')('/data/npmplus/database.sqlite',{readonly:true});console.log(d.prepare('select count(*) c from proxy_host').get().c);d.close()")" \
+            || { echo "cannot read the proxy host count after the restore"; exit 1; }
+          test "$before_hosts" = "$after_hosts"
+
+          # the API answers and the stack is healthy
+          ready=false
+          for _ in $(seq 1 120); do
+            if curl -fkSs --connect-timeout 2 --max-time 5 https://127.0.0.1:81/api |
+              grep -qE '"status"[[:space:]]*:[[:space:]]*"OK"'; then
+              ready=true
+              break
+            fi
+            sleep 2
+          done
+          test "$ready" = true
+
+          # a restore must refuse to run without a confirmation word
+          set +e
+          refuse_output="$(printf '\n' | sudo /opt/npmplus/setup-npmplus.sh --restore "$backup_file" 2>&1)"
+          refuse_status="$?"
+          set -e
+          test "$refuse_status" -ne 0
+          grep -q 'aborted' <<<"$refuse_output"
       - name: strict boot fails closed while the firewall bouncer is unavailable
         if: matrix.name == 'defaults'
         run: |
@@ -441,48 +491,6 @@ jobs:
             sleep 2
           done
           test "$ready" = true
-      - name: backup restore round trip works (migration path)
-        if: matrix.name == 'defaults'
-        run: |
-          # prove the migration story: take a backup of the running stack, then
-          # restore it back over the same installation and confirm everything
-          # (database, certs, crowdsec state) survives a restore
-          sudo /usr/local/bin/npmplus-backup
-          backup_file="$(sudo bash -c 'ls -1t /var/backups/npmplus/npmplus-*.tar.gz | head -1')"
-          test -s "$backup_file"
-          before_hosts="$(sudo docker exec npmplus node -e "const d=require('better-sqlite3')('/data/npmplus/database.sqlite',{readonly:true});console.log(d.prepare('select count(*) c from proxy_host').get().c);d.close()")"
-          test -s /opt/npmplus/compose.yaml
-          compose_before="$(sudo sha256sum /opt/npmplus/compose.yaml | awk '{print $1}')"
-
-          printf 'restore\n' | sudo /opt/npmplus/setup-npmplus.sh --restore "$backup_file" | tee /tmp/npmplus-restore.log
-          grep -q 'restore complete' /tmp/npmplus-restore.log
-
-          # the machine's compose configuration must be untouched by a restore
-          test "$(sudo sha256sum /opt/npmplus/compose.yaml | awk '{print $1}')" = "$compose_before"
-
-          # the restored database still contains the same proxy hosts
-          after_hosts="$(sudo docker exec npmplus node -e "const d=require('better-sqlite3')('/data/npmplus/database.sqlite',{readonly:true});console.log(d.prepare('select count(*) c from proxy_host').get().c);d.close()")"
-          test "$before_hosts" = "$after_hosts"
-
-          # the API answers and the stack is healthy
-          ready=false
-          for _ in $(seq 1 120); do
-            if curl -fkSs --connect-timeout 2 --max-time 5 https://127.0.0.1:81/api |
-              grep -qE '"status"[[:space:]]*:[[:space:]]*"OK"'; then
-              ready=true
-              break
-            fi
-            sleep 2
-          done
-          test "$ready" = true
-
-          # a restore must refuse to run without a confirmation word
-          set +e
-          refuse_output="$(printf '\n' | sudo /opt/npmplus/setup-npmplus.sh --restore "$backup_file" 2>&1)"
-          refuse_status="$?"
-          set -e
-          test "$refuse_status" -ne 0
-          grep -q 'aborted' <<<"$refuse_output"
       - name: failed update restores the complete last-good state
         if: matrix.name == 'defaults'
         run: |
@@ -607,6 +615,7 @@ jobs:
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       - name: prepare debian environment
+        shell: bash
         run: |
           export DEBIAN_FRONTEND=noninteractive
           apt-get update -qq
@@ -618,6 +627,7 @@ jobs:
           docker version --format '{{.Client.Version}}' >/dev/null
           docker compose version
       - name: restore validates archives and refuses invalid ones
+        shell: bash
         run: |
           # a tar that is not a npmplus backup must be rejected
           mkdir -p /tmp/fake/opt/npmplus
@@ -636,6 +646,7 @@ jobs:
           # the usage/help surfaces the restore action
           bash setup-npmplus.sh --help | grep -q -- '--restore'
       - name: full restore round trip on debian (real stack)
+        shell: bash
         run: |
           fail=0
           check() {
