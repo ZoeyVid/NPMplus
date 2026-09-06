@@ -50,7 +50,7 @@ At startup, the local script compares its version and content with `mangyan1/NPM
 
 `NPMPLUS_ALLOW_STALE_SCRIPT=true` bypasses the block for an intentional emergency update. Review the difference first; this override accepts older host-management logic.
 
-The Docker and CrowdSec PackageCloud bootstrap scripts are downloaded to temporary files and checked against the SHA-256 values embedded in `setup-npmplus.sh` before execution. If either publisher changes its installer, maintainers must review the new file and deliberately update the corresponding hash.
+The Docker and CrowdSec PackageCloud bootstrap scripts are downloaded to temporary files and checked against the SHA-256 values embedded in `setup-npmplus.sh` before execution. If either publisher changes its installer, maintainers must review the new file and deliberately update the corresponding hash. A scheduled repository workflow checks the official Docker installer and opens a reviewable pull request when its checksum changes; it never changes deployed machines automatically.
 
 ## Updating
 

@@ -1,0 +1,72 @@
+name: docker installer checksum
+
+on:
+  schedule:
+    - cron: "17 4 * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pull-requests: write
+
+concurrency:
+  group: docker-installer-checksum
+  cancel-in-progress: true
+
+defaults:
+  run:
+    shell: bash
+
+jobs:
+  check:
+    runs-on: ubuntu-slim
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: develop
+          fetch-depth: 1
+
+      - name: compare the official Docker installer checksum
+        id: update
+        run: |
+          set -euo pipefail
+          url="https://get.docker.com"
+          tmp="$(mktemp)"
+          trap 'rm -f "$tmp"' EXIT
+          curl --fail --location --retry 3 --connect-timeout 15 --max-time 120 "$url" -o "$tmp"
+          new_hash="$(sha256sum "$tmp" | awk '{print $1}')"
+          current_hash="$(sed -n 's/^DOCKER_INSTALL_SHA256="\([0-9a-fA-F]\{64\}\)"$/\1/p' setup-npmplus.sh)"
+          test -n "$current_hash" || { echo "current checksum is missing or malformed" >&2; exit 1; }
+          echo "current=$current_hash"
+          echo "official=$new_hash"
+          if [[ "$current_hash" == "$new_hash" ]]; then
+            echo "changed=false" >>"$GITHUB_OUTPUT"
+            exit 0
+          fi
+          sed -i "s/^DOCKER_INSTALL_SHA256=\"[0-9a-fA-F]*\"$/DOCKER_INSTALL_SHA256=\"$new_hash\"/" setup-npmplus.sh
+          test "$(sed -n 's/^DOCKER_INSTALL_SHA256="\([0-9a-fA-F]\{64\}\)"$/\1/p' setup-npmplus.sh)" = "$new_hash"
+          echo "changed=true" >>"$GITHUB_OUTPUT"
+          echo "old_hash=$current_hash" >>"$GITHUB_OUTPUT"
+          echo "new_hash=$new_hash" >>"$GITHUB_OUTPUT"
+
+      - name: validate the updated installer
+        if: steps.update.outputs.changed == 'true'
+        run: |
+          bash -n setup-npmplus.sh
+
+      - uses: peter-evans/create-pull-request@5f6978faf089d4d20b00c7766989d076bb2fc7f1 # v8.1.1
+        if: steps.update.outputs.changed == 'true'
+        with:
+          token: ${{ github.token }}
+          signoff: true
+          delete-branch: true
+          commit-message: refresh the Docker installer checksum
+          branch: update-docker-installer-checksum
+          title: refresh the Docker installer checksum
+          body: |
+            The official Docker installer at https://get.docker.com changed.
+
+            - Previous SHA-256: `${{ steps.update.outputs.old_hash }}`
+            - New SHA-256: `${{ steps.update.outputs.new_hash }}`
+
+            This PR only updates the reviewed checksum pin. Run the required CI checks before merging; do not auto-merge this change.
