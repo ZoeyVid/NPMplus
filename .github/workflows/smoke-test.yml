@@ -706,7 +706,10 @@ jobs:
           # without a shell error is the point.
           head -c 2048 /dev/urandom >>/tmp/good/opt/npmplus/npmplus/database.sqlite
           tar -czf /tmp/npmplus-20260906-120000.tar.gz -C /tmp/good opt/npmplus
-          output="$(bash setup-npmplus.sh --restore </dev/null 2>&1)"
+          # the picker refuses (exit 1) when select hits EOF without a choice,
+          # and bash -e aborts on a failing command substitution - capture it
+          # like check_refusal does instead of letting the pipeline die here
+          output="$(bash setup-npmplus.sh --restore </dev/null 2>&1)" || true
           grep -q 'available backups' <<<"$output" || { echo "picker did not list the /tmp archive: $output" >&2; exit 1; }
           grep -q '/tmp/npmplus-20260906-120000.tar.gz' <<<"$output" || { echo "archive not in picker list: $output" >&2; exit 1; }
           if grep -qE 'syntax error|operand expected|command not found|unary operator' <<<"$output"; then
@@ -715,11 +718,27 @@ jobs:
           fi
           echo "PASS: bare --restore discovers the /tmp archive"
 
-          # discovery: a directory argument picks the newest archive inside it
+          # discovery: a directory argument picks the newest archive inside it.
+          # this fixture has no installation, so the restore always refuses
+          # after the layout check - prove the pick through that gate instead:
+          # the older archive is deliberately invalid (and backdated, so it is
+          # not also the newest by mtime), so a resolution that ever fell back
+          # to oldest-first trips 'contains no database' instead of reaching
+          # the fixture's no-install refusal.
           head -c 2048 /dev/urandom >>/tmp/good/opt/npmplus/npmplus/database.sqlite
           tar -czf /tmp/npmplus-20260906-130000.tar.gz -C /tmp/good opt/npmplus
-          output="$(printf '\n' | bash setup-npmplus.sh --restore /tmp 2>&1)"
-          grep -q 'restore /tmp/npmplus-20260906-130000.tar.gz' <<<"$output" || { echo "directory arg did not resolve the newest archive: $output" >&2; exit 1; }
+          mkdir -p /tmp/older-bad/opt/npmplus
+          echo not-a-database >/tmp/older-bad/opt/npmplus/nope
+          tar -czf /tmp/npmplus-20260906-110000.tar.gz -C /tmp/older-bad opt/npmplus
+          touch -d '2026-09-06 11:00' /tmp/npmplus-20260906-110000.tar.gz
+          # the refusal exits nonzero and bash -e aborts on a failing command
+          # substitution, so capture it like check_refusal does
+          output="$(printf '\n' | bash setup-npmplus.sh --restore /tmp 2>&1)" || true
+          grep -q 'no installation found' <<<"$output" || { echo "directory arg did not resolve the newest archive: $output" >&2; exit 1; }
+          if grep -q 'contains no database' <<<"$output"; then
+            echo "resolution picked the invalid older archive: $output" >&2
+            exit 1
+          fi
           echo "PASS: directory argument resolves the newest archive"
 
           # discovery: a mistyped path fails helpfully instead of silently
