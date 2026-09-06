@@ -11,7 +11,7 @@ set -euo pipefail
 
 # bump this on every meaningful change - the script compares it against the
 # copy on github at startup and tells the operator when theirs is stale
-SCRIPT_VERSION="1.41"
+SCRIPT_VERSION="1.42"
 
 DATA_DIR="/opt/npmplus"
 CROWDSEC_DIR="/opt/crowdsec"
@@ -314,7 +314,7 @@ repair_installer_firewall_bouncer() {
 adopt_legacy_installer_firewall_bouncer() {
 	local config=/etc/crowdsec/bouncers/crowdsec-firewall-bouncer.yaml
 	[[ ! -f /var/lib/npmplus/installed-firewall-bouncer ]] || return 0
-	package_is_installed crowdsec-firewall-bouncer || return 0
+	package_is_installed crowdsec-firewall-bouncer || package_is_installed crowdsec-firewall-bouncer-iptables || return 0
 	command -v crowdsec-firewall-bouncer >/dev/null || return 0
 	[[ -s "$COMPOSE_FILE" && -s "$config" ]] || return 0
 	grep -q 'container_name: crowdsec' "$COMPOSE_FILE" || return 0
@@ -1401,6 +1401,36 @@ run_verified_script() { # url sha256: download, verify, then execute
 		return 1
 	fi
 	rm -f "$tmp"
+}
+
+# CrowdSec's packagecloud repo does not publish every Debian/Ubuntu codename
+# this installer supports (trixie is absent while its packages are built for
+# the previous stable suite). The packagecloud setup script honours a preset
+# `dist`, so detect the codename and fall back to the last published suite
+# when this one is missing. Without this, apt update aborts with
+# "does not have a Release file" on the unsupported codename.
+crowdsec_repo_suite() {
+	local dists_base="${PACKAGECLOUD_INSTALL_URL#*install/repositories/}"
+	dists_base="${dists_base%%/*}" # crowdsec/crowdsec
+	local codename fallback
+	suite_published() { # single probe, no retry loop: 404 must fail fast
+		curl -sSfL --connect-timeout 10 --max-time 30 -o /dev/null \
+			"https://packagecloud.io/${dists_base}/debian/dists/${1}/Release"
+	}
+	codename=$(. /etc/os-release && echo "${VERSION_CODENAME:-}")
+	[[ -n "$codename" ]] || codename=$(lsb_release -cs 2>/dev/null || true)
+	if [[ -n "$codename" ]] && suite_published "$codename"; then
+		echo "$codename"
+		return 0
+	fi
+	# fall back to the newest published Debian suite; verify before using it
+	for fallback in bookworm bullseye; do
+		if suite_published "$fallback"; then
+			echo "$fallback"
+			return 0
+		fi
+	done
+	return 1
 }
 
 yaml_quote() { # quote YAML and escape $ so compose preserves it literally
@@ -3158,13 +3188,29 @@ EOF
 		# crowdsec publishes no docker image for this bouncer, the deb is the
 		# supported install; noninteractive keeps its debconf wizard silent
 		if ! command -v crowdsec-firewall-bouncer >/dev/null; then
-			run_verified_script "$PACKAGECLOUD_INSTALL_URL" "$PACKAGECLOUD_INSTALL_SHA256" >/dev/null
+			# a codename CrowdSec does not publish (trixie) leaves a broken
+			# sources entry behind; repair it before apt touches it again
+			CROWDSEC_SUITE=$(crowdsec_repo_suite) || {
+				echo "could not determine a published CrowdSec apt suite for this system" >&2
+				return 1
+			}
+			if [[ "$(. /etc/os-release && echo "${VERSION_CODENAME:-}")" != "$CROWDSEC_SUITE" ]]; then
+				sed -i "s|/debian [a-z]* main|/debian ${CROWDSEC_SUITE} main|" \
+					/etc/apt/sources.list.d/crowdsec_crowdsec.list 2>/dev/null || true
+			fi
+			dist="$CROWDSEC_SUITE" run_verified_script "$PACKAGECLOUD_INSTALL_URL" "$PACKAGECLOUD_INSTALL_SHA256" >/dev/null
 			# --no-install-recommends is load-bearing: the debian-packaged
 			# bouncer Recommends a native crowdsec daemon, and a native
 			# crowdsec binds 127.0.0.1:8080 before the container can - every
 			# auth then hits an lapi that knows none of our keys (silent 403s)
+			# CrowdSec split the bare meta-package into backend-specific
+			# variants; this fork's generated config selects the iptables/ipset
+			# backend, so install the matching variant when the legacy name is
+			# unavailable (older published suites keep the bare name).
 			DEBIAN_FRONTEND=noninteractive apt-get install -y -qq --no-install-recommends \
-				crowdsec-firewall-bouncer ipset iptables
+				crowdsec-firewall-bouncer ipset iptables 2>/dev/null || \
+				DEBIAN_FRONTEND=noninteractive apt-get install -y -qq --no-install-recommends \
+					crowdsec-firewall-bouncer-iptables ipset iptables
 			mkdir -p /var/lib/npmplus
 			touch /var/lib/npmplus/installed-firewall-bouncer
 			# belt and suspenders for installs predating the flag (and for
