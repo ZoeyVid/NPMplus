@@ -1414,6 +1414,14 @@ run_verified_script() { # url sha256: download, verify, then execute
 # `dist`, so detect the codename and fall back to the last published suite
 # when this one is missing. Without this, apt update aborts with
 # "does not have a Release file" on the unsupported codename.
+crowdsec_repo_distro() { # packagecloud distro directory for this system
+	local distro_dir
+	# shellcheck disable=SC1091
+	distro_dir=$(. /etc/os-release 2>/dev/null; echo "${ID:-debian}")
+	[[ "$distro_dir" == "debian" || "$distro_dir" == "ubuntu" || "$distro_dir" == "raspbian" ]] || distro_dir="debian"
+	echo "$distro_dir"
+}
+
 crowdsec_repo_suite() {
 	local dists_base="${PACKAGECLOUD_INSTALL_URL#*install/repositories/}"
 	dists_base="${dists_base%/*}" # crowdsec/crowdsec
@@ -1422,9 +1430,7 @@ crowdsec_repo_suite() {
 		curl -sfL --connect-timeout 10 --max-time 30 -o /dev/null \
 			"https://packagecloud.io/${dists_base}/${distro_dir}/dists/${1}/Release" 2>/dev/null
 	}
-	# shellcheck disable=SC1091
-	distro_dir=$(. /etc/os-release 2>/dev/null; echo "${ID:-debian}")
-	[[ "$distro_dir" == "debian" || "$distro_dir" == "ubuntu" || "$distro_dir" == "raspbian" ]] || distro_dir="debian"
+	distro_dir=$(crowdsec_repo_distro)
 	# shellcheck disable=SC1091
 	codename=$(. /etc/os-release 2>/dev/null; echo "${VERSION_CODENAME:-}")
 	[[ -n "$codename" ]] || codename=$(lsb_release -cs 2>/dev/null || true)
@@ -3226,7 +3232,11 @@ EOF
 			if [[ "$CROWDSEC_CODENAME" != "$CROWDSEC_SUITE" ]]; then
 				repair_crowdsec_sources_suite "$CROWDSEC_SUITE"
 			fi
-			dist="$CROWDSEC_SUITE" run_verified_script "$PACKAGECLOUD_INSTALL_URL" "$PACKAGECLOUD_INSTALL_SHA256" >/dev/null
+			# packagecloud's script only auto-detects when os AND dist are both
+			# unset; presetting dist alone leaves os empty and its repo config
+			# fetch 404s, so always pass both
+			os=$(crowdsec_repo_distro) dist="$CROWDSEC_SUITE" \
+				run_verified_script "$PACKAGECLOUD_INSTALL_URL" "$PACKAGECLOUD_INSTALL_SHA256" >/dev/null
 			# --no-install-recommends is load-bearing: the debian-packaged
 			# bouncer Recommends a native crowdsec daemon, and a native
 			# crowdsec binds 127.0.0.1:8080 before the container can - every
