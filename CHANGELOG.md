@@ -13,6 +13,7 @@ All notable changes to the NPMplus Security Fork are documented here. The fork u
 
 ### Fixed
 
+- Fixed the CrowdSec overview attack-mix legend colliding with the neighbouring WAF and attack-map cards on narrow desktop columns: the legend now truncates long scenario names with an ellipsis inside its card, the donut shrinks instead of overflowing, and large center totals step their font size down so they never touch the label. Also resized the site-menu icons so they no longer overhang the menu titles.
 - Preset the OS alongside the distro when installing CrowdSec's packagecloud repository so the installer works on every supported distro; packagecloud only auto-detects when both are unset.
 - Made the CrowdSec apt suite pick a published suite per distro, including a published fallback on Debian trixie, and repaired unpublished suite entries.
 - Made the CrowdSec doctor explain an enrolled-but-empty CAPI pull and print the current Prometheus settings when the decision gauge is missing.
@@ -20,6 +21,7 @@ All notable changes to the NPMplus Security Fork are documented here. The fork u
 - Refused CrowdSec key re-registration while the LAPI is unreachable so unclean state is not overwritten.
 - Adopted the legacy installer bouncer safely, removed the stale bouncer backend override, and allowed the documented backup-free uninstall path.
 - Removed a protected-service discovery race, stabilized the protected startup probe, and guarded public ports before Docker starts.
+- Made the daily upstream-sync workflow report merge conflicts through the job log and step summary instead of hard-failing when the repository has issues disabled, and merged the latest upstream develop while keeping the fork's dependency pins under the seven-day supply-chain policy.
 
 ### Security
 

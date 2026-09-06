@@ -79,7 +79,7 @@ Later updates: repeat the `wget` line, review the downloaded change, and run `su
 - daily backup cron (keeps the last 7, root-only permissions): database (hot-copied so it is never torn mid-write), certificates, crowdsec config, anubis policy
 - daily crowdsec key-heal cron: verifies the UI bouncer, UI machine and nginx bouncer keys against the LAPI every day and re-registers any the LAPI rejects, so a sqlite rollback after an unclean shutdown never leaves the ban view broken or bans unenforced (log: `/var/log/npmplus-crowdsec-heal.log`)
 - unattended-upgrades for OS security patches
-- daily upstream sync workflow: opens a reviewable pull request from an automation branch; conflicts open an issue with a resolve recipe
+- daily upstream sync workflow: opens a reviewable pull request from an automation branch; conflicts are reported in the job log and step summary with a resolve recipe (an issue is filed only when issues are enabled on the repository), and the run fails softly instead of dying on the issue step
 - boot-resilience CI: on every major change the image is built and proven to survive the boot dns race (container starting before the host's dns answers) and a docker daemon restart, recovering without human help
 
 Admin UI fixes:

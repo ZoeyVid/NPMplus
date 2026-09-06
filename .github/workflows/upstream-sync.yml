@@ -2,8 +2,9 @@ name: upstream sync
 
 # keeps the fork up to date with ZoeyVid/NPMplus.
 # clean merge -> proposed as a pull request for review and required checks.
-# conflict -> an issue is opened listing the conflicted files,
-# with instructions to resolve. nothing is force-pushed, ever.
+# conflict -> the conflicted files and a resolve recipe are recorded in the
+# job log and step summary (an issue is filed when issues are enabled).
+# nothing is force-pushed, ever.
 
 on:
   schedule:
