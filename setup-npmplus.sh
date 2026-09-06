@@ -11,7 +11,7 @@ set -euo pipefail
 
 # bump this on every meaningful change - the script compares it against the
 # copy on github at startup and tells the operator when theirs is stale
-SCRIPT_VERSION="1.39"
+SCRIPT_VERSION="1.40"
 
 DATA_DIR="/opt/npmplus"
 CROWDSEC_DIR="/opt/crowdsec"
@@ -724,15 +724,21 @@ run_crowdsec_doctor() (
 		local value
 		value=$(cat "$1" 2>/dev/null || true)
 		[[ -n $value ]] || { echo 000; return; }
-		printf 'header = "X-Api-Key: %s"\n' "$value" | \
+		local code
+		code=$(printf 'header = "X-Api-Key: %s"\n' "$value" | \
 			curl -sS -m 5 -o /dev/null -w '%{http_code}' --config - \
-			"$lapi/v1/decisions?limit=1" 2>/dev/null || echo 000
+			"$lapi/v1/decisions?limit=1" 2>/dev/null || true)
+		[[ -n $code ]] || code=000
+		echo "$code"
 	}
 	doctor_machine_http_code() {
 		[[ -n $1 ]] || { echo 000; return; }
-		printf '{"machine_id":"npmplus-ui","password":"%s"}' "$1" | \
+		local code
+		code=$(printf '{"machine_id":"npmplus-ui","password":"%s"}' "$1" | \
 			curl -sS -m 5 -o /dev/null -w '%{http_code}' -H "Content-Type: application/json" \
-			--data-binary @- "$lapi/v1/watchers/login" 2>/dev/null || echo 000
+			--data-binary @- "$lapi/v1/watchers/login" 2>/dev/null || true)
+		[[ -n $code ]] || code=000
+		echo "$code"
 	}
 
 	doctor_header "1. containers"
@@ -760,7 +766,8 @@ run_crowdsec_doctor() (
 	done
 
 	doctor_header "2. LAPI answers on $lapi (no key - 401/403 expected)"
-	code=$(curl -sS -m 5 -o /dev/null -w '%{http_code}' "$lapi/v1/decisions?limit=1" 2>/dev/null || echo 000)
+	code=$(curl -sS -m 5 -o /dev/null -w '%{http_code}' "$lapi/v1/decisions?limit=1" 2>/dev/null || true)
+	[[ -n $code ]] || code=000
 	case $code in
 		401 | 403) doctor_ok "LAPI up (no-key answer: $code)" ;;
 		000) doctor_bad "LAPI unreachable - is the 127.0.0.1:8080 port publish up?"; fail=1 ;;
@@ -948,6 +955,7 @@ run_crowdsec_doctor() (
 	fi
 	if [[ -z $metrics_body ]]; then
 		doctor_bad "metrics fetch failed from inside the npmplus container"
+		doctor_note "if crowdsec was just restarted, its metrics listener may still be starting"
 		doctor_note "is the 127.0.0.1:6060:6060 port publish up on the crowdsec service?"
 		doctor_note "updates from setup v1.18 add it automatically via --update"
 		fail=1
@@ -975,6 +983,12 @@ run_crowdsec_doctor() (
 	if [[ $kcode == 200 && $mcode == 200 ]]; then
 		doctor_note "both keys are already accepted - nothing to re-register"
 		doctor_note "follow the notes above for the remaining findings"
+		exit 1
+	fi
+	if [[ "$code" == "000" ]]; then
+		doctor_note "the LAPI is unreachable, so the keys could not be tested at all;"
+		doctor_note "re-registering now could overwrite working keys for no reason."
+		doctor_note "wait for the LAPI to answer, then rerun this doctor."
 		exit 1
 	fi
 	read -r -p "re-register the rejected keys now? [y/N] " answer || answer=""

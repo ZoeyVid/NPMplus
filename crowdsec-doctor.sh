@@ -14,16 +14,22 @@ bouncer_http_code() {
 	local key
 	key=$(cat "$1" 2>/dev/null || true)
 	[[ -n $key ]] || { echo 000; return; }
-	printf 'header = "X-Api-Key: %s"\n' "$key" | \
+	local code
+	code=$(printf 'header = "X-Api-Key: %s"\n' "$key" | \
 		curl -sS -m 5 -o /dev/null -w '%{http_code}' --config - \
-		"$LAPI/v1/decisions?limit=1" 2>/dev/null || echo 000
+		"$LAPI/v1/decisions?limit=1" 2>/dev/null || true)
+	[[ -n $code ]] || code=000
+	echo "$code"
 }
 
 machine_http_code() {
 	[[ -n $1 ]] || { echo 000; return; }
-	printf '{"machine_id":"npmplus-ui","password":"%s"}' "$1" | \
+	local code
+	code=$(printf '{"machine_id":"npmplus-ui","password":"%s"}' "$1" | \
 		curl -sS -m 5 -o /dev/null -w '%{http_code}' -H "Content-Type: application/json" \
-		--data-binary @- "$LAPI/v1/watchers/login" 2>/dev/null || echo 000
+		--data-binary @- "$LAPI/v1/watchers/login" 2>/dev/null || true)
+	[[ -n $code ]] || code=000
+	echo "$code"
 }
 LAPI=http://127.0.0.1:8080
 
@@ -65,7 +71,8 @@ for c in crowdsec npmplus; do
 done
 
 hdr "2. LAPI answers on $LAPI (no key - 401/403 expected)"
-code=$(curl -sS -m 5 -o /dev/null -w '%{http_code}' "$LAPI/v1/decisions?limit=1" 2>/dev/null || echo 000)
+code=$(curl -sS -m 5 -o /dev/null -w '%{http_code}' "$LAPI/v1/decisions?limit=1" 2>/dev/null || true)
+[[ -n $code ]] || code=000
 case $code in
 	401 | 403) ok "LAPI up (no-key answer: $code)" ;;
 	000) bad "LAPI unreachable - is the 127.0.0.1:8080 port publish up?"; fail=1 ;;
@@ -254,6 +261,7 @@ else
 fi
 if [[ -z $metrics_body ]]; then
 	bad "metrics fetch failed from inside the npmplus container"
+	note "if crowdsec was just restarted, its metrics listener may still be starting"
 	note "is the 127.0.0.1:6060:6060 port publish up on the crowdsec service?"
 	note "updates from setup v1.18 add it automatically via --update"
 	fail=1
@@ -281,6 +289,12 @@ hdr "fix"
 if [[ $kcode == 200 && $mcode == 200 ]]; then
 	note "both keys are already accepted - nothing to re-register"
 	note "follow the notes above for the remaining findings"
+	exit 1
+fi
+if [[ "$code" == "000" ]]; then
+	note "the LAPI is unreachable, so the keys could not be tested at all;"
+	note "re-registering now could overwrite working keys for no reason."
+	note "wait for the LAPI to answer, then rerun this doctor."
 	exit 1
 fi
 read -r -p "re-register the rejected keys now? [y/N] " answer || answer=""
