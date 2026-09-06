@@ -274,7 +274,13 @@ elif grep -q '^cs_active_decisions' <<<"$metrics_body"; then
 	fail=1
 else
 	bad "cs_active_decisions is missing from the metrics output"
-	note "set prometheus: { enabled: true, level: full } in /opt/crowdsec/conf/config.yaml"
+	note "current prometheus settings:"
+	if [[ -f /opt/crowdsec/conf/config.yaml.local ]]; then
+		note "WARNING: /opt/crowdsec/conf/config.yaml.local overrides the main config"
+		grep -A4 '^prometheus' /opt/crowdsec/conf/config.yaml.local 2>/dev/null | sed 's/^/          /'
+	fi
+	grep -A4 '^prometheus' /opt/crowdsec/conf/config.yaml 2>/dev/null | sed 's/^/          /'
+	note "level must be: full (enabled alone is not enough), then: docker restart crowdsec"
 	fail=1
 fi
 

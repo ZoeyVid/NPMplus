@@ -11,7 +11,7 @@ set -euo pipefail
 
 # bump this on every meaningful change - the script compares it against the
 # copy on github at startup and tells the operator when theirs is stale
-SCRIPT_VERSION="1.40"
+SCRIPT_VERSION="1.41"
 
 DATA_DIR="/opt/npmplus"
 CROWDSEC_DIR="/opt/crowdsec"
@@ -968,7 +968,13 @@ run_crowdsec_doctor() (
 		fail=1
 	else
 		doctor_bad "cs_active_decisions is missing from the metrics output"
-		doctor_note "set prometheus: { enabled: true, level: full } in $CROWDSEC_DIR/conf/config.yaml"
+		doctor_note "current prometheus settings:"
+		if [[ -f "$CROWDSEC_DIR/conf/config.yaml.local" ]]; then
+			doctor_note "WARNING: $CROWDSEC_DIR/conf/config.yaml.local overrides the main config"
+			grep -A4 '^prometheus' "$CROWDSEC_DIR/conf/config.yaml.local" 2>/dev/null | sed 's/^/          /'
+		fi
+		grep -A4 '^prometheus' "$CROWDSEC_DIR/conf/config.yaml" 2>/dev/null | sed 's/^/          /'
+		doctor_note "level must be: full (enabled alone is not enough), then: docker restart crowdsec"
 		fail=1
 	fi
 
