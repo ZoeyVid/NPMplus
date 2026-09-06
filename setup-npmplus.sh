@@ -11,7 +11,7 @@ set -euo pipefail
 
 # bump this on every meaningful change - the script compares it against the
 # copy on github at startup and tells the operator when theirs is stale
-SCRIPT_VERSION="1.48"
+SCRIPT_VERSION="1.49"
 
 DATA_DIR="/opt/npmplus"
 CROWDSEC_DIR="/opt/crowdsec"
@@ -22,7 +22,7 @@ NPMPLUS_IMAGE_CHANNEL="ghcr.io/mangyan1/npmplus:develop"
 CADDY_IMAGE_CHANNEL="ghcr.io/mangyan1/npmplus:caddy"
 CROWDSEC_IMAGE_CHANNEL="docker.io/crowdsecurity/crowdsec:latest"
 DOCKER_INSTALL_URL="https://get.docker.com"
-DOCKER_INSTALL_SHA256="2df5f9e0f201a967f454191726d9254625f0f08030af3812c9edcdedc78e9693"
+DOCKER_INSTALL_SHA256="a2050182dbc4876e2327825e139493c17cf12303634b19cb446f7e33132f3f99"
 PACKAGECLOUD_INSTALL_URL="https://packagecloud.io/install/repositories/crowdsec/crowdsec/script.deb.sh"
 PACKAGECLOUD_INSTALL_SHA256="3a098063d364ab1e69516d6835d69945d0e4061c003f86a98e7cf307bb79a91e"
 

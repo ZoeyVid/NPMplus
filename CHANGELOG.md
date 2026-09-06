@@ -16,6 +16,7 @@ All notable changes to the NPMplus Security Fork are documented here. The fork u
 
 ### Fixed
 
+- Updated the pinned checksum for Docker's official installer after its upstream script changed, so fresh Debian and Ubuntu installs no longer reject the verified `get.docker.com` download.
 - Fixed a bash syntax error in the on-demand backup action's freshness check: it derived the archive's timestamp from the archive path (whose dots made it a non-numeric operand), printed a scary `syntax error: operand expected` while still reporting success, and the check never actually ran. The verification now keeps find's mtime and path fields separate and fails closed on any shell error. Smoke coverage now asserts the backup output contains no shell errors so a masked failure like this cannot pass silently again.
 - Fixed the CrowdSec overview attack-mix legend colliding with the neighbouring WAF and attack-map cards on narrow desktop columns: the legend now truncates long scenario names with an ellipsis inside its card, the donut shrinks instead of overflowing, and large center totals step their font size down so they never touch the label. Also resized the site-menu icons so they no longer overhang the menu titles.
 - Preset the OS alongside the distro when installing CrowdSec's packagecloud repository so the installer works on every supported distro; packagecloud only auto-detects when both are unset.
