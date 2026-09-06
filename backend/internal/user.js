@@ -511,15 +511,16 @@ const internalUser = {
 
 		let permissions;
 
+		const { id, ...permissionData } = data;
 		const existing_auth = await userPermissionModel.query().where("user_id", user.id).first();
 
 		if (existing_auth) {
 			permissions = await userPermissionModel
 				.query()
 				.where("user_id", user.id)
-				.patchAndFetchById(existing_auth.id, { user_id: user.id, ...data });
+				.patchAndFetchById(existing_auth.id, { user_id: user.id, ...permissionData });
 		} else {
-			permissions = await userPermissionModel.query().insertAndFetch({ user_id: user.id, ...data });
+			permissions = await userPermissionModel.query().insertAndFetch({ user_id: user.id, ...permissionData });
 		}
 
 		await internalAuditLog.add(access, {
