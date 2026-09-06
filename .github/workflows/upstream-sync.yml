@@ -98,9 +98,19 @@ jobs:
           Close this issue afterwards; the next scheduled run will find a clean tree.
           EOF
           )
-          existing=$(gh issue list --search 'in:title "upstream sync conflict" is:open' --json number --jq '.[0].number')
+          # issues are disabled on this repository, so issue create/comment is
+          # expected to fail with "Resource not accessible by integration".
+          # the conflicted files are already listed in the job log above; failing
+          # the whole workflow on top of an unfileable issue would only add noise,
+          # so record a step summary and succeed instead.
+          existing=$(gh issue list --search 'in:title "upstream sync conflict" is:open' --json number --jq '.[0].number' 2>/dev/null || true)
           if [ -n "$existing" ]; then
-            gh issue comment "$existing" --body "$body"
+            gh issue comment "$existing" --body "$body" || true
           else
-            gh issue create --title "upstream sync conflict with ZoeyVid/NPMplus" --body "$body"
+            gh issue create --title "upstream sync conflict with ZoeyVid/NPMplus" --body "$body" || true
           fi
+          echo "### Upstream sync conflict" >> "$GITHUB_STEP_SUMMARY"
+          echo "The daily upstream merge hit conflicts in these files; resolve manually as described in the log above:" >> "$GITHUB_STEP_SUMMARY"
+          echo '```' >> "$GITHUB_STEP_SUMMARY"
+          cat conflict-files.txt >> "$GITHUB_STEP_SUMMARY"
+          echo '```' >> "$GITHUB_STEP_SUMMARY"
