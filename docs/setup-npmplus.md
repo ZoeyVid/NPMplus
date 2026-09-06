@@ -217,7 +217,7 @@ Append `--disable-mfa` when both the password and MFA need to be reset.
 
 Daily archives are written to `/var/backups/npmplus/npmplus-YYYY-MM-DD-HHMMSS.tar.gz`, mode `0600`, with the newest seven retained. They contain NPMplus data and certificates, CrowdSec state, the generated Compose file, and optional Anubis policy. While NPMplus is running, the helper creates `npmplus/database.backup.sqlite` through SQLite's backup API and includes it in the archive.
 
-To restore an archive, run the setup script's restore action. It validates the archive, snapshots the state it replaces, restores the database, certificates, access lists, CrowdSec state, and optional Anubis policy, re-registers any CrowdSec key the LAPI rejects, restarts the stack, and waits for it to become healthy. Without a file argument it offers the newest archives found under `/var/backups/npmplus`:
+To restore an archive, run the setup script's restore action. It validates the archive, snapshots the state it replaces, restores the database, certificates, access lists, CrowdSec state, and optional Anubis policy, re-registers any CrowdSec key the LAPI rejects - including the host firewall bouncer, whose key the restored CrowdSec database has never seen and whose death after the next reboot would keep the protected boot gate closed - restarts the stack, and waits for it to become healthy. Without a file argument it lists the newest archives found in `/var/backups/npmplus`, `/tmp` (the documented `scp` landing spot for a migration), and the current directory; the file argument may also be a directory (the newest archive inside it is picked) or any renamed archive, since the layout check is the gate:
 
 ```bash
 # interactive: pick one of the listed archives
