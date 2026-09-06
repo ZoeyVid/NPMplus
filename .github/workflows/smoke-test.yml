@@ -399,7 +399,8 @@ jobs:
           sudo /usr/local/bin/npmplus-backup
           sudo tail -n 20 /var/log/npmplus-backup.log
           backup_file="$(sudo bash -c 'ls -1t /var/backups/npmplus/npmplus-*.tar.gz | head -1')"
-          test -s "$backup_file" || { echo "no backup archive produced"; sudo ls -la /var/backups/npmplus; exit 1; }
+          # the backup dir is root-only (0700) and the tars are 0600: check as root
+          sudo test -s "$backup_file" || { echo "no backup archive produced"; sudo ls -la /var/backups/npmplus; exit 1; }
           before_hosts="$(sudo docker exec npmplus node -e "const d=require('better-sqlite3')('/data/npmplus/database.sqlite',{readonly:true});console.log(d.prepare('select count(*) c from proxy_host').get().c);d.close()")" \
             || { echo "cannot read the proxy host count before the restore"; exit 1; }
           test -s /opt/npmplus/compose.yaml
@@ -629,19 +630,30 @@ jobs:
       - name: restore validates archives and refuses invalid ones
         shell: bash
         run: |
+          # note: the refusal checks run the restore expecting a non-zero
+          # exit, and the step shell is bash -e -o pipefail, so the expected
+          # failure must not fail the pipeline - capture instead of piping
+          check_refusal() { # check_refusal "archive" "expected message"
+            local output
+            if output="$(bash setup-npmplus.sh --restore "$1" 2>&1)"; then
+              echo "restore unexpectedly accepted: $1" >&2
+              exit 1
+            fi
+            grep -q "$2" <<<"$output" || { echo "missing '$2' in: $output" >&2; exit 1; }
+            echo "PASS: $2"
+          }
+
           # a tar that is not a npmplus backup must be rejected
           mkdir -p /tmp/fake/opt/npmplus
           echo not-a-database >/tmp/fake/opt/npmplus/nope
           tar -czf /tmp/not-a-backup.tar.gz -C /tmp/fake opt/npmplus
-          bash setup-npmplus.sh --restore /tmp/not-a-backup.tar.gz 2>&1 | grep -q 'backup contains no database' \
-            || { echo 'expected the no-database refusal' >&2; exit 1; }
+          check_refusal /tmp/not-a-backup.tar.gz 'backup contains no database'
 
           # a valid backup but no installation on this machine must be refused
           mkdir -p /tmp/good/opt/npmplus/npmplus
           printf 'sqlite-test-bytes' >/tmp/good/opt/npmplus/npmplus/database.sqlite
           tar -czf /tmp/npmplus-valid.tar.gz -C /tmp/good opt/npmplus
-          bash setup-npmplus.sh --restore /tmp/npmplus-valid.tar.gz 2>&1 | grep -q 'no installation found' \
-            || { echo 'expected the no-installation refusal' >&2; exit 1; }
+          check_refusal /tmp/npmplus-valid.tar.gz 'no installation found'
 
           # the usage/help surfaces the restore action
           bash setup-npmplus.sh --help | grep -q -- '--restore'
@@ -682,7 +694,7 @@ jobs:
           tar -czf /tmp/oldmachine-backup.tar.gz -C /tmp/oldserver opt/npmplus opt/crowdsec
 
           printf 'restore\n' | bash setup-npmplus.sh --restore /tmp/oldmachine-backup.tar.gz >/tmp/debian-restore.log 2>&1
-          restore_status="${PIPESTATUS[0]}"
+          restore_status="${PIPESTATUS[1]}"
           check "restore exited 0" test "$restore_status" -eq 0
           check "log says restore complete" grep -q 'restore complete' /tmp/debian-restore.log
 
