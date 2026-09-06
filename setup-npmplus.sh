@@ -11,7 +11,7 @@ set -euo pipefail
 
 # bump this on every meaningful change - the script compares it against the
 # copy on github at startup and tells the operator when theirs is stale
-SCRIPT_VERSION="1.52"
+SCRIPT_VERSION="1.53"
 
 DATA_DIR="/opt/npmplus"
 CROWDSEC_DIR="/opt/crowdsec"
@@ -309,6 +309,15 @@ repair_installer_firewall_bouncer() {
 	if curl -sS --connect-timeout 1 --max-time 2 -o /dev/null \
 		http://127.0.0.1:8080/v1/decisions?limit=1 2>/dev/null; then
 		systemctl restart crowdsec-firewall-bouncer
+		# rule insertion is asynchronous: the bouncer must reach LAPI and
+		# create its ipset before the iptables rules appear, and systemctl
+		# returns before any of that. poll briefly instead of judging the
+		# rule set in the same instant the restart returns.
+		local waited=0
+		until firewall_bouncer_covers_public_paths || ((waited >= 10)); do
+			sleep 1
+			waited=$((waited + 1))
+		done
 		firewall_bouncer_covers_public_paths || {
 			echo "CrowdSec firewall bouncer is not protecting both INPUT and FORWARD" >&2
 			return 1
@@ -2339,18 +2348,7 @@ revert() {
 		rm -f /opt/npmplus/npmplus/database.sqlite-wal /opt/npmplus/npmplus/database.sqlite-shm
 	fi
 	# --update refreshes these before touching images; roll them back as well.
-	# the backup snapshots the script that made it, so on a restore it is often
-	# older than the installer already on disk - never downgrade it, or every
-	# later run nags about a stale script the operator cannot get rid of.
-	if [[ -s "$BACKUP/setup-npmplus.sh" ]]; then
-		script_version_of() { sed -n 's/^SCRIPT_VERSION="\([^"]*\)".*/\1/p' "$1" 2>/dev/null | head -1; }
-		local have want
-		have=$(script_version_of "$SETUP")
-		want=$(script_version_of "$BACKUP/setup-npmplus.sh")
-		if [[ -z "$have" ]] || [[ "$(printf '%s\n%s\n' "$have" "$want" | sort -V | tail -1)" == "$want" ]]; then
-			cp -a "$BACKUP/setup-npmplus.sh" "$SETUP"
-		fi
-	fi
+	[[ -s "$BACKUP/setup-npmplus.sh" ]] && cp -a "$BACKUP/setup-npmplus.sh" "$SETUP"
 	rm -f /usr/local/bin/npmplus-safe-update /usr/local/bin/npmplus-backup \
 		/usr/local/bin/npmplus-crowdsec-heal
 	rm -f /etc/cron.d/npmplus-safe-update /etc/cron.d/npmplus-backup \
