@@ -45,6 +45,7 @@ All notable changes to the NPMplus Security Fork are documented here. The fork u
 ### Changed
 
 - Restored upstream NPMplus runtime Certbot DNS-plugin installation so Cloudflare and other DNS challenges work out of the box; pinned pip and Certbot stay in the image and the pip packaging-tool scan findings are carried under a reviewed, expiring `.trivy/npmplus.yaml` baseline.
+- Refactored the internal code layout without behavior changes: the CrowdSec LAPI client moved to its own module, the redundant per-route error handling that Express 5 already performs was deleted, the frontend API transport is generically typed, and the CrowdSec dashboard was split into per-tab components. HTTP-level characterization tests now pin the auth, CRUD, CrowdSec route, and DNS-challenge certificate contracts before any future change can drift them, and the backend entrypoint is pinned to LF so local Windows image builds boot.
 
 ## v2.15.1-mangyan1.rc.4 - 2026-09-05
 
