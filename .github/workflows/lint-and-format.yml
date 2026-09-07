@@ -24,21 +24,14 @@ jobs:
       - uses: pnpm/action-setup@ea17c68df8912ef543352723c149a84f56e3d413 # v6.1.0
         with:
           version: 11.22.0
-      - name: writable test data dirs
+      - name: backend
         run: |
           # the http characterization tests boot the real app, which writes to
           # the same container-layout paths (/data, /usr/local/nginx) it uses
           # in production; the hosted runner only allows writes there as root
+          # and every step gets a fresh container, so this must happen here
           sudo mkdir -p /data /usr/local/nginx/conf/conf.d
           sudo chown -R "$USER" /data /usr/local/nginx
-      - name: debug data dir
-        run: |
-          id
-          ls -ld /data /data/npmplus 2>&1 || true
-          touch /data/.writetest && echo "shell write ok" || echo "shell write FAILED"
-          node -e "require('node:fs').mkdirSync('/data/npmplus',{recursive:true});console.log('node mkdir ok')" || echo "node mkdir FAILED"
-      - name: backend
-        run: |
           cd backend
           pnpm install --frozen-lockfile
           pnpm biome ci --reporter=default --reporter=github
