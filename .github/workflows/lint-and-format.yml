@@ -32,6 +32,11 @@ jobs:
           # and every step gets a fresh container, so this must happen here
           sudo mkdir -p /data /usr/local/nginx/conf/conf.d
           sudo chown -R "$USER" /data /usr/local/nginx
+          echo "USER=$USER uid=$(id -u)"
+          ls -ld /data /usr/local/nginx
+          sudo chown -R runner /data; echo "chown-exit=$?"
+          ls -ld /data
+          touch /data/.writetest; echo "touch-exit=$?"
           cd backend
           pnpm install --frozen-lockfile
           pnpm biome ci --reporter=default --reporter=github
