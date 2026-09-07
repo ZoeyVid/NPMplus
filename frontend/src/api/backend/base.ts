@@ -127,7 +127,7 @@ export async function post<T = any>({ url, params, data, headers: extraHeaders }
 
 	const signal = getAbortSignal(abortSource);
 	const response = await fetch(apiUrl, { method, headers, body, signal });
-	return processResponse(response);
+	return processResponse<T>(response);
 }
 
 interface PutArgs {
@@ -144,7 +144,7 @@ export async function put<T = any>({ url, params, data }: PutArgs, abortSource?:
 	const signal = getAbortSignal(abortSource);
 	const body = buildBody(data);
 	const response = await fetch(apiUrl, { method, headers, body, signal });
-	return processResponse(response);
+	return processResponse<T>(response);
 }
 
 interface DeleteArgs {
@@ -156,5 +156,5 @@ export async function del<T = any>({ url, params }: DeleteArgs, abortSource?: Ab
 	const method = "DELETE";
 	const signal = getAbortSignal(abortSource);
 	const response = await fetch(apiUrl, { method, signal });
-	return processResponse(response);
+	return processResponse<T>(response);
 }
