@@ -71,8 +71,14 @@ const KpiDetailsModal = ({
 							</span>
 						</div>
 						<div className="row g-4">
-							<ItemList title={<T id="crowdsec.insights.scenarios" />} items={insights?.topScenarios ?? []} />
-							<ItemList title={<T id="crowdsec.insights.countries" />} items={insights?.topCountries ?? []} />
+							<ItemList
+								title={<T id="crowdsec.insights.scenarios" />}
+								items={insights?.topScenarios ?? []}
+							/>
+							<ItemList
+								title={<T id="crowdsec.insights.countries" />}
+								items={insights?.topCountries ?? []}
+							/>
 							<ItemList title={<T id="crowdsec.insights.asns" />} items={insights?.topAsns ?? []} />
 							<ItemList title={<T id="crowdsec.insights.ips" />} items={insights?.topIps ?? []} />
 							<ItemList title={<T id="crowdsec.insights.targets" />} items={insights?.topTargets ?? []} />

@@ -28,25 +28,25 @@ router
 	 * Retrieve all streams
 	 */
 	.get(async (req, res, next) => {
-const data = await validator(
-				{
-					additionalProperties: false,
-					properties: {
-						expand: {
-							$ref: "common#/properties/expand",
-						},
-						query: {
-							$ref: "common#/properties/query",
-						},
+		const data = await validator(
+			{
+				additionalProperties: false,
+				properties: {
+					expand: {
+						$ref: "common#/properties/expand",
+					},
+					query: {
+						$ref: "common#/properties/query",
 					},
 				},
-				{
-					expand: typeof req.query.expand === "string" ? req.query.expand.split(",") : null,
-					query: typeof req.query.query === "string" ? req.query.query : null,
-				},
-			);
-			const rows = await internalStream.getAll(res.locals.access, data.expand, data.query);
-			res.status(200).send(rows);
+			},
+			{
+				expand: typeof req.query.expand === "string" ? req.query.expand.split(",") : null,
+				query: typeof req.query.query === "string" ? req.query.query : null,
+			},
+		);
+		const rows = await internalStream.getAll(res.locals.access, data.expand, data.query);
+		res.status(200).send(rows);
 	})
 
 	/**
@@ -55,9 +55,9 @@ const data = await validator(
 	 * Create a new stream
 	 */
 	.post(async (req, res, next) => {
-const payload = apiValidator(getValidationSchema("/nginx/streams", "post"), req.body);
-			const result = await internalStream.create(res.locals.access, payload);
-			res.status(201).send(result);
+		const payload = apiValidator(getValidationSchema("/nginx/streams", "post"), req.body);
+		const result = await internalStream.create(res.locals.access, payload);
+		res.status(201).send(result);
 	});
 
 /**
@@ -78,29 +78,29 @@ router
 	 * Retrieve a specific stream
 	 */
 	.get(async (req, res, next) => {
-const data = await validator(
-				{
-					required: ["stream_id"],
-					additionalProperties: false,
-					properties: {
-						stream_id: {
-							$ref: "common#/properties/id",
-						},
-						expand: {
-							$ref: "common#/properties/expand",
-						},
+		const data = await validator(
+			{
+				required: ["stream_id"],
+				additionalProperties: false,
+				properties: {
+					stream_id: {
+						$ref: "common#/properties/id",
+					},
+					expand: {
+						$ref: "common#/properties/expand",
 					},
 				},
-				{
-					stream_id: req.params.stream_id,
-					expand: typeof req.query.expand === "string" ? req.query.expand.split(",") : null,
-				},
-			);
-			const row = await internalStream.get(res.locals.access, {
-				id: Number.parseInt(data.stream_id, 10),
-				expand: data.expand,
-			});
-			res.status(200).send(row);
+			},
+			{
+				stream_id: req.params.stream_id,
+				expand: typeof req.query.expand === "string" ? req.query.expand.split(",") : null,
+			},
+		);
+		const row = await internalStream.get(res.locals.access, {
+			id: Number.parseInt(data.stream_id, 10),
+			expand: data.expand,
+		});
+		res.status(200).send(row);
 	})
 
 	/**
@@ -109,10 +109,10 @@ const data = await validator(
 	 * Update an existing stream
 	 */
 	.put(async (req, res, next) => {
-const payload = apiValidator(getValidationSchema("/nginx/streams/{streamID}", "put"), req.body);
-			payload.id = Number.parseInt(req.params.stream_id, 10);
-			const result = await internalStream.update(res.locals.access, payload);
-			res.status(200).send(result);
+		const payload = apiValidator(getValidationSchema("/nginx/streams/{streamID}", "put"), req.body);
+		payload.id = Number.parseInt(req.params.stream_id, 10);
+		const result = await internalStream.update(res.locals.access, payload);
+		res.status(200).send(result);
 	})
 
 	/**
@@ -121,10 +121,10 @@ const payload = apiValidator(getValidationSchema("/nginx/streams/{streamID}", "p
 	 * Delete a stream
 	 */
 	.delete(async (req, res, next) => {
-const result = await internalStream.delete(res.locals.access, {
-				id: Number.parseInt(req.params.stream_id, 10),
-			});
-			res.status(200).send(result);
+		const result = await internalStream.delete(res.locals.access, {
+			id: Number.parseInt(req.params.stream_id, 10),
+		});
+		res.status(200).send(result);
 	});
 
 /**
@@ -143,10 +143,10 @@ router
 	 * POST /api/nginx/streams/123/enable
 	 */
 	.post(async (req, res, next) => {
-const result = await internalStream.enable(res.locals.access, {
-				id: Number.parseInt(req.params.stream_id, 10),
-			});
-			res.status(200).send(result);
+		const result = await internalStream.enable(res.locals.access, {
+			id: Number.parseInt(req.params.stream_id, 10),
+		});
+		res.status(200).send(result);
 	});
 
 /**
@@ -165,10 +165,10 @@ router
 	 * POST /api/nginx/streams/123/disable
 	 */
 	.post(async (req, res, next) => {
-const result = await internalStream.disable(res.locals.access, {
-				id: Number.parseInt(req.params.stream_id, 10),
-			});
-			res.status(200).send(result);
+		const result = await internalStream.disable(res.locals.access, {
+			id: Number.parseInt(req.params.stream_id, 10),
+		});
+		res.status(200).send(result);
 	});
 
 export default router;

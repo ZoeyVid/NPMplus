@@ -2,9 +2,9 @@ import { IconShield, IconShieldOff } from "@tabler/icons-react";
 import Alert from "react-bootstrap/Alert";
 import type { useCrowdsecMetrics } from "src/hooks";
 import { intl, T } from "src/locale";
-import Metric from "./Metric";
 import styles from "./Dashboard.module.css";
 import { MetricsSkeleton } from "./LoadingSkeleton";
+import Metric from "./Metric";
 import { appsecStatus } from "./shared";
 
 const WafMonitoring = ({ metrics }: { metrics: ReturnType<typeof useCrowdsecMetrics> }) => {
@@ -24,7 +24,11 @@ const WafMonitoring = ({ metrics }: { metrics: ReturnType<typeof useCrowdsecMetr
 			<section className={`${styles.wafHero} card`} aria-labelledby="appsec-monitor-title">
 				<div className="card-body d-flex align-items-start gap-3">
 					<div className={`${styles.wafIcon} bg-${status.tone}-lt text-${status.tone}`} aria-hidden="true">
-						{metrics.data.appsecConfigured === false ? <IconShieldOff size={28} /> : <IconShield size={28} />}
+						{metrics.data.appsecConfigured === false ? (
+							<IconShieldOff size={28} />
+						) : (
+							<IconShield size={28} />
+						)}
 					</div>
 					<div className="flex-fill min-w-0">
 						<div className="d-flex flex-wrap align-items-center gap-2 mb-1">
@@ -133,7 +137,9 @@ const WafMonitoring = ({ metrics }: { metrics: ReturnType<typeof useCrowdsecMetr
 										<T id="crowdsec.appsec.failure-mode" />
 									</strong>
 									<span className="text-secondary">
-										<T id={`crowdsec.appsec.failure-${metrics.data.appsecFailureAction || "unknown"}`} />
+										<T
+											id={`crowdsec.appsec.failure-${metrics.data.appsecFailureAction || "unknown"}`}
+										/>
 									</span>
 								</div>
 								<div>

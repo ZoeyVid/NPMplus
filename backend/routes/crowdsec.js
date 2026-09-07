@@ -3,8 +3,8 @@ import express from "express";
 import internalAuditLog from "../internal/audit-log.js";
 import {
 	fetchCrowdsec,
-	lapiFetch,
 	LAPI_USER_AGENT,
+	lapiFetch,
 	lapiMachineFetch,
 	publicError,
 	readAppsecConfiguration,
@@ -292,8 +292,8 @@ router
 			if (origin === "community" && !COMMUNITY_DECISION_ORIGINS.includes(decision.origin.toLocaleLowerCase()))
 				return false;
 			if (!search) return true;
-			return [decision.value, decision.scope, decision.scenario, decision.origin, decision.type].some(
-				(value) => value.toLocaleLowerCase().includes(search),
+			return [decision.value, decision.scope, decision.scenario, decision.origin, decision.type].some((value) =>
+				value.toLocaleLowerCase().includes(search),
 			);
 		});
 		const start = (page - 1) * pageSize;
@@ -614,8 +614,7 @@ router
 		// keep them out of the local active-bans figure so the two never double-count
 		const localDecisions =
 			decisions === null ? null : decisions.filter((decision) => decision.scenario !== HONEYPOT_SCENARIO);
-		const activeDecisions =
-			localDecisions === null ? null : Math.min(localDecisions.length, LAPI_DECISION_LIMIT);
+		const activeDecisions = localDecisions === null ? null : Math.min(localDecisions.length, LAPI_DECISION_LIMIT);
 		// a full sample means the buckets only cover the newest tail of the window,
 		// so the spike baseline is structurally deflated - never call that a spike
 		const sampled = alerts.length >= INSIGHTS_ALERT_LIMIT;

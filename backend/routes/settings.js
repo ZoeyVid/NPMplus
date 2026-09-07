@@ -28,8 +28,8 @@ router
 	 * Retrieve all settings
 	 */
 	.get(async (req, res, next) => {
-const rows = await internalSetting.getAll(res.locals.access);
-			res.status(200).send(rows);
+		const rows = await internalSetting.getAll(res.locals.access);
+		res.status(200).send(rows);
 	});
 
 /**
@@ -50,25 +50,25 @@ router
 	 * Retrieve a specific setting
 	 */
 	.get(async (req, res, next) => {
-const data = await validator(
-				{
-					required: ["setting_id"],
-					additionalProperties: false,
-					properties: {
-						setting_id: {
-							type: "string",
-							minLength: 1,
-						},
+		const data = await validator(
+			{
+				required: ["setting_id"],
+				additionalProperties: false,
+				properties: {
+					setting_id: {
+						type: "string",
+						minLength: 1,
 					},
 				},
-				{
-					setting_id: req.params.setting_id,
-				},
-			);
-			const row = await internalSetting.get(res.locals.access, {
-				id: data.setting_id,
-			});
-			res.status(200).send(row);
+			},
+			{
+				setting_id: req.params.setting_id,
+			},
+		);
+		const row = await internalSetting.get(res.locals.access, {
+			id: data.setting_id,
+		});
+		res.status(200).send(row);
 	})
 
 	/**
@@ -77,10 +77,10 @@ const data = await validator(
 	 * Update and existing setting
 	 */
 	.put(async (req, res, next) => {
-const payload = apiValidator(getValidationSchema("/settings/{settingID}", "put"), req.body);
-			payload.id = req.params.setting_id;
-			const result = await internalSetting.update(res.locals.access, payload);
-			res.status(200).send(result);
+		const payload = apiValidator(getValidationSchema("/settings/{settingID}", "put"), req.body);
+		payload.id = req.params.setting_id;
+		const result = await internalSetting.update(res.locals.access, payload);
+		res.status(200).send(result);
 	});
 
 export default router;

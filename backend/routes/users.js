@@ -51,25 +51,25 @@ router
 	 * Retrieve all users
 	 */
 	.get(async (req, res, next) => {
-const data = await validator(
-				{
-					additionalProperties: false,
-					properties: {
-						expand: {
-							$ref: "common#/properties/expand",
-						},
-						query: {
-							$ref: "common#/properties/query",
-						},
+		const data = await validator(
+			{
+				additionalProperties: false,
+				properties: {
+					expand: {
+						$ref: "common#/properties/expand",
+					},
+					query: {
+						$ref: "common#/properties/query",
 					},
 				},
-				{
-					expand: typeof req.query.expand === "string" ? req.query.expand.split(",") : null,
-					query: typeof req.query.query === "string" ? req.query.query : null,
-				},
-			);
-			const users = await internalUser.getAll(res.locals.access, data.expand, data.query);
-			res.status(200).send(users);
+			},
+			{
+				expand: typeof req.query.expand === "string" ? req.query.expand.split(",") : null,
+				query: typeof req.query.query === "string" ? req.query.query : null,
+			},
+		);
+		const users = await internalUser.getAll(res.locals.access, data.expand, data.query);
+		res.status(200).send(users);
 	})
 
 	/**
@@ -143,31 +143,31 @@ router
 	 * Retrieve a specific user
 	 */
 	.get(async (req, res, next) => {
-const data = await validator(
-				{
-					required: ["user_id"],
-					additionalProperties: false,
-					properties: {
-						user_id: {
-							$ref: "common#/properties/id",
-						},
-						expand: {
-							$ref: "common#/properties/expand",
-						},
+		const data = await validator(
+			{
+				required: ["user_id"],
+				additionalProperties: false,
+				properties: {
+					user_id: {
+						$ref: "common#/properties/id",
+					},
+					expand: {
+						$ref: "common#/properties/expand",
 					},
 				},
-				{
-					user_id: req.params.user_id,
-					expand: typeof req.query.expand === "string" ? req.query.expand.split(",") : null,
-				},
-			);
+			},
+			{
+				user_id: req.params.user_id,
+				expand: typeof req.query.expand === "string" ? req.query.expand.split(",") : null,
+			},
+		);
 
-			const user = await internalUser.get(res.locals.access, {
-				id: data.user_id,
-				expand: data.expand,
-				omit: internalUser.getUserOmisionsByAccess(res.locals.access, data.user_id),
-			});
-			res.status(200).send(user);
+		const user = await internalUser.get(res.locals.access, {
+			id: data.user_id,
+			expand: data.expand,
+			omit: internalUser.getUserOmisionsByAccess(res.locals.access, data.user_id),
+		});
+		res.status(200).send(user);
 	})
 
 	/**
@@ -176,10 +176,10 @@ const data = await validator(
 	 * Update and existing user
 	 */
 	.put(async (req, res, next) => {
-const payload = apiValidator(getValidationSchema("/users/{userID}", "put"), req.body);
-			payload.id = req.params.user_id;
-			const result = await internalUser.update(res.locals.access, payload);
-			res.status(200).send(result);
+		const payload = apiValidator(getValidationSchema("/users/{userID}", "put"), req.body);
+		payload.id = req.params.user_id;
+		const result = await internalUser.update(res.locals.access, payload);
+		res.status(200).send(result);
 	})
 
 	/**
@@ -188,10 +188,10 @@ const payload = apiValidator(getValidationSchema("/users/{userID}", "put"), req.
 	 * Update and existing user
 	 */
 	.delete(async (req, res, next) => {
-const result = await internalUser.delete(res.locals.access, {
-				id: req.params.user_id,
-			});
-			res.status(200).send(result);
+		const result = await internalUser.delete(res.locals.access, {
+			id: req.params.user_id,
+		});
+		res.status(200).send(result);
 	});
 
 /**
@@ -213,10 +213,10 @@ router
 	 * Update password for a user
 	 */
 	.put(async (req, res, next) => {
-const payload = apiValidator(getValidationSchema("/users/{userID}/auth", "put"), req.body);
-			payload.id = req.params.user_id;
-			const result = await internalUser.setPassword(res.locals.access, payload);
-			res.status(200).send(result);
+		const payload = apiValidator(getValidationSchema("/users/{userID}/auth", "put"), req.body);
+		payload.id = req.params.user_id;
+		const result = await internalUser.setPassword(res.locals.access, payload);
+		res.status(200).send(result);
 	});
 
 /**
@@ -238,10 +238,10 @@ router
 	 * Set some or all permissions for a user
 	 */
 	.put(async (req, res, next) => {
-const payload = apiValidator(getValidationSchema("/users/{userID}/permissions", "put"), req.body);
-			payload.id = req.params.user_id;
-			const result = await internalUser.setPermissions(res.locals.access, payload);
-			res.status(200).send(result);
+		const payload = apiValidator(getValidationSchema("/users/{userID}/permissions", "put"), req.body);
+		payload.id = req.params.user_id;
+		const result = await internalUser.setPermissions(res.locals.access, payload);
+		res.status(200).send(result);
 	});
 
 /**
@@ -404,15 +404,15 @@ router
 	 * Revoke all of a user's sessions (self or admin)
 	 */
 	.delete(async (req, res, next) => {
-await internalUser.revokeSessions(res.locals.access, req.params.user_id);
-			if (Number(req.params.user_id) === res.locals.access.token.getUserId(0)) {
-				res.clearCookie("__Host-Http-token", {
-					httpOnly: true,
-					secure: true,
-					sameSite: "Strict",
-				});
-			}
-			res.status(200).send(true);
+		await internalUser.revokeSessions(res.locals.access, req.params.user_id);
+		if (Number(req.params.user_id) === res.locals.access.token.getUserId(0)) {
+			res.clearCookie("__Host-Http-token", {
+				httpOnly: true,
+				secure: true,
+				sameSite: "Strict",
+			});
+		}
+		res.status(200).send(true);
 	});
 
 /**
@@ -439,8 +439,8 @@ router
 			limits: { fileSize: 1024 * 1024, files: 1, fields: 0, parts: 1, fieldNameSize: 32 },
 		}).single("avatar"),
 		async (req, res, next) => {
-	const result = await internalUser.setAvatar(res.locals.access, req.params.user_id, req.file);
-				res.status(200).send(result);
+			const result = await internalUser.setAvatar(res.locals.access, req.params.user_id, req.file);
+			res.status(200).send(result);
 		},
 	)
 
@@ -450,8 +450,8 @@ router
 	 * Remove the custom avatar, falling back to gravatar
 	 */
 	.delete(async (req, res, next) => {
-const result = await internalUser.deleteAvatar(res.locals.access, req.params.user_id);
-			res.status(200).send(result);
+		const result = await internalUser.deleteAvatar(res.locals.access, req.params.user_id);
+		res.status(200).send(result);
 	});
 
 export default router;

@@ -1,7 +1,7 @@
 import { IconChevronRight } from "@tabler/icons-react";
 import type { ReactNode } from "react";
-import styles from "./Dashboard.module.css";
 import { intl, T } from "src/locale";
+import styles from "./Dashboard.module.css";
 
 const Metric = ({
 	label,

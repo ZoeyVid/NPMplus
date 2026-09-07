@@ -20,8 +20,8 @@ router
 	 * GET /reports/hosts
 	 */
 	.get(async (req, res, next) => {
-const data = await internalReport.getHostsReport(res.locals.access);
-			res.status(200).send(data);
+		const data = await internalReport.getHostsReport(res.locals.access);
+		res.status(200).send(data);
 	});
 
 export default router;

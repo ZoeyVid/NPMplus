@@ -21,10 +21,10 @@ router
 	 * GET /schema
 	 */
 	.get(async (req, res, next) => {
-const swaggerJSON = await getCompiledSchema();
-			swaggerJSON.info.version = PACKAGE.version;
-			swaggerJSON.servers[0].url = "/api";
-			res.status(200).send(swaggerJSON);
+		const swaggerJSON = await getCompiledSchema();
+		swaggerJSON.info.version = PACKAGE.version;
+		swaggerJSON.servers[0].url = "/api";
+		res.status(200).send(swaggerJSON);
 	});
 
 export default router;

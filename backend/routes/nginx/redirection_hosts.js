@@ -28,25 +28,25 @@ router
 	 * Retrieve all redirection-hosts
 	 */
 	.get(async (req, res, next) => {
-const data = await validator(
-				{
-					additionalProperties: false,
-					properties: {
-						expand: {
-							$ref: "common#/properties/expand",
-						},
-						query: {
-							$ref: "common#/properties/query",
-						},
+		const data = await validator(
+			{
+				additionalProperties: false,
+				properties: {
+					expand: {
+						$ref: "common#/properties/expand",
+					},
+					query: {
+						$ref: "common#/properties/query",
 					},
 				},
-				{
-					expand: typeof req.query.expand === "string" ? req.query.expand.split(",") : null,
-					query: typeof req.query.query === "string" ? req.query.query : null,
-				},
-			);
-			const rows = await internalRedirectionHost.getAll(res.locals.access, data.expand, data.query);
-			res.status(200).send(rows);
+			},
+			{
+				expand: typeof req.query.expand === "string" ? req.query.expand.split(",") : null,
+				query: typeof req.query.query === "string" ? req.query.query : null,
+			},
+		);
+		const rows = await internalRedirectionHost.getAll(res.locals.access, data.expand, data.query);
+		res.status(200).send(rows);
 	})
 
 	/**
@@ -55,9 +55,9 @@ const data = await validator(
 	 * Create a new redirection-host
 	 */
 	.post(async (req, res, next) => {
-const payload = apiValidator(getValidationSchema("/nginx/redirection-hosts", "post"), req.body);
-			const result = await internalRedirectionHost.create(res.locals.access, payload);
-			res.status(201).send(result);
+		const payload = apiValidator(getValidationSchema("/nginx/redirection-hosts", "post"), req.body);
+		const result = await internalRedirectionHost.create(res.locals.access, payload);
+		res.status(201).send(result);
 	});
 
 /**
@@ -78,29 +78,29 @@ router
 	 * Retrieve a specific redirection-host
 	 */
 	.get(async (req, res, next) => {
-const data = await validator(
-				{
-					required: ["host_id"],
-					additionalProperties: false,
-					properties: {
-						host_id: {
-							$ref: "common#/properties/id",
-						},
-						expand: {
-							$ref: "common#/properties/expand",
-						},
+		const data = await validator(
+			{
+				required: ["host_id"],
+				additionalProperties: false,
+				properties: {
+					host_id: {
+						$ref: "common#/properties/id",
+					},
+					expand: {
+						$ref: "common#/properties/expand",
 					},
 				},
-				{
-					host_id: req.params.host_id,
-					expand: typeof req.query.expand === "string" ? req.query.expand.split(",") : null,
-				},
-			);
-			const row = await internalRedirectionHost.get(res.locals.access, {
-				id: Number.parseInt(data.host_id, 10),
-				expand: data.expand,
-			});
-			res.status(200).send(row);
+			},
+			{
+				host_id: req.params.host_id,
+				expand: typeof req.query.expand === "string" ? req.query.expand.split(",") : null,
+			},
+		);
+		const row = await internalRedirectionHost.get(res.locals.access, {
+			id: Number.parseInt(data.host_id, 10),
+			expand: data.expand,
+		});
+		res.status(200).send(row);
 	})
 
 	/**
@@ -109,10 +109,10 @@ const data = await validator(
 	 * Update an existing redirection-host
 	 */
 	.put(async (req, res, next) => {
-const payload = apiValidator(getValidationSchema("/nginx/redirection-hosts/{hostID}", "put"), req.body);
-			payload.id = Number.parseInt(req.params.host_id, 10);
-			const result = await internalRedirectionHost.update(res.locals.access, payload);
-			res.status(200).send(result);
+		const payload = apiValidator(getValidationSchema("/nginx/redirection-hosts/{hostID}", "put"), req.body);
+		payload.id = Number.parseInt(req.params.host_id, 10);
+		const result = await internalRedirectionHost.update(res.locals.access, payload);
+		res.status(200).send(result);
 	})
 
 	/**
@@ -121,10 +121,10 @@ const payload = apiValidator(getValidationSchema("/nginx/redirection-hosts/{host
 	 * Delete a redirection-host
 	 */
 	.delete(async (req, res, next) => {
-const result = await internalRedirectionHost.delete(res.locals.access, {
-				id: Number.parseInt(req.params.host_id, 10),
-			});
-			res.status(200).send(result);
+		const result = await internalRedirectionHost.delete(res.locals.access, {
+			id: Number.parseInt(req.params.host_id, 10),
+		});
+		res.status(200).send(result);
 	});
 
 /**
@@ -143,10 +143,10 @@ router
 	 * POST /api/nginx/redirection-hosts/123/enable
 	 */
 	.post(async (req, res, next) => {
-const result = await internalRedirectionHost.enable(res.locals.access, {
-				id: Number.parseInt(req.params.host_id, 10),
-			});
-			res.status(200).send(result);
+		const result = await internalRedirectionHost.enable(res.locals.access, {
+			id: Number.parseInt(req.params.host_id, 10),
+		});
+		res.status(200).send(result);
 	});
 
 /**
@@ -165,10 +165,10 @@ router
 	 * POST /api/nginx/redirection-hosts/123/disable
 	 */
 	.post(async (req, res, next) => {
-const result = await internalRedirectionHost.disable(res.locals.access, {
-				id: Number.parseInt(req.params.host_id, 10),
-			});
-			res.status(200).send(result);
+		const result = await internalRedirectionHost.disable(res.locals.access, {
+			id: Number.parseInt(req.params.host_id, 10),
+		});
+		res.status(200).send(result);
 	});
 
 export default router;

@@ -7,13 +7,7 @@ import { appsecStatus } from "./shared";
 // compact AppSec verdict on the overview: how many requests were inspected,
 // how many were blocked, and a pass/blocked traffic bar. answers "is the WAF
 // really blocking or just watching" without a tab switch
-const AppsecSummary = ({
-	metrics,
-	onOpen,
-}: {
-	metrics: ReturnType<typeof useCrowdsecMetrics>;
-	onOpen: () => void;
-}) => {
+const AppsecSummary = ({ metrics, onOpen }: { metrics: ReturnType<typeof useCrowdsecMetrics>; onOpen: () => void }) => {
 	const data = metrics.data;
 	if (!data)
 		return (

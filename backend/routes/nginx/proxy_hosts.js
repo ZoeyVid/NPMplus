@@ -29,25 +29,25 @@ router
 	 * Retrieve all proxy-hosts
 	 */
 	.get(async (req, res, next) => {
-const data = await validator(
-				{
-					additionalProperties: false,
-					properties: {
-						expand: {
-							$ref: "common#/properties/expand",
-						},
-						query: {
-							$ref: "common#/properties/query",
-						},
+		const data = await validator(
+			{
+				additionalProperties: false,
+				properties: {
+					expand: {
+						$ref: "common#/properties/expand",
+					},
+					query: {
+						$ref: "common#/properties/query",
 					},
 				},
-				{
-					expand: typeof req.query.expand === "string" ? req.query.expand.split(",") : null,
-					query: typeof req.query.query === "string" ? req.query.query : null,
-				},
-			);
-			const rows = await internalProxyHost.getAll(res.locals.access, data.expand, data.query);
-			res.status(200).send(rows.map((row) => internalProxyHostAccessList.maskAccessListItems(row)));
+			},
+			{
+				expand: typeof req.query.expand === "string" ? req.query.expand.split(",") : null,
+				query: typeof req.query.query === "string" ? req.query.query : null,
+			},
+		);
+		const rows = await internalProxyHost.getAll(res.locals.access, data.expand, data.query);
+		res.status(200).send(rows.map((row) => internalProxyHostAccessList.maskAccessListItems(row)));
 	})
 
 	/**
@@ -87,29 +87,29 @@ router
 	 * Retrieve a specific proxy-host
 	 */
 	.get(async (req, res, next) => {
-const data = await validator(
-				{
-					required: ["host_id"],
-					additionalProperties: false,
-					properties: {
-						host_id: {
-							$ref: "common#/properties/id",
-						},
-						expand: {
-							$ref: "common#/properties/expand",
-						},
+		const data = await validator(
+			{
+				required: ["host_id"],
+				additionalProperties: false,
+				properties: {
+					host_id: {
+						$ref: "common#/properties/id",
+					},
+					expand: {
+						$ref: "common#/properties/expand",
 					},
 				},
-				{
-					host_id: req.params.host_id,
-					expand: typeof req.query.expand === "string" ? req.query.expand.split(",") : null,
-				},
-			);
-			const row = await internalProxyHost.get(res.locals.access, {
-				id: Number.parseInt(data.host_id, 10),
-				expand: data.expand,
-			});
-			res.status(200).send(internalProxyHostAccessList.maskAccessListItems(row));
+			},
+			{
+				host_id: req.params.host_id,
+				expand: typeof req.query.expand === "string" ? req.query.expand.split(",") : null,
+			},
+		);
+		const row = await internalProxyHost.get(res.locals.access, {
+			id: Number.parseInt(data.host_id, 10),
+			expand: data.expand,
+		});
+		res.status(200).send(internalProxyHostAccessList.maskAccessListItems(row));
 	})
 
 	/**
@@ -118,10 +118,10 @@ const data = await validator(
 	 * Update an existing proxy-host
 	 */
 	.put(async (req, res, next) => {
-const payload = apiValidator(getValidationSchema("/nginx/proxy-hosts/{hostID}", "put"), req.body);
-			payload.id = Number.parseInt(req.params.host_id, 10);
-			const result = await internalProxyHost.update(res.locals.access, payload);
-			res.status(200).send(result);
+		const payload = apiValidator(getValidationSchema("/nginx/proxy-hosts/{hostID}", "put"), req.body);
+		payload.id = Number.parseInt(req.params.host_id, 10);
+		const result = await internalProxyHost.update(res.locals.access, payload);
+		res.status(200).send(result);
 	})
 
 	/**
@@ -130,10 +130,10 @@ const payload = apiValidator(getValidationSchema("/nginx/proxy-hosts/{hostID}", 
 	 * Delete a proxy-host
 	 */
 	.delete(async (req, res, next) => {
-const result = await internalProxyHost.delete(res.locals.access, {
-				id: Number.parseInt(req.params.host_id, 10),
-			});
-			res.status(200).send(result);
+		const result = await internalProxyHost.delete(res.locals.access, {
+			id: Number.parseInt(req.params.host_id, 10),
+		});
+		res.status(200).send(result);
 	});
 
 /**
@@ -152,10 +152,10 @@ router
 	 * POST /api/nginx/proxy-hosts/123/enable
 	 */
 	.post(async (req, res, next) => {
-const result = await internalProxyHost.enable(res.locals.access, {
-				id: Number.parseInt(req.params.host_id, 10),
-			});
-			res.status(200).send(result);
+		const result = await internalProxyHost.enable(res.locals.access, {
+			id: Number.parseInt(req.params.host_id, 10),
+		});
+		res.status(200).send(result);
 	});
 
 /**
@@ -174,10 +174,10 @@ router
 	 * POST /api/nginx/proxy-hosts/123/disable
 	 */
 	.post(async (req, res, next) => {
-const result = await internalProxyHost.disable(res.locals.access, {
-				id: Number.parseInt(req.params.host_id, 10),
-			});
-			res.status(200).send(result);
+		const result = await internalProxyHost.disable(res.locals.access, {
+			id: Number.parseInt(req.params.host_id, 10),
+		});
+		res.status(200).send(result);
 	});
 
 export default router;

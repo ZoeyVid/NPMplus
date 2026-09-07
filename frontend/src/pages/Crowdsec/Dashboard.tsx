@@ -11,13 +11,13 @@ import AnimatedLogo from "./AnimatedLogo";
 import AppsecSummary from "./AppsecSummary";
 import AttackHistory from "./AttackHistory";
 import AttackMix from "./AttackMix";
+import styles from "./Dashboard.module.css";
 import KpiDetailsModal from "./KpiDetailsModal";
-import Metric from "./Metric";
 import { OverviewSkeleton, TableSkeleton } from "./LoadingSkeleton";
+import Metric from "./Metric";
+import SystemMetrics from "./SystemMetrics";
 import type { DashboardTab, KpiKind } from "./shared";
 import { anubisServiceStatus, appsecStatus, honeypotStatus } from "./shared";
-import styles from "./Dashboard.module.css";
-import SystemMetrics from "./SystemMetrics";
 import WafMonitoring from "./WafMonitoring";
 
 const AttackMap = lazy(() => import("./AttackMap"));
@@ -315,14 +315,20 @@ const CrowdsecDashboard = () => {
 									<Metric
 										label={<T id="crowdsec.kpi.attacks" />}
 										value={
-											insights.data.sampled ? `${insights.data.alertCount}+` : insights.data.alertCount
+											insights.data.sampled
+												? `${insights.data.alertCount}+`
+												: insights.data.alertCount
 										}
 										description={<T id="crowdsec.kpi.attacks-hint" data={{ hours: windowHours }} />}
 										onClick={() => setKpi("attacks")}
 									/>
 									<Metric
 										label={<T id="crowdsec.kpi.local" />}
-										value={insights.data.localActiveDecisions ?? metrics.data?.localActiveDecisions ?? "—"}
+										value={
+											insights.data.localActiveDecisions ??
+											metrics.data?.localActiveDecisions ??
+											"—"
+										}
 										tone="red"
 										description={
 											metrics.data?.available === false ||

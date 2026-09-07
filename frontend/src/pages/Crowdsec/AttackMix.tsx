@@ -90,11 +90,17 @@ const AttackMix = ({
 					<ul className={`list-unstyled mb-0 ${styles.donutList}`}>
 						{segments.map((segment) => {
 							const color =
-								segment.color >= 0 ? DONUT_COLORS[segment.color % DONUT_COLORS.length] : "var(--tblr-secondary)";
+								segment.color >= 0
+									? DONUT_COLORS[segment.color % DONUT_COLORS.length]
+									: "var(--tblr-secondary)";
 							const label = segment.name || intl.formatMessage({ id: "crowdsec.attack-mix.other" });
 							return (
 								<li key={segment.name || "other"} className={styles.donutRow}>
-									<span className={styles.donutDot} style={{ background: color }} aria-hidden="true" />
+									<span
+										className={styles.donutDot}
+										style={{ background: color }}
+										aria-hidden="true"
+									/>
 									{segment.name ? (
 										<button
 											type="button"

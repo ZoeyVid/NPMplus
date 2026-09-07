@@ -1,8 +1,8 @@
 import Alert from "react-bootstrap/Alert";
 import type { useCrowdsecMetrics } from "src/hooks";
 import { T } from "src/locale";
-import Metric from "./Metric";
 import { MetricsSkeleton } from "./LoadingSkeleton";
+import Metric from "./Metric";
 
 const SystemMetrics = ({ metrics }: { metrics: ReturnType<typeof useCrowdsecMetrics> }) =>
 	!metrics.data ? (
@@ -17,8 +17,16 @@ const SystemMetrics = ({ metrics }: { metrics: ReturnType<typeof useCrowdsecMetr
 				<T id="crowdsec.metrics.title" />
 			</h3>
 			<div className="row g-3">
-				<Metric label={<T id="crowdsec.metrics.bouncer-requests" />} value={metrics.data.bouncerRequests ?? 0} tone="green" />
-				<Metric label={<T id="crowdsec.metrics.machine-requests" />} value={metrics.data.machineRequests ?? 0} tone="orange" />
+				<Metric
+					label={<T id="crowdsec.metrics.bouncer-requests" />}
+					value={metrics.data.bouncerRequests ?? 0}
+					tone="green"
+				/>
+				<Metric
+					label={<T id="crowdsec.metrics.machine-requests" />}
+					value={metrics.data.machineRequests ?? 0}
+					tone="orange"
+				/>
 				<Metric
 					label={<T id="crowdsec.metrics.parser-rate" />}
 					value={

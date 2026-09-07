@@ -23,10 +23,10 @@ router
 	 * GET / (Now serves the Swagger UI interface)
 	 */
 	.get(async (req, res, next) => {
-const swaggerJSON = await getCompiledSchema();
-			swaggerJSON.info.version = PACKAGE.version;
-			swaggerJSON.servers[0].url = "/api";
-			res.status(200).send(swaggerUi.generateHTML(swaggerJSON));
+		const swaggerJSON = await getCompiledSchema();
+		swaggerJSON.info.version = PACKAGE.version;
+		swaggerJSON.servers[0].url = "/api";
+		res.status(200).send(swaggerUi.generateHTML(swaggerJSON));
 	});
 
 export default router;
