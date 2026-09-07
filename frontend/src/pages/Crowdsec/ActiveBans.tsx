@@ -219,7 +219,7 @@ const ActiveBans = () => {
 											</tr>
 											{open && (
 												<tr>
-													<td colSpan={7} className="bg-light">
+													<td colSpan={7} className="bg-secondary-lt">
 														<AlertContext decision={decision} />
 													</td>
 												</tr>

@@ -68,11 +68,13 @@ const DONUT_CIRCUMFERENCE = 2 * Math.PI * DONUT_RADIUS;
 const AttackMix = ({
 	items,
 	total,
+	sampled,
 	windowHours,
 	onSelect,
 }: {
 	items: CrowdsecInsightsItem[];
 	total: number;
+	sampled: boolean;
 	windowHours: number;
 	onSelect: (value: string) => void;
 }) => {
@@ -81,7 +83,7 @@ const AttackMix = ({
 	// the center total is formatted with locale grouping, so long attack counts
 	// can outgrow the donut at the default size - step the font down instead of
 	// letting the number collide with the ring or the label below it
-	const totalLabel = intl.formatNumber(total);
+	const totalLabel = `${intl.formatNumber(total)}${sampled ? "+" : ""}`;
 	const totalFontSize = totalLabel.length <= 6 ? 24 : totalLabel.length <= 9 ? 19 : totalLabel.length <= 12 ? 16 : 13;
 	let offset = 0;
 	return (
@@ -235,7 +237,7 @@ const AppsecSummary = ({ metrics, onOpen }: { metrics: ReturnType<typeof useCrow
 	return (
 		<button
 			type="button"
-			className={`${styles.metricCard} card card-sm w-100 text-start h-100`}
+			className={`${styles.metricCard} card card-sm w-100 text-start`}
 			onClick={onOpen}
 			aria-haspopup="dialog"
 		>
@@ -441,7 +443,9 @@ const KpiDetailsModal = ({
 				{kind === "attacks" && (
 					<>
 						<div className="h2 mb-3">
-							{typeof insights?.alertCount === "number" ? intl.formatNumber(insights.alertCount) : "—"}{" "}
+							{typeof insights?.alertCount === "number"
+								? `${intl.formatNumber(insights.alertCount)}${insights.sampled ? "+" : ""}`
+								: "—"}{" "}
 							<span className="text-secondary fs-5">
 								<T id="crowdsec.insights.alert-count" />
 							</span>
@@ -467,9 +471,9 @@ const KpiDetailsModal = ({
 							<T id="crowdsec.kpi.local-help" />
 						</p>
 						<div className="h1">
-							{typeof (metrics?.localActiveDecisions ?? insights?.localActiveDecisions) === "number"
+							{typeof (insights?.localActiveDecisions ?? metrics?.localActiveDecisions) === "number"
 								? intl.formatNumber(
-										(metrics?.localActiveDecisions ?? insights?.localActiveDecisions) as number,
+										(insights?.localActiveDecisions ?? metrics?.localActiveDecisions) as number,
 									)
 								: "—"}
 						</div>
@@ -728,7 +732,7 @@ const AttackHistory = ({
 											</tr>
 											{open && (
 												<tr>
-													<td colSpan={6} className="bg-light">
+													<td colSpan={6} className="bg-secondary-lt">
 														<div className="small py-2">
 															<div className="mb-2">{item.message}</div>
 															{item.events.map((event, index) => (
@@ -1190,9 +1194,6 @@ const CrowdsecDashboard = () => {
 										<T id={notificationLabel} />
 									</span>
 								</Button>
-								<Button actionType="danger" onClick={() => showManualBanModal({})}>
-									<T id="crowdsec.ban" />
-								</Button>
 								<Button
 									actionType="secondary"
 									variant="outline"
@@ -1278,15 +1279,15 @@ const CrowdsecDashboard = () => {
 								<div className="row g-3 mb-4">
 									<Metric
 										label={<T id="crowdsec.kpi.attacks" />}
-										value={insights.data.alertCount}
+										value={insights.data.sampled ? `${insights.data.alertCount}+` : insights.data.alertCount}
 										description={<T id="crowdsec.kpi.attacks-hint" data={{ hours: windowHours }} />}
 										onClick={() => setKpi("attacks")}
 									/>
 									<Metric
 										label={<T id="crowdsec.kpi.local" />}
 										value={
-											metrics.data?.localActiveDecisions ??
 											insights.data.localActiveDecisions ??
+											metrics.data?.localActiveDecisions ??
 											"—"
 										}
 										tone="red"
@@ -1343,6 +1344,7 @@ const CrowdsecDashboard = () => {
 										<AttackMix
 											items={insights.data.topScenarios}
 											total={insights.data.alertCount}
+											sampled={insights.data.sampled}
 											windowHours={windowHours}
 											onSelect={(value) => quickFilter(setScenario, value)}
 										/>

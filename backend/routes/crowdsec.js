@@ -806,9 +806,17 @@ router
 			}
 			const activity = activityBuckets(alerts, windowHours);
 			const decisions = decisionPayload === null ? null : normalizeCrowdsecDecisions(decisionPayload);
-			const activeDecisions = decisions === null ? null : Math.min(decisions.length, LAPI_DECISION_LIMIT);
+			// honeypot bans arrive as origin "cscli" but get their own dashboard card;
+			// keep them out of the local active-bans figure so the two never double-count
+			const localDecisions =
+				decisions === null ? null : decisions.filter((decision) => decision.scenario !== HONEYPOT_SCENARIO);
+			const activeDecisions =
+				localDecisions === null ? null : Math.min(localDecisions.length, LAPI_DECISION_LIMIT);
+			// a full sample means the buckets only cover the newest tail of the window,
+			// so the spike baseline is structurally deflated - never call that a spike
+			const sampled = alerts.length >= INSIGHTS_ALERT_LIMIT;
 			const signals = [];
-			if (attackSpike(activity))
+			if (!sampled && attackSpike(activity))
 				signals.push({ id: `spike-${activity.at(-1).start}`, severity: "warning", type: "attack-spike" });
 			if (activeDecisions > 0)
 				signals.push({
@@ -823,7 +831,7 @@ router
 				alert_count: alerts.length,
 				active_decisions: activeDecisions,
 				local_active_decisions: activeDecisions,
-				sampled: alerts.length >= INSIGHTS_ALERT_LIMIT,
+				sampled,
 				activity,
 				locations: [...locationCounts.values()].sort((a, b) => b.count - a.count).slice(0, 100),
 				signals,

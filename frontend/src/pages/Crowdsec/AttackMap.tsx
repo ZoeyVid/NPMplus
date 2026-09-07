@@ -35,6 +35,14 @@ const AttackMap = ({ items }: { items: AttackMapItem[] }) => {
 				<svg className={styles.worldMap} viewBox="0 0 720 360" role="img" aria-label={summary}>
 					<title>{summary}</title>
 					<desc>{intl.formatMessage({ id: "crowdsec.attack-map.motion-note" })}</desc>
+					<defs>
+						{/* the trail fades tail-to-head in each meteor's local coordinates */}
+						<linearGradient id="meteor-fade" gradientUnits="userSpaceOnUse" x1="-22" y1="-14" x2="-3" y2="-2">
+							<stop offset="0" stopColor="#ff9862" stopOpacity="0" />
+							<stop offset="0.55" stopColor="#ff9862" stopOpacity="0.45" />
+							<stop offset="1" stopColor="#ff9862" stopOpacity="1" />
+						</linearGradient>
+					</defs>
 					{[-60, -30, 0, 30, 60].map((latitude) => (
 						<line
 							key={latitude}
@@ -72,7 +80,7 @@ const AttackMap = ({ items }: { items: AttackMapItem[] }) => {
 							>
 								<title>{label}</title>
 								<g className={styles.meteor} style={animationStyle}>
-									<line x1="-22" y1="-14" x2="-3" y2="-2" className={styles.meteorTrail} />
+									<path d="M-22 -14 Q-14 -9.5 -3 -2" className={styles.meteorTrail} />
 									<circle cx="0" cy="0" r="3.5" className={styles.meteorHead} />
 								</g>
 								<circle r={Math.min(11, 3.5 + Math.sqrt(item.count))} className={styles.locationDot} />

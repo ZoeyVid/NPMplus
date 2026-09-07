@@ -209,9 +209,10 @@ button.metricCard:focus-visible {
 }
 
 .meteorTrail {
-	stroke: #ff9862;
+	stroke: url(#meteor-fade);
 	stroke-linecap: round;
 	stroke-width: 3;
+	fill: none;
 	filter: drop-shadow(0 0 0.25rem #ff9862);
 }
 
