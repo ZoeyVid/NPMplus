@@ -282,3 +282,43 @@ test("proxy host CRUD round-trips through nginx config generation", async (t) =>
 	const cleared = await api("GET", "/api/nginx/proxy-hosts", { cookie: adminCookie });
 	assert.ok(!cleared.body.some((row) => row.id === hostId));
 });
+
+// CrowdSec routes: no LAPI is wired in the test environment, so these pin the
+// permission wall and the input-validation guards that fire before the LAPI
+// is ever contacted
+test("peon is refused on crowdsec routes", async () => {
+	const res = await api("GET", "/api/crowdsec/decisions", { cookie: peonCookie });
+	assert.equal(res.status, 403);
+	assert.equal(res.body.error.message, "access.denied");
+});
+
+test("crowdsec pagination guard fires before the LAPI is contacted", async () => {
+	const res = await api("GET", "/api/crowdsec/decisions?page=10&page_size=100", { cookie: adminCookie });
+	assert.equal(res.status, 400);
+	assert.equal(res.body.error.message, "crowdsec.page-too-deep");
+});
+
+test("crowdsec manual-ban validation fires before the LAPI is contacted", async () => {
+	const res = await api("POST", "/api/crowdsec/decisions", { cookie: adminCookie, body: { value: "" } });
+	assert.equal(res.status, 400);
+	assert.equal(res.body.error.message, "crowdsec.invalid-ban-input");
+});
+
+test("crowdsec reads degrade to a stable not-wired error without a LAPI key", async () => {
+	// key-auth reads and machine-token reads report distinct wiring states,
+	// while the anubis view degrades per-probe instead of failing
+	const expectations = [
+		["/api/crowdsec/decisions", 503, "crowdsec.not-wired"],
+		["/api/crowdsec/insights", 503, "crowdsec.not-wired-machine"],
+	];
+	for (const [path, status, expected] of expectations) {
+		const res = await api("GET", path, { cookie: adminCookie });
+		assert.equal(res.status, status, `${path}: ${res.text}`);
+		assert.equal(res.body.error.message, expected, `${path}: ${res.text}`);
+	}
+	const anubis = await api("GET", "/api/crowdsec/anubis", { cookie: adminCookie });
+	assert.equal(anubis.status, 200, anubis.text);
+	assert.equal(anubis.body.configured, false);
+	assert.equal(anubis.body.honeypot.decisionsAvailable, false);
+	assert.equal(anubis.body.honeypot.status, "disabled");
+});
