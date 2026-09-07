@@ -31,6 +31,12 @@ jobs:
           # in production; the hosted runner only allows writes there as root
           sudo mkdir -p /data /usr/local/nginx/conf/conf.d
           sudo chown -R "$USER" /data /usr/local/nginx
+      - name: debug data dir
+        run: |
+          id
+          ls -ld /data /data/npmplus 2>&1 || true
+          touch /data/.writetest && echo "shell write ok" || echo "shell write FAILED"
+          node -e "require('node:fs').mkdirSync('/data/npmplus',{recursive:true});console.log('node mkdir ok')" || echo "node mkdir FAILED"
       - name: backend
         run: |
           cd backend
