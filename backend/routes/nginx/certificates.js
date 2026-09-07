@@ -57,8 +57,7 @@ router
 	 * Retrieve all certificates
 	 */
 	.get(async (req, res, next) => {
-		try {
-			const data = await validator(
+const data = await validator(
 				{
 					additionalProperties: false,
 					properties: {
@@ -77,10 +76,6 @@ router
 			);
 			const rows = await internalCertificate.getAll(res.locals.access, data.expand, data.query);
 			res.status(200).send(rows);
-		} catch (err) {
-			debug(logger, `${req.method.toUpperCase()} ${req.originalUrl}: ${err}`);
-			next(err);
-		}
 	})
 
 	/**
@@ -89,15 +84,10 @@ router
 	 * Create a new certificate
 	 */
 	.post(async (req, res, next) => {
-		try {
-			const payload = apiValidator(getValidationSchema("/nginx/certificates", "post"), req.body);
+const payload = apiValidator(getValidationSchema("/nginx/certificates", "post"), req.body);
 			req.setTimeout(900000); // 15 minutes timeout
 			const result = await internalCertificate.create(res.locals.access, payload);
 			res.status(201).send(result);
-		} catch (err) {
-			debug(logger, `${req.method.toUpperCase()} ${req.originalUrl}: ${err}`);
-			next(err);
-		}
 	});
 
 /**
@@ -116,8 +106,7 @@ router
 	 * Get list of all supported DNS providers
 	 */
 	.get((req, res, next) => {
-		try {
-			if (!res.locals.access.token.getUserId()) {
+if (!res.locals.access.token.getUserId()) {
 				throw new errs.PermissionError("Login required");
 			}
 			const clean = Object.keys(dnsPlugins).map((key) => ({
@@ -128,10 +117,6 @@ router
 
 			clean.sort((a, b) => a.name.localeCompare(b.name));
 			res.status(200).send(clean);
-		} catch (err) {
-			debug(logger, `${req.method.toUpperCase()} ${req.originalUrl}: ${err}`);
-			next(err);
-		}
 	});
 
 /**
@@ -152,16 +137,11 @@ router
 	 * Test HTTP challenge for domains
 	 */
 	.post(async (req, res, next) => {
-		try {
-			const payload = apiValidator(getValidationSchema("/nginx/certificates/test-http", "post"), req.body);
+const payload = apiValidator(getValidationSchema("/nginx/certificates/test-http", "post"), req.body);
 			req.setTimeout(60000); // 1 minute timeout
 
 			const result = await internalCertificate.testHttpsChallenge(res.locals.access, payload);
 			res.status(200).send(result);
-		} catch (err) {
-			debug(logger, `${req.method.toUpperCase()} ${req.originalUrl}: ${err}`);
-			next(err);
-		}
 	});
 
 /**
@@ -184,15 +164,10 @@ router
 	.post(parseCertFiles, async (req, res, next) => {
 		if (!req.files?.certificate) return res.status(400).send({ error: "certificate file is required" });
 
-		try {
-			const result = await internalCertificate.validate(res.locals.access, {
+const result = await internalCertificate.validate(res.locals.access, {
 				files: req.files,
 			});
 			res.status(200).send(result);
-		} catch (err) {
-			debug(logger, `${req.method.toUpperCase()} ${req.originalUrl}: ${err}`);
-			next(err);
-		}
 	});
 
 /**
@@ -213,8 +188,7 @@ router
 	 * Retrieve a specific certificate
 	 */
 	.get(async (req, res, next) => {
-		try {
-			const data = await validator(
+const data = await validator(
 				{
 					required: ["certificate_id"],
 					additionalProperties: false,
@@ -237,10 +211,6 @@ router
 				expand: data.expand,
 			});
 			res.status(200).send(row);
-		} catch (err) {
-			debug(logger, `${req.method.toUpperCase()} ${req.originalUrl}: ${err}`);
-			next(err);
-		}
 	})
 
 	/**
@@ -249,15 +219,10 @@ router
 	 * Update and existing certificate
 	 */
 	.delete(async (req, res, next) => {
-		try {
-			const result = await internalCertificate.delete(res.locals.access, {
+const result = await internalCertificate.delete(res.locals.access, {
 				id: Number.parseInt(req.params.certificate_id, 10),
 			});
 			res.status(200).send(result);
-		} catch (err) {
-			debug(logger, `${req.method.toUpperCase()} ${req.originalUrl}: ${err}`);
-			next(err);
-		}
 	});
 
 /**
@@ -280,16 +245,11 @@ router
 	.post(parseCertFiles, async (req, res, next) => {
 		if (!req.files?.certificate) return res.status(400).send({ error: "certificate file is required" });
 
-		try {
-			const result = await internalCertificate.upload(res.locals.access, {
+const result = await internalCertificate.upload(res.locals.access, {
 				id: Number.parseInt(req.params.certificate_id, 10),
 				files: req.files,
 			});
 			res.status(200).send(result);
-		} catch (err) {
-			debug(logger, `${req.method.toUpperCase()} ${req.originalUrl}: ${err}`);
-			next(err);
-		}
 	});
 
 /**
@@ -311,15 +271,10 @@ router
 	 */
 	.post(async (req, res, next) => {
 		req.setTimeout(900000); // 15 minutes timeout
-		try {
-			const result = await internalCertificate.renew(res.locals.access, {
+const result = await internalCertificate.renew(res.locals.access, {
 				id: Number.parseInt(req.params.certificate_id, 10),
 			});
 			res.status(200).send(result);
-		} catch (err) {
-			debug(logger, `${req.method.toUpperCase()} ${req.originalUrl}: ${err}`);
-			next(err);
-		}
 	});
 
 /**
@@ -340,8 +295,7 @@ router
 	 * Download certificate
 	 */
 	.get(downloadLimiter, async (req, res, next) => {
-		try {
-			const result = await internalCertificate.download(res.locals.access, {
+const result = await internalCertificate.download(res.locals.access, {
 				id: Number.parseInt(req.params.certificate_id, 10),
 			});
 			res.status(200).download(result.fileName, async (err) => {
@@ -352,10 +306,6 @@ router
 				}
 				if (err && !res.headersSent) next(err);
 			});
-		} catch (err) {
-			debug(logger, `${req.method.toUpperCase()} ${req.originalUrl}: ${err}`);
-			next(err);
-		}
 	});
 
 export default router;

@@ -83,8 +83,7 @@ router
 	 * Create a new Token
 	 */
 	.post(async (req, res, next) => {
-		try {
-			if (process.env.OIDC_DISABLE_PASSWORD === "true") {
+if (process.env.OIDC_DISABLE_PASSWORD === "true") {
 				throw new errs.AuthError("Non OIDC login is disabled");
 			}
 
@@ -111,10 +110,6 @@ router
 			}
 
 			res.status(200).send(responseBody);
-		} catch (err) {
-			debug(logger, `${req.method.toUpperCase()} ${req.originalUrl}: ${err}`);
-			next(err);
-		}
 	})
 
 	/**
@@ -123,8 +118,7 @@ router
 	 * Delete the Token
 	 */
 	.delete((req, res, next) => {
-		try {
-			res.clearCookie("__Host-Http-token", {
+res.clearCookie("__Host-Http-token", {
 				httpOnly: true,
 				secure: true,
 				sameSite: "Strict",
@@ -135,10 +129,6 @@ router
 				maxAge: 60 * 60 * 1000,
 			});
 			res.status(200).send({ expires: new Date(0).toISOString() });
-		} catch (err) {
-			debug(logger, `${req.method.toUpperCase()} ${req.originalUrl}: ${err}`);
-			next(err);
-		}
 	});
 
 router

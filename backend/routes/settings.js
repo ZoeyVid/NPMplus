@@ -28,13 +28,8 @@ router
 	 * Retrieve all settings
 	 */
 	.get(async (req, res, next) => {
-		try {
-			const rows = await internalSetting.getAll(res.locals.access);
+const rows = await internalSetting.getAll(res.locals.access);
 			res.status(200).send(rows);
-		} catch (err) {
-			debug(logger, `${req.method.toUpperCase()} ${req.originalUrl}: ${err}`);
-			next(err);
-		}
 	});
 
 /**
@@ -55,8 +50,7 @@ router
 	 * Retrieve a specific setting
 	 */
 	.get(async (req, res, next) => {
-		try {
-			const data = await validator(
+const data = await validator(
 				{
 					required: ["setting_id"],
 					additionalProperties: false,
@@ -75,10 +69,6 @@ router
 				id: data.setting_id,
 			});
 			res.status(200).send(row);
-		} catch (err) {
-			debug(logger, `${req.method.toUpperCase()} ${req.originalUrl}: ${err}`);
-			next(err);
-		}
 	})
 
 	/**
@@ -87,15 +77,10 @@ router
 	 * Update and existing setting
 	 */
 	.put(async (req, res, next) => {
-		try {
-			const payload = apiValidator(getValidationSchema("/settings/{settingID}", "put"), req.body);
+const payload = apiValidator(getValidationSchema("/settings/{settingID}", "put"), req.body);
 			payload.id = req.params.setting_id;
 			const result = await internalSetting.update(res.locals.access, payload);
 			res.status(200).send(result);
-		} catch (err) {
-			debug(logger, `${req.method.toUpperCase()} ${req.originalUrl}: ${err}`);
-			next(err);
-		}
 	});
 
 export default router;

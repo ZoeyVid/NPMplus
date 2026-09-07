@@ -20,13 +20,8 @@ router
 	 * GET /reports/hosts
 	 */
 	.get(async (req, res, next) => {
-		try {
-			const data = await internalReport.getHostsReport(res.locals.access);
+const data = await internalReport.getHostsReport(res.locals.access);
 			res.status(200).send(data);
-		} catch (err) {
-			debug(logger, `${req.method.toUpperCase()} ${req.originalUrl}: ${err}`);
-			next(err);
-		}
 	});
 
 export default router;

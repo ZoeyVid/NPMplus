@@ -28,8 +28,7 @@ router
 	 * Retrieve all dead-hosts
 	 */
 	.get(async (req, res, next) => {
-		try {
-			const data = await validator(
+const data = await validator(
 				{
 					additionalProperties: false,
 					properties: {
@@ -48,10 +47,6 @@ router
 			);
 			const rows = await internalDeadHost.getAll(res.locals.access, data.expand, data.query);
 			res.status(200).send(rows);
-		} catch (err) {
-			debug(logger, `${req.method.toUpperCase()} ${req.originalUrl}: ${err}`);
-			next(err);
-		}
 	})
 
 	/**
@@ -60,14 +55,9 @@ router
 	 * Create a new dead-host
 	 */
 	.post(async (req, res, next) => {
-		try {
-			const payload = apiValidator(getValidationSchema("/nginx/dead-hosts", "post"), req.body);
+const payload = apiValidator(getValidationSchema("/nginx/dead-hosts", "post"), req.body);
 			const result = await internalDeadHost.create(res.locals.access, payload);
 			res.status(201).send(result);
-		} catch (err) {
-			debug(logger, `${req.method.toUpperCase()} ${req.originalUrl}: ${err}`);
-			next(err);
-		}
 	});
 
 /**
@@ -88,8 +78,7 @@ router
 	 * Retrieve a specific dead-host
 	 */
 	.get(async (req, res, next) => {
-		try {
-			const data = await validator(
+const data = await validator(
 				{
 					required: ["host_id"],
 					additionalProperties: false,
@@ -112,10 +101,6 @@ router
 				expand: data.expand,
 			});
 			res.status(200).send(row);
-		} catch (err) {
-			debug(logger, `${req.method.toUpperCase()} ${req.originalUrl}: ${err}`);
-			next(err);
-		}
 	})
 
 	/**
@@ -124,15 +109,10 @@ router
 	 * Update an existing dead-host
 	 */
 	.put(async (req, res, next) => {
-		try {
-			const payload = apiValidator(getValidationSchema("/nginx/dead-hosts/{hostID}", "put"), req.body);
+const payload = apiValidator(getValidationSchema("/nginx/dead-hosts/{hostID}", "put"), req.body);
 			payload.id = Number.parseInt(req.params.host_id, 10);
 			const result = await internalDeadHost.update(res.locals.access, payload);
 			res.status(200).send(result);
-		} catch (err) {
-			debug(logger, `${req.method.toUpperCase()} ${req.originalUrl}: ${err}`);
-			next(err);
-		}
 	})
 
 	/**
@@ -141,15 +121,10 @@ router
 	 * Delete a dead-host
 	 */
 	.delete(async (req, res, next) => {
-		try {
-			const result = await internalDeadHost.delete(res.locals.access, {
+const result = await internalDeadHost.delete(res.locals.access, {
 				id: Number.parseInt(req.params.host_id, 10),
 			});
 			res.status(200).send(result);
-		} catch (err) {
-			debug(logger, `${req.method.toUpperCase()} ${req.originalUrl}: ${err}`);
-			next(err);
-		}
 	});
 
 /**
@@ -168,15 +143,10 @@ router
 	 * POST /api/nginx/dead-hosts/123/enable
 	 */
 	.post(async (req, res, next) => {
-		try {
-			const result = await internalDeadHost.enable(res.locals.access, {
+const result = await internalDeadHost.enable(res.locals.access, {
 				id: Number.parseInt(req.params.host_id, 10),
 			});
 			res.status(200).send(result);
-		} catch (err) {
-			debug(logger, `${req.method.toUpperCase()} ${req.originalUrl}: ${err}`);
-			next(err);
-		}
 	});
 
 /**
@@ -195,15 +165,10 @@ router
 	 * POST /api/nginx/dead-hosts/123/disable
 	 */
 	.post(async (req, res, next) => {
-		try {
-			const result = await internalDeadHost.disable(res.locals.access, {
+const result = await internalDeadHost.disable(res.locals.access, {
 				id: Number.parseInt(req.params.host_id, 10),
 			});
 			res.status(200).send(result);
-		} catch (err) {
-			debug(logger, `${req.method.toUpperCase()} ${req.originalUrl}: ${err}`);
-			next(err);
-		}
 	});
 
 export default router;

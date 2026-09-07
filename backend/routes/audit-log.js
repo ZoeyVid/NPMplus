@@ -26,8 +26,7 @@ router
 	 * Retrieve all logs
 	 */
 	.get(async (req, res, next) => {
-		try {
-			const data = await validator(
+const data = await validator(
 				{
 					additionalProperties: false,
 					properties: {
@@ -46,10 +45,6 @@ router
 			);
 			const rows = await internalAuditLog.getAll(res.locals.access, data.expand, data.query);
 			res.status(200).send(rows);
-		} catch (err) {
-			debug(logger, `${req.method.toUpperCase()} ${req.originalUrl}: ${err}`);
-			next(err);
-		}
 	});
 
 /**
@@ -70,8 +65,7 @@ router
 	 * Retrieve a specific entry
 	 */
 	.get(async (req, res, next) => {
-		try {
-			const data = await validator(
+const data = await validator(
 				{
 					required: ["event_id"],
 					additionalProperties: false,
@@ -95,10 +89,6 @@ router
 				expand: data.expand,
 			});
 			res.status(200).send(item);
-		} catch (err) {
-			debug(logger, `${req.method.toUpperCase()} ${req.originalUrl}: ${err}`);
-			next(err);
-		}
 	});
 
 export default router;

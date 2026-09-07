@@ -51,8 +51,7 @@ router
 	 * Retrieve all users
 	 */
 	.get(async (req, res, next) => {
-		try {
-			const data = await validator(
+const data = await validator(
 				{
 					additionalProperties: false,
 					properties: {
@@ -71,10 +70,6 @@ router
 			);
 			const users = await internalUser.getAll(res.locals.access, data.expand, data.query);
 			res.status(200).send(users);
-		} catch (err) {
-			debug(logger, `${req.method.toUpperCase()} ${req.originalUrl}: ${err}`);
-			next(err);
-		}
 	})
 
 	/**
@@ -148,8 +143,7 @@ router
 	 * Retrieve a specific user
 	 */
 	.get(async (req, res, next) => {
-		try {
-			const data = await validator(
+const data = await validator(
 				{
 					required: ["user_id"],
 					additionalProperties: false,
@@ -174,10 +168,6 @@ router
 				omit: internalUser.getUserOmisionsByAccess(res.locals.access, data.user_id),
 			});
 			res.status(200).send(user);
-		} catch (err) {
-			debug(logger, `${req.method.toUpperCase()} ${req.originalUrl}: ${err}`);
-			next(err);
-		}
 	})
 
 	/**
@@ -186,15 +176,10 @@ router
 	 * Update and existing user
 	 */
 	.put(async (req, res, next) => {
-		try {
-			const payload = apiValidator(getValidationSchema("/users/{userID}", "put"), req.body);
+const payload = apiValidator(getValidationSchema("/users/{userID}", "put"), req.body);
 			payload.id = req.params.user_id;
 			const result = await internalUser.update(res.locals.access, payload);
 			res.status(200).send(result);
-		} catch (err) {
-			debug(logger, `${req.method.toUpperCase()} ${req.originalUrl}: ${err}`);
-			next(err);
-		}
 	})
 
 	/**
@@ -203,15 +188,10 @@ router
 	 * Update and existing user
 	 */
 	.delete(async (req, res, next) => {
-		try {
-			const result = await internalUser.delete(res.locals.access, {
+const result = await internalUser.delete(res.locals.access, {
 				id: req.params.user_id,
 			});
 			res.status(200).send(result);
-		} catch (err) {
-			debug(logger, `${req.method.toUpperCase()} ${req.originalUrl}: ${err}`);
-			next(err);
-		}
 	});
 
 /**
@@ -233,15 +213,10 @@ router
 	 * Update password for a user
 	 */
 	.put(async (req, res, next) => {
-		try {
-			const payload = apiValidator(getValidationSchema("/users/{userID}/auth", "put"), req.body);
+const payload = apiValidator(getValidationSchema("/users/{userID}/auth", "put"), req.body);
 			payload.id = req.params.user_id;
 			const result = await internalUser.setPassword(res.locals.access, payload);
 			res.status(200).send(result);
-		} catch (err) {
-			debug(logger, `${req.method.toUpperCase()} ${req.originalUrl}: ${err}`);
-			next(err);
-		}
 	});
 
 /**
@@ -263,15 +238,10 @@ router
 	 * Set some or all permissions for a user
 	 */
 	.put(async (req, res, next) => {
-		try {
-			const payload = apiValidator(getValidationSchema("/users/{userID}/permissions", "put"), req.body);
+const payload = apiValidator(getValidationSchema("/users/{userID}/permissions", "put"), req.body);
 			payload.id = req.params.user_id;
 			const result = await internalUser.setPermissions(res.locals.access, payload);
 			res.status(200).send(result);
-		} catch (err) {
-			debug(logger, `${req.method.toUpperCase()} ${req.originalUrl}: ${err}`);
-			next(err);
-		}
 	});
 
 /**
@@ -434,8 +404,7 @@ router
 	 * Revoke all of a user's sessions (self or admin)
 	 */
 	.delete(async (req, res, next) => {
-		try {
-			await internalUser.revokeSessions(res.locals.access, req.params.user_id);
+await internalUser.revokeSessions(res.locals.access, req.params.user_id);
 			if (Number(req.params.user_id) === res.locals.access.token.getUserId(0)) {
 				res.clearCookie("__Host-Http-token", {
 					httpOnly: true,
@@ -444,10 +413,6 @@ router
 				});
 			}
 			res.status(200).send(true);
-		} catch (err) {
-			debug(logger, `${req.method.toUpperCase()} ${req.originalUrl}: ${err}`);
-			next(err);
-		}
 	});
 
 /**
@@ -474,13 +439,8 @@ router
 			limits: { fileSize: 1024 * 1024, files: 1, fields: 0, parts: 1, fieldNameSize: 32 },
 		}).single("avatar"),
 		async (req, res, next) => {
-			try {
-				const result = await internalUser.setAvatar(res.locals.access, req.params.user_id, req.file);
+	const result = await internalUser.setAvatar(res.locals.access, req.params.user_id, req.file);
 				res.status(200).send(result);
-			} catch (err) {
-				debug(logger, `${req.method.toUpperCase()} ${req.originalUrl}: ${err}`);
-				next(err);
-			}
 		},
 	)
 
@@ -490,13 +450,8 @@ router
 	 * Remove the custom avatar, falling back to gravatar
 	 */
 	.delete(async (req, res, next) => {
-		try {
-			const result = await internalUser.deleteAvatar(res.locals.access, req.params.user_id);
+const result = await internalUser.deleteAvatar(res.locals.access, req.params.user_id);
 			res.status(200).send(result);
-		} catch (err) {
-			debug(logger, `${req.method.toUpperCase()} ${req.originalUrl}: ${err}`);
-			next(err);
-		}
 	});
 
 export default router;
