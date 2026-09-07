@@ -1279,7 +1279,11 @@ const CrowdsecDashboard = () => {
 								<div className="row g-3 mb-4">
 									<Metric
 										label={<T id="crowdsec.kpi.attacks" />}
-										value={insights.data.sampled ? `${insights.data.alertCount}+` : insights.data.alertCount}
+										value={
+											insights.data.sampled
+												? `${insights.data.alertCount}+`
+												: insights.data.alertCount
+										}
 										description={<T id="crowdsec.kpi.attacks-hint" data={{ hours: windowHours }} />}
 										onClick={() => setKpi("attacks")}
 									/>

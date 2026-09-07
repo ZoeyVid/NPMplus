@@ -37,7 +37,14 @@ const AttackMap = ({ items }: { items: AttackMapItem[] }) => {
 					<desc>{intl.formatMessage({ id: "crowdsec.attack-map.motion-note" })}</desc>
 					<defs>
 						{/* the trail fades tail-to-head in each meteor's local coordinates */}
-						<linearGradient id="meteor-fade" gradientUnits="userSpaceOnUse" x1="-22" y1="-14" x2="-3" y2="-2">
+						<linearGradient
+							id="meteor-fade"
+							gradientUnits="userSpaceOnUse"
+							x1="-22"
+							y1="-14"
+							x2="-3"
+							y2="-2"
+						>
 							<stop offset="0" stopColor="#ff9862" stopOpacity="0" />
 							<stop offset="0.55" stopColor="#ff9862" stopOpacity="0.45" />
 							<stop offset="1" stopColor="#ff9862" stopOpacity="1" />
