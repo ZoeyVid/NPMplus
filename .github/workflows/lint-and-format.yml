@@ -24,6 +24,13 @@ jobs:
       - uses: pnpm/action-setup@ea17c68df8912ef543352723c149a84f56e3d413 # v6.1.0
         with:
           version: 11.22.0
+      - name: writable test data dirs
+        run: |
+          # the http characterization tests boot the real app, which writes to
+          # the same container-layout paths (/data, /usr/local/nginx) it uses
+          # in production; the hosted runner only allows writes there as root
+          sudo mkdir -p /data /usr/local/nginx/conf/conf.d
+          sudo chown -R "$USER" /data /usr/local/nginx
       - name: backend
         run: |
           cd backend
