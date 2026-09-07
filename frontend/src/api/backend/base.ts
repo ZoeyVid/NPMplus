@@ -43,7 +43,11 @@ function buildBody(data?: Record<string, any>): string | undefined {
 	}
 }
 
-async function processResponse(response: Response, reload = true) {
+export interface ApiError extends Error {
+	payload?: unknown;
+}
+
+async function processResponse<T = any>(response: Response, reload = true): Promise<T> {
 	const payload = await response.json();
 	if (!response.ok) {
 		if (response.status === 401 && reload) {
@@ -58,11 +62,11 @@ async function processResponse(response: Response, reload = true) {
 		}
 		const error = new Error(
 			typeof payload.error.messageI18n !== "undefined" ? payload.error.messageI18n : payload.error.message,
-		);
-		(error as any).payload = payload;
+		) as ApiError;
+		error.payload = payload;
 		throw error;
 	}
-	return camelizeKeys(payload) as any;
+	return camelizeKeys(payload) as T;
 }
 
 interface GetArgs {
@@ -79,8 +83,8 @@ async function baseGet({ url, params }: GetArgs, abortSource?: AbortSource) {
 	return response;
 }
 
-export async function get(args: GetArgs, abortSource?: AbortSource) {
-	return processResponse(await baseGet(args, abortSource), args.reload);
+export async function get<T = any>(args: GetArgs, abortSource?: AbortSource) {
+	return processResponse<T>(await baseGet(args, abortSource), args.reload);
 }
 
 export async function download({ url, params }: GetArgs, filename = "download.file") {
@@ -101,7 +105,7 @@ interface PostArgs {
 	headers?: Record<string, string>;
 }
 
-export async function post({ url, params, data, headers: extraHeaders }: PostArgs, abortSource?: AbortSource) {
+export async function post<T = any>({ url, params, data, headers: extraHeaders }: PostArgs, abortSource?: AbortSource) {
 	const apiUrl = buildUrl({ url, params });
 	const method = "POST";
 
@@ -131,7 +135,7 @@ interface PutArgs {
 	params?: queryString.StringifiableRecord;
 	data?: Record<string, any>;
 }
-export async function put({ url, params, data }: PutArgs, abortSource?: AbortSource) {
+export async function put<T = any>({ url, params, data }: PutArgs, abortSource?: AbortSource) {
 	const apiUrl = buildUrl({ url, params });
 	const method = "PUT";
 	const headers = {
@@ -147,7 +151,7 @@ interface DeleteArgs {
 	url: string;
 	params?: queryString.StringifiableRecord;
 }
-export async function del({ url, params }: DeleteArgs, abortSource?: AbortSource) {
+export async function del<T = any>({ url, params }: DeleteArgs, abortSource?: AbortSource) {
 	const apiUrl = buildUrl({ url, params });
 	const method = "DELETE";
 	const signal = getAbortSignal(abortSource);
