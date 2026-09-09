@@ -1,7 +1,7 @@
 ## Mis on puhverserver?
 
-Puhverserver on veebiteenuse sissetuleva andmevoo lõpp-punkt, mida soovite edastada.
+Puhverserver on veebiteenuse sisend, mille suunad edasi oma tegelikule teenusele.
 
-See pakub valikulist TLS-i lõpetamist teie teenusele, millel ei pruugi olla sisseehitatud TLS-tuge.
+Soovi korral lõpetab see TLS-i sinu eest — isegi kui teenusel endal TLS-tuge pole.
 
-Puhverserverid on NPMplusi kõige levinum kasutusala.
+Puhverserverid on NPMplusi kõige tavalisem kasutus.
