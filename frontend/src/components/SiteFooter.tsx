@@ -6,7 +6,7 @@ export function SiteFooter() {
 
 	const version = versionData?.current || "";
 	const githubTag = version.split("-").slice(0, 4).join("-");
-	const githubLinkType = githubTag.length < 13 ? "tree" : "releases/tag";
+	const githubLinkType = githubTag.length < 13 ? "commit" : "releases/tag";
 
 	return (
 		<footer className="footer d-print-none py-3">
