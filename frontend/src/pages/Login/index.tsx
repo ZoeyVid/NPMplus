@@ -39,7 +39,9 @@ function TotpForm() {
 			<p className="text-secondary text-center mb-4">
 				<T id="login.totp-description" />
 			</p>
-			{formErr !== "" && <Alert variant="danger">{intl.formatMessage({ id: formErr, defaultMessage: formErr })}</Alert>}
+			{formErr !== "" && (
+				<Alert variant="danger">{intl.formatMessage({ id: formErr, defaultMessage: formErr })}</Alert>
+			)}
 			<Formik initialValues={{ code: "" }} onSubmit={onSubmit}>
 				{({ isSubmitting }) => (
 					<Form>
@@ -141,7 +143,9 @@ function PasswordForm() {
 			<h2 className="h2 text-center mb-4">
 				<T id="login.title" />
 			</h2>
-			{formErr !== "" && <Alert variant="danger">{intl.formatMessage({ id: formErr, defaultMessage: formErr })}</Alert>}
+			{formErr !== "" && (
+				<Alert variant="danger">{intl.formatMessage({ id: formErr, defaultMessage: formErr })}</Alert>
+			)}
 			{health.data?.password && (
 				<Formik
 					initialValues={
