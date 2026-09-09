@@ -192,6 +192,16 @@ export default {
 			throw new errs.AuthError("Invalid challenge token");
 		}
 
+		const user = await userModel
+			.query()
+			.where("id", userId)
+			.andWhere("is_deleted", 0)
+			.andWhere("is_disabled", 0)
+			.first();
+		if (!user || tokenData.iat <= user.npmplus_token_valid_after) {
+			throw new errs.AuthError("Invalid challenge token");
+		}
+
 		// Verify TOTP code
 		const valid = await mfa.verifyForLogin(userId, code);
 		if (!valid) {
