@@ -13,6 +13,7 @@ import internalToken from "./token.js";
 
 const omissions = () => [
 	"is_deleted",
+	"npmplus_token_valid_after",
 	"permissions.id",
 	"permissions.user_id",
 	"permissions.created_on",
@@ -543,10 +544,20 @@ const internalUser = {
 
 	revokeSessions: async (access, userId) => {
 		await access.can("users:revoke", userId);
-		await userModel
+		const user = await userModel
 			.query()
-			.where("id", userId)
-			.patch({ npmplus_token_valid_after: Math.floor(Date.now() / 1000) });
+			.patchAndFetchById(userId, { npmplus_token_valid_after: Math.floor(Date.now() / 1000) });
+
+		await internalAuditLog.add(access, {
+			action: "updated",
+			object_type: "user",
+			object_id: user.id,
+			meta: {
+				name: user.name,
+				sessions_revoked: true,
+			},
+		});
+
 		return true;
 	},
 };
