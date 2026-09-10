@@ -12,8 +12,8 @@ importers:
         specifier: 1.2.13
         version: 1.2.13(react-dom@19.3.0(react@19.3.0))(react@19.3.0)
       '@tabler/core':
-        specifier: 1.5.0
-        version: 1.5.0
+        specifier: 1.5.1
+        version: 1.5.1
       '@tabler/icons-react':
         specifier: 3.46.0
         version: 3.46.0(react@19.3.0)
@@ -425,8 +425,8 @@ packages:
   '@swc/helpers@0.5.23':
     resolution: {integrity: sha512-5lSsMOTXURePglDfvuAQUqkGek9Hg2kksOYay2m0+XR++b2NWYL/4sWyuvVBIs8oKnJaxkdi9whaL/sqN13afw==}
 
-  '@tabler/core@1.5.0':
-    resolution: {integrity: sha512-nXFwOF0jlH6cH57eCRDI6uxhlQGtN92hBmkSwgIsUNg+hQBwnK9clAv3dEcSkVkXY+lKpDq8hpCvDT1AwPIzZw==}
+  '@tabler/core@1.5.1':
+    resolution: {integrity: sha512-PI9rJq4H4lBh53YP/J+m5Uz6lqVQbsGPmWCMN34IP4KQQ/wy28YMO6a3Eiz1cQHdFFr+3MlU3yYhXdzvFGJfqw==}
     engines: {node: '>=20'}
 
   '@tabler/icons-react@3.46.0':
@@ -1465,7 +1465,7 @@ snapshots:
     dependencies:
       tslib: 2.8.1
 
-  '@tabler/core@1.5.0':
+  '@tabler/core@1.5.1':
     dependencies:
       '@popperjs/core': 2.11.8
 
