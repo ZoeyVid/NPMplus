@@ -260,8 +260,6 @@ RUN apk upgrade --no-cache -a && \
     rm -vr /src /tmp/luarocks_local_cache-* && \
     apk del --no-cache luarocks5.1 git make && \
     \
-    sed -i "s|placeholder|$(jq -r .version /app/package.json)|g" /usr/local/nginx/conf/conf.d/crowdsec.conf.disabled && \
-    \
     python3 -m venv /usr/local && \
     pip install --no-cache-dir --upgrade pip certbot && \
     \
