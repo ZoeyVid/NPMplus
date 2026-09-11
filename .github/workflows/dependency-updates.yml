@@ -129,6 +129,7 @@ jobs:
           LCSB_SHA="$(git ls-remote https://github.com/crowdsecurity/lua-cs-bouncer "$LCSB_VER" | cut -f1)"
           echo "compare=https://github.com/crowdsecurity/lua-cs-bouncer/compare/$(sed -n 's|^ARG LCSB_VER=\(.*\) #.*|\1|p' Dockerfile)...$LCSB_SHA" >> $GITHUB_OUTPUT
           sed -i "s|ARG LCSB_VER=.*|ARG LCSB_VER=$LCSB_SHA # $LCSB_VER|" Dockerfile
+          sed -i "s|crowdsec-npmplus-bouncer/.*\"|crowdsec-npmplus-bouncer/$LCSB_VER\"|" rootfs/usr/local/nginx/conf/conf.d/crowdsec.conf.disabled
           echo "version=$LCSB_VER" >> $GITHUB_OUTPUT
           curl -sSfL https://raw.githubusercontent.com/crowdsecurity/lua-cs-bouncer/refs/tags/"$LCSB_VER"/config_example.conf -o rootfs/etc/crowdsec.conf.original
       - uses: peter-evans/create-pull-request@5f6978faf089d4d20b00c7766989d076bb2fc7f1 # v8.1.1
@@ -144,7 +145,9 @@ jobs:
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       - name: update cs-nginx-bouncer config
-        run: curl -sSfL https://raw.githubusercontent.com/crowdsecurity/cs-nginx-bouncer/main/nginx/crowdsec_nginx.conf -o rootfs/usr/local/nginx/conf/conf.d/crowdsec.conf.original
+        run: |
+          curl -sSfL https://raw.githubusercontent.com/crowdsecurity/cs-nginx-bouncer/main/nginx/crowdsec_nginx.conf -o rootfs/usr/local/nginx/conf/conf.d/crowdsec.conf.original
+          sed -i "s|crowdsec-nginx-bouncer/.*\"|crowdsec-nginx-bouncer/version\"|" rootfs/usr/local/nginx/conf/conf.d/crowdsec.conf.original
       - uses: peter-evans/create-pull-request@5f6978faf089d4d20b00c7766989d076bb2fc7f1 # v8.1.1
         with:
           signoff: true
