@@ -41,4 +41,4 @@ openssl base64 -A -in "$ECHCL"
 echo
 
 rm "$ECHPK" "$ECHCL"
-jq --argjson id "$ECHCID" '.current += [$id]' /data/tls/ech/config-ids.json | sponge /data/tls/ech/config-ids.json
+jq --argjson id "$ECHCID" '.current += [$id]' /data/tls/ech/config-ids.json > /data/tls/ech/config-ids.json.tmp && mv /data/tls/ech/config-ids.json.tmp /data/tls/ech/config-ids.json

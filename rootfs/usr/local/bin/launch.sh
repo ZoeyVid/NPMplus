@@ -49,12 +49,12 @@ if [ "$CUSTOM_OCSP_STAPLING" = "true" ]; then
 fi
 
 if [ ! -s /data/tls/ech/config-ids.json ]; then
-    jq -n '{current: [], previous: []}' | sponge /data/tls/ech/config-ids.json
+    jq -n '{current: [], previous: []}' > /data/tls/ech/config-ids.json
 fi
 
 if [ -s /data/tls/ech/cron.sh ]; then
     rm -f /data/tls/ech/*-previous.ech
-    jq '{current: [], previous: .current}' /data/tls/ech/config-ids.json | sponge /data/tls/ech/config-ids.json
+    jq '{current: [], previous: .current}' /data/tls/ech/config-ids.json > /data/tls/ech/config-ids.json.tmp && mv /data/tls/ech/config-ids.json.tmp /data/tls/ech/config-ids.json
 
     chmod +x /data/tls/ech/cron.sh
     /data/tls/ech/cron.sh
@@ -65,7 +65,7 @@ if [ -s /data/tls/ech/cron.sh ]; then
     done
 elif [ -s /data/tls/ech/nginx.conf ]; then
     rm -f /data/tls/ech/*.ech
-    jq -n '{current: [], previous: []}' | sponge /data/tls/ech/config-ids.json
+    jq -n '{current: [], previous: []}' > /data/tls/ech/config-ids.json
 
     : > /data/tls/ech/nginx.conf
 fi
