@@ -21,7 +21,7 @@
 		"react": "19.3.0",
 		"react-bootstrap": "2.10.10",
 		"react-dom": "19.3.0",
-		"react-intl": "10.2.1",
+		"react-intl": "10.2.2",
 		"react-router": "8.3.1",
 		"react-select": "5.10.2",
 		"react-toastify": "11.1.0",
