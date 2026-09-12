@@ -1,5 +1,6 @@
 import crypto from "node:crypto";
 import bcrypt from "bcryptjs";
+import { hash, verify } from "../lib/argon2.js";
 import errs from "../lib/error.js";
 import authModel from "../models/auth.js";
 import userModel from "../models/user.js";
@@ -20,8 +21,7 @@ const generateBackupCodes = async () => {
 	for (let i = 0; i < BACKUP_CODE_COUNT; i++) {
 		const code = crypto.randomBytes(4).toString("hex").toUpperCase();
 		plain.push(code);
-		const hash = await bcrypt.hash(code, 10);
-		hashed.push(hash);
+		hashed.push(await hash(code, true));
 	}
 
 	return { plain, hashed };
@@ -146,7 +146,10 @@ const internalMfa = {
 			const auth = await authModel.getPasswordAuth(userId);
 			const backupCodes = auth?.meta?.backup_codes || [];
 			for (let i = 0; i < backupCodes.length; i++) {
-				const match = await bcrypt.compare(tokenTrim.toUpperCase(), backupCodes[i]);
+				const stored = backupCodes[i];
+				const match = stored.startsWith("$2")
+					? await bcrypt.compare(tokenTrim.toUpperCase(), stored)
+					: await verify(tokenTrim.toUpperCase(), stored);
 				if (match) {
 					// Remove used backup code
 					const updatedCodes = [...backupCodes];

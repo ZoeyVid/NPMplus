@@ -4,6 +4,7 @@
 import bcrypt from "bcryptjs";
 import { Model } from "objection";
 import db from "../db.js";
+import { hash, verify } from "../lib/argon2.js";
 import { convertBoolFieldsToInt, convertIntFieldsToBool } from "../lib/helpers.js";
 import now from "./now_helper.js";
 import User from "./user.js";
@@ -14,7 +15,7 @@ const boolFields = ["is_deleted"];
 
 async function encryptPassword() {
 	if (this.type === "password" && this.secret) {
-		this.secret = await bcrypt.hash(this.secret, 13);
+		this.secret = await hash(this.secret);
 		return;
 	}
 
@@ -50,13 +51,17 @@ class Auth extends Model {
 	}
 
 	/**
-	 * Verify a plain password against the encrypted password
+	 * Verify a plain password against the encrypted password, replacing a legacy bcrypt hash on success
 	 *
 	 * @param {String} password
 	 * @returns {Promise}
 	 */
-	verifyPassword(password) {
-		return bcrypt.compare(password, this.secret);
+	async verifyPassword(password) {
+		if (!this.secret.startsWith("$2")) return verify(password, this.secret);
+		if (!(await bcrypt.compare(password, this.secret))) return false;
+
+		await this.$query().patch({ type: this.type, secret: password });
+		return true;
 	}
 
 	/**
