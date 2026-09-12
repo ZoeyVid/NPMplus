@@ -14,17 +14,17 @@ Date:     $(date)
 "
 
 
-if [ "$(whoami)" != "root" ] || [ "$(id -u)" != "0" ] || [ "$(id -g)" != "0" ]; then
-	echo "-----------------------------------------------------------------------------------------------"
-	echo "This docker container must be run as root, do not specify a user. Please use PUID/PGID instead."
-	echo "-----------------------------------------------------------------------------------------------"
+if [ "$(whoami)" != "root" ] || [ "$(id -u)" != "0" ] || [ "$(id -g)" != "0" ] || [ -n "$UID" ] || [ -n "$GID" ]; then
+    echo "-----------------------------------------------------------------------------------------------"
+    echo "This docker container must be run as root, do not specify a user. Please use PUID/PGID instead."
+    echo "-----------------------------------------------------------------------------------------------"
     sleep inf
 fi
 
 if [ ! -d /data ]; then
-	echo "----------------------------------------------"
-	echo "/data is not mounted! Check your compose.yaml."
-	echo "----------------------------------------------"
+    echo "----------------------------------------------"
+    echo "/data is not mounted! Check your compose.yaml."
+    echo "----------------------------------------------"
     sleep inf
 fi
 

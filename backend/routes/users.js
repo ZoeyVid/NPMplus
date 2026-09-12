@@ -82,26 +82,21 @@ router
 	 * Create a new User
 	 */
 	.post(async (req, res, next) => {
-		const { body } = req;
-
 		try {
 			// If we are in setup mode, we don't check access for current user
 			const setup = await isSetup();
+
+			let body = req.body;
 			if (!setup) {
 				logger.info("Creating a new user in setup mode");
 				const access = new Access(null);
 				await access.load(true);
 				res.locals.access = access;
 
-				// We are in setup mode, set some defaults for this first new user, such as making
-				// them an admin.
-				body.is_disabled = false;
-				if (typeof body.roles !== "object" || body.roles === null) {
-					body.roles = [];
-				}
-				if (body.roles.indexOf("admin") === -1) {
-					body.roles.push("admin");
-				}
+				// We are in setup mode, only take the fields a user may set and force this
+				// first user to be an admin.
+				const { name, nickname, email, auth } = req.body;
+				body = { name, nickname, email, auth, roles: ["admin"] };
 			}
 
 			const payload = apiValidator(getValidationSchema("/users", "post"), body);

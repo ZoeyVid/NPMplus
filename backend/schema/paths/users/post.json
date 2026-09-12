@@ -43,6 +43,18 @@
 						"auth": {
 							"type": "object",
 							"description": "Auth Credentials",
+							"additionalProperties": false,
+							"required": ["type", "secret"],
+							"properties": {
+								"type": {
+									"type": "string",
+									"enum": ["password"]
+								},
+								"secret": {
+									"type": "string",
+									"minLength": 1
+								}
+							},
 							"example": {
 								"type": "password",
 								"secret": "bigredhorsebanana"

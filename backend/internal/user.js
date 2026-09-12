@@ -32,6 +32,44 @@ const avatarExt = (b) => {
 	return null;
 };
 
+const rmAvatars = (dir, name) =>
+	Promise.all(avatarExts.map((e) => rm(`/data/npmplus/${dir}/${name}.${e}`, { force: true })));
+
+const fetchGravatar = async (id, email, name) => {
+	if (process.env.DISABLE_GRAVATAR === "true") return "/images/default-avatar.jpg";
+	try {
+		const hash = crypto.createHash("sha256").update(email.trim().toLowerCase()).digest("hex");
+		const response = await fetch(
+			`https://www.gravatar.com/avatar/${hash}?s=64&default=initials&name=${encodeURIComponent(
+				name
+					.split(" ")
+					.map((n) => n[0])
+					.join(""),
+			)}`,
+			{
+				headers: {
+					"User-Agent": `NPMplus/${pjson.version}`,
+				},
+			},
+		);
+
+		if (!response.ok) throw new Error(`Status code: ${response.status}`);
+
+		const buffer = Buffer.from(await response.arrayBuffer());
+		const ext = avatarExt(buffer);
+		if (!ext) throw new Error("Unsupported image format");
+
+		await rmAvatars("gravatar", id);
+		await rmAvatars("gravatar", hash);
+		await writeFile(`/data/npmplus/gravatar/${id}.${ext}`, buffer);
+
+		return `/images/gravatar/${id}.${ext}`;
+	} catch (err) {
+		logger.error(`Error downloading gravatar: ${err.message}`);
+		return "/images/default-avatar.jpg";
+	}
+};
+
 const internalUser = {
 	/**
 	 * Create a user can happen unauthenticated only once and only when no active users exist.
@@ -60,52 +98,6 @@ const internalUser = {
 			throw new errs.ValidationError(`Email address already in use - ${data.email}`);
 		}
 
-		if (process.env.DISABLE_GRAVATAR === "true") {
-			data.avatar = "/images/default-avatar.jpg";
-		} else {
-			try {
-				const hash = crypto.createHash("sha256").update(data.email.trim().toLowerCase()).digest("hex");
-				const response = await fetch(
-					`https://www.gravatar.com/avatar/${hash}?s=64&default=initials&name=${encodeURIComponent(
-						data.name
-							.split(" ")
-							.map((n) => n[0])
-							.join(""),
-					)}`,
-					{
-						headers: {
-							"User-Agent": `NPMplus/${pjson.version}`,
-						},
-					},
-				);
-
-				if (!response.ok) throw new Error(`Status code: ${response.status}`);
-
-				let ext;
-				switch (response.headers.get("content-type")) {
-					case "image/png":
-						ext = "png";
-						break;
-					case "image/jpeg":
-						ext = "jpg";
-						break;
-					case "image/gif":
-						ext = "gif";
-						break;
-					default:
-						throw new Error(`Unsupported content-type: ${response.headers.get("content-type")}`);
-				}
-
-				const buffer = await response.arrayBuffer();
-				await writeFile(`/data/npmplus/gravatar/${hash}.${ext}`, Buffer.from(buffer));
-
-				data.avatar = `/images/gravatar/${hash}.${ext}`;
-			} catch (err) {
-				logger.error(`Error downloading gravatar: ${err.message}`);
-				data.avatar = "/images/default-avatar.jpg";
-			}
-		}
-
 		let user = utils.omitRow(omissions())(await userModel.query().insertAndFetch(data));
 		if (auth) {
 			await authModel.query().insert({
@@ -130,6 +122,10 @@ const internalUser = {
 			certificates: "manage",
 		});
 
+		await userModel
+			.query()
+			.patchAndFetchById(user.id, { avatar: await fetchGravatar(user.id, user.email, user.name) });
+
 		user = await internalUser.get(access, { id: user.id, expand: ["permissions"] });
 
 		await internalAuditLog.add(access, {
@@ -147,7 +143,7 @@ const internalUser = {
 		const ext = avatarExt(file?.buffer);
 		if (!ext) throw new errs.ValidationError("Invalid avatar file type");
 		const user = await internalUser.get(access, { id });
-		await Promise.all(avatarExts.map((e) => rm(`/data/npmplus/avatar/${user.id}.${e}`, { force: true })));
+		await rmAvatars("avatar", user.id);
 		await writeFile(`/data/npmplus/avatar/${user.id}.${ext}`, file.buffer);
 		await userModel.query().patchAndFetchById(user.id, { avatar: `/images/avatar/${user.id}.${ext}` });
 		return internalUser.update(access, { id: user.id });
@@ -156,7 +152,7 @@ const internalUser = {
 	deleteAvatar: async (access, id) => {
 		await access.can("users:update", id);
 		const user = await internalUser.get(access, { id });
-		await Promise.all(avatarExts.map((e) => rm(`/data/npmplus/avatar/${user.id}.${e}`, { force: true })));
+		await rmAvatars("avatar", user.id);
 		await userModel.query().patchAndFetchById(user.id, { avatar: "" });
 		return internalUser.update(access, { id: user.id });
 	},
@@ -200,53 +196,12 @@ const internalUser = {
 
 		if (existingUser.avatar?.startsWith("/images/avatar/")) {
 			data.avatar = existingUser.avatar;
-		} else if (process.env.DISABLE_GRAVATAR === "true") {
-			data.avatar = "/images/default-avatar.jpg";
 		} else {
-			try {
-				const hash = crypto
-					.createHash("sha256")
-					.update((data.email || existingUser.email).trim().toLowerCase())
-					.digest("hex");
-				const response = await fetch(
-					`https://www.gravatar.com/avatar/${hash}?s=64&default=initials&name=${encodeURIComponent(
-						(data.name || existingUser.name)
-							.split(" ")
-							.map((n) => n[0])
-							.join(""),
-					)}`,
-					{
-						headers: {
-							"User-Agent": `NPMplus/${pjson.version}`,
-						},
-					},
-				);
-
-				if (!response.ok) throw new Error(`Status code: ${response.status}`);
-
-				let ext;
-				switch (response.headers.get("content-type")) {
-					case "image/png":
-						ext = "png";
-						break;
-					case "image/jpeg":
-						ext = "jpg";
-						break;
-					case "image/gif":
-						ext = "gif";
-						break;
-					default:
-						throw new Error(`Unsupported content-type: ${response.headers.get("content-type")}`);
-				}
-
-				const buffer = await response.arrayBuffer();
-				await writeFile(`/data/npmplus/gravatar/${hash}.${ext}`, Buffer.from(buffer));
-
-				data.avatar = `/images/gravatar/${hash}.${ext}`;
-			} catch (err) {
-				logger.error(`Error downloading gravatar: ${err.message}`);
-				data.avatar = "/images/default-avatar.jpg";
-			}
+			data.avatar = await fetchGravatar(
+				existingUser.id,
+				data.email || existingUser.email,
+				data.name || existingUser.name,
+			);
 		}
 
 		await userModel.query().patchAndFetchById(existingUser.id, data);
