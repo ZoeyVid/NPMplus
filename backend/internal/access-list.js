@@ -39,7 +39,7 @@ const internalAccessList = {
 				accessListAuthModel.query().insert({
 					access_list_id: row.id,
 					username: item.username,
-					password: bcrypt.hashSync(item.password, 6),
+					password: bcrypt.hashSync(item.password, 5),
 				}),
 			),
 		);
@@ -143,7 +143,7 @@ const internalAccessList = {
 						accessListAuthModel.query().insert({
 							access_list_id: data.id,
 							username: item.username,
-							password: bcrypt.hashSync(item.password, 6),
+							password: bcrypt.hashSync(item.password, 5),
 						}),
 					),
 			);
