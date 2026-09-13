@@ -72,9 +72,8 @@ docker compose up -d
 8. You should now remove the `/etc/letsencrypt` mount, since it was moved to `/data` while migration, then redeploy the compose file
 9. Since many forms have changed, please check if they are still correct for every host you have.
 10. If you proxy NPM(plus) through NPM(plus) make sure to change the scheme from http to https
-11. Because of a added CSP-rules gravatar images will not load, to fix this you need to open the form to edit a users name and save it without changes
-12. Maybe setup crowdsec (see below)
-13. Please report all (migration) issues you may have
+11. Maybe setup crowdsec (see below)
+12. Please report all (migration) issues you may have
 
 # Crowdsec
 <!--Note: Using Immich behind NPMplus with enabled appsec causes issues, see here: [#1241](https://github.com/ZoeyVid/NPMplus/discussions/1241) <br>-->

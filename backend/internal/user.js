@@ -32,44 +32,6 @@ const avatarExt = (b) => {
 	return null;
 };
 
-const rmAvatars = (dir, name) =>
-	Promise.all(avatarExts.map((e) => rm(`/data/npmplus/${dir}/${name}.${e}`, { force: true })));
-
-const fetchGravatar = async (id, email, name) => {
-	if (process.env.DISABLE_GRAVATAR === "true") return "/images/default-avatar.jpg";
-	try {
-		const hash = crypto.createHash("sha256").update(email.trim().toLowerCase()).digest("hex");
-		const response = await fetch(
-			`https://www.gravatar.com/avatar/${hash}?s=64&default=initials&name=${encodeURIComponent(
-				name
-					.split(" ")
-					.map((n) => n[0])
-					.join(""),
-			)}`,
-			{
-				headers: {
-					"User-Agent": `NPMplus/${pjson.version}`,
-				},
-			},
-		);
-
-		if (!response.ok) throw new Error(`Status code: ${response.status}`);
-
-		const buffer = Buffer.from(await response.arrayBuffer());
-		const ext = avatarExt(buffer);
-		if (!ext) throw new Error("Unsupported image format");
-
-		await rmAvatars("gravatar", id);
-		await rmAvatars("gravatar", hash);
-		await writeFile(`/data/npmplus/gravatar/${id}.${ext}`, buffer);
-
-		return `/images/gravatar/${id}.${ext}`;
-	} catch (err) {
-		logger.error(`Error downloading gravatar: ${err.message}`);
-		return "/images/default-avatar.jpg";
-	}
-};
-
 const internalUser = {
 	/**
 	 * Create a user can happen unauthenticated only once and only when no active users exist.
@@ -124,7 +86,7 @@ const internalUser = {
 
 		await userModel
 			.query()
-			.patchAndFetchById(user.id, { avatar: await fetchGravatar(user.id, user.email, user.name) });
+			.patchAndFetchById(user.id, { avatar: await internalUser.fetchGravatar(user.id, user.email, user.name) });
 
 		user = await internalUser.get(access, { id: user.id, expand: ["permissions"] });
 
@@ -138,12 +100,46 @@ const internalUser = {
 		return user;
 	},
 
+	fetchGravatar: async (id, email, name) => {
+		if (process.env.DISABLE_GRAVATAR === "true") return "/images/default-avatar.jpg";
+		try {
+			const hash = crypto.createHash("sha256").update(email.trim().toLowerCase()).digest("hex");
+			const response = await fetch(
+				`https://www.gravatar.com/avatar/${hash}?s=64&default=initials&name=${encodeURIComponent(
+					name
+						.split(" ")
+						.map((n) => n[0])
+						.join(""),
+				)}`,
+				{
+					headers: {
+						"User-Agent": `NPMplus/${pjson.version}`,
+					},
+				},
+			);
+
+			if (!response.ok) throw new Error(`Status code: ${response.status}`);
+
+			const buffer = Buffer.from(await response.arrayBuffer());
+			const ext = avatarExt(buffer);
+			if (!ext) throw new Error("Unsupported image format");
+
+			for (const e of avatarExts) await rm(`/data/npmplus/gravatar/${id}.${e}`, { force: true });
+			await writeFile(`/data/npmplus/gravatar/${id}.${ext}`, buffer);
+
+			return `/images/gravatar/${id}.${ext}`;
+		} catch (err) {
+			logger.error(`Error downloading gravatar: ${err.message}`);
+			return "/images/default-avatar.jpg";
+		}
+	},
+
 	setAvatar: async (access, id, file) => {
 		await access.can("users:update", id);
 		const ext = avatarExt(file?.buffer);
 		if (!ext) throw new errs.ValidationError("Invalid avatar file type");
 		const user = await internalUser.get(access, { id });
-		await rmAvatars("avatar", user.id);
+		for (const e of avatarExts) await rm(`/data/npmplus/avatar/${user.id}.${e}`, { force: true });
 		await writeFile(`/data/npmplus/avatar/${user.id}.${ext}`, file.buffer);
 		await userModel.query().patchAndFetchById(user.id, { avatar: `/images/avatar/${user.id}.${ext}` });
 		return internalUser.update(access, { id: user.id });
@@ -152,7 +148,7 @@ const internalUser = {
 	deleteAvatar: async (access, id) => {
 		await access.can("users:update", id);
 		const user = await internalUser.get(access, { id });
-		await rmAvatars("avatar", user.id);
+		for (const e of avatarExts) await rm(`/data/npmplus/avatar/${user.id}.${e}`, { force: true });
 		await userModel.query().patchAndFetchById(user.id, { avatar: "" });
 		return internalUser.update(access, { id: user.id });
 	},
@@ -197,7 +193,7 @@ const internalUser = {
 		if (existingUser.avatar?.startsWith("/images/avatar/")) {
 			data.avatar = existingUser.avatar;
 		} else {
-			data.avatar = await fetchGravatar(
+			data.avatar = await internalUser.fetchGravatar(
 				existingUser.id,
 				data.email || existingUser.email,
 				data.name || existingUser.name,
