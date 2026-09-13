@@ -14,6 +14,14 @@
 		"message": {
 			"type": "string",
 			"example": "Bad Request"
+		},
+		"message_i18n": {
+			"type": "string",
+			"example": "error.invalid-auth"
+		},
+		"output": {
+			"type": "string",
+			"example": "Some challenges have failed."
 		}
 	}
 }

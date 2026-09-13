@@ -57,12 +57,11 @@ const DeadHostModal = EasyModal.create(({ id, visible, remove }: Props) => {
 
 		setDeadHost(payload, {
 			onError: (err: any) => {
-				if (err.payload?.debug?.stack) {
+				if (err.payload?.error?.output) {
 					setErrorMsg(
 						<div className="w-100">
-							<T id={err.message} />
 							<pre>
-								<code>{err.payload.debug.stack.join("\n")}</code>
+								<code>{err.payload.error.output}</code>
 							</pre>
 						</div>,
 					);

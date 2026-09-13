@@ -69,10 +69,7 @@ app.use((err, req, res, _) => {
 	}
 
 	if (err instanceof errs.CommandError) {
-		payload.debug = {
-			stack: err.stack?.split("\n") ?? null,
-			previous: err.previous,
-		};
+		payload.error.output = err.message;
 	}
 
 	// Not every error is worth logging - but this is good for now until it gets annoying.
