@@ -60,7 +60,6 @@ export default function TableWrapper() {
 		filtered = data?.filter(
 			(item) =>
 				item.name.toLowerCase().includes(search) ||
-				item.nickname.toLowerCase().includes(search) ||
 				item.email.toLowerCase().includes(search),
 		);
 	}

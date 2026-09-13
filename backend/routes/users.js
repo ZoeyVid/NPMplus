@@ -95,8 +95,8 @@ router
 
 				// We are in setup mode, only take the fields a user may set and force this
 				// first user to be an admin.
-				const { name, nickname, email, auth } = req.body;
-				body = { name, nickname, email, auth, roles: ["admin"] };
+				const { name, email, auth } = req.body;
+				body = { name, email, auth, roles: ["admin"] };
 			}
 
 			const payload = apiValidator(getValidationSchema("/users", "post"), body);

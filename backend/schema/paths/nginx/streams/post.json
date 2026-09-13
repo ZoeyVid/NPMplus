@@ -104,7 +104,6 @@
 									"is_disabled": false,
 									"email": "admin@example.com",
 									"name": "Administrator",
-									"nickname": "Admin",
 									"avatar": "",
 									"roles": [
 										"admin"
