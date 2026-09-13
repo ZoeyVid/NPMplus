@@ -1,0 +1,263 @@
+import { IconDotsVertical, IconEdit, IconPower, IconTrash } from "@tabler/icons-react";
+import {
+	createColumnHelper,
+	createSortedRowModel,
+	rowSortingFeature,
+	sortFn_alphanumeric,
+	sortFn_datetime,
+	sortFn_text,
+	tableFeatures,
+	useTable,
+} from "@tanstack/react-table";
+import { useMemo } from "react";
+import {
+	CertificateFormatter,
+	EmptyData,
+	GravatarFormatter,
+	HasPermission,
+	StatusFormatter,
+	ValueWithDateFormatter,
+} from "src/components";
+import { TableLayout } from "src/components/Table/TableLayout";
+import { intl, T } from "src/locale";
+import { MANAGE, STREAMS } from "src/modules/Permissions";
+
+const features = tableFeatures({
+	rowSortingFeature,
+	sortedRowModel: createSortedRowModel(),
+	sortFns: {
+		alphanumeric: sortFn_alphanumeric,
+		datetime: sortFn_datetime,
+		text: sortFn_text,
+	},
+});
+
+export default function Table({
+	data,
+	isFetching,
+	isFiltered,
+	onEdit,
+	onDelete,
+	onDisableToggle,
+	onNew,
+	sorting,
+	onSortingChange,
+	showHeader,
+	groupBy,
+	renderGroupLabel,
+}) {
+	const columnHelper = createColumnHelper();
+	const columns = useMemo(
+		() => [
+			columnHelper.accessor((row) => row.owner.name, {
+				id: "owner",
+				cell: (info) => {
+					const value = info.row.original.owner;
+					return <GravatarFormatter url={value ? value.avatar : ""} name={value ? value.name : ""} />;
+				},
+				meta: {
+					className: "w-1",
+				},
+			}),
+			columnHelper.accessor((row) => row.incomingPort, {
+				id: "incomingPort",
+				header: intl.formatMessage({ id: "column.incoming-port" }),
+				cell: (info) => {
+					const value = info.row.original;
+					return <ValueWithDateFormatter value={value.incomingPort} createdOn={value.createdOn} />;
+				},
+			}),
+			columnHelper.accessor((row) => row.npmplusDescription || "", {
+				id: "npmplusDescription",
+				header: intl.formatMessage({ id: "column.description" }),
+				cell: (info) => {
+					const value = info.row.original.npmplusDescription;
+					return value || <span className="text-muted">—</span>;
+				},
+			}),
+			columnHelper.accessor(
+				(row) => `${row.forwardingHost}${row.forwardingPort ? `:${row.forwardingPort}` : ""}`,
+				{
+					id: "destination",
+					header: intl.formatMessage({ id: "column.destination" }),
+					cell: (info) => info.getValue(),
+				},
+			),
+			columnHelper.accessor(
+				(row) => {
+					const protocols = [];
+					if (row.tcpForwarding) protocols.push("TCP");
+					if (row.npmplusProxyProtocolForwarding)
+						protocols.push(row.npmplusProxyProtocolForwarding === 1 ? "PPv1" : "PPv2");
+					if (row.npmplusProxyTls) protocols.push("TLS");
+					if (row.udpForwarding) protocols.push("UDP");
+					return protocols.join(" ");
+				},
+				{
+					id: "protocol",
+					header: intl.formatMessage({ id: "column.protocol" }),
+					cell: (info) => {
+						const value = info.row.original;
+						return (
+							<>
+								{value.tcpForwarding ? (
+									<span className="badge badge-lg domain-name">
+										<T id="streams.tcp" />
+									</span>
+								) : null}
+								{value.npmplusProxyProtocolForwarding ? (
+									<span className="badge badge-lg domain-name">
+										<T
+											id={
+												value.npmplusProxyProtocolForwarding === 1
+													? "streams.pp.v1"
+													: "streams.pp.v2"
+											}
+										/>
+									</span>
+								) : null}
+								{value.npmplusProxyTls ? (
+									<span className="badge badge-lg domain-name">
+										<T id="streams.tls" />
+									</span>
+								) : null}
+								{value.udpForwarding ? (
+									<span className="badge badge-lg domain-name">
+										<T id="streams.udp" />
+									</span>
+								) : null}
+							</>
+						);
+					},
+				},
+			),
+			columnHelper.accessor((row) => (row.certificate ? row.certificate.provider : "http-only"), {
+				id: "certificate",
+				header: intl.formatMessage({ id: "column.ssl" }),
+				cell: (info) => <CertificateFormatter certificate={info.row.original.certificate} />,
+			}),
+			columnHelper.accessor(
+				(row) => {
+					if (!row.enabled) return "3disabled";
+					if (row.meta.nginxOnline) return "2online";
+					return "1offline";
+				},
+				{
+					id: "enabled",
+					header: intl.formatMessage({ id: "column.status" }),
+					cell: (info) => {
+						const value = info.row.original;
+						return (
+							<StatusFormatter
+								enabled={value.enabled}
+								nginxOnline={value.meta.nginxOnline}
+								nginxErr={value.meta.nginxErr}
+							/>
+						);
+					},
+				},
+			),
+			columnHelper.accessor((row) => row.id, {
+				id: "id",
+				header: "ID",
+				cell: (info) => info.getValue(),
+				meta: {
+					className: "text-end w-1",
+				},
+			}),
+			columnHelper.display({
+				id: "actions",
+				cell: (info) => (
+					<span className="dropdown">
+						<button
+							type="button"
+							className="btn dropdown-toggle btn-action btn-sm px-1"
+							data-bs-boundary="viewport"
+							data-bs-toggle="dropdown"
+						>
+							<IconDotsVertical />
+						</button>
+						<div className="dropdown-menu dropdown-menu-end">
+							<span className="dropdown-header">
+								<T
+									id="object.actions-title"
+									tData={{ object: "stream" }}
+									data={{ id: info.row.original.id }}
+								/>
+							</span>
+							<button
+								type="button"
+								className="dropdown-item"
+								onClick={() => {
+									onEdit?.(info.row.original.id);
+								}}
+							>
+								<IconEdit size={16} />
+								<T id="action.edit" />
+							</button>
+							<HasPermission section={STREAMS} permission={MANAGE} hideError>
+								<button
+									type="button"
+									className="dropdown-item"
+									onClick={() => {
+										onDisableToggle?.(info.row.original.id, !info.row.original.enabled);
+									}}
+								>
+									<IconPower size={16} />
+									<T id={info.row.original.enabled ? "action.disable" : "action.enable"} />
+								</button>
+								<div className="dropdown-divider" />
+								<button
+									type="button"
+									className="dropdown-item"
+									onClick={() => {
+										onDelete?.(info.row.original.id);
+									}}
+								>
+									<IconTrash size={16} />
+									<T id="action.delete" />
+								</button>
+							</HasPermission>
+						</div>
+					</span>
+				),
+				meta: {
+					className: "text-end w-1",
+				},
+			}),
+		],
+		[columnHelper, onEdit, onDisableToggle, onDelete],
+	);
+
+	const tableInstance = useTable({
+		features,
+		columns: columnHelper.columns(columns),
+		data,
+		meta: {
+			isFetching,
+		},
+		enableSortingRemoval: false,
+		state: sorting ? { sorting } : undefined,
+		onSortingChange,
+	});
+
+	return (
+		<TableLayout
+			tableInstance={tableInstance}
+			showHeader={showHeader}
+			groupBy={groupBy}
+			renderGroupLabel={renderGroupLabel}
+			emptyState={
+				<EmptyData
+					object="stream"
+					objects="streams"
+					tableInstance={tableInstance}
+					onNew={onNew}
+					isFiltered={isFiltered}
+					color="blue"
+					permissionSection={STREAMS}
+				/>
+			}
+		/>
+	);
+}
