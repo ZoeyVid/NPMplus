@@ -21,6 +21,13 @@ if [ "$(whoami)" != "root" ] || [ "$(id -u)" != "0" ] || [ "$(id -g)" != "0" ] |
     sleep inf
 fi
 
+if [ "$HOST_OS" = "Unraid" ]; then
+    echo "-----------------------------------------------------------------------------------------------------------------------------------------------------------------"
+    echo "Deploying NPMplus using the Unraid app template is not supported, please use docker compose instead: https://github.com/ZoeyVid/NPMplus/blob/develop/compose.yaml"
+    echo "-----------------------------------------------------------------------------------------------------------------------------------------------------------------"
+    sleep inf
+fi
+
 if [ ! -d /data ]; then
     echo "----------------------------------------------"
     echo "/data is not mounted! Check your compose.yaml."
