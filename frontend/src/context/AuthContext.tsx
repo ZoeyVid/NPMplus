@@ -3,6 +3,7 @@ import { createContext, type ReactNode, useContext, useEffect, useState } from "
 import { useIntervalWhen } from "rooks";
 import { deleteToken, getToken, refreshToken, revokeSessions, type TokenResponse, verifyTotp } from "src/api/backend";
 import AuthStore from "src/modules/AuthStore";
+import { getCookie } from "src/modules/Cookies";
 
 // Context
 interface AuthContextType {
@@ -16,13 +17,6 @@ interface AuthContextType {
 }
 
 const AuthContext = createContext<AuthContextType | null>(null);
-
-const getCookie = (name: string): string | undefined => {
-	const value = `; ${document.cookie}`;
-	const parts = value.split(`; ${name}=`);
-	if (parts.length === 2) return parts.pop()?.split(";").shift();
-	return undefined;
-};
 
 // Provider
 interface Props {

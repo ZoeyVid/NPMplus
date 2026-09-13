@@ -6,6 +6,7 @@ import { Button, LocalePicker, Page, ThemeSwitcher } from "src/components";
 import { useAuthState } from "src/context";
 import { useHealth } from "src/hooks";
 import { intl, T } from "src/locale";
+import { getCookie } from "src/modules/Cookies";
 import { validateEmail, validateString } from "src/modules/Validations";
 import styles from "./index.module.css";
 
@@ -122,13 +123,6 @@ function PasswordForm() {
 
 	useEffect(() => {
 		if (health.data?.password === false) {
-			const getCookie = (name: string): string | undefined => {
-				const value = `; ${document.cookie}`;
-				const parts = value.split(`; ${name}=`);
-				if (parts.length === 2) return parts.pop()?.split(";").shift();
-				return undefined;
-			};
-
 			if (getCookie("__Host-npmplus_oidc_no_redirect") !== "true") {
 				redirectToOIDC();
 			}

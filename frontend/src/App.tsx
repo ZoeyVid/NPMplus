@@ -1,13 +1,11 @@
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { QueryClientProvider } from "@tanstack/react-query";
 import { RawIntlProvider } from "react-intl";
 import { ToastContainer } from "react-toastify";
+import { queryClient } from "src/api/backend/base";
 import { AuthProvider, LocaleProvider, ThemeProvider } from "src/context";
 import { intl } from "src/locale";
 import EasyModal from "src/modules/easyModal";
 import Router from "src/Router.tsx";
-
-// Create a client
-const queryClient = new QueryClient();
 
 function App() {
 	return (

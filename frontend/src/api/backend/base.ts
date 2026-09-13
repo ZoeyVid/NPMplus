@@ -2,9 +2,8 @@ import { QueryClient } from "@tanstack/react-query";
 import queryString, { type StringifiableRecord } from "query-string";
 import AuthStore from "src/modules/AuthStore";
 import { camelizeKeys, decamelize, decamelizeKeys } from "./caseConvert";
-import { deleteToken } from "./deleteToken";
 
-const queryClient = new QueryClient();
+export const queryClient = new QueryClient();
 const contentTypeHeader = "Content-Type";
 
 interface BuildUrlArgs {
@@ -47,12 +46,11 @@ async function processResponse(response: Response, reload = true) {
 			// Force logout user and reload the page if Unauthorized
 			AuthStore.clear();
 			queryClient.clear();
-			await deleteToken().catch(() => {});
 			if (reload) {
 				window.location.reload();
 			}
 		}
-		const error = new Error(payload.error.message_i18n ?? payload.error.message);
+		const error = new Error(payload.error?.message_i18n ?? payload.error?.message ?? `HTTP ${response.status}`);
 		(error as any).payload = payload;
 		throw error;
 	}
@@ -79,6 +77,7 @@ export async function get(args: GetArgs, abortController?: AbortController) {
 
 export async function download({ url, params }: GetArgs, filename = "download.file") {
 	const res = await fetch(buildUrl({ url, params }));
+	if (!res.ok) await processResponse(res);
 	const bl = await res.blob();
 	const u = window.URL.createObjectURL(bl);
 	const a = document.createElement("a");

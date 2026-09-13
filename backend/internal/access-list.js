@@ -1,4 +1,4 @@
-import { appendFile, rm, unlink, writeFile } from "node:fs/promises";
+import { appendFile, rm, writeFile } from "node:fs/promises";
 import bcrypt from "bcryptjs";
 import _ from "lodash";
 import errs from "../lib/error.js";
@@ -357,11 +357,7 @@ const internalAccessList = {
 		await internalNginx.reload();
 
 		// delete the htpasswd file
-		try {
-			await unlink(internalAccessList.getFilename(row));
-		} catch {
-			// do nothing
-		}
+		await rm(internalAccessList.getFilename(row), { force: true });
 
 		// 4. audit log
 		await internalAuditLog.add(access, {

@@ -13,29 +13,22 @@ const isUnixTimestamp = (value: unknown): boolean => {
 
 const parseDate = (value: string | number): Date | null => {
 	if (typeof value !== "number" && typeof value !== "string") return null;
-	try {
-		return isUnixTimestamp(value) ? fromUnixTime(Number(value)) : parseISO(`${value}`);
-	} catch {
-		return null;
-	}
+	const date = isUnixTimestamp(value) ? fromUnixTime(Number(value)) : parseISO(`${value}`);
+	return Number.isNaN(date.getTime()) ? null : date;
 };
 
 const formatDateTime = (value: string | number, locale = "en-US"): string => {
 	const d = parseDate(value);
 	if (!d) return `${value}`;
-	try {
-		return intlFormat(
-			d,
-			{
-				dateStyle: "medium",
-				timeStyle: "medium",
-				hourCycle: "h23",
-			} as IntlFormatFormatOptions,
-			{ locale },
-		);
-	} catch {
-		return `${value}`;
-	}
+	return intlFormat(
+		d,
+		{
+			dateStyle: "medium",
+			timeStyle: "medium",
+			hourCycle: "h23",
+		} as IntlFormatFormatOptions,
+		{ locale },
+	);
 };
 
 export { formatDateTime, parseDate };

@@ -40,20 +40,6 @@ router
 	 * for services like Job board and Worker.
 	 */
 	.get(jwtdecode(), async (req, res, next) => {
-		if (!req.signedCookies?.["__Host-Http-token"]) {
-			res.clearCookie("__Host-Http-token", {
-				httpOnly: true,
-				secure: true,
-				sameSite: "Strict",
-			});
-			res.cookie("__Host-npmplus_oidc_no_redirect", "true", {
-				secure: true,
-				sameSite: "Strict",
-				maxAge: 60 * 60 * 1000,
-			});
-			return res.status(401).send({ expires: new Date(0).toISOString() });
-		}
-
 		try {
 			const data = await internalToken.getFreshToken(res.locals.access);
 
@@ -67,11 +53,6 @@ router
 
 			res.status(200).send({ expires: data.expires });
 		} catch (err) {
-			res.clearCookie("__Host-Http-token", {
-				httpOnly: true,
-				secure: true,
-				sameSite: "Strict",
-			});
 			debug(logger, `${req.method.toUpperCase()} ${req.originalUrl}: ${err}`);
 			next(err);
 		}
@@ -170,8 +151,6 @@ router
 				secure: true,
 				sameSite: "Strict",
 			});
-			res.clearCookie("__Host-npmplus_oidc_totp_required", { secure: true, sameSite: "Strict" });
-			res.clearCookie("__Host-npmplus_oidc_no_redirect", { secure: true, sameSite: "Strict" });
 
 			res.status(200).send(responseBody);
 		} catch (err) {

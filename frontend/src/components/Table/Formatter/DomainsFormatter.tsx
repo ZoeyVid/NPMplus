@@ -14,28 +14,23 @@ interface Props {
 const DomainLink = ({ domain, color }: { domain?: string; color?: string }) => {
 	// when domain contains a wildcard, make the link go nowhere.
 	// Apparently the domain can be null or undefined sometimes.
-	// This try is just a safeguard to prevent the whole formatter from breaking.
 	if (!domain) return null;
-	try {
-		let onClick: ((e: React.MouseEvent) => void) | undefined;
-		if (domain.includes("*")) {
-			onClick = (e: React.MouseEvent) => e.preventDefault();
-		}
-		return (
-			<a
-				key={domain}
-				href={`http://${domain}`}
-				target="_blank"
-				rel="noopener"
-				onClick={onClick}
-				className={cn("badge", color ? `bg-${color}-lt` : null, "domain-name", "me-2")}
-			>
-				{domain}
-			</a>
-		);
-	} catch {
-		return null;
+	let onClick: ((e: React.MouseEvent) => void) | undefined;
+	if (domain.includes("*")) {
+		onClick = (e: React.MouseEvent) => e.preventDefault();
 	}
+	return (
+		<a
+			key={domain}
+			href={`http://${domain}`}
+			target="_blank"
+			rel="noopener"
+			onClick={onClick}
+			className={cn("badge", color ? `bg-${color}-lt` : null, "domain-name", "me-2")}
+		>
+			{domain}
+		</a>
+	);
 };
 
 export function DomainsFormatter({ domains, createdOn, niceName, provider, color }: Props) {

@@ -56,7 +56,7 @@ app.use("/", mainRoutes);
 // production error handler
 // no stacktraces leaked to user
 app.use((err, req, res, _) => {
-	const status = err.status === 403 && !req.signedCookies?.["__Host-Http-token"] ? 401 : err.status || 500;
+	const status = err.status || 500;
 	const payload = {
 		error: {
 			code: status,

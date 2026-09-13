@@ -196,11 +196,11 @@ export default function (tokenString) {
 		 * @returns {Promise}
 		 */
 		load: (allowInternal) => {
-			if (tokenString) {
-				return this.init();
+			if (!tokenString && allowInternal) {
+				allowInternalAccess = allowInternal;
+				return allowInternal;
 			}
-			allowInternalAccess = allowInternal;
-			return allowInternal || null;
+			return this.init();
 		},
 
 		reloadObjects: this.loadObjects,

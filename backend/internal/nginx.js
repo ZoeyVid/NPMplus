@@ -420,9 +420,7 @@ const internalNginx = {
 			typeof host === "undefined" ? 0 : host.id,
 		);
 
-		try {
-			await rename(config_file, `${config_file}.err`);
-		} catch {}
+		await rename(config_file, `${config_file}.err`);
 	},
 
 	/**

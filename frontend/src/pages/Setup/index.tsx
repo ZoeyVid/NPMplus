@@ -7,6 +7,7 @@ import { Alert } from "react-bootstrap";
 import { createUser } from "src/api/backend";
 import { Button, LocalePicker, Page, ThemeSwitcher } from "src/components";
 import { useAuthState } from "src/context";
+import { useHealth } from "src/hooks";
 import { intl, T } from "src/locale";
 import { validateEmail, validateString } from "src/modules/Validations";
 import styles from "./index.module.css";
@@ -20,6 +21,7 @@ interface Payload {
 export default function Setup() {
 	const queryClient = useQueryClient();
 	const { login } = useAuthState();
+	const health = useHealth();
 	const [errorMsg, setErrorMsg] = useState<string | null>(null);
 	const [showPassword, setShowPassword] = useState(false);
 
@@ -43,6 +45,10 @@ export default function Setup() {
 		try {
 			const user = await createUser(payload);
 			if (user?.id) {
+				if (health.data?.password === false) {
+					window.location.href = "/api/oidc";
+					return;
+				}
 				try {
 					await login(user.email, password);
 					// Trigger a Health change
