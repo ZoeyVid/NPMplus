@@ -1,0 +1,194 @@
+import { IconShield } from "@tabler/icons-react";
+import { Field, useFormikContext } from "formik";
+import Select, { components } from "react-select";
+import { useLocaleState } from "src/context";
+import { useCertificates } from "src/hooks";
+import { formatDateTime, intl, T } from "src/locale";
+
+const Option = (props) => (
+	<components.Option {...props}>
+		<div className="flex-fill">
+			<div className="font-weight-medium">
+				{props.data.icon} <strong>{props.data.label}</strong>
+			</div>
+			<div className="text-secondary mt-1 ps-3">{props.data.subLabel}</div>
+		</div>
+	</components.Option>
+);
+
+export function SSLCertificateField({
+	name = "certificateId",
+	label = "ssl-certificate",
+	id = "certificateId",
+	required,
+	allowNew,
+	forHttp = true,
+	mtlsName = "meta.npmplusMtlsCertificateId",
+	mtlsLabel = "mtls-certificate",
+}) {
+	const { locale } = useLocaleState();
+	const { isLoading, isError, error, data } = useCertificates();
+	const { values, setFieldValue } = useFormikContext();
+	const v = values || {};
+
+	const handleChange = (newValue, _actionMeta) => {
+		void setFieldValue(name, newValue?.value);
+
+		if (!(newValue?.value > 0)) {
+			void setFieldValue(mtlsName, 0);
+			void setFieldValue("meta.npmplusMtlsVerifyClientOptional", false);
+		}
+
+		const {
+			sslForced,
+			npmplusHttp3Support,
+			hstsEnabled,
+			hstsSubdomains,
+			reuseKey,
+			dnsChallenge,
+			dnsProvider,
+			dnsProviderCredentials,
+			propagationSeconds,
+		} = v;
+		if (forHttp && !newValue?.value) {
+			if (sslForced) void setFieldValue("sslForced", false);
+			if (npmplusHttp3Support) void setFieldValue("npmplusHttp3Support", false);
+			if (hstsEnabled) void setFieldValue("hstsEnabled", false);
+			if (hstsSubdomains) void setFieldValue("hstsSubdomains", false);
+		}
+		if (newValue?.value !== "new") {
+			if (reuseKey) void setFieldValue("reuseKey", undefined);
+			if (dnsChallenge) void setFieldValue("dnsChallenge", undefined);
+			if (dnsProvider) void setFieldValue("dnsProvider", undefined);
+			if (dnsProviderCredentials) void setFieldValue("dnsProviderCredentials", undefined);
+			if (propagationSeconds) void setFieldValue("propagationSeconds", undefined);
+		}
+	};
+
+	const options =
+		data
+			?.filter((cert) => cert.provider !== "mtls")
+			.map((cert) => ({
+				value: cert.id,
+				label: cert.niceName,
+				subLabel: `${cert.provider === "letsencrypt" ? intl.formatMessage({ id: "lets-encrypt" }) : cert.provider} — ${intl.formatMessage({ id: "expires.on" }, { date: cert.expiresOn ? formatDateTime(cert.expiresOn, locale) : "N/A" })}`,
+				icon: <IconShield size={14} className="text-pink" />,
+			})) || [];
+
+	const mtlsOptions =
+		data
+			?.filter((cert) => cert.provider === "mtls")
+			.map((cert) => ({
+				value: cert.id,
+				label: cert.niceName,
+				subLabel: `${cert.provider} — ${intl.formatMessage({ id: "expires.on" }, { date: cert.expiresOn ? formatDateTime(cert.expiresOn, locale) : "N/A" })}`,
+				icon: <IconShield size={14} className="text-pink" />,
+			})) || [];
+
+	// Prepend the Add New option
+	if (allowNew) {
+		options?.unshift({
+			value: "new",
+			label: intl.formatMessage({ id: "certificates.request.title" }),
+			subLabel: intl.formatMessage({ id: "certificates.request.subtitle" }),
+			icon: <IconShield size={14} className="text-lime" />,
+		});
+	}
+
+	// Prepend the None option
+	if (!required) {
+		options?.unshift({
+			value: 0,
+			label: intl.formatMessage({ id: "certificate.none.title" }),
+			subLabel: forHttp
+				? intl.formatMessage({ id: "certificate.none.subtitle.for-http" })
+				: intl.formatMessage({ id: "certificate.none.subtitle" }),
+			icon: <IconShield size={14} className="text-red" />,
+		});
+	}
+
+	mtlsOptions?.unshift({
+		value: 0,
+		label: intl.formatMessage({ id: "certificate.none.title" }),
+		subLabel: intl.formatMessage({ id: "certificate.none.subtitle" }),
+		icon: <IconShield size={14} className="text-red" />,
+	});
+
+	return (
+		<>
+			<Field name={name}>
+				{({ field, form }) => (
+					<div className="mb-3">
+						<label className="form-label" htmlFor={id}>
+							<T id={label} />
+						</label>
+						{isLoading ? <div className="placeholder placeholder-lg col-12 my-3 placeholder-glow" /> : null}
+						{isError ? <div className="invalid-feedback">{`${error}`}</div> : null}
+						{!isLoading && !isError ? (
+							<Select
+								inputId={id}
+								className="react-select-container"
+								classNamePrefix="react-select"
+								value={options.find((o) => o.value === field.value) || options[0]}
+								options={options}
+								components={{ Option }}
+								styles={{
+									option: (base) => ({
+										...base,
+										height: "100%",
+									}),
+								}}
+								onChange={handleChange}
+								isDisabled={v?.udpForwarding}
+							/>
+						) : null}
+						{form.errors[field.name] ? (
+							<div className="invalid-feedback">
+								{form.errors[field.name] && form.touched[field.name] ? form.errors[field.name] : null}
+							</div>
+						) : null}
+					</div>
+				)}
+			</Field>
+			<Field name={mtlsName}>
+				{({ field, form }) => (
+					<div className="mb-3">
+						<label className="form-label" htmlFor="mtlsCertificate">
+							<T id={mtlsLabel} />
+						</label>
+						{isLoading ? <div className="placeholder placeholder-lg col-12 my-3 placeholder-glow" /> : null}
+						{isError ? <div className="invalid-feedback">{`${error}`}</div> : null}
+						{!isLoading && !isError ? (
+							<Select
+								inputId="mtlsCertificate"
+								className="react-select-container"
+								classNamePrefix="react-select"
+								value={mtlsOptions.find((o) => o.value === field.value) || mtlsOptions[0]}
+								options={mtlsOptions}
+								components={{ Option }}
+								styles={{
+									option: (base) => ({
+										...base,
+										height: "100%",
+									}),
+								}}
+								onChange={(newValue) => {
+									void setFieldValue(mtlsName, newValue?.value);
+									if (!(newValue?.value > 0)) {
+										void setFieldValue("meta.npmplusMtlsVerifyClientOptional", false);
+									}
+								}}
+								isDisabled={v?.udpForwarding || !(v?.certificateId > 0)}
+							/>
+						) : null}
+						{form.errors[field.name] ? (
+							<div className="invalid-feedback">
+								{form.errors[field.name] && form.touched[field.name] ? form.errors[field.name] : null}
+							</div>
+						) : null}
+					</div>
+				)}
+			</Field>
+		</>
+	);
+}
