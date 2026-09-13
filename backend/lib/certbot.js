@@ -46,7 +46,7 @@ const installPlugins = async (pluginKeys) => {
 	}
 
 	if (hasErrors) {
-		throw new errs.CommandError("Some plugins failed to install. Please check the logs above", 1);
+		throw new errs.CommandError("Some plugins failed to install. Please check the logs above");
 	}
 };
 

@@ -118,6 +118,7 @@ RUN cd /src/nginx && \
     --with-threads \
     --with-file-aio \
     --with-libatomic \
+    --with-control-api \
     --with-pcre \
     --with-pcre-jit \
     --without-select_module \
@@ -133,6 +134,7 @@ RUN cd /src/nginx && \
     --with-http_gunzip_module \
     --with-http_gzip_static_module \
     --with-http_sub_module \
+    --with-http_json_module \
     --with-http_addition_module \
     --with-http_stub_status_module \
     --with-http_auth_request_module \

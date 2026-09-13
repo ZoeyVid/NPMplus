@@ -1,5 +1,5 @@
 type = process
-command = nginx -e stderr
+command = nginx -e stderr -l unix:/run/nginx-control.sock
 term-signal = QUIT
 restart = yes
 options = shares-console

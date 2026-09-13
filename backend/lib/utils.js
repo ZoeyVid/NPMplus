@@ -50,7 +50,7 @@ const execFile = async (cmd, args) => {
 		return `${stdout || ""}${stderr || ""}`.trim();
 	} catch (err) {
 		if (err && typeof err === "object") {
-			throw new errs.CommandError(`${err.stdout || ""}${err.stderr || ""}`.trim(), 1, err);
+			throw new errs.CommandError(`${err.stdout || ""}${err.stderr || ""}`.trim(), err);
 		}
 		throw err;
 	}

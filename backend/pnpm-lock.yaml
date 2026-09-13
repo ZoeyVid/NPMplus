@@ -68,6 +68,9 @@ importers:
       swagger-ui-express:
         specifier: 5.0.1
         version: 5.0.1(express@5.2.1)
+      undici:
+        specifier: 8.10.2
+        version: 8.10.2
     devDependencies:
       '@apidevtools/swagger-parser':
         specifier: 13.0.0

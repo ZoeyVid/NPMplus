@@ -1,6 +1,7 @@
 import { readFile, rename, rm, writeFile } from "node:fs/promises";
 import { dirname } from "node:path";
 import { domainToASCII, fileURLToPath } from "node:url";
+import { Client, fetch } from "undici";
 import errs from "../lib/error.js";
 import utils from "../lib/utils.js";
 import { debug, nginx as logger } from "../logger.js";
@@ -8,6 +9,8 @@ import internalProxyHostAccessList from "./proxy-host-access-list.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
+
+const controlApi = new Client("http://localhost", { connect: { socketPath: "/run/nginx-control.sock" } });
 
 const internalNginx = {
 	/**
@@ -35,7 +38,7 @@ const internalNginx = {
 		await internalNginx.generateConfig(host_type, host);
 
 		try {
-			await internalNginx.test();
+			await (skipReload ? internalNginx.test() : internalNginx.reload());
 			combined_meta = { ...host.meta, nginx_online: true, nginx_err: null };
 
 			await model.query().where("id", host.id).patch({
@@ -52,11 +55,9 @@ const internalNginx = {
 			});
 
 			await internalNginx.renameConfigAsError(host_type, host);
+			if (!skipReload) await internalNginx.reload();
 		}
 
-		if (!skipReload) {
-			await internalNginx.reload();
-		}
 		return combined_meta;
 	},
 
@@ -95,8 +96,12 @@ const internalNginx = {
 			} catch {}
 		}
 
-		await internalNginx.test();
-		return utils.execFile("nginx", ["-s", "reload"]);
+		const res = await fetch("http://localhost/1/control/config", { method: "PATCH", dispatcher: controlApi });
+		const logs = (await res.json()).logs.join("").trim();
+		if (!res.ok) {
+			throw new errs.CommandError(logs || `nginx reload failed with status ${res.status}, see container logs`);
+		}
+		return logs;
 	},
 
 	/**
