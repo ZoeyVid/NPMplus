@@ -24,8 +24,6 @@ const limiter = rateLimit({
 	validate: { trustProxy: false },
 });
 
-router.use(limiter);
-
 router
 	.route("/")
 	.options((_, res) => {
@@ -63,7 +61,7 @@ router
 	 *
 	 * Create a new Token
 	 */
-	.post(async (req, res, next) => {
+	.post(limiter, async (req, res, next) => {
 		try {
 			if (process.env.OIDC_DISABLE_PASSWORD === "true") {
 				throw new errs.AuthError("Non OIDC login is disabled");
@@ -133,7 +131,7 @@ router
 	 *
 	 * Verify TOTP code and get full token
 	 */
-	.post(async (req, res, next) => {
+	.post(limiter, async (req, res, next) => {
 		try {
 			const { code } = apiValidator(getValidationSchema("/tokens/totp", "post"), req.body);
 			const result = await internalToken.verifyTotp(req.signedCookies?.["__Host-Http-challenge_token"], code);
