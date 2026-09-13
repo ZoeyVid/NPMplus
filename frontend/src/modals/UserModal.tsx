@@ -88,7 +88,6 @@ const UserModal = EasyModal.create(({ id, visible, remove }: Props) => {
 					initialValues={
 						{
 							name: data?.name,
-							nickname: data?.nickname,
 							email: data?.email,
 							isAdmin: data?.roles?.includes("admin"),
 							isDisabled: data?.isDisabled,
@@ -145,59 +144,29 @@ const UserModal = EasyModal.create(({ id, visible, remove }: Props) => {
 										)}
 									</div>
 								)}
-								<div className="row">
-									<div className="col-lg-6">
-										<div className="mb-3">
-											<Field name="name" validate={validateString(1, 50)}>
-												{({ field, form }: any) => (
-													<div className="form-floating mb-3">
-														<input
-															id="name"
-															className={`form-control ${form.errors.name && form.touched.name ? "is-invalid" : ""}`}
-															placeholder={intl.formatMessage({ id: "user.full-name" })}
-															{...field}
-														/>
-														<label htmlFor="name">
-															<T id="user.full-name" />
-														</label>
-														{form.errors.name ? (
-															<div className="invalid-feedback">
-																{form.errors.name && form.touched.name
-																	? form.errors.name
-																	: null}
-															</div>
-														) : null}
+								<div className="mb-3">
+									<Field name="name" validate={validateString(1, 50)}>
+										{({ field, form }: any) => (
+											<div className="form-floating mb-3">
+												<input
+													id="name"
+													className={`form-control ${form.errors.name && form.touched.name ? "is-invalid" : ""}`}
+													placeholder={intl.formatMessage({ id: "user.full-name" })}
+													{...field}
+												/>
+												<label htmlFor="name">
+													<T id="user.full-name" />
+												</label>
+												{form.errors.name ? (
+													<div className="invalid-feedback">
+														{form.errors.name && form.touched.name
+															? form.errors.name
+															: null}
 													</div>
-												)}
-											</Field>
-										</div>
-									</div>
-									<div className="col-lg-6">
-										<div className="mb-3">
-											<Field name="nickname" validate={validateString(1, 30)}>
-												{({ field, form }: any) => (
-													<div className="form-floating mb-3">
-														<input
-															id="nickname"
-															className={`form-control ${form.errors.nickname && form.touched.nickname ? "is-invalid" : ""}`}
-															placeholder={intl.formatMessage({ id: "user.nickname" })}
-															{...field}
-														/>
-														<label htmlFor="nickname">
-															<T id="user.nickname" />
-														</label>
-														{form.errors.nickname ? (
-															<div className="invalid-feedback">
-																{form.errors.nickname && form.touched.nickname
-																	? form.errors.nickname
-																	: null}
-															</div>
-														) : null}
-													</div>
-												)}
-											</Field>
-										</div>
-									</div>
+												) : null}
+											</div>
+										)}
+									</Field>
 								</div>
 								<div className="mb-3">
 									<Field name="email" validate={validateEmail()}>

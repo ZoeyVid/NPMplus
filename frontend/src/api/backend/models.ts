@@ -19,7 +19,6 @@ export interface User {
 	isDisabled: boolean;
 	email: string;
 	name: string;
-	nickname: string;
 	avatar: string;
 	roles: string[];
 	goaccess?: boolean;

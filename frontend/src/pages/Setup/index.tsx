@@ -28,13 +28,9 @@ export default function Setup() {
 	const onSubmit = async (values: Payload, { setSubmitting }: any) => {
 		setErrorMsg(null);
 
-		// Set a nickname, which is the first word of the name
-		const nickname = values.name.split(" ")[0];
-
 		const { password, ...payload } = {
 			...values,
 			...{
-				nickname,
 				auth: {
 					type: "password",
 					secret: values.password,

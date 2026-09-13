@@ -8,7 +8,6 @@
 		"is_disabled",
 		"email",
 		"name",
-		"nickname",
 		"avatar",
 		"roles"
 	],
@@ -47,11 +46,6 @@
 			"description": "Name",
 			"minLength": 1,
 			"example": "Jamie Curnow"
-		},
-		"nickname": {
-			"type": "string",
-			"description": "Nickname",
-			"example": "James"
 		},
 		"avatar": {
 			"type": "string",

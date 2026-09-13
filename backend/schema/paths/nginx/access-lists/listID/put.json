@@ -95,7 +95,6 @@
 									"is_disabled": false,
 									"email": "admin@example.com",
 									"name": "Administrator",
-									"nickname": "some guy",
 									"avatar": "//www.gravatar.com/avatar/e64c7d89f26bd1972efa854d13d7dd61?default=mm",
 									"roles": [
 										"admin"

@@ -13,6 +13,7 @@ import internalToken from "./token.js";
 
 const omissions = () => [
 	"is_deleted",
+	"nickname",
 	"npmplus_token_valid_after",
 	"permissions.id",
 	"permissions.user_id",

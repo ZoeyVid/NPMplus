@@ -58,10 +58,7 @@ export default function TableWrapper() {
 	let filtered: User[] | null = null;
 	if (search && data) {
 		filtered = data?.filter(
-			(item) =>
-				item.name.toLowerCase().includes(search) ||
-				item.nickname.toLowerCase().includes(search) ||
-				item.email.toLowerCase().includes(search),
+			(item) => item.name.toLowerCase().includes(search) || item.email.toLowerCase().includes(search),
 		);
 	}
 

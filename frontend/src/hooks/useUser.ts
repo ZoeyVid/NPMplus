@@ -10,7 +10,6 @@ const fetchUser = (id: number | string) => {
 			isDisabled: false,
 			email: "",
 			name: "",
-			nickname: "",
 			roles: [],
 			avatar: "",
 		} as User);

@@ -63,7 +63,7 @@ export function SiteHeader() {
 									}}
 								/>
 								<div className="d-none d-xl-block ps-2">
-									<div>{currentUser?.nickname}</div>
+									<div>{currentUser?.name}</div>
 									<div className="mt-1 small text-secondary">
 										<T id={isAdmin ? "role.admin" : "role.standard-user"} />
 									</div>
@@ -77,7 +77,7 @@ export function SiteHeader() {
 										onClick={(e) => e.stopPropagation()}
 									>
 										<div className="ps-2 pe-1 me-auto">
-											<div>{currentUser?.nickname}</div>
+											<div>{currentUser?.name}</div>
 											<div className="mt-1 small text-secondary text-nowrap">
 												<T id={isAdmin ? "role.admin" : "role.standard-user"} />
 											</div>
