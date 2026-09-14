@@ -40,7 +40,7 @@ importers:
         version: 9.0.3
       knex:
         specifier: 3.3.0
-        version: 3.3.0(better-sqlite3@13.0.3)(mysql2@3.24.4(@types/node@26.4.1))(pg@8.23.0)
+        version: 3.3.0(better-sqlite3@13.0.3)(mysql2@3.24.4(@types/node@26.5.1))(pg@8.23.0)
       liquidjs:
         specifier: 10.29.0
         version: 10.29.0
@@ -52,10 +52,10 @@ importers:
         version: 2.3.0
       mysql2:
         specifier: 3.24.4
-        version: 3.24.4(@types/node@26.4.1)
+        version: 3.24.4(@types/node@26.5.1)
       objection:
         specifier: 3.1.5
-        version: 3.1.5(knex@3.3.0(better-sqlite3@13.0.3)(mysql2@3.24.4(@types/node@26.4.1))(pg@8.23.0))
+        version: 3.1.5(knex@3.3.0(better-sqlite3@13.0.3)(mysql2@3.24.4(@types/node@26.5.1))(pg@8.23.0))
       openid-client:
         specifier: 6.8.8
         version: 6.8.8
@@ -194,8 +194,8 @@ packages:
   '@types/json-schema@7.0.15':
     resolution: {integrity: sha512-5+fP8P8MFNC+AyZCDxrB2pkZFPGzqQWUzpSeuuVLvm8VMcorNYavBqoFcxK8bQz4Qsbn4oUEEem4wDLfcysGHA==}
 
-  '@types/node@26.4.1':
-    resolution: {integrity: sha512-k97ENvZWtvA6yqz5/FS6a7duDgOPEeOQOc2iKS/nY6mX6qJUKtLnWzQS+Xj6tXweyj6ZcTAK2Qecetnvi9nCLA==}
+  '@types/node@26.5.1':
+    resolution: {integrity: sha512-CzNm2FezW4VR/LjG6yUdiEgLE/rAQ9Slj5gCu/C2VrdcW7I0ahNZ8DRbHT7zOZ6r3ONgd/bsQIeSaoDGrd1C6g==}
 
   abort-controller@3.0.0:
     resolution: {integrity: sha512-h8lQ8tacZYnR3vNQTgibj+tODHI5/+l06Au2Pcriv/Gmet0eaj4TwWH41sO9wnHDiQsEj19q0drzdWdeAHtweg==}
@@ -241,8 +241,8 @@ packages:
     resolution: {integrity: sha512-NZKeq9AfyQvEeNlN0zSYAaWrmBffJh3IELMZfRpJVWgrpEbtEpnjvzqBPf+mxoI287JohRDoa+/nsfqqiZmF6g==}
     engines: {node: '>= 6.0.0'}
 
-  b4a@1.8.1:
-    resolution: {integrity: sha512-aiqre1Nr0B/6DgE2N5vwTc+2/oQZ4Wh1t4NznYY4E00y8LCt6NqdRv81so00oo27D8MVKTpUa/MwUUtBLXCoDw==}
+  b4a@1.9.0:
+    resolution: {integrity: sha512-dpfcF9fDNR6++cthXR67iyhgqWy9CBouAvIWhIntzBG6cvK/cnIPiZQjBwi/ZqjjBEDGfoNDtmB0kTjroOJ3pQ==}
     peerDependencies:
       react-native-b4a: '*'
     peerDependenciesMeta:
@@ -589,8 +589,8 @@ packages:
     resolution: {integrity: sha512-SFNOvSJ+Dgf/9An904Yx+CgSlIPCkIpao4qo51lpee25TIRejdH3rhR4EZMGoNx3/TP3O+wzWuiTFl4sqbltzA==}
     hasBin: true
 
-  js-yaml@5.4.1:
-    resolution: {integrity: sha512-28R/k+NAjeuf7+CKlTxWZVExJGwVVLwY06DgEnOMz2gEpfNkDcD7QvyiVPT0xy0XXhU8vHsd4Ot42OOPdJG7dQ==}
+  js-yaml@5.4.2:
+    resolution: {integrity: sha512-m+aqu+LwO1O6sIopafj8HUVl5aawITwZQe/yHpMCKjaWBaA/d07B/QdMb3529REftiU+RMMHL3Vlsw3hON7vWg==}
     hasBin: true
 
   json-schema-traverse@1.0.0:
@@ -1010,8 +1010,8 @@ packages:
   typedarray@0.0.6:
     resolution: {integrity: sha512-/aCDEGatGvZ2BIk+HmLf4ifCJFwvKFNb9/JeZPMulfgFracn9QFcAf5GO8B/mweUjSoblS5In0cWhqpfs/5PQA==}
 
-  undici-types@8.3.0:
-    resolution: {integrity: sha512-j375ScV60dom+YkPFIfTLcOiPxkN/buHz5GobjLhixFuANaNs3C9l4GmrWqejgXWJ7BbJcFYpTEUkS1Ge8bpZQ==}
+  undici-types@8.9.0:
+    resolution: {integrity: sha512-KTDyRTYX8sWmKXAikPHHSyc63CRPETMctyjKFupcC6OBLXT3xsN0e9aF7m+mIXutFWpUXuedtowG7iLOzp0kQg==}
 
   undici@8.10.2:
     resolution: {integrity: sha512-/y4/bH9YNU5hi9NIrpOuvGXFcxrj3CMrV+/AYpowAYTpHn8gX/XPFjNy766FPoYY0miQhdW977JFWKGNhBdwyQ==}
@@ -1049,7 +1049,7 @@ snapshots:
   '@apidevtools/json-schema-ref-parser@16.0.2(@types/json-schema@7.0.15)':
     dependencies:
       '@types/json-schema': 7.0.15
-      js-yaml: 5.4.1
+      js-yaml: 5.4.2
       undici: 8.10.2
 
   '@apidevtools/openapi-schemas@2.1.0': {}
@@ -1137,9 +1137,9 @@ snapshots:
 
   '@types/json-schema@7.0.15': {}
 
-  '@types/node@26.4.1':
+  '@types/node@26.5.1':
     dependencies:
-      undici-types: 8.3.0
+      undici-types: 8.9.0
 
   abort-controller@3.0.0:
     dependencies:
@@ -1189,7 +1189,7 @@ snapshots:
 
   aws-ssl-profiles@1.1.2: {}
 
-  b4a@1.8.1: {}
+  b4a@1.9.0: {}
 
   balanced-match@4.0.4: {}
 
@@ -1210,7 +1210,7 @@ snapshots:
 
   bare-stream@2.13.4(bare-events@2.9.2):
     dependencies:
-      b4a: 1.8.1
+      b4a: 1.9.0
       streamx: 2.28.1
       teex: 1.0.1
     optionalDependencies:
@@ -1514,7 +1514,7 @@ snapshots:
     dependencies:
       argparse: 2.0.1
 
-  js-yaml@5.4.1:
+  js-yaml@5.4.2:
     dependencies:
       argparse: 2.0.1
 
@@ -1544,7 +1544,7 @@ snapshots:
       jwa: 2.0.1
       safe-buffer: 5.2.1
 
-  knex@3.3.0(better-sqlite3@13.0.3)(mysql2@3.24.4(@types/node@26.4.1))(pg@8.23.0):
+  knex@3.3.0(better-sqlite3@13.0.3)(mysql2@3.24.4(@types/node@26.5.1))(pg@8.23.0):
     dependencies:
       colorette: 2.0.19
       commander: 10.0.1
@@ -1562,7 +1562,7 @@ snapshots:
       tildify: 2.0.0
     optionalDependencies:
       better-sqlite3: 13.0.3
-      mysql2: 3.24.4(@types/node@26.4.1)
+      mysql2: 3.24.4(@types/node@26.5.1)
       pg: 8.23.0
     transitivePeerDependencies:
       - supports-color
@@ -1630,9 +1630,9 @@ snapshots:
       concat-stream: 2.0.0
       type-is: 1.6.18
 
-  mysql2@3.24.4(@types/node@26.4.1):
+  mysql2@3.24.4(@types/node@26.5.1):
     dependencies:
-      '@types/node': 26.4.1
+      '@types/node': 26.5.1
       aws-ssl-profiles: 1.1.2
       generate-function: 2.3.1
       iconv-lite: 0.7.3
@@ -1657,12 +1657,12 @@ snapshots:
 
   object-inspect@1.13.4: {}
 
-  objection@3.1.5(knex@3.3.0(better-sqlite3@13.0.3)(mysql2@3.24.4(@types/node@26.4.1))(pg@8.23.0)):
+  objection@3.1.5(knex@3.3.0(better-sqlite3@13.0.3)(mysql2@3.24.4(@types/node@26.5.1))(pg@8.23.0)):
     dependencies:
       ajv: 8.20.0
       ajv-formats: 2.1.1(ajv@8.20.0)
       db-errors: 0.2.3
-      knex: 3.3.0(better-sqlite3@13.0.3)(mysql2@3.24.4(@types/node@26.4.1))(pg@8.23.0)
+      knex: 3.3.0(better-sqlite3@13.0.3)(mysql2@3.24.4(@types/node@26.5.1))(pg@8.23.0)
 
   on-finished@2.4.1:
     dependencies:
@@ -1918,7 +1918,7 @@ snapshots:
 
   tar-stream@3.2.1:
     dependencies:
-      b4a: 1.8.1
+      b4a: 1.9.0
       bare-fs: 4.8.1
       fast-fifo: 1.3.2
       streamx: 2.28.1
@@ -1938,7 +1938,7 @@ snapshots:
 
   text-decoder@1.2.7:
     dependencies:
-      b4a: 1.8.1
+      b4a: 1.9.0
     transitivePeerDependencies:
       - react-native-b4a
 
@@ -1959,7 +1959,7 @@ snapshots:
 
   typedarray@0.0.6: {}
 
-  undici-types@8.3.0: {}
+  undici-types@8.9.0: {}
 
   undici@8.10.2: {}
 
