@@ -2,6 +2,11 @@
 	"operationId": "regenUserMfaBackupCodes",
 	"summary": "Regenerate MFA backup codes",
 	"tags": ["users"],
+	"security": [
+		{
+			"cookieAuth": []
+		}
+	],
 	"parameters": [
 		{
 			"in": "path",

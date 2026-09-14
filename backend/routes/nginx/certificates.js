@@ -43,9 +43,6 @@ const parseCertFiles = (req, res, next) =>
  */
 router
 	.route("/")
-	.options((_, res) => {
-		res.sendStatus(204);
-	})
 	.all(jwtdecode())
 
 	/**
@@ -102,9 +99,6 @@ router
  */
 router
 	.route("/dns-providers")
-	.options((_, res) => {
-		res.sendStatus(204);
-	})
 	.all(jwtdecode())
 
 	/**
@@ -138,9 +132,6 @@ router
  */
 router
 	.route("/test-http")
-	.options((_, res) => {
-		res.sendStatus(204);
-	})
 	.all(jwtdecode())
 
 	/**
@@ -168,9 +159,6 @@ router
  */
 router
 	.route("/validate")
-	.options((_, res) => {
-		res.sendStatus(204);
-	})
 	.all(jwtdecode())
 
 	/**
@@ -178,11 +166,11 @@ router
 	 *
 	 * Validate certificates
 	 */
-	.post(parseCertFiles, async (req, res, next) => {
+	.post(parseCertFiles, (req, res, next) => {
 		if (!req.files?.certificate) return res.status(400).send({ error: "certificate file is required" });
 
 		try {
-			const result = await internalCertificate.validate(res.locals.access, {
+			const result = internalCertificate.validate(res.locals.access, {
 				files: req.files,
 			});
 			res.status(200).send(result);
@@ -199,9 +187,6 @@ router
  */
 router
 	.route("/:certificate_id")
-	.options((_, res) => {
-		res.sendStatus(204);
-	})
 	.all(jwtdecode())
 
 	/**
@@ -264,9 +249,6 @@ router
  */
 router
 	.route("/:certificate_id/upload")
-	.options((_, res) => {
-		res.sendStatus(204);
-	})
 	.all(jwtdecode())
 
 	/**
@@ -296,9 +278,6 @@ router
  */
 router
 	.route("/:certificate_id/renew")
-	.options((_, res) => {
-		res.sendStatus(204);
-	})
 	.all(jwtdecode())
 
 	/**
@@ -326,9 +305,6 @@ router
  */
 router
 	.route("/:certificate_id/download")
-	.options((_req, res) => {
-		res.sendStatus(204);
-	})
 	.all(jwtdecode())
 
 	/**

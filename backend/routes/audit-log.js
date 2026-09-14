@@ -15,9 +15,6 @@ const router = express.Router({
  */
 router
 	.route("/")
-	.options((_, res) => {
-		res.sendStatus(204);
-	})
 	.all(jwtdecode())
 
 	/**
@@ -59,9 +56,6 @@ router
  */
 router
 	.route("/:event_id")
-	.options((_, res) => {
-		res.sendStatus(204);
-	})
 	.all(jwtdecode())
 
 	/**

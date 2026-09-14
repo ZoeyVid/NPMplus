@@ -6,9 +6,7 @@
 	],
 	"security": [
 		{
-			"cookieAuth": [
-				"streams.manage"
-			]
+			"cookieAuth": []
 		}
 	],
 	"requestBody": {

@@ -1,0 +1,17 @@
+{
+	"operationId": "authCheck",
+	"summary": "Check that the current token belongs to a user, used by the nginx auth_request directive",
+	"tags": [
+		"auth"
+	],
+	"security": [
+		{
+			"cookieAuth": []
+		}
+	],
+	"responses": {
+		"200": {
+			"description": "200 response"
+		}
+	}
+}

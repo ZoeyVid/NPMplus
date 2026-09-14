@@ -1,9 +1,9 @@
 const errs = {
-	PermissionError: function (_, previous) {
+	PermissionError: function (message, previous) {
 		Error.captureStackTrace(this, this.constructor);
 		this.name = this.constructor.name;
 		this.previous = previous;
-		this.message = "Permission Denied";
+		this.message = message || "Permission Denied";
 		this.public = true;
 		this.status = 403;
 	},

@@ -115,7 +115,7 @@ const internalCertificate = {
 	 * @returns {Promise}
 	 */
 	create: async (access, data) => {
-		await access.can("certificates:create", data);
+		access.can("certificates:manage");
 		data.owner_user_id = access.token.getUserId(1);
 
 		if (data.provider === "letsencrypt") {
@@ -190,7 +190,7 @@ const internalCertificate = {
 	 * @return {Promise}
 	 */
 	update: async (access, data) => {
-		await access.can("certificates:update", data.id);
+		access.can("certificates:manage");
 		const row = await internalCertificate.get(access, { id: data.id });
 
 		if (row.id !== data.id) {
@@ -230,7 +230,7 @@ const internalCertificate = {
 	 * @return {Promise}
 	 */
 	get: async (access, data) => {
-		const accessData = await access.can("certificates:get", data.id);
+		access.can("certificates:view");
 		const query = certificateModel
 			.query()
 			.where("is_deleted", 0)
@@ -238,7 +238,7 @@ const internalCertificate = {
 			.allowGraph("[owner,proxy_hosts,redirection_hosts,dead_hosts,streams]")
 			.first();
 
-		if (accessData.permission_visibility !== "all") {
+		if (access.visibility !== "all") {
 			query.andWhere("owner_user_id", access.token.getUserId(1));
 		}
 
@@ -281,7 +281,7 @@ const internalCertificate = {
 	 * @returns {Promise}
 	 */
 	download: async (access, data) => {
-		await access.can("certificates:get", data);
+		access.can("certificates:view");
 		const certificate = await internalCertificate.get(access, data);
 		if (certificate.provider === "letsencrypt") {
 			const zipDirectory = internalCertificate.getLiveCertPath(data.id);
@@ -355,7 +355,7 @@ const internalCertificate = {
 	 * @returns {Promise}
 	 */
 	delete: async (access, data) => {
-		await access.can("certificates:delete", data.id);
+		access.can("certificates:manage");
 		const row = await internalCertificate.get(access, { id: data.id });
 
 		if (!row?.id) {
@@ -410,7 +410,7 @@ const internalCertificate = {
 	 * @returns {Promise}
 	 */
 	getAll: async (access, expand, searchQuery) => {
-		const accessData = await access.can("certificates:list");
+		access.can("certificates:view");
 
 		const query = certificateModel
 			.query()
@@ -419,7 +419,7 @@ const internalCertificate = {
 			.allowGraph("[owner,proxy_hosts,redirection_hosts,dead_hosts,streams]")
 			.orderBy("nice_name", "ASC");
 
-		if (accessData.permission_visibility !== "all") {
+		if (access.visibility !== "all") {
 			query.andWhere("owner_user_id", access.token.getUserId(1));
 		}
 
@@ -495,15 +495,15 @@ const internalCertificate = {
 
 	/**
 	 * Validates that the certs provided are good.
-	 * No access required here, nothing is changed or stored.
+	 * Nothing is changed or stored.
 	 *
 	 * @param   {Access}  access
 	 * @param   {Object}  data
 	 * @param   {Object}  data.files
-	 * @returns {Promise}
+	 * @returns {Object}
 	 */
-	validate: async (access, data) => {
-		await access.can("certificates:create");
+	validate: (access, data) => {
+		access.can("certificates:manage");
 		const finalData = {};
 		for (const [name, [file]] of Object.entries(data.files)) {
 			if (internalCertificate.allowedSslFiles.includes(name)) {
@@ -535,7 +535,7 @@ const internalCertificate = {
 		}
 		const isMtls = row.provider === "mtls";
 
-		const validations = await internalCertificate.validate(access, data);
+		const validations = internalCertificate.validate(access, data);
 		if (typeof validations.certificate === "undefined") {
 			throw new error.ValidationError("Certificate file was not provided");
 		}
@@ -752,7 +752,7 @@ const internalCertificate = {
 	 * @returns {Promise}
 	 */
 	renew: async (access, data) => {
-		await access.can("certificates:update", data);
+		access.can("certificates:manage");
 		const certificate = await internalCertificate.get(access, data);
 
 		if (certificate.provider === "letsencrypt") {
@@ -909,7 +909,7 @@ const internalCertificate = {
 	 * @returns
 	 */
 	testHttpsChallenge: async (access, payload) => {
-		await access.can("certificates:list");
+		access.can("certificates:view");
 
 		// Create a test challenge file
 		await writeFile("/data/tls/certbot/acme-challenge/.well-known/acme-challenge/test-challenge", "Success", {

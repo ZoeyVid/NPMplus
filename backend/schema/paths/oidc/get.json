@@ -1,0 +1,12 @@
+{
+	"operationId": "oidcAuthorize",
+	"summary": "Start the OIDC authorization code flow, only available when OIDC is configured",
+	"tags": [
+		"public"
+	],
+	"responses": {
+		"302": {
+			"description": "Redirect to the OIDC provider"
+		}
+	}
+}

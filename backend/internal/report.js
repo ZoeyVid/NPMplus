@@ -9,15 +9,13 @@ const internalReport = {
 	 * @return {Promise}
 	 */
 	getHostsReport: async (access) => {
-		const access_data = await access.can("reports:hosts", 1);
-
 		const userId = access.token.getUserId(1);
 
 		const [proxy, redirection, stream, dead] = await Promise.all([
-			internalProxyHost.getCount(userId, access_data.permission_visibility),
-			internalRedirectionHost.getCount(userId, access_data.permission_visibility),
-			internalStream.getCount(userId, access_data.permission_visibility),
-			internalDeadHost.getCount(userId, access_data.permission_visibility),
+			internalProxyHost.getCount(userId, access.visibility),
+			internalRedirectionHost.getCount(userId, access.visibility),
+			internalStream.getCount(userId, access.visibility),
+			internalDeadHost.getCount(userId, access.visibility),
 		]);
 
 		return { proxy, redirection, stream, dead };

@@ -17,9 +17,6 @@ const router = express.Router({
  */
 router
 	.route("/")
-	.options((_, res) => {
-		res.sendStatus(204);
-	})
 	.all(jwtdecode())
 
 	/**
@@ -77,9 +74,6 @@ router
  */
 router
 	.route("/:host_id")
-	.options((_, res) => {
-		res.sendStatus(204);
-	})
 	.all(jwtdecode())
 
 	/**
@@ -159,9 +153,6 @@ router
  */
 router
 	.route("/:host_id/enable")
-	.options((_, res) => {
-		res.sendStatus(204);
-	})
 	.all(jwtdecode())
 
 	/**
@@ -186,9 +177,6 @@ router
  */
 router
 	.route("/:host_id/disable")
-	.options((_, res) => {
-		res.sendStatus(204);
-	})
 	.all(jwtdecode())
 
 	/**

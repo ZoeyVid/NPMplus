@@ -24,7 +24,7 @@ const internalRedirectionHost = {
 			delete thisData.certificate_id;
 		}
 
-		await access.can("redirection_hosts:create", thisData);
+		access.can("redirection_hosts:manage");
 
 		// Get a list of the domain names and check each of them against existing records
 		const checkResults = await Promise.all(
@@ -85,7 +85,9 @@ const internalRedirectionHost = {
 			delete thisData.certificate_id;
 		}
 
-		await access.can("redirection_hosts:update", thisData.id);
+		access.can("redirection_hosts:manage");
+
+		const existingRow = await internalRedirectionHost.get(access, { id: thisData.id });
 
 		// Get a list of the domain names and check each of them against existing records
 		if (typeof thisData.domain_names !== "undefined") {
@@ -100,7 +102,6 @@ const internalRedirectionHost = {
 			}
 		}
 
-		const existingRow = await internalRedirectionHost.get(access, { id: thisData.id });
 		if (existingRow.id !== thisData.id) {
 			// Sanity check that something crazy hasn't happened
 			throw new errs.InternalValidationError(
@@ -159,7 +160,7 @@ const internalRedirectionHost = {
 	get: async (access, data) => {
 		const thisData = data || {};
 
-		const accessData = await access.can("redirection_hosts:get", thisData.id);
+		access.can("redirection_hosts:view");
 
 		const query = redirectionHostModel
 			.query()
@@ -168,7 +169,7 @@ const internalRedirectionHost = {
 			.allowGraph(redirectionHostModel.defaultAllowGraph)
 			.first();
 
-		if (accessData.permission_visibility !== "all") {
+		if (access.visibility !== "all") {
 			query.andWhere("owner_user_id", access.token.getUserId(1));
 		}
 
@@ -199,7 +200,7 @@ const internalRedirectionHost = {
 	 * @returns {Promise}
 	 */
 	delete: async (access, data) => {
-		await access.can("redirection_hosts:delete", data.id);
+		access.can("redirection_hosts:manage");
 
 		const row = await internalRedirectionHost.get(access, { id: data.id });
 		if (!row?.id) {
@@ -233,7 +234,7 @@ const internalRedirectionHost = {
 	 * @returns {Promise}
 	 */
 	enable: async (access, data) => {
-		await access.can("redirection_hosts:update", data.id);
+		access.can("redirection_hosts:manage");
 
 		const row = await internalRedirectionHost.get(access, {
 			id: data.id,
@@ -282,7 +283,7 @@ const internalRedirectionHost = {
 	 * @returns {Promise}
 	 */
 	disable: async (access, data) => {
-		await access.can("redirection_hosts:update", data.id);
+		access.can("redirection_hosts:manage");
 
 		const row = await internalRedirectionHost.get(access, { id: data.id });
 		if (!row?.id) {
@@ -322,7 +323,7 @@ const internalRedirectionHost = {
 	 * @returns {Promise}
 	 */
 	getAll: async (access, expand, searchQuery) => {
-		const accessData = await access.can("redirection_hosts:list");
+		access.can("redirection_hosts:view");
 
 		const query = redirectionHostModel
 			.query()
@@ -331,7 +332,7 @@ const internalRedirectionHost = {
 			.allowGraph(redirectionHostModel.defaultAllowGraph)
 			.orderBy(castJsonIfNeed("domain_names"), "ASC");
 
-		if (accessData.permission_visibility !== "all") {
+		if (access.visibility !== "all") {
 			query.andWhere("owner_user_id", access.token.getUserId(1));
 		}
 

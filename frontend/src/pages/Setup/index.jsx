@@ -4,7 +4,7 @@ import cn from "clsx";
 import { ErrorMessage, Field, Form, Formik } from "formik";
 import { useState } from "react";
 import { Alert } from "react-bootstrap";
-import { createUser } from "src/api/backend";
+import { createSetupUser } from "src/api/backend";
 import { Button, LocalePicker, Page, ThemeSwitcher } from "src/components";
 import { useAuthState } from "src/context";
 import { useHealth } from "src/hooks";
@@ -33,7 +33,7 @@ export default function Setup() {
 		};
 
 		try {
-			const user = await createUser(payload);
+			const user = await createSetupUser(payload);
 			if (user?.id) {
 				if (health.data?.password === false) {
 					window.location.href = "/api/oidc";

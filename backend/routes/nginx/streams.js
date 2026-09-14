@@ -17,9 +17,6 @@ const router = express.Router({
  */
 router
 	.route("/")
-	.options((_, res) => {
-		res.sendStatus(204);
-	})
 	.all(jwtdecode()) // preferred so it doesn't apply to nonexistent routes
 
 	/**
@@ -77,9 +74,6 @@ router
  */
 router
 	.route("/:stream_id")
-	.options((_, res) => {
-		res.sendStatus(204);
-	})
 	.all(jwtdecode()) // preferred so it doesn't apply to nonexistent routes
 
 	/**
@@ -159,9 +153,6 @@ router
  */
 router
 	.route("/:stream_id/enable")
-	.options((_, res) => {
-		res.sendStatus(204);
-	})
 	.all(jwtdecode())
 
 	/**
@@ -186,9 +177,6 @@ router
  */
 router
 	.route("/:stream_id/disable")
-	.options((_, res) => {
-		res.sendStatus(204);
-	})
 	.all(jwtdecode())
 
 	/**

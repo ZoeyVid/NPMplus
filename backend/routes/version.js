@@ -14,9 +14,6 @@ const router = express.Router({
  */
 router
 	.route("/check")
-	.options((_, res) => {
-		res.sendStatus(204);
-	})
 	.all(requireLogin())
 
 	/**

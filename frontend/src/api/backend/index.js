@@ -5,6 +5,7 @@ export * from "./createCertificate";
 export * from "./createDeadHost";
 export * from "./createProxyHost";
 export * from "./createRedirectionHost";
+export * from "./createSetupUser";
 export * from "./createStream";
 export * from "./createUser";
 export * from "./deleteAccessList";

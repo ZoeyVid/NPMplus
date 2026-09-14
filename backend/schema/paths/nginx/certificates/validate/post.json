@@ -6,9 +6,7 @@
 	],
 	"security": [
 		{
-			"cookieAuth": [
-				"certificates.manage"
-			]
+			"cookieAuth": []
 		}
 	],
 	"requestBody": {

@@ -6,9 +6,7 @@
 	],
 	"security": [
 		{
-			"cookieAuth": [
-				"proxy_hosts.manage"
-			]
+			"cookieAuth": []
 		}
 	],
 	"requestBody": {

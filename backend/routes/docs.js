@@ -15,9 +15,6 @@ router.use("/", requireLogin(), swaggerUi.serve);
 
 router
 	.route("/")
-	.options((_, res) => {
-		res.sendStatus(204);
-	})
 
 	/**
 	 * GET / (Now serves the Swagger UI interface)

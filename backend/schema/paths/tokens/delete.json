@@ -1,0 +1,26 @@
+{
+	"operationId": "deleteToken",
+	"summary": "Clear the token cookie",
+	"tags": [
+		"tokens"
+	],
+	"responses": {
+		"200": {
+			"description": "200 response",
+			"content": {
+				"application/json": {
+					"examples": {
+						"default": {
+							"value": {
+								"expires": "1970-01-01T00:00:00.000Z"
+							}
+						}
+					},
+					"schema": {
+						"$ref": "../../components/token-object.json"
+					}
+				}
+			}
+		}
+	}
+}

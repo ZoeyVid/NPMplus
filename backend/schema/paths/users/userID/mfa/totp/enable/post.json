@@ -2,6 +2,11 @@
 	"operationId": "enableUserTotp",
 	"summary": "Verify code and enable TOTP",
 	"tags": ["users"],
+	"security": [
+		{
+			"cookieAuth": []
+		}
+	],
 	"parameters": [
 		{
 			"in": "path",

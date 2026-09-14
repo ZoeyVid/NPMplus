@@ -11,8 +11,8 @@ const internalAuditLog = {
 	 * @param   {String}  [searchQuery]
 	 * @returns {Promise}
 	 */
-	getAll: async (access, expand, searchQuery) => {
-		await access.can("auditlog:list");
+	getAll: (access, expand, searchQuery) => {
+		access.canAdmin();
 
 		const query = auditLogModel
 			.query()
@@ -43,7 +43,7 @@ const internalAuditLog = {
 	 * @return {Promise}
 	 */
 	get: async (access, data) => {
-		await access.can("auditlog:list");
+		access.canAdmin();
 
 		const query = auditLogModel.query().andWhere("id", data.id).allowGraph("[user]").first();
 

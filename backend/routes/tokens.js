@@ -26,9 +26,6 @@ const limiter = rateLimit({
 
 router
 	.route("/")
-	.options((_, res) => {
-		res.sendStatus(204);
-	})
 
 	/**
 	 * GET /tokens
@@ -122,9 +119,6 @@ router
 
 router
 	.route("/totp")
-	.options((_, res) => {
-		res.sendStatus(204);
-	})
 
 	/**
 	 * POST /tokens/totp

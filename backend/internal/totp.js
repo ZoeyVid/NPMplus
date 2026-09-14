@@ -26,7 +26,6 @@ const internalTotp = {
 	 * @returns {Promise<{secret: string, otpauth_url: string}>}
 	 */
 	startSetup: async (access, userId) => {
-		await access.can("users:password", userId);
 		if (Number(userId) !== access.token.getUserId(0)) {
 			throw new errs.PermissionError("TOTP can only be managed for your own account");
 		}
@@ -69,7 +68,6 @@ const internalTotp = {
 	 * @returns {Promise<void>}
 	 */
 	enable: async (access, userId, code) => {
-		await access.can("users:password", userId);
 		if (Number(userId) !== access.token.getUserId(0)) {
 			throw new errs.PermissionError("TOTP can only be managed for your own account");
 		}

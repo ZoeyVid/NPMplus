@@ -1,0 +1,20 @@
+{
+	"operationId": "docs",
+	"summary": "Returns the Swagger UI for this API schema",
+	"tags": [
+		"docs"
+	],
+	"security": [
+		{
+			"cookieAuth": []
+		}
+	],
+	"responses": {
+		"200": {
+			"description": "200 response",
+			"content": {
+				"text/html": {}
+			}
+		}
+	}
+}

@@ -12,7 +12,7 @@ const internalSetting = {
 	 * @return {Promise}
 	 */
 	update: async (access, data) => {
-		await access.can("settings:update", data.id);
+		access.canAdmin();
 
 		const existingRow = await internalSetting.get(access, { id: data.id });
 		if (existingRow.id !== data.id) {
@@ -64,7 +64,7 @@ const internalSetting = {
 	 * @return {Promise}
 	 */
 	get: async (access, data) => {
-		await access.can("settings:get", data.id);
+		access.canAdmin();
 
 		const row = await settingModel.query().where("id", data.id).first();
 		if (row) {
@@ -74,26 +74,13 @@ const internalSetting = {
 	},
 
 	/**
-	 * This will only count the settings
-	 *
-	 * @param   {Access}  access
-	 * @returns {*}
-	 */
-	getCount: async (access) => {
-		await access.can("settings:list");
-
-		const row = await settingModel.query().count("id as count").first();
-		return Number.parseInt(row.count, 10);
-	},
-
-	/**
 	 * All settings
 	 *
 	 * @param   {Access}  access
 	 * @returns {Promise}
 	 */
-	getAll: async (access) => {
-		await access.can("settings:list");
+	getAll: (access) => {
+		access.canAdmin();
 		return settingModel.query().orderBy("description", "ASC");
 	},
 };

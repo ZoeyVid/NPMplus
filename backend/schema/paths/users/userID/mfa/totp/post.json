@@ -2,6 +2,11 @@
 	"operationId": "setupUserTotp",
 	"summary": "Start TOTP setup, returns QR code URL",
 	"tags": ["users"],
+	"security": [
+		{
+			"cookieAuth": []
+		}
+	],
 	"parameters": [
 		{
 			"in": "path",

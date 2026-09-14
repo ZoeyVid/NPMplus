@@ -21,6 +21,10 @@
 			"description": "Endpoints that do not require authentication"
 		},
 		{
+			"name": "auth",
+			"description": "Endpoints used by the nginx auth_request directive"
+		},
+		{
 			"name": "audit-log",
 			"description": "Endpoints related to Audit Logs"
 		},
@@ -77,6 +81,31 @@
 		"/": {
 			"get": {
 				"$ref": "./paths/get.json"
+			}
+		},
+		"/auth": {
+			"get": {
+				"$ref": "./paths/auth/get.json"
+			}
+		},
+		"/auth/admin": {
+			"get": {
+				"$ref": "./paths/auth/admin/get.json"
+			}
+		},
+		"/docs": {
+			"get": {
+				"$ref": "./paths/docs/get.json"
+			}
+		},
+		"/oidc": {
+			"get": {
+				"$ref": "./paths/oidc/get.json"
+			}
+		},
+		"/oidc/callback": {
+			"get": {
+				"$ref": "./paths/oidc/callback/get.json"
 			}
 		},
 		"/audit-log": {
@@ -299,6 +328,9 @@
 			},
 			"post": {
 				"$ref": "./paths/tokens/post.json"
+			},
+			"delete": {
+				"$ref": "./paths/tokens/delete.json"
 			}
 		},
 		"/tokens/totp": {
@@ -319,6 +351,11 @@
 				"$ref": "./paths/users/post.json"
 			}
 		},
+		"/users/setup": {
+			"post": {
+				"$ref": "./paths/users/setup/post.json"
+			}
+		},
 		"/users/{userID}": {
 			"get": {
 				"$ref": "./paths/users/userID/get.json"
@@ -328,6 +365,14 @@
 			},
 			"delete": {
 				"$ref": "./paths/users/userID/delete.json"
+			}
+		},
+		"/users/{userID}/avatar": {
+			"post": {
+				"$ref": "./paths/users/userID/avatar/post.json"
+			},
+			"delete": {
+				"$ref": "./paths/users/userID/avatar/delete.json"
 			}
 		},
 		"/users/{userID}/mfa": {
@@ -369,11 +414,6 @@
 		"/users/{userID}/permissions": {
 			"put": {
 				"$ref": "./paths/users/userID/permissions/put.json"
-			}
-		},
-		"/users/{userID}/login": {
-			"post": {
-				"$ref": "./paths/users/userID/login/post.json"
 			}
 		}
 	}

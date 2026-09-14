@@ -6,9 +6,7 @@
 	],
 	"security": [
 		{
-			"cookieAuth": [
-				"access_lists.view"
-			]
+			"cookieAuth": []
 		}
 	],
 	"parameters": [

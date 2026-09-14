@@ -33,9 +33,6 @@ router.use(limiter);
 
 router
 	.route("/")
-	.options((_, res) => {
-		res.sendStatus(204);
-	})
 
 	/**
 	 * GET /api/oidc
@@ -116,9 +113,6 @@ router
 
 router
 	.route("/callback")
-	.options((_, res) => {
-		res.sendStatus(204);
-	})
 
 	/**
 	 * GET /api/oidc/callback

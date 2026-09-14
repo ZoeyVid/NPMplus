@@ -1,6 +1,6 @@
 import express from "express";
 import internalReport from "../internal/report.js";
-import jwtdecode from "../lib/express/jwt-decode.js";
+import requireLogin from "../lib/express/require-login.js";
 import { debug, express as logger } from "../logger.js";
 
 const router = express.Router({
@@ -11,10 +11,7 @@ const router = express.Router({
 
 router
 	.route("/hosts")
-	.options((_, res) => {
-		res.sendStatus(204);
-	})
-	.all(jwtdecode())
+	.all(requireLogin())
 
 	/**
 	 * GET /reports/hosts

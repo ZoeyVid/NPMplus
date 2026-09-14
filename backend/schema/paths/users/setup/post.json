@@ -1,0 +1,63 @@
+{
+	"operationId": "createSetupUser",
+	"summary": "Create the initial admin User, only possible while no User exists",
+	"tags": [
+		"public"
+	],
+	"requestBody": {
+		"description": "User Payload",
+		"required": true,
+		"content": {
+			"application/json": {
+				"schema": {
+					"type": "object",
+					"additionalProperties": false,
+					"required": [
+						"name",
+						"email"
+					],
+					"properties": {
+						"name": {
+							"$ref": "../../../components/user-object.json#/properties/name"
+						},
+						"email": {
+							"$ref": "../../../components/user-object.json#/properties/email"
+						},
+						"auth": {
+							"type": "object",
+							"description": "Auth Credentials",
+							"additionalProperties": false,
+							"required": ["type", "secret"],
+							"properties": {
+								"type": {
+									"type": "string",
+									"enum": ["password"]
+								},
+								"secret": {
+									"type": "string",
+									"minLength": 1
+								}
+							},
+							"example": {
+								"type": "password",
+								"secret": "bigredhorsebanana"
+							}
+						}
+					}
+				}
+			}
+		}
+	},
+	"responses": {
+		"201": {
+			"description": "201 response",
+			"content": {
+				"application/json": {
+					"schema": {
+						"$ref": "../../../components/user-object.json"
+					}
+				}
+			}
+		}
+	}
+}

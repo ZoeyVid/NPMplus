@@ -1,6 +1,6 @@
 import express from "express";
 import errs from "../lib/error.js";
-import jwtdecode from "../lib/express/jwt-decode.js";
+import requireLogin from "../lib/express/require-login.js";
 import { isSetup } from "../setup.js";
 import auditLogRoutes from "./audit-log.js";
 import docsRoutes from "./docs.js";
@@ -48,16 +48,17 @@ router.get(["/api", "/api/"], async (_, res /*, next*/) => {
  * Auth Check, used by the nginx auth_request directive
  * GET /api/auth
  */
-router.get("/api/auth", jwtdecode(), (_, res) => {
-	res.sendStatus(res.locals.access?.token.getUserId(0) ? 200 : 401);
+router.get("/api/auth", requireLogin(), (_, res) => {
+	res.sendStatus(200);
 });
 
 /**
  * Admin Auth Check, used by the nginx auth_request directive
  * GET /api/auth/admin
  */
-router.get("/api/auth/admin", jwtdecode(), async (_, res) => {
-	res.sendStatus((await res.locals.access.can("admin:access").catch(() => false)) ? 200 : 401);
+router.get("/api/auth/admin", requireLogin(), (_, res) => {
+	res.locals.access.canAdmin();
+	res.sendStatus(200);
 });
 
 router.use("/api/docs", docsRoutes);

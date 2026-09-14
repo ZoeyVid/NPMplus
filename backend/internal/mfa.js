@@ -44,7 +44,7 @@ const internalMfa = {
 	 * @returns {Promise<{totp_enabled: boolean, backup_codes_remaining: number}>}
 	 */
 	getStatus: async (access, userId) => {
-		await access.can("users:password", userId);
+		access.canUser(userId);
 		await internalUser.get(access, { id: userId });
 		const auth = await authModel.getPasswordAuth(userId);
 
@@ -101,7 +101,6 @@ const internalMfa = {
 	 * @returns {Promise<void>}
 	 */
 	disableTotp: async (access, userId, code) => {
-		await access.can("users:password", userId);
 		if (Number(userId) !== access.token.getUserId(0)) {
 			throw new errs.PermissionError("TOTP can only be managed for your own account");
 		}
@@ -177,7 +176,7 @@ const internalMfa = {
 	 * @returns {Promise<void>}
 	 */
 	adminDisable: async (access, userId) => {
-		await access.can("users:mfadisable", userId);
+		access.canAdmin();
 		if (Number(userId) === access.token.getUserId(0)) {
 			throw new errs.ValidationError("MFA can not be reset for your own account");
 		}
@@ -221,7 +220,6 @@ const internalMfa = {
 	 * @returns {Promise<{backup_codes: string[]}>}
 	 */
 	regenerateBackupCodes: async (access, userId, token) => {
-		await access.can("users:password", userId);
 		if (Number(userId) !== access.token.getUserId(0)) {
 			throw new errs.PermissionError("MFA can only be managed for your own account");
 		}

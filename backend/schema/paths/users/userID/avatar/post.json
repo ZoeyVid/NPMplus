@@ -1,0 +1,66 @@
+{
+	"operationId": "setUserAvatar",
+	"summary": "Upload a custom avatar for a user",
+	"tags": [
+		"users"
+	],
+	"security": [
+		{
+			"cookieAuth": []
+		}
+	],
+	"parameters": [
+		{
+			"in": "path",
+			"name": "userID",
+			"schema": {
+				"oneOf": [
+					{
+						"type": "string",
+						"pattern": "^me$"
+					},
+					{
+						"type": "integer",
+						"minimum": 1
+					}
+				]
+			},
+			"required": true,
+			"description": "User ID or 'me' for yourself",
+			"example": 2
+		}
+	],
+	"requestBody": {
+		"description": "Avatar image, at most 1 MiB",
+		"required": true,
+		"content": {
+			"multipart/form-data": {
+				"schema": {
+					"type": "object",
+					"additionalProperties": false,
+					"required": [
+						"avatar"
+					],
+					"properties": {
+						"avatar": {
+							"type": "string",
+							"format": "binary"
+						}
+					}
+				}
+			}
+		}
+	},
+	"responses": {
+		"200": {
+			"description": "200 response",
+			"content": {
+				"application/json": {
+					"schema": {
+						"$ref": "../../../../components/user-object.json"
+					}
+				}
+			}
+		}
+	}
+}

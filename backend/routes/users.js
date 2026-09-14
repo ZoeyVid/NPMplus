@@ -21,6 +21,8 @@ const router = express.Router({
 	mergeParams: true,
 });
 
+let setupRunning = false;
+
 const limiter = rateLimit({
 	windowMs: 5 * 60 * 1000,
 	limit: 5,
@@ -39,9 +41,6 @@ router.use(limiter);
  */
 router
 	.route("/")
-	.options((_, res) => {
-		res.sendStatus(204);
-	})
 	.all(jwtdecode())
 
 	/**
@@ -83,25 +82,50 @@ router
 	 */
 	.post(async (req, res, next) => {
 		try {
-			// If we are in setup mode, we don't check access for current user
-			const setup = await isSetup();
-
-			let body = req.body;
-			if (!setup) {
-				logger.info("Creating a new user in setup mode");
-				const access = new Access(null);
-				await access.load(true);
-				res.locals.access = access;
-
-				// We are in setup mode, only take the fields a user may set and force this
-				// first user to be an admin.
-				const { name, email, auth } = req.body;
-				body = { name, email, auth, roles: ["admin"] };
-			}
-
-			const payload = apiValidator(getValidationSchema("/users", "post"), body);
+			const payload = apiValidator(getValidationSchema("/users", "post"), req.body);
 			const user = await internalUser.create(res.locals.access, payload);
 			res.status(201).send(user);
+		} catch (err) {
+			debug(logger, `${req.method.toUpperCase()} ${req.originalUrl}: ${err}`);
+			next(err);
+		}
+	});
+
+/**
+ * Initial user
+ *
+ * /api/users/setup
+ */
+router
+	.route("/setup")
+
+	/**
+	 * POST /api/users/setup
+	 *
+	 * Create the initial admin User, only possible while no User exists
+	 */
+	.post(async (req, res, next) => {
+		try {
+			if (setupRunning) {
+				throw new errs.PermissionError();
+			}
+			setupRunning = true;
+			try {
+				if (await isSetup()) {
+					throw new errs.PermissionError();
+				}
+				logger.info("Creating a new user in setup mode");
+
+				const access = new Access(null);
+				await access.load(true);
+
+				// Force this first user to be an admin.
+				const payload = apiValidator(getValidationSchema("/users/setup", "post"), req.body);
+				const user = await internalUser.create(access, { ...payload, roles: ["admin"] });
+				res.status(201).send(user);
+			} finally {
+				setupRunning = false;
+			}
 		} catch (err) {
 			debug(logger, `${req.method.toUpperCase()} ${req.originalUrl}: ${err}`);
 			next(err);
@@ -115,9 +139,6 @@ router
  */
 router
 	.route("/:user_id")
-	.options((_, res) => {
-		res.sendStatus(204);
-	})
 	.all(jwtdecode())
 	.all(userIdFromMe)
 
@@ -150,7 +171,6 @@ router
 			const user = await internalUser.get(res.locals.access, {
 				id: data.user_id,
 				expand: data.expand,
-				omit: internalUser.getUserOmisionsByAccess(res.locals.access, data.user_id),
 			});
 			res.status(200).send(user);
 		} catch (err) {
@@ -200,9 +220,6 @@ router
  */
 router
 	.route("/:user_id/auth")
-	.options((_, res) => {
-		res.sendStatus(204);
-	})
 	.all(jwtdecode())
 	.all(userIdFromMe)
 
@@ -240,9 +257,6 @@ router
  */
 router
 	.route("/:user_id/permissions")
-	.options((_, res) => {
-		res.sendStatus(204);
-	})
 	.all(jwtdecode())
 	.all(userIdFromMe)
 
@@ -270,9 +284,6 @@ router
  */
 router
 	.route("/:user_id/mfa")
-	.options((_, res) => {
-		res.sendStatus(204);
-	})
 	.all(jwtdecode())
 	.all(userIdFromMe)
 
@@ -313,9 +324,6 @@ router
  */
 router
 	.route("/:user_id/mfa/totp")
-	.options((_, res) => {
-		res.sendStatus(204);
-	})
 	.all(jwtdecode())
 	.all(userIdFromMe)
 
@@ -358,9 +366,6 @@ router
  */
 router
 	.route("/:user_id/mfa/totp/enable")
-	.options((_, res) => {
-		res.sendStatus(204);
-	})
 	.all(jwtdecode())
 	.all(userIdFromMe)
 
@@ -395,9 +400,6 @@ router
  */
 router
 	.route("/:user_id/mfa/backup-codes")
-	.options((_, res) => {
-		res.sendStatus(204);
-	})
 	.all(jwtdecode())
 	.all(userIdFromMe)
 
@@ -427,9 +429,6 @@ router
 
 router
 	.route("/:user_id/sessions")
-	.options((_, res) => {
-		res.sendStatus(204);
-	})
 	.all(jwtdecode())
 	.all(userIdFromMe)
 
@@ -467,9 +466,6 @@ router
  */
 router
 	.route("/:user_id/avatar")
-	.options((_, res) => {
-		res.sendStatus(204);
-	})
 	.all(jwtdecode())
 	.all(userIdFromMe)
 
