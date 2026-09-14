@@ -7,6 +7,31 @@ import validator from "../../lib/validator/index.js";
 import { debug, express as logger } from "../../logger.js";
 import { getValidationSchema } from "../../schema/index.js";
 
+const listSchema = {
+	additionalProperties: false,
+	properties: {
+		expand: {
+			$ref: "common#/properties/expand",
+		},
+		query: {
+			$ref: "common#/properties/query",
+		},
+	},
+};
+
+const hostSchema = {
+	required: ["host_id"],
+	additionalProperties: false,
+	properties: {
+		host_id: {
+			$ref: "common#/properties/id",
+		},
+		expand: {
+			$ref: "common#/properties/expand",
+		},
+	},
+};
+
 const router = express.Router({
 	caseSensitive: true,
 	strict: true,
@@ -27,23 +52,10 @@ router
 	 */
 	.get(async (req, res, next) => {
 		try {
-			const data = await validator(
-				{
-					additionalProperties: false,
-					properties: {
-						expand: {
-							$ref: "common#/properties/expand",
-						},
-						query: {
-							$ref: "common#/properties/query",
-						},
-					},
-				},
-				{
-					expand: typeof req.query.expand === "string" ? req.query.expand.split(",") : null,
-					query: typeof req.query.query === "string" ? req.query.query : null,
-				},
-			);
+			const data = await validator(listSchema, {
+				expand: typeof req.query.expand === "string" ? req.query.expand.split(",") : null,
+				query: typeof req.query.query === "string" ? req.query.query : null,
+			});
 			const rows = await internalProxyHost.getAll(res.locals.access, data.expand, data.query);
 			res.status(200).send(rows.map((row) => internalProxyHostAccessList.maskAccessListItems(row)));
 		} catch (err) {
@@ -87,24 +99,10 @@ router
 	 */
 	.get(async (req, res, next) => {
 		try {
-			const data = await validator(
-				{
-					required: ["host_id"],
-					additionalProperties: false,
-					properties: {
-						host_id: {
-							$ref: "common#/properties/id",
-						},
-						expand: {
-							$ref: "common#/properties/expand",
-						},
-					},
-				},
-				{
-					host_id: req.params.host_id,
-					expand: typeof req.query.expand === "string" ? req.query.expand.split(",") : null,
-				},
-			);
+			const data = await validator(hostSchema, {
+				host_id: req.params.host_id,
+				expand: typeof req.query.expand === "string" ? req.query.expand.split(",") : null,
+			});
 			const row = await internalProxyHost.get(res.locals.access, {
 				id: Number.parseInt(data.host_id, 10),
 				expand: data.expand,

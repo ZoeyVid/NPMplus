@@ -6,6 +6,17 @@ import validator from "../lib/validator/index.js";
 import { debug, express as logger } from "../logger.js";
 import { getValidationSchema } from "../schema/index.js";
 
+const settingSchema = {
+	required: ["setting_id"],
+	additionalProperties: false,
+	properties: {
+		setting_id: {
+			type: "string",
+			minLength: 1,
+		},
+	},
+};
+
 const router = express.Router({
 	caseSensitive: true,
 	strict: true,
@@ -50,21 +61,9 @@ router
 	 */
 	.get(async (req, res, next) => {
 		try {
-			const data = await validator(
-				{
-					required: ["setting_id"],
-					additionalProperties: false,
-					properties: {
-						setting_id: {
-							type: "string",
-							minLength: 1,
-						},
-					},
-				},
-				{
-					setting_id: req.params.setting_id,
-				},
-			);
+			const data = await validator(settingSchema, {
+				setting_id: req.params.setting_id,
+			});
 			const row = await internalSetting.get(res.locals.access, {
 				id: data.setting_id,
 			});

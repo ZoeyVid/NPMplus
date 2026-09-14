@@ -4,6 +4,31 @@ import jwtdecode from "../lib/express/jwt-decode.js";
 import validator from "../lib/validator/index.js";
 import { debug, express as logger } from "../logger.js";
 
+const listSchema = {
+	additionalProperties: false,
+	properties: {
+		expand: {
+			$ref: "common#/properties/expand",
+		},
+		query: {
+			$ref: "common#/properties/query",
+		},
+	},
+};
+
+const eventSchema = {
+	required: ["event_id"],
+	additionalProperties: false,
+	properties: {
+		event_id: {
+			$ref: "common#/properties/id",
+		},
+		expand: {
+			$ref: "common#/properties/expand",
+		},
+	},
+};
+
 const router = express.Router({
 	caseSensitive: true,
 	strict: true,
@@ -24,23 +49,10 @@ router
 	 */
 	.get(async (req, res, next) => {
 		try {
-			const data = await validator(
-				{
-					additionalProperties: false,
-					properties: {
-						expand: {
-							$ref: "common#/properties/expand",
-						},
-						query: {
-							$ref: "common#/properties/query",
-						},
-					},
-				},
-				{
-					expand: typeof req.query.expand === "string" ? req.query.expand.split(",") : null,
-					query: typeof req.query.query === "string" ? req.query.query : null,
-				},
-			);
+			const data = await validator(listSchema, {
+				expand: typeof req.query.expand === "string" ? req.query.expand.split(",") : null,
+				query: typeof req.query.query === "string" ? req.query.query : null,
+			});
 			const rows = await internalAuditLog.getAll(res.locals.access, data.expand, data.query);
 			res.status(200).send(rows);
 		} catch (err) {
@@ -65,24 +77,10 @@ router
 	 */
 	.get(async (req, res, next) => {
 		try {
-			const data = await validator(
-				{
-					required: ["event_id"],
-					additionalProperties: false,
-					properties: {
-						event_id: {
-							$ref: "common#/properties/id",
-						},
-						expand: {
-							$ref: "common#/properties/expand",
-						},
-					},
-				},
-				{
-					event_id: req.params.event_id,
-					expand: typeof req.query.expand === "string" ? req.query.expand.split(",") : null,
-				},
-			);
+			const data = await validator(eventSchema, {
+				event_id: req.params.event_id,
+				expand: typeof req.query.expand === "string" ? req.query.expand.split(",") : null,
+			});
 
 			const item = await internalAuditLog.get(res.locals.access, {
 				id: data.event_id,
