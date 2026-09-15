@@ -7,7 +7,7 @@
 	"main": "index.js",
 	"type": "module",
 	"dependencies": {
-		"@apidevtools/json-schema-ref-parser": "16.0.2",
+		"@apidevtools/json-schema-ref-parser": "16.0.3",
 		"ajv": "8.20.0",
 		"archiver": "8.0.0",
 		"bcryptjs": "3.0.3",
@@ -27,10 +27,10 @@
 		"otplib": "13.5.0",
 		"pg": "8.23.0",
 		"swagger-ui-express": "5.0.1",
-		"undici": "8.10.2"
+		"undici": "8.11.0"
 	},
 	"devDependencies": {
-		"@apidevtools/swagger-parser": "13.0.0",
-		"@biomejs/biome": "2.5.13"
+		"@apidevtools/swagger-parser": "13.1.0",
+		"@biomejs/biome": "2.5.14"
 	}
 }
