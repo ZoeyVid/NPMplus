@@ -30,7 +30,7 @@
 		"undici": "8.10.2"
 	},
 	"devDependencies": {
-		"@apidevtools/swagger-parser": "13.0.0",
-		"@biomejs/biome": "2.5.13"
+		"@apidevtools/swagger-parser": "13.1.0",
+		"@biomejs/biome": "2.5.14"
 	}
 }
