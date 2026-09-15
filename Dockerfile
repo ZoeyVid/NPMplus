@@ -9,7 +9,7 @@ ARG AWSLC_VER=a3d1e685552f05a9ad04a2946962c03e97bdecac # v5.8.0
 
 ARG NGINX_VER=c82a590adc3a317dfb9b738d76cb2dd45e3cfcbe # release-1.31.5
 ARG DTR_VER=1.29.2
-ARG RCP_VER=1.31.4
+ARG RCP_VER=1.31.6
 ARG ZNP_VER=1.30.0
 
 ARG NB_VER=35ec7c13cf2baf758845f727dae220acf9fb3445 # master
@@ -19,7 +19,7 @@ ARG NHUZFM_VER=658990e20a5f1cefbf760eb427741ce95b6eebc9 # main
 ARG NF_VER=047589e4dc0041517b8a47739fa960c430c4045e # v0.6.0
 ARG HMNM_VER=0bf283ff92017acd616814b0e5153e0ccf93e2c9 # v0.40
 ARG NDK_VER=bd44d16302273052d6005d7bdb55f74e23813de3 # v0.3.4
-ARG LNM_VER=84cc201565bc2ef12dcab6eb25e7ccaf44d56d42 # v0.10.32rc4
+ARG LNM_VER=58ece96055227399bbffa5e06cb5b54ebeeacef9 # v0.10.32rc5
 
 ARG NJS_VER=1b648f8805596c95368f8fa428a5c38c5d279857 # 1.0.1
 ARG NAL_VER=241200eac8e4acae74d353291bd27f79e5ca3dc4 # master
@@ -73,7 +73,7 @@ RUN git-clone-commit.sh https://github.com/nginx/nginx "$NGINX_VER" /src/nginx &
     echo "0aa9c73e7515dbbd48ecc798f7894412c1a50e96e98aee25847e823059faf821  /src/nginx/4.patch" | sha256sum -c - && \
     git apply /src/nginx/4.patch && \
     wget -q https://raw.githubusercontent.com/openresty/openresty/master/patches/nginx/"$RCP_VER"/nginx-"$RCP_VER"-resolver_conf_parsing.patch -O /src/nginx/5.patch && \
-    echo "bda9db7d2766b20c9490f1ccd6d2da72fee402ade219efb32fe341851dbdd7c8  /src/nginx/5.patch" | sha256sum -c - && \
+    echo "354bb2c05a41357efe3ea9d28a2fc8ff2a5fe6482e0fdda61a237d6bb5a96d51  /src/nginx/5.patch" | sha256sum -c - && \
     git apply /src/nginx/5.patch && \
     wget -q https://raw.githubusercontent.com/zlib-ng/patches/master/nginx/"$ZNP_VER"-zlib-ng.patch -O /src/nginx/6.patch && \
     echo "bcd0f2fb9723fc1f251f94cead8d5160e767f7d4a04365331396a72a9ba54c6b  /src/nginx/6.patch" | sha256sum -c - && \
