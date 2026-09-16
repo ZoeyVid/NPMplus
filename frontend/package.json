@@ -28,7 +28,7 @@
 		"rooks": "9.9.0"
 	},
 	"devDependencies": {
-		"@biomejs/biome": "2.5.13",
+		"@biomejs/biome": "2.5.14",
 		"@vitejs/plugin-react": "6.1.1",
 		"vite": "8.3.0"
 	}
