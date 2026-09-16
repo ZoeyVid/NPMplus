@@ -366,10 +366,11 @@ const internalProxyHostAccessList = {
 
 	/**
 	 * Ensures the provided acls are valid (if custom, at least 1 acl must be specified)
+	 * @param {Access} access
 	 * @param {*} proxyHost
 	 * @returns
 	 */
-	validateAccessLists: async (proxyHost) => {
+	validateAccessLists: async (access, proxyHost) => {
 		if (!proxyHost) {
 			return;
 		}
@@ -399,11 +400,17 @@ const internalProxyHostAccessList = {
 		}
 		// make sure no ACLs that are being uploaded have been soft deleted
 		if (aclIds.size > 0) {
-			const rows = await accessListModel
+			const query = accessListModel
 				.query()
 				.whereIn("id", [...aclIds])
 				.andWhere("is_deleted", 0)
 				.select("id");
+
+			if (access.visibility !== "all") {
+				query.andWhere("owner_user_id", access.token.getUserId(1));
+			}
+
+			const rows = await query;
 
 			const validIds = new Set(rows.map((row) => row.id));
 			const invalidIds = [...aclIds].filter((id) => !validIds.has(id));
