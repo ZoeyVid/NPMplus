@@ -23,6 +23,8 @@ const internalProxyHost = {
 
 		if (createCertificate) {
 			delete thisData.certificate_id;
+		} else if (Number(thisData.certificate_id) > 0) {
+			await internalCertificate.get(access, { id: thisData.certificate_id });
 		}
 
 		access.can("proxy_hosts:manage");
@@ -40,7 +42,7 @@ const internalProxyHost = {
 		thisData.owner_user_id = access.token.getUserId(1);
 		thisData = internalHost.cleanSslHstsData(createCertificate, thisData);
 		thisData = internalProxyHostAccessList.cleanAccessListTypes(thisData);
-		await internalProxyHostAccessList.validateAccessLists(thisData);
+		await internalProxyHostAccessList.validateAccessLists(access, thisData);
 
 		const createdRow = utils.omitRow(omissions())(
 			await proxyHostModel.transaction(async (trx) => {
@@ -101,6 +103,8 @@ const internalProxyHost = {
 
 		if (createCertificate) {
 			delete thisData.certificate_id;
+		} else if (Number(thisData.certificate_id) > 0) {
+			await internalCertificate.get(access, { id: thisData.certificate_id });
 		}
 
 		access.can("proxy_hosts:manage");
@@ -141,7 +145,7 @@ const internalProxyHost = {
 		thisData = { domain_names: existingRow.domain_names, ...thisData };
 		thisData = internalHost.cleanSslHstsData(createCertificate, thisData, existingRow);
 		thisData = internalProxyHostAccessList.cleanAccessListTypes(thisData);
-		await internalProxyHostAccessList.validateAccessLists(thisData);
+		await internalProxyHostAccessList.validateAccessLists(access, thisData);
 
 		await proxyHostModel.transaction(async (trx) => {
 			const patchResult = await proxyHostModel.query(trx).where({ id: thisData.id }).patch(thisData);
