@@ -22,6 +22,8 @@ const internalDeadHost = {
 
 		if (createCertificate) {
 			delete thisData.certificate_id;
+		} else if (Number(thisData.certificate_id) > 0) {
+			await internalCertificate.get(access, { id: thisData.certificate_id });
 		}
 
 		access.can("dead_hosts:manage");
@@ -83,6 +85,8 @@ const internalDeadHost = {
 
 		if (createCertificate) {
 			delete thisData.certificate_id;
+		} else if (Number(thisData.certificate_id) > 0) {
+			await internalCertificate.get(access, { id: thisData.certificate_id });
 		}
 
 		access.can("dead_hosts:manage");
