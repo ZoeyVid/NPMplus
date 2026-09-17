@@ -41,7 +41,7 @@
 			"uniqueItems": true,
 			"items": {
 				"type": "string",
-				"pattern": "^(([^.]+\\.)+[^.]+)|(\\[[0-9a-f:]+\\])$"
+				"pattern": "^((([^\\s.]+\\.)+[^\\s.]+)|(\\[[0-9a-fA-F:]+\\]))$"
 			},
 			"example": [
 				"example.com",
