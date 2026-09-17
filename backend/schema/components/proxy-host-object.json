@@ -132,6 +132,7 @@
 		},
 		"npmplus_auth_request_upstream": {
 			"type": "string",
+			"pattern": "^(https?://([^/:]+|\\[[a-fA-F0-9:]+\\]):[0-9]+)?$",
 			"example": ""
 		},
 		"advanced_config": {

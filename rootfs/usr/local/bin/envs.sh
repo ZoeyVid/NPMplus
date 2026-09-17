@@ -440,13 +440,13 @@ if ! echo "$NPM_IPV4_BINDING" | grep -q "^[0-9]\{1,3\}\.[0-9]\{1,3\}\.[0-9]\{1,3
 fi
 
 
-if ! echo "$IPV6_BINDING" | grep -q "^\[[0-9a-f:]\+\]$"; then
-    echo "IPV6_BINDING needs to be a IPv6-Address inside []: lower letters a-f, numbers 0-9 and colons."
+if ! echo "$IPV6_BINDING" | grep -q "^\[[0-9a-fA-F:]\+\]$"; then
+    echo "IPV6_BINDING needs to be a IPv6-Address inside []: letters a-f or A-F, numbers 0-9 and colons."
     sleep inf
 fi
 
-if ! echo "$NPM_IPV6_BINDING" | grep -q "^\[[0-9a-f:]\+\]$"; then
-    echo "NPM_IPV6_BINDING needs to be a IPv6-Address inside []: lower letters a-f, numbers 0-9 and colons."
+if ! echo "$NPM_IPV6_BINDING" | grep -q "^\[[0-9a-fA-F:]\+\]$"; then
+    echo "NPM_IPV6_BINDING needs to be a IPv6-Address inside []: letters a-f or A-F, numbers 0-9 and colons."
     sleep inf
 fi
 
