@@ -77,12 +77,12 @@ const internalUser = {
 		await userPermissionModel.query().insert({
 			user_id: user.id,
 			visibility: isAdmin ? "all" : "user",
-			proxy_hosts: "manage",
-			redirection_hosts: "manage",
-			dead_hosts: "manage",
-			streams: "manage",
-			access_lists: "manage",
-			certificates: "manage",
+			proxy_hosts: "hidden",
+			redirection_hosts: "hidden",
+			dead_hosts: "hidden",
+			streams: "hidden",
+			access_lists: "hidden",
+			certificates: "hidden",
 		});
 
 		await userModel
@@ -445,6 +445,17 @@ const internalUser = {
 
 		const { id, ...permissionData } = data;
 		const existing_auth = await userPermissionModel.query().where("user_id", user.id).first();
+
+		const merged = { ...existing_auth, ...permissionData };
+		if (merged.proxy_hosts !== "hidden" && merged.access_lists === "hidden") {
+			throw new errs.ValidationError("Access lists can not be hidden while proxy hosts are visible");
+		}
+		if (
+			merged.certificates === "hidden" &&
+			["proxy_hosts", "redirection_hosts", "dead_hosts", "streams"].some((type) => merged[type] !== "hidden")
+		) {
+			throw new errs.ValidationError("Certificates can not be hidden while hosts are visible");
+		}
 
 		if (existing_auth) {
 			permissions = await userPermissionModel
