@@ -41,7 +41,7 @@ jobs:
             FLAGS=-march=x86-64-v2 -mtune=generic -fcf-protection=full
           
   build-aarch64:
-    runs-on: ubuntu-24.04-arm
+    runs-on: ubuntu-26.04-arm
     permissions:
       contents: read
       packages: write
