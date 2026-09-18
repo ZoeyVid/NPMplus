@@ -54,8 +54,8 @@ importers:
         specifier: 19.3.0
         version: 19.3.0(react@19.3.0)
       react-intl:
-        specifier: 12.1.0
-        version: 12.1.0(@types/react@19.3.0)(react@19.3.0)
+        specifier: 12.1.1
+        version: 12.1.1(@types/react@19.3.0)(react@19.3.0)
       react-router:
         specifier: 8.4.0
         version: 8.4.0(react-dom@19.3.0(react@19.3.0))(react@19.3.0)
@@ -248,8 +248,8 @@ packages:
   '@formatjs/icu-skeleton-parser@2.1.12':
     resolution: {integrity: sha512-ca7tZMLpfHX3sUD7hP6gE/qr6Iq89EDd3ZLeRhbsB7r0UD55DGJq+tmFLzrGrnx5StahUevQmQQVtbDRHsfDHA==}
 
-  '@formatjs/intl@6.1.0':
-    resolution: {integrity: sha512-dq5fd6DaBD8rCERANT3dKkKB0ZprBvWgUHilPP/JXe87tdGhz1OtJ5A1Ho2k/+f9BPoB8Eq6/dhgGTHdnQjHmA==}
+  '@formatjs/intl@6.1.1':
+    resolution: {integrity: sha512-kKxt7HZrmlSChntA4OAD5DlaDcKeUJOOvWKA/7ORiM1dQ+GYuiIz6FuDOkMeo/aVzSJ6hA25etFAtCnHEalqJw==}
 
   '@internationalized/date@3.12.4':
     resolution: {integrity: sha512-M1dEn4c1U1HsSlaVR8upZtSqvXrTkHDfv18H01uCSJyjVLDxnBR38v/fMxecmlwXKR4i9HeZcmgQAPE6A+aGJQ==}
@@ -613,8 +613,8 @@ packages:
     resolution: {integrity: sha512-TR3KfrTZTYLPB6jUjfx6MF9WcWrHL9su5TObK4ZkYgBdWKPOFoSoQIdEuTuR82pmtxH2spWG9h6etwfr1pLBqQ==}
     engines: {node: '>=6'}
 
-  intl-messageformat@12.1.0:
-    resolution: {integrity: sha512-wOZHCRUYx5jdVJ8VCLYpVF27YjLA0DxVQfm1gGm1caXC8HyTgWezaZkW3fZWREQHS3aL5gTK7xKI4VKZJTcd1Q==}
+  intl-messageformat@12.1.1:
+    resolution: {integrity: sha512-ZNwni2Ihmge8FZ0O+n7JQXHNAZfFGN/ovLrIxyfFK/bEsnHV2bG3W75Z24GdKmMepiq21SiMfANNPze+xjSCHA==}
 
   invariant@2.2.4:
     resolution: {integrity: sha512-phJfQVBuaJM5raOpJjSfkiD6BpbCE4Ns//LaXl6wGYtUBY83nWS6Rf9tXm2e8VaK60JEjYldbPif/A2B1C2gNA==}
@@ -836,8 +836,8 @@ packages:
   react-fast-compare@2.0.4:
     resolution: {integrity: sha512-suNP+J1VU1MWFKcyt7RtjiSWUjvidmQSlqu+eHslq+342xCbGTYmC0mEhPCOHxlW0CywylOC1u2DFAT+bv4dBw==}
 
-  react-intl@12.1.0:
-    resolution: {integrity: sha512-Q9crwrvhTZYJlG/NLEh8+wXtl7ue3JLTo8FSHYU/r1k2oZVT6b7ITZ//5dIWVDOVDbk7Zt/YTIrHD58WFRt5qQ==}
+  react-intl@12.1.1:
+    resolution: {integrity: sha512-W+i+eifLA3ZTVmAtdfjU7+2dBPAapJeaFwHGKeEyVv1xYUft6tBEU5z1dmgvJlkgs6mn8phFHP5wQQIfU1SjCQ==}
     peerDependencies:
       '@types/react': '>=18.0.0'
       react: '>=18.0.0'
@@ -1193,11 +1193,11 @@ snapshots:
 
   '@formatjs/icu-skeleton-parser@2.1.12': {}
 
-  '@formatjs/intl@6.1.0':
+  '@formatjs/intl@6.1.1':
     dependencies:
       '@formatjs/fast-memoize': 3.1.7
       '@formatjs/icu-messageformat-parser': 3.5.19
-      intl-messageformat: 12.1.0
+      intl-messageformat: 12.1.1
 
   '@internationalized/date@3.12.4':
     dependencies:
@@ -1486,7 +1486,7 @@ snapshots:
       parent-module: 1.0.1
       resolve-from: 4.0.0
 
-  intl-messageformat@12.1.0:
+  intl-messageformat@12.1.1:
     dependencies:
       '@formatjs/fast-memoize': 3.1.7
       '@formatjs/icu-messageformat-parser': 3.5.19
@@ -1677,12 +1677,12 @@ snapshots:
 
   react-fast-compare@2.0.4: {}
 
-  react-intl@12.1.0(@types/react@19.3.0)(react@19.3.0):
+  react-intl@12.1.1(@types/react@19.3.0)(react@19.3.0):
     dependencies:
       '@formatjs/icu-messageformat-parser': 3.5.19
-      '@formatjs/intl': 6.1.0
+      '@formatjs/intl': 6.1.1
       '@types/react': 19.3.0
-      intl-messageformat: 12.1.0
+      intl-messageformat: 12.1.1
       react: 19.3.0
 
   react-is@16.13.1: {}
