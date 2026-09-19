@@ -36,11 +36,11 @@
 						"forward_port": {
 							"$ref": "../../../components/proxy-host-object.json#/properties/forward_port"
 						},
-						"lb_method": {
-							"$ref": "../../../components/proxy-host-object.json#/properties/lb_method"
+						"npmplus_load_balance_method": {
+							"$ref": "../../../components/proxy-host-object.json#/properties/npmplus_load_balance_method"
 						},
-						"upstream_servers": {
-							"$ref": "../../../components/proxy-host-object.json#/properties/upstream_servers"
+						"npmplus_upstream_servers": {
+							"$ref": "../../../components/proxy-host-object.json#/properties/npmplus_upstream_servers"
 						},
 						"certificate_id": {
 							"$ref": "../../../components/proxy-host-object.json#/properties/certificate_id"

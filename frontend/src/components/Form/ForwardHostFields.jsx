@@ -39,8 +39,8 @@ export function ForwardHostFields({ initialServers = [], initialMethod = "round_
 
 	const syncField = (newServers, newMethod) => {
 		const filtered = newServers.filter((s) => s.host.trim() !== "");
-		setFieldValue("upstreamServers", filtered);
-		setFieldValue("lbMethod", newMethod);
+		setFieldValue("npmplusUpstreamServers", filtered);
+		setFieldValue("npmplusLoadBalanceMethod", newMethod);
 	};
 
 	const handleAdd = () => {
