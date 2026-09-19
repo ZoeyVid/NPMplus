@@ -339,17 +339,8 @@ const internalNginx = {
 			const originalLocations = [...host.locations];
 			host.locations = await internalNginx.renderLocations(host);
 
-			const providerEnvMap = {
-				anubis: "AUTH_REQUEST_ANUBIS_UPSTREAM",
-				tinyauth: "AUTH_REQUEST_TINYAUTH_UPSTREAM",
-				oauth2proxy: "AUTH_REQUEST_OAUTH2PROXY_UPSTREAM",
-				voidauth: "AUTH_REQUEST_VOIDAUTH_UPSTREAM",
-				authelia: "AUTH_REQUEST_AUTHELIA_UPSTREAM",
-				authentik: "AUTH_REQUEST_AUTHENTIK_UPSTREAM",
-			};
-
-			for (const [provider, envKey] of Object.entries(providerEnvMap)) {
-				let effectiveUpstream = process.env[envKey] || "";
+			for (const provider of ["anubis", "tinyauth", "oauth2proxy", "voidauth", "authelia", "authentik"]) {
+				let effectiveUpstream = "";
 
 				if (
 					(host.npmplus_auth_request === provider ||
