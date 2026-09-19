@@ -16,42 +16,63 @@ import { AccessFields } from "src/components";
 import { intl, T } from "src/locale";
 import { forwardSummary } from "src/modules/Forward";
 import { upstreamUrlPattern } from "src/modules/Validations";
+import { ForwardHostFields } from "./ForwardHostFields";
 
 export function LocationsFields({ initialValues, name = "locations" }) {
 	const nextUiKey = useRef(0);
-	const createUiLocation = (item) => ({
-		npmplusEnabled: true,
-		path: "",
-		locationType: "",
-		advancedConfig: "",
-		forwardScheme: "http",
-		npmplusLoadBalanceMethod: "round_robin",
-		npmplusUpstreamServers: [
-			{
-				host: "",
-				port: null,
-				weight: 1,
-				maxFails: 1,
-				failTimeout: 10,
-				backup: false,
-				down: false,
-			},
-		],
-		npmplusAccessListIds: [],
-		npmplusNoindex: false,
-		npmplusCrowdsecAppsec: false,
-		npmplusProxyResponseBuffering: false,
-		npmplusProxyRequestBuffering: false,
-		npmplusUpstreamCompression: false,
-		npmplusFancyindex: false,
-		npmplusXFrameOptions: "SAMEORIGIN",
-		npmplusAuthRequest: "none",
-		npmplusAuthRequestUpstream: "",
-		npmplusAccessListType: "global",
-		id: null,
-		...item,
-		uiKey: nextUiKey.current++,
-	});
+	const createUiLocation = (item) => {
+		const npmplusUpstreamServers = item?.npmplusUpstreamServers?.length
+			? item.npmplusUpstreamServers
+			: [
+					{
+						host: "",
+						port: null,
+						weight: null,
+						maxFails: null,
+						maxConns: null,
+						failTimeout: null,
+						backup: false,
+						down: false,
+					},
+				];
+
+		return {
+
+			npmplusEnabled: true,
+			path: "",
+			locationType: "",
+			advancedConfig: "",
+			forwardScheme: "http",
+			npmplusLoadBalanceMethod: "round_robin",
+			npmplusUpstreamServers: [
+				{
+					host: "",
+					port: null,
+					weight: 1,
+					maxFails: 1,
+					failTimeout: 10,
+					backup: false,
+					down: false,
+				},
+			],
+			npmplusAccessListIds: [],
+			npmplusNoindex: false,
+			npmplusCrowdsecAppsec: false,
+			npmplusProxyResponseBuffering: false,
+			npmplusProxyRequestBuffering: false,
+			npmplusUpstreamCompression: false,
+			npmplusFancyindex: false,
+			npmplusXFrameOptions: "SAMEORIGIN",
+			npmplusAuthRequest: "none",
+			npmplusAuthRequestUpstream: "",
+			npmplusAccessListType: "global",
+			id: null,
+			...item,
+			npmplusLoadBalanceMethod: item?.npmplusLoadBalanceMethod || "round_robin",
+			npmplusUpstreamServers,
+			uiKey: nextUiKey.current++,
+		};
+	};
 
 	const [values, setValues] = useState(initialValues.map(createUiLocation));
 	const { setFieldValue } = useFormikContext();
@@ -127,13 +148,21 @@ export function LocationsFields({ initialValues, name = "locations" }) {
 
 	const isOpen = (item) => expanded.includes(item.uiKey);
 
-	const locationLabel = (item) => `${item.locationType}${item.path}`;
+	const locationLabel = (item) => `${item.locationType ?? ""}${item.path ?? ""}`;
+
+	const forwardSummary = ({ forwardScheme, npmplusUpstreamServers = [] }) => {
+		const server = npmplusUpstreamServers[0];
+		if (!server?.host || forwardScheme === "empty") return "";
+		if (forwardScheme && forwardScheme !== "path") {
+			return `${forwardScheme}://${server.host}${server.port ? `:${server.port}` : ""}`;
+		}
+		return server.host;
+	};
 
 	const handleForwardChange = (idx, forwarding) => {
 		const newValues = [...values];
 
 		newValues[idx] = {
-			...newValues[idx],
 			forwardScheme: forwarding.scheme,
 			npmplusLoadBalanceMethod: forwarding.method,
 			npmplusUpstreamServers: forwarding.servers,
@@ -321,11 +350,9 @@ export function LocationsFields({ initialValues, name = "locations" }) {
 						<div className="row">
 							<ForwardHostFields
 								idPrefix={`location-${item.uiKey}`}
-								value={{
-									scheme: item.forwardScheme,
-									method: item.npmplusLoadBalanceMethod,
-									servers: item.npmplusUpstreamServers,
-								}}
+								scheme={item.forwardScheme}
+								loadBalanceMethod={item.npmplusLoadBalanceMethod}
+								upstreamServers={item.npmplusUpstreamServers}
 								onChange={(next) => handleForwardChange(idx, next)}
 							/>
 
