@@ -11,6 +11,7 @@ import internalProxyHostAccessList from "./proxy-host-access-list.js";
 
 const omissions = () => ["is_deleted", "owner.is_deleted", "certificate.is_deleted"];
 
+
 const internalProxyHost = {
 	/**
 	 * @param   {Access}  access
@@ -43,7 +44,7 @@ const internalProxyHost = {
 		thisData = internalHost.cleanSslHstsData(createCertificate, thisData);
 		thisData = internalProxyHostAccessList.cleanAccessListTypes(thisData);
 		await internalProxyHostAccessList.validateAccessLists(access, thisData);
-
+		internalProxyHost.validateLoadBalancing(thisData);
 		const createdRow = utils.omitRow(omissions())(
 			await proxyHostModel.transaction(async (trx) => {
 				const insertedRow = await proxyHostModel.query(trx).insertAndFetch(thisData);
@@ -146,7 +147,7 @@ const internalProxyHost = {
 		thisData = internalHost.cleanSslHstsData(createCertificate, thisData, existingRow);
 		thisData = internalProxyHostAccessList.cleanAccessListTypes(thisData);
 		await internalProxyHostAccessList.validateAccessLists(access, thisData);
-
+		internalProxyHost.validateLoadBalancing(thisData, existingRow);
 		await proxyHostModel.transaction(async (trx) => {
 			const patchResult = await proxyHostModel.query(trx).where({ id: thisData.id }).patch(thisData);
 
@@ -423,6 +424,14 @@ const internalProxyHost = {
 
 		return Number.parseInt(row.count, 10);
 	},
+
+	validateLoadBalancing: (data, existing = {}) => {
+		const lbMethod = data.lb_method ?? existing.lb_method ?? "round_robin";
+		const upstreamServers = data.upstream_servers ?? existing.upstream_servers ?? [];
+		if (lbMethod === "ip_hash" && upstreamServers.some((server) => server.backup)) {
+			throw new errs.ValidationError("The backup parameter cannot be used with the ip_hash load balancing method",);
+		}
+	}
 };
 
 export default internalProxyHost;
