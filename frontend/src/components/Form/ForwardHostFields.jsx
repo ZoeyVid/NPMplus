@@ -87,153 +87,300 @@ export function ForwardHostFields({ initialServers = [], initialMethod = "round_
 
 	return (
 		<>
-			<div className="mb-4">
+			<div className="row">
 				<label className="form-label" htmlFor="lbMethod">
-					<T id="upstream.method" />
-					<InfoPopover messageId="upstream.method.help" />
+					<T id="host.load-balance-method" />
+					<InfoPopover messageId="host.load-balance-method-help" />
 				</label>
-				<select
-					id="lbMethod"
-					className="form-select"
-					value={method}
-					onChange={(e) => handleMethodChange(e.target.value)}
-				>
-					<option value="round_robin">Round Robin</option>
-					<option value="least_conn">Least Connections</option>
-					<option value="ip_hash">IP Hash (sticky sessions)</option>
-				</select>
 			</div>
-
-			{servers.map((server, idx) => (
-				<div key={idx} className="card card-active mb-3">
-					<div className="card-body">
-						<div className="row g-2 mb-2">
-							<div className="col-sm-6">
-								<label className="form-label" htmlFor={`upstream-host-${idx}`}>
-									<T id="upstream.host" />
-								</label>
-								<input
-									id={`upstream-host-${idx}`}
-									type="text"
-									className="form-control"
-									placeholder="192.168.1.1"
-									autoComplete="off"
-									value={server.host}
-									onChange={(e) => handleChange(idx, "host", e.target.value)}
-								/>
-							</div>
-							<div className="col-sm-2">
-								<label className="form-label" htmlFor={`upstream-port-${idx}`}>
-									<T id="upstream.port" />
-								</label>
-								<input
-									id={`upstream-port-${idx}`}
-									type="number"
-									min={1}
-									max={65535}
-									className="form-control"
-									placeholder="80"
-									value={server.port}
-									onChange={(e) => handleChange(idx, "port", Number(e.target.value))}
-								/>
-							</div>
-							<div className="col-sm-2">
-								<label className="form-label" htmlFor={`upstream-weight-${idx}`}>
-									<T id="upstream.weight" />
-									<InfoPopover messageId="upstream.weight.help" />
-								</label>
-								<input
-									id={`upstream-weight-${idx}`}
-									type="number"
-									min={1}
-									max={100}
-									className="form-control"
-									value={server.weight}
-									onChange={(e) => handleChange(idx, "weight", Number(e.target.value))}
-								/>
-							</div>
-						</div>
-						<div className="row g-2">
-							<div className="col-sm-3">
-								<label className="form-label" htmlFor={`upstream-maxfails-${idx}`}>
-									<T id="upstream.max-fails" />
-									<InfoPopover messageId="upstream.max-fails.help" />
-								</label>
-								<input
-									id={`upstream-maxfails-${idx}`}
-									type="number"
-									min={0}
-									className="form-control"
-									value={server.maxFails}
-									onChange={(e) => handleChange(idx, "maxFails", Number(e.target.value))}
-								/>
-							</div>
-							<div className="col-sm-3">
-								<label className="form-label" htmlFor={`upstream-failtimeout-${idx}`}>
-									<T id="upstream.fail-timeout" />
-									<InfoPopover messageId="upstream.fail-timeout.help" />
-								</label>
-								<input
-									id={`upstream-failtimeout-${idx}`}
-									type="text"
-									className="form-control"
-									placeholder="30s"
-									value={server.failTimeout}
-									onChange={(e) => handleChange(idx, "failTimeout", e.target.value)}
-								/>
-							</div>
-							<div className="col-sm-3 d-flex align-items-end">
-								<OverlayTrigger
-									trigger={backupDisabled ? ["hover", "focus"] : []}
-									placement="top"
-									overlay={
-										<Popover>
-											<Popover.Body>
-												{intl.formatMessage({ id: "upstream.backup.help" })}
-											</Popover.Body>
-										</Popover>
-									}
-								>
-									<label className="form-check form-switch mb-2">
-										<input
-											type="checkbox"
-											className="form-check-input"
-											checked={server.backup}
-											disabled={backupDisabled}
-											onChange={(e) => handleChange(idx, "backup", e.target.checked)}
-										/>
-										<span className="form-check-label">
-											<T id="upstream.backup" />
-											<InfoPopover messageId="upstream.backup.help" />
-										</span>
-									</label>
-								</OverlayTrigger>
-							</div>
-							<div className="col-sm-3 d-flex align-items-end">
-								<label className="form-check form-switch mb-2">
-									<input
-										type="checkbox"
-										className="form-check-input"
-										checked={server.down}
-										onChange={(e) => handleChange(idx, "down", e.target.checked)}
-									/>
-									<span className="form-check-label">
-										<T id="upstream.down" />
-										<InfoPopover messageId="upstream.down.help" />
-									</span>
-								</label>
-							</div>
-						</div>
-						<div className="mt-1">
-							<a
-								href="#"
-								onClick={(e) => {
-									e.preventDefault();
-									handleRemove(idx);
-								}}
+			<div className="row">
+				<div className="col-md-10">
+					<Field name="loadBalanceMethod">
+						<div className="input-group mb-3 shadow-none">
+							<select
+								id="loadBalanceMethod"
+								className="form-select"
+								value={method}
+								onChange={(e) => handleMethodChange(e.target.value)}
 							>
-								<T id="action.delete" />
-							</a>
+								<option value="round_robin">Round Robin</option>
+								<option value="least_conn">Least Connections</option>
+								<option value="ip_hash">IP Hash (sticky sessions)</option>
+							</select>
+						</div>
+					</Field>
+				</div>
+			</div>
+			{servers.map((server, idx) => (
+				<div className="row">
+					<div className="row">
+						<div className="col-md-3">
+							<Field name="forwardScheme">
+								{({ field, form }) => (
+									<div className="mb-3">
+										<label
+											className="form-label"
+											htmlFor="forwardScheme"
+										>
+											<T id="host.forward-scheme" />
+										</label>
+										<select
+											id="forwardScheme"
+											className="form-select"
+											required
+											{...field}
+											onChange={(e) => {
+												field.onChange(e);
+												const scheme = e.target.value;
+												if (scheme === "empty") return;
+												if (!["http", "https"].includes(scheme)) {
+													form.setFieldValue(
+														"npmplusProxyRequestBuffering",
+														false,
+													);
+													form.setFieldValue(
+														"npmplusProxyResponseBuffering",
+														false,
+													);
+												}
+												if (scheme === "path") {
+													form.setFieldValue(
+														"npmplusUpstreamCompression",
+														false,
+													);
+												} else {
+													form.setFieldValue(
+														"npmplusFancyindex",
+														false,
+													);
+												}
+											}}
+										>
+											<option value="http">http://</option>
+											<option value="https">https://</option>
+											<option value="path">path: </option>
+											<option value="empty">empty</option>
+											<option value="grpc">grpc://</option>
+											<option value="grpcs">grpcs://</option>
+										</select>
+									</div>
+								)}
+							</Field>
+						</div>
+						<div className="col-md-5">
+							<Field name="forwardHost">
+								{({ field, form }) => (
+									<div className="mb-3">
+										<label className="form-label" htmlFor="forwardHost">
+											<T id="proxy-host.forward-host-path" />
+										</label>
+										<input
+											id="forwardHost"
+											type="text"
+											className={`form-control ${form.errors.forwardHost && form.touched.forwardHost ? "is-invalid" : ""}`}
+											placeholder="example.com"
+											{...field}
+										/>
+
+										{form.errors.forwardHost ? (
+											<div className="invalid-feedback">
+												{form.errors.forwardHost &&
+												form.touched.forwardHost
+													? form.errors.forwardHost
+													: null}
+											</div>
+										) : null}
+									</div>
+								)}
+							</Field>
+						</div>
+						<div className="col-md-3">
+							<Field name="forwardPort" validate={validateNumber(-1, 65535)}>
+								{({ field, form }) => (
+									<div className="mb-3">
+										<label className="form-label" htmlFor="forwardPort">
+											<T id="host.forward-port" />
+										</label>
+										<input
+											id="forwardPort"
+											type="text"
+											inputMode="numeric"
+											pattern="[0-9]*"
+											className={`form-control ${form.errors.forwardPort && form.touched.forwardPort ? "is-invalid" : ""}`}
+											placeholder="eg: 8081"
+											{...field}
+										/>
+
+										{form.errors.forwardPort ? (
+											<div className="invalid-feedback">
+												{form.errors.forwardPort &&
+												form.touched.forwardPort
+													? form.errors.forwardPort
+													: null}
+											</div>
+										) : null}
+									</div>
+								)}
+							</Field>
+						</div>
+						<div className="col-md-1 text-end">
+							<div className="mb-3">
+								<div className="form-label invisible">​</div>
+								<button
+									type="button"
+									className="btn p-0"
+									title="LocationConfig"
+									onClick={() => setAdvVisible((prev) => !prev)}
+								>
+									<IconSettings size={20} />
+									{values?.npmplusLocationConfig?.trim() ? "*" : ""}
+								</button>
+							</div>
+						</div>
+						<button
+							type="button"
+							aria-label="Remove"
+							className="btn btn-ghost btn-danger p-0 mb-1"
+							onClick={() => {
+								handleRemove(item);
+							}}
+						>
+							<IconX size={16} />
+						</button>
+					</div>
+					<div className="row">
+						<div className="col-md-3">
+							<Field name="npmplusUpstreamWeight" validate={validateNumber(-1, 65535)}>
+								{({ field, form }) => (
+									<div className="mb-3">
+										<label className="form-label" htmlFor="npmplusUpstreamWeight">
+											<T id="host.upstream-weight" />
+										</label>
+										<input
+											id="npmplusUpstreamWeight"
+											type="text"
+											inputMode="numeric"
+											pattern="[0-9]*"
+											className={`form-control ${form.errors.npmplusUpstreamWeight && form.touched.npmplusUpstreamWeight ? "is-invalid" : ""}`}
+											placeholder="eg: 1"
+											{...field}
+										/>
+
+										{form.errors.npmplusUpstreamWeight ? (
+											<div className="invalid-feedback">
+												{form.errors.npmplusUpstreamWeight &&
+												form.touched.npmplusUpstreamWeight
+													? form.errors.npmplusUpstreamWeight
+													: null}
+											</div>
+										) : null}
+									</div>
+								)}
+							</Field>
+						</div>
+						<div className="col-md-3">
+							<Field name="npmplusUpstreamMaxFails" validate={validateNumber(-1, 65535)}>
+								{({ field, form }) => (
+									<div className="mb-3">
+										<label className="form-label" htmlFor="npmplusUpstreamMaxFails">
+											<T id="host.upstream-weight" />
+										</label>
+										<input
+											id="npmplusUpstreamMaxFails"
+											type="text"
+											inputMode="numeric"
+											pattern="[0-9]*"
+											className={`form-control ${form.errors.npmplusUpstreamMaxFails && form.touched.npmplusUpstreamMaxFails ? "is-invalid" : ""}`}
+											placeholder="eg: 1"
+											{...field}
+										/>
+
+										{form.errors.npmplusUpstreamMaxFails ? (
+											<div className="invalid-feedback">
+												{form.errors.npmplusUpstreamMaxFails &&
+												form.touched.npmplusUpstreamMaxFails
+													? form.errors.npmplusUpstreamMaxFails
+													: null}
+											</div>
+										) : null}
+									</div>
+								)}
+							</Field>
+						</div>
+						<div className="col-md-3">
+							<Field name="npmplusUpstreamTimeoutSec" validate={validateNumber(-1, 65535)}>
+								{({ field, form }) => (
+									<div className="mb-3">
+										<label className="form-label" htmlFor="npmplusUpstreamTimeoutSec">
+											<T id="host.upstream-weight" />
+										</label>
+										<input
+											id="npmplusUpstreamTimeoutSec"
+											type="text"
+											inputMode="numeric"
+											pattern="[0-9]*"
+											className={`form-control ${form.errors.npmplusUpstreamTimeoutSec && form.touched.npmplusUpstreamTimeoutSec ? "is-invalid" : ""}`}
+											placeholder="eg: 1"
+											{...field}
+										/>
+
+										{form.errors.npmplusUpstreamTimeoutSec ? (
+											<div className="invalid-feedback">
+												{form.errors.npmplusUpstreamTimeoutSec &&
+												form.touched.npmplusUpstreamTimeoutSec
+													? form.errors.npmplusUpstreamTimeoutSec
+													: null}
+											</div>
+										) : null}
+									</div>
+								)}
+							</Field>
+						</div>
+						<div className="col-md-3">
+							<label className="row" htmlFor="npmplusUpstreamDisable">
+								<span className="col">
+									<T id="host.flags.send-noindex" />
+								</span>
+								<span className="col-auto">
+									<Field name="npmplusUpstreamDisable" type="checkbox">
+										{({ field }) => (
+											<span className="form-check form-check-single form-switch">
+												<input
+													{...field}
+													id="npmplusUpstreamDisable"
+													className={cn("form-check-input", {
+														"bg-lime": field.checked,
+													})}
+													type="checkbox"
+												/>
+											</span>
+										)}
+									</Field>
+								</span>
+							</label>
+						</div>
+						<div className="col-md-3">
+							<label className="row" htmlFor="npmplusUpstreamDisable">
+								<span className="col">
+									<T id="host.flags.send-noindex" />
+								</span>
+								<span className="col-auto">
+									<Field name="npmplusUpstreamDisable" type="checkbox">
+										{({ field }) => (
+											<span className="form-check form-check-single form-switch">
+												<input
+													{...field}
+													id="npmplusUpstreamDisable"
+													className={cn("form-check-input", {
+														"bg-lime": field.checked,
+													})}
+													type="checkbox"
+												/>
+											</span>
+										)}
+									</Field>
+								</span>
+							</label>
 						</div>
 					</div>
 				</div>
@@ -241,7 +388,7 @@ export function ForwardHostFields({ initialServers = [], initialMethod = "round_
 
 			<div>
 				<button type="button" className="btn btn-sm" onClick={handleAdd}>
-					<T id="upstream.add-server" />
+					<T id="host.add-server" />
 				</button>
 			</div>
 		</>
