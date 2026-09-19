@@ -91,6 +91,7 @@ const internalProxyHost = {
 			thisData.certificate_id = (await internalCertificate.createQuickCertificate(access, thisData)).id;
 		}
 
+		internalProxyHost.validateLoadBalancing(thisData);
 		const createdRow = await proxyHostModel.transaction(async (trx) => {
 			const insertedRow = await proxyHostModel.query(trx).insertAndFetch(thisData);
 			await replaceLocationsAndAccessLists(trx, insertedRow.id, thisData);
@@ -171,7 +172,7 @@ const internalProxyHost = {
 		thisData = internalProxyHostAccessList.cleanAccessListTypes(thisData);
 		for (const item of [thisData, ...(thisData.locations ?? [])]) cleanForwardOptions(item);
 		await internalProxyHostAccessList.validateAccessLists(access, thisData);
-
+		internalProxyHost.validateLoadBalancing(thisData, existingRow);
 		await proxyHostModel.transaction(async (trx) => {
 			await proxyHostModel.query(trx).where({ id: thisData.id }).patch(thisData);
 			await replaceLocationsAndAccessLists(trx, thisData.id, thisData);
@@ -409,6 +410,14 @@ const internalProxyHost = {
 
 		return query.resultSize();
 	},
+
+	validateLoadBalancing: (data, existing = {}) => {
+		const lbMethod = data.lb_method ?? existing.lb_method ?? "round_robin";
+		const upstreamServers = data.upstream_servers ?? existing.upstream_servers ?? [];
+		if (lbMethod === "ip_hash" && upstreamServers.some((server) => server.backup)) {
+			throw new errs.ValidationError("The backup parameter cannot be used with the ip_hash load balancing method",);
+		}
+	}
 };
 
 export default internalProxyHost;

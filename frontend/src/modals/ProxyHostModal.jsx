@@ -22,6 +22,7 @@ import EasyModal from "src/modules/easyModal";
 import { MANAGE, PROXY_HOSTS } from "src/modules/Permissions";
 import { showTabOfInvalid, validateNumber, validateUpstreamUrl } from "src/modules/Validations";
 import { showObjectSuccess } from "src/notifications";
+import { ForwardHostFields } from "../components/Form/ForwardHostFields";
 
 const ProxyHostModal = EasyModal.create(({ id, isClone, visible, remove }) => {
 	const { data, isPending, error } = useProxyHost(id);
@@ -202,108 +203,8 @@ const ProxyHostModal = EasyModal.create(({ id, isClone, visible, remove }) => {
 													dnsProviderWildcardSupported
 													forCertificate={values.certificateId === "new"}
 												/>
-												<div className="row">
-													<div className="col-md-3">
-														<Field name="forwardScheme">
-															{({ field, form }) => (
-																<div className="mb-3">
-																	<label
-																		className="form-label"
-																		htmlFor="forwardScheme"
-																	>
-																		<T id="host.forward-scheme" />
-																	</label>
-																	<select
-																		id="forwardScheme"
-																		className="form-select"
-																		required
-																		{...field}
-																		onChange={(e) => {
-																			field.onChange(e);
-																			const scheme = e.target.value;
-																			if (scheme === "empty") return;
-																			if (!["http", "https"].includes(scheme)) {
-																				form.setFieldValue(
-																					"npmplusProxyRequestBuffering",
-																					false,
-																				);
-																				form.setFieldValue(
-																					"npmplusProxyResponseBuffering",
-																					false,
-																				);
-																			}
-																			if (scheme === "path") {
-																				form.setFieldValue(
-																					"npmplusUpstreamCompression",
-																					false,
-																				);
-																			} else {
-																				form.setFieldValue(
-																					"npmplusFancyindex",
-																					false,
-																				);
-																			}
-																		}}
-																	>
-																		<option value="http">http://</option>
-																		<option value="https">https://</option>
-																		<option value="path">path: </option>
-																		<option value="empty">empty</option>
-																		<option value="grpc">grpc://</option>
-																		<option value="grpcs">grpcs://</option>
-																	</select>
-																</div>
-															)}
-														</Field>
-													</div>
-													<div className="col-md-5">
-														<Field name="forwardHost">
-															{({ field, form }) => (
-																<div className="mb-3">
-																	<label className="form-label" htmlFor="forwardHost">
-																		<T id="proxy-host.forward-host-path" />
-																	</label>
-																	<input
-																		id="forwardHost"
-																		type="text"
-																		className="form-control"
-																		placeholder="example.com"
-																		required={form.values.forwardScheme !== "empty"}
-																		pattern="(?=\S{0,255}$)[^\s\/]{0,253}(\/\S*)?"
-																		{...field}
-																	/>
-																</div>
-															)}
-														</Field>
-													</div>
-													<div className="col-md-3">
-														<Field name="forwardPort" validate={validateNumber(-1, 65535)}>
-															{({ field, form }) => (
-																<div className="mb-3">
-																	<label className="form-label" htmlFor="forwardPort">
-																		<T id="host.forward-port" />
-																	</label>
-																	<input
-																		id="forwardPort"
-																		type="text"
-																		inputMode="numeric"
-																		pattern="[1-9][0-9]*"
-																		className={`form-control ${form.errors.forwardPort && form.touched.forwardPort ? "is-invalid" : ""}`}
-																		placeholder="eg: 8081"
-																		{...field}
-																	/>
-
-																	{form.errors.forwardPort ? (
-																		<div className="invalid-feedback">
-																			{form.touched.forwardPort
-																				? form.errors.forwardPort
-																				: null}
-																		</div>
-																	) : null}
-																</div>
-															)}
-														</Field>
-													</div>
+												<ForwardHostFields />
+												<div class="row">
 													<div className="col-md-1 text-end">
 														<div className="mb-3">
 															<div className="form-label invisible">​</div>

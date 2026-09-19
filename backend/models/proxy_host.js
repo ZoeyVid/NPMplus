@@ -77,7 +77,7 @@ class ProxyHost extends Model {
 
 	static tableName = "proxy_host";
 
-	static jsonAttributes = ["domain_names", "meta"];
+	static jsonAttributes = ["domain_names", "meta", "npmplus_upstream_servers"];
 
 	static get relationMappings() {
 		return {
