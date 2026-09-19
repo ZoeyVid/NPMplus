@@ -57,7 +57,7 @@ export function ForwardHostFields({ scheme, loadBalanceMethod, upstreamServers }
 
 	const handleAdd = () => {
 		const newServerIdx = servers.length;
-    	const updated = [...servers, { ...blankServer }];
+		const updated = [...servers, { ...blankServer }];
 		setServers(updated);
 		setExpanded((current) => [...current, newServerIdx]);
 	};
@@ -203,7 +203,7 @@ export function ForwardHostFields({ scheme, loadBalanceMethod, upstreamServers }
 								onClick={() => toggleExpanded(idx)}
 							>
 								{isExpanded(idx) ? <IconChevronDown size={16} /> : <IconChevronRight size={16} />}
-								<span className="ms-2 fw-medium text-nowrap">{server.host}:{server.port < 0? "": server.port}</span>								
+								<span className="ms-2 fw-medium text-nowrap">{server.host}:{server.port < 0? "": server.port}</span>
 							</button>
 							<button
 								type="button"
@@ -216,7 +216,7 @@ export function ForwardHostFields({ scheme, loadBalanceMethod, upstreamServers }
 							</button>
 						</div>
 					) : null}
-					<div 
+					<div
 						className={cn("card-body", !isExpanded(idx) && "d-none")}
 						id={`upstream-host-body-${idx}`}
 					>

@@ -116,6 +116,7 @@ const internalProxyHost = {
 			throw new errs.ValidationError("Each auth request provider can only have one upstream");
 		}
 		await internalProxyHostAccessList.validateAccessLists(access, thisData);
+		internalProxyHost.validateLoadBalancing(thisData);
 
 		if (createCertificate) {
 			thisData.certificate_id = (await internalCertificate.createQuickCertificate(access, thisData)).id;
