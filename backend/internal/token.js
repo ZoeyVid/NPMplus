@@ -11,6 +11,8 @@ const ERROR_MESSAGE_INVALID_AUTH_I18N = "error.invalid-auth";
 const ERROR_MESSAGE_INVALID_CODE = "Invalid verification code";
 const ERROR_MESSAGE_INVALID_CODE_I18N = "error.invalid-code";
 
+const consumedChallenges = new Map();
+
 export default {
 	/**
 	 * @param   {Object} data
@@ -207,6 +209,14 @@ export default {
 		if (!valid) {
 			throw new errs.AuthError(ERROR_MESSAGE_INVALID_CODE, ERROR_MESSAGE_INVALID_CODE_I18N);
 		}
+
+		const now = Math.floor(Date.now() / 1000);
+		for (const [jti, expires] of consumedChallenges) if (expires <= now) consumedChallenges.delete(jti);
+
+		if (consumedChallenges.has(tokenData.jti)) {
+			throw new errs.AuthError("Invalid challenge token");
+		}
+		consumedChallenges.set(tokenData.jti, tokenData.exp);
 
 		const signed = await Token.create({
 			iss: "api",
