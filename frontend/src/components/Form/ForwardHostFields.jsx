@@ -279,7 +279,7 @@ export function ForwardHostFields({ scheme, loadBalanceMethod, upstreamServers }
 							</div>
 							{servers.length > 1 ? (
 								<>
-									<div className="col-md-2">
+									<div className="col-md-3">
 										<Field name="npmplusUpstreamEnable" type="checkbox">
 											{({ field }) => (
 												<div className="mb-3">
@@ -303,18 +303,6 @@ export function ForwardHostFields({ scheme, loadBalanceMethod, upstreamServers }
 												</div>
 											)}
 										</Field>
-									</div>
-									<div className="col-md-1 shadow-none px-1 pt-4">
-										<button
-											type="button"
-											aria-label="Remove"
-											className="btn btn-ghost btn-sm btn-danger p-0 mb-1"
-											onClick={() => {
-												handleRemove(idx);
-											}}
-										>
-											<IconX size={16} />
-										</button>
 									</div>
 								</>
 							) : null}
@@ -408,7 +396,7 @@ export function ForwardHostFields({ scheme, loadBalanceMethod, upstreamServers }
 										)}
 									</Field>
 								</div>
-								<div className="col-md-2">
+								<div className="col-md-3">
 									<Field name="npmplusUpstreamBackup" type="checkbox">
 										{({ field }) => (
 											<div className="mb-3">
