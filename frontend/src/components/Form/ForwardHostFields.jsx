@@ -40,7 +40,7 @@ export function ForwardHostFields({ initialServers = [], initialMethod = "round_
 	const syncField = (newServers, newMethod) => {
 		const filtered = newServers.filter((s) => s.host.trim() !== "");
 		setFieldValue("npmplusUpstreamServers", filtered);
-		setFieldValue("npmplusLoadBalanceMethod", newMethod);
+		setFieldValue("npmplusnpmplusLoadBalanceMethod", newMethod);
 	};
 
 	const handleAdd = () => {
@@ -94,11 +94,64 @@ export function ForwardHostFields({ initialServers = [], initialMethod = "round_
 				</label>
 			</div>
 			<div className="row">
+				<div className="col-md-3">
+					<Field name="forwardScheme">
+						{({ field, form }) => (
+							<div className="mb-3">
+								<label
+									className="form-label"
+									htmlFor="forwardScheme"
+								>
+									<T id="host.forward-scheme" />
+								</label>
+								<select
+									id="forwardScheme"
+									className="form-select"
+									required
+									{...field}
+									onChange={(e) => {
+										field.onChange(e);
+										const scheme = e.target.value;
+										if (scheme === "empty") return;
+										if (!["http", "https"].includes(scheme)) {
+											form.setFieldValue(
+												"npmplusProxyRequestBuffering",
+												false,
+											);
+											form.setFieldValue(
+												"npmplusProxyResponseBuffering",
+												false,
+											);
+										}
+										if (scheme === "path") {
+											form.setFieldValue(
+												"npmplusUpstreamCompression",
+												false,
+											);
+										} else {
+											form.setFieldValue(
+												"npmplusFancyindex",
+												false,
+											);
+										}
+									}}
+								>
+									<option value="http">http://</option>
+									<option value="https">https://</option>
+									<option value="path">path: </option>
+									<option value="empty">empty</option>
+									<option value="grpc">grpc://</option>
+									<option value="grpcs">grpcs://</option>
+								</select>
+							</div>
+						)}
+					</Field>
+				</div>
 				<div className="col-md-10">
-					<Field name="loadBalanceMethod">
+					<Field name="npmplusLoadBalanceMethod">
 						<div className="input-group mb-3 shadow-none">
 							<select
-								id="loadBalanceMethod"
+								id="npmplusLoadBalanceMethod"
 								className="form-select"
 								value={method}
 								onChange={(e) => handleMethodChange(e.target.value)}
@@ -114,59 +167,7 @@ export function ForwardHostFields({ initialServers = [], initialMethod = "round_
 			{servers.map((server, idx) => (
 				<div className="row">
 					<div className="row">
-						<div className="col-md-3">
-							<Field name="forwardScheme">
-								{({ field, form }) => (
-									<div className="mb-3">
-										<label
-											className="form-label"
-											htmlFor="forwardScheme"
-										>
-											<T id="host.forward-scheme" />
-										</label>
-										<select
-											id="forwardScheme"
-											className="form-select"
-											required
-											{...field}
-											onChange={(e) => {
-												field.onChange(e);
-												const scheme = e.target.value;
-												if (scheme === "empty") return;
-												if (!["http", "https"].includes(scheme)) {
-													form.setFieldValue(
-														"npmplusProxyRequestBuffering",
-														false,
-													);
-													form.setFieldValue(
-														"npmplusProxyResponseBuffering",
-														false,
-													);
-												}
-												if (scheme === "path") {
-													form.setFieldValue(
-														"npmplusUpstreamCompression",
-														false,
-													);
-												} else {
-													form.setFieldValue(
-														"npmplusFancyindex",
-														false,
-													);
-												}
-											}}
-										>
-											<option value="http">http://</option>
-											<option value="https">https://</option>
-											<option value="path">path: </option>
-											<option value="empty">empty</option>
-											<option value="grpc">grpc://</option>
-											<option value="grpcs">grpcs://</option>
-										</select>
-									</div>
-								)}
-							</Field>
-						</div>
+						
 						<div className="col-md-5">
 							<Field name="forwardHost">
 								{({ field, form }) => (
@@ -237,16 +238,18 @@ export function ForwardHostFields({ initialServers = [], initialMethod = "round_
 								</button>
 							</div>
 						</div>
-						<button
-							type="button"
-							aria-label="Remove"
-							className="btn btn-ghost btn-danger p-0 mb-1"
-							onClick={() => {
-								handleRemove(item);
-							}}
-						>
-							<IconX size={16} />
-						</button>
+						{initialServers.length > 1 ? (
+							<button
+								type="button"
+								aria-label="Remove"
+								className="btn btn-ghost btn-danger p-0 mb-1"
+								onClick={() => {
+									handleRemove(idx);
+								}}
+							>
+								<IconX size={16} />
+							</button>
+						) : null}
 					</div>
 					<div className="row">
 						<div className="col-md-3">
@@ -283,7 +286,7 @@ export function ForwardHostFields({ initialServers = [], initialMethod = "round_
 								{({ field, form }) => (
 									<div className="mb-3">
 										<label className="form-label" htmlFor="npmplusUpstreamMaxFails">
-											<T id="host.upstream-weight" />
+											<T id="host.upstream-max-fails" />
 										</label>
 										<input
 											id="npmplusUpstreamMaxFails"
@@ -312,7 +315,7 @@ export function ForwardHostFields({ initialServers = [], initialMethod = "round_
 								{({ field, form }) => (
 									<div className="mb-3">
 										<label className="form-label" htmlFor="npmplusUpstreamTimeoutSec">
-											<T id="host.upstream-weight" />
+											<T id="host.upstream-timeout-sec" />
 										</label>
 										<input
 											id="npmplusUpstreamTimeoutSec"
@@ -337,17 +340,17 @@ export function ForwardHostFields({ initialServers = [], initialMethod = "round_
 							</Field>
 						</div>
 						<div className="col-md-3">
-							<label className="row" htmlFor="npmplusUpstreamDisable">
+							<label className="row" htmlFor="npmplusUpstreamBackup">
 								<span className="col">
 									<T id="host.flags.send-noindex" />
 								</span>
 								<span className="col-auto">
-									<Field name="npmplusUpstreamDisable" type="checkbox">
+									<Field name="npmplusUpstreamBackup" type="checkbox">
 										{({ field }) => (
 											<span className="form-check form-check-single form-switch">
 												<input
 													{...field}
-													id="npmplusUpstreamDisable"
+													id="npmplusUpstreamBackup"
 													className={cn("form-check-input", {
 														"bg-lime": field.checked,
 													})}
