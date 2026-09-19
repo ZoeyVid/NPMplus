@@ -1,5 +1,5 @@
-import { IconInfoCircle } from "@tabler/icons-react";
-import { useFormikContext } from "formik";
+import { IconInfoCircle, IconSettings, IconX } from "@tabler/icons-react";
+import { Field, useFormikContext } from "formik";
 import { useState } from "react";
 import OverlayTrigger from "react-bootstrap/OverlayTrigger";
 import Popover from "react-bootstrap/Popover";
@@ -40,7 +40,7 @@ export function ForwardHostFields({ initialServers = [], initialMethod = "round_
 	const syncField = (newServers, newMethod) => {
 		const filtered = newServers.filter((s) => s.host.trim() !== "");
 		setFieldValue("npmplusUpstreamServers", filtered);
-		setFieldValue("npmplusnpmplusLoadBalanceMethod", newMethod);
+		setFieldValue("npmplusLoadBalanceMethod", newMethod);
 	};
 
 	const handleAdd = () => {
@@ -87,12 +87,6 @@ export function ForwardHostFields({ initialServers = [], initialMethod = "round_
 
 	return (
 		<>
-			<div className="row">
-				<label className="form-label" htmlFor="lbMethod">
-					<T id="host.load-balance-method" />
-					<InfoPopover messageId="host.load-balance-method-help" />
-				</label>
-			</div>
 			<div className="row">
 				<div className="col-md-3">
 					<Field name="forwardScheme">
@@ -147,22 +141,32 @@ export function ForwardHostFields({ initialServers = [], initialMethod = "round_
 						)}
 					</Field>
 				</div>
-				<div className="col-md-10">
-					<Field name="npmplusLoadBalanceMethod">
-						<div className="input-group mb-3 shadow-none">
-							<select
-								id="npmplusLoadBalanceMethod"
-								className="form-select"
-								value={method}
-								onChange={(e) => handleMethodChange(e.target.value)}
-							>
-								<option value="round_robin">Round Robin</option>
-								<option value="least_conn">Least Connections</option>
-								<option value="ip_hash">IP Hash (sticky sessions)</option>
-							</select>
+				{initialServers.length > 1 ? (
+					<>
+						<div className="col-md-10">
+							<label className="form-label" htmlFor="lbMethod">
+								<T id="host.load-balance-method" />
+								<InfoPopover messageId="host.load-balance-method-help" />
+							</label>
 						</div>
-					</Field>
-				</div>
+						<div className="col-md-10">
+							<Field name="npmplusLoadBalanceMethod">
+								<div className="input-group mb-3 shadow-none">
+									<select
+										id="npmplusLoadBalanceMethod"
+										className="form-select"
+										value={method}
+										onChange={(e) => handleMethodChange(e.target.value)}
+									>
+										<option value="round_robin">Round Robin</option>
+										<option value="least_conn">Least Connections</option>
+										<option value="ip_hash">IP Hash (sticky sessions)</option>
+									</select>
+								</div>
+							</Field>
+						</div>
+					</>
+				) : null}
 			</div>
 			{servers.map((server, idx) => (
 				<div className="row">
@@ -223,20 +227,6 @@ export function ForwardHostFields({ initialServers = [], initialMethod = "round_
 									</div>
 								)}
 							</Field>
-						</div>
-						<div className="col-md-1 text-end">
-							<div className="mb-3">
-								<div className="form-label invisible">​</div>
-								<button
-									type="button"
-									className="btn p-0"
-									title="LocationConfig"
-									onClick={() => setAdvVisible((prev) => !prev)}
-								>
-									<IconSettings size={20} />
-									{values?.npmplusLocationConfig?.trim() ? "*" : ""}
-								</button>
-							</div>
 						</div>
 						{initialServers.length > 1 ? (
 							<button

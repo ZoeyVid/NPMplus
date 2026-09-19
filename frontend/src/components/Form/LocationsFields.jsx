@@ -18,7 +18,8 @@ import { AccessFields } from "src/components";
 import { useUser } from "src/hooks";
 import { intl, T } from "src/locale";
 import { forwardSummary } from "src/modules/Forward";
-import { isAdminTarget, validateAdminTarget, validateNumber, validateUpstreamUrl } from "src/modules/Validations";
+import { isAdminTarget, validateUpstreamUrl } from "src/modules/Validations";
+import { ForwardHostFields } from "./ForwardHostFields";
 
 const authProvider = (authRequest) => authRequest?.replace("-send-basic-auth", "");
 
@@ -30,8 +31,18 @@ export const createUiLocation = (item) => ({
 	locationType: "",
 	advancedConfig: "",
 	forwardScheme: "http",
-	forwardHost: "",
-	forwardPort: "",
+	npmplusLoadBalanceMethod: "round_robin",
+	npmplusUpstreamServers: [
+		{
+			host: "",
+			port: null,
+			weight: 1,
+			maxFails: 1,
+			failTimeout: 10,
+			backup: false,
+			down: false,
+		},
+	],
 	npmplusAccessListIds: [],
 	npmplusNoindex: false,
 	npmplusDisableCrowdsecAppsec: false,
@@ -56,7 +67,7 @@ const requestBufferingTitle = ({ npmplusDisableCrowdsecAppsec, forwardScheme }) 
 
 export function LocationsFields({ name = "locations", disabled, isClone }) {
 	const { data: currentUser } = useUser("me");
-	const { values: hostValues, initialValues, setFieldValue } = useFormikContext();
+	const { values: hostValues, setFieldValue } = useFormikContext();
 	const values = hostValues[name];
 	const [advVisible, setAdvVisible] = useState([]);
 	const [expanded, setExpanded] = useState([]);
@@ -105,24 +116,15 @@ export function LocationsFields({ name = "locations", disabled, isClone }) {
 		}
 	};
 
-	const handleForwardSchemeChange = (e, field, idx) => {
-		field.onChange(e);
-		const scheme = e.target.value;
-		if (scheme === "empty") return;
-		if (!["http", "https"].includes(scheme)) {
-			void setFieldValue(`${name}.${idx}.npmplusDisableProxyRequestBuffering`, false);
-			void setFieldValue(`${name}.${idx}.npmplusProxyResponseBuffering`, "on_auto");
-		}
-		if (scheme === "path") {
-			void setFieldValue(`${name}.${idx}.npmplusUpstreamCompression`, false);
-		} else {
-			void setFieldValue(`${name}.${idx}.npmplusFancyindex`, false);
-		}
-	};
-
 	const isOpen = (item) => expanded.includes(item.uiKey);
 
 	const locationLabel = (item) => `${item.locationType}${item.path}`;
+
+	const handleForwardChange = (idx, forwarding) => {
+		void setFieldValue(`${name}.${idx}.forwardScheme`, forwarding.scheme);
+		void setFieldValue(`${name}.${idx}.npmplusLoadBalanceMethod`, forwarding.method);
+		void setFieldValue(`${name}.${idx}.npmplusUpstreamServers`, forwarding.servers);
+	};
 
 	const matchesFilter = (item) =>
 		`${locationLabel(item)} ${forwardSummary(item)}`.toLowerCase().includes(filter.trim().toLowerCase());
@@ -296,7 +298,7 @@ export function LocationsFields({ name = "locations", disabled, isClone }) {
 															disabled={
 																!currentUser?.npmplusIsAdmin &&
 																(item.forwardScheme === "path" ||
-																	isAdminTarget(item.forwardHost) ||
+																	item.npmplusUpstreamServers?.some((server) => isAdminTarget(server.host)) ||
 																	item.advancedConfig)
 															}
 															{...field}
@@ -323,7 +325,7 @@ export function LocationsFields({ name = "locations", disabled, isClone }) {
 															disabled={
 																!currentUser?.npmplusIsAdmin &&
 																(item.forwardScheme === "path" ||
-																	isAdminTarget(item.forwardHost) ||
+																	item.npmplusUpstreamServers?.some((server) => isAdminTarget(server.host)) ||
 																	item.advancedConfig)
 															}
 															{...field}
@@ -352,115 +354,15 @@ export function LocationsFields({ name = "locations", disabled, isClone }) {
 											</p>
 										)}
 									<div className="row">
-										<div className="col-md-3">
-											<div className="mb-3">
-												<label className="form-label" htmlFor={`forwardScheme-${item.uiKey}`}>
-													<T id="host.forward-scheme" />
-												</label>
-												<Field name={`${name}.${idx}.forwardScheme`}>
-													{({ field }) => (
-														<select
-															id={`forwardScheme-${item.uiKey}`}
-															className="form-control"
-															required
-															{...field}
-															onChange={(e) => handleForwardSchemeChange(e, field, idx)}
-														>
-															<option value="http">http://</option>
-															<option value="https">https://</option>
-															{(currentUser?.npmplusIsAdmin ||
-																field.value === "path") && (
-																<option value="path">path: </option>
-															)}
-															<option value="empty">empty</option>
-															<option value="grpc">grpc://</option>
-															<option value="grpcs">grpcs://</option>
-														</select>
-													)}
-												</Field>
-											</div>
-										</div>
-										<div className="col-md-6">
-											<div className="mb-3">
-												<label className="form-label" htmlFor={`forwardHost-${item.uiKey}`}>
-													<T id="proxy-host.forward-host-path" />
-												</label>
-												<Field
-													name={`${name}.${idx}.forwardHost`}
-													validate={(value) =>
-														validateAdminTarget(
-															value,
-															currentUser?.npmplusIsAdmin,
-															isClone
-																? undefined
-																: initialValues[name].find(
-																		(location) =>
-																			location.path === item.path &&
-																			location.locationType === item.locationType,
-																	)?.forwardHost,
-															item.forwardScheme,
-														)
-													}
-												>
-													{({ field, meta }) => (
-														<>
-															<input
-																id={`forwardHost-${item.uiKey}`}
-																type="text"
-																className={`form-control ${meta.error ? "is-invalid" : ""}`}
-																required={item.forwardScheme !== "empty"}
-																pattern="(?=\S{0,255}$)[^\s\/]{0,253}(\/\S*)?"
-																placeholder={intl.formatMessage(
-																	{ id: "example" },
-																	{ value: "10.0.0.1/path/" },
-																)}
-																disabled={
-																	!currentUser?.npmplusIsAdmin &&
-																	item.forwardScheme === "path"
-																}
-																{...field}
-															/>
-															{meta.error && (
-																<div className="invalid-feedback">{meta.error}</div>
-															)}
-														</>
-													)}
-												</Field>
-											</div>
-										</div>
-										<div className="col-md-3">
-											<div className="mb-3">
-												<label className="form-label" htmlFor={`forwardPort-${item.uiKey}`}>
-													<T id="host.forward-port" />
-												</label>
-												<Field
-													name={`${name}.${idx}.forwardPort`}
-													validate={(value) => validateNumber(value, -1, 65535)}
-												>
-													{({ field, meta }) => (
-														<>
-															<input
-																id={`forwardPort-${item.uiKey}`}
-																type="text"
-																inputMode="numeric"
-																pattern="[1-9][0-9]*"
-																className={`form-control ${meta.error ? "is-invalid" : ""}`}
-																placeholder={intl.formatMessage(
-																	{ id: "example" },
-																	{ value: "8081" },
-																)}
-																disabled={item.forwardScheme === "path"}
-																{...field}
-															/>
-															{meta.error && (
-																<div className="invalid-feedback">{meta.error}</div>
-															)}
-														</>
-													)}
-												</Field>
-											</div>
-										</div>
-
+										<ForwardHostFields
+											idPrefix={`location-${item.uiKey}`}
+											value={{
+												scheme: item.forwardScheme,
+												method: item.npmplusLoadBalanceMethod,
+												servers: item.npmplusUpstreamServers,
+											}}
+											onChange={(next) => handleForwardChange(idx, next)}
+										/>
 										<div className="my-3">
 											<h4 className="py-2">
 												<T id="options" />
