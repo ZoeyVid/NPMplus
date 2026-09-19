@@ -68,8 +68,8 @@ const internalProxyHost = {
 		thisData = internalHost.cleanSslHstsData(createCertificate, thisData);
 		thisData = internalProxyHostAccessList.cleanAccessListTypes(thisData);
 		await internalProxyHostAccessList.validateAccessLists(access, thisData);
-
 		internalProxyHost.validateLoadBalancing(thisData);
+
 		const createdRow = await proxyHostModel.transaction(async (trx) => {
 			const insertedRow = await proxyHostModel.query(trx).insertAndFetch(thisData);
 			await replaceLocationsAndAccessLists(trx, insertedRow.id, thisData);
@@ -163,7 +163,7 @@ const internalProxyHost = {
 
 		thisData = internalHost.cleanSslHstsData(createCertificate, thisData, existingRow);
 		thisData = internalProxyHostAccessList.cleanAccessListTypes(thisData);
-		await internalProxyHostAccessList.validateAccessLists(access, thisData);
+		await internalProxyHostAccessList.validateAccessLists(thisData);
 		internalProxyHost.validateLoadBalancing(thisData, existingRow);
 		await proxyHostModel.transaction(async (trx) => {
 			const patchResult = await proxyHostModel.query(trx).where({ id: thisData.id }).patch(thisData);
