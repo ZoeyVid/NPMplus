@@ -249,13 +249,12 @@ const UserModal = EasyModal.create(({ id, visible, remove }) => {
 								) : null}
 							</Modal.Body>
 							<Modal.Footer>
-								<Button data-bs-dismiss="modal" onClick={remove} disabled={isSubmitting}>
+								<Button onClick={remove} disabled={isSubmitting}>
 									<T id="cancel" />
 								</Button>
 								<Button
 									type="submit"
 									className="ms-auto btn-orange"
-									data-bs-dismiss="modal"
 									isLoading={isSubmitting}
 									disabled={isSubmitting}
 								>

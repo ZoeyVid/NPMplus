@@ -279,7 +279,6 @@ export default function DefaultSite() {
 								type="submit"
 								actionType="primary"
 								className="ms-auto bg-teal"
-								data-bs-dismiss="modal"
 								isLoading={isSubmitting}
 								disabled={isSubmitting}
 							>

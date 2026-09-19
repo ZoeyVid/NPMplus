@@ -69,7 +69,7 @@ const RenewCertificateModal = EasyModal.create(({ id, visible, remove }) => {
 				{data && isSubmitting && !errorMsg ? <p className="text-center mt-3">Please wait ...</p> : null}
 			</Modal.Body>
 			<Modal.Footer>
-				<Button data-bs-dismiss="modal" onClick={remove} disabled={isSubmitting}>
+				<Button onClick={remove} disabled={isSubmitting}>
 					<T id="action.close" />
 				</Button>
 			</Modal.Footer>
