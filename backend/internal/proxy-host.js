@@ -86,12 +86,12 @@ const internalProxyHost = {
 		thisData = internalProxyHostAccessList.cleanAccessListTypes(thisData);
 		for (const item of [thisData, ...(thisData.locations ?? [])]) cleanForwardOptions(item);
 		await internalProxyHostAccessList.validateAccessLists(access, thisData);
+		internalProxyHost.validateLoadBalancing(thisData);
 
 		if (createCertificate) {
 			thisData.certificate_id = (await internalCertificate.createQuickCertificate(access, thisData)).id;
 		}
 
-		internalProxyHost.validateLoadBalancing(thisData);
 		const createdRow = await proxyHostModel.transaction(async (trx) => {
 			const insertedRow = await proxyHostModel.query(trx).insertAndFetch(thisData);
 			await replaceLocationsAndAccessLists(trx, insertedRow.id, thisData);
