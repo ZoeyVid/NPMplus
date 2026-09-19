@@ -120,7 +120,7 @@ const internalProxyHost = {
 		if (createCertificate) {
 			thisData.certificate_id = (await internalCertificate.createQuickCertificate(access, thisData)).id;
 		}
-
+		internalProxyHost.validateLoadBalancing(thisData);
 		let row;
 		try {
 			await proxyHostModel.transaction(async (trx) => {
@@ -223,7 +223,7 @@ const internalProxyHost = {
 			// update host with cert id
 			thisData.certificate_id = cert.id;
 		}
-
+		internalProxyHost.validateLoadBalancing(thisData, existingRow);
 		try {
 			await proxyHostModel.transaction(async (trx) => {
 				await proxyHostModel.query(trx).where({ id: thisData.id }).patch(thisData);
@@ -477,6 +477,14 @@ const internalProxyHost = {
 
 		return query.resultSize();
 	},
+
+	validateLoadBalancing: (data, existing = {}) => {
+		const lbMethod = data.lb_method ?? existing.lb_method ?? "round_robin";
+		const upstreamServers = data.upstream_servers ?? existing.upstream_servers ?? [];
+		if (lbMethod === "ip_hash" && upstreamServers.some((server) => server.backup)) {
+			throw new errs.ValidationError("The backup parameter cannot be used with the ip_hash load balancing method",);
+		}
+	}
 };
 
 export default internalProxyHost;
