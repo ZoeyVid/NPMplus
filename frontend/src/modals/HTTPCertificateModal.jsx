@@ -181,7 +181,7 @@ const HTTPCertificateModal = EasyModal.create(({ visible, remove }) => {
 							</div>
 						</Modal.Body>
 						<Modal.Footer>
-							<Button data-bs-dismiss="modal" onClick={remove} disabled={isSubmitting || isTesting}>
+							<Button onClick={remove} disabled={isSubmitting || isTesting}>
 								<T id="cancel" />
 							</Button>
 							<div className="ms-auto">
@@ -189,7 +189,6 @@ const HTTPCertificateModal = EasyModal.create(({ visible, remove }) => {
 									type="button"
 									actionType="secondary"
 									className="me-3"
-									data-bs-dismiss="modal"
 									isLoading={isTesting}
 									disabled={isSubmitting || domains.length === 0}
 									onClick={handleTest}
@@ -200,7 +199,6 @@ const HTTPCertificateModal = EasyModal.create(({ visible, remove }) => {
 									type="submit"
 									actionType="primary"
 									className="bg-pink"
-									data-bs-dismiss="modal"
 									isLoading={isSubmitting}
 									disabled={isSubmitting || isTesting}
 								>
