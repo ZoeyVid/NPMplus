@@ -35,7 +35,9 @@
 		"npmplus_fancyindex",
 		"npmplus_x_frame_options",
 		"npmplus_auth_request",
-		"npmplus_auth_request_upstream"
+		"npmplus_auth_request_upstream",
+		"npmplus_load_balance_method",
+		"npmplus_upstream_servers"
 	],
 	"additionalProperties": false,
 	"properties": {
@@ -66,6 +68,25 @@
 			"minimum": 1,
 			"maximum": 65535,
 			"example": 8080
+		},
+		"npmplus_load_balance_method": {
+			"type": "string",
+			"enum": [
+				"round_robin",
+				"least_conn",
+				"ip_hash"
+			],
+			"default": "round_robin",
+			"example": "round_robin"
+		},
+		"npmplus_upstream_servers": {
+			"type": "array",
+			"minItems": 0,
+			"items": {
+				"$ref": "./upstream-server-object.json"
+			},
+			"default": [],
+			"example": []
 		},
 		"npmplus_access_list_ids":{
 			"$ref": "../common.json#/properties/npmplus_access_list_ids"

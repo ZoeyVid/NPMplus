@@ -36,6 +36,12 @@
 						"forward_port": {
 							"$ref": "../../../components/proxy-host-object.json#/properties/forward_port"
 						},
+						"npmplus_load_balance_method": {
+							"$ref": "../../../components/proxy-host-object.json#/properties/npmplus_load_balance_method"
+						},
+						"npmplus_upstream_servers": {
+							"$ref": "../../../components/proxy-host-object.json#/properties/npmplus_upstream_servers"
+						},
 						"certificate_id": {
 							"$ref": "../../../components/proxy-host-object.json#/properties/certificate_id"
 						},

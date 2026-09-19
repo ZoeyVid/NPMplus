@@ -37,8 +37,18 @@ export function LocationsFields({ initialValues, name = "locations" }) {
 		locationType: "",
 		advancedConfig: "",
 		forwardScheme: "http",
-		forwardHost: "",
-		forwardPort: "",
+		npmplusLoadBalanceMethod: "round_robin",
+		npmplusUpstreamServers: [
+			{
+				host: "",
+				port: null,
+				weight: 1,
+				maxFails: 1,
+				failTimeout: 10,
+				backup: false,
+				down: false,
+			},
+		],
 		npmplusAccessListIds: [],
 		cachingEnabled: false,
 		blockExploits: false,
@@ -129,6 +139,20 @@ export function LocationsFields({ initialValues, name = "locations" }) {
 			return `${forwardScheme}://${forwardHost}${forwardPort ? `:${forwardPort}` : ""}`;
 		}
 		return forwardHost;
+	};
+
+	const handleForwardChange = (idx, forwarding) => {
+		const newValues = [...values];
+
+		newValues[idx] = {
+			...newValues[idx],
+			forwardScheme: forwarding.scheme,
+			npmplusLoadBalanceMethod: forwarding.method,
+			npmplusUpstreamServers: forwarding.servers,
+		};
+
+		setValues(newValues);
+		setFormField(newValues);
 	};
 
 	const matchesFilter = (item) =>
@@ -304,59 +328,15 @@ export function LocationsFields({ initialValues, name = "locations" }) {
 							</p>
 						)}
 						<div className="row">
-							<div className="col-md-3">
-								<div className="mb-3">
-									<label className="form-label" htmlFor={`forwardScheme-${item.uiKey}`}>
-										<T id="host.forward-scheme" />
-									</label>
-									<select
-										id={`forwardScheme-${item.uiKey}`}
-										className="form-control"
-										value={item.forwardScheme}
-										onChange={(e) => handleChange(idx, "forwardScheme", e.target.value)}
-									>
-										<option value="http">http://</option>
-										<option value="https">https://</option>
-										<option value="path">path: </option>
-										<option value="empty">empty</option>
-										<option value="grpc">grpc://</option>
-										<option value="grpcs">grpcs://</option>
-									</select>
-								</div>
-							</div>
-							<div className="col-md-6">
-								<div className="mb-3">
-									<label className="form-label" htmlFor={`forwardHost-${item.uiKey}`}>
-										<T id="proxy-host.forward-host-path" />
-									</label>
-									<input
-										id={`forwardHost-${item.uiKey}`}
-										type="text"
-										className="form-control"
-										required={item.forwardScheme !== "empty"}
-										placeholder="eg: 10.0.0.1/path/"
-										value={item.forwardHost}
-										onChange={(e) => handleChange(idx, "forwardHost", e.target.value)}
-									/>
-								</div>
-							</div>
-							<div className="col-md-3">
-								<div className="mb-3">
-									<label className="form-label" htmlFor={`forwardPort-${item.uiKey}`}>
-										<T id="host.forward-port" />
-									</label>
-									<input
-										id={`forwardPort-${item.uiKey}`}
-										type="number"
-										min={1}
-										max={65535}
-										className="form-control"
-										placeholder="eg: 8081"
-										value={item.forwardPort}
-										onChange={(e) => handleChange(idx, "forwardPort", e.target.value)}
-									/>
-								</div>
-							</div>
+							<ForwardHostFields
+								idPrefix={`location-${item.uiKey}`}
+								value={{
+									scheme: item.forwardScheme,
+									method: item.npmplusLoadBalanceMethod,
+									servers: item.npmplusUpstreamServers,
+								}}
+								onChange={(next) => handleForwardChange(idx, next)}
+							/>
 
 							<div className="my-3">
 								<h4 className="py-2">
