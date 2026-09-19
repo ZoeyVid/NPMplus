@@ -47,9 +47,21 @@ const ProxyHostModal = EasyModal.create(({ id, isClone, visible, remove, close, 
 		() => ({
 			// Details tab
 			domainNames: isClone ? [] : data?.domainNames,
-			forwardScheme: data?.forwardScheme,
-			forwardHost: data?.forwardHost,
-			forwardPort: String(data?.forwardPort || ""),
+			forwardScheme: data?.forwardScheme || "http",
+			npmplusLoadBalanceMethod: data?.npmplusLoadBalanceMethod || "round_robin",
+			npmplusUpstreamServers: data?.npmplusUpstreamServers?.length
+				? data.npmplusUpstreamServers
+				: [
+						{
+							host: data?.forwardHost || "",
+							port: data?.forwardPort ?? null,
+							weight: 1,
+							maxFails: 1,
+							failTimeout: 10,
+							backup: false,
+							enabled: true,
+						},
+					],
 			npmplusAccessListIds: data?.accessLists.map((accessList) => accessList.id),
 			npmplusAccessListType: data?.npmplusAccessListType,
 			// Locations tab
@@ -209,11 +221,9 @@ const ProxyHostModal = EasyModal.create(({ id, isClone, visible, remove, close, 
 												</div>
 												<ForwardHostFields
 													idPrefix="proxy-host"
-													value={{
-														scheme: values.forwardScheme,
-														method: values.npmplusLoadBalanceMethod,
-														servers: values.npmplusUpstreamServers,
-													}}
+													scheme={values.forwardScheme}
+													loadBalanceMethod={values.npmplusLoadBalanceMethod}
+													upstreamServers={values.npmplusUpstreamServers}
 													onChange={(next) => {
 														setFieldValue("forwardScheme", next.scheme);
 														setFieldValue("npmplusLoadBalanceMethod", next.method);

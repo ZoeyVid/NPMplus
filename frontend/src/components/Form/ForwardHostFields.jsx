@@ -1,9 +1,13 @@
-import { IconInfoCircle, IconSettings, IconX } from "@tabler/icons-react";
+import { IconInfoCircle, IconX } from "@tabler/icons-react";
 import { Field, useFormikContext } from "formik";
+import cn from "clsx";
 import { useState } from "react";
 import OverlayTrigger from "react-bootstrap/OverlayTrigger";
 import Popover from "react-bootstrap/Popover";
+import Select, { components } from "react-select";
+
 import { intl, T } from "src/locale";
+import { validateNumber } from "src/modules/Validations";
 
 const BACKUP_INCOMPATIBLE_METHODS = ["ip_hash"];
 
@@ -22,9 +26,16 @@ function InfoPopover({ messageId }) {
 	);
 }
 
-export function ForwardHostFields({ initialServers = [], initialMethod = "round_robin" }) {
-	const [servers, setServers] = useState(initialServers);
-	const [method, setMethod] = useState(initialMethod);
+
+const LoadBalancerOption = (props) => (
+	<components.Option {...props}>
+		{OptionContent(props.data.label, props.data.subLabel, props.data.icon)}
+	</components.Option>
+);
+
+export function ForwardHostFields({ scheme, loadBalanceMethod, upstreamServers }) {
+	const [servers, setServers] = useState(upstreamServers);
+	const [method, setMethod] = useState(loadBalanceMethod);
 	const { setFieldValue } = useFormikContext();
 
 	const blankServer = {
@@ -73,25 +84,16 @@ export function ForwardHostFields({ initialServers = [], initialMethod = "round_
 	const backupDisabled = BACKUP_INCOMPATIBLE_METHODS.includes(method);
 
 	if (servers.length === 0) {
-		return (
-			<div className="text-center">
-				<p className="text-muted mt-3">
-					<T id="upstream.description" />
-				</p>
-				<button type="button" className="btn my-2" onClick={handleAdd}>
-					<T id="upstream.add-server" />
-				</button>
-			</div>
-		);
+		handleAdd();
 	}
 
 	return (
 		<>
 			<div className="row">
-				<div className="col-md-3">
+				<div className="col-md-3 mb-3">
 					<Field name="forwardScheme">
 						{({ field, form }) => (
-							<div className="mb-3">
+							<>
 								<label
 									className="form-label"
 									htmlFor="forwardScheme"
@@ -137,42 +139,39 @@ export function ForwardHostFields({ initialServers = [], initialMethod = "round_
 									<option value="grpc">grpc://</option>
 									<option value="grpcs">grpcs://</option>
 								</select>
-							</div>
+							</>
 						)}
 					</Field>
 				</div>
-				{initialServers.length > 1 ? (
-					<>
-						<div className="col-md-10">
-							<label className="form-label" htmlFor="lbMethod">
-								<T id="host.load-balance-method" />
-								<InfoPopover messageId="host.load-balance-method-help" />
-							</label>
-						</div>
-						<div className="col-md-10">
-							<Field name="npmplusLoadBalanceMethod">
-								<div className="input-group mb-3 shadow-none">
+				{servers.length > 1 ? (
+					<Field name="npmplusLoadBalanceMethod">
+						{({ field, form }) => (
+							<>
+								<div className="col-md-7">
+									<label className="form-label" htmlFor="npmplusLoadBalanceMethod">
+										<T id="host.loadbalancer.method" />
+										<InfoPopover messageId="host.loadbalancer.method-help" />
+									</label>
 									<select
 										id="npmplusLoadBalanceMethod"
 										className="form-select"
-										value={method}
+										{...field}
 										onChange={(e) => handleMethodChange(e.target.value)}
 									>
-										<option value="round_robin">Round Robin</option>
-										<option value="least_conn">Least Connections</option>
-										<option value="ip_hash">IP Hash (sticky sessions)</option>
+										<option value="round_robin"><T id="host.loadbalancer.round-robin" /></option>
+										<option value="least_conn"><T id="host.loadbalancer.least-connections" /></option>
+										<option value="ip_hash"><T id="host.loadbalancer.ip-hash" /></option>
 									</select>
 								</div>
-							</Field>
-						</div>
-					</>
+							</>
+						)}
+					</Field>
 				) : null}
 			</div>
 			{servers.map((server, idx) => (
-				<div className="row">
+				<div className={servers.length > 1 ? "card card-active p-2 mb-2" : ""}>
 					<div className="row">
-						
-						<div className="col-md-5">
+						<div className="col-md-6">
 							<Field name="forwardHost">
 								{({ field, form }) => (
 									<div className="mb-3">
@@ -228,116 +227,141 @@ export function ForwardHostFields({ initialServers = [], initialMethod = "round_
 								)}
 							</Field>
 						</div>
-						{initialServers.length > 1 ? (
-							<button
-								type="button"
-								aria-label="Remove"
-								className="btn btn-ghost btn-danger p-0 mb-1"
-								onClick={() => {
-									handleRemove(idx);
-								}}
-							>
-								<IconX size={16} />
-							</button>
+						{servers.length > 1 ? (
+							<>
+								<div className="col-md-2">
+									<Field name="npmplusUpstreamEnable" type="checkbox">
+										{({ field }) => (
+											<div className="mb-3">
+												<label className="form-label" htmlFor="npmplusUpstreamEnable">
+													<T id="enabled" />
+												</label>
+												<span className="form-check form-check-single form-switch p-0">
+													<input
+														{...field}
+														id="npmplusUpstreamEnable"
+														className={cn("form-check-input", {
+															"bg-lime": field.checked,
+														})}
+														type="checkbox"
+													/>
+												</span>
+											</div>
+										)}
+									</Field>
+								</div>
+								<div className="col-md-1 shadow-none px-1 pt-4">
+									<button
+										type="button"
+										aria-label="Remove"
+										className="btn btn-ghost btn-sm btn-danger p-0 mb-1"
+										onClick={() => {
+											handleRemove(idx);
+										}}
+									>
+										<IconX size={16} />
+									</button>
+								</div>
+							</>
 						) : null}
 					</div>
-					<div className="row">
-						<div className="col-md-3">
-							<Field name="npmplusUpstreamWeight" validate={validateNumber(-1, 65535)}>
-								{({ field, form }) => (
-									<div className="mb-3">
-										<label className="form-label" htmlFor="npmplusUpstreamWeight">
-											<T id="host.upstream-weight" />
-										</label>
-										<input
-											id="npmplusUpstreamWeight"
-											type="text"
-											inputMode="numeric"
-											pattern="[0-9]*"
-											className={`form-control ${form.errors.npmplusUpstreamWeight && form.touched.npmplusUpstreamWeight ? "is-invalid" : ""}`}
-											placeholder="eg: 1"
-											{...field}
-										/>
+					{servers.length > 1 ? (
+						<div className="row">
+							<div className="col-md-3">
+								<Field name="npmplusUpstreamWeight" validate={validateNumber(-1, 65535)}>
+									{({ field, form }) => (
+										<div className="mb-3">
+											<label className="form-label" htmlFor="npmplusUpstreamWeight">
+												<T id="host.upstream.weight" />
+											</label>
+											<input
+												id="npmplusUpstreamWeight"
+												type="text"
+												inputMode="numeric"
+												pattern="[0-9]*"
+												className={`form-control ${form.errors.npmplusUpstreamWeight && form.touched.npmplusUpstreamWeight ? "is-invalid" : ""}`}
+												placeholder="eg: 1"
+												{...field}
+											/>
 
-										{form.errors.npmplusUpstreamWeight ? (
-											<div className="invalid-feedback">
-												{form.errors.npmplusUpstreamWeight &&
-												form.touched.npmplusUpstreamWeight
-													? form.errors.npmplusUpstreamWeight
-													: null}
-											</div>
-										) : null}
-									</div>
-								)}
-							</Field>
-						</div>
-						<div className="col-md-3">
-							<Field name="npmplusUpstreamMaxFails" validate={validateNumber(-1, 65535)}>
-								{({ field, form }) => (
-									<div className="mb-3">
-										<label className="form-label" htmlFor="npmplusUpstreamMaxFails">
-											<T id="host.upstream-max-fails" />
-										</label>
-										<input
-											id="npmplusUpstreamMaxFails"
-											type="text"
-											inputMode="numeric"
-											pattern="[0-9]*"
-											className={`form-control ${form.errors.npmplusUpstreamMaxFails && form.touched.npmplusUpstreamMaxFails ? "is-invalid" : ""}`}
-											placeholder="eg: 1"
-											{...field}
-										/>
+											{form.errors.npmplusUpstreamWeight ? (
+												<div className="invalid-feedback">
+													{form.errors.npmplusUpstreamWeight &&
+													form.touched.npmplusUpstreamWeight
+														? form.errors.npmplusUpstreamWeight
+														: null}
+												</div>
+											) : null}
+										</div>
+									)}
+								</Field>
+							</div>
+							<div className="col-md-3">
+								<Field name="npmplusUpstreamMaxFails" validate={validateNumber(-1, 65535)}>
+									{({ field, form }) => (
+										<div className="mb-3">
+											<label className="form-label" htmlFor="npmplusUpstreamMaxFails">
+												<T id="host.upstream.max-fails" />
+											</label>
+											<input
+												id="npmplusUpstreamMaxFails"
+												type="text"
+												inputMode="numeric"
+												pattern="[0-9]*"
+												className={`form-control ${form.errors.npmplusUpstreamMaxFails && form.touched.npmplusUpstreamMaxFails ? "is-invalid" : ""}`}
+												placeholder="eg: 1"
+												{...field}
+											/>
 
-										{form.errors.npmplusUpstreamMaxFails ? (
-											<div className="invalid-feedback">
-												{form.errors.npmplusUpstreamMaxFails &&
-												form.touched.npmplusUpstreamMaxFails
-													? form.errors.npmplusUpstreamMaxFails
-													: null}
-											</div>
-										) : null}
-									</div>
-								)}
-							</Field>
-						</div>
-						<div className="col-md-3">
-							<Field name="npmplusUpstreamTimeoutSec" validate={validateNumber(-1, 65535)}>
-								{({ field, form }) => (
-									<div className="mb-3">
-										<label className="form-label" htmlFor="npmplusUpstreamTimeoutSec">
-											<T id="host.upstream-timeout-sec" />
-										</label>
-										<input
-											id="npmplusUpstreamTimeoutSec"
-											type="text"
-											inputMode="numeric"
-											pattern="[0-9]*"
-											className={`form-control ${form.errors.npmplusUpstreamTimeoutSec && form.touched.npmplusUpstreamTimeoutSec ? "is-invalid" : ""}`}
-											placeholder="eg: 1"
-											{...field}
-										/>
+											{form.errors.npmplusUpstreamMaxFails ? (
+												<div className="invalid-feedback">
+													{form.errors.npmplusUpstreamMaxFails &&
+													form.touched.npmplusUpstreamMaxFails
+														? form.errors.npmplusUpstreamMaxFails
+														: null}
+												</div>
+											) : null}
+										</div>
+									)}
+								</Field>
+							</div>
+							<div className="col-md-3">
+								<Field name="npmplusUpstreamTimeoutSec" validate={validateNumber(-1, 65535)}>
+									{({ field, form }) => (
+										<div className="mb-3">
+											<label className="form-label" htmlFor="npmplusUpstreamTimeoutSec">
+												<T id="host.upstream.timeout" />
+											</label>
+											<input
+												id="npmplusUpstreamTimeoutSec"
+												type="text"
+												inputMode="numeric"
+												pattern="[0-9]*"
+												className={`form-control ${form.errors.npmplusUpstreamTimeoutSec && form.touched.npmplusUpstreamTimeoutSec ? "is-invalid" : ""}`}
+												placeholder="eg: 1"
+												{...field}
+											/>
 
-										{form.errors.npmplusUpstreamTimeoutSec ? (
-											<div className="invalid-feedback">
-												{form.errors.npmplusUpstreamTimeoutSec &&
-												form.touched.npmplusUpstreamTimeoutSec
-													? form.errors.npmplusUpstreamTimeoutSec
-													: null}
-											</div>
-										) : null}
-									</div>
-								)}
-							</Field>
-						</div>
-						<div className="col-md-3">
-							<label className="row" htmlFor="npmplusUpstreamBackup">
-								<span className="col">
-									<T id="host.flags.send-noindex" />
-								</span>
-								<span className="col-auto">
-									<Field name="npmplusUpstreamBackup" type="checkbox">
-										{({ field }) => (
-											<span className="form-check form-check-single form-switch">
+											{form.errors.npmplusUpstreamTimeoutSec ? (
+												<div className="invalid-feedback">
+													{form.errors.npmplusUpstreamTimeoutSec &&
+													form.touched.npmplusUpstreamTimeoutSec
+														? form.errors.npmplusUpstreamTimeoutSec
+														: null}
+												</div>
+											) : null}
+										</div>
+									)}
+								</Field>
+							</div>
+							<div className="col-md-2">
+								<Field name="npmplusUpstreamBackup" type="checkbox">
+									{({ field }) => (
+										<div className="mb-3">
+											<label className="form-label" htmlFor="npmplusUpstreamBackup">
+												<T id="host.upstream.backup" />
+											</label>
+											<span className="form-check form-check-single form-switch p-0">
 												<input
 													{...field}
 													id="npmplusUpstreamBackup"
@@ -347,41 +371,18 @@ export function ForwardHostFields({ initialServers = [], initialMethod = "round_
 													type="checkbox"
 												/>
 											</span>
-										)}
-									</Field>
-								</span>
-							</label>
+										</div>
+									)}
+								</Field>
+							</div>
 						</div>
-						<div className="col-md-3">
-							<label className="row" htmlFor="npmplusUpstreamDisable">
-								<span className="col">
-									<T id="host.flags.send-noindex" />
-								</span>
-								<span className="col-auto">
-									<Field name="npmplusUpstreamDisable" type="checkbox">
-										{({ field }) => (
-											<span className="form-check form-check-single form-switch">
-												<input
-													{...field}
-													id="npmplusUpstreamDisable"
-													className={cn("form-check-input", {
-														"bg-lime": field.checked,
-													})}
-													type="checkbox"
-												/>
-											</span>
-										)}
-									</Field>
-								</span>
-							</label>
-						</div>
-					</div>
+					) : null}
 				</div>
 			))}
 
 			<div>
 				<button type="button" className="btn btn-sm" onClick={handleAdd}>
-					<T id="host.add-server" />
+					<T id="action.add" />
 				</button>
 			</div>
 		</>

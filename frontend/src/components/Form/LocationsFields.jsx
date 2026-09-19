@@ -20,43 +20,50 @@ import { intl, T } from "src/locale";
 import { forwardSummary } from "src/modules/Forward";
 import { isAdminTarget, validateUpstreamUrl } from "src/modules/Validations";
 import { ForwardHostFields } from "./ForwardHostFields";
-
 const authProvider = (authRequest) => authRequest?.replace("-send-basic-auth", "");
 
 let nextUiKey = 0;
 
-export const createUiLocation = (item) => ({
-	npmplusEnabled: true,
-	path: "",
-	locationType: "",
-	advancedConfig: "",
-	forwardScheme: "http",
-	npmplusLoadBalanceMethod: "round_robin",
-	npmplusUpstreamServers: [
-		{
-			host: "",
-			port: null,
-			weight: 1,
-			maxFails: 1,
-			failTimeout: 10,
-			backup: false,
-			down: false,
-		},
-	],
-	npmplusAccessListIds: [],
-	npmplusNoindex: false,
-	npmplusDisableCrowdsecAppsec: false,
-	npmplusProxyResponseBuffering: "on_auto",
-	npmplusDisableProxyRequestBuffering: false,
-	npmplusUpstreamCompression: false,
-	npmplusFancyindex: false,
-	npmplusXFrameOptions: "SAMEORIGIN",
-	npmplusAuthRequest: "global",
-	npmplusAuthRequestUpstream: "",
-	npmplusAccessListType: "global",
-	...item,
-	uiKey: nextUiKey++,
-});
+export const createUiLocation = (item) => {
+	const npmplusUpstreamServers = item?.npmplusUpstreamServers?.length
+		? item.npmplusUpstreamServers
+		: [
+				{
+					host: "",
+					port: null,
+					weight: null,
+					maxFails: null,
+					maxConns: null,
+					failTimeout: null,
+					backup: false,
+					down: false,
+				},
+			];
+
+	return {
+		npmplusEnabled: true,
+		path: "",
+		locationType: "",
+		advancedConfig: "",
+		forwardScheme: "http",
+		npmplusAccessListIds: [],
+		npmplusNoindex: false,
+		npmplusDisableCrowdsecAppsec: false,
+		npmplusProxyResponseBuffering: "on_auto",
+		npmplusDisableProxyRequestBuffering: false,
+		npmplusUpstreamCompression: false,
+		npmplusFancyindex: false,
+		npmplusXFrameOptions: "SAMEORIGIN",
+		npmplusAuthRequest: "global",
+		npmplusAuthRequestUpstream: "",
+		npmplusAccessListType: "global",
+		id: null,
+		...item,
+		npmplusLoadBalanceMethod: item?.npmplusLoadBalanceMethod || "round_robin",
+		npmplusUpstreamServers,
+		uiKey: nextUiKey++,
+	};
+};
 
 const requestBufferingTitle = ({ npmplusDisableCrowdsecAppsec, forwardScheme }) => {
 	if (!npmplusDisableCrowdsecAppsec && ["http", "https"].includes(forwardScheme)) {
@@ -118,7 +125,7 @@ export function LocationsFields({ name = "locations", disabled, isClone }) {
 
 	const isOpen = (item) => expanded.includes(item.uiKey);
 
-	const locationLabel = (item) => `${item.locationType}${item.path}`;
+	const locationLabel = (item) => `${item.locationType ?? ""}${item.path ?? ""}`;
 
 	const handleForwardChange = (idx, forwarding) => {
 		void setFieldValue(`${name}.${idx}.forwardScheme`, forwarding.scheme);
@@ -356,11 +363,9 @@ export function LocationsFields({ name = "locations", disabled, isClone }) {
 									<div className="row">
 										<ForwardHostFields
 											idPrefix={`location-${item.uiKey}`}
-											value={{
-												scheme: item.forwardScheme,
-												method: item.npmplusLoadBalanceMethod,
-												servers: item.npmplusUpstreamServers,
-											}}
+											scheme={item.forwardScheme}
+											loadBalanceMethod={item.npmplusLoadBalanceMethod}
+											upstreamServers={item.npmplusUpstreamServers}
 											onChange={(next) => handleForwardChange(idx, next)}
 										/>
 										<div className="my-3">
