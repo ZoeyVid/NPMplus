@@ -20,7 +20,7 @@ import { useDirectorySuggestions, useProxyHost, useProxyHosts, useSetProxyHost }
 import { intl, T } from "src/locale";
 import EasyModal from "src/modules/easyModal";
 import { MANAGE, PROXY_HOSTS } from "src/modules/Permissions";
-import { showTabOfInvalid, validateNumber, validateUpstreamUrl } from "src/modules/Validations";
+import { showTabOfInvalid, validateUpstreamUrl } from "src/modules/Validations";
 import { showObjectSuccess } from "src/notifications";
 import { ForwardHostFields } from "../components/Form/ForwardHostFields";
 
@@ -95,9 +95,21 @@ const ProxyHostModal = EasyModal.create(({ id, isClone, visible, remove }) => {
 					initialValues={{
 						// Details tab
 						domainNames: data?.domainNames,
-						forwardScheme: data?.forwardScheme,
-						forwardHost: data?.forwardHost,
-						forwardPort: data?.forwardPort || "",
+						forwardScheme: data?.forwardScheme || "http",
+						npmplusLoadBalanceMethod: data?.npmplusLoadBalanceMethod || "round_robin",
+						npmplusUpstreamServers: data?.npmplusUpstreamServers?.length
+							? data.npmplusUpstreamServers
+							: [
+									{
+										host: data?.forwardHost || "",
+										port: data?.forwardPort ?? null,
+										weight: 1,
+										maxFails: 1,
+										failTimeout: 10,
+										backup: false,
+										enabled: true,
+									},
+								],
 						npmplusAccessListIds: data?.accessLists.map((accessList) => accessList.id),
 						npmplusAccessListType: data?.npmplusAccessListType,
 						// Locations tab
@@ -127,7 +139,7 @@ const ProxyHostModal = EasyModal.create(({ id, isClone, visible, remove }) => {
 					}}
 					onSubmit={onSubmit}
 				>
-					{({ values }) => (
+					{({ values, setFieldValue }) => (
 						<Form onInvalid={showTabOfInvalid}>
 							<Modal.Header closeButton={!isSubmitting}>
 								<Modal.Title>
@@ -220,13 +232,11 @@ const ProxyHostModal = EasyModal.create(({ id, isClone, visible, remove }) => {
 														</div>
 													</div>
 												</div>
-												<ForwardHostFields 
+												<ForwardHostFields
 													idPrefix="proxy-host"
-													value={{
-														scheme: values.forwardScheme,
-														method: values.npmplusLoadBalanceMethod,
-														servers: values.npmplusUpstreamServers,
-													}}
+													scheme={values.forwardScheme}
+													loadBalanceMethod={values.npmplusLoadBalanceMethod}
+													upstreamServers={values.npmplusUpstreamServers}
 													onChange={(next) => {
 														setFieldValue("forwardScheme", next.scheme);
 														setFieldValue("npmplusLoadBalanceMethod", next.method);
