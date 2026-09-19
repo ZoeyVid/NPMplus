@@ -8,7 +8,7 @@
 	"dependencies": {
 		"@ebay/nice-modal-react": "1.2.13",
 		"@tabler/core": "1.5.1",
-		"@tabler/icons-react": "3.46.0",
+		"@tabler/icons-react": "3.47.0",
 		"@tanstack/react-query": "5.103.1",
 		"@tanstack/react-table": "9.2.4",
 		"clsx": "2.1.1",
