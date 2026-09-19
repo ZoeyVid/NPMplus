@@ -220,6 +220,19 @@ const ProxyHostModal = EasyModal.create(({ id, isClone, visible, remove }) => {
 														</div>
 													</div>
 												</div>
+												<ForwardHostFields 
+													idPrefix="proxy-host"
+													value={{
+														scheme: values.forwardScheme,
+														method: values.npmplusLoadBalanceMethod,
+														servers: values.npmplusUpstreamServers,
+													}}
+													onChange={(next) => {
+														setFieldValue("forwardScheme", next.scheme);
+														setFieldValue("npmplusLoadBalanceMethod", next.method);
+														setFieldValue("npmplusUpstreamServers", next.servers);
+													}}
+												/>
 												<div className="my-3">
 													<h4 className="py-2">
 														<T id="options" />
