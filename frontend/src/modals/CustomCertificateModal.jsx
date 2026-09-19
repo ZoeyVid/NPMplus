@@ -234,7 +234,7 @@ const CustomCertificateModal = EasyModal.create(({ visible, remove, cert, provid
 							</div>
 						</Modal.Body>
 						<Modal.Footer>
-							<Button data-bs-dismiss="modal" onClick={remove} disabled={isSubmitting}>
+							<Button onClick={remove} disabled={isSubmitting}>
 								<T id="cancel" />
 							</Button>
 							<Button

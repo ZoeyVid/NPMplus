@@ -178,14 +178,13 @@ const ChangePasswordModal = EasyModal.create(({ id, visible, remove }) => {
 							</div>
 						</Modal.Body>
 						<Modal.Footer>
-							<Button data-bs-dismiss="modal" onClick={remove} disabled={isSubmitting}>
+							<Button onClick={remove} disabled={isSubmitting}>
 								<T id="cancel" />
 							</Button>
 							<Button
 								type="submit"
 								actionType="primary"
 								className="ms-auto"
-								data-bs-dismiss="modal"
 								isLoading={isSubmitting}
 								disabled={isSubmitting}
 							>
