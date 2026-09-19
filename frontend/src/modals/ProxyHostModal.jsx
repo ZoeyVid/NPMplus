@@ -20,7 +20,7 @@ import { useDirectorySuggestions, useProxyHost, useProxyHosts, useSetProxyHost, 
 import { intl, T } from "src/locale";
 import EasyModal from "src/modules/easyModal";
 import { MANAGE, PROXY_HOSTS } from "src/modules/Permissions";
-import { showTabOfInvalid, validateNumber, validateUpstreamUrl } from "src/modules/Validations";
+import { showTabOfInvalid, validateUpstreamUrl } from "src/modules/Validations";
 import { showObjectSuccess } from "src/notifications";
 import { ForwardHostFields } from "../components/Form/ForwardHostFields";
 
@@ -113,8 +113,20 @@ const ProxyHostModal = EasyModal.create(({ id, isClone = false, visible, remove 
 						// Details tab
 						domainNames: data?.domainNames || [],
 						forwardScheme: data?.forwardScheme || "http",
-						forwardHost: data?.forwardHost || "",
-						forwardPort: data?.forwardPort || undefined,
+						npmplusLoadBalanceMethod: data?.npmplusLoadBalanceMethod || "round_robin",
+						npmplusUpstreamServers: data?.npmplusUpstreamServers?.length
+							? data.npmplusUpstreamServers
+							: [
+									{
+										host: data?.forwardHost || "",
+										port: data?.forwardPort ?? null,
+										weight: 1,
+										maxFails: 1,
+										failTimeout: 10,
+										backup: false,
+										enabled: true,
+									},
+								],
 						npmplusAccessListIds: data?.npmplusAccessListIds || [],
 						npmplusAccessListType: data?.npmplusAccessListType || "public",
 						cachingEnabled: data?.cachingEnabled || false,
@@ -146,7 +158,7 @@ const ProxyHostModal = EasyModal.create(({ id, isClone = false, visible, remove 
 					}}
 					onSubmit={onSubmit}
 				>
-					{({ values }) => (
+					{({ values, setFieldValue }) => (
 						<Form onInvalid={showTabOfInvalid}>
 							<Modal.Header closeButton>
 								<Modal.Title>
@@ -223,28 +235,28 @@ const ProxyHostModal = EasyModal.create(({ id, isClone = false, visible, remove 
 									<div className="card-body">
 										<div className="tab-content">
 											<div className="tab-pane active show" id="tab-details" role="tabpanel">
-												<DomainNamesField isWildcardPermitted dnsProviderWildcardSupported />
-												<div className="col-md-1 text-end">
-													<div className="mb-3">
-														<div className="form-label invisible">​</div>
-														<button
-															type="button"
-															className="btn p-0"
-															title="LocationConfig"
-															onClick={() => setAdvVisible((prev) => !prev)}
-														>
-															<IconSettings size={20} />
-															{values?.npmplusLocationConfig?.trim() ? "*" : ""}
-														</button>
+												<div class="row">
+													<DomainNamesField isWildcardPermitted dnsProviderWildcardSupported />
+													<div className="col-md-1 text-end">
+														<div className="mb-3">
+															<div className="form-label invisible">​</div>
+															<button
+																type="button"
+																className="btn p-0"
+																title="LocationConfig"
+																onClick={() => setAdvVisible((prev) => !prev)}
+															>
+																<IconSettings size={20} />
+																{values?.npmplusLocationConfig?.trim() ? "*" : ""}
+															</button>
+														</div>
 													</div>
 												</div>
-												<ForwardHostFields 
+												<ForwardHostFields
 													idPrefix="proxy-host"
-													value={{
-														scheme: values.forwardScheme,
-														method: values.npmplusLoadBalanceMethod,
-														servers: values.npmplusUpstreamServers,
-													}}
+													scheme={values.forwardScheme}
+													loadBalanceMethod={values.npmplusLoadBalanceMethod}
+													upstreamServers={values.npmplusUpstreamServers}
 													onChange={(next) => {
 														setFieldValue("forwardScheme", next.scheme);
 														setFieldValue("npmplusLoadBalanceMethod", next.method);

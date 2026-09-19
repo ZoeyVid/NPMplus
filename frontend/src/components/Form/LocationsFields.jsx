@@ -15,14 +15,33 @@ import { flushSync } from "react-dom";
 import { AccessFields } from "src/components";
 import { intl, T } from "src/locale";
 import { upstreamUrlPattern } from "src/modules/Validations";
+import { ForwardHostFields } from "./ForwardHostFields";
 import styles from "./LocationsFields.module.css";
 
 export function LocationsFields({ initialValues, name = "locations" }) {
 	const nextUiKey = useRef(0);
-	const createUiLocation = (item) => ({
-		...item,
-		uiKey: nextUiKey.current++,
-	});
+	const createUiLocation = (item) => {
+		const npmplusUpstreamServers = item?.npmplusUpstreamServers?.length
+			? item.npmplusUpstreamServers
+			: [
+					{
+						host: item?.forwardHost || "",
+						port: item?.forwardPort ?? null,
+						weight: 1,
+						maxFails: 1,
+						failTimeout: 10,
+						backup: false,
+						down: false,
+					},
+				];
+
+		return {
+			...item,
+			npmplusLoadBalanceMethod: item?.npmplusLoadBalanceMethod || "round_robin",
+			npmplusUpstreamServers,
+			uiKey: nextUiKey.current++,
+		};
+	};
 
 	const [values, setValues] = useState((initialValues || []).map(createUiLocation));
 	const { setFieldValue } = useFormikContext();
@@ -133,19 +152,19 @@ export function LocationsFields({ initialValues, name = "locations" }) {
 
 	const locationLabel = (item) => `${item.locationType ?? ""}${item.path ?? ""}`;
 
-	const forwardSummary = ({ forwardScheme, forwardHost, forwardPort }) => {
-		if (!forwardHost || forwardScheme === "empty") return "";
+	const forwardSummary = ({ forwardScheme, npmplusUpstreamServers = [] }) => {
+		const server = npmplusUpstreamServers[0];
+		if (!server?.host || forwardScheme === "empty") return "";
 		if (forwardScheme && forwardScheme !== "path") {
-			return `${forwardScheme}://${forwardHost}${forwardPort ? `:${forwardPort}` : ""}`;
+			return `${forwardScheme}://${server.host}${server.port ? `:${server.port}` : ""}`;
 		}
-		return forwardHost;
+		return server.host;
 	};
 
 	const handleForwardChange = (idx, forwarding) => {
 		const newValues = [...values];
 
 		newValues[idx] = {
-			...newValues[idx],
 			forwardScheme: forwarding.scheme,
 			npmplusLoadBalanceMethod: forwarding.method,
 			npmplusUpstreamServers: forwarding.servers,
@@ -330,11 +349,9 @@ export function LocationsFields({ initialValues, name = "locations" }) {
 						<div className="row">
 							<ForwardHostFields
 								idPrefix={`location-${item.uiKey}`}
-								value={{
-									scheme: item.forwardScheme,
-									method: item.npmplusLoadBalanceMethod,
-									servers: item.npmplusUpstreamServers,
-								}}
+								scheme={item.forwardScheme}
+								loadBalanceMethod={item.npmplusLoadBalanceMethod}
+								upstreamServers={item.npmplusUpstreamServers}
 								onChange={(next) => handleForwardChange(idx, next)}
 							/>
 

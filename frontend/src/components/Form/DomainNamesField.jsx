@@ -33,7 +33,7 @@ export function DomainNamesField({
 	return (
 		<Field name={name} validate={validateDomains(isWildcardPermitted && dnsProviderWildcardSupported, maxDomains)}>
 			{({ field, form }) => (
-				<div className="mb-3">
+				<div className="mb-3 col-md-10">
 					<label className="form-label" htmlFor={id}>
 						<T id={label} />
 					</label>
