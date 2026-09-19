@@ -224,7 +224,33 @@ const ProxyHostModal = EasyModal.create(({ id, isClone = false, visible, remove 
 										<div className="tab-content">
 											<div className="tab-pane active show" id="tab-details" role="tabpanel">
 												<DomainNamesField isWildcardPermitted dnsProviderWildcardSupported />
-												<ForwardHostFields />
+												<div className="col-md-1 text-end">
+													<div className="mb-3">
+														<div className="form-label invisible">​</div>
+														<button
+															type="button"
+															className="btn p-0"
+															title="LocationConfig"
+															onClick={() => setAdvVisible((prev) => !prev)}
+														>
+															<IconSettings size={20} />
+															{values?.npmplusLocationConfig?.trim() ? "*" : ""}
+														</button>
+													</div>
+												</div>
+												<ForwardHostFields 
+													idPrefix="proxy-host"
+													value={{
+														scheme: values.forwardScheme,
+														method: values.npmplusLoadBalanceMethod,
+														servers: values.npmplusUpstreamServers,
+													}}
+													onChange={(next) => {
+														setFieldValue("forwardScheme", next.scheme);
+														setFieldValue("npmplusLoadBalanceMethod", next.method);
+														setFieldValue("npmplusUpstreamServers", next.servers);
+													}}
+												/>
 												<div className="my-3">
 													<h4 className="py-2">
 														<T id="options" />
