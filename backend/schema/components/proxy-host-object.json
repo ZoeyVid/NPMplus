@@ -69,7 +69,7 @@
 			"maximum": 65535,
 			"example": 8080
 		},
-		"lb_method": {
+		"npmplus_load_balance_method": {
 			"type": "string",
 			"enum": [
 				"round_robin",
@@ -79,7 +79,7 @@
 			"default": "round_robin",
 			"example": "round_robin"
 		},
-		"upstream_servers": {
+		"npmplus_upstream_servers": {
 			"type": "array",
 			"minItems": 0,
 			"items": {
