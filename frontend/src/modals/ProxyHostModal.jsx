@@ -790,7 +790,7 @@ const ProxyHostModal = EasyModal.create(({ id, isClone = false, visible, remove 
 								</div>
 							</Modal.Body>
 							<Modal.Footer>
-								<Button data-bs-dismiss="modal" onClick={remove} disabled={isSubmitting}>
+								<Button onClick={remove} disabled={isSubmitting}>
 									<T id="cancel" />
 								</Button>
 								<HasPermission section={PROXY_HOSTS} permission={MANAGE} hideError>
@@ -798,7 +798,6 @@ const ProxyHostModal = EasyModal.create(({ id, isClone = false, visible, remove 
 										type="submit"
 										actionType="primary"
 										className="ms-auto bg-lime"
-										data-bs-dismiss="modal"
 										isLoading={isSubmitting}
 										disabled={isSubmitting}
 									>
