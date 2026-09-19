@@ -43,16 +43,15 @@ try {
 
 	const auth = db
 		.prepare(
-			"SELECT auth.id, auth.user_id, auth.meta FROM auth JOIN user ON user.id = auth.user_id WHERE auth.type = 'password' AND auth.is_deleted = 0 AND user.is_deleted = 0 AND user.email = ?",
+			"SELECT auth.user_id FROM auth JOIN user ON user.id = auth.user_id WHERE auth.type = 'password' AND auth.is_deleted = 0 AND user.is_deleted = 0 AND user.email = ?",
 		)
 		.get(EMAIL);
 
 	if (auth) {
 		if (PASSWORD) {
-			db.prepare("UPDATE auth SET secret = ?, modified_on = datetime('now','localtime') WHERE id = ?").run(
-				await hash(PASSWORD),
-				auth.id,
-			);
+			db.prepare(
+				"UPDATE auth SET secret = ?, modified_on = datetime('now','localtime') WHERE user_id = ? AND type = 'password'",
+			).run(await hash(PASSWORD), auth.user_id);
 			db.prepare("UPDATE user SET npmplus_token_valid_after = ? WHERE id = ?").run(
 				Math.floor(Date.now() / 1000),
 				auth.user_id,
@@ -61,12 +60,8 @@ try {
 		}
 
 		if (DISABLE_MFA) {
-			const meta = JSON.parse(auth.meta || "{}");
-			for (const key of ["totp_secret", "totp_enabled", "totp_enabled_at", "totp_pending_secret", "backup_codes"])
-				delete meta[key];
-			db.prepare("UPDATE auth SET meta = ?, modified_on = datetime('now','localtime') WHERE id = ?").run(
-				JSON.stringify(meta),
-				auth.id,
+			db.prepare("DELETE FROM auth WHERE user_id = ? AND type IN ('totp', 'totp_pending', 'backup_code')").run(
+				auth.user_id,
 			);
 			console.log(`MFA for user ${EMAIL} has been disabled.`);
 		}
