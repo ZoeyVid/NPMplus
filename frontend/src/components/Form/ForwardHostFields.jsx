@@ -41,7 +41,7 @@ export function ForwardHostFields({ scheme, loadBalanceMethod, upstreamServers }
 
 	const blankServer = {
 		host: "",
-		port: 80,
+		port: -1,
 		weight: 1,
 		maxFails: 1,
 		failTimeout: "30s",
@@ -203,7 +203,7 @@ export function ForwardHostFields({ scheme, loadBalanceMethod, upstreamServers }
 								onClick={() => toggleExpanded(idx)}
 							>
 								{isExpanded(idx) ? <IconChevronDown size={16} /> : <IconChevronRight size={16} />}
-								<span className="ms-2 fw-medium text-nowrap">{server.host}</span>								
+								<span className="ms-2 fw-medium text-nowrap">{server.host}:{server.port < 0? "": server.port}</span>								
 							</button>
 							<button
 								type="button"
@@ -229,11 +229,13 @@ export function ForwardHostFields({ scheme, loadBalanceMethod, upstreamServers }
 												<T id="proxy-host.forward-host-path" />
 											</label>
 											<input
+												{...field}
 												id="forwardHost"
 												type="text"
 												className={`form-control ${form.errors.forwardHost && form.touched.forwardHost ? "is-invalid" : ""}`}
 												placeholder="example.com"
-												{...field}
+												value={server.host ?? ""}
+												onChange={(event) => handleChange(idx, "host", event.target.value)}
 											/>
 
 											{form.errors.forwardHost ? (
@@ -256,13 +258,15 @@ export function ForwardHostFields({ scheme, loadBalanceMethod, upstreamServers }
 												<T id="host.forward-port" />
 											</label>
 											<input
+												{...field}
 												id="forwardPort"
 												type="text"
 												inputMode="numeric"
 												pattern="[0-9]*"
 												className={`form-control ${form.errors.forwardPort && form.touched.forwardPort ? "is-invalid" : ""}`}
 												placeholder="eg: 8081"
-												{...field}
+												value={!server.port || server.port < 0 ? "" : server.port}
+												onChange={(event) => handleChange(idx, "port", event.target.value)}
 											/>
 
 											{form.errors.forwardPort ? (
@@ -294,10 +298,8 @@ export function ForwardHostFields({ scheme, loadBalanceMethod, upstreamServers }
 																"bg-lime": !server.enabled,
 															})}
 															type="checkbox"
-															checked={!server.enabled}
-															onChange={(event) =>
-																handleChange(idx, "enabled", !event.target.checked)
-															}
+															checked={!Boolean(server.enabled)}
+															onChange={(event) =>handleChange(idx, "enabled", !event.target.checked)}
 														/>
 													</span>
 												</div>
@@ -317,13 +319,15 @@ export function ForwardHostFields({ scheme, loadBalanceMethod, upstreamServers }
 													<T id="host.upstream.weight" />
 												</label>
 												<input
+													{...field}
 													id="npmplusUpstreamWeight"
 													type="text"
 													inputMode="numeric"
 													pattern="[0-9]*"
 													className={`form-control ${form.errors.npmplusUpstreamWeight && form.touched.npmplusUpstreamWeight ? "is-invalid" : ""}`}
 													placeholder="eg: 1"
-													{...field}
+													value={server.weight ?? ""}
+													onChange={(event) => handleChange(idx, "weight", event.target.value)}
 												/>
 
 												{form.errors.npmplusUpstreamWeight ? (
@@ -346,13 +350,15 @@ export function ForwardHostFields({ scheme, loadBalanceMethod, upstreamServers }
 													<T id="host.upstream.max-fails" />
 												</label>
 												<input
+													{...field}
 													id="npmplusUpstreamMaxFails"
 													type="text"
 													inputMode="numeric"
 													pattern="[0-9]*"
 													className={`form-control ${form.errors.npmplusUpstreamMaxFails && form.touched.npmplusUpstreamMaxFails ? "is-invalid" : ""}`}
 													placeholder="eg: 1"
-													{...field}
+													value={server.maxFails ?? ""}
+													onChange={(event) => handleChange(idx, "maxFails", event.target.value)}
 												/>
 
 												{form.errors.npmplusUpstreamMaxFails ? (
@@ -368,27 +374,29 @@ export function ForwardHostFields({ scheme, loadBalanceMethod, upstreamServers }
 									</Field>
 								</div>
 								<div className="col-md-3">
-									<Field name="npmplusUpstreamTimeoutSec" validate={validateNumber(-1, 65535)}>
+									<Field name="npmplusUpstreamTimeout" validate={validateNumber(-1, 65535)}>
 										{({ field, form }) => (
 											<div className="mb-3">
-												<label className="form-label" htmlFor="npmplusUpstreamTimeoutSec">
+												<label className="form-label" htmlFor="npmplusUpstreamTimeout">
 													<T id="host.upstream.timeout" />
 												</label>
 												<input
-													id="npmplusUpstreamTimeoutSec"
+													{...field}
+													id="npmplusUpstreamTimeout"
 													type="text"
 													inputMode="numeric"
 													pattern="[0-9]*"
-													className={`form-control ${form.errors.npmplusUpstreamTimeoutSec && form.touched.npmplusUpstreamTimeoutSec ? "is-invalid" : ""}`}
+													className={`form-control ${form.errors.npmplusUpstreamTimeout && form.touched.npmplusUpstreamTimeout ? "is-invalid" : ""}`}
 													placeholder="eg: 1"
-													{...field}
+													value={server.failTimeout ?? ""}
+													onChange={(event) => handleChange(idx, "failTimeout", event.target.value)}
 												/>
 
-												{form.errors.npmplusUpstreamTimeoutSec ? (
+												{form.errors.npmplusUpstreamTimeout ? (
 													<div className="invalid-feedback">
-														{form.errors.npmplusUpstreamTimeoutSec &&
-														form.touched.npmplusUpstreamTimeoutSec
-															? form.errors.npmplusUpstreamTimeoutSec
+														{form.errors.npmplusUpstreamTimeout &&
+														form.touched.npmplusUpstreamTimeout
+															? form.errors.npmplusUpstreamTimeout
 															: null}
 													</div>
 												) : null}
@@ -405,16 +413,15 @@ export function ForwardHostFields({ scheme, loadBalanceMethod, upstreamServers }
 												</label>
 												<span className="form-check form-check-single form-switch p-0">
 													<input
+														{...field}
 														id="npmplusUpstreamBackup"
 														className={cn("form-check-input", {
 															"bg-lime": server.backup,
 														})}
 														type="checkbox"
-														checked={server.backup}
+														checked={Boolean(server.backup)}
 														disabled={backupDisabled}
-														onChange={(event) =>
-															handleChange(idx, "backup", event.target.checked)
-														}
+														onChange={(event) => handleChange(idx, "backup", event.target.checked)}
 													/>
 												</span>
 											</div>
