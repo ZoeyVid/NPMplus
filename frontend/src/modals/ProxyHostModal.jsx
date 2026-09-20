@@ -122,19 +122,14 @@ const ProxyHostModal = EasyModal.create(({ id, isClone, visible, remove }) => {
 						domainNames: data?.domainNames,
 						forwardScheme: data?.forwardScheme || "http",
 						npmplusLoadBalanceMethod: data?.npmplusLoadBalanceMethod || "round_robin",
-						npmplusUpstreamServers: data?.npmplusUpstreamServers?.length
-							? data.npmplusUpstreamServers
-							: [
-									{
-										host: data?.forwardHost || "",
-										port: data?.forwardPort ?? null,
-										weight: 1,
-										maxFails: 1,
-										failTimeout: 10,
-										backup: false,
-										enabled: true,
-									},
-								],
+						npmplusUpstreamServers: data?.npmplusUpstreamServers || [
+																					{
+																						host: "",
+																						port: null,
+																						backup: false,
+																						down: false,
+																					},
+																				],
 						npmplusAccessListIds: data?.accessLists.map((accessList) => accessList.id),
 						npmplusAccessListType: data?.npmplusAccessListType,
 						// Locations tab
@@ -258,16 +253,7 @@ const ProxyHostModal = EasyModal.create(({ id, isClone, visible, remove }) => {
 													scheme={values.forwardScheme}
 													loadBalanceMethod={values.npmplusLoadBalanceMethod}
 													loadBalanceMethodFieldName="npmplusLoadBalanceMethod"
-													upstreamServers={values.npmplusUpstreamServers?.length
-													? values.npmplusUpstreamServers
-													: [
-															{
-																host: "",
-																port: null,
-																backup: false,
-																down: false,
-															},
-														]}
+													upstreamServers={values.npmplusUpstreamServers}
 												/>
 												<div className="my-3">
 													<h4 className="py-2">
