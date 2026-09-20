@@ -47,7 +47,7 @@ export default function (tokenString) {
 
 			if (user) {
 				if (tokenData.iat <= user.npmplus_token_valid_after) {
-					throw new errs.AuthError("Token has been revoked");
+					throw new errs.PermissionError("Token has been revoked");
 				}
 
 				// make sure user has all scopes of the token
@@ -55,13 +55,13 @@ export default function (tokenString) {
 				user.roles.push("user");
 
 				if (!(tokenData.scope ?? []).every((scopeItem) => user.roles.includes(scopeItem))) {
-					throw new errs.AuthError("Invalid token scope for User");
+					throw new errs.PermissionError("Invalid token scope for User");
 				}
 				initialised = true;
 				isAdmin = user.roles.includes("admin");
 				permissions = user.permissions ?? {};
 			} else {
-				throw new errs.AuthError("User cannot be loaded for Token");
+				throw new errs.PermissionError("User cannot be loaded for Token");
 			}
 		}
 		initialised = true;

@@ -16,7 +16,7 @@ function TotpForm() {
 	const [formErr, setFormErr] = useState("");
 	const { submitTotp, cancelTotp } = useAuthState();
 
-	const onSubmit = async (values, { setSubmitting }) => {
+	const onSubmit = async (values, { setSubmitting, resetForm }) => {
 		setFormErr("");
 		try {
 			await submitTotp(values.code);
@@ -24,6 +24,7 @@ function TotpForm() {
 			if (err instanceof Error) {
 				setFormErr(err.message);
 			}
+			resetForm();
 		}
 		setSubmitting(false);
 	};
