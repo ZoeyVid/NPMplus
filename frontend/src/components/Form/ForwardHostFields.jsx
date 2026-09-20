@@ -34,7 +34,9 @@ const LoadBalancerOption = (props) => (
 	</components.Option>
 );
 
-export function ForwardHostFields({ scheme, loadBalanceMethod, upstreamServers, onChange, namePrefix = "" }) {
+const numberOrNull = (value) => (value === "" ? null : Number(value));
+
+export function ForwardHostFields({ scheme, loadBalanceMethod, upstreamServers, onChange, loadBalanceMethodFieldName, namePrefix = "" }) {
 	const [servers, setServers] = useState(upstreamServers);
 	const [method, setMethod] = useState(loadBalanceMethod);
 	const [expanded, setExpanded] = useState([0]);
@@ -61,8 +63,9 @@ export function ForwardHostFields({ scheme, loadBalanceMethod, upstreamServers, 
 	};
 
 	const syncField = (newServers, newMethod) => {
-		const filtered = newServers.filter((s) => s.host.trim() !== "");
-		 applyChanges({
+		// TODO cause a validation failure on blank hosts rather than "silently" remove them
+		// const filtered = newServers.filter((s) => s.host.trim() !== "");
+		applyChanges({
 			npmplusUpstreamServers: newServers,
 			npmplusLoadBalanceMethod: newMethod,
 		});
@@ -73,6 +76,7 @@ export function ForwardHostFields({ scheme, loadBalanceMethod, upstreamServers, 
 		const updated = [...servers, { ...blankServer }];
 		setServers(updated);
 		setExpanded((current) => [...current, newServerIdx]);
+		syncField(updated, method);
 	};
 
 	const handleRemove = (idx) => {
@@ -131,9 +135,6 @@ export function ForwardHostFields({ scheme, loadBalanceMethod, upstreamServers, 
 	};
 
 	const backupDisabled = BACKUP_INCOMPATIBLE_METHODS.includes(method);
-	if (servers.length == 0 ){
-		handleAdd();
-	}
 	const isExpanded = (idx) => expanded.includes(idx);
 
 	const toggleExpanded = (idx) => {
@@ -177,7 +178,7 @@ export function ForwardHostFields({ scheme, loadBalanceMethod, upstreamServers, 
 					</Field>
 				</div>
 				{servers.length > 1 ? (
-					<Field name="npmplusLoadBalanceMethod">
+					<Field name={loadBalanceMethodFieldName}>
 						{({ field, form }) => (
 							<>
 								<div className="col-md-7">
@@ -279,7 +280,7 @@ export function ForwardHostFields({ scheme, loadBalanceMethod, upstreamServers, 
 												className={`form-control ${form.errors.forwardPort && form.touched.forwardPort ? "is-invalid" : ""}`}
 												placeholder="eg: 8081"
 												value={server.port?? ""}
-												onChange={(event) => handleChange(idx, "port", event.target.value)}
+												onChange={(event) => handleChange(idx, "port", numberOrNull(event.target.value))}
 											/>
 
 											{form.errors.forwardPort ? (
@@ -342,7 +343,7 @@ export function ForwardHostFields({ scheme, loadBalanceMethod, upstreamServers, 
 														className={`form-control ${form.errors.npmplusUpstreamWeight && form.touched.npmplusUpstreamWeight ? "is-invalid" : ""}`}
 														placeholder="eg: 1"
 														value={server.weight ?? ""}
-														onChange={(event) => handleChange(idx, "weight", event.target.value)}
+														onChange={(event) => handleChange(idx, "weight", numberOrNull(event.target.value))}
 													/>
 
 													{form.errors.npmplusUpstreamWeight ? (
@@ -373,7 +374,7 @@ export function ForwardHostFields({ scheme, loadBalanceMethod, upstreamServers, 
 														className={`form-control ${form.errors.npmplusUpstreamMaxFails && form.touched.npmplusUpstreamMaxFails ? "is-invalid" : ""}`}
 														placeholder="eg: 1"
 														value={server.maxFails ?? ""}
-														onChange={(event) => handleChange(idx, "maxFails", event.target.value)}
+														onChange={(event) => handleChange(idx, "maxFails", numberOrNull(event.target.value))}
 													/>
 
 													{form.errors.npmplusUpstreamMaxFails ? (
@@ -462,7 +463,7 @@ export function ForwardHostFields({ scheme, loadBalanceMethod, upstreamServers, 
 														className={`form-control ${form.errors.npmplusUpstreamMaxConns && form.touched.npmplusUpstreamMaxConns ? "is-invalid" : ""}`}
 														placeholder="eg: 1"
 														value={server.maxConns ?? ""}
-														onChange={(event) => handleChange(idx, "maxConns", event.target.value)}
+														onChange={(event) => handleChange(idx, "maxConns", numberOrNull(event.target.value))}
 													/>
 													{form.errors.npmplusUpstreamMaxConns ? (
 														<div className="invalid-feedback">

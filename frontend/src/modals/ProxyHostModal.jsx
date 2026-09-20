@@ -39,6 +39,20 @@ const ProxyHostModal = EasyModal.create(({ id, isClone = false, visible, remove 
 		setIsSubmitting(true);
 		setErrorMsg(null);
 
+		// remove entries that are null or undefined or empty to pass schema validation
+		const cleanUpstreamServers = (servers = []) =>
+			servers.map((server) => {
+			const cleaned = { ...server };
+
+			for (const field of ["weight", "maxFails", "maxConns", "failTimeout"]) {
+				if (cleaned[field] === null || cleaned[field] === undefined || cleaned[field] === "") {
+					delete cleaned[field];
+				}
+			}
+
+			return cleaned;
+		});
+
 		// Set the unrestricted acls here (remove any data in their acl lists)
 		const globalType = values.npmplusAccessListType;
 		let globalAclIds = values.npmplusAccessListIds || [];
@@ -46,12 +60,20 @@ const ProxyHostModal = EasyModal.create(({ id, isClone = false, visible, remove 
 			globalAclIds = [];
 		}
 		const locations = (values.locations || []).map((loc) => {
-			const newLoc = { ...loc };
+			const newLoc = { 
+				...loc, 
+				npmplusUpstreamServers: cleanUpstreamServers(
+					loc.npmplusUpstreamServers,
+				),
+			};
+
 			if (loc.npmplusAccessListType === "global" || loc.npmplusAccessListType === "public") {
 				newLoc.npmplusAccessListIds = [];
 			}
 			return newLoc;
 		});
+
+		
 
 		const meta = { ...(values.meta || {}) };
 		if (typeof meta.directory === "string") {
@@ -68,10 +90,12 @@ const ProxyHostModal = EasyModal.create(({ id, isClone = false, visible, remove 
 		const { ...payload } = {
 			id: id === "new" || isClone ? undefined : id,
 			...values,
+			npmplusUpstreamServers: cleanUpstreamServers(
+				values.npmplusUpstreamServers,
+			),
 			meta,
 			npmplusAccessListIds: globalAclIds,
 			locations,
-			forwardPort: values.forwardPort || null,
 		};
 
 		setProxyHost(payload, {
@@ -244,12 +268,17 @@ const ProxyHostModal = EasyModal.create(({ id, isClone = false, visible, remove 
 													idPrefix="proxy-host"
 													scheme={values.forwardScheme}
 													loadBalanceMethod={values.npmplusLoadBalanceMethod}
-													upstreamServers={values.npmplusUpstreamServers}
-													onChange={(next) => {
-														setFieldValue("forwardScheme", next.scheme);
-														setFieldValue("npmplusLoadBalanceMethod", next.method);
-														setFieldValue("npmplusUpstreamServers", next.servers);
-													}}
+													loadBalanceMethodFieldName="npmplusLoadBalanceMethod"
+													upstreamServers={values.npmplusUpstreamServers?.length
+													? values.npmplusUpstreamServers
+													: [
+															{
+																host: "",
+																port: null,
+																backup: false,
+																down: false,
+															},
+														]}
 												/>
 												<div className="my-3">
 													<h4 className="py-2">

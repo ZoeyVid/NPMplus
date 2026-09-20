@@ -67,7 +67,7 @@ export function LocationsFields({ initialValues, name = "locations" }) {
 				maxConns: null,
 				failTimeout: "",
 				backup: false,
-				enabled: false,
+				down: false,
 			},
 		],
 		npmplusAccessListIds: [],
@@ -116,17 +116,6 @@ export function LocationsFields({ initialValues, name = "locations" }) {
 			}
 			if (field === "npmplusProxyRequestBuffering" && fieldValue === true) {
 				updatedLocation.npmplusCrowdsecAppsec = true;
-			}
-			if (field === "forwardScheme" && fieldValue !== "empty") {
-				if (!["http", "https"].includes(fieldValue)) {
-					updatedLocation.npmplusProxyRequestBuffering = false;
-					updatedLocation.npmplusProxyResponseBuffering = false;
-				}
-				if (fieldValue === "path") {
-					updatedLocation.npmplusUpstreamCompression = false;
-				} else {
-					updatedLocation.npmplusFancyindex = false;
-				}
 			}
 			return updatedLocation;
 		});
@@ -352,9 +341,10 @@ export function LocationsFields({ initialValues, name = "locations" }) {
 						)}
 						<div className="row">
 							<ForwardHostFields
-								namePrefix={`location-${item.uiKey}`}
+								namePrefix={`${name}[${idx}]`}
 								scheme={item.forwardScheme}
 								loadBalanceMethod={item.npmplusLoadBalanceMethod}
+								loadBalanceMethodFieldName={`${name}[${idx}].npmplusLoadBalanceMethod`}
 								upstreamServers={item.npmplusUpstreamServers}
 								onChange={(next) => handleForwardFieldsChange(idx, next)}
 							/>
