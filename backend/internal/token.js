@@ -31,18 +31,18 @@ export default {
 			.first();
 
 		if (!user) {
-			throw new errs.AuthError(ERROR_MESSAGE_INVALID_AUTH);
+			throw new errs.PermissionError(ERROR_MESSAGE_INVALID_AUTH);
 		}
 
 		const auth = await authModel.getPasswordAuth(user.id);
 
 		if (!auth) {
-			throw new errs.AuthError(ERROR_MESSAGE_INVALID_AUTH);
+			throw new errs.PermissionError(ERROR_MESSAGE_INVALID_AUTH);
 		}
 
 		const valid = await auth.verifyPassword(data.secret);
 		if (!valid) {
-			throw new errs.AuthError(ERROR_MESSAGE_INVALID_AUTH, ERROR_MESSAGE_INVALID_AUTH_I18N);
+			throw new errs.PermissionError(ERROR_MESSAGE_INVALID_AUTH, ERROR_MESSAGE_INVALID_AUTH_I18N);
 		}
 
 		// Check if MFA is enabled
@@ -51,7 +51,7 @@ export default {
 			if (data.code) {
 				const validCode = await mfa.verifyForLogin(user.id, data.code);
 				if (!validCode) {
-					throw new errs.AuthError(ERROR_MESSAGE_INVALID_CODE, ERROR_MESSAGE_INVALID_CODE_I18N);
+					throw new errs.PermissionError(ERROR_MESSAGE_INVALID_CODE, ERROR_MESSAGE_INVALID_CODE_I18N);
 				}
 			} else {
 				// Return challenge token instead of full token
@@ -103,7 +103,7 @@ export default {
 			.first();
 
 		if (!user) {
-			throw new errs.AuthError(ERROR_MESSAGE_INVALID_AUTH);
+			throw new errs.PermissionError(ERROR_MESSAGE_INVALID_AUTH);
 		}
 
 		// Check if MFA is enabled
@@ -207,7 +207,7 @@ export default {
 		// Verify TOTP code
 		const valid = await mfa.verifyForLogin(userId, code);
 		if (!valid) {
-			throw new errs.AuthError(ERROR_MESSAGE_INVALID_CODE, ERROR_MESSAGE_INVALID_CODE_I18N);
+			throw new errs.PermissionError(ERROR_MESSAGE_INVALID_CODE, ERROR_MESSAGE_INVALID_CODE_I18N);
 		}
 
 		const now = Math.floor(Date.now() / 1000);
