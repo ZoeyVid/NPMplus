@@ -190,6 +190,7 @@ export function ForwardHostFields({ scheme, loadBalanceMethod, upstreamServers, 
 										id="npmplusLoadBalanceMethod"
 										className="form-select"
 										{...field}
+										value={method}
 										onChange={(e) => handleMethodChange(e.target.value)}
 									>
 										<option value="round_robin"><T id="host.loadbalancer.round-robin" /></option>

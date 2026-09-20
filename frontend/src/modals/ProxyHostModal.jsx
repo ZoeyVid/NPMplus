@@ -138,7 +138,14 @@ const ProxyHostModal = EasyModal.create(({ id, isClone = false, visible, remove 
 						domainNames: data?.domainNames || [],
 						forwardScheme: data?.forwardScheme || "http",
 						npmplusLoadBalanceMethod: data?.npmplusLoadBalanceMethod || "round_robin",
-						npmplusUpstreamServers: data?.npmplusUpstreamServers || [],
+						npmplusUpstreamServers: data?.npmplusUpstreamServers || [
+																					{
+																						host: "",
+																						port: null,
+																						backup: false,
+																						down: false,
+																					},
+																				],
 						npmplusAccessListIds: data?.npmplusAccessListIds || [],
 						npmplusAccessListType: data?.npmplusAccessListType || "public",
 						cachingEnabled: data?.cachingEnabled || false,
@@ -269,16 +276,7 @@ const ProxyHostModal = EasyModal.create(({ id, isClone = false, visible, remove 
 													scheme={values.forwardScheme}
 													loadBalanceMethod={values.npmplusLoadBalanceMethod}
 													loadBalanceMethodFieldName="npmplusLoadBalanceMethod"
-													upstreamServers={values.npmplusUpstreamServers?.length
-													? values.npmplusUpstreamServers
-													: [
-															{
-																host: "",
-																port: null,
-																backup: false,
-																down: false,
-															},
-														]}
+													upstreamServers={values.npmplusUpstreamServers}
 												/>
 												<div className="my-3">
 													<h4 className="py-2">
