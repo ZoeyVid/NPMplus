@@ -1,5 +1,5 @@
 import cn from "clsx";
-import { IconChevronDown, IconChevronRight, IconInfoCircle, IconTrash, IconX } from "@tabler/icons-react";
+import { IconArrowDown, IconArrowUp, IconChevronDown, IconChevronRight, IconInfoCircle, IconTrash, IconX } from "@tabler/icons-react";
 import { Field, useFormikContext } from "formik";
 import { useState } from "react";
 import OverlayTrigger from "react-bootstrap/OverlayTrigger";
@@ -96,6 +96,27 @@ export function ForwardHostFields({ scheme, loadBalanceMethod, upstreamServers, 
 					expandedIdx > idx ? expandedIdx - 1 : expandedIdx,
 				);
 		});
+		syncField(updated, method);
+	};
+
+	const handleMove = (idx, newIdx) => {
+		// Ordering is used to determine the default port since if upstreams have empty ports, 
+		// then the first port is auto applied. Port is required only on the first upstream
+		if (newIdx < 0 || newIdx >= servers.length) {
+			return;
+		}
+
+		const updated = [...servers];
+		[updated[idx], updated[newIdx]] = [updated[newIdx], updated[idx]];
+
+		setServers(updated);
+		setExpanded((current) =>
+			current.map((expandedIdx) => {
+				if (expandedIdx === idx) return newIdx;
+				if (expandedIdx === newIdx) return idx;
+				return expandedIdx;
+			}),
+		);
 		syncField(updated, method);
 	};
 
@@ -220,6 +241,27 @@ export function ForwardHostFields({ scheme, loadBalanceMethod, upstreamServers, 
 								{isExpanded(idx) ? <IconChevronDown size={16} /> : <IconChevronRight size={16} />}
 								<span className="ms-2 fw-medium text-nowrap">{server.host}{server.port ?  `:${server.port}`: ""}</span>
 							</button>
+							{idx > 0 ? (
+								<button
+									type="button"
+									className="btn btn-action ms-2"
+									aria-label="Move up"
+									onClick={() => handleMove(idx, idx - 1)}
+								>
+									<IconArrowUp size={16} />
+								</button>
+							) : null}
+
+							{idx < servers.length - 1 ? (
+								<button
+									type="button"
+									className="btn btn-action ms-2"
+									aria-label="Move down"
+									onClick={() => handleMove(idx, idx + 1)}
+								>
+									<IconArrowDown size={16} />
+								</button>
+							) : null}
 							<button
 								type="button"
 								className="btn btn-action ms-2"
