@@ -29,8 +29,8 @@ export const createUiLocation = (item) => {
 		? item.npmplusUpstreamServers
 		: [
 				{
-					host: "",
-					port: null,
+					host: item?.host || "",
+					port: item?.port ?? null,
 					weight: null,
 					maxFails: null,
 					maxConns: null,
