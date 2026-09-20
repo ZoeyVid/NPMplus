@@ -176,6 +176,7 @@
 			"type": "string",
 			"pattern": "@",
 			"minLength": 3,
+			"maxLength": 255,
 			"example": "me@example.com"
 		},
 		"directive": {
@@ -188,6 +189,7 @@
 		},
 		"address": {
 			"type": "string",
+			"maxLength": 255,
 			"example": "192.168.0.11"
 		},
 		"access_items": {
@@ -199,7 +201,8 @@
 					"username": {
 						"type": "string",
 						"minLength": 1,
-						"pattern": "^[^:]+$"
+						"pattern": "^[^:]+$",
+						"maxLength": 255
 					},
 					"password": {
 						"type": "string"
