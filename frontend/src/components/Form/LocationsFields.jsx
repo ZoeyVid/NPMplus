@@ -163,14 +163,16 @@ export function LocationsFields({ initialValues, name = "locations" }) {
 		return server.host;
 	};
 
-	const handleForwardChange = (idx, forwarding) => {
-		const newValues = [...values];
-
-		newValues[idx] = {
-			forwardScheme: forwarding.scheme,
-			npmplusLoadBalanceMethod: forwarding.method,
-			npmplusUpstreamServers: forwarding.servers,
-		};
+	const handleForwardFieldsChange = (idx, changes) => {
+		const newValues = values.map((location, locationIdx) => {
+			if (locationIdx !== idx) {
+				return location;
+			}
+			return {
+				...location,
+				...changes,
+			};
+		});
 
 		setValues(newValues);
 		setFormField(newValues);
@@ -350,11 +352,11 @@ export function LocationsFields({ initialValues, name = "locations" }) {
 						)}
 						<div className="row">
 							<ForwardHostFields
-								idPrefix={`location-${item.uiKey}`}
+								namePrefix={`location-${item.uiKey}`}
 								scheme={item.forwardScheme}
 								loadBalanceMethod={item.npmplusLoadBalanceMethod}
 								upstreamServers={item.npmplusUpstreamServers}
-								onChange={(next) => handleForwardChange(idx, next)}
+								onChange={(next) => handleForwardFieldsChange(idx, next)}
 							/>
 
 							<div className="my-3">

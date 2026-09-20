@@ -114,19 +114,7 @@ const ProxyHostModal = EasyModal.create(({ id, isClone = false, visible, remove 
 						domainNames: data?.domainNames || [],
 						forwardScheme: data?.forwardScheme || "http",
 						npmplusLoadBalanceMethod: data?.npmplusLoadBalanceMethod || "round_robin",
-						npmplusUpstreamServers: data?.npmplusUpstreamServers?.length
-							? data.npmplusUpstreamServers
-							: [
-									{
-										host: data?.forwardHost || "",
-										port: data?.forwardPort ?? null,
-										weight: 1,
-										maxFails: 1,
-										failTimeout: 10,
-										backup: false,
-										enabled: true,
-									},
-								],
+						npmplusUpstreamServers: data?.npmplusUpstreamServers || [],
 						npmplusAccessListIds: data?.npmplusAccessListIds || [],
 						npmplusAccessListType: data?.npmplusAccessListType || "public",
 						cachingEnabled: data?.cachingEnabled || false,
