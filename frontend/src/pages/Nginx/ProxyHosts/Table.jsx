@@ -15,6 +15,7 @@ import {
 	CertificateFormatter,
 	DomainsFormatter,
 	EmptyData,
+	ForwardHostFormatter,
 	GravatarFormatter,
 	HasPermission,
 	StatusFormatter,
@@ -70,14 +71,23 @@ export default function Table({
 				},
 			}),
 			columnHelper.accessor(
-				(row) => `${row.forwardScheme}://${row.forwardHost}${row.forwardPort ? `:${row.forwardPort}` : ""}`,
+				(row) => {
+					const names = [];
+					for(server in row.npmplusUpstreamServers) {
+						names.push(`${row.forwardScheme}://${server.host}${row.port ? `:${row.port}` : ""}`);
+					}
+					return names.join(", ");
+				},
 				{
 					id: "forwardHost",
 					header: intl.formatMessage({ id: "column.destination" }),
 					cell: (info) => (
-						<a href={info.getValue()} target="_blank" rel="noopener">
-							{info.getValue()}
-						</a>
+						<ForwardHostFormatter
+							proxyHostId={info.row.original.id}
+							upstreamServers={info.row.original.npmplusUpstreamServers}
+							scheme={info.row.original.forwardScheme}
+							loadBalanceMethod={info.row.original.npmplusLoadBalanceMethod}
+						/>
 					),
 				},
 			),
