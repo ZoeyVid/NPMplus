@@ -47,11 +47,11 @@ const internalSetting = {
 				await internalNginx.generateConfig("default", row);
 				await internalNginx.test();
 				await internalNginx.reload();
-			} catch (err) {
+			} catch {
 				await internalNginx.deleteConfig("default");
 				await internalNginx.test();
 				await internalNginx.reload();
-				throw new errs.ValidationError("Could not reconfigure Nginx. Please check logs.", err);
+				throw new errs.ValidationError("Could not reconfigure Nginx. Please check logs.");
 			}
 		}
 		return row;

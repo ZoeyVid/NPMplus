@@ -129,7 +129,7 @@ const internalNginx = {
 				encoding: "utf8",
 			});
 		} catch (err) {
-			throw new errs.ConfigurationError(err.message, err);
+			throw new errs.ConfigurationError(err.message);
 		}
 
 		const renderEngine = utils.getRenderEngine();
@@ -176,7 +176,7 @@ const internalNginx = {
 				encoding: "utf8",
 			});
 		} catch (err) {
-			throw new errs.ConfigurationError(err.message, err);
+			throw new errs.ConfigurationError(err.message);
 		}
 
 		const renderEngine = utils.getRenderEngine();
@@ -251,7 +251,7 @@ const internalNginx = {
 		try {
 			template = await readFile(`${__dirname}/../templates/${nice_host_type}.conf`, { encoding: "utf8" });
 		} catch (err) {
-			throw new errs.ConfigurationError(err.message, err);
+			throw new errs.ConfigurationError(err.message);
 		}
 
 		host.env = process.env;
@@ -379,7 +379,7 @@ const internalNginx = {
 			return true;
 		} catch (err) {
 			debug(logger, `Could not write ${filename}:`, err.message);
-			throw new errs.ConfigurationError(err.message, err);
+			throw new errs.ConfigurationError(err.message);
 		}
 	},
 
