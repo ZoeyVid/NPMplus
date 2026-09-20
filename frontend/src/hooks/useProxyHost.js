@@ -10,7 +10,7 @@ const fetchProxyHost = (id) => {
 			ownerUserId: 0,
 			domainNames: [],
 			npmplusUpstreamServers: [],
-			npmplusLoadBalanceMethod: "",
+			npmplusLoadBalanceMethod: "round_robin",
 			npmplusAccessListIds: [],
 			certificateId: 0,
 			sslForced: false,
