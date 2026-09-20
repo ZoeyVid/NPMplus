@@ -9,7 +9,8 @@ import { flushSync } from "react-dom";
 import { intl, T } from "src/locale";
 import { validateNumber } from "src/modules/Validations";
 
-const BACKUP_INCOMPATIBLE_METHODS = ["ip_hash"];
+const BACKUP_INCOMPATIBLE_METHODS = ["ip_hash", "random", "random_two_least_connections", "random_two_least_time_header", "random_two_least_time_last_byte"];
+
 const NGINX_TIME_SYNTAX_REGEX = "^[1-9]\\d*\\s*(ms|s|m|h|d|w|M|y)?";
 const NUMERIC_PATTERN = "[0-9]*";
 
@@ -220,6 +221,10 @@ export function ForwardHostFields({ scheme, loadBalanceMethod, upstreamServers, 
 										<option value="least_time_header"><T id="host.loadbalancer.least-time-header" /></option>
 										<option value="least_time_last_byte"><T id="host.loadbalancer.least-time-last-byte" /></option>
 										<option value="least_time_last_byte_inflight"><T id="host.loadbalancer.least-time-last-byte-inflight" /></option>
+										<option value="random"><T id="host.loadbalancer.random" /></option>
+										<option value="random_two_least_connections"><T id="host.loadbalancer.random-two-least-connections" /></option>
+										<option value="random_two_least_time_header"><T id="host.loadbalancer.random-two-least-time-header" /></option>
+										<option value="random_two_least_time_last_byte"><T id="host.loadbalancer.random-two-least-time-last-byte" /></option>
 									</select>
 								</div>
 							</>
