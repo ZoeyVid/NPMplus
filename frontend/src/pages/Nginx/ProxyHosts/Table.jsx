@@ -73,8 +73,10 @@ export default function Table({
 			columnHelper.accessor(
 				(row) => {
 					const names = [];
-					for(server in row.npmplusUpstreamServers) {
-						names.push(`${row.forwardScheme}://${server.host}${row.port ? `:${row.port}` : ""}`);
+					for (const server of row.npmplusUpstreamServers ?? []) {
+						names.push(
+							`${row.forwardScheme}://${server.host}${server.port ? `:${server.port}` : ""}`,
+						);
 					}
 					return names.join(", ");
 				},
