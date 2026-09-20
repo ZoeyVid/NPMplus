@@ -35,11 +35,11 @@ const internalAccessList = {
 
 		// Items
 		await Promise.all(
-			(data.items ?? []).map((item) =>
+			(data.items ?? []).map(async (item) =>
 				accessListAuthModel.query().insert({
 					access_list_id: row.id,
 					username: item.username,
-					password: bcrypt.hashSync(item.password, 5),
+					password: await bcrypt.hash(item.password, 5),
 				}),
 			),
 		);
@@ -139,11 +139,11 @@ const internalAccessList = {
 			await Promise.all(
 				data.items
 					.filter((item) => item.password)
-					.map((item) =>
+					.map(async (item) =>
 						accessListAuthModel.query().insert({
 							access_list_id: data.id,
 							username: item.username,
-							password: bcrypt.hashSync(item.password, 5),
+							password: await bcrypt.hash(item.password, 5),
 						}),
 					),
 			);
