@@ -32,6 +32,7 @@
 		"nice_name": {
 			"type": "string",
 			"description": "Nice Name for the custom certificate",
+			"maxLength": 255,
 			"example": "My Custom Cert"
 		},
 		"domain_names": {
