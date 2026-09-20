@@ -1,32 +1,9 @@
-import crypto from "node:crypto";
-import bcrypt from "bcryptjs";
-import { hash, verify } from "../lib/argon2.js";
 import errs from "../lib/error.js";
-import authModel from "../models/auth.js";
 import userModel from "../models/user.js";
 import internalAuditLog from "./audit-log.js";
+import backupCodes from "./backup-codes.js";
 import totp from "./totp.js";
 import internalUser from "./user.js";
-
-const BACKUP_CODE_COUNT = 8;
-
-/**
- * Generate backup codes
- * @returns {Promise<{plain: string[], hashed: string[]}>}
- */
-const generateBackupCodes = async () => {
-	const plain = [];
-	const hashed = [];
-
-	for (let i = 0; i < BACKUP_CODE_COUNT; i++) {
-		// biome-ignore lint/security/noSecrets: Crockford Base32 alphabet
-		const code = Array.from({ length: 8 }, () => "0123456789ABCDEFGHJKMNPQRSTVWXYZ"[crypto.randomInt(32)]).join("");
-		plain.push(code);
-		hashed.push(await hash(code, true));
-	}
-
-	return { plain, hashed };
-};
 
 const internalMfa = {
 	/**
@@ -50,11 +27,7 @@ const internalMfa = {
 
 		return {
 			totp_enabled: await totp.isEnabled(userId),
-			backup_codes_remaining: await authModel
-				.query()
-				.where("user_id", userId)
-				.andWhere("type", "backup_code")
-				.resultSize(),
+			backup_codes_remaining: await backupCodes.count(userId),
 		};
 	},
 
@@ -65,16 +38,11 @@ const internalMfa = {
 	 * @returns {Promise<{backup_codes: string[]} | null>}
 	 */
 	ensureBackupCodes: async (userId) => {
-		if (await authModel.query().where("user_id", userId).andWhere("type", "backup_code").resultSize()) {
+		if (await backupCodes.count(userId)) {
 			return null;
 		}
 
-		const { plain, hashed } = await generateBackupCodes();
-		for (const secret of hashed) {
-			await authModel.query().insert({ user_id: userId, type: "backup_code", secret, meta: {} });
-		}
-
-		return { backup_codes: plain };
+		return { backup_codes: await backupCodes.create(userId) };
 	},
 
 	/**
@@ -113,7 +81,7 @@ const internalMfa = {
 		await totp.disable(access, userId);
 
 		if (!(await internalMfa.isAnyEnabled(userId))) {
-			await authModel.query().where("user_id", userId).andWhere("type", "backup_code").delete();
+			await backupCodes.delete(userId);
 		}
 	},
 
@@ -125,21 +93,15 @@ const internalMfa = {
 	 * @returns {Promise<boolean>}
 	 */
 	verifyForLogin: async (userId, token) => {
-		const tokenTrim = token.trim().toUpperCase().replace(/O/g, "0").replace(/[IL]/g, "1");
+		const tokenTrim = token.trim();
 
 		// TOTP codes are 6 chars, backup codes are 8 chars
 		if (tokenTrim.length === 6) {
-			return totp.verifyCode(userId, tokenTrim);
+			return await totp.verifyCode(userId, tokenTrim);
 		}
 
 		if (tokenTrim.length === 8) {
-			for (const code of await authModel.query().where("user_id", userId).andWhere("type", "backup_code")) {
-				const match = code.secret.startsWith("$2")
-					? await bcrypt.compare(tokenTrim, code.secret)
-					: await verify(tokenTrim, code.secret);
-				// Remove used backup code, only the request that removes it counts as used
-				if (match) return (await authModel.query().findById(code.id).delete()) === 1;
-			}
+			return await backupCodes.verify(userId, tokenTrim);
 		}
 
 		return false;
@@ -164,7 +126,7 @@ const internalMfa = {
 		}
 
 		await totp.disable(access, userId, false);
-		await authModel.query().where("user_id", userId).andWhere("type", "backup_code").delete();
+		await backupCodes.delete(userId);
 
 		await internalAuditLog.add(access, {
 			action: "updated",
@@ -205,12 +167,7 @@ const internalMfa = {
 			throw new errs.ValidationError("Invalid verification code");
 		}
 
-		const { plain, hashed } = await generateBackupCodes();
-
-		await authModel.query().where("user_id", userId).andWhere("type", "backup_code").delete();
-		for (const secret of hashed) {
-			await authModel.query().insert({ user_id: userId, type: "backup_code", secret, meta: {} });
-		}
+		const plain = await backupCodes.create(userId);
 
 		await userModel
 			.query()
