@@ -7,6 +7,8 @@ import internalUser from "./user.js";
 
 const APP_NAME = "NPMplus";
 
+const usedSteps = new Map();
+
 const internalTotp = {
 	/**
 	 * Check if user has TOTP enabled
@@ -92,6 +94,7 @@ const internalTotp = {
 		if (enabled !== 1) {
 			throw new errs.ValidationError("No pending TOTP setup found");
 		}
+		usedSteps.set(pending.id, result.timeStep);
 
 		await userModel
 			.query()
@@ -151,6 +154,7 @@ const internalTotp = {
 		const result = await verify({
 			token: code,
 			secret: enrolled.secret,
+			afterTimeStep: usedSteps.get(enrolled.id),
 			// These guardrails lower the minimum length requirement for secrets.
 			// In v12 of otplib the default minimum length is 10 and in v13 it is 16.
 			// Since there are totp secrets in the wild generated with v12 we need to allow shorter secrets
@@ -159,6 +163,8 @@ const internalTotp = {
 				MIN_SECRET_BYTES: 10,
 			}),
 		});
+
+		if (result.valid) usedSteps.set(enrolled.id, result.timeStep);
 
 		return result.valid;
 	},
