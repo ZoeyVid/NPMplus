@@ -77,8 +77,8 @@ export function ForwardHostFields({ scheme, loadBalanceMethod, upstreamServers, 
 
 	const handleRemove = (idx) => {
 		const updated = servers.filter((_, serverIdx) => serverIdx !== idx);
-		if(updated.length == 1){
-			updated[0].down = false; // always enable the last server
+		if(updated.length === 1){
+			updated[0] = { ...updated[0], down: false }; // always enable the last server
 		}
 		setServers(updated);
 		setExpanded((current) => {
@@ -309,11 +309,11 @@ export function ForwardHostFields({ scheme, loadBalanceMethod, upstreamServers, 
 															{...field}
 															id="npmplusUpstreamEnable"
 															className={cn("form-check-input", {
-																"bg-lime": !server.enabled,
+																"bg-lime": !server.down, // invert it to represent the UI which shows 'enabled'
 															})}
 															type="checkbox"
-															checked={!Boolean(server.enabled)}
-															onChange={(event) =>handleChange(idx, "enabled", !event.target.checked)}
+															checked={!Boolean(server.down)}
+															onChange={(event) =>handleChange(idx, "down", !event.target.checked)}
 														/>
 													</span>
 												</div>
