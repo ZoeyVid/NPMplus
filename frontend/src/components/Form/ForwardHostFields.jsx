@@ -77,7 +77,9 @@ export function ForwardHostFields({ scheme, loadBalanceMethod, upstreamServers, 
 
 	const handleRemove = (idx) => {
 		const updated = servers.filter((_, serverIdx) => serverIdx !== idx);
-
+		if(updated.length == 1){
+			updated[0].down = false; // always enable the last server
+		}
 		setServers(updated);
 		setExpanded((current) => {
 			if (updated.length === 1) {

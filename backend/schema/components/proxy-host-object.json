@@ -69,7 +69,7 @@
 		},
 		"npmplus_upstream_servers": {
 			"type": "array",
-			"minItems": 0,
+			"minItems": 1,
 			"items": {
 				"$ref": "./upstream-server-object.json"
 			},
