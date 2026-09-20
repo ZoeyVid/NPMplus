@@ -1,18 +1,16 @@
 const errs = {
-	PermissionError: function (message, messageI18n, previous) {
+	PermissionError: function (message, messageI18n) {
 		Error.captureStackTrace(this, this.constructor);
 		this.name = this.constructor.name;
-		this.previous = previous;
 		this.message = message || "Permission Denied";
 		this.message_i18n = messageI18n;
 		this.public = true;
 		this.status = 403;
 	},
 
-	ItemNotFoundError: function (id, previous) {
+	ItemNotFoundError: function (id) {
 		Error.captureStackTrace(this, this.constructor);
 		this.name = this.constructor.name;
-		this.previous = previous;
 		this.message = "Not Found";
 		if (id) {
 			this.message = `Not Found - ${id}`;
@@ -21,74 +19,66 @@ const errs = {
 		this.status = 404;
 	},
 
-	AuthError: function (message, messageI18n, previous) {
+	AuthError: function (message, messageI18n) {
 		Error.captureStackTrace(this, this.constructor);
 		this.name = this.constructor.name;
-		this.previous = previous;
 		this.message = message;
 		this.message_i18n = messageI18n;
 		this.public = true;
 		this.status = 401;
 	},
 
-	InternalError: function (message, previous) {
+	InternalError: function (message) {
 		Error.captureStackTrace(this, this.constructor);
 		this.name = this.constructor.name;
-		this.previous = previous;
 		this.message = message;
 		this.status = 500;
 		this.public = false;
 	},
 
-	InternalValidationError: function (message, previous) {
+	InternalValidationError: function (message) {
 		Error.captureStackTrace(this, this.constructor);
 		this.name = this.constructor.name;
-		this.previous = previous;
 		this.message = message;
 		this.status = 400;
 		this.public = false;
 	},
 
-	ConfigurationError: function (message, previous) {
+	ConfigurationError: function (message) {
 		Error.captureStackTrace(this, this.constructor);
 		this.name = this.constructor.name;
-		this.previous = previous;
 		this.message = message;
 		this.status = 400;
 		this.public = true;
 	},
 
-	CacheError: function (message, previous) {
+	CacheError: function (message) {
 		Error.captureStackTrace(this, this.constructor);
 		this.name = this.constructor.name;
 		this.message = message;
-		this.previous = previous;
 		this.status = 500;
 		this.public = false;
 	},
 
-	ValidationError: function (message, previous) {
+	ValidationError: function (message) {
 		Error.captureStackTrace(this, this.constructor);
 		this.name = this.constructor.name;
-		this.previous = previous;
 		this.message = message;
 		this.public = true;
 		this.status = 400;
 	},
 
-	AssertionFailedError: function (message, previous) {
+	AssertionFailedError: function (message) {
 		Error.captureStackTrace(this, this.constructor);
 		this.name = this.constructor.name;
-		this.previous = previous;
 		this.message = message;
 		this.public = false;
 		this.status = 400;
 	},
 
-	CommandError: function (stdErr, previous) {
+	CommandError: function (stdErr) {
 		Error.captureStackTrace(this, this.constructor);
 		this.name = this.constructor.name;
-		this.previous = previous;
 		this.message = stdErr;
 		this.public = false;
 	},
