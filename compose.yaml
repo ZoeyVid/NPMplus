@@ -88,9 +88,9 @@ services:
 #      - "PHP85=true" # Activate PHP85, default false, supported, but not recommended, you should prefer to use a dedicated php-fpm container
 #      - "PHP85_APKS=php85-curl php85-openssl" # Add php extensions, also enables PHP85, see available packages here: https://pkgs.alpinelinux.org/packages?branch=v3.21&repo=community&arch=x86_64&name=php85-*, default none, requires PHP85
 #      - "PHP_APKS=php-pecl-apcu php-pecl-redis" # Add php extensions, see available packages here: https://pkgs.alpinelinux.org/packages?branch=v3.21&repo=community&arch=x86_64&name=php-*, default none, requires PHP83, PHP84 and/or PHP85, not recommended, please use PHP83_APKS, PHP84_APKS or PHP85_APKS
-#      - "INITIAL_ADMIN_EMAIL=<initial@email.tld>" # email to use instead of admin@example.org on first start of NPMplus for the initial user
-#      - "INITIAL_ADMIN_PASSWORD=<initial-password>" # password to use instead of a random password which is logged on first start of NPMplus for the initial user
-#      - "INITIAL_DEFAULT_PAGE=444" # default page to set on first start of NPMplus for the initial user, default congratulations, can be one of: 404, 444, redirect, congratulations or html
+#      - "INITIAL_ADMIN_EMAIL=<initial@email.tld>" # email of the initial admin user, only used together with INITIAL_ADMIN_PASSWORD on the initial NPMplus start, without both the setup wizard creates the user
+#      - "INITIAL_ADMIN_PASSWORD=<initial-password>" # password of the initial admin user, only used together with INITIAL_ADMIN_EMAIL on the initial NPMplus start, without both the setup wizard creates the user
+#      - "INITIAL_DEFAULT_PAGE=444" # default page to set on initial start of NPMplus, default "congratulations", can be one of: 404, 444, redirect, congratulations or html
 #      - "DISABLE_GRAVATAR=true" # disables usage of gravatar images, users need to update theier profile for this to apply, default false
 #      - "COOKIE_SECRET=some-random-string" # by default a new secret to encrypt/decrypt cookies is used after each restart, to keep cookies valid after restarts you can set a static secret here
 #      - "ENABLE_PRERUN=true" # see readme, default off
@@ -110,7 +110,7 @@ services:
 #      - "AUTH_REQUEST_ANUBIS_UPSTREAM=http://127.0.0.1:8923" # scheme + ip/hostname/domain (+ port) to internal anubis, without path, this is unrelated to OIDC
 #      - "AUTH_REQUEST_TINYAUTH_UPSTREAM=http://127.0.0.1:3000" # scheme + ip/hostname/domain (+ port) to internal tinyauth, without path, this is unrelated to OIDC
 #      - "AUTH_REQUEST_OAUTH2PROXY_UPSTREAM=http://127.0.0.1:4180" # scheme + ip/hostname/domain (+ port) to internal oauth2proxy, without path, this is unrelated to OIDC
-#      - "AUTH_REQUEST_VOIDAUTH_UPSTREAM=http://127.0.0.1:3000" # scheme + ip/hostname/domain (+ port) to internal oauth2proxy, without path, this is unrelated to OIDC
+#      - "AUTH_REQUEST_VOIDAUTH_UPSTREAM=http://127.0.0.1:3000" # scheme + ip/hostname/domain (+ port) to internal voidauth, without path, this is unrelated to OIDC
 #      - "AUTH_REQUEST_AUTHELIA_UPSTREAM=http://127.0.0.1:9091" # scheme + ip/hostname/domain (+ port) to internal authelia, without path, this is unrelated to OIDC
 #      - "AUTH_REQUEST_AUTHENTIK_UPSTREAM=https://127.0.0.1:9443" # scheme + ip/hostname/domain (+ port) to internal authentik, without path, currently only works with embedded outpost, this is unrelated to OIDC
 
@@ -147,7 +147,7 @@ services:
 #      - "TARGET= " # important: this needs to be and stay one single space
 #      - "POLICY_FNAME=/etc/botPolicies.yaml" # required so the status codes can be changed
 #    volumes:
-#      - "/opt/anubis.yaml:/etc/botPolicies.yaml:ro" # since a file is mounted here, you first need to create it before deploying this container, you can download the default file from here: https://raw.githubusercontent.com/TecharoHQ/anubis/refs/heads/main/data/botPolicies.yaml
+#      - "/opt/anubis.yaml:/etc/botPolicies.yaml:ro" # since a file is mounted here, you first need to create it before deploying this container, you can download the default file matching your anubis version from here: https://raw.githubusercontent.com/TecharoHQ/anubis/refs/tags/<version>/data/botPolicies.yaml
 
 # This can be used with GOA=true to keep the geoip database updated, environment variables must be configured
 #  geoipupdate:

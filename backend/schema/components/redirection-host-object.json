@@ -60,6 +60,7 @@
 			"description": "Domain Name",
 			"type": "string",
 			"minLength": 1,
+			"maxLength": 255,
 			"example": "jc21.com"
 		},
 		"preserve_path": {
