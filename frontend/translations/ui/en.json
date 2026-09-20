@@ -156,6 +156,7 @@
 	"host.upstream.timeout": "Timeout",
 	"host.upstream.timeout-help": "Number can be followed by a digit E.g. 30s or 4d.\nValues:\nms:milliseconds\ns:seconds (default)\nm:minutes\nh:hours\nd:days\nw:weeks\nM:months, 30:days\ny:years, 365 days",
 	"host.upstream.backup": "Backup",
+	"host.upstream.enabled-down-help": "This sets the `Down` property of the Nginx to enable or disable this upstream",
 	"host.flags.block-exploits": "Block Common Exploits",
 	"host.flags.cache-assets": "Cache Assets",
 	"host.flags.disable-crowdsec-appsec": "Disable Crowdsec Appsec",

@@ -4,12 +4,7 @@
 	"additionalProperties": false,
 	"required": [
 		"host",
-		"port",
-		"weight",
-		"max_fails",
-		"fail_timeout",
-		"backup",
-		"down"
+		"port"
 	],
 	"properties": {
 		"host": {
@@ -38,9 +33,15 @@
 			"default": 1,
 			"example": 1
 		},
+		"max_conns": {
+			"type": "integer",
+			"minimum": 0,
+			"default": 1,
+			"example": 1
+		},
 		"fail_timeout": {
 			"type": "string",
-			"pattern": "^[1-9][0-9]*(?:ms|s|m|h|d|w)$",
+			"pattern": "^[1-9][0-9]*(?:ms|s|m|h|d|w|M|y)$",
 			"default": "30s",
 			"example": "30s"
 		},

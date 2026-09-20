@@ -10,7 +10,7 @@ import { intl, T } from "src/locale";
 import { validateNumber } from "src/modules/Validations";
 
 const BACKUP_INCOMPATIBLE_METHODS = ["ip_hash"];
-const NGINX_TIME_SYNTAX_REGEX = "\\d+\\s*(ms|s|m|h|d|w|M|y)?";
+const NGINX_TIME_SYNTAX_REGEX = "^[1-9]\\d*\\s*(ms|s|m|h|d|w|M|y)?";
 const NUMERIC_PATTERN = "[0-9]*";
 
 function InfoPopover({ messageId }) {
@@ -49,7 +49,7 @@ export function ForwardHostFields({ scheme, loadBalanceMethod, upstreamServers, 
 		failTimeout: "",
 		maxConns: "",
 		backup: false,
-		enabled: false, // down
+		down: false, // ui is shown as enabled for better UX
 	};
 
 	const applyChanges = (changes) => {
@@ -300,6 +300,7 @@ export function ForwardHostFields({ scheme, loadBalanceMethod, upstreamServers, 
 												<div className="mb-3">
 													<label className="form-label" htmlFor="npmplusUpstreamEnable">
 														<T id="enabled" />
+														<InfoPopover messageId="host.upstream.enabled-down-help" />
 													</label>
 													<span className="form-check form-check-single form-switch p-0">
 														<input
