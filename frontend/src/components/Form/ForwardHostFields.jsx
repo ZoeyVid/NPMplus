@@ -10,11 +10,13 @@ import { intl, T } from "src/locale";
 import { validateNumber } from "src/modules/Validations";
 
 const BACKUP_INCOMPATIBLE_METHODS = ["ip_hash"];
+const NGINX_TIME_SYNTAX_REGEX = "\\d+\\s*(ms|s|m|h|d|w|M|y)?";
+const NUMERIC_PATTERN = "[0-9]*";
 
 function InfoPopover({ messageId }) {
 	const popover = (
 		<Popover>
-			<Popover.Body>{intl.formatMessage({ id: messageId })}</Popover.Body>
+			<Popover.Body style={{ whiteSpace: "pre-line" }}>{intl.formatMessage({ id: messageId })}</Popover.Body>
 		</Popover>
 	);
 	return (
@@ -25,7 +27,6 @@ function InfoPopover({ messageId }) {
 		</OverlayTrigger>
 	);
 }
-
 
 const LoadBalancerOption = (props) => (
 	<components.Option {...props}>
@@ -41,12 +42,13 @@ export function ForwardHostFields({ scheme, loadBalanceMethod, upstreamServers }
 
 	const blankServer = {
 		host: "",
-		port: -1,
-		weight: 1,
-		maxFails: 1,
-		failTimeout: "30s",
+		port: null,
+		weight: null,
+		maxFails: null,
+		failTimeout: "",
+		maxConns: "",
 		backup: false,
-		enabled: false,
+		enabled: false, // down
 	};
 
 	const syncField = (newServers, newMethod) => {
@@ -184,6 +186,9 @@ export function ForwardHostFields({ scheme, loadBalanceMethod, upstreamServers }
 										<option value="round_robin"><T id="host.loadbalancer.round-robin" /></option>
 										<option value="least_conn"><T id="host.loadbalancer.least-connections" /></option>
 										<option value="ip_hash"><T id="host.loadbalancer.ip-hash" /></option>
+										<option value="least_time_header"><T id="host.loadbalancer.least-time-header" /></option>
+										<option value="least_time_last_byte"><T id="host.loadbalancer.least-time-last-byte" /></option>
+										<option value="least_time_last_byte_inflight"><T id="host.loadbalancer.least-time-last-byte-inflight" /></option>
 									</select>
 								</div>
 							</>
@@ -203,7 +208,7 @@ export function ForwardHostFields({ scheme, loadBalanceMethod, upstreamServers }
 								onClick={() => toggleExpanded(idx)}
 							>
 								{isExpanded(idx) ? <IconChevronDown size={16} /> : <IconChevronRight size={16} />}
-								<span className="ms-2 fw-medium text-nowrap">{server.host}:{server.port < 0? "": server.port}</span>
+								<span className="ms-2 fw-medium text-nowrap">{server.host}{server.port ?  `:${server.port}`: ""}</span>
 							</button>
 							<button
 								type="button"
@@ -262,10 +267,10 @@ export function ForwardHostFields({ scheme, loadBalanceMethod, upstreamServers }
 												id="forwardPort"
 												type="text"
 												inputMode="numeric"
-												pattern="[0-9]*"
+												pattern={NUMERIC_PATTERN}
 												className={`form-control ${form.errors.forwardPort && form.touched.forwardPort ? "is-invalid" : ""}`}
 												placeholder="eg: 8081"
-												value={!server.port || server.port < 0 ? "" : server.port}
+												value={server.port?? ""}
 												onChange={(event) => handleChange(idx, "port", event.target.value)}
 											/>
 
@@ -310,125 +315,160 @@ export function ForwardHostFields({ scheme, loadBalanceMethod, upstreamServers }
 							) : null}
 						</div>
 						{servers.length > 1 ? (
-							<div className="row">
-								<div className="col-md-3">
-									<Field name="npmplusUpstreamWeight" validate={validateNumber(-1, 65535)}>
-										{({ field, form }) => (
-											<div className="mb-3">
-												<label className="form-label" htmlFor="npmplusUpstreamWeight">
-													<T id="host.upstream.weight" />
-												</label>
-												<input
-													{...field}
-													id="npmplusUpstreamWeight"
-													type="text"
-													inputMode="numeric"
-													pattern="[0-9]*"
-													className={`form-control ${form.errors.npmplusUpstreamWeight && form.touched.npmplusUpstreamWeight ? "is-invalid" : ""}`}
-													placeholder="eg: 1"
-													value={server.weight ?? ""}
-													onChange={(event) => handleChange(idx, "weight", event.target.value)}
-												/>
-
-												{form.errors.npmplusUpstreamWeight ? (
-													<div className="invalid-feedback">
-														{form.errors.npmplusUpstreamWeight &&
-														form.touched.npmplusUpstreamWeight
-															? form.errors.npmplusUpstreamWeight
-															: null}
-													</div>
-												) : null}
-											</div>
-										)}
-									</Field>
-								</div>
-								<div className="col-md-3">
-									<Field name="npmplusUpstreamMaxFails" validate={validateNumber(-1, 65535)}>
-										{({ field, form }) => (
-											<div className="mb-3">
-												<label className="form-label" htmlFor="npmplusUpstreamMaxFails">
-													<T id="host.upstream.max-fails" />
-												</label>
-												<input
-													{...field}
-													id="npmplusUpstreamMaxFails"
-													type="text"
-													inputMode="numeric"
-													pattern="[0-9]*"
-													className={`form-control ${form.errors.npmplusUpstreamMaxFails && form.touched.npmplusUpstreamMaxFails ? "is-invalid" : ""}`}
-													placeholder="eg: 1"
-													value={server.maxFails ?? ""}
-													onChange={(event) => handleChange(idx, "maxFails", event.target.value)}
-												/>
-
-												{form.errors.npmplusUpstreamMaxFails ? (
-													<div className="invalid-feedback">
-														{form.errors.npmplusUpstreamMaxFails &&
-														form.touched.npmplusUpstreamMaxFails
-															? form.errors.npmplusUpstreamMaxFails
-															: null}
-													</div>
-												) : null}
-											</div>
-										)}
-									</Field>
-								</div>
-								<div className="col-md-3">
-									<Field name="npmplusUpstreamTimeout" validate={validateNumber(-1, 65535)}>
-										{({ field, form }) => (
-											<div className="mb-3">
-												<label className="form-label" htmlFor="npmplusUpstreamTimeout">
-													<T id="host.upstream.timeout" />
-												</label>
-												<input
-													{...field}
-													id="npmplusUpstreamTimeout"
-													type="text"
-													inputMode="numeric"
-													pattern="[0-9]*"
-													className={`form-control ${form.errors.npmplusUpstreamTimeout && form.touched.npmplusUpstreamTimeout ? "is-invalid" : ""}`}
-													placeholder="eg: 1"
-													value={server.failTimeout ?? ""}
-													onChange={(event) => handleChange(idx, "failTimeout", event.target.value)}
-												/>
-
-												{form.errors.npmplusUpstreamTimeout ? (
-													<div className="invalid-feedback">
-														{form.errors.npmplusUpstreamTimeout &&
-														form.touched.npmplusUpstreamTimeout
-															? form.errors.npmplusUpstreamTimeout
-															: null}
-													</div>
-												) : null}
-											</div>
-										)}
-									</Field>
-								</div>
-								<div className="col-md-3">
-									<Field name="npmplusUpstreamBackup" type="checkbox">
-										{({ field }) => (
-											<div className="mb-3">
-												<label className="form-label" htmlFor="npmplusUpstreamBackup">
-													<T id="host.upstream.backup" />
-												</label>
-												<span className="form-check form-check-single form-switch p-0">
+							<>
+								<div className="row">
+									<div className="col-md-3">
+										<Field name="npmplusUpstreamWeight" validate={validateNumber(-1, 65535)}>
+											{({ field, form }) => (
+												<div className="mb-3">
+													<label className="form-label" htmlFor="npmplusUpstreamWeight">
+														<T id="host.upstream.weight" />
+													</label>
 													<input
 														{...field}
-														id="npmplusUpstreamBackup"
-														className={cn("form-check-input", {
-															"bg-lime": server.backup,
-														})}
-														type="checkbox"
-														checked={Boolean(server.backup)}
-														disabled={backupDisabled}
-														onChange={(event) => handleChange(idx, "backup", event.target.checked)}
+														id="npmplusUpstreamWeight"
+														type="text"
+														inputMode="numeric"
+														pattern={NUMERIC_PATTERN}
+														className={`form-control ${form.errors.npmplusUpstreamWeight && form.touched.npmplusUpstreamWeight ? "is-invalid" : ""}`}
+														placeholder="eg: 1"
+														value={server.weight ?? ""}
+														onChange={(event) => handleChange(idx, "weight", event.target.value)}
 													/>
-												</span>
-											</div>
-										)}
-									</Field>
+
+													{form.errors.npmplusUpstreamWeight ? (
+														<div className="invalid-feedback">
+															{form.errors.npmplusUpstreamWeight &&
+															form.touched.npmplusUpstreamWeight
+																? form.errors.npmplusUpstreamWeight
+																: null}
+														</div>
+													) : null}
+												</div>
+											)}
+										</Field>
+									</div>
+									<div className="col-md-3">
+										<Field name="npmplusUpstreamMaxFails" validate={validateNumber(-1, 65535)}>
+											{({ field, form }) => (
+												<div className="mb-3">
+													<label className="form-label" htmlFor="npmplusUpstreamMaxFails">
+														<T id="host.upstream.max-fails" />
+													</label>
+													<input
+														{...field}
+														id="npmplusUpstreamMaxFails"
+														type="text"
+														inputMode="numeric"
+														pattern={NUMERIC_PATTERN}
+														className={`form-control ${form.errors.npmplusUpstreamMaxFails && form.touched.npmplusUpstreamMaxFails ? "is-invalid" : ""}`}
+														placeholder="eg: 1"
+														value={server.maxFails ?? ""}
+														onChange={(event) => handleChange(idx, "maxFails", event.target.value)}
+													/>
+
+													{form.errors.npmplusUpstreamMaxFails ? (
+														<div className="invalid-feedback">
+															{form.errors.npmplusUpstreamMaxFails &&
+															form.touched.npmplusUpstreamMaxFails
+																? form.errors.npmplusUpstreamMaxFails
+																: null}
+														</div>
+													) : null}
+												</div>
+											)}
+										</Field>
+									</div>
+									<div className="col-md-3">
+										<Field name="npmplusUpstreamTimeout" validate={validateNumber(-1, 65535)}>
+											{({ field, form }) => (
+												<div className="mb-3">
+													<label className="form-label" htmlFor="npmplusUpstreamTimeout">
+														<T id="host.upstream.timeout" />
+														<InfoPopover messageId="host.upstream.timeout-help" />
+													</label>
+													<input
+														{...field}
+														id="npmplusUpstreamTimeout"
+														type="text"
+														inputMode="numeric"
+														pattern={NGINX_TIME_SYNTAX_REGEX}
+														className={`form-control ${form.errors.npmplusUpstreamTimeout && form.touched.npmplusUpstreamTimeout ? "is-invalid" : ""}`}
+														placeholder="default: 30s"
+														value={server.failTimeout ?? ""}
+														onChange={(event) => handleChange(idx, "failTimeout", event.target.value)}
+													/>
+
+													{form.errors.npmplusUpstreamTimeout ? (
+														<div className="invalid-feedback">
+															{form.errors.npmplusUpstreamTimeout &&
+															form.touched.npmplusUpstreamTimeout
+																? form.errors.npmplusUpstreamTimeout
+																: null}
+														</div>
+													) : null}
+												</div>
+											)}
+										</Field>
+									</div>
+									<div className="col-md-3">
+										<Field name="npmplusUpstreamBackup" type="checkbox">
+											{({ field }) => (
+												<div className="mb-3">
+													<label className="form-label" htmlFor="npmplusUpstreamBackup">
+														<T id="host.upstream.backup" />
+													</label>
+													<span className="form-check form-check-single form-switch p-0">
+														<input
+															{...field}
+															id="npmplusUpstreamBackup"
+															className={cn("form-check-input", {
+																"bg-lime": server.backup,
+															})}
+															type="checkbox"
+															checked={Boolean(server.backup)}
+															disabled={backupDisabled}
+															onChange={(event) => handleChange(idx, "backup", event.target.checked)}
+														/>
+													</span>
+												</div>
+											)}
+										</Field>
+									</div>
 								</div>
-							</div>
+								<div className="row">
+									<div className="col-md-4">
+										<Field name="npmplusUpstreamMaxConns" validate={validateNumber(-1, 65535)}>
+											{({ field, form }) => (
+												<div className="mb-3">
+													<label className="form-label" htmlFor="npmplusUpstreamMaxConns">
+														<T id="host.upstream.max-connections" />
+													</label>
+													<input
+														{...field}
+														id="npmplusUpstreamMaxConns"
+														type="text"
+														inputMode="numeric"
+														pattern={NUMERIC_PATTERN}
+														className={`form-control ${form.errors.npmplusUpstreamMaxConns && form.touched.npmplusUpstreamMaxConns ? "is-invalid" : ""}`}
+														placeholder="eg: 1"
+														value={server.maxConns ?? ""}
+														onChange={(event) => handleChange(idx, "maxConns", event.target.value)}
+													/>
+													{form.errors.npmplusUpstreamMaxConns ? (
+														<div className="invalid-feedback">
+															{form.errors.npmplusUpstreamMaxConns &&
+															form.touched.npmplusUpstreamMaxConns
+																? form.errors.npmplusUpstreamMaxConns
+																: null}
+														</div>
+													) : null}
+												</div>
+											)}
+										</Field>
+									</div>
+								</div>
+							</>
 						) : null}
 					</div>
 				</div>
