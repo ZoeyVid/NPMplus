@@ -47,12 +47,19 @@ export default function TableWrapper() {
 	};
 
 	let filtered = null;
-	if (search) {
-		filtered = data?.filter((item) => {
+	if (search && data) {
+		filtered = data.filter((item) => {
 			const directory = getDirectory(item).toLowerCase();
+			// search all upstreams for each host
+			const matchesUpstream = (item.npmplusUpstreamServers ?? []).some((server) => {
+				const destination =
+					`${item.forwardScheme}://${server.host ?? ""}` +
+					`${server.port ? `:${server.port}` : ""}`;
+				return destination.toLowerCase().includes(search);
+			});
 			return (
 				item.domainNames.some((domain) => domain.toLowerCase().includes(search)) ||
-				forwardSummary(item).toLowerCase().includes(search) ||
+				matchesUpstream ||
 				directory.includes(search)
 			);
 		});
@@ -70,6 +77,9 @@ export default function TableWrapper() {
 		onClone: (id) => showProxyHostModal(id, true),
 		onDelete: (id) => {
 			const host = data?.find((item) => item.id === id);
+			const upstreamDetails = (host?.npmplusUpstreamServers ?? []).map((server) => 
+				`${host.forwardScheme}://${server.host}` +`${server.port ? `:${server.port}` : ""}`
+			);
 			showDeleteConfirmModal({
 				title: <T id="object.delete" tData={{ object: "proxy-host" }} />,
 				onConfirm: async () => {
@@ -79,7 +89,7 @@ export default function TableWrapper() {
 				invalidations: [["proxy-hosts"], ["proxy-host", id], ["certificates"], ["access-lists"]],
 				children: <T id="object.delete.content" tData={{ object: "proxy-host" }} />,
 				subject: host?.domainNames.join(", "),
-				details: host && forwardSummary(host),
+				details: upstreamDetails.length ? upstreamDetails.join(", ") : null,
 			});
 		},
 		onDisableToggle: handleDisableToggle,
