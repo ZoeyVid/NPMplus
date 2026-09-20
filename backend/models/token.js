@@ -66,7 +66,7 @@ export default () => {
 							(err, result) => {
 								if (err) {
 									if (err.name === "TokenExpiredError") {
-										reject(new errs.PermissionError("Token has expired", undefined, err));
+										reject(new errs.PermissionError("Token has expired"));
 									} else {
 										reject(err);
 									}
