@@ -39,12 +39,14 @@
 			"description": "Email",
 			"pattern": "@",
 			"minLength": 3,
+			"maxLength": 255,
 			"example": "jc@jc21.com"
 		},
 		"name": {
 			"type": "string",
 			"description": "Name",
 			"minLength": 1,
+			"maxLength": 255,
 			"example": "Jamie Curnow"
 		},
 		"avatar": {

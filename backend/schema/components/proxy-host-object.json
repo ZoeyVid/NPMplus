@@ -56,6 +56,7 @@
 		},
 		"forward_host": {
 			"type": "string",
+			"maxLength": 255,
 			"example": "127.0.0.1"
 		},
 		"forward_port": {
@@ -133,6 +134,7 @@
 		"npmplus_auth_request_upstream": {
 			"type": "string",
 			"pattern": "^(https?://([^/:]+|\\[[a-fA-F0-9:]+\\]):[0-9]+)?$",
+			"maxLength": 255,
 			"example": ""
 		},
 		"advanced_config": {
