@@ -1,38 +1,37 @@
+import cn from "clsx";
 import OverlayTrigger from "react-bootstrap/OverlayTrigger";
 import Popover from "react-bootstrap/Popover";
-import { intl } from "src/locale";
-import { showAccessListModal, showProxyHostModal } from "src/modals";
 
-
-const ForwardHostLink = ({ forwardScheme, forwardhost, forwardPort }) => {
+const ForwardHostLink = ({ proxyHostId, forwardScheme, forwardhost, forwardPort, index }) => {
 	return (
 		<a
-			key={forwardhost}
+			key={`${key}-${proxyHostId}-${forwardhost}-${forwardPort}`}
 			href={`${forwardScheme}://${forwardhost}:${forwardPort}`}
 			target="_blank"
 			rel="noopener"
-			className={cn("badge", color ? `bg-${color}-lt` : null)}
+			className={cn("badge")}
 		>
-			`${forwardScheme}://${forwardhost}:${forwardPort}`
+			{`${forwardScheme}://${forwardhost}${server.port ? `:${server.port}` : ""}`}
 		</a>
 	);
 };
 
-export function ForwardHostFormatter({ proxyHostId, upstreamServers, scheme, loadBalanceMethod }) {
+export function ForwardHostFormatter({ proxyHostId, upstreamServers = [], scheme, loadBalanceMethod }) {
 	
     const elms = [];
-    for (i = 0; i < 2 && i < upstreamServers.length; ++i){
+    for (let i = 0; i < 2 && i < upstreamServers.length; ++i){
         const server = upstreamServers[i];
-        elms.push(<ForwardHostLink forwardScheme={scheme} forwardhost={server.host} forwardPort={server.port} />);
+        elms.push(<ForwardHostLink key={`${proxyHostId}-${server.host}-${server.port}-${i}`} index={id} proxyHostId={proxyHostId} forwardScheme={scheme} forwardhost={server.host} forwardPort={server.port} />);
     }
 
     const popover = (
-		<Popover id={`upstream-host-${server.host}`}>
+		<Popover id={`upstream-host-${proxyHostId}`}>
 			<Popover.Body>
-				{upstreamServers.map((server) => (
-                    //TODO strip the first 2 elements
-					<div key={`${server.host}-${server.port}`}>`${scheme}://${server.host}:${server.port}`</div>
-				))}
+				{upstreamServers.slice(2).map((server, index) => (
+                    <div key={`${server.host}-${server.port}-${index}`}>
+                        {`${scheme}://${server.host}${server.port ? `:${server.port}` : ""}`}
+                    </div>
+                ))}
 			</Popover.Body>
 		</Popover>
 	);
