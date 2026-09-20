@@ -34,11 +34,12 @@ const LoadBalancerOption = (props) => (
 	</components.Option>
 );
 
-export function ForwardHostFields({ scheme, loadBalanceMethod, upstreamServers }) {
+export function ForwardHostFields({ scheme, loadBalanceMethod, upstreamServers, onChange, namePrefix = "" }) {
 	const [servers, setServers] = useState(upstreamServers);
 	const [method, setMethod] = useState(loadBalanceMethod);
 	const [expanded, setExpanded] = useState([0]);
 	const { setFieldValue } = useFormikContext();
+	const fieldName = (name) => namePrefix ? `${namePrefix}.${name}` : name;
 
 	const blankServer = {
 		host: "",
@@ -51,10 +52,20 @@ export function ForwardHostFields({ scheme, loadBalanceMethod, upstreamServers }
 		enabled: false, // down
 	};
 
+	const applyChanges = (changes) => {
+		for (const [name, value] of Object.entries(changes)) {
+			void setFieldValue(fieldName(name), value);
+		}
+
+		onChange?.(changes);
+	};
+
 	const syncField = (newServers, newMethod) => {
 		const filtered = newServers.filter((s) => s.host.trim() !== "");
-		setFieldValue("npmplusUpstreamServers", filtered);
-		setFieldValue("npmplusLoadBalanceMethod", newMethod);
+		 applyChanges({
+			npmplusUpstreamServers: newServers,
+			npmplusLoadBalanceMethod: newMethod,
+		});
 	};
 
 	const handleAdd = () => {
@@ -98,6 +109,25 @@ export function ForwardHostFields({ scheme, loadBalanceMethod, upstreamServers }
 		syncField(updated, newMethod);
 	};
 
+	const handleSchemeChange = (newScheme) => {
+		const changes = {forwardScheme: newScheme};
+
+		if (newScheme !== "empty") {
+			if (!["http", "https"].includes(newScheme)) {
+				changes.npmplusProxyRequestBuffering = false;
+				changes.npmplusProxyResponseBuffering = false;
+			}
+
+			if (newScheme === "path") {
+				changes.npmplusUpstreamCompression = false;
+			} else {
+				changes.npmplusFancyindex = false;
+			}
+		}
+
+		applyChanges(changes);
+	};
+
 	const backupDisabled = BACKUP_INCOMPATIBLE_METHODS.includes(method);
 	if (servers.length == 0 ){
 		handleAdd();
@@ -130,32 +160,8 @@ export function ForwardHostFields({ scheme, loadBalanceMethod, upstreamServers }
 									className="form-select"
 									required
 									{...field}
-									onChange={(e) => {
-										field.onChange(e);
-										const scheme = e.target.value;
-										if (scheme === "empty") return;
-										if (!["http", "https"].includes(scheme)) {
-											form.setFieldValue(
-												"npmplusProxyRequestBuffering",
-												false,
-											);
-											form.setFieldValue(
-												"npmplusProxyResponseBuffering",
-												false,
-											);
-										}
-										if (scheme === "path") {
-											form.setFieldValue(
-												"npmplusUpstreamCompression",
-												false,
-											);
-										} else {
-											form.setFieldValue(
-												"npmplusFancyindex",
-												false,
-											);
-										}
-									}}
+									value={scheme}
+									onChange={(e) => {handleSchemeChange(e.target.value)}}
 								>
 									<option value="http">http://</option>
 									<option value="https">https://</option>

@@ -127,7 +127,16 @@ export function LocationsFields({ name = "locations", disabled, isClone }) {
 
 	const locationLabel = (item) => `${item.locationType ?? ""}${item.path ?? ""}`;
 
-	const handleForwardChange = (idx, forwarding) => {
+	const forwardSummary = ({ forwardScheme, npmplusUpstreamServers = [] }) => {
+		const server = npmplusUpstreamServers[0];
+		if (!server?.host || forwardScheme === "empty") return "";
+		if (forwardScheme && forwardScheme !== "path") {
+			return `${forwardScheme}://${server.host}${server.port ? `:${server.port}` : ""}`;
+		}
+		return server.host;
+	};
+
+	const handleForwardChange  = (idx, changes) => {
 		void setFieldValue(`${name}.${idx}.forwardScheme`, forwarding.scheme);
 		void setFieldValue(`${name}.${idx}.npmplusLoadBalanceMethod`, forwarding.method);
 		void setFieldValue(`${name}.${idx}.npmplusUpstreamServers`, forwarding.servers);
