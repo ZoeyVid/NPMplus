@@ -1,9 +1,10 @@
 const errs = {
-	PermissionError: function (message, previous) {
+	PermissionError: function (message, messageI18n, previous) {
 		Error.captureStackTrace(this, this.constructor);
 		this.name = this.constructor.name;
 		this.previous = previous;
 		this.message = message || "Permission Denied";
+		this.message_i18n = messageI18n;
 		this.public = true;
 		this.status = 403;
 	},
@@ -27,7 +28,7 @@ const errs = {
 		this.message = message;
 		this.message_i18n = messageI18n;
 		this.public = true;
-		this.status = 400;
+		this.status = 401;
 	},
 
 	InternalError: function (message, previous) {
