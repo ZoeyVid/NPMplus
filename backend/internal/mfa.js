@@ -19,7 +19,8 @@ const generateBackupCodes = async () => {
 	const hashed = [];
 
 	for (let i = 0; i < BACKUP_CODE_COUNT; i++) {
-		const code = crypto.randomBytes(4).toString("hex").toUpperCase();
+		// biome-ignore lint/security/noSecrets: Crockford Base32 alphabet
+		const code = Array.from({ length: 8 }, () => "0123456789ABCDEFGHJKMNPQRSTVWXYZ"[crypto.randomInt(32)]).join("");
 		plain.push(code);
 		hashed.push(await hash(code, true));
 	}
@@ -124,7 +125,7 @@ const internalMfa = {
 	 * @returns {Promise<boolean>}
 	 */
 	verifyForLogin: async (userId, token) => {
-		const tokenTrim = token.trim();
+		const tokenTrim = token.trim().toUpperCase().replace(/O/g, "0").replace(/[IL]/g, "1");
 
 		// TOTP codes are 6 chars, backup codes are 8 chars
 		if (tokenTrim.length === 6) {
@@ -134,8 +135,8 @@ const internalMfa = {
 		if (tokenTrim.length === 8) {
 			for (const code of await authModel.query().where("user_id", userId).andWhere("type", "backup_code")) {
 				const match = code.secret.startsWith("$2")
-					? await bcrypt.compare(tokenTrim.toUpperCase(), code.secret)
-					: await verify(tokenTrim.toUpperCase(), code.secret);
+					? await bcrypt.compare(tokenTrim, code.secret)
+					: await verify(tokenTrim, code.secret);
 				// Remove used backup code, only the request that removes it counts as used
 				if (match) return (await authModel.query().findById(code.id).delete()) === 1;
 			}

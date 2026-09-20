@@ -146,10 +146,10 @@ router
 				claims = { ...idTokenClaims, ...userinfo };
 			}
 
-			if (!claims.email) throw new errs.AuthError("The Identity Provider didn't send the 'email' claim");
+			if (!claims.email) throw new errs.PermissionError("The Identity Provider didn't send the 'email' claim");
 
 			if (process.env.OIDC_REQUIRE_VERIFIED_EMAIL === "true" && claims.email_verified !== true) {
-				throw new errs.AuthError("The email address has not been verified.");
+				throw new errs.PermissionError("The email address has not been verified.");
 			}
 
 			logger.info(`Successful authentication for email: ${claims.email.toLowerCase().trim()}`);
