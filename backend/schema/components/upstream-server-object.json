@@ -3,8 +3,7 @@
 	"description": "Upstream server definition for load balancing",
 	"additionalProperties": false,
 	"required": [
-		"host",
-		"port"
+		"host"
 	],
 	"properties": {
 		"host": {
@@ -15,7 +14,7 @@
 			"example": "192.168.1.1"
 		},
 		"port": {
-			"type": "integer",
+			"type": ["integer", "null"],
 			"minimum": 1,
 			"maximum": 65535,
 			"example": 8080

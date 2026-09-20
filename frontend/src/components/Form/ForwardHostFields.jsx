@@ -1,11 +1,11 @@
+import cn from "clsx";
 import { IconChevronDown, IconChevronRight, IconInfoCircle, IconTrash, IconX } from "@tabler/icons-react";
 import { Field, useFormikContext } from "formik";
-import cn from "clsx";
 import { useState } from "react";
 import OverlayTrigger from "react-bootstrap/OverlayTrigger";
 import Popover from "react-bootstrap/Popover";
 import Select, { components } from "react-select";
-
+import { flushSync } from "react-dom";
 import { intl, T } from "src/locale";
 import { validateNumber } from "src/modules/Validations";
 
@@ -234,6 +234,13 @@ export function ForwardHostFields({ scheme, loadBalanceMethod, upstreamServers, 
 					<div
 						className={cn("card-body", !isExpanded(idx) && "d-none")}
 						id={`upstream-host-body-${idx}`}
+						onInvalid={() =>
+							flushSync(() => {
+								setExpanded((current) => 
+									current.includes(idx) ? current: [...current, idx],
+								);
+							})
+						}
 					>
 						<div className="row">
 							<div className="col-md-6">
@@ -247,6 +254,7 @@ export function ForwardHostFields({ scheme, loadBalanceMethod, upstreamServers, 
 												{...field}
 												id="forwardHost"
 												type="text"
+												required
 												className={`form-control ${form.errors.forwardHost && form.touched.forwardHost ? "is-invalid" : ""}`}
 												placeholder="example.com"
 												value={server.host ?? ""}
@@ -278,6 +286,7 @@ export function ForwardHostFields({ scheme, loadBalanceMethod, upstreamServers, 
 												type="text"
 												inputMode="numeric"
 												pattern={NUMERIC_PATTERN}
+												required={idx === 0}
 												className={`form-control ${form.errors.forwardPort && form.touched.forwardPort ? "is-invalid" : ""}`}
 												placeholder="eg: 8081"
 												value={server.port?? ""}
