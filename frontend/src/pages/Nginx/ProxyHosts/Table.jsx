@@ -15,6 +15,7 @@ import {
 	CertificateFormatter,
 	DomainsFormatter,
 	EmptyData,
+	ForwardHostFormatter,
 	GravatarFormatter,
 	HasPermission,
 	StatusFormatter,
@@ -79,14 +80,12 @@ export default function Table({
 				id: "forwardHost",
 				header: intl.formatMessage({ id: "column.destination" }),
 				cell: (info) => {
-					if (info.row.original.forwardScheme === "path" || !info.getValue()) {
-						return info.getValue();
-					}
-					return (
-						<a href={info.getValue()} target="_blank" rel="noopener">
-							{info.getValue()}
-						</a>
-					);
+					<ForwardHostFormatter
+						proxyHostId={info.row.original.id}
+						upstreamServers={info.row.original.npmplusUpstreamServers}
+						scheme={info.row.original.forwardScheme}
+						loadBalanceMethod={info.row.original.npmplusLoadBalanceMethod}
+					/>
 				},
 			}),
 			columnHelper.accessor((row) => (row.certificate ? row.certificate.provider : "http-only"), {
