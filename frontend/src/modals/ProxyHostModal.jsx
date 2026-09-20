@@ -42,19 +42,44 @@ const ProxyHostModal = EasyModal.create(({ id, isClone, visible, remove }) => {
 		setIsSubmitting(true);
 		setErrorMsg(null);
 
+		// remove entries that are null or undefined or empty to pass schema validation
+		const cleanUpstreamServers = (servers = []) =>
+			servers.map((server) => {
+			const cleaned = { ...server };
+
+			for (const field of ["weight", "maxFails", "maxConns", "failTimeout"]) {
+				if (cleaned[field] === null || cleaned[field] === undefined || cleaned[field] === "") {
+					delete cleaned[field];
+				}
+			}
+
+			return cleaned;
+		});
+
 		// Set the unrestricted acls here (remove any data in their acl lists)
 		const globalType = values.npmplusAccessListType;
 		let globalAclIds = values.npmplusAccessListIds;
 		if (globalType === "public") {
 			globalAclIds = [];
 		}
+		const locations = (values.locations || []).map((loc) => {
+			const newLoc = { 
+				...loc, 
+				npmplusUpstreamServers: cleanUpstreamServers(
+					loc.npmplusUpstreamServers,
+				),
+			};
+			return newLoc;
+		});
 
 		const payload = {
 			id: id === "new" || isClone ? undefined : id,
 			...values,
+			npmplusUpstreamServers: cleanUpstreamServers(
+				values.npmplusUpstreamServers,
+			),
 			npmplusAccessListIds: globalAclIds,
-			forwardPort: values.forwardPort || 0,
-			locations: values.locations.map((location) => ({ ...location, forwardPort: location.forwardPort || 0 })),
+			locations,
 		};
 
 		setProxyHost(payload, {
@@ -232,12 +257,17 @@ const ProxyHostModal = EasyModal.create(({ id, isClone, visible, remove }) => {
 													idPrefix="proxy-host"
 													scheme={values.forwardScheme}
 													loadBalanceMethod={values.npmplusLoadBalanceMethod}
-													upstreamServers={values.npmplusUpstreamServers}
-													onChange={(next) => {
-														setFieldValue("forwardScheme", next.scheme);
-														setFieldValue("npmplusLoadBalanceMethod", next.method);
-														setFieldValue("npmplusUpstreamServers", next.servers);
-													}}
+													loadBalanceMethodFieldName="npmplusLoadBalanceMethod"
+													upstreamServers={values.npmplusUpstreamServers?.length
+													? values.npmplusUpstreamServers
+													: [
+															{
+																host: "",
+																port: null,
+																backup: false,
+																down: false,
+															},
+														]}
 												/>
 												<div className="my-3">
 													<h4 className="py-2">

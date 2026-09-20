@@ -113,17 +113,6 @@ export function LocationsFields({ initialValues, name = "locations" }) {
 			if (field === "npmplusAuthRequest" && fieldValue === "none") {
 				updatedLocation.npmplusAuthRequestUpstream = "";
 			}
-			if (field === "forwardScheme" && fieldValue !== "empty") {
-				if (!["http", "https"].includes(fieldValue)) {
-					updatedLocation.npmplusProxyRequestBuffering = false;
-					updatedLocation.npmplusProxyResponseBuffering = false;
-				}
-				if (fieldValue === "path") {
-					updatedLocation.npmplusUpstreamCompression = false;
-				} else {
-					updatedLocation.npmplusFancyindex = false;
-				}
-			}
 			return updatedLocation;
 		});
 		setValues(newValues);
@@ -351,9 +340,10 @@ export function LocationsFields({ initialValues, name = "locations" }) {
 						)}
 						<div className="row">
 							<ForwardHostFields
-								namePrefix={`location-${item.uiKey}`}
+								namePrefix={`${name}[${idx}]`}
 								scheme={item.forwardScheme}
 								loadBalanceMethod={item.npmplusLoadBalanceMethod}
+								loadBalanceMethodFieldName={`${name}[${idx}].npmplusLoadBalanceMethod`}
 								upstreamServers={item.npmplusUpstreamServers}
 								onChange={(next) => handleForwardFieldsChange(idx, next)}
 							/>
