@@ -180,8 +180,8 @@ export default {
 		let tokenData;
 		try {
 			tokenData = await Token.load(challengeToken);
-		} catch (err) {
-			throw new errs.AuthError("Invalid or expired challenge token", undefined, err);
+		} catch {
+			throw new errs.AuthError("Invalid or expired challenge token");
 		}
 
 		// Check scope
