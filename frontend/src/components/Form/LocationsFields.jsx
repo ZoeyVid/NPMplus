@@ -25,8 +25,8 @@ export function LocationsFields({ initialValues, name = "locations" }) {
 			? item.npmplusUpstreamServers
 			: [
 					{
-						host: item?.host || "",
-						port: item?.port ?? null,
+						host: "",
+						port: null,
 						weight: null,
 						maxFails: null,
 						maxConns: null,
