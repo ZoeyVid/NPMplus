@@ -21,7 +21,6 @@ const limiter = rateLimit({
 	legacyHeaders: false,
 	ipv6Subnet: 48,
 	skipSuccessfulRequests: true,
-	validate: { trustProxy: false },
 });
 
 router
