@@ -10,12 +10,7 @@ import mainRoutes from "./routes/main.js";
  */
 const app = express();
 
-app.enable("trust proxy");
-app.use((req, _res, next) => {
-	req.headers["x-forwarded-for"] = req.header("x-real-ip");
-	return next();
-});
-
+app.set("trust proxy", 1);
 app.disable("x-powered-by");
 app.set("json spaces", 2);
 
