@@ -42,7 +42,7 @@
 		"forwarding_host": {
 			"type": "string",
 			"minLength": 1,
-			"maxLength": 255,
+			"maxLength": 253,
 			"example": "127.0.0.1"
 		},
 		"forwarding_port": {

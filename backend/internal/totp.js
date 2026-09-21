@@ -154,7 +154,6 @@ const internalTotp = {
 		const result = await verify({
 			token: code,
 			secret: enrolled.secret,
-			afterTimeStep: usedSteps.get(enrolled.id),
 			// These guardrails lower the minimum length requirement for secrets.
 			// In v12 of otplib the default minimum length is 10 and in v13 it is 16.
 			// Since there are totp secrets in the wild generated with v12 we need to allow shorter secrets
@@ -164,9 +163,10 @@ const internalTotp = {
 			}),
 		});
 
-		if (result.valid) usedSteps.set(enrolled.id, result.timeStep);
+		if (!result.valid || usedSteps.get(enrolled.id) >= result.timeStep) return false;
 
-		return result.valid;
+		usedSteps.set(enrolled.id, result.timeStep);
+		return true;
 	},
 };
 

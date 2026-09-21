@@ -50,10 +50,9 @@ const downloadLimiter = rateLimit({
 	standardHeaders: "draft-8",
 	legacyHeaders: false,
 	ipv6Subnet: 48,
-	validate: { trustProxy: false },
 });
 
-const uploadCerts = multer({ storage: multer.memoryStorage(), limits: { fileSize: 1024 * 1024 } }).fields([
+const uploadCerts = multer({ storage: multer.memoryStorage(), limits: { fileSize: 1024 * 1024, fields: 0 } }).fields([
 	{ name: "certificate", maxCount: 1 },
 	{ name: "certificate_key", maxCount: 1 },
 ]);
