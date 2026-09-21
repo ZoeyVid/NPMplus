@@ -204,19 +204,20 @@ export default {
 			throw new errs.AuthError("Invalid challenge token");
 		}
 
-		// Verify TOTP code
-		const valid = await mfa.verifyForLogin(userId, code);
-		if (!valid) {
-			throw new errs.PermissionError(ERROR_MESSAGE_INVALID_CODE, ERROR_MESSAGE_INVALID_CODE_I18N);
-		}
-
 		const now = Math.floor(Date.now() / 1000);
 		for (const [jti, expires] of consumedChallenges) if (expires <= now) consumedChallenges.delete(jti);
 
+		// Claim the challenge token before the code is checked, so no parallel or repeated request can consume a code
 		if (consumedChallenges.has(tokenData.jti)) {
 			throw new errs.AuthError("Invalid challenge token");
 		}
 		consumedChallenges.set(tokenData.jti, tokenData.exp);
+
+		// Verify TOTP code
+		if (!(await mfa.verifyForLogin(userId, code))) {
+			consumedChallenges.delete(tokenData.jti);
+			throw new errs.PermissionError(ERROR_MESSAGE_INVALID_CODE, ERROR_MESSAGE_INVALID_CODE_I18N);
+		}
 
 		const signed = await Token.create({
 			iss: "api",
