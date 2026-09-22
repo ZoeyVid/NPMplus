@@ -7,7 +7,6 @@
 		"modified_on",
 		"owner_user_id",
 		"incoming_port",
-		"npmplus_load_balance_method",
 		"npmplus_upstream_servers",
 		"tcp_forwarding",
 		"udp_forwarding",
