@@ -36,11 +36,11 @@ const LoadBalancerOption = (props) => (
 	</components.Option>
 );
 
-const numberOrNull = (value, streams = false) => {
-	if (value === "" ) { return null }
+const numberOrNull = (value, currentValue, allowText = false) => {
+	if (value === "" ) { return null; }
 	// specifying "$server_port" literal supports only 1 upstream being specified
-	if (streams && !(new RegExp(NUMERIC_PATTERN).test(value))) { return value }
-	return Number(value);
+	if (new RegExp(NUMERIC_PATTERN).test(value)) { return Number(value); }
+	return allowText ? value : currentValue;
 };
 
 const validatePort = (streams) => (value) => {
@@ -49,6 +49,13 @@ const validatePort = (streams) => (value) => {
 	}
 	return validateNumber(-1, 65535)(value);
 };
+
+const validateTimeout = () => (value) => {
+	if(!(new RegExp(NGINX_TIME_SYNTAX_REGEX).test(value))){
+		intl.formatMessage({ id: "error.nginx-time-format" });
+	}
+	return;
+}
 
 export function ForwardHostFields({ scheme="", loadBalanceMethod, upstreamServers, onChange, loadBalanceMethodFieldName, namePrefix = "", streams = false }) {
 	const [servers, setServers] = useState(upstreamServers);
@@ -360,7 +367,7 @@ export function ForwardHostFields({ scheme="", loadBalanceMethod, upstreamServer
 													className={`form-control ${form.errors.forwardPort && form.touched.forwardPort ? "is-invalid" : ""}`}
 													placeholder="eg: 8081"
 													value={server.port?? ""}
-													onChange={(event) => handleChange(idx, "port", numberOrNull(event.target.value, streamValidation))}
+													onChange={(event) => handleChange(idx, "port", numberOrNull(event.target.value, server.port, streamValidation))}
 												/>
 
 												{form.errors.forwardPort ? (
@@ -423,7 +430,7 @@ export function ForwardHostFields({ scheme="", loadBalanceMethod, upstreamServer
 															className={`form-control ${form.errors.npmplusUpstreamWeight && form.touched.npmplusUpstreamWeight ? "is-invalid" : ""}`}
 															placeholder="eg: 1"
 															value={server.weight ?? ""}
-															onChange={(event) => handleChange(idx, "weight", numberOrNull(event.target.value))}
+															onChange={(event) => handleChange(idx, "weight", numberOrNull(event.target.value, server.weight))}
 														/>
 
 														{form.errors.npmplusUpstreamWeight ? (
@@ -454,7 +461,7 @@ export function ForwardHostFields({ scheme="", loadBalanceMethod, upstreamServer
 															className={`form-control ${form.errors.npmplusUpstreamMaxFails && form.touched.npmplusUpstreamMaxFails ? "is-invalid" : ""}`}
 															placeholder="eg: 1"
 															value={server.maxFails ?? ""}
-															onChange={(event) => handleChange(idx, "maxFails", numberOrNull(event.target.value))}
+															onChange={(event) => handleChange(idx, "maxFails", numberOrNull(event.target.value, server.maxFails))}
 														/>
 
 														{form.errors.npmplusUpstreamMaxFails ? (
@@ -470,7 +477,7 @@ export function ForwardHostFields({ scheme="", loadBalanceMethod, upstreamServer
 											</Field>
 										</div>
 										<div className="col-md-3">
-											<Field name="npmplusUpstreamTimeout" validate={validateNumber(-1, 65535)}>
+											<Field name="npmplusUpstreamTimeout" validate={validateTimeout()}>
 												{({ field, form }) => (
 													<div className="mb-3">
 														<label className="form-label" htmlFor="npmplusUpstreamTimeout">
@@ -481,7 +488,7 @@ export function ForwardHostFields({ scheme="", loadBalanceMethod, upstreamServer
 															{...field}
 															id="npmplusUpstreamTimeout"
 															type="text"
-															inputMode="numeric"
+															inputMode="text"
 															pattern={NGINX_TIME_SYNTAX_REGEX}
 															className={`form-control ${form.errors.npmplusUpstreamTimeout && form.touched.npmplusUpstreamTimeout ? "is-invalid" : ""}`}
 															placeholder="default: 30s"
@@ -543,7 +550,7 @@ export function ForwardHostFields({ scheme="", loadBalanceMethod, upstreamServer
 															className={`form-control ${form.errors.npmplusUpstreamMaxConns && form.touched.npmplusUpstreamMaxConns ? "is-invalid" : ""}`}
 															placeholder="eg: 1"
 															value={server.maxConns ?? ""}
-															onChange={(event) => handleChange(idx, "maxConns", numberOrNull(event.target.value))}
+															onChange={(event) => handleChange(idx, "maxConns", numberOrNull(event.target.value, server.maxConns))}
 														/>
 														{form.errors.npmplusUpstreamMaxConns ? (
 															<div className="invalid-feedback">
