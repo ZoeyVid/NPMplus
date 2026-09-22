@@ -61,6 +61,7 @@ const SetPasswordModal = EasyModal.create(({ id, visible, remove }) => {
 												<input
 													id="new"
 													type={showPassword ? "text" : "password"}
+													autoComplete="new-password"
 													required
 													className={`form-control ${form.errors.new && form.touched.new ? "is-invalid" : ""}`}
 													placeholder={intl.formatMessage({

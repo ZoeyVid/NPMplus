@@ -96,6 +96,7 @@ export default function Setup() {
 												<div className="form-floating mb-3">
 													<input
 														id="name"
+														autoComplete="name"
 														className={`form-control ${form.errors.name && form.touched.name ? "is-invalid" : ""}`}
 														placeholder={intl.formatMessage({
 															id: "user.full-name",
@@ -124,6 +125,7 @@ export default function Setup() {
 													<input
 														id="email"
 														type="email"
+														autoComplete="username"
 														className={`form-control ${form.errors.email && form.touched.email ? "is-invalid" : ""}`}
 														placeholder={intl.formatMessage({
 															id: "email-address",

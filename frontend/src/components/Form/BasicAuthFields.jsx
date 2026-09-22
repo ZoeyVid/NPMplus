@@ -69,7 +69,7 @@ export function BasicAuthFields({ initialValues, name = "items" }) {
 						<div className="input-group input-group-flat">
 							<input
 								type={revealed[idx] ? "text" : "password"}
-								autoComplete="off"
+								autoComplete="new-password"
 								className="form-control"
 								value={item.password}
 								placeholder={

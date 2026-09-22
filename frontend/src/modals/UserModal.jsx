@@ -147,6 +147,7 @@ const UserModal = EasyModal.create(({ id, visible, remove }) => {
 											<div className="form-floating mb-3">
 												<input
 													id="name"
+													autoComplete="off"
 													className={`form-control ${form.errors.name && form.touched.name ? "is-invalid" : ""}`}
 													placeholder={intl.formatMessage({
 														id: "user.full-name",
@@ -175,6 +176,7 @@ const UserModal = EasyModal.create(({ id, visible, remove }) => {
 												<input
 													id="email"
 													type="email"
+													autoComplete="off"
 													className={`form-control ${form.errors.email && form.touched.email ? "is-invalid" : ""}`}
 													placeholder={intl.formatMessage({
 														id: "email-address",
