@@ -83,7 +83,7 @@ Note: If you don't [disable sharing in crowdsec](https://docs.crowdsec.net/docs/
 3. Open `/opt/crowdsec/conf/acquis.d/npmplus.yaml` (path may be different depending how you installed crowdsec) and fill it with:
 ```yaml
 filenames:
-  - /opt/npmplus/nginx/logs/*.log
+  - /opt/npmplus/nginx/logs/access.log
 labels:
   type: npmplus
 ---
