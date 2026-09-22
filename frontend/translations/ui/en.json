@@ -136,6 +136,7 @@
 	"error.minimum": "Minimum is {min}",
 	"error.passwords-must-match": "Passwords must match",
 	"error.required": "This is required",
+	"error.nginx-time-format": "This is must be a number or a number followed by one of the following: ms,s,h,d,w,M,y",
 	"expires.on": "Expires: {date}",
 	"footer.github": "Repo on Github",
 	"footer.github-fork": "Fork me on Github",
