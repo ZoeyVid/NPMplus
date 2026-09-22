@@ -98,12 +98,6 @@ export default function Table({
 						/>
 					),
 				},
-				(row) => `${row.forwardingHost}${row.forwardingPort ? `:${row.forwardingPort}` : ""}`,
-				{
-					id: "destination",
-					header: intl.formatMessage({ id: "column.destination" }),
-					cell: (info) => info.getValue(),
-				},
 			),
 			columnHelper.accessor(
 				(row) => {

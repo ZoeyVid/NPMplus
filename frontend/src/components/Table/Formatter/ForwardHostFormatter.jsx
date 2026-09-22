@@ -10,16 +10,16 @@ const ForwardHostLink = ({ forwardScheme, forwardhost, forwardPort, streams }) =
 	const serverPath=`${forwardhost}${getPort(forwardPort)}`;
 	return streams ? (
 	<>
-		`${serverPath}`
+		{serverPath}
 	</>
 	): (
 		<a
-			href={`${forwardScheme}://${serverPath}}`}
+			href={`${forwardScheme}://${serverPath}`}
 			target="_blank"
 			rel="noopener"
 			className={cn("badge")}
 		>
-			{`${forwardScheme}://${serverPath}}`}
+			{`${forwardScheme}://${serverPath}`}
 		</a>
 	);
 };
@@ -37,7 +37,7 @@ export function ForwardHostFormatter({ hostRowId, upstreamServers = [], scheme="
 			<Popover.Body>
 				{upstreamServers.slice(2).map((server, index) => (
                     <div key={`${server.host}-${server.port}-${index}`}>
-                        {`${streams ? `${scheme}://` : ""}${server.host}${getPort(server.port)}`}
+                        {`${streams ? "" : `${scheme}://`}${server.host}${getPort(server.port)}`}
                     </div>
                 ))}
 			</Popover.Body>

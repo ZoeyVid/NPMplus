@@ -95,7 +95,27 @@
 				}
 			],
 			"items": {
-				"$ref": "./upstream-server-object.json"
+				"allOf": [
+					{
+						"$ref": "./upstream-server-object.json"
+					},
+					{
+						"properties": {
+							"port": {
+								"oneOf": [
+									{
+										"type": "integer",
+										"minimum": 1,
+										"maximum": 65535
+									},
+									{
+										"type": "null"
+									}
+								]
+							}
+						}
+					}
+				]
 			},
 			"default": [],
 			"example": [{
@@ -103,7 +123,7 @@
 							"port": 80,
 							"max_conns": 1,
 							"weight": 2,
-							"least_conn": 2,
+							"backup": true,
 							"down": false,
 							"fail_timeout": "60s"
 						}]
@@ -336,7 +356,7 @@
 							"port": 80,
 							"max_conns": 1,
 							"weight": 2,
-							"least_conn": 2,
+							"backup": true,
 							"down": false,
 							"fail_timeout": "60s"
 						}

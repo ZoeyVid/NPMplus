@@ -14,9 +14,19 @@
 			"example": "192.168.1.1"
 		},
 		"port": {
-			"type": ["integer", "null"],
-			"minimum": 1,
-			"maximum": 65535,
+			"oneOf": [
+				{
+					"type": "integer",
+					"minimum": 1,
+					"maximum": 65535
+				},
+				{
+					"type": "null"
+				},
+				{
+					"const": "$server_port"
+				}
+			],
 			"example": 8080
 		},
 		"weight": {

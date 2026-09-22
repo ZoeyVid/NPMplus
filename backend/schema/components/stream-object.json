@@ -46,14 +46,12 @@
 				"hash",
 				"hash_consistent",
 				"least_time_connect",
-				"least_time_header",
 				"least_time_first_byte",
 				"least_time_last_byte",
 				"least_time_last_byte_inflight",
 				"random",
 				"random_two_least_connections",
 				"random_two_least_time_connect",
-				"random_two_least_time_header",
 				"random_two_least_time_first_byte",
 				"random_two_least_time_last_byte"
 			],
@@ -75,9 +73,16 @@
 							],
 							"properties": {
 								"port": {
-									"type": "integer",
-									"minimum": 1,
-									"maximum": 65535
+									"oneOf": [
+										{
+											"type": "integer",
+											"minimum": 1,
+											"maximum": 65535
+										},
+										{
+											"const": "$server_port"
+										}
+									]
 								}
 							}
 						}
@@ -85,15 +90,54 @@
 				}
 			],
 			"items": {
-				"$ref": "./upstream-server-object.json"
+				"allOf": [
+					{
+						"$ref": "./upstream-server-object.json"
+					},
+					{
+						"properties": {
+							"port": {
+								"oneOf": [
+									{
+										"type": "integer",
+										"minimum": 1,
+										"maximum": 65535
+									},
+									{
+										"type": "null"
+									}
+								]
+							}
+						}
+					}
+				]
 			},
+			"allOf": [
+				{
+					"if": {
+						"prefixItems": [
+							{
+								"required": ["port"],
+								"properties": {
+									"port": {
+										"const": "$server_port"
+									}
+								}
+							}
+						]
+					},
+					"then": {
+						"maxItems": 1
+					}
+				}
+			],
 			"default": [],
 			"example": [{
 							"host": "example.com",
 							"port": 80,
 							"max_conns": 1,
 							"weight": 2,
-							"least_conn": 2,
+							"backup": true,
 							"down": false,
 							"fail_timeout": "60s"
 						}]
