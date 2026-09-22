@@ -9,11 +9,6 @@ function LocalePicker({ menuAlign = "start" }) {
 	const { locale } = useLocaleState();
 	const { getTheme } = useTheme();
 
-	const changeTo = (lang) => {
-		changeLocale(lang);
-		location.reload();
-	};
-
 	const classes = ["btn", "dropdown-toggle", "btn-sm", styles.btn];
 	const cns = cn(...classes, getTheme() === "dark" ? "btn-ghost-dark" : "btn-ghost-light");
 
@@ -29,14 +24,7 @@ function LocalePicker({ menuAlign = "start" }) {
 				style={{ maxHeight: "50vh" }}
 			>
 				{localeOptions.map((item) => (
-					<button
-						type="button"
-						className="dropdown-item"
-						key={item}
-						onClick={() => {
-							changeTo(item);
-						}}
-					>
+					<button type="button" className="dropdown-item" key={item} onClick={() => changeLocale(item)}>
 						<Flag countryCode={getFlagCodeForLocale(item)} /> {localeList[item].name}
 					</button>
 				))}
