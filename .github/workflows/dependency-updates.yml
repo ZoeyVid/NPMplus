@@ -169,7 +169,7 @@ jobs:
             pull: 689
           - name: nginx
             repo: nginx/nginx
-            pull: 1219
+            pull: 1756
           - name: nginx
             repo: nginx/nginx
             pull: 1333
@@ -208,10 +208,10 @@ jobs:
               | sort -V \
               | tail -1
           )"
-          rm -r ngx_http_tls_dyn_size
           sed -i "s|ARG DTR_VER=.*|ARG DTR_VER=$DTR_VER|" Dockerfile
-          DTR_HASH="$(curl -sSfL https://raw.githubusercontent.com/nginx-modules/ngx_http_tls_dyn_size/master/nginx__dynamic_tls_records_"$DTR_VER"%2B.patch | sha256sum | cut -d" " -f1)"
+          DTR_HASH="$(sha256sum ngx_http_tls_dyn_size/nginx__dynamic_tls_records_"$DTR_VER"+.patch | cut -d" " -f1)"
           sed -i "\|dynamic_tls_records|{n;s|[0-9a-f]\{64\}|$DTR_HASH|}" Dockerfile
+          rm -r ngx_http_tls_dyn_size
           echo "version=$DTR_VER" >> $GITHUB_OUTPUT
       - uses: peter-evans/create-pull-request@5f6978faf089d4d20b00c7766989d076bb2fc7f1 # v8.1.1
         with:
@@ -221,32 +221,34 @@ jobs:
           branch: update-dynamic_tls_records-version
           title: update dynamic_tls_records version to ${{ steps.update.outputs.version }}
           body: update dynamic_tls_records version to ${{ steps.update.outputs.version }}
-  resolver_conf_parsing-update:
+  openresty-patches-update:
     runs-on: ubuntu-slim
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
-      - name: update resolver_conf_parsing version
+      - name: update openresty patches version
         id: update
         run: |
           git clone --depth 1 https://github.com/openresty/openresty openresty
-          RCP_VER="$(
+          ORP_VER="$(
           ls openresty/patches/nginx \
               | sort -V \
               | tail -1
           )"
+          sed -i "s|ARG ORP_VER=.*|ARG ORP_VER=$ORP_VER|" Dockerfile
+          for ORP_PATCH in resolver_conf_parsing resolver_hosts upstream_pipelining reuseport_close_unused_fds; do
+            ORP_HASH="$(sha256sum openresty/patches/nginx/"$ORP_VER"/nginx-"$ORP_VER"-"$ORP_PATCH".patch | cut -d" " -f1)"
+            sed -i "\|$ORP_PATCH|{n;s|[0-9a-f]\{64\}|$ORP_HASH|}" Dockerfile
+          done
           rm -r openresty
-          sed -i "s|ARG RCP_VER=.*|ARG RCP_VER=$RCP_VER|" Dockerfile
-          RCP_HASH="$(curl -sSfL https://raw.githubusercontent.com/openresty/openresty/master/patches/nginx/"$RCP_VER"/nginx-"$RCP_VER"-resolver_conf_parsing.patch | sha256sum | cut -d" " -f1)"
-          sed -i "\|resolver_conf_parsing|{n;s|[0-9a-f]\{64\}|$RCP_HASH|}" Dockerfile
-          echo "version=$RCP_VER" >> $GITHUB_OUTPUT
+          echo "version=$ORP_VER" >> $GITHUB_OUTPUT
       - uses: peter-evans/create-pull-request@5f6978faf089d4d20b00c7766989d076bb2fc7f1 # v8.1.1
         with:
           signoff: true
           delete-branch: true
-          commit-message: update resolver_conf_parsing version to ${{ steps.update.outputs.version }}
-          branch: update-resolver_conf_parsing-version
-          title: update resolver_conf_parsing version to ${{ steps.update.outputs.version }}
-          body: update resolver_conf_parsing version to ${{ steps.update.outputs.version }}
+          commit-message: update openresty patches version to ${{ steps.update.outputs.version }}
+          branch: update-openresty-patches-version
+          title: update openresty patches version to ${{ steps.update.outputs.version }}
+          body: update openresty patches version to ${{ steps.update.outputs.version }}
   zlib-ng-patch-update:
     runs-on: ubuntu-slim
     steps:
@@ -261,10 +263,10 @@ jobs:
               | sort -V \
               | tail -1
           )"
-          rm -r zlib-ng-patches
           sed -i "s|ARG ZNP_VER=.*|ARG ZNP_VER=$ZNP_VER|" Dockerfile
-          ZNP_HASH="$(curl -sSfL https://raw.githubusercontent.com/zlib-ng/patches/master/nginx/"$ZNP_VER"-zlib-ng.patch | sha256sum | cut -d" " -f1)"
+          ZNP_HASH="$(sha256sum zlib-ng-patches/nginx/"$ZNP_VER"-zlib-ng.patch | cut -d" " -f1)"
           sed -i "\|zlib-ng.patch|{n;s|[0-9a-f]\{64\}|$ZNP_HASH|}" Dockerfile
+          rm -r zlib-ng-patches
           echo "version=$ZNP_VER" >> $GITHUB_OUTPUT
       - uses: peter-evans/create-pull-request@5f6978faf089d4d20b00c7766989d076bb2fc7f1 # v8.1.1
         with:
