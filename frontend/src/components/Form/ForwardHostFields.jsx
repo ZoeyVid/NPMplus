@@ -64,8 +64,6 @@ export function ForwardHostFields({ scheme="", loadBalanceMethod, upstreamServer
 	};
 
 	const syncField = (newServers, newMethod) => {
-		// TODO cause a validation failure on blank hosts rather than "silently" remove them
-		// const filtered = newServers.filter((s) => s.host.trim() !== "");
 		applyChanges({
 			npmplusUpstreamServers: newServers,
 			npmplusLoadBalanceMethod: newMethod,
