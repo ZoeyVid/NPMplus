@@ -32,11 +32,6 @@ export default function TableWrapper() {
 		return <Alert variant="danger">{error?.message || "Unknown error"}</Alert>;
 	}
 
-	const handleDelete = async (id) => {
-		await deleteRedirectionHost(id);
-		showObjectSuccess("redirection-host", "deleted");
-	};
-
 	const handleDisableToggle = async (id, enabled) => {
 		await toggleRedirectionHost(id, enabled);
 		await Promise.all([
@@ -59,7 +54,7 @@ export default function TableWrapper() {
 	}
 
 	const displayedHosts = filtered ?? data ?? [];
-	const groupingActive = displayedHosts.some((item) => getDirectory(item));
+	const groupingActive = displayedHosts.some(getDirectory);
 
 	const sharedTableProps = {
 		isFiltered: Boolean(search),
@@ -71,7 +66,10 @@ export default function TableWrapper() {
 			const host = data?.find((item) => item.id === id);
 			showDeleteConfirmModal({
 				title: <T id="object.delete" tData={{ object: "redirection-host" }} />,
-				onConfirm: () => handleDelete(id),
+				onConfirm: async () => {
+					await deleteRedirectionHost(id);
+					showObjectSuccess("redirection-host", "deleted");
+				},
 				invalidations: [["redirection-hosts"], ["redirection-host", id]],
 				children: <T id="object.delete.content" tData={{ object: "redirection-host" }} />,
 				subject: host?.domainNames.join(", "),

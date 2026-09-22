@@ -28,14 +28,6 @@ const errs = {
 		this.status = 401;
 	},
 
-	InternalError: function (message) {
-		Error.captureStackTrace(this, this.constructor);
-		this.name = this.constructor.name;
-		this.message = message;
-		this.status = 500;
-		this.public = false;
-	},
-
 	InternalValidationError: function (message) {
 		Error.captureStackTrace(this, this.constructor);
 		this.name = this.constructor.name;
@@ -50,14 +42,6 @@ const errs = {
 		this.message = message;
 		this.status = 400;
 		this.public = true;
-	},
-
-	CacheError: function (message) {
-		Error.captureStackTrace(this, this.constructor);
-		this.name = this.constructor.name;
-		this.message = message;
-		this.status = 500;
-		this.public = false;
 	},
 
 	ValidationError: function (message) {

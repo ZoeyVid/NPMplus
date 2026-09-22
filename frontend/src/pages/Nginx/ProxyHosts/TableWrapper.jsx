@@ -32,11 +32,6 @@ export default function TableWrapper() {
 		return <Alert variant="danger">{error?.message || "Unknown error"}</Alert>;
 	}
 
-	const handleDelete = async (id) => {
-		await deleteProxyHost(id);
-		showObjectSuccess("proxy-host", "deleted");
-	};
-
 	const handleDisableToggle = async (id, enabled) => {
 		await toggleProxyHost(id, enabled);
 		await Promise.all([
@@ -60,7 +55,7 @@ export default function TableWrapper() {
 	}
 
 	const displayedHosts = filtered ?? data ?? [];
-	const groupingActive = displayedHosts.some((item) => getDirectory(item));
+	const groupingActive = displayedHosts.some(getDirectory);
 
 	const sharedTableProps = {
 		isFiltered: Boolean(search),
@@ -73,7 +68,10 @@ export default function TableWrapper() {
 			const host = data?.find((item) => item.id === id);
 			showDeleteConfirmModal({
 				title: <T id="object.delete" tData={{ object: "proxy-host" }} />,
-				onConfirm: () => handleDelete(id),
+				onConfirm: async () => {
+					await deleteProxyHost(id);
+					showObjectSuccess("proxy-host", "deleted");
+				},
 				invalidations: [["proxy-hosts"], ["proxy-host", id]],
 				children: <T id="object.delete.content" tData={{ object: "proxy-host" }} />,
 				subject: host?.domainNames.join(", "),

@@ -4,11 +4,12 @@ import { useAuthState } from "src/context";
 import { useUser } from "src/hooks";
 import { T } from "src/locale";
 import { showChangePasswordModal, showMfaModal, showUserModal } from "src/modals";
+import { isAdmin } from "src/modules/Permissions";
 import styles from "./SiteHeader.module.css";
 
 export function SiteHeader() {
 	const { data: currentUser } = useUser("me");
-	const isAdmin = currentUser?.roles.includes("admin");
+	const role = isAdmin(currentUser?.roles) ? "role.admin" : "role.standard-user";
 	const { logout, logoutEverywhere } = useAuthState();
 
 	return (
@@ -66,7 +67,7 @@ export function SiteHeader() {
 								<div className="d-none d-xl-block ps-2">
 									<div>{currentUser?.name}</div>
 									<div className="mt-1 small text-secondary">
-										<T id={isAdmin ? "role.admin" : "role.standard-user"} />
+										<T id={role} />
 									</div>
 								</div>
 							</a>
@@ -80,7 +81,7 @@ export function SiteHeader() {
 										<div className="ps-2 pe-1 me-auto">
 											<div>{currentUser?.name}</div>
 											<div className="mt-1 small text-secondary text-nowrap">
-												<T id={isAdmin ? "role.admin" : "role.standard-user"} />
+												<T id={role} />
 											</div>
 										</div>
 										<div className="d-flex align-items-center">

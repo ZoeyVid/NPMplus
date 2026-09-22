@@ -31,11 +31,6 @@ export default function TableWrapper() {
 		return <Alert variant="danger">{error?.message || "Unknown error"}</Alert>;
 	}
 
-	const handleDelete = async (id) => {
-		await deleteUser(id);
-		showObjectSuccess("user", "deleted");
-	};
-
 	const handleDisableToggle = async (id, enabled) => {
 		await toggleUser(id, enabled);
 		await Promise.all([
@@ -43,16 +38,6 @@ export default function TableWrapper() {
 			queryClient.invalidateQueries({ queryKey: ["user", id] }),
 		]);
 		showObjectSuccess("user", enabled ? "enabled" : "disabled");
-	};
-
-	const handleResetMfa = async (id) => {
-		await adminDisableMfa(id);
-		showObjectSuccess("user", "updated");
-	};
-
-	const handleRevokeSessions = async (id) => {
-		await revokeSessions(id);
-		showObjectSuccess("user", "updated");
 	};
 
 	let filtered = null;
@@ -111,7 +96,10 @@ export default function TableWrapper() {
 							children: <T id="user.reset-mfa.content" />,
 							subject: user?.name,
 							details: user?.email,
-							onConfirm: () => handleResetMfa(id),
+							onConfirm: async () => {
+								await adminDisableMfa(id);
+								showObjectSuccess("user", "updated");
+							},
 							invalidations: [["users"], ["user", id]],
 						});
 					}}
@@ -122,7 +110,10 @@ export default function TableWrapper() {
 							children: <T id="user.revoke-sessions.content" />,
 							subject: user?.name,
 							details: user?.email,
-							onConfirm: () => handleRevokeSessions(id),
+							onConfirm: async () => {
+								await revokeSessions(id);
+								showObjectSuccess("user", "updated");
+							},
 							invalidations: [["users"], ["user", id]],
 						});
 					}}
@@ -130,7 +121,10 @@ export default function TableWrapper() {
 						const user = data?.find((item) => item.id === id);
 						showDeleteConfirmModal({
 							title: <T id="object.delete" tData={{ object: "user" }} />,
-							onConfirm: () => handleDelete(id),
+							onConfirm: async () => {
+								await deleteUser(id);
+								showObjectSuccess("user", "deleted");
+							},
 							invalidations: [["users"], ["user", id]],
 							children: <T id="object.delete.content" tData={{ object: "user" }} />,
 							subject: user?.name,

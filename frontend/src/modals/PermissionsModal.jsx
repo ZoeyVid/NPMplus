@@ -9,6 +9,7 @@ import { Button, Loading } from "src/components";
 import { useUser } from "src/hooks";
 import { T } from "src/locale";
 import EasyModal from "src/modules/easyModal";
+import { isAdmin } from "src/modules/Permissions";
 import styles from "./PermissionsModal.module.css";
 
 const showPermissionsModal = (id) => {
@@ -131,8 +132,6 @@ const PermissionsModal = EasyModal.create(({ id, visible, remove }) => {
 		);
 	};
 
-	const isAdmin = data?.roles.indexOf("admin") !== -1;
-
 	return (
 		<Modal show={visible} onHide={remove}>
 			{!isLoading && error && (
@@ -215,7 +214,7 @@ const PermissionsModal = EasyModal.create(({ id, visible, remove }) => {
 										)}
 									</Field>
 								</div>
-								{!isAdmin && (
+								{!isAdmin(data?.roles) && (
 									<>
 										<div className="mb-3">
 											<div className="form-label">

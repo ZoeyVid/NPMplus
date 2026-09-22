@@ -174,17 +174,13 @@ const internalProxyHost = {
 
 		if (!row.enabled) {
 			// No need to add nginx config if host is disabled
-			return internalProxyHostAccessList.maskAccessListItems(
-				_.omit(internalHost.cleanRowCertificateMeta(row), omissions()),
-			);
+			return internalProxyHostAccessList.maskAccessListItems(internalHost.cleanRowCertificateMeta(row));
 		}
 
 		// Configure nginx
 		row.meta = await internalNginx.configure(proxyHostModel, "proxy_host", row);
 
-		return internalProxyHostAccessList.maskAccessListItems(
-			_.omit(internalHost.cleanRowCertificateMeta(row), omissions()),
-		);
+		return internalProxyHostAccessList.maskAccessListItems(internalHost.cleanRowCertificateMeta(row));
 	},
 
 	/**
@@ -317,7 +313,7 @@ const internalProxyHost = {
 			action: "enabled",
 			object_type: "proxy-host",
 			object_id: row.id,
-			meta: _.omit(internalProxyHostAccessList.maskAccessListItems(row), omissions()),
+			meta: internalProxyHostAccessList.maskAccessListItems(row),
 		});
 
 		return true;
