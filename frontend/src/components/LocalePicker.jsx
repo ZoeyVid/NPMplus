@@ -1,12 +1,10 @@
 import cn from "clsx";
 import { Flag } from "src/components";
-import { useLocaleState } from "src/context";
 import { useTheme } from "src/hooks";
 import { getFlagCodeForLocale, localeList, localeOptions } from "src/locale";
 import styles from "./LocalePicker.module.css";
 
 function LocalePicker({ menuAlign = "start" }) {
-	const { locale } = useLocaleState();
 	const { getTheme } = useTheme();
 
 	const changeTo = (lang) => {
@@ -20,7 +18,7 @@ function LocalePicker({ menuAlign = "start" }) {
 	return (
 		<div className="dropdown">
 			<button type="button" className={cns} data-bs-toggle="dropdown">
-				<Flag countryCode={getFlagCodeForLocale(locale)} />
+				<Flag countryCode={getFlagCodeForLocale()} />
 			</button>
 			<div
 				className={cn("dropdown-menu scroll-y", {

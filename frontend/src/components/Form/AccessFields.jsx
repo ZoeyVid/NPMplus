@@ -2,7 +2,6 @@ import { IconArrowDown, IconArrowUp, IconLock, IconLockOpen2, IconWorld, IconX }
 import { useFormikContext } from "formik";
 import { useState } from "react";
 import Select, { components } from "react-select";
-import { useLocaleState } from "src/context";
 import { useAccessLists } from "src/hooks";
 import { formatDateTime, intl, T } from "src/locale";
 
@@ -29,7 +28,6 @@ const TypeOption = (props) => (
 export function AccessFields({ initialAccessListType, location, initialAccessListIds, name, typeFieldName, onChange }) {
 	const [values, setValues] = useState(initialAccessListIds || []);
 	const [aclValue, setAclValue] = useState(initialAccessListType);
-	const { locale } = useLocaleState();
 	const { setFieldValue } = useFormikContext();
 	const { isLoading, isError, error, data } = useAccessLists(["owner", "items", "clients"]);
 
@@ -41,7 +39,7 @@ export function AccessFields({ initialAccessListType, location, initialAccessLis
 			{
 				users: item?.items?.length,
 				rules: item?.clients?.length,
-				date: item?.createdOn ? formatDateTime(item?.createdOn, locale) : "N/A",
+				date: item?.createdOn ? formatDateTime(item?.createdOn) : "N/A",
 			},
 		),
 		meta: item,

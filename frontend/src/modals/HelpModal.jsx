@@ -1,6 +1,6 @@
 import Markdown from "markdown-to-jsx";
 import Modal from "react-bootstrap/Modal";
-import { getHelpFile, getLocale, T } from "src/locale";
+import { getHelpFile, T } from "src/locale";
 import EasyModal from "src/modules/easyModal";
 
 const showHelpModal = (section) => {
@@ -8,7 +8,7 @@ const showHelpModal = (section) => {
 };
 
 const HelpModal = EasyModal.create(({ section, visible, remove }) => {
-	const markdownText = getHelpFile(getLocale(), section);
+	const markdownText = getHelpFile(section);
 
 	return (
 		<Modal show={visible} onHide={remove}>

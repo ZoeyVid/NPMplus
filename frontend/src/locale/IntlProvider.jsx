@@ -12,7 +12,7 @@ const localeList = langList;
 
 const localeOptions = ["en", ...Object.keys(localeList).filter((locale) => locale !== "en")];
 
-const getFlagCodeForLocale = (locale = "en") => localeList[locale]?.flag ?? "EN";
+const getFlagCodeForLocale = (locale = currentLocale) => localeList[locale]?.flag ?? "EN";
 
 const loadMessages = (locale = "en") => ({
 	...messagesFor("en"),
@@ -58,4 +58,4 @@ const T = ({ id, data, tData }) => {
 	);
 };
 
-export { getFlagCodeForLocale, getLocale, intl, localeList, localeOptions, T };
+export { currentLocale, getFlagCodeForLocale, intl, localeList, localeOptions, T };
