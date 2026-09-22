@@ -23,21 +23,17 @@ const getLocale = () => {
 	let loc = window.localStorage.getItem("locale");
 	if (!loc) loc = document.documentElement.lang;
 	// finally, fallback
-	if (!loc) loc = "en";
+	if (!localeOptions.includes(loc)) loc = "en";
 	return loc;
 };
 
 const cache = createIntlCache();
 
-const initialMessages = loadMessages(getLocale());
-let intl = createIntl({ locale: getLocale(), messages: initialMessages }, cache);
-
-const changeLocale = (locale) => {
-	const messages = loadMessages(locale);
-	intl = createIntl({ locale, messages }, cache);
-	window.localStorage.setItem("locale", locale);
-	document.documentElement.lang = locale;
-};
+const currentLocale = getLocale();
+const initialMessages = loadMessages(currentLocale);
+document.documentElement.lang = currentLocale;
+if (localeList[currentLocale]?.rtl) document.dir = "rtl";
+const intl = createIntl({ locale: currentLocale, messages: initialMessages }, cache);
 
 // This is a translation component that wraps the translation in a span with a data
 // attribute so devs can inspect the element to see the translation ID
@@ -62,4 +58,4 @@ const T = ({ id, data, tData }) => {
 	);
 };
 
-export { changeLocale, getFlagCodeForLocale, getLocale, intl, localeList, localeOptions, T };
+export { getFlagCodeForLocale, getLocale, intl, localeList, localeOptions, T };

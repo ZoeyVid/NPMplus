@@ -2,7 +2,7 @@ import cn from "clsx";
 import { Flag } from "src/components";
 import { useLocaleState } from "src/context";
 import { useTheme } from "src/hooks";
-import { changeLocale, getFlagCodeForLocale, localeList, localeOptions } from "src/locale";
+import { getFlagCodeForLocale, localeList, localeOptions } from "src/locale";
 import styles from "./LocalePicker.module.css";
 
 function LocalePicker({ menuAlign = "start" }) {
@@ -10,7 +10,7 @@ function LocalePicker({ menuAlign = "start" }) {
 	const { getTheme } = useTheme();
 
 	const changeTo = (lang) => {
-		changeLocale(lang);
+		window.localStorage.setItem("locale", lang);
 		location.reload();
 	};
 

@@ -27,6 +27,11 @@
 		"flag": "EE",
 		"name": "Eesti"
 	},
+	"fa": {
+		"flag": "IR",
+		"name": "فارسی",
+		"rtl": true
+	},
 	"fr": {
 		"flag": "FR",
 		"name": "Français"
