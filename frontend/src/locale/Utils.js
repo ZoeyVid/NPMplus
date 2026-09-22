@@ -1,20 +1,8 @@
 import { fromUnixTime, intlFormat, parseISO } from "date-fns";
 import { currentLocale } from "./IntlProvider.jsx";
 
-const isUnixTimestamp = (value) => {
-	if (typeof value !== "number" && typeof value !== "string") return false;
-	const num = Number(value);
-	if (!Number.isFinite(num)) return false;
-	// Check plausible Unix timestamp range: from 1970 to ~year 3000
-	// Support both seconds and milliseconds
-	if (num > 0 && num < 10000000000) return true; // seconds (<= 10 digits)
-	if (num >= 10000000000 && num < 32503680000000) return true; // milliseconds (<= 13 digits)
-	return false;
-};
-
 const parseDate = (value) => {
-	if (typeof value !== "number" && typeof value !== "string") return null;
-	const date = isUnixTimestamp(value) ? fromUnixTime(Number(value)) : parseISO(`${value}`);
+	const date = typeof value === "number" ? fromUnixTime(value) : parseISO(`${value}`);
 	return Number.isNaN(date.getTime()) ? null : date;
 };
 

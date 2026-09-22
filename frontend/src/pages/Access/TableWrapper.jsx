@@ -29,11 +29,6 @@ export default function TableWrapper() {
 		return <Alert variant="danger">{error?.message || "Unknown error"}</Alert>;
 	}
 
-	const handleDelete = async (id) => {
-		await deleteAccessList(id);
-		showObjectSuccess("access-list", "deleted");
-	};
-
 	let filtered = null;
 	if (search && data) {
 		filtered = data?.filter((item) => item.name.toLowerCase().includes(search));
@@ -93,7 +88,10 @@ export default function TableWrapper() {
 						const accessList = data?.find((item) => item.id === id);
 						showDeleteConfirmModal({
 							title: <T id="object.delete" tData={{ object: "access-list" }} />,
-							onConfirm: () => handleDelete(id),
+							onConfirm: async () => {
+								await deleteAccessList(id);
+								showObjectSuccess("access-list", "deleted");
+							},
 							invalidations: [["access-lists"], ["access-list", id], ["proxy-hosts"], ["proxy-host"]],
 							children: <T id="object.delete.content" tData={{ object: "access-list" }} />,
 							subject: accessList?.name,

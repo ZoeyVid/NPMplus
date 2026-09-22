@@ -86,8 +86,6 @@ export function AccessFields({ initialAccessListType, location, initialAccessLis
 		return ret;
 	};
 
-	const findFirstAvailableOption = () => (options.length > 0 ? options[0] : null);
-
 	const applyUpdatedValues = (newValues) => {
 		setValues(newValues);
 		void setFieldValue(name, newValues);
@@ -100,7 +98,7 @@ export function AccessFields({ initialAccessListType, location, initialAccessLis
 	};
 
 	const handleAdd = () => {
-		const newAccessOption = findFirstAvailableOption();
+		const newAccessOption = options[0];
 		if (newAccessOption?.meta.id) {
 			const newValues = [...values, newAccessOption.meta.id];
 			applyUpdatedValues(newValues);

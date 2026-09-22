@@ -32,11 +32,6 @@ export default function TableWrapper() {
 		return <Alert variant="danger">{error?.message || "Unknown error"}</Alert>;
 	}
 
-	const handleDelete = async (id) => {
-		await deleteStream(id);
-		showObjectSuccess("stream", "deleted");
-	};
-
 	const handleDisableToggle = async (id, enabled) => {
 		await toggleStream(id, enabled);
 		await Promise.all([
@@ -61,7 +56,7 @@ export default function TableWrapper() {
 	}
 
 	const displayedStreams = filtered ?? data ?? [];
-	const groupingActive = displayedStreams.some((item) => getDirectory(item));
+	const groupingActive = displayedStreams.some(getDirectory);
 
 	const sharedTableProps = {
 		isFiltered: Boolean(search),
@@ -73,7 +68,10 @@ export default function TableWrapper() {
 			const stream = data?.find((item) => item.id === id);
 			showDeleteConfirmModal({
 				title: <T id="object.delete" tData={{ object: "stream" }} />,
-				onConfirm: () => handleDelete(id),
+				onConfirm: async () => {
+					await deleteStream(id);
+					showObjectSuccess("stream", "deleted");
+				},
 				invalidations: [["streams"], ["stream", id]],
 				children: <T id="object.delete.content" tData={{ object: "stream" }} />,
 				subject: stream ? `${stream.incomingPort} → ${stream.forwardingHost}:${stream.forwardingPort}` : null,

@@ -43,11 +43,6 @@ export default function TableWrapper() {
 		return <Alert variant="danger">{error?.message || "Unknown error"}</Alert>;
 	}
 
-	const handleDelete = async (id) => {
-		await deleteCertificate(id);
-		showObjectSuccess("certificate", "deleted");
-	};
-
 	const handleDownload = async (id) => {
 		try {
 			await downloadCertificate(id);
@@ -165,7 +160,10 @@ export default function TableWrapper() {
 						const domainNames = certificate?.domainNames.join(", ");
 						showDeleteConfirmModal({
 							title: <T id="object.delete" tData={{ object: "certificate" }} />,
-							onConfirm: () => handleDelete(id),
+							onConfirm: async () => {
+								await deleteCertificate(id);
+								showObjectSuccess("certificate", "deleted");
+							},
 							invalidations: [["certificates"], ["certificate", id]],
 							children: <T id="object.delete.content" tData={{ object: "certificate" }} />,
 							subject: domainNames || certificate?.niceName,

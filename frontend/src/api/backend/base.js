@@ -1,29 +1,17 @@
 import { QueryClient } from "@tanstack/react-query";
 import queryString from "query-string";
 import AuthStore from "src/modules/AuthStore";
-import { camelizeKeys, decamelize, decamelizeKeys } from "./caseConvert";
+import { camelizeKeys, decamelizeKeys } from "./caseConvert";
 
 export const queryClient = new QueryClient();
 const contentTypeHeader = "Content-Type";
-
-function decamelizeParams(params) {
-	if (!params) {
-		return;
-	}
-	const result = {};
-	for (const [key, value] of Object.entries(params)) {
-		result[decamelize(key)] = value;
-	}
-
-	return result;
-}
 
 function buildUrl({ url, params }) {
 	const endpoint = url.replace(/^\/|\/$/g, "");
 	const baseUrl = `/api/${endpoint}`;
 	const apiUrl = queryString.stringifyUrl({
 		url: baseUrl,
-		query: decamelizeParams(params),
+		query: decamelizeKeys(params),
 	});
 	return apiUrl;
 }
@@ -52,16 +40,12 @@ async function processResponse(response, reload = true) {
 	return camelizeKeys(payload);
 }
 
-async function baseGet({ url, params }, abortController) {
+export async function get({ url, params, reload }, abortController) {
 	const apiUrl = buildUrl({ url, params });
 	const method = "GET";
 	const signal = abortController?.signal;
 	const response = await fetch(apiUrl, { method, signal });
-	return response;
-}
-
-export async function get(args, abortController) {
-	return processResponse(await baseGet(args, abortController), args.reload);
+	return processResponse(response, reload);
 }
 
 export async function download({ url, params }, filename = "download.file") {
