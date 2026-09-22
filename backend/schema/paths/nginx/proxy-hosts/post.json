@@ -120,7 +120,6 @@
 					"required": [
 						"domain_names",
 						"forward_scheme",
-						"npmplus_load_balance_method",
 						"npmplus_upstream_servers"
 					],
 					"properties": {
