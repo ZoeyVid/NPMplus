@@ -15,6 +15,7 @@ import {
 	CertificateFormatter,
 	EditButton,
 	EmptyData,
+	ForwardHostFormatter,
 	GravatarFormatter,
 	HasPermission,
 	StatusFormatter,
@@ -84,11 +85,34 @@ export default function Table({
 				return value || <span className="text-secondary">—</span>;
 			},
 		}),
-		columnHelper.accessor((row) => `${row.forwardingHost}${row.forwardingPort ? `:${row.forwardingPort}` : ""}`, {
-			id: "destination",
-			header: intl.formatMessage({ id: "column.destination" }),
-			cell: (info) => info.getValue(),
-		}),
+		columnHelper.accessor((row) => {
+			const names = [];
+				for (const server of row.npmplusUpstreamServers ?? []) {
+					names.push(
+						`${server.host}${server.port ? `:${server.port}` : ""}`,
+					);
+				}
+				return names.join(", ");
+			},
+			{
+				id: "forwardHost",
+				header: intl.formatMessage({ id: "column.destination" }),
+				cell: (info) => (
+					<ForwardHostFormatter
+						hostRowId={info.row.original.id}
+						upstreamServers={info.row.original.npmplusUpstreamServers}
+						loadBalanceMethod={info.row.original.npmplusLoadBalanceMethod}
+						streams={true}
+					/>
+				),
+			},
+			(row) => `${row.forwardingHost}${row.forwardingPort ? `:${row.forwardingPort}` : ""}`,
+			{
+				id: "destination",
+				header: intl.formatMessage({ id: "column.destination" }),
+				cell: (info) => info.getValue(),
+			}
+		),
 		columnHelper.accessor(
 			(row) => {
 				const protocols = [];
