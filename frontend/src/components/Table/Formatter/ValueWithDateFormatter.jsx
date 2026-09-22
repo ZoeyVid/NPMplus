@@ -1,8 +1,6 @@
-import { useLocaleState } from "src/context";
 import { formatDateTime, T } from "src/locale";
 
 export function ValueWithDateFormatter({ value, createdOn, disabled }) {
-	const { locale } = useLocaleState();
 	return (
 		<div className="flex-fill">
 			<div className="font-weight-medium">
@@ -10,7 +8,7 @@ export function ValueWithDateFormatter({ value, createdOn, disabled }) {
 			</div>
 			{createdOn ? (
 				<div className={`text-secondary mt-1 ${disabled ? "text-red" : ""}`}>
-					<T id={disabled ? "disabled" : "created-on"} data={{ date: formatDateTime(createdOn, locale) }} />
+					<T id={disabled ? "disabled" : "created-on"} data={{ date: formatDateTime(createdOn) }} />
 				</div>
 			) : null}
 		</div>
