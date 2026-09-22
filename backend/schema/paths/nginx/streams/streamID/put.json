@@ -36,10 +36,10 @@
 							"$ref": "../../../../components/stream-object.json#/properties/incoming_port"
 						},
 						"npmplus_load_balance_method": {
-							"$ref": "../../../../components/proxy-host-object.json#/properties/npmplus_load_balance_method"
+							"$ref": "../../../../components/stream-object.json#/properties/npmplus_load_balance_method"
 						},
 						"npmplus_upstream_servers": {
-							"$ref": "../../../../components/proxy-host-object.json#/properties/npmplus_upstream_servers"
+							"$ref": "../../../../components/stream-object.json#/properties/npmplus_upstream_servers"
 						},
 						"tcp_forwarding": {
 							"$ref": "../../../../components/stream-object.json#/properties/tcp_forwarding"
