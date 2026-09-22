@@ -51,10 +51,26 @@ const StreamModal = EasyModal.create(({ id, isClone, visible, remove, close, for
 	const onSubmit = async (values, { setFieldValue }) => {
 		setErrorMsg(null);
 
+		// remove entries that are null or undefined or empty to pass schema validation
+		const cleanUpstreamServers = (servers = []) =>
+			servers.map((server) => {
+			const cleaned = { ...server };
+
+			for (const field of ["weight", "maxFails", "maxConns", "failTimeout"]) {
+				if (cleaned[field] === null || cleaned[field] === undefined || cleaned[field] === "") {
+					delete cleaned[field];
+				}
+			}
+			return cleaned;
+		});
+
 		const payload = {
 			id: id === "new" || isClone ? undefined : id,
 			...values,
 			domainNames: values.certificateId === "new" ? values.domainNames : undefined,
+			npmplusUpstreamServers: cleanUpstreamServers(
+				values.npmplusUpstreamServers,
+			),
 		};
 
 		try {
