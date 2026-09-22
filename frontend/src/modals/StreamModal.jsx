@@ -17,6 +17,7 @@ import EasyModal from "src/modules/easyModal";
 import { hasPermission, MANAGE, STREAMS } from "src/modules/Permissions";
 import { showTabOfInvalid, validateAdminTarget, validateString } from "src/modules/Validations";
 import { showObjectSuccess } from "src/notifications";
+import { ForwardHostFields } from "../components/Form/ForwardHostFields";
 
 const showStreamModal = (id, isClone) => {
 	EasyModal.show(StreamModal, { id, isClone });
@@ -90,8 +91,17 @@ const StreamModal = EasyModal.create(({ id, isClone, visible, remove, close, for
 					innerRef={formRef}
 					initialValues={{
 						incomingPort: data?.incomingPort,
-						forwardingHost: data?.forwardingHost,
-						forwardingPort: data?.forwardingPort,
+						npmplusLoadBalanceMethod: data?.npmplusLoadBalanceMethod || "round_robin",
+						npmplusUpstreamServers: data?.npmplusUpstreamServers?.length ? 
+														data.npmplusUpstreamServers :
+																				[
+																					{
+																						host: "",
+																						port: null,
+																						backup: false,
+																						down: false,
+																					},
+																				],
 						tcpForwarding: data?.tcpForwarding,
 						udpForwarding: data?.udpForwarding,
 						npmplusProxyProtocolForwarding: data?.npmplusProxyProtocolForwarding,
@@ -193,73 +203,13 @@ const StreamModal = EasyModal.create(({ id, isClone, visible, remove, close, for
 													)}
 												</Field>
 												<div className="row">
-													<div className="col-md-8">
-														<Field
-															name="forwardingHost"
-															validate={(value) =>
-																validateString(value, 1, 253) ||
-																validateAdminTarget(
-																	value,
-																	currentUser?.npmplusIsAdmin,
-																	isClone ? undefined : data?.forwardingHost,
-																)
-															}
-														>
-															{({ field, meta }) => (
-																<div className="mb-3">
-																	<label
-																		className="form-label"
-																		htmlFor="forwardingHost"
-																	>
-																		<T id="stream.forward-host" />
-																	</label>
-																	<input
-																		id="forwardingHost"
-																		type="text"
-																		className={`form-control ${meta.touched && meta.error ? "is-invalid" : ""}`}
-																		required
-																		pattern="\S+"
-																		placeholder={intl.formatMessage({
-																			id: "stream.forward-host.placeholder",
-																		})}
-																		{...field}
-																	/>
-
-																	<ErrorMessage
-																		name="forwardingHost"
-																		component="div"
-																		className="invalid-feedback"
-																	/>
-																</div>
-															)}
-														</Field>
-													</div>
-													<div className="col-md-4">
-														<Field name="forwardingPort">
-															{({ field }) => (
-																<div className="mb-3">
-																	<label
-																		className="form-label"
-																		htmlFor="forwardingPort"
-																	>
-																		<T id="host.forward-port" />
-																	</label>
-																	<input
-																		id="forwardingPort"
-																		type="text"
-																		maxLength={12}
-																		pattern="[0-9]{0,5}|\$server_port"
-																		className="form-control"
-																		placeholder={intl.formatMessage(
-																			{ id: "example" },
-																			{ value: "8081" },
-																		)}
-																		{...field}
-																	/>
-																</div>
-															)}
-														</Field>
-													</div>
+													<ForwardHostFields
+														idPrefix="stream-host"
+														loadBalanceMethod={values.npmplusLoadBalanceMethod}
+														loadBalanceMethodFieldName="npmplusLoadBalanceMethod"
+														upstreamServers={values.npmplusUpstreamServers}
+														streams={true}
+													/>
 												</div>
 												<div className="my-3">
 													<h3 className="py-2">

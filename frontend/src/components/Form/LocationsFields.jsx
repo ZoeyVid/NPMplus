@@ -371,11 +371,13 @@ export function LocationsFields({ name = "locations", disabled, isClone }) {
 										)}
 									<div className="row">
 										<ForwardHostFields
-											idPrefix={`location-${item.uiKey}`}
+											namePrefix={`${name}[${idx}]`}
 											scheme={item.forwardScheme}
 											loadBalanceMethod={item.npmplusLoadBalanceMethod}
+											loadBalanceMethodFieldName={`${name}[${idx}].npmplusLoadBalanceMethod`}
 											upstreamServers={item.npmplusUpstreamServers}
-											onChange={(next) => handleForwardChange(idx, next)}
+											onChange={(next) => handleForwardFieldsChange(idx, next)}
+											streams={false}
 										/>
 										<div className="my-3">
 											<h4 className="py-2">
