@@ -260,6 +260,7 @@ const ProxyHostModal = EasyModal.create(({ id, isClone, visible, remove }) => {
 													loadBalanceMethod={values.npmplusLoadBalanceMethod}
 													loadBalanceMethodFieldName="npmplusLoadBalanceMethod"
 													upstreamServers={values.npmplusUpstreamServers}
+													streams={false}
 												/>
 												<div className="my-3">
 													<h4 className="py-2">
