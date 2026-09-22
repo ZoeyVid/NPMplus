@@ -1,6 +1,6 @@
 import cn from "clsx";
 import { IconArrowDown, IconArrowUp, IconChevronDown, IconChevronRight, IconInfoCircle, IconTrash, IconX } from "@tabler/icons-react";
-import { Field, useFormikContext } from "formik";
+import { useFormikContext } from "formik";
 import { useState } from "react";
 import OverlayTrigger from "react-bootstrap/OverlayTrigger";
 import Popover from "react-bootstrap/Popover";
@@ -37,13 +37,13 @@ const LoadBalancerOption = (props) => (
 
 const numberOrNull = (value) => (value === "" ? null : Number(value));
 
-export function ForwardHostFields({ scheme, loadBalanceMethod, upstreamServers, onChange, loadBalanceMethodFieldName, namePrefix = "" }) {
+export function ForwardHostFields({ scheme="", loadBalanceMethod, upstreamServers, onChange, loadBalanceMethodFieldName, namePrefix = "", streams = false }) {
 	const [servers, setServers] = useState(upstreamServers);
 	const [method, setMethod] = useState(loadBalanceMethod);
 	const [expanded, setExpanded] = useState([0]);
 	const { setFieldValue } = useFormikContext();
 	const fieldName = (name) => namePrefix ? `${namePrefix}.${name}` : name;
-
+	const upstreamFieldName = (idx, property) => fieldName(`npmplusUpstreamServers[${idx}].${property}`);
 	const blankServer = {
 		host: "",
 		port: null,
@@ -170,35 +170,37 @@ export function ForwardHostFields({ scheme, loadBalanceMethod, upstreamServers, 
 	return (
 		<>
 			<div className="row">
-				<div className="col-md-3 mb-3">
-					<Field name="forwardScheme">
-						{({ field, form }) => (
-							<>
-								<label
-									className="form-label"
-									htmlFor="forwardScheme"
-								>
-									<T id="host.forward-scheme" />
-								</label>
-								<select
-									id="forwardScheme"
-									className="form-select"
-									required
-									{...field}
-									value={scheme}
-									onChange={(e) => {handleSchemeChange(e.target.value)}}
-								>
-									<option value="http">http://</option>
-									<option value="https">https://</option>
-									<option value="path">path: </option>
-									<option value="empty">empty</option>
-									<option value="grpc">grpc://</option>
-									<option value="grpcs">grpcs://</option>
-								</select>
-							</>
-						)}
-					</Field>
-				</div>
+				{streams ? null : (
+					<div className="col-md-3 mb-3">
+						<Field name="forwardScheme">
+							{({ field, form }) => (
+								<>
+									<label
+										className="form-label"
+										htmlFor="forwardScheme"
+									>
+										<T id="host.forward-scheme" />
+									</label>
+									<select
+										id="forwardScheme"
+										className="form-select"
+										required
+										{...field}
+										value={scheme}
+										onChange={(e) => {handleSchemeChange(e.target.value)}}
+									>
+										<option value="http">http://</option>
+										<option value="https">https://</option>
+										<option value="path">path: </option>
+										<option value="empty">empty</option>
+										<option value="grpc">grpc://</option>
+										<option value="grpcs">grpcs://</option>
+									</select>
+								</>
+							)}
+						</Field>
+					</div>
+				)}
 				{servers.length > 1 ? (
 					<Field name={loadBalanceMethodFieldName}>
 						{({ field, form }) => (
@@ -217,13 +219,15 @@ export function ForwardHostFields({ scheme, loadBalanceMethod, upstreamServers, 
 									>
 										<option value="round_robin"><T id="host.loadbalancer.round-robin" /></option>
 										<option value="least_conn"><T id="host.loadbalancer.least-connections" /></option>
-										<option value="ip_hash"><T id="host.loadbalancer.ip-hash" /></option>
-										<option value="least_time_header"><T id="host.loadbalancer.least-time-header" /></option>
+										<option value="ip_hash"><T id={streams ? "host.loadbalancer.hash" :"host.loadbalancer.ip-hash"} /></option>
+										{streams ? (<option value="least_time_connect"><T id="host.loadbalancer.least-time-connect"/></option>) : null}
+										<option value="least_time_header"><T id={streams ? "host.loadbalancer.least-time-first-byte":"host.loadbalancer.least-time-header"} /></option>
 										<option value="least_time_last_byte"><T id="host.loadbalancer.least-time-last-byte" /></option>
 										<option value="least_time_last_byte_inflight"><T id="host.loadbalancer.least-time-last-byte-inflight" /></option>
 										<option value="random"><T id="host.loadbalancer.random" /></option>
 										<option value="random_two_least_connections"><T id="host.loadbalancer.random-two-least-connections" /></option>
-										<option value="random_two_least_time_header"><T id="host.loadbalancer.random-two-least-time-header" /></option>
+										{streams ? (<option value="random_two_least_time_connect"><T id="host.loadbalancer.random-two-least-time-connect"/></option>) : null}
+										<option value="random_two_least_time_header"><T id={streams ? "host.loadbalancer.random-two-least-time-first-byte":"host.loadbalancer.random-two-least-time-header"} /></option>
 										<option value="random_two_least_time_last_byte"><T id="host.loadbalancer.random-two-least-time-last-byte" /></option>
 									</select>
 								</div>
@@ -295,7 +299,7 @@ export function ForwardHostFields({ scheme, loadBalanceMethod, upstreamServers, 
 									{({ field, form }) => (
 										<div className="mb-3">
 											<label className="form-label" htmlFor="forwardHost">
-												<T id="proxy-host.forward-host-path" />
+												<T id={streams ? "stream.forward-host": "proxy-host.forward-host-path"} />
 											</label>
 											<input
 												{...field}
@@ -303,7 +307,9 @@ export function ForwardHostFields({ scheme, loadBalanceMethod, upstreamServers, 
 												type="text"
 												required
 												className={`form-control ${form.errors.forwardHost && form.touched.forwardHost ? "is-invalid" : ""}`}
-												placeholder="example.com"
+												placeholder={streams ? intl.formatMessage({
+																			id: "stream.forward-host.placeholder",
+																		}) : "example.com"}
 												value={server.host ?? ""}
 												onChange={(event) => handleChange(idx, "host", event.target.value)}
 											/>

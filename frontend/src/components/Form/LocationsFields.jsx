@@ -347,6 +347,7 @@ export function LocationsFields({ initialValues, name = "locations" }) {
 								loadBalanceMethodFieldName={`${name}[${idx}].npmplusLoadBalanceMethod`}
 								upstreamServers={item.npmplusUpstreamServers}
 								onChange={(next) => handleForwardFieldsChange(idx, next)}
+								streams={false}
 							/>
 
 							<div className="my-3">

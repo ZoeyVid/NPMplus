@@ -17,6 +17,8 @@ const fetchStream = (id) => {
 			enabled: true,
 			certificateId: 0,
 			npmplusDescription: "",
+			npmplusUpstreamServers: [],
+			npmplusLoadBalanceMethod: "round_robin",
 		});
 	}
 	return getStream(id, ["owner"]);
