@@ -62,7 +62,11 @@
 				"ip_hash",
 				"least_time_header",
 				"least_time_last_byte",
-				"least_time_last_byte_inflight"
+				"least_time_last_byte_inflight",
+				"random",
+				"random_two_least_connections",
+				"random_two_least_time_header",
+				"random_two_least_time_last_byte"
 			],
 			"default": "round_robin",
 			"example": "round_robin"

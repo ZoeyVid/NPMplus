@@ -85,10 +85,11 @@ export default function Table({
 					header: intl.formatMessage({ id: "column.destination" }),
 					cell: (info) => (
 						<ForwardHostFormatter
-							proxyHostId={info.row.original.id}
+							hostRowId={info.row.original.id}
 							upstreamServers={info.row.original.npmplusUpstreamServers}
 							scheme={info.row.original.forwardScheme}
 							loadBalanceMethod={info.row.original.npmplusLoadBalanceMethod}
+							streams={false}
 						/>
 					),
 				},
