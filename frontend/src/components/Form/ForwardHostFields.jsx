@@ -9,7 +9,7 @@ import { flushSync } from "react-dom";
 import { intl, T } from "src/locale";
 import { validateNumber } from "src/modules/Validations";
 
-const BACKUP_INCOMPATIBLE_METHODS = ["ip_hash", "random", "random_two_least_connections", "random_two_least_time_header", "random_two_least_time_last_byte"];
+const BACKUP_INCOMPATIBLE_METHODS = ["hash", "hash_consistent", "ip_hash", "random", "random_two_least_connections", "random_two_least_time_connect", "random_two_least_time_header", "random_two_least_time_first_byte", "random_two_least_time_last_byte" ];
 
 const NGINX_TIME_SYNTAX_REGEX = "^[1-9]\\d*\\s*(ms|s|m|h|d|w|M|y)?";
 const NUMERIC_PATTERN = "[0-9]*";
@@ -203,7 +203,7 @@ export function ForwardHostFields({ scheme="", loadBalanceMethod, upstreamServer
 					<Field name={loadBalanceMethodFieldName}>
 						{({ field, form }) => (
 							<>
-								<div className="col-md-7">
+								<div className="col-md-7 mb-3">
 									<label className="form-label" htmlFor="npmplusLoadBalanceMethod">
 										<T id="host.loadbalancer.method" />
 										<InfoPopover messageId="host.loadbalancer.method-help" />
@@ -217,15 +217,19 @@ export function ForwardHostFields({ scheme="", loadBalanceMethod, upstreamServer
 									>
 										<option value="round_robin"><T id="host.loadbalancer.round-robin" /></option>
 										<option value="least_conn"><T id="host.loadbalancer.least-connections" /></option>
-										<option value="ip_hash"><T id={streams ? "host.loadbalancer.hash" :"host.loadbalancer.ip-hash"} /></option>
+										{streams ? null : (<option value="ip_hash"><T id={"host.loadbalancer.ip-hash"} /></option>)}
+										{streams ? (<option value="hash"><T id={"host.loadbalancer.hash"} /></option>):null}
+										{streams ? (<option value="hash_consistent"><T id={"host.loadbalancer.hash-consistent"} /></option>):null}
 										{streams ? (<option value="least_time_connect"><T id="host.loadbalancer.least-time-connect"/></option>) : null}
-										<option value="least_time_header"><T id={streams ? "host.loadbalancer.least-time-first-byte":"host.loadbalancer.least-time-header"} /></option>
+										{streams ? (<option value="least_time_first_byte"><T id="host.loadbalancer.least-time-first-byte"/></option>) : null}
+										{streams ? null : (<option value="least_time_header"><T id="host.loadbalancer.least-time-header"/></option>)}
 										<option value="least_time_last_byte"><T id="host.loadbalancer.least-time-last-byte" /></option>
 										<option value="least_time_last_byte_inflight"><T id="host.loadbalancer.least-time-last-byte-inflight" /></option>
 										<option value="random"><T id="host.loadbalancer.random" /></option>
 										<option value="random_two_least_connections"><T id="host.loadbalancer.random-two-least-connections" /></option>
 										{streams ? (<option value="random_two_least_time_connect"><T id="host.loadbalancer.random-two-least-time-connect"/></option>) : null}
-										<option value="random_two_least_time_header"><T id={streams ? "host.loadbalancer.random-two-least-time-first-byte":"host.loadbalancer.random-two-least-time-header"} /></option>
+										{streams ? (<option value="random_two_least_time_first_byte"><T id="host.loadbalancer.random-two-least-time-first-byte"/></option>) : null}
+										{streams ? null : (<option value="random_two_least_time_header"><T id="host.loadbalancer.random-two-least-time-header"/></option>) }
 										<option value="random_two_least_time_last_byte"><T id="host.loadbalancer.random-two-least-time-last-byte" /></option>
 									</select>
 								</div>
