@@ -3,7 +3,6 @@ import { useEffect, useState } from "react";
 import Alert from "react-bootstrap/Alert";
 import { deleteCertificate, downloadCertificate } from "src/api/backend";
 import { Button, certificateProviderTranslation, HasPermission, LoadingPage } from "src/components";
-import { useLocaleState } from "src/context";
 import { useCertificates } from "src/hooks";
 import { formatDateTime, T } from "src/locale";
 import {
@@ -20,8 +19,6 @@ import { showError, showObjectSuccess } from "src/notifications";
 import Table from "./Table";
 
 export default function TableWrapper() {
-	const { locale } = useLocaleState();
-
 	const [search, setSearch] = useState("");
 	const { isFetching, isLoading, isError, error, data } = useCertificates([
 		"owner",
@@ -186,7 +183,7 @@ export default function TableWrapper() {
 											<T
 												id="expires.on"
 												data={{
-													date: formatDateTime(certificate.expiresOn, locale),
+													date: formatDateTime(certificate.expiresOn),
 												}}
 											/>
 										</div>
