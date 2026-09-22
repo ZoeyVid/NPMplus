@@ -34,7 +34,6 @@
 		"npmplus_x_frame_options",
 		"npmplus_auth_request",
 		"npmplus_auth_request_upstream",
-		"npmplus_load_balance_method",
 		"npmplus_upstream_servers"
 	],
 	"additionalProperties": false,
@@ -221,7 +220,6 @@
 				"type": "object",
 				"required": [
 					"forward_scheme",
-					"npmplus_load_balance_method",
 					"npmplus_upstream_servers",
 					"path",
 					"npmplus_access_list_ids",

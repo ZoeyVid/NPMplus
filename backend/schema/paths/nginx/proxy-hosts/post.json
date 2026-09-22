@@ -20,7 +20,6 @@
 					"required": [
 						"domain_names",
 						"forward_scheme",
-						"npmplus_load_balance_method",
 						"npmplus_upstream_servers"
 					],
 					"properties": {
@@ -140,7 +139,7 @@
 									"test.example.com"
 								],
 								"npmplus_upstream_servers": [{
-									"host": "example.com",
+									"host": "127.0.0.1",
 									"port": 80
 								}],
 								"npmplus_load_balance_method": "round_robin",

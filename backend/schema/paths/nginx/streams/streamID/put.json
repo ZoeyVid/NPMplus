@@ -35,11 +35,11 @@
 						"incoming_port": {
 							"$ref": "../../../../components/stream-object.json#/properties/incoming_port"
 						},
-						"forwarding_host": {
-							"$ref": "../../../../components/stream-object.json#/properties/forwarding_host"
+						"npmplus_load_balance_method": {
+							"$ref": "../../../components/proxy-host-object.json#/properties/npmplus_load_balance_method"
 						},
-						"forwarding_port": {
-							"$ref": "../../../../components/stream-object.json#/properties/forwarding_port"
+						"npmplus_upstream_servers": {
+							"$ref": "../../../components/proxy-host-object.json#/properties/npmplus_upstream_servers"
 						},
 						"tcp_forwarding": {
 							"$ref": "../../../../components/stream-object.json#/properties/tcp_forwarding"
@@ -83,8 +83,11 @@
 								"modified_on": "2024-10-09T02:33:45.000Z",
 								"owner_user_id": 1,
 								"incoming_port": 9090,
-								"forwarding_host": "router.internal",
-								"forwarding_port": 80,
+								"npmplus_upstream_servers": [{
+									"host": "router.internal",
+									"port": 80
+								}],
+								"npmplus_load_balance_method": "round_robin",
 								"tcp_forwarding": true,
 								"udp_forwarding": false,
 								"npmplus_proxy_protocol_forwarding": 0,

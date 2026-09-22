@@ -40,8 +40,11 @@
 									"domain_names": [
 										"test.jc21com"
 									],
-									"forward_host": "127.0.0.1",
-									"forward_port": 8081,
+									"npmplus_upstream_servers": [{
+										"host": "127.0.0.1",
+										"port": 8081
+									}],
+									"npmplus_load_balance_method": "round_robin",
 									"npmplus_access_list_ids": [],
 									"npmplus_access_list_type": "public",
 									"certificate_id": 1,
