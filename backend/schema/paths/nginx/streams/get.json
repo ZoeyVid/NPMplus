@@ -37,8 +37,11 @@
 									"modified_on": "2024-10-09T02:33:45.000Z",
 									"owner_user_id": 1,
 									"incoming_port": 9090,
-									"forwarding_host": "router.internal",
-									"forwarding_port": 80,
+									"npmplus_upstream_servers": [{
+										"host": "router.internal",
+										"port": 80
+									}],
+									"npmplus_load_balance_method": "round_robin",
 									"tcp_forwarding": true,
 									"udp_forwarding": false,
 									"npmplus_proxy_protocol_forwarding": 0,
