@@ -1,4 +1,5 @@
 import { fromUnixTime, intlFormat, parseISO } from "date-fns";
+import { currentLocale } from "./IntlProvider.jsx";
 
 const isUnixTimestamp = (value) => {
 	if (typeof value !== "number" && typeof value !== "string") return false;
@@ -17,7 +18,7 @@ const parseDate = (value) => {
 	return Number.isNaN(date.getTime()) ? null : date;
 };
 
-const formatDateTime = (value, locale = "en-US") => {
+const formatDateTime = (value) => {
 	const d = parseDate(value);
 	if (!d) return `${value}`;
 	return intlFormat(
@@ -27,7 +28,7 @@ const formatDateTime = (value, locale = "en-US") => {
 			timeStyle: "medium",
 			hourCycle: "h23",
 		},
-		{ locale },
+		{ locale: currentLocale },
 	);
 };
 

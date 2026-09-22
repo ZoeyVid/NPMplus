@@ -192,6 +192,7 @@
 	"notification.object-enabled": "{object} is ingeschakeld",
 	"notification.object-renewed": "{object} is vernieuwd",
 	"notification.object-saved": "{object} is opgeslagen",
+	"notification.object-updated": "{object} is bijgewerkt",
 	"notification.success": "Succes",
 	"object.actions-title": "{object} #{id}",
 	"object.add": "{object} toevoegen",

@@ -192,6 +192,7 @@
 	"notification.object-enabled": "{object} has been enabled",
 	"notification.object-renewed": "{object} has been renewed",
 	"notification.object-saved": "{object} has been saved",
+	"notification.object-updated": "{object} has been updated",
 	"notification.success": "Success",
 	"object.actions-title": "{object} #{id}",
 	"object.add": "Add {object}",

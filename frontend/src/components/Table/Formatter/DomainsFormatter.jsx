@@ -1,5 +1,4 @@
 import cn from "clsx";
-import { useLocaleState } from "src/context";
 import { formatDateTime, T } from "src/locale";
 
 const DomainLink = ({ domain, color }) => {
@@ -25,7 +24,6 @@ const DomainLink = ({ domain, color }) => {
 };
 
 export function DomainsFormatter({ domains, createdOn, niceName, provider, color }) {
-	const { locale } = useLocaleState();
 	const elms = [];
 
 	if ((!domains || domains.length === 0) && !niceName) {
@@ -52,7 +50,7 @@ export function DomainsFormatter({ domains, createdOn, niceName, provider, color
 			<div className="font-weight-medium">{...elms}</div>
 			{createdOn ? (
 				<div className="text-secondary mt-1">
-					<T id="created-on" data={{ date: formatDateTime(createdOn, locale) }} />
+					<T id="created-on" data={{ date: formatDateTime(createdOn) }} />
 				</div>
 			) : null}
 		</div>

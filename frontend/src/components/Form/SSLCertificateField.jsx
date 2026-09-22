@@ -1,7 +1,6 @@
 import { IconShield } from "@tabler/icons-react";
 import { Field, useFormikContext } from "formik";
 import Select, { components } from "react-select";
-import { useLocaleState } from "src/context";
 import { useCertificates } from "src/hooks";
 import { formatDateTime, intl, T } from "src/locale";
 
@@ -26,7 +25,6 @@ export function SSLCertificateField({
 	mtlsName = "meta.npmplusMtlsCertificateId",
 	mtlsLabel = "mtls-certificate",
 }) {
-	const { locale } = useLocaleState();
 	const { isLoading, isError, error, data } = useCertificates();
 	const { values, setFieldValue } = useFormikContext();
 	const v = values || {};
@@ -71,7 +69,7 @@ export function SSLCertificateField({
 			.map((cert) => ({
 				value: cert.id,
 				label: cert.niceName,
-				subLabel: `${cert.provider === "letsencrypt" ? intl.formatMessage({ id: "lets-encrypt" }) : cert.provider} — ${intl.formatMessage({ id: "expires.on" }, { date: cert.expiresOn ? formatDateTime(cert.expiresOn, locale) : "N/A" })}`,
+				subLabel: `${cert.provider === "letsencrypt" ? intl.formatMessage({ id: "lets-encrypt" }) : cert.provider} — ${intl.formatMessage({ id: "expires.on" }, { date: cert.expiresOn ? formatDateTime(cert.expiresOn) : "N/A" })}`,
 				icon: <IconShield size={14} className="text-pink" />,
 			})) || [];
 
@@ -81,7 +79,7 @@ export function SSLCertificateField({
 			.map((cert) => ({
 				value: cert.id,
 				label: cert.niceName,
-				subLabel: `${cert.provider} — ${intl.formatMessage({ id: "expires.on" }, { date: cert.expiresOn ? formatDateTime(cert.expiresOn, locale) : "N/A" })}`,
+				subLabel: `${cert.provider} — ${intl.formatMessage({ id: "expires.on" }, { date: cert.expiresOn ? formatDateTime(cert.expiresOn) : "N/A" })}`,
 				icon: <IconShield size={14} className="text-pink" />,
 			})) || [];
 
