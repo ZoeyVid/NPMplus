@@ -61,7 +61,7 @@ export default function TableWrapper() {
 	}
 
 	const displayedStreams = filtered ?? data ?? [];
-	const groupingActive = displayedStreams.some((item) => getDirectory(item));
+	const groupingActive = displayedStreams.some(getDirectory);
 
 	const sharedTableProps = {
 		isFiltered: Boolean(search),

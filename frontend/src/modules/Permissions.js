@@ -21,4 +21,4 @@ const hasPermission = (section, perm, userPerms, roles) => {
 
 const isAdmin = (roles) => roles?.includes("admin") || false;
 
-export { hasPermission };
+export { hasPermission, isAdmin };

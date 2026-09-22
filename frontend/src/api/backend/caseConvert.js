@@ -4,7 +4,7 @@ const upperBoundaryPattern = /(?=[A-Z])/;
 
 const camelize = (s) =>
 	s.replace(separatorPattern, (_, c) => (c ? c.toUpperCase() : "")).replace(firstCharPattern, (c) => c.toLowerCase());
-export const decamelize = (s) => s.split(upperBoundaryPattern).join("_").toLowerCase();
+const decamelize = (s) => s.split(upperBoundaryPattern).join("_").toLowerCase();
 const mapKeys = (fn) => {
 	const walk = (o) => {
 		if (Array.isArray(o)) return o.map(walk);

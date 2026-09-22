@@ -8,6 +8,7 @@ import { Button, Loading } from "src/components";
 import { useSetUser, useUser } from "src/hooks";
 import { intl, T } from "src/locale";
 import EasyModal from "src/modules/easyModal";
+import { isAdmin } from "src/modules/Permissions";
 import { validateEmail, validateString } from "src/modules/Validations";
 import { showObjectSuccess } from "src/notifications";
 
@@ -85,7 +86,7 @@ const UserModal = EasyModal.create(({ id, visible, remove }) => {
 					initialValues={{
 						name: data?.name,
 						email: data?.email,
-						isAdmin: data?.roles?.includes("admin"),
+						isAdmin: isAdmin(data?.roles),
 						isDisabled: data?.isDisabled,
 					}}
 					onSubmit={onSubmit}

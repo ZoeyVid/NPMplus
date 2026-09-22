@@ -57,7 +57,7 @@ export default function TableWrapper() {
 	}
 
 	const displayedHosts = filtered ?? data ?? [];
-	const groupingActive = displayedHosts.some((item) => getDirectory(item));
+	const groupingActive = displayedHosts.some(getDirectory);
 
 	const sharedTableProps = {
 		isFiltered: Boolean(search),
