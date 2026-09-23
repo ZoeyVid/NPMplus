@@ -11,8 +11,6 @@ export * from "./useDirectorySuggestions";
 export * from "./useDnsProviders";
 export * from "./useHealth";
 export * from "./useHostReport";
-export * from "./useLogSources";
-export * from "./useLogTail";
 export * from "./useProxyHost";
 export * from "./useProxyHosts";
 export * from "./useRedirectionHost";
