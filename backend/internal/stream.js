@@ -98,7 +98,7 @@ const internalStream = {
 			// update host with cert id
 			thisData.certificate_id = cert.id;
 		}
-		thisData = internalUpstreamServers.cleanUpstreamServers(thisData);
+		internalUpstreamServers.cleanUpstreamServers(thisData);
 
 		await streamModel.query().where({ id: thisData.id }).patch(thisData);
 

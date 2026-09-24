@@ -22,7 +22,7 @@ import EasyModal from "src/modules/easyModal";
 import { MANAGE, PROXY_HOSTS } from "src/modules/Permissions";
 import { showTabOfInvalid, validateUpstreamUrl } from "src/modules/Validations";
 import { showObjectSuccess } from "src/notifications";
-import { ForwardHostFields, CleanUpstreamServers } from "../components/Form/ForwardHostFields";
+import { ForwardHostFields, CleanUpstreamServers, CleanLoadBalanceMethod } from "../components/Form/ForwardHostFields";
 
 const ProxyHostModal = EasyModal.create(({ id, isClone = false, visible, remove }) => {
 	const { data: currentUser, isLoading: userIsLoading, error: userError } = useUser("me");
@@ -46,14 +46,14 @@ const ProxyHostModal = EasyModal.create(({ id, isClone = false, visible, remove 
 			globalAclIds = [];
 		}
 		const locations = (values.locations || []).map((loc) => {
-			const newLoc = { 
+			let newLoc = { 
 				...loc, 
 				// remove entries that are null or undefined or empty to pass schema validation
 				npmplusUpstreamServers: CleanUpstreamServers(
 					loc.npmplusUpstreamServers,
 				),
 			};
-
+			newLoc = CleanLoadBalanceMethod(newLoc);
 			if (loc.npmplusAccessListType === "global" || loc.npmplusAccessListType === "public") {
 				newLoc.npmplusAccessListIds = [];
 			}
@@ -83,8 +83,10 @@ const ProxyHostModal = EasyModal.create(({ id, isClone = false, visible, remove 
 			npmplusAccessListIds: globalAclIds,
 			locations,
 		};
+		// Keep payload construction separate from submission cleanup so future cleanup steps remain explicit
+		const cleanPayload = CleanLoadBalanceMethod(payload);
 
-		setProxyHost(payload, {
+		setProxyHost(cleanPayload, {
 			onError: (err) => {
 				if (err.payload?.error?.output) {
 					setErrorMsg(

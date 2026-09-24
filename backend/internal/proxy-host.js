@@ -44,7 +44,7 @@ const internalProxyHost = {
 		thisData.owner_user_id = access.token.getUserId(1);
 		thisData = internalHost.cleanSslHstsData(createCertificate, thisData);
 		thisData = internalProxyHostAccessList.cleanAccessListTypes(thisData);
-		await internalProxyHostAccessList.validateAccessLists(thisData);
+		await internalProxyHostAccessList.validateAccessLists(access, thisData);
 		internalProxyHost.validateLoadBalancing(thisData);
 		const createdRow = utils.omitRow(omissions())(
 			await proxyHostModel.transaction(async (trx) => {
@@ -148,7 +148,7 @@ const internalProxyHost = {
 		thisData = internalHost.cleanSslHstsData(createCertificate, thisData, existingRow);
 		thisData = internalProxyHostAccessList.cleanAccessListTypes(thisData);
 
-		await internalProxyHostAccessList.validateAccessLists(thisData);
+		await internalProxyHostAccessList.validateAccessLists(access, thisData);
 		internalProxyHost.validateLoadBalancing(thisData, existingRow);
 		// always remove the load balance method if there is only 1 item in the array
 		thisData = internalUpstreamServers.cleanUpstreamServers(thisData);

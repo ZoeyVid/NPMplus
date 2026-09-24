@@ -6,7 +6,7 @@ const internalUpstreamServers = {
 	 * @param   {Object}  serverHost
 	 * @returns {Promise}
 	 */
-	cleanUpstreamServers: async (serverHost) => {
+	cleanUpstreamServers: (serverHost) => {
         // always remove the load balance method if there is only 1 item in the array
 		if (Array.isArray(serverHost.npmplus_upstream_servers) &&
 			serverHost.npmplus_upstream_servers.length === 1) {
@@ -15,7 +15,7 @@ const internalUpstreamServers = {
 		return serverHost;
     },
 };
-export default internalAccessList;
+export default internalUpstreamServers;
 
 
         
