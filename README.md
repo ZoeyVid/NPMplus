@@ -76,9 +76,11 @@ docker compose up -d
 12. Please report all (migration) issues you may have
 
 # Crowdsec
-<!--Note: Using Immich behind NPMplus with enabled appsec causes issues, see here: [#1241](https://github.com/ZoeyVid/NPMplus/discussions/1241) <br>-->
 Note: If you don't [disable sharing in crowdsec](https://docs.crowdsec.net/docs/next/configuration/crowdsec_configuration/#sharing), you may need to mention that [this](https://docs.crowdsec.net/docs/central_api/intro/#signal-meta-data) is sent to crowdsec in your privacy policy.
-1. Install crowdsec and the ZoeyVid/npmplus collection for example by using crowdsec container at the end of the compose.yaml, you may also want to install [this](https://app.crowdsec.net/hub/author/crowdsecurity/collections/http-dos), but be warned of false positives
+1. Install crowdsec and the ZoeyVid/npmplus collection for example by using crowdsec container in the compose.yaml, you may also want to install some of these optional collections by editing the `COLLECTIONS` env:
+    - [crowdsecurity/http-dos](https://app.crowdsec.net/hub/author/crowdsecurity/collections/http-dos): detects http dos tools which the default http scenarios miss, but be warned of false positives
+    - [crowdsecurity/appsec-crs](https://app.crowdsec.net/hub/author/crowdsecurity/collections/appsec-crs): the OWASP Core Rule Set, it is loaded out-of-band, so matching requests are not blocked, but an IP triggering more than 5 rules gets banned, you also need to uncomment `crowdsecurity/crs` in step 3
+    - [crowdsecurity/http-extended-context](https://app.crowdsec.net/hub/author/crowdsecurity/collections/http-extended-context): adds the attacked domain to the alert context, which is sent to crowdsec if your instance is enrolled in the console
 2. Set LOGROTATE to `true` in your `compose.yaml` and redeploy
 3. Open `/opt/crowdsec/conf/acquis.d/npmplus.yaml` (path may be different depending how you installed crowdsec) and fill it with:
 ```yaml
@@ -88,21 +90,42 @@ labels:
   type: npmplus
 ---
 listen_addr: 0.0.0.0:7422
-appsec_config: crowdsecurity/appsec-default
+appsec_configs:
+  - crowdsecurity/appsec-default
+#  - crowdsecurity/crs # only if you installed crowdsecurity/appsec-crs
+#  - crowdsecurity/appsec-bot-* # only if you set up bot detection, see below
 name: appsec
 source: appsec
 labels:
   type: appsec
 ```
-4. Make sure to use `network_mode: host` in your compose file for the NPMplus container
-5. Run `docker exec crowdsec cscli bouncers add npmplus` and save the api key of the output
-6. Open `/opt/npmplus/crowdsec/crowdsec.conf`
-7. Set `ENABLED` to `true`
-8. Use the output of step 5 as `API_KEY`
-9. Save the file
-10. Redeploy the `compose.yaml`
-11. It is recommended to block at the earliest possible point, so if possible set up a firewall bouncer: https://docs.crowdsec.net/u/bouncers/firewall, make sure to also include the docker iptables in the firewall bouncer config
-12. Note that when using crowdsec requests will always be buffered, so setting `proxy_(request_)buffering` to off will not work
+4. Restart the crowdsec container
+5. Make sure to use `network_mode: host` in your compose file for the NPMplus container
+6. Run `docker exec crowdsec cscli bouncers add npmplus` and save the api key of the output
+7. Open `/opt/npmplus/crowdsec/crowdsec.conf`
+8. Set `ENABLED` to `true`
+9. Use the output of step 6 as `API_KEY`
+10. Save the file
+11. Redeploy the `compose.yaml`
+12. It is recommended to block at the earliest possible point, so if possible set up a firewall bouncer: https://docs.crowdsec.net/u/bouncers/firewall, make sure to also include the docker iptables in the firewall bouncer config
+13. Note that when using crowdsec requests will always be buffered, so setting `proxy_(request_)buffering` to off will not work
+
+## Bot detection (optional)
+Bot detection challenges every request without a valid cookie, so clients which can not solve it, like apps, get blocked. Full documentation: https://doc.crowdsec.net/docs/next/appsec/bot_detection/enable, the short version:
+1. Add `crowdsecurity/appsec-bot-challenge`, `crowdsecurity/appsec-bot-challenge-strict` or `crowdsecurity/appsec-bot-challenge-permissive` to the `COLLECTIONS` env, depending on your wanted threshold
+2. Uncomment `crowdsecurity/appsec-bot-*` in the acquisition file from step 3, the wildcard only matches appsec-configs you actually installed
+3. Restart crowdsec
+
+## Rate limiting (optional)
+If you added rate limiting (`limit_req_zone`/`limit_req`) through the advanced config or `/data/custom_nginx`, `crowdsecurity/nginx-req-limit-exceeded` from the ZoeyVid/npmplus collection needs the error log, since nginx only writes the `limiting requests, excess` lines there. Add it to the acquisition file from step 3:
+```yaml
+filenames:
+  - /opt/npmplus/nginx/logs/access.log
+  - /opt/npmplus/nginx/logs/error.log
+labels:
+  type: npmplus
+```
+nginx writes the client IP itself, so bans can not be forged. The request line however is written out as the client sent it, a crafted one can put any value into `target_fqdn`, so do not build whitelists on the domain of an error log alert.
 
 ## Use of external php-fpm (recommended)
 To set it per location: press the gear button, set the scheme to `path`, put in the path and paste the following in the new text field at the bottom, you need to adjust the last line:
