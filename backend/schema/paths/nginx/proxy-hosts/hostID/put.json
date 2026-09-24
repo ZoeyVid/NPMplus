@@ -29,6 +29,11 @@
 			"application/json": {
 				"schema": {
 					"type": "object",
+					"allOf": [
+						{
+							"$ref": "../../../../components/load-balancing.json#/$defs/partialLoadBalanceMethodRequirement"
+						}
+					],
 					"additionalProperties": false,
 					"allOf": [
 						{
