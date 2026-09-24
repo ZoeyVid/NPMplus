@@ -1,3 +1,4 @@
+import { isIPv6 } from "node:net";
 import { migrate as logger } from "../logger.js";
 
 const migrateName = "proxy_host_upstream";
@@ -23,8 +24,20 @@ const normalisePort = (port) => {
 	return port;
 };
 
+const normaliseHost = (host) => {
+	if (typeof host !== "string") {
+		return host;
+	}
+
+	if (host.startsWith("[") && host.endsWith("]")) {
+		return host;
+	}
+
+	return isIPv6(host) ? `[${host}]` : host;
+};
+
 const createUpstreamServer = (host, port) => ({
-	host,
+	host: normaliseHost(host),
 	port: normalisePort(port),
 });
 
