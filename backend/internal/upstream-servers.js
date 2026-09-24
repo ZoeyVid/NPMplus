@@ -15,11 +15,12 @@ const BACKUP_INCOMPATIBLE_METHODS = [
 const internalUpstreamServers = {
 
 	/**
-	 * @param   {Object}  serverHost
-	 * @returns {Promise}
+	 * 
+	 * @param {*} serverHost 
+	 * @returns 
 	 */
 	cleanUpstreamServers: (serverHost) => {
-        // always remove the load balance method if there is only 1 item in the array
+		// always remove the load balance method if there is only 1 item in the array
 		if (Array.isArray(serverHost.npmplus_upstream_servers) &&
 			serverHost.npmplus_upstream_servers.length === 1) {
 			serverHost.npmplus_load_balance_method = null;
@@ -31,12 +32,12 @@ const internalUpstreamServers = {
 			}
 		}
 		return serverHost;
-    },
+	},
 
 	/**
 	 * 
-	 * @param {*} serverHost 
-	 * @param {*} existingServerHost 
+	 * @param {*} serverHost
+	 * @param {*} existingServerHost
 	 */
 	validateLoadBalancing: (serverHost, existingServerHost = {}) => {
 		// use hasOwn to verify if it was specified as null deliberately (clean functions) or is actually missing
@@ -71,4 +72,3 @@ const internalUpstreamServers = {
 };
 
 export default internalUpstreamServers;
-        
