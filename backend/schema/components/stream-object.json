@@ -43,6 +43,7 @@
 			"type": "string",
 			"minLength": 1,
 			"maxLength": 253,
+			"pattern": "^\\S+$",
 			"example": "127.0.0.1"
 		},
 		"forwarding_port": {

@@ -49,7 +49,7 @@ export default {
 		const hasMfa = await mfa.isAnyEnabled(user.id);
 		if (hasMfa) {
 			if (data.code) {
-				const validCode = await mfa.verifyForLogin(user.id, data.code);
+				const validCode = await mfa.verifyForLogin(user.id, data.code.trim());
 				if (!validCode) {
 					throw new errs.PermissionError(ERROR_MESSAGE_INVALID_CODE, ERROR_MESSAGE_INVALID_CODE_I18N);
 				}
@@ -214,7 +214,7 @@ export default {
 		consumedChallenges.set(tokenData.jti, tokenData.exp);
 
 		// Verify TOTP code
-		if (!(await mfa.verifyForLogin(userId, code))) {
+		if (!(await mfa.verifyForLogin(userId, code.trim()))) {
 			consumedChallenges.delete(tokenData.jti);
 			throw new errs.PermissionError(ERROR_MESSAGE_INVALID_CODE, ERROR_MESSAGE_INVALID_CODE_I18N);
 		}

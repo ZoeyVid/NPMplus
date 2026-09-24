@@ -27,22 +27,17 @@ const StreamModal = EasyModal.create(({ id, visible, remove }) => {
 		setErrorMsg(null);
 
 		const meta = { ...(values.meta || {}) };
-		if (typeof meta.directory === "string") {
-			const trimmed = meta.directory.trim();
-			if (trimmed) {
-				meta.directory = trimmed;
-			} else {
-				delete meta.directory;
-			}
-		} else {
-			delete meta.directory;
-		}
+		meta.directory = typeof meta.directory === "string" ? meta.directory.trim() : "";
+		if (!meta.directory) delete meta.directory;
 
 		const { ...payload } = {
 			id: id === "new" ? undefined : id,
 			...values,
 			meta,
-			forwardingPort: values.forwardingPort || null,
+			incomingPort: values.incomingPort.trim(),
+			forwardingHost: values.forwardingHost.trim(),
+			forwardingPort: values.forwardingPort?.trim() || null,
+			npmplusDescription: values.npmplusDescription.trim(),
 		};
 
 		setStream(payload, {

@@ -93,15 +93,13 @@ const internalMfa = {
 	 * @returns {Promise<boolean>}
 	 */
 	verifyForLogin: async (userId, token) => {
-		const tokenTrim = token.trim();
-
 		// TOTP codes are 6 chars, backup codes are 8 chars
-		if (tokenTrim.length === 6) {
-			return await totp.verifyCode(userId, tokenTrim);
+		if (token.length === 6) {
+			return await totp.verifyCode(userId, token);
 		}
 
-		if (tokenTrim.length === 8) {
-			return await backupCodes.verify(userId, tokenTrim);
+		if (token.length === 8) {
+			return await backupCodes.verify(userId, token);
 		}
 
 		return false;
@@ -158,12 +156,10 @@ const internalMfa = {
 			throw new errs.ValidationError("MFA is not enabled");
 		}
 
-		const tokenTrim = token.trim();
-
-		if (tokenTrim.length !== 6) {
+		if (token.length !== 6) {
 			throw new errs.ValidationError("Invalid verification code");
 		}
-		if (!(await totp.verifyCode(userId, tokenTrim))) {
+		if (!(await totp.verifyCode(userId, token))) {
 			throw new errs.ValidationError("Invalid verification code");
 		}
 

@@ -57,6 +57,7 @@
 		"forward_host": {
 			"type": "string",
 			"maxLength": 255,
+			"pattern": "^\\S*$",
 			"example": "127.0.0.1"
 		},
 		"forward_port": {
@@ -199,7 +200,8 @@
 					},
 					"path": {
 						"type": "string",
-						"minLength": 1
+						"minLength": 1,
+						"pattern": "^\\S+$"
 					},
 					"location_type": {
 						"type": "string",

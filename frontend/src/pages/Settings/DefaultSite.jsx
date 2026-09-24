@@ -22,7 +22,7 @@ export default function DefaultSite() {
 			id: "default-site",
 			value: values.value,
 			meta: {
-				redirect: values.redirect,
+				redirect: values.redirect.trim(),
 				html: values.html,
 				status: values.status ? Number(values.status) : undefined,
 			},

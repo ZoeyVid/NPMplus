@@ -68,12 +68,12 @@ const internalBackupCodes = {
 	 * @returns {Promise<boolean>}
 	 */
 	verify: async (userId, code) => {
-		const codeTrim = code.trim().toUpperCase().replace(/O/g, "0").replace(/[IL]/g, "1");
+		const normalizedCode = code.toUpperCase().replace(/O/g, "0").replace(/[IL]/g, "1");
 
 		for (const row of await codesOf(userId)) {
 			const match = row.secret.startsWith("$2")
-				? await bcrypt.compare(codeTrim, row.secret)
-				: await verify(codeTrim, row.secret);
+				? await bcrypt.compare(normalizedCode, row.secret)
+				: await verify(normalizedCode, row.secret);
 			// Remove used backup code, only the request that removes it counts as used
 			if (match) return (await authModel.query().findById(row.id).delete()) === 1;
 		}

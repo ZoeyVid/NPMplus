@@ -45,7 +45,12 @@ const ProxyHostModal = EasyModal.create(({ id, isClone = false, visible, remove 
 			globalAclIds = [];
 		}
 		const locations = (values.locations || []).map((loc) => {
-			const newLoc = { ...loc };
+			const newLoc = {
+				...loc,
+				path: loc.path.trim(),
+				forwardHost: loc.forwardHost.trim(),
+				npmplusAuthRequestUpstream: loc.npmplusAuthRequestUpstream?.trim(),
+			};
 			if (loc.npmplusAccessListType === "global" || loc.npmplusAccessListType === "public") {
 				newLoc.npmplusAccessListIds = [];
 			}
@@ -53,16 +58,8 @@ const ProxyHostModal = EasyModal.create(({ id, isClone = false, visible, remove 
 		});
 
 		const meta = { ...(values.meta || {}) };
-		if (typeof meta.directory === "string") {
-			const trimmed = meta.directory.trim();
-			if (trimmed) {
-				meta.directory = trimmed;
-			} else {
-				delete meta.directory;
-			}
-		} else {
-			delete meta.directory;
-		}
+		meta.directory = typeof meta.directory === "string" ? meta.directory.trim() : "";
+		if (!meta.directory) delete meta.directory;
 
 		const { ...payload } = {
 			id: id === "new" || isClone ? undefined : id,
@@ -70,7 +67,9 @@ const ProxyHostModal = EasyModal.create(({ id, isClone = false, visible, remove 
 			meta,
 			npmplusAccessListIds: globalAclIds,
 			locations,
+			forwardHost: values.forwardHost.trim(),
 			forwardPort: values.forwardPort || null,
+			npmplusAuthRequestUpstream: values.npmplusAuthRequestUpstream.trim(),
 		};
 
 		setProxyHost(payload, {

@@ -78,9 +78,7 @@ const internalTotp = {
 			throw new errs.ValidationError("TOTP setup has expired");
 		}
 
-		const codeTrim = code.trim();
-
-		const result = await verify({ token: codeTrim, secret: pending.secret });
+		const result = await verify({ token: code, secret: pending.secret });
 		if (!result.valid) {
 			throw new errs.ValidationError("Invalid verification code");
 		}

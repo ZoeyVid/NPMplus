@@ -15,7 +15,7 @@ export function DomainNamesField({
 	const { setFieldValue } = useFormikContext();
 
 	const handleChange = (v, _actionMeta) => {
-		const doms = v?.map((i) => i.value);
+		const doms = v?.map((i) => i.value.trim());
 		void setFieldValue(name, doms);
 		onChange?.(doms);
 	};

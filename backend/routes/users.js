@@ -346,7 +346,7 @@ router
 	 */
 	.delete(async (req, res, next) => {
 		try {
-			const code = typeof req.query.code === "string" ? req.query.code : null;
+			const code = typeof req.query.code === "string" ? req.query.code.trim() : null;
 			if (!code) throw new errs.ValidationError("Missing required parameter: code");
 			await internalMfa.disableTotp(res.locals.access, req.params.user_id, code);
 			res.status(200).send(true);
@@ -374,7 +374,7 @@ router
 	.post(async (req, res, next) => {
 		try {
 			const { code } = apiValidator(getValidationSchema("/users/{userID}/mfa/totp/enable", "post"), req.body);
-			const result = await internalMfa.enableTotp(res.locals.access, req.params.user_id, code);
+			const result = await internalMfa.enableTotp(res.locals.access, req.params.user_id, code.trim());
 			const data = await internalToken.getFreshToken(res.locals.access, true);
 			res.cookie("__Host-Http-token", data.token, {
 				signed: true,
@@ -408,7 +408,7 @@ router
 	.post(async (req, res, next) => {
 		try {
 			const { code } = apiValidator(getValidationSchema("/users/{userID}/mfa/backup-codes", "post"), req.body);
-			const result = await internalMfa.regenerateBackupCodes(res.locals.access, req.params.user_id, code);
+			const result = await internalMfa.regenerateBackupCodes(res.locals.access, req.params.user_id, code.trim());
 			const data = await internalToken.getFreshToken(res.locals.access, true);
 			res.cookie("__Host-Http-token", data.token, {
 				signed: true,
