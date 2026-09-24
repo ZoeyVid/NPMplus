@@ -17,7 +17,7 @@ import EasyModal from "src/modules/easyModal";
 import { MANAGE, STREAMS } from "src/modules/Permissions";
 import { showTabOfInvalid, validateString } from "src/modules/Validations";
 import { showObjectSuccess } from "src/notifications";
-import { ForwardHostFields } from "../components/Form/ForwardHostFields";
+import { ForwardHostFields, CleanUpstreamServers } from "../components/Form/ForwardHostFields";
 
 const showStreamModal = (id) => {
 	EasyModal.show(StreamModal, { id });
@@ -34,27 +34,14 @@ const StreamModal = EasyModal.create(({ id, visible, remove }) => {
 	const onSubmit = (values, { setSubmitting }) => {
 		if (isSubmitting) return;
 		setIsSubmitting(true);
-		setErrorMsg(null);
-
-
-		// remove entries that are null or undefined or empty to pass schema validation
-		const cleanUpstreamServers = (servers = []) =>
-			servers.map((server) => {
-			const cleaned = { ...server };
-
-			for (const field of ["weight", "maxFails", "maxConns", "failTimeout"]) {
-				if (cleaned[field] === null || cleaned[field] === undefined || cleaned[field] === "") {
-					delete cleaned[field];
-				}
-			}
-			return cleaned;
-		});
+		setErrorMsg(null);		
 
 		const { ...payload } = {
 			id: id === "new" ? undefined : id,
 			...values,
 			domainNames: values.certificateId === "new" ? values.domainNames : undefined,
-			npmplusUpstreamServers: cleanUpstreamServers(
+			// remove entries that are null or undefined or empty to pass schema validation
+			npmplusUpstreamServers: CleanUpstreamServers(
 				values.npmplusUpstreamServers,
 			),
 		};

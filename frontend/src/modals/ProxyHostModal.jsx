@@ -22,7 +22,7 @@ import EasyModal from "src/modules/easyModal";
 import { MANAGE, PROXY_HOSTS } from "src/modules/Permissions";
 import { showTabOfInvalid, validateUpstreamUrl } from "src/modules/Validations";
 import { showObjectSuccess } from "src/notifications";
-import { ForwardHostFields } from "../components/Form/ForwardHostFields";
+import { ForwardHostFields, CleanUpstreamServers } from "../components/Form/ForwardHostFields";
 
 const ProxyHostModal = EasyModal.create(({ id, isClone, visible, remove }) => {
 	const { data, isPending, error } = useProxyHost(id);
@@ -42,20 +42,6 @@ const ProxyHostModal = EasyModal.create(({ id, isClone, visible, remove }) => {
 		setIsSubmitting(true);
 		setErrorMsg(null);
 
-		// remove entries that are null or undefined or empty to pass schema validation
-		const cleanUpstreamServers = (servers = []) =>
-			servers.map((server) => {
-			const cleaned = { ...server };
-
-			for (const field of ["weight", "maxFails", "maxConns", "failTimeout"]) {
-				if (cleaned[field] === null || cleaned[field] === undefined || cleaned[field] === "") {
-					delete cleaned[field];
-				}
-			}
-
-			return cleaned;
-		});
-
 		// Set the unrestricted acls here (remove any data in their acl lists)
 		const globalType = values.npmplusAccessListType;
 		let globalAclIds = values.npmplusAccessListIds;
@@ -65,7 +51,8 @@ const ProxyHostModal = EasyModal.create(({ id, isClone, visible, remove }) => {
 		const locations = (values.locations || []).map((loc) => {
 			const newLoc = { 
 				...loc, 
-				npmplusUpstreamServers: cleanUpstreamServers(
+				// remove entries that are null or undefined or empty to pass schema validation
+				npmplusUpstreamServers: CleanUpstreamServers(
 					loc.npmplusUpstreamServers,
 				),
 			};
@@ -75,7 +62,7 @@ const ProxyHostModal = EasyModal.create(({ id, isClone, visible, remove }) => {
 		const payload = {
 			id: id === "new" || isClone ? undefined : id,
 			...values,
-			npmplusUpstreamServers: cleanUpstreamServers(
+			npmplusUpstreamServers: CleanUpstreamServers(
 				values.npmplusUpstreamServers,
 			),
 			npmplusAccessListIds: globalAclIds,

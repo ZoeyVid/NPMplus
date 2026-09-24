@@ -131,7 +131,7 @@ export function LocationsFields({ initialValues, name = "locations" }) {
 	};
 
 	const setFormField = (newValues) => {
-		const filtered = newValues.filter((v) => v?.path?.trim() !== "").map(({ uiKey, ...rest }) => rest);
+		const filtered = newValues.map(({ uiKey, ...rest }) => rest);
 		void setFieldValue(name, filtered);
 	};
 
@@ -317,6 +317,7 @@ export function LocationsFields({ initialValues, name = "locations" }) {
 										required
 										pattern="\S{1,255}"
 										value={item.path}
+										pattern=".*\S.*"
 										onChange={(e) => handleChange(idx, "path", e.target.value)}
 									/>
 								</div>
