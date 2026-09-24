@@ -317,6 +317,7 @@ export function LocationsFields({ initialValues, name = "locations" }) {
 										pattern="\S{1,255}"
 										value={item.path}
 										pattern=".*\S.*"
+										required
 										onChange={(e) => handleChange(idx, "path", e.target.value)}
 									/>
 								</div>
@@ -341,6 +342,7 @@ export function LocationsFields({ initialValues, name = "locations" }) {
 						)}
 						<div className="row">
 							<ForwardHostFields
+								idPrefix={`location-${item.uiKey}`}
 								namePrefix={`${name}[${idx}]`}
 								scheme={item.forwardScheme}
 								loadBalanceMethod={item.npmplusLoadBalanceMethod}
