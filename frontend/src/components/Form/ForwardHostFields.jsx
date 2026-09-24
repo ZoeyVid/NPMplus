@@ -43,6 +43,13 @@ const numberOrNull = (value, currentValue, allowText = false) => {
 	return allowText ? value : currentValue;
 };
 
+const nginxTimeOrNull = (value, currentValue) => {
+	if (value === "" ) { return null; }
+	// specifying "$server_port" literal supports only 1 upstream being specified
+	if (new RegExp(`${NGINX_TIME_SYNTAX_REGEX}$`).test(value)) { return value; }
+	return currentValue;
+};
+
 const validatePort = (streams) => (value) => {
 	if(value === null || value === "" || (streams && value === "$server_port")) {
 		return;
@@ -51,10 +58,24 @@ const validatePort = (streams) => (value) => {
 };
 
 const validateTimeout = () => (value) => {
-	if(!(new RegExp(NGINX_TIME_SYNTAX_REGEX).test(value))){
-		intl.formatMessage({ id: "error.nginx-time-format" });
+	if(value && !(new RegExp(`${NGINX_TIME_SYNTAX_REGEX}$`).test(value))){
+		return intl.formatMessage({ id: "error.nginx-time-format" });
 	}
-	return;
+}
+
+export function CleanUpstreamServers(servers = []) {
+	return servers.map((server) => {
+		const cleaned = { ...server };
+
+		for (const field of ["weight", "maxFails", "maxConns", "failTimeout"]) {
+			if (cleaned[field] === null || 
+				cleaned[field] === undefined || 
+				cleaned[field] === "") {
+				delete cleaned[field];
+			}
+		}
+		return cleaned;
+	});
 }
 
 export function ForwardHostFields({ scheme="", loadBalanceMethod, upstreamServers, onChange, loadBalanceMethodFieldName, namePrefix = "", streams = false }) {
@@ -131,8 +152,8 @@ export function ForwardHostFields({ scheme="", loadBalanceMethod, upstreamServer
 		setServers(updated);
 		setExpanded((current) =>
 			current.map((expandedIdx) => {
-				if (expandedIdx === idx) return newIdx;
-				if (expandedIdx === newIdx) return idx;
+				if (expandedIdx === idx) { return newIdx; }
+				if (expandedIdx === newIdx) { return idx; }
 				return expandedIdx;
 			}),
 		);
@@ -190,7 +211,7 @@ export function ForwardHostFields({ scheme="", loadBalanceMethod, upstreamServer
 			<div className="row">
 				{streams ? null : (
 					<div className="col-md-3 mb-3">
-						<Field name="forwardScheme">
+						<Field name={fieldName("forwardScheme")}>
 							{({ field, form }) => (
 								<>
 									<label
@@ -319,10 +340,17 @@ export function ForwardHostFields({ scheme="", loadBalanceMethod, upstreamServer
 						>
 							<div className="row">
 								<div className="col-md-6">
-									<Field name="forwardHost">
-										{({ field, form }) => (
+									<Field 
+										name={upstreamFieldName(idx, "host")}
+										validate={(value) => {
+											if (!value?.trim()) {
+												return intl.formatMessage({ id: "error.required" });
+											}
+										}}
+									>
+										{({ field, meta  }) => (
 											<div className="mb-3">
-												<label className="form-label" htmlFor="forwardHost">
+												<label className="form-label" htmlFor={`upstream-host-${idx}`}>
 													<T id={streams ? "stream.forward-host": "proxy-host.forward-host-path"} />
 												</label>
 												<input
@@ -330,29 +358,23 @@ export function ForwardHostFields({ scheme="", loadBalanceMethod, upstreamServer
 													id="forwardHost"
 													type="text"
 													required
-													className={`form-control ${form.errors.forwardHost && form.touched.forwardHost ? "is-invalid" : ""}`}
+													className={`form-control ${meta.touched && meta.error ? "is-invalid" : ""}`}
 													placeholder={streams ? intl.formatMessage({
 																				id: "stream.forward-host.placeholder",
 																			}) : "example.com"}
 													value={server.host ?? ""}
 													onChange={(event) => handleChange(idx, "host", event.target.value)}
 												/>
-
-												{form.errors.forwardHost ? (
-													<div className="invalid-feedback">
-														{form.errors.forwardHost &&
-														form.touched.forwardHost
-															? form.errors.forwardHost
-															: null}
-													</div>
+												{meta.touched && meta.error ? (
+													<div className="invalid-feedback">{meta.error}</div>
 												) : null}
 											</div>
 										)}
 									</Field>
 								</div>
 								<div className="col-md-3">
-									<Field name="forwardPort" validate={validatePort(streamValidation)}>
-										{({ field, form }) => (
+									<Field name={upstreamFieldName(idx, "port")} validate={validatePort(streamValidation)}>
+										{({ field, meta }) => (
 											<div className="mb-3">
 												<label className="form-label" htmlFor="forwardPort">
 													<T id="host.forward-port" />
@@ -364,19 +386,14 @@ export function ForwardHostFields({ scheme="", loadBalanceMethod, upstreamServer
 													inputMode={streamValidation ? "text" : "numeric"}
 													pattern={streamValidation ? SERVER_PORT_PATTERN : NUMERIC_PATTERN}
 													required={idx === 0}
-													className={`form-control ${form.errors.forwardPort && form.touched.forwardPort ? "is-invalid" : ""}`}
+													className={`form-control ${meta.touched && meta.error ? "is-invalid" : ""}`}
 													placeholder="eg: 8081"
 													value={server.port?? ""}
 													onChange={(event) => handleChange(idx, "port", numberOrNull(event.target.value, server.port, streamValidation))}
 												/>
 
-												{form.errors.forwardPort ? (
-													<div className="invalid-feedback">
-														{form.errors.forwardPort &&
-														form.touched.forwardPort
-															? form.errors.forwardPort
-															: null}
-													</div>
+												{meta.touched && meta.error ? (
+													<div className="invalid-feedback">{meta.error}</div>
 												) : null}
 											</div>
 										)}
@@ -385,7 +402,7 @@ export function ForwardHostFields({ scheme="", loadBalanceMethod, upstreamServer
 								{servers.length > 1 ? (
 									<>
 										<div className="col-md-3">
-											<Field name="npmplusUpstreamEnable" type="checkbox">
+											<Field name={upstreamFieldName(idx, "down")} type="checkbox">
 												{({ field }) => (
 													<div className="mb-3">
 														<label className="form-label" htmlFor="npmplusUpstreamEnable">
@@ -415,8 +432,8 @@ export function ForwardHostFields({ scheme="", loadBalanceMethod, upstreamServer
 								<>
 									<div className="row">
 										<div className="col-md-3">
-											<Field name="npmplusUpstreamWeight" validate={validateNumber(-1, 65535)}>
-												{({ field, form }) => (
+											<Field name={upstreamFieldName(idx, "weight")} validate={validateNumber(-1, 65535)}>
+												{({ field, meta }) => (
 													<div className="mb-3">
 														<label className="form-label" htmlFor="npmplusUpstreamWeight">
 															<T id="host.upstream.weight" />
@@ -427,27 +444,22 @@ export function ForwardHostFields({ scheme="", loadBalanceMethod, upstreamServer
 															type="text"
 															inputMode="numeric"
 															pattern={NUMERIC_PATTERN}
-															className={`form-control ${form.errors.npmplusUpstreamWeight && form.touched.npmplusUpstreamWeight ? "is-invalid" : ""}`}
+															className={`form-control ${meta.touched && meta.error ? "is-invalid" : ""}`}
 															placeholder="eg: 1"
 															value={server.weight ?? ""}
 															onChange={(event) => handleChange(idx, "weight", numberOrNull(event.target.value, server.weight))}
 														/>
 
-														{form.errors.npmplusUpstreamWeight ? (
-															<div className="invalid-feedback">
-																{form.errors.npmplusUpstreamWeight &&
-																form.touched.npmplusUpstreamWeight
-																	? form.errors.npmplusUpstreamWeight
-																	: null}
-															</div>
+														{meta.touched && meta.error ? (
+															<div className="invalid-feedback">{meta.error}</div>
 														) : null}
 													</div>
 												)}
 											</Field>
 										</div>
 										<div className="col-md-3">
-											<Field name="npmplusUpstreamMaxFails" validate={validateNumber(-1, 65535)}>
-												{({ field, form }) => (
+											<Field name={upstreamFieldName(idx, "maxFails")} validate={validateNumber(-1, 65535)}>
+												{({ field, meta }) => (
 													<div className="mb-3">
 														<label className="form-label" htmlFor="npmplusUpstreamMaxFails">
 															<T id="host.upstream.max-fails" />
@@ -458,27 +470,22 @@ export function ForwardHostFields({ scheme="", loadBalanceMethod, upstreamServer
 															type="text"
 															inputMode="numeric"
 															pattern={NUMERIC_PATTERN}
-															className={`form-control ${form.errors.npmplusUpstreamMaxFails && form.touched.npmplusUpstreamMaxFails ? "is-invalid" : ""}`}
+															className={`form-control ${meta.touched && meta.error ? "is-invalid" : ""}`}
 															placeholder="eg: 1"
 															value={server.maxFails ?? ""}
 															onChange={(event) => handleChange(idx, "maxFails", numberOrNull(event.target.value, server.maxFails))}
 														/>
 
-														{form.errors.npmplusUpstreamMaxFails ? (
-															<div className="invalid-feedback">
-																{form.errors.npmplusUpstreamMaxFails &&
-																form.touched.npmplusUpstreamMaxFails
-																	? form.errors.npmplusUpstreamMaxFails
-																	: null}
-															</div>
+														{meta.touched && meta.error ? (
+															<div className="invalid-feedback">{meta.error}</div>
 														) : null}
 													</div>
 												)}
 											</Field>
 										</div>
 										<div className="col-md-3">
-											<Field name="npmplusUpstreamTimeout" validate={validateTimeout()}>
-												{({ field, form }) => (
+											<Field name={upstreamFieldName(idx, "failTimeout")} validate={validateTimeout()}>
+												{({ field, meta }) => (
 													<div className="mb-3">
 														<label className="form-label" htmlFor="npmplusUpstreamTimeout">
 															<T id="host.upstream.timeout" />
@@ -490,26 +497,21 @@ export function ForwardHostFields({ scheme="", loadBalanceMethod, upstreamServer
 															type="text"
 															inputMode="text"
 															pattern={NGINX_TIME_SYNTAX_REGEX}
-															className={`form-control ${form.errors.npmplusUpstreamTimeout && form.touched.npmplusUpstreamTimeout ? "is-invalid" : ""}`}
+															className={`form-control ${meta.touched && meta.error ? "is-invalid" : ""}`}
 															placeholder="default: 30s"
 															value={server.failTimeout ?? ""}
-															onChange={(event) => handleChange(idx, "failTimeout", event.target.value)}
+															onChange={(event) => handleChange(idx, "failTimeout", nginxTimeOrNull(event.target.value, server.failTimeout))}
 														/>
 
-														{form.errors.npmplusUpstreamTimeout ? (
-															<div className="invalid-feedback">
-																{form.errors.npmplusUpstreamTimeout &&
-																form.touched.npmplusUpstreamTimeout
-																	? form.errors.npmplusUpstreamTimeout
-																	: null}
-															</div>
+														{meta.touched && meta.error ? (
+															<div className="invalid-feedback">{meta.error}</div>
 														) : null}
 													</div>
 												)}
 											</Field>
 										</div>
 										<div className="col-md-3">
-											<Field name="npmplusUpstreamBackup" type="checkbox">
+											<Field name={upstreamFieldName(idx, "backup")} type="checkbox">
 												{({ field }) => (
 													<div className="mb-3">
 														<label className="form-label" htmlFor="npmplusUpstreamBackup">
@@ -535,8 +537,8 @@ export function ForwardHostFields({ scheme="", loadBalanceMethod, upstreamServer
 									</div>
 									<div className="row">
 										<div className="col-md-4">
-											<Field name="npmplusUpstreamMaxConns" validate={validateNumber(-1, 65535)}>
-												{({ field, form }) => (
+											<Field name={upstreamFieldName(idx, "maxConns")} validate={validateNumber(-1, 65535)}>
+												{({ field, meta }) => (
 													<div className="mb-3">
 														<label className="form-label" htmlFor="npmplusUpstreamMaxConns">
 															<T id="host.upstream.max-connections" />
@@ -547,18 +549,13 @@ export function ForwardHostFields({ scheme="", loadBalanceMethod, upstreamServer
 															type="text"
 															inputMode="numeric"
 															pattern={NUMERIC_PATTERN}
-															className={`form-control ${form.errors.npmplusUpstreamMaxConns && form.touched.npmplusUpstreamMaxConns ? "is-invalid" : ""}`}
+															className={`form-control ${meta.touched && meta.error ? "is-invalid" : ""}`}
 															placeholder="eg: 1"
 															value={server.maxConns ?? ""}
 															onChange={(event) => handleChange(idx, "maxConns", numberOrNull(event.target.value, server.maxConns))}
 														/>
-														{form.errors.npmplusUpstreamMaxConns ? (
-															<div className="invalid-feedback">
-																{form.errors.npmplusUpstreamMaxConns &&
-																form.touched.npmplusUpstreamMaxConns
-																	? form.errors.npmplusUpstreamMaxConns
-																	: null}
-															</div>
+														{meta.touched && meta.error ? (
+															<div className="invalid-feedback">{meta.error}</div>
 														) : null}
 													</div>
 												)}
