@@ -1,4 +1,3 @@
-import net from "node:net";
 import Ajv from "ajv/dist/2020.js";
 import commonDefinitions from "../../schema/common.json" with { type: "json" };
 import errs from "../error.js";
@@ -13,8 +12,6 @@ const ajv = new Ajv({
 	strict: false,
 	schemas: [commonDefinitions],
 });
-
-ajv.addFormat("ipv6", { type: "string", validate: (value) => net.isIPv6(value) });
 
 /**
  *
