@@ -52,10 +52,12 @@ const internalStream = {
 		access.can("streams:manage");
 
 		thisData.owner_user_id = access.token.getUserId(1);
-
+		internalUpstreamServers.cleanUpstreamServers(thisData);
+		internalUpstreamServers.validateLoadBalancing(thisData);
 		if (createCertificate) {
 			thisData.certificate_id = (await internalCertificate.createQuickCertificate(access, thisData)).id;
 		}
+		
 
 		const createdRow = await streamModel.query().insertAndFetch(thisData);
 
@@ -113,6 +115,7 @@ const internalStream = {
 			thisData.certificate_id = cert.id;
 		}
 		internalUpstreamServers.cleanUpstreamServers(thisData);
+		internalUpstreamServers.validateLoadBalancing(thisData, existingRow);
 
 		await streamModel.query().where({ id: thisData.id }).patch(thisData);
 
@@ -304,8 +307,7 @@ const internalStream = {
 		if (typeof searchQuery === "string" && searchQuery.length > 0) {
 			query.where(function () {
 				this.where(castJsonIfNeed("incoming_port"), "like", `%${searchQuery}%`)
-					.orWhere(castJsonIfNeed("forwarding_port"), "like", `%${searchQuery}%`)
-					.orWhere("forwarding_host", "like", `%${searchQuery}%`)
+					.orWhere(castJsonIfNeed("npmplus_upstream_servers"), "like", `%${searchQuery}%`)
 					.orWhere("npmplus_description", "like", `%${searchQuery}%`);
 			});
 		}
