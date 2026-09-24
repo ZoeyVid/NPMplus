@@ -36,6 +36,11 @@
 		"npmplus_auth_request_upstream",
 		"npmplus_upstream_servers"
 	],
+	"allOf": [
+		{
+			"$ref": "./load-balancing.json#/$defs/loadBalanceMethodRequirement"
+		}
+	],
 	"additionalProperties": false,
 	"properties": {
 		"id": {
@@ -71,62 +76,25 @@
 			"example": "round_robin"
 		},
 		"npmplus_upstream_servers": {
-			"type": "array",
-			"minItems": 1,
-			"prefixItems": [
+			"allOf": [
 				{
-					"allOf": [
-						{
-							"$ref": "./upstream-server-object.json"
-						},
+					"$ref": "./load-balancing.json#/$defs/upstreamServers"
+				},
+				{
+					"prefixItems": [
 						{
 							"required": [
 								"port"
 							],
 							"properties": {
 								"port": {
-									"type": "integer",
-									"minimum": 1,
-									"maximum": 65535
+									"$ref": "./load-balancing.json#/$defs/port"
 								}
 							}
 						}
 					]
 				}
-			],
-			"items": {
-				"allOf": [
-					{
-						"$ref": "./upstream-server-object.json"
-					},
-					{
-						"properties": {
-							"port": {
-								"oneOf": [
-									{
-										"type": "integer",
-										"minimum": 1,
-										"maximum": 65535
-									},
-									{
-										"type": "null"
-									}
-								]
-							}
-						}
-					}
-				]
-			},
-			"default": [],
-			"example": [{
-							"host": "example.com",
-							"port": 80,
-							"max_conns": 1,
-							"weight": 2,
-							"backup": true,
-							"down": false,
-							"fail_timeout": "60s"
-						}]
+			]
 		},
 		"npmplus_access_list_ids":{
 			"$ref": "../common.json#/properties/npmplus_access_list_ids"
@@ -245,6 +213,11 @@
 					"npmplus_access_list_ids",
 					"npmplus_access_list_type"
 				],
+				"allOf": [
+					{
+						"$ref": "./load-balancing.json#/$defs/loadBalanceMethodRequirement"
+					}
+				],
 				"additionalProperties": false,
 				"properties": {
 					"id": {
@@ -349,7 +322,6 @@
 				{
 					"path": "/app",
 					"forward_scheme": "http",
-					"npmplus_load_balance_method": "ip_hash",
 					"npmplus_upstream_servers": [
 						{
 							"host": "example.com",

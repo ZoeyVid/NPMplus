@@ -29,6 +29,11 @@
 			"application/json": {
 				"schema": {
 					"type": "object",
+					"allOf": [
+						{
+							"$ref": "../../../../components/load-balancing.json#/$defs/partialLoadBalanceMethodRequirement"
+						}
+					],
 					"additionalProperties": false,
 					"minProperties": 1,
 					"properties": {
@@ -87,7 +92,6 @@
 									"host": "router.internal",
 									"port": 80
 								}],
-								"npmplus_load_balance_method": "round_robin",
 								"tcp_forwarding": true,
 								"udp_forwarding": false,
 								"npmplus_proxy_protocol_forwarding": 0,

@@ -16,6 +16,11 @@
 			"application/json": {
 				"schema": {
 					"type": "object",
+					"allOf": [
+						{
+							"$ref": "../../../components/load-balancing.json#/$defs/loadBalanceMethodRequirement"
+						}
+					],
 					"additionalProperties": false,
 					"required": [
 						"domain_names",
@@ -142,7 +147,6 @@
 									"host": "127.0.0.1",
 									"port": 80
 								}],
-								"npmplus_load_balance_method": "round_robin",
 								"npmplus_access_list_ids": [],
 								"npmplus_access_list_type": "public",
 								"certificate_id": 0,

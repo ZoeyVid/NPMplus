@@ -18,6 +18,11 @@
 		"certificate_id",
 		"meta"
 	],
+	"allOf": [
+		{
+			"$ref": "./load-balancing.json#/$defs/loadBalanceMethodRequirement"
+		}
+	],
 	"additionalProperties": false,
 	"properties": {
 		"id": {
@@ -59,14 +64,12 @@
 			"example": "round_robin"
 		},
 		"npmplus_upstream_servers": {
-			"type": "array",
-			"minItems": 1,
-			"prefixItems": [
+			"allOf": [
 				{
-					"allOf": [
-						{
-							"$ref": "./upstream-server-object.json"
-						},
+					"$ref": "./load-balancing.json#/$defs/upstreamServers"
+				},
+				{
+					"prefixItems": [
 						{
 							"required": [
 								"port"
@@ -75,9 +78,7 @@
 								"port": {
 									"oneOf": [
 										{
-											"type": "integer",
-											"minimum": 1,
-											"maximum": 65535
+											"$ref": "./load-balancing.json#/$defs/port"
 										},
 										{
 											"const": "$server_port"
@@ -87,37 +88,14 @@
 							}
 						}
 					]
-				}
-			],
-			"items": {
-				"allOf": [
-					{
-						"$ref": "./upstream-server-object.json"
-					},
-					{
-						"properties": {
-							"port": {
-								"oneOf": [
-									{
-										"type": "integer",
-										"minimum": 1,
-										"maximum": 65535
-									},
-									{
-										"type": "null"
-									}
-								]
-							}
-						}
-					}
-				]
-			},
-			"allOf": [
+				},
 				{
 					"if": {
 						"prefixItems": [
 							{
-								"required": ["port"],
+								"required": [
+									"port"
+								],
 								"properties": {
 									"port": {
 										"const": "$server_port"
@@ -130,17 +108,7 @@
 						"maxItems": 1
 					}
 				}
-			],
-			"default": [],
-			"example": [{
-							"host": "example.com",
-							"port": 80,
-							"max_conns": 1,
-							"weight": 2,
-							"backup": true,
-							"down": false,
-							"fail_timeout": "60s"
-						}]
+			]
 		},
 		"tcp_forwarding": {
 			"type": "boolean",
