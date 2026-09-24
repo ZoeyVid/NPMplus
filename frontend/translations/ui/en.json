@@ -158,7 +158,7 @@
 	"host.flags.hsts-subdomains": "HSTS Subdomains+Preload",
 	"host.flags.preserve-path": "Preserve Path",
 	"host.flags.protocols": "Protocols",
-	"host.flags.send-noindex": "Send noindex header and block some user agents",
+	"host.flags.send-noindex": "Send noindex header and block some bot user agents",
 	"host.flags.upstream-compression": "Enable compression by upstream",
 	"host.flags.websockets-upgrade": "Websockets Support",
 	"host.forward-port": "Forward Port",
