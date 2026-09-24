@@ -63,6 +63,9 @@ class ProxyHost extends Model {
 
 	$parseDatabaseJson(json) {
 		const thisJson = super.$parseDatabaseJson(json);
+		if (thisJson.npmplus_load_balance_method === null) {
+			delete thisJson.npmplus_load_balance_method;
+		}
 		return convertIntFieldsToBool(thisJson, boolFields);
 	}
 

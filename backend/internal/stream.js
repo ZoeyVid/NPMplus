@@ -7,6 +7,7 @@ import internalAuditLog from "./audit-log.js";
 import internalCertificate from "./certificate.js";
 import internalHost from "./host.js";
 import internalNginx from "./nginx.js";
+import internalUpstreamServers from "./upstream-servers.js"
 
 const omissions = () => ["is_deleted", "owner.is_deleted", "certificate.is_deleted"];
 
@@ -97,6 +98,7 @@ const internalStream = {
 			// update host with cert id
 			thisData.certificate_id = cert.id;
 		}
+		thisData = internalUpstreamServers.cleanUpstreamServers(thisData);
 
 		await streamModel.query().where({ id: thisData.id }).patch(thisData);
 
