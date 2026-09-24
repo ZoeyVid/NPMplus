@@ -71,6 +71,13 @@ export function CleanUpstreamServers(servers = []) {
 	});
 }
 
+export function CleanLoadBalanceMethod(object) {
+	if (object?.npmplusUpstreamServers?.length === 1){
+		delete object.npmplusLoadBalanceMethod;
+	}
+	return object;
+}
+
 export function ForwardHostFields({ scheme="",idPrefix, loadBalanceMethod, upstreamServers, onChange, loadBalanceMethodFieldName, namePrefix = "", streams = false }) {
 	const [servers, setServers] = useState(upstreamServers);
 	const [method, setMethod] = useState(loadBalanceMethod);

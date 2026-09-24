@@ -128,7 +128,7 @@ const internalStream = {
 			// update host with cert id
 			thisData.certificate_id = cert.id;
 		}
-		thisData = internalUpstreamServers.cleanUpstreamServers(thisData);
+		internalUpstreamServers.cleanUpstreamServers(thisData);
 
 		try {
 			await streamModel.transaction(async (trx) => {

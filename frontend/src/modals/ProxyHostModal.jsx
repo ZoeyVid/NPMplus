@@ -23,7 +23,7 @@ import EasyModal from "src/modules/easyModal";
 import { hasPermission, MANAGE, PROXY_HOSTS } from "src/modules/Permissions";
 import { showTabOfInvalid, validateUpstreamUrl } from "src/modules/Validations";
 import { showObjectSuccess } from "src/notifications";
-import { ForwardHostFields, CleanUpstreamServers } from "../components/Form/ForwardHostFields";
+import { ForwardHostFields, CleanUpstreamServers, CleanLoadBalanceMethod } from "../components/Form/ForwardHostFields";
 
 const requestBufferingTitle = ({ npmplusDisableCrowdsecAppsec, forwardScheme }) => {
 	if (!npmplusDisableCrowdsecAppsec && ["http", "https"].includes(forwardScheme)) {
@@ -119,6 +119,7 @@ const ProxyHostModal = EasyModal.create(({ id, isClone, visible, remove, close, 
 				npmplusAccessListIds:
 					location.npmplusAccessListType === "custom" ? location.npmplusAccessListIds : [],
 			};
+			newLoc = CleanLoadBalanceMethod(newLoc);
 			return newLoc;
 		});
 
@@ -131,9 +132,11 @@ const ProxyHostModal = EasyModal.create(({ id, isClone, visible, remove, close, 
 			npmplusAccessListIds: globalAclIds,
 			locations,
 		};
+		// Keep payload construction separate from submission cleanup so future cleanup steps remain explicit
+		const cleanPayload = CleanLoadBalanceMethod(payload);
 
 		try {
-			await setProxyHost(payload);
+			await setProxyHost(cleanPayload);
 			showObjectSuccess("proxy-host", "saved");
 			remove();
 		} catch (err) {
