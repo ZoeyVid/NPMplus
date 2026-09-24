@@ -84,6 +84,7 @@ RUN git-clone-commit.sh https://github.com/nginx/nginx "$NGINX_VER" /src/nginx &
     wget -q https://raw.githubusercontent.com/openresty/openresty/master/patches/nginx/"$ORP_VER"/nginx-"$ORP_VER"-resolver_hosts.patch -O /src/nginx/8.patch && \
     echo "7a3e9ebe4fafaef0a90773ed093bed83c3e753af5983718b0aee50881c32151b  /src/nginx/8.patch" | sha256sum -c - && \
     git apply /src/nginx/8.patch && \
+    sed -i "s|ngx_destroy_pool(r->hosts->pool);|r->hosts->pool->log = r->log; &|" /src/nginx/src/core/ngx_resolver.c && \
     wget -q https://raw.githubusercontent.com/openresty/openresty/master/patches/nginx/"$ORP_VER"/nginx-"$ORP_VER"-upstream_pipelining.patch -O /src/nginx/9.patch && \
     echo "f147c9724a0ad33084a3cb51acdafbd4dbd2c40ba5840af1684b7b9595b24ae2  /src/nginx/9.patch" | sha256sum -c - && \
     git apply /src/nginx/9.patch && \
@@ -249,6 +250,7 @@ RUN apk upgrade --no-cache -a && \
     luarocks-5.1 install lua-resty-http && \
     luarocks-5.1 install lua-resty-string && \
     luarocks-5.1 install lua-resty-openssl && \
+    sed -i 's|^local legacy_nids = {}$|C.ERR_clear_error()\n&|' /usr/local/share/lua/5.1/resty/openssl/pkey.lua && \
     \
     git config --global advice.detachedHead false && \
     git config --global init.defaultBranch main && \
