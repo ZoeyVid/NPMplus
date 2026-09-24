@@ -1,10 +1,9 @@
 import cn from "clsx";
-import { IconArrowDown, IconArrowUp, IconChevronDown, IconChevronRight, IconInfoCircle, IconTrash, IconX } from "@tabler/icons-react";
+import { IconArrowDown, IconArrowUp, IconChevronDown, IconChevronRight, IconInfoCircle, IconTrash } from "@tabler/icons-react";
 import { Field, useFormikContext } from "formik";
 import { useState } from "react";
 import OverlayTrigger from "react-bootstrap/OverlayTrigger";
 import Popover from "react-bootstrap/Popover";
-import Select, { components } from "react-select";
 import { flushSync } from "react-dom";
 import { intl, T } from "src/locale";
 import { validateNumber } from "src/modules/Validations";
@@ -29,12 +28,6 @@ function InfoPopover({ messageId }) {
 		</OverlayTrigger>
 	);
 }
-
-const LoadBalancerOption = (props) => (
-	<components.Option {...props}>
-		{OptionContent(props.data.label, props.data.subLabel, props.data.icon)}
-	</components.Option>
-);
 
 const numberOrNull = (value, currentValue, allowText = false) => {
 	if (value === "" ) { return null; }
@@ -78,13 +71,14 @@ export function CleanUpstreamServers(servers = []) {
 	});
 }
 
-export function ForwardHostFields({ scheme="", loadBalanceMethod, upstreamServers, onChange, loadBalanceMethodFieldName, namePrefix = "", streams = false }) {
+export function ForwardHostFields({ scheme="",idPrefix, loadBalanceMethod, upstreamServers, onChange, loadBalanceMethodFieldName, namePrefix = "", streams = false }) {
 	const [servers, setServers] = useState(upstreamServers);
 	const [method, setMethod] = useState(loadBalanceMethod);
 	const [expanded, setExpanded] = useState([0]);
 	const { setFieldValue } = useFormikContext();
 	const fieldName = (name) => namePrefix ? `${namePrefix}.${name}` : name;
 	const upstreamFieldName = (idx, property) => fieldName(`npmplusUpstreamServers[${idx}].${property}`);
+	const controlId = (name, idx) => `${idPrefix}-${name}${idx === undefined ? "" : `-${idx}`}`;
 	const blankServer = {
 		host: "",
 		port: null,
@@ -216,12 +210,12 @@ export function ForwardHostFields({ scheme="", loadBalanceMethod, upstreamServer
 								<>
 									<label
 										className="form-label"
-										htmlFor="forwardScheme"
+										htmlFor={controlId("scheme")}
 									>
 										<T id="host.forward-scheme" />
 									</label>
 									<select
-										id="forwardScheme"
+										id={controlId("scheme")}
 										className="form-select"
 										required
 										{...field}
@@ -245,12 +239,12 @@ export function ForwardHostFields({ scheme="", loadBalanceMethod, upstreamServer
 						{({ field, form }) => (
 							<>
 								<div className="col-md-7 mb-3">
-									<label className="form-label" htmlFor="npmplusLoadBalanceMethod">
+									<label className="form-label" htmlFor={controlId("npmplusLoadBalanceMethod")}>
 										<T id="host.loadbalancer.method" />
 										<InfoPopover messageId="host.loadbalancer.method-help" />
 									</label>
 									<select
-										id="npmplusLoadBalanceMethod"
+										id={controlId("npmplusLoadBalanceMethod")}
 										className="form-select"
 										{...field}
 										value={method}
@@ -282,14 +276,14 @@ export function ForwardHostFields({ scheme="", loadBalanceMethod, upstreamServer
 			{servers.map((server, idx) => {
 				const streamValidation = streams && servers.length === 1 && idx === 0;
 				return (
-					<div className={cn(servers.length > 1 && "card card-active p-2 mb-2")}>
+					<div key={idx} className={cn(servers.length > 1 && "card card-active p-2 mb-2")}>
 						{servers.length > 1 ? (
 							<div className={cn("card-header", "p-2", !isExpanded(idx) && "border-bottom-0")}>
 								<button
 									type="button"
 									className="d-flex flex-fill align-self-stretch align-items-center overflow-hidden p-0 text-start text-body bg-transparent border-0"
 									aria-expanded={isExpanded(idx)}
-									aria-controls={`upstream-host-body-${idx}`}
+									aria-controls={controlId("upstream-body", idx)}
 									onClick={() => toggleExpanded(idx)}
 								>
 									{isExpanded(idx) ? <IconChevronDown size={16} /> : <IconChevronRight size={16} />}
@@ -329,7 +323,7 @@ export function ForwardHostFields({ scheme="", loadBalanceMethod, upstreamServer
 						) : null}
 						<div
 							className={cn("card-body", !isExpanded(idx) && "d-none")}
-							id={`upstream-host-body-${idx}`}
+							id={controlId("upstream-body", idx)}
 							onInvalid={() =>
 								flushSync(() => {
 									setExpanded((current) =>
@@ -350,12 +344,12 @@ export function ForwardHostFields({ scheme="", loadBalanceMethod, upstreamServer
 									>
 										{({ field, meta  }) => (
 											<div className="mb-3">
-												<label className="form-label" htmlFor={`upstream-host-${idx}`}>
+												<label className="form-label" htmlFor={controlId("host", idx)}>
 													<T id={streams ? "stream.forward-host": "proxy-host.forward-host-path"} />
 												</label>
 												<input
 													{...field}
-													id="forwardHost"
+													id={controlId("host", idx)}
 													type="text"
 													required
 													className={`form-control ${meta.touched && meta.error ? "is-invalid" : ""}`}
@@ -376,12 +370,12 @@ export function ForwardHostFields({ scheme="", loadBalanceMethod, upstreamServer
 									<Field name={upstreamFieldName(idx, "port")} validate={validatePort(streamValidation)}>
 										{({ field, meta }) => (
 											<div className="mb-3">
-												<label className="form-label" htmlFor="forwardPort">
+												<label className="form-label" htmlFor={controlId("port", idx)}>
 													<T id="host.forward-port" />
 												</label>
 												<input
 													{...field}
-													id="forwardPort"
+													id={controlId("port", idx)}
 													type="text"
 													inputMode={streamValidation ? "text" : "numeric"}
 													pattern={streamValidation ? SERVER_PORT_PATTERN : NUMERIC_PATTERN}
@@ -405,14 +399,14 @@ export function ForwardHostFields({ scheme="", loadBalanceMethod, upstreamServer
 											<Field name={upstreamFieldName(idx, "down")} type="checkbox">
 												{({ field }) => (
 													<div className="mb-3">
-														<label className="form-label" htmlFor="npmplusUpstreamEnable">
+														<label className="form-label" htmlFor={controlId("npmplusUpstreamEnable", idx)}>
 															<T id="enabled" />
 															<InfoPopover messageId="host.upstream.enabled-down-help" />
 														</label>
 														<span className="form-check form-check-single form-switch p-0">
 															<input
 																{...field}
-																id="npmplusUpstreamEnable"
+																id={controlId("npmplusUpstreamEnable", idx)}
 																className={cn("form-check-input", {
 																	"bg-lime": !server.down, // invert it to represent the UI which shows 'enabled'
 																})}
@@ -435,12 +429,12 @@ export function ForwardHostFields({ scheme="", loadBalanceMethod, upstreamServer
 											<Field name={upstreamFieldName(idx, "weight")} validate={validateNumber(-1, 65535)}>
 												{({ field, meta }) => (
 													<div className="mb-3">
-														<label className="form-label" htmlFor="npmplusUpstreamWeight">
+														<label className="form-label" htmlFor={controlId("npmplusUpstreamWeight", idx)}>
 															<T id="host.upstream.weight" />
 														</label>
 														<input
 															{...field}
-															id="npmplusUpstreamWeight"
+															id={controlId("npmplusUpstreamWeight", idx)}
 															type="text"
 															inputMode="numeric"
 															pattern={NUMERIC_PATTERN}
@@ -461,12 +455,12 @@ export function ForwardHostFields({ scheme="", loadBalanceMethod, upstreamServer
 											<Field name={upstreamFieldName(idx, "maxFails")} validate={validateNumber(-1, 65535)}>
 												{({ field, meta }) => (
 													<div className="mb-3">
-														<label className="form-label" htmlFor="npmplusUpstreamMaxFails">
+														<label className="form-label" htmlFor={controlId("npmplusUpstreamMaxFails", idx)}>
 															<T id="host.upstream.max-fails" />
 														</label>
 														<input
 															{...field}
-															id="npmplusUpstreamMaxFails"
+															id={controlId("npmplusUpstreamMaxFails", idx)}
 															type="text"
 															inputMode="numeric"
 															pattern={NUMERIC_PATTERN}
@@ -487,13 +481,13 @@ export function ForwardHostFields({ scheme="", loadBalanceMethod, upstreamServer
 											<Field name={upstreamFieldName(idx, "failTimeout")} validate={validateTimeout()}>
 												{({ field, meta }) => (
 													<div className="mb-3">
-														<label className="form-label" htmlFor="npmplusUpstreamTimeout">
+														<label className="form-label" htmlFor={controlId("npmplusUpstreamTimeout", idx)}>
 															<T id="host.upstream.timeout" />
 															<InfoPopover messageId="host.upstream.timeout-help" />
 														</label>
 														<input
 															{...field}
-															id="npmplusUpstreamTimeout"
+															id={controlId("npmplusUpstreamTimeout", idx)}
 															type="text"
 															inputMode="text"
 															pattern={NGINX_TIME_SYNTAX_REGEX}
@@ -514,13 +508,13 @@ export function ForwardHostFields({ scheme="", loadBalanceMethod, upstreamServer
 											<Field name={upstreamFieldName(idx, "backup")} type="checkbox">
 												{({ field }) => (
 													<div className="mb-3">
-														<label className="form-label" htmlFor="npmplusUpstreamBackup">
+														<label className="form-label" htmlFor={controlId("npmplusUpstreamBackup", idx)}>
 															<T id="host.upstream.backup" />
 														</label>
 														<span className="form-check form-check-single form-switch p-0">
 															<input
 																{...field}
-																id="npmplusUpstreamBackup"
+																id={controlId("npmplusUpstreamBackup", idx)}
 																className={cn("form-check-input", {
 																	"bg-lime": server.backup,
 																})}
@@ -540,12 +534,12 @@ export function ForwardHostFields({ scheme="", loadBalanceMethod, upstreamServer
 											<Field name={upstreamFieldName(idx, "maxConns")} validate={validateNumber(-1, 65535)}>
 												{({ field, meta }) => (
 													<div className="mb-3">
-														<label className="form-label" htmlFor="npmplusUpstreamMaxConns">
+														<label className="form-label" htmlFor={controlId("npmplusUpstreamMaxConns", idx)}>
 															<T id="host.upstream.max-connections" />
 														</label>
 														<input
 															{...field}
-															id="npmplusUpstreamMaxConns"
+															id={controlId("npmplusUpstreamMaxConns", idx)}
 															type="text"
 															inputMode="numeric"
 															pattern={NUMERIC_PATTERN}
