@@ -47,7 +47,7 @@ const validatePort = (streams) => (value) => {
 	if(value === null || value === "" || (streams && value === "$server_port")) {
 		return;
 	}
-	return validateNumber(-1, 65535)(value);
+	return validateNumber(1, 65535)(value);
 };
 
 const validateTimeout = () => (value) => {
