@@ -13,6 +13,7 @@ import { useMemo } from "react";
 import {
 	CertificateFormatter,
 	EmptyData,
+	ForwardHostFormatter,
 	GravatarFormatter,
 	HasPermission,
 	StatusFormatter,
@@ -76,11 +77,26 @@ export default function Table({
 				},
 			}),
 			columnHelper.accessor(
-				(row) => `${row.forwardingHost}${row.forwardingPort ? `:${row.forwardingPort}` : ""}`,
+				(row) => {
+					const names = [];
+					for (const server of row.npmplusUpstreamServers ?? []) {
+						names.push(
+							`${server.host}${server.port ? `:${server.port}` : ""}`,
+						);
+					}
+					return names.join(", ");
+				},
 				{
-					id: "destination",
+					id: "forwardHost",
 					header: intl.formatMessage({ id: "column.destination" }),
-					cell: (info) => info.getValue(),
+					cell: (info) => (
+						<ForwardHostFormatter
+							hostRowId={info.row.original.id}
+							upstreamServers={info.row.original.npmplusUpstreamServers}
+							loadBalanceMethod={info.row.original.npmplusLoadBalanceMethod}
+							streams={true}
+						/>
+					),
 				},
 			),
 			columnHelper.accessor(

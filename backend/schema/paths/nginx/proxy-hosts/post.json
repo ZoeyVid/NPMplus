@@ -20,8 +20,7 @@
 					"required": [
 						"domain_names",
 						"forward_scheme",
-						"forward_host",
-						"forward_port"
+						"npmplus_upstream_servers"
 					],
 					"properties": {
 						"domain_names": {
@@ -30,11 +29,11 @@
 						"forward_scheme": {
 							"$ref": "../../../components/proxy-host-object.json#/properties/forward_scheme"
 						},
-						"forward_host": {
-							"$ref": "../../../components/proxy-host-object.json#/properties/forward_host"
+						"npmplus_load_balance_method": {
+							"$ref": "../../../components/proxy-host-object.json#/properties/npmplus_load_balance_method"
 						},
-						"forward_port": {
-							"$ref": "../../../components/proxy-host-object.json#/properties/forward_port"
+						"npmplus_upstream_servers": {
+							"$ref": "../../../components/proxy-host-object.json#/properties/npmplus_upstream_servers"
 						},
 						"certificate_id": {
 							"$ref": "../../../components/proxy-host-object.json#/properties/certificate_id"
@@ -139,8 +138,11 @@
 								"domain_names": [
 									"test.example.com"
 								],
-								"forward_host": "127.0.0.1",
-								"forward_port": 8080,
+								"npmplus_upstream_servers": [{
+									"host": "127.0.0.1",
+									"port": 80
+								}],
+								"npmplus_load_balance_method": "round_robin",
 								"npmplus_access_list_ids": [],
 								"npmplus_access_list_type": "public",
 								"certificate_id": 0,

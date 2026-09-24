@@ -8,6 +8,7 @@ import { intl, T } from "src/locale";
 import EasyModal from "src/modules/easyModal";
 import { showTabOfInvalid, validateString } from "src/modules/Validations";
 import { showObjectSuccess } from "src/notifications";
+import { ForwardHostFields, CleanUpstreamServers } from "../components/Form/ForwardHostFields";
 
 const showStreamModal = (id) => {
 	EasyModal.show(StreamModal, { id });
@@ -24,7 +25,7 @@ const StreamModal = EasyModal.create(({ id, visible, remove }) => {
 	const onSubmit = (values, { setSubmitting }) => {
 		if (isSubmitting) return;
 		setIsSubmitting(true);
-		setErrorMsg(null);
+		setErrorMsg(null);		
 
 		const meta = { ...(values.meta || {}) };
 		if (typeof meta.directory === "string") {
@@ -41,8 +42,11 @@ const StreamModal = EasyModal.create(({ id, visible, remove }) => {
 		const { ...payload } = {
 			id: id === "new" ? undefined : id,
 			...values,
+			// remove entries that are null or undefined or empty to pass schema validation
+			npmplusUpstreamServers: CleanUpstreamServers(
+				values.npmplusUpstreamServers,
+			),
 			meta,
-			forwardingPort: values.forwardingPort || null,
 		};
 
 		setStream(payload, {
@@ -82,8 +86,17 @@ const StreamModal = EasyModal.create(({ id, visible, remove }) => {
 				<Formik
 					initialValues={{
 						incomingPort: data?.incomingPort,
-						forwardingHost: data?.forwardingHost,
-						forwardingPort: data?.forwardingPort,
+						npmplusLoadBalanceMethod: data?.npmplusLoadBalanceMethod || "round_robin",
+						npmplusUpstreamServers: data?.npmplusUpstreamServers?.length ? 
+														data.npmplusUpstreamServers :
+																				[
+																					{
+																						host: "",
+																						port: null,
+																						backup: false,
+																						down: false,
+																					},
+																				],
 						tcpForwarding: data?.tcpForwarding,
 						udpForwarding: data?.udpForwarding,
 						npmplusProxyProtocolForwarding: data?.npmplusProxyProtocolForwarding,
@@ -215,70 +228,13 @@ const StreamModal = EasyModal.create(({ id, visible, remove }) => {
 													)}
 												</Field>
 												<div className="row">
-													<div className="col-md-8">
-														<Field name="forwardingHost" validate={validateString(1, 255)}>
-															{({ field, form }) => (
-																<div className="mb-3">
-																	<label
-																		className="form-label"
-																		htmlFor="forwardingHost"
-																	>
-																		<T id="stream.forward-host" />
-																	</label>
-																	<input
-																		id="forwardingHost"
-																		type="text"
-																		className={`form-control ${form.errors.forwardingHost && form.touched.forwardingHost ? "is-invalid" : ""}`}
-																		required
-																		placeholder={intl.formatMessage({
-																			id: "stream.forward-host.placeholder",
-																		})}
-																		{...field}
-																	/>
-
-																	{form.errors.forwardingHost ? (
-																		<div className="invalid-feedback">
-																			{form.errors.forwardingHost &&
-																			form.touched.forwardingHost
-																				? form.errors.forwardingHost
-																				: null}
-																		</div>
-																	) : null}
-																</div>
-															)}
-														</Field>
-													</div>
-													<div className="col-md-4">
-														<Field name="forwardingPort" validate={validateString(0, 12)}>
-															{({ field, form }) => (
-																<div className="mb-3">
-																	<label
-																		className="form-label"
-																		htmlFor="forwardingPort"
-																	>
-																		<T id="host.forward-port" />
-																	</label>
-																	<input
-																		id="forwardingPort"
-																		type="text"
-																		maxLength={12}
-																		className={`form-control ${form.errors.forwardingPort && form.touched.forwardingPort ? "is-invalid" : ""}`}
-																		placeholder="eg: 8081"
-																		{...field}
-																	/>
-
-																	{form.errors.forwardingPort ? (
-																		<div className="invalid-feedback">
-																			{form.errors.forwardingPort &&
-																			form.touched.forwardingPort
-																				? form.errors.forwardingPort
-																				: null}
-																		</div>
-																	) : null}
-																</div>
-															)}
-														</Field>
-													</div>
+													<ForwardHostFields
+														idPrefix="stream-host"
+														loadBalanceMethod={values.npmplusLoadBalanceMethod}
+														loadBalanceMethodFieldName="npmplusLoadBalanceMethod"
+														upstreamServers={values.npmplusUpstreamServers}
+														streams={true}
+													/>
 												</div>
 												<div className="my-3">
 													<h3 className="py-2">

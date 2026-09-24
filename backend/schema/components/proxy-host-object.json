@@ -7,8 +7,6 @@
 		"modified_on",
 		"owner_user_id",
 		"domain_names",
-		"forward_host",
-		"forward_port",
 		"npmplus_access_list_ids",
 		"npmplus_access_list_type",
 		"certificate_id",
@@ -35,7 +33,8 @@
 		"npmplus_fancyindex",
 		"npmplus_x_frame_options",
 		"npmplus_auth_request",
-		"npmplus_auth_request_upstream"
+		"npmplus_auth_request_upstream",
+		"npmplus_upstream_servers"
 	],
 	"additionalProperties": false,
 	"properties": {
@@ -54,19 +53,80 @@
 		"domain_names": {
 			"$ref": "../common.json#/properties/domain_names"
 		},
-		"forward_host": {
+		"npmplus_load_balance_method": {
 			"type": "string",
-			"maxLength": 255,
-			"example": "127.0.0.1"
-		},
-		"forward_port": {
-			"type": [
-				"integer",
-				"null"
+			"enum": [
+				"round_robin",
+				"least_conn",
+				"ip_hash",
+				"least_time_header",
+				"least_time_last_byte",
+				"least_time_last_byte_inflight",
+				"random",
+				"random_two_least_connections",
+				"random_two_least_time_header",
+				"random_two_least_time_last_byte"
 			],
-			"minimum": 1,
-			"maximum": 65535,
-			"example": 8080
+			"default": "round_robin",
+			"example": "round_robin"
+		},
+		"npmplus_upstream_servers": {
+			"type": "array",
+			"minItems": 1,
+			"prefixItems": [
+				{
+					"allOf": [
+						{
+							"$ref": "./upstream-server-object.json"
+						},
+						{
+							"required": [
+								"port"
+							],
+							"properties": {
+								"port": {
+									"type": "integer",
+									"minimum": 1,
+									"maximum": 65535
+								}
+							}
+						}
+					]
+				}
+			],
+			"items": {
+				"allOf": [
+					{
+						"$ref": "./upstream-server-object.json"
+					},
+					{
+						"properties": {
+							"port": {
+								"oneOf": [
+									{
+										"type": "integer",
+										"minimum": 1,
+										"maximum": 65535
+									},
+									{
+										"type": "null"
+									}
+								]
+							}
+						}
+					}
+				]
+			},
+			"default": [],
+			"example": [{
+							"host": "example.com",
+							"port": 80,
+							"max_conns": 1,
+							"weight": 2,
+							"backup": true,
+							"down": false,
+							"fail_timeout": "60s"
+						}]
 		},
 		"npmplus_access_list_ids":{
 			"$ref": "../common.json#/properties/npmplus_access_list_ids"
@@ -180,8 +240,7 @@
 				"type": "object",
 				"required": [
 					"forward_scheme",
-					"forward_host",
-					"forward_port",
+					"npmplus_upstream_servers",
 					"path",
 					"npmplus_access_list_ids",
 					"npmplus_access_list_type"
@@ -215,11 +274,11 @@
 					"forward_scheme": {
 						"$ref": "#/properties/forward_scheme"
 					},
-					"forward_host": {
-						"$ref": "#/properties/forward_host"
+					"npmplus_load_balance_method": {
+						"$ref": "#/properties/npmplus_load_balance_method"
 					},
-					"forward_port": {
-						"$ref": "#/properties/forward_port"
+					"npmplus_upstream_servers": {
+						"$ref": "#/properties/npmplus_upstream_servers"
 					},
 					"caching_enabled": {
 						"$ref": "#/properties/caching_enabled"
@@ -290,8 +349,18 @@
 				{
 					"path": "/app",
 					"forward_scheme": "http",
-					"forward_host": "example.com",
-					"forward_port": 80,
+					"npmplus_load_balance_method": "ip_hash",
+					"npmplus_upstream_servers": [
+						{
+							"host": "example.com",
+							"port": 80,
+							"max_conns": 1,
+							"weight": 2,
+							"backup": true,
+							"down": false,
+							"fail_timeout": "60s"
+						}
+					],
 					"npmplus_access_list_ids": [1, 2],
 					"npmplus_access_list_type": "custom"
 				}
