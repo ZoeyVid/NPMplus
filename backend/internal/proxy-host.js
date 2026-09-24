@@ -165,7 +165,7 @@ const internalProxyHost = {
 		thisData = internalHost.cleanSslHstsData(createCertificate, thisData, existingRow);
 		thisData = internalProxyHostAccessList.cleanAccessListTypes(thisData);
 
-		await internalProxyHostAccessList.validateAccessLists(thisData);
+		await internalProxyHostAccessList.validateAccessLists(access, thisData);
 		internalProxyHost.validateLoadBalancing(thisData, existingRow);
 		// always remove the load balance method if there is only 1 item in the array
 		thisData = internalUpstreamServers.cleanUpstreamServers(thisData);
