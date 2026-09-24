@@ -16,6 +16,11 @@
 			"application/json": {
 				"schema": {
 					"type": "object",
+					"allOf": [
+						{
+							"$ref": "../../../components/load-balancing.json#/$defs/loadBalanceMethodRequirement"
+						}
+					],
 					"additionalProperties": false,
 					"required": [
 						"incoming_port",

@@ -41,7 +41,6 @@
 										"host": "router.internal",
 										"port": 80
 									}],
-									"npmplus_load_balance_method": "round_robin",
 									"tcp_forwarding": true,
 									"udp_forwarding": false,
 									"npmplus_proxy_protocol_forwarding": 0,
