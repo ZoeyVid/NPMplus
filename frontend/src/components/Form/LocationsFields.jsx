@@ -371,6 +371,7 @@ export function LocationsFields({ name = "locations", disabled, isClone }) {
 										)}
 									<div className="row">
 										<ForwardHostFields
+											idPrefix={`location-${item.uiKey}`}
 											namePrefix={`${name}[${idx}]`}
 											scheme={item.forwardScheme}
 											loadBalanceMethod={item.npmplusLoadBalanceMethod}
