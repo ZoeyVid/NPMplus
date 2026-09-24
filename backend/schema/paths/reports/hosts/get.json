@@ -20,7 +20,9 @@
 								"proxy": 20,
 								"redirection": 1,
 								"stream": 0,
-								"dead": 1
+								"dead": 1,
+								"access_list": 2,
+								"certificate": 15
 							}
 						}
 					},
@@ -46,6 +48,16 @@
 								"type": "integer",
 								"description": "404 Hosts Count",
 								"example": 3
+							},
+							"access_list": {
+								"type": "integer",
+								"description": "Access Lists Count",
+								"example": 2
+							},
+							"certificate": {
+								"type": "integer",
+								"description": "Certificates Count",
+								"example": 15
 							}
 						}
 					}
