@@ -117,7 +117,8 @@ const internalProxyHost = {
 			throw new errs.ValidationError("Each auth request provider can only have one upstream");
 		}
 		await internalProxyHostAccessList.validateAccessLists(access, thisData);
-		internalProxyHost.validateLoadBalancing(thisData);
+		thisData = internalUpstreamServers.cleanUpstreamServers(thisData);
+		internalUpstreamServers.validateLoadBalancing(thisData);
 
 		if (createCertificate) {
 			thisData.certificate_id = (await internalCertificate.createQuickCertificate(access, thisData)).id;
@@ -208,6 +209,9 @@ const internalProxyHost = {
 		thisData = internalHost.cleanSslHstsData(createCertificate, thisData, existingRow);
 		thisData = internalProxyHostAccessList.cleanAccessListTypes(thisData);
 		for (const item of [thisData, ...(thisData.locations ?? [])]) cleanForwardOptions(item);
+		// always remove the load balance method if there is only 1 item in the array
+		thisData = internalUpstreamServers.cleanUpstreamServers(thisData);
+		internalProxyHost.validateLoadBalancing(thisData, existingRow);
 		if (thisData.locations?.some(({ path }) => !path)) {
 			throw new errs.ValidationError("Location paths can not be empty");
 		}
@@ -225,9 +229,6 @@ const internalProxyHost = {
 			// update host with cert id
 			thisData.certificate_id = cert.id;
 		}
-		// always remove the load balance method if there is only 1 item in the array
-		thisData = internalUpstreamServers.cleanUpstreamServers(thisData);
-		internalProxyHost.validateLoadBalancing(thisData, existingRow);
 
 		try {
 			await proxyHostModel.transaction(async (trx) => {
@@ -483,14 +484,6 @@ const internalProxyHost = {
 		return query.resultSize();
 	},
 
-	validateLoadBalancing: (data, existing = {}) => {
-		// TODO This needs to be corrected to perform validation that matches what the schema expects
-		const lbMethod = data.lb_method ?? existing.lb_method ?? "round_robin";
-		const upstreamServers = data.upstream_servers ?? existing.upstream_servers ?? [];
-		if (lbMethod === "ip_hash" && upstreamServers.some((server) => server.backup)) {
-			throw new errs.ValidationError("The backup parameter cannot be used with the ip_hash load balancing method",);
-		}
-	}
 };
 
 export default internalProxyHost;

@@ -58,10 +58,12 @@ const internalStream = {
 		internalHost.checkForwardTarget(access, thisData);
 
 		thisData.owner_user_id = access.token.getUserId(1);
-
+		internalUpstreamServers.cleanUpstreamServers(thisData);
+		internalUpstreamServers.validateLoadBalancing(thisData);
 		if (createCertificate) {
 			thisData.certificate_id = (await internalCertificate.createQuickCertificate(access, thisData)).id;
 		}
+		
 
 		let row;
 		try {
@@ -129,6 +131,7 @@ const internalStream = {
 			thisData.certificate_id = cert.id;
 		}
 		internalUpstreamServers.cleanUpstreamServers(thisData);
+		internalUpstreamServers.validateLoadBalancing(thisData, existingRow);
 
 		try {
 			await streamModel.transaction(async (trx) => {
