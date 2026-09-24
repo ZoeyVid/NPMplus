@@ -17,7 +17,7 @@ import EasyModal from "src/modules/easyModal";
 import { MANAGE, STREAMS } from "src/modules/Permissions";
 import { showTabOfInvalid, validateString } from "src/modules/Validations";
 import { showObjectSuccess } from "src/notifications";
-import { ForwardHostFields, CleanUpstreamServers } from "../components/Form/ForwardHostFields";
+import { ForwardHostFields, CleanUpstreamServers, CleanLoadBalanceMethod } from "../components/Form/ForwardHostFields";
 
 const showStreamModal = (id) => {
 	EasyModal.show(StreamModal, { id });
@@ -45,8 +45,10 @@ const StreamModal = EasyModal.create(({ id, visible, remove }) => {
 				values.npmplusUpstreamServers,
 			),
 		};
+		// Keep payload construction separate from submission cleanup so future cleanup steps remain explicit
+		const cleanPayload = CleanLoadBalanceMethod(payload);
 
-		setStream(payload, {
+		setStream(cleanPayload, {
 			onError: (err) => {
 				if (err.payload?.error?.output) {
 					setErrorMsg(
