@@ -4,6 +4,7 @@ import internalAuditLog from "./audit-log.js";
 import internalCertificate from "./certificate.js";
 import internalHost from "./host.js";
 import internalNginx from "./nginx.js";
+import internalUpstreamServers from "./upstream-servers.js"
 
 const cleanStreamData = (data, existingData) => {
 	const combinedData = { ...existingData, ...data };
@@ -127,6 +128,7 @@ const internalStream = {
 			// update host with cert id
 			thisData.certificate_id = cert.id;
 		}
+		thisData = internalUpstreamServers.cleanUpstreamServers(thisData);
 
 		try {
 			await streamModel.transaction(async (trx) => {
