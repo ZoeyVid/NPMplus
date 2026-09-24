@@ -45,7 +45,8 @@ const internalProxyHost = {
 		thisData = internalHost.cleanSslHstsData(createCertificate, thisData);
 		thisData = internalProxyHostAccessList.cleanAccessListTypes(thisData);
 		await internalProxyHostAccessList.validateAccessLists(access, thisData);
-		internalProxyHost.validateLoadBalancing(thisData);
+		thisData = internalUpstreamServers.cleanUpstreamServers(thisData);
+		internalUpstreamServers.validateLoadBalancing(thisData);
 		const createdRow = utils.omitRow(omissions())(
 			await proxyHostModel.transaction(async (trx) => {
 				const insertedRow = await proxyHostModel.query(trx).insertAndFetch(thisData);
@@ -149,9 +150,9 @@ const internalProxyHost = {
 		thisData = internalProxyHostAccessList.cleanAccessListTypes(thisData);
 
 		await internalProxyHostAccessList.validateAccessLists(access, thisData);
-		internalProxyHost.validateLoadBalancing(thisData, existingRow);
 		// always remove the load balance method if there is only 1 item in the array
 		thisData = internalUpstreamServers.cleanUpstreamServers(thisData);
+		internalUpstreamServers.validateLoadBalancing(thisData, existingRow);
 
 		await proxyHostModel.transaction(async (trx) => {
 			
@@ -431,14 +432,6 @@ const internalProxyHost = {
 		return Number.parseInt(row.count, 10);
 	},
 
-	validateLoadBalancing: (data, existing = {}) => {
-		// TODO This needs to be corrected to perform validation that matches what the schema expects
-		const lbMethod = data.lb_method ?? existing.lb_method ?? "round_robin";
-		const upstreamServers = data.upstream_servers ?? existing.upstream_servers ?? [];
-		if (lbMethod === "ip_hash" && upstreamServers.some((server) => server.backup)) {
-			throw new errs.ValidationError("The backup parameter cannot be used with the ip_hash load balancing method",);
-		}
-	}
 };
 
 export default internalProxyHost;
