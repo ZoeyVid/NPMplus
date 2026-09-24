@@ -36,6 +36,9 @@ class Stream extends Model {
 
 	$parseDatabaseJson(json) {
 		const { is_deleted, meta, ...thisJson } = super.$parseDatabaseJson(json);
+		if (thisJson.npmplus_load_balance_method === null) {
+			delete thisJson.npmplus_load_balance_method;
+		}
 		return convertIntFieldsToBool(thisJson, boolFields);
 	}
 
@@ -53,7 +56,7 @@ class Stream extends Model {
 	}
 
 	static get jsonAttributes() {
-		return ["meta"];
+		return ["meta", "npmplus_upstream_servers"];
 	}
 
 	static get relationMappings() {
