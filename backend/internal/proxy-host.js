@@ -7,6 +7,7 @@ import internalCertificate from "./certificate.js";
 import internalHost from "./host.js";
 import internalNginx from "./nginx.js";
 import internalProxyHostAccessList from "./proxy-host-access-list.js";
+import internalUpstreamServers from "./upstream-servers.js"
 
 const replaceLocationsAndAccessLists = async (trx, proxyHostId, data) => {
 	const insertAccessLists = async (locationId, accessListIds) => {
@@ -173,6 +174,9 @@ const internalProxyHost = {
 		for (const item of [thisData, ...(thisData.locations ?? [])]) cleanForwardOptions(item);
 		await internalProxyHostAccessList.validateAccessLists(access, thisData);
 		internalProxyHost.validateLoadBalancing(thisData, existingRow);
+		// always remove the load balance method if there is only 1 item in the array
+		thisData = internalUpstreamServers.cleanUpstreamServers(thisData);
+
 		await proxyHostModel.transaction(async (trx) => {
 			await proxyHostModel.query(trx).where({ id: thisData.id }).patch(thisData);
 			await replaceLocationsAndAccessLists(trx, thisData.id, thisData);
@@ -412,6 +416,7 @@ const internalProxyHost = {
 	},
 
 	validateLoadBalancing: (data, existing = {}) => {
+		// TODO This needs to be corrected to perform validation that matches what the schema expects
 		const lbMethod = data.lb_method ?? existing.lb_method ?? "round_robin";
 		const upstreamServers = data.upstream_servers ?? existing.upstream_servers ?? [];
 		if (lbMethod === "ip_hash" && upstreamServers.some((server) => server.backup)) {

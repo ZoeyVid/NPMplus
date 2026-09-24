@@ -39,24 +39,27 @@ const up = async (knex) => {
 
 	await knex.schema.alterTable("proxy_host", (proxyHost) => {
 		proxyHost.json("npmplus_upstream_servers").notNull().defaultTo("[]");
+		proxyHost.string("npmplus_load_balance_method", 64);
 	});
 
 	await knex.schema.alterTable("stream", (stream) => {
 		stream.json("npmplus_upstream_servers").notNull().defaultTo("[]");
+		stream.string("npmplus_load_balance_method", 64);
 	});
 
-	const proxyHosts = await knex("proxy_host").select(
-		"id",
-		"forward_host",
-		"forward_port",
-		"locations",
-	);
+	const proxyHosts = await knex("proxy_host").select("id", "forward_host", "forward_port", "locations");
 
 	for (const proxyHost of proxyHosts) {
-		const locations = parseLocations(proxyHost.locations).map((location) => ({
-			...location,
-			npmplus_upstream_servers: [createUpstreamServer(location.forward_host, location.forward_port)]
-		}));
+		const locations = parseLocations(proxyHost.locations).map((location) => {
+				const {forward_host, forward_port, ...otherLocationData } = location;
+
+				return {
+					...otherLocationData,
+					npmplus_upstream_servers: [
+						createUpstreamServer(forward_host, forward_port),
+					],
+				};
+			});
 
 		await knex("proxy_host")
 			.where({ id: proxyHost.id })
@@ -79,6 +82,15 @@ const up = async (knex) => {
 				]),
 			});
 	}
+
+	// this may need to be removed if the goal is to preserve the old tables
+	await knex.schema.alterTable("proxy_host", (proxyHost) => {
+		proxyHost.dropColumns("forward_host", "forward_port");
+	});
+
+	await knex.schema.alterTable("stream", (stream) => {
+		stream.dropColumns("forwarding_host", "forwarding_port");
+	});
 
 	logger.info(`[${migrateName}] proxy_host and stream Tables altered`);
 };
