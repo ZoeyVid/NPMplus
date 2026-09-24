@@ -27,7 +27,7 @@
 		"otplib": "13.5.0",
 		"pg": "8.23.0",
 		"swagger-ui-express": "5.0.1",
-		"undici": "8.11.1"
+		"undici": "8.11.2"
 	},
 	"devDependencies": {
 		"@apidevtools/swagger-parser": "13.1.0",
