@@ -80,31 +80,6 @@ const Dashboard = () => {
 								</a>
 							</div>
 						</HasPermission>
-						<HasPermission section={STREAMS} permission={VIEW} hideError>
-							<div className="col-sm-6 col-lg-4">
-								<a
-									href="/nginx/stream"
-									className="card card-sm card-link card-link-pop"
-									onClick={(e) => {
-										e.preventDefault();
-										void navigate("/nginx/stream");
-									}}
-								>
-									<div className="card-body">
-										<div className="row align-items-center">
-											<div className="col-auto">
-												<span className="bg-blue text-white avatar avatar-square">
-													<IconDisc />
-												</span>
-											</div>
-											<div className="col">
-												<T id="streams.count" data={{ count: hostReport?.stream }} />
-											</div>
-										</div>
-									</div>
-								</a>
-							</div>
-						</HasPermission>
 						<HasPermission section={DEAD_HOSTS} permission={VIEW} hideError>
 							<div className="col-sm-6 col-lg-4">
 								<a
@@ -130,25 +105,25 @@ const Dashboard = () => {
 								</a>
 							</div>
 						</HasPermission>
-						<HasPermission section={ACCESS_LISTS} permission={VIEW} hideError>
+						<HasPermission section={STREAMS} permission={VIEW} hideError>
 							<div className="col-sm-6 col-lg-4">
 								<a
-									href="/access"
+									href="/nginx/stream"
 									className="card card-sm card-link card-link-pop"
 									onClick={(e) => {
 										e.preventDefault();
-										void navigate("/access");
+										void navigate("/nginx/stream");
 									}}
 								>
 									<div className="card-body">
 										<div className="row align-items-center">
 											<div className="col-auto">
-												<span className="bg-purple text-white avatar avatar-square">
-													<IconLock />
+												<span className="bg-blue text-white avatar avatar-square">
+													<IconDisc />
 												</span>
 											</div>
 											<div className="col">
-												<T id="access-lists.count" data={{ count: hostReport?.accessList }} />
+												<T id="streams.count" data={{ count: hostReport?.stream }} />
 											</div>
 										</div>
 									</div>
@@ -174,6 +149,31 @@ const Dashboard = () => {
 											</div>
 											<div className="col">
 												<T id="certificates.count" data={{ count: hostReport?.certificate }} />
+											</div>
+										</div>
+									</div>
+								</a>
+							</div>
+						</HasPermission>
+						<HasPermission section={ACCESS_LISTS} permission={VIEW} hideError>
+							<div className="col-sm-6 col-lg-4">
+								<a
+									href="/access"
+									className="card card-sm card-link card-link-pop"
+									onClick={(e) => {
+										e.preventDefault();
+										void navigate("/access");
+									}}
+								>
+									<div className="card-body">
+										<div className="row align-items-center">
+											<div className="col-auto">
+												<span className="bg-purple text-white avatar avatar-square">
+													<IconLock />
+												</span>
+											</div>
+											<div className="col">
+												<T id="access-lists.count" data={{ count: hostReport?.accessList }} />
 											</div>
 										</div>
 									</div>

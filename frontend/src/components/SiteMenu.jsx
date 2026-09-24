@@ -1,13 +1,13 @@
 import {
-	IconBook,
+	IconArrowsCross,
+	IconBolt,
+	IconBoltOff,
 	IconChartBar,
-	IconDeviceDesktop,
+	IconDisc,
 	IconExternalLink,
-	IconHome,
 	IconLock,
 	IconSettings,
 	IconShield,
-	IconUser,
 } from "@tabler/icons-react";
 import cn from "clsx";
 import React from "react";
@@ -27,45 +27,31 @@ import {
 
 const menuItems = [
 	{
-		to: "/",
-		icon: IconHome,
-		label: "dashboard",
+		to: "/nginx/proxy",
+		icon: IconBolt,
+		label: "proxy-hosts",
+		permissionSection: PROXY_HOSTS,
+		permission: VIEW,
 	},
 	{
-		icon: IconDeviceDesktop,
-		label: "hosts",
-		items: [
-			{
-				to: "/nginx/proxy",
-				label: "proxy-hosts",
-				permissionSection: PROXY_HOSTS,
-				permission: VIEW,
-			},
-			{
-				to: "/nginx/redirection",
-				label: "redirection-hosts",
-				permissionSection: REDIRECTION_HOSTS,
-				permission: VIEW,
-			},
-			{
-				to: "/nginx/stream",
-				label: "streams",
-				permissionSection: STREAMS,
-				permission: VIEW,
-			},
-			{
-				to: "/nginx/404",
-				label: "dead-hosts",
-				permissionSection: DEAD_HOSTS,
-				permission: VIEW,
-			},
-		],
+		to: "/nginx/redirection",
+		icon: IconArrowsCross,
+		label: "redirection-hosts",
+		permissionSection: REDIRECTION_HOSTS,
+		permission: VIEW,
 	},
 	{
-		to: "/access",
-		icon: IconLock,
-		label: "access-lists",
-		permissionSection: ACCESS_LISTS,
+		to: "/nginx/404",
+		icon: IconBoltOff,
+		label: "dead-hosts",
+		permissionSection: DEAD_HOSTS,
+		permission: VIEW,
+	},
+	{
+		to: "/nginx/stream",
+		icon: IconDisc,
+		label: "streams",
+		permissionSection: STREAMS,
 		permission: VIEW,
 	},
 	{
@@ -76,22 +62,30 @@ const menuItems = [
 		permission: VIEW,
 	},
 	{
-		to: "/users",
-		icon: IconUser,
-		label: "users",
-		permissionSection: ADMIN,
+		to: "/access",
+		icon: IconLock,
+		label: "access-lists",
+		permissionSection: ACCESS_LISTS,
+		permission: VIEW,
 	},
 	{
-		to: "/audit-log",
-		icon: IconBook,
-		label: "auditlogs",
-		permissionSection: ADMIN,
-	},
-	{
-		to: "/settings",
 		icon: IconSettings,
 		label: "settings",
 		permissionSection: ADMIN,
+		items: [
+			{
+				to: "/settings",
+				label: "settings",
+			},
+			{
+				to: "/users",
+				label: "users",
+			},
+			{
+				to: "/audit-log",
+				label: "auditlogs",
+			},
+		],
 	},
 ];
 
@@ -139,7 +133,7 @@ const getMenuDropown = (item, onClick) => {
 					aria-expanded="false"
 				>
 					<span className="nav-link-icon d-md-none d-lg-inline-block">
-						<IconDeviceDesktop height={24} width={24} />
+						{React.createElement(item.icon, { height: 24, width: 24 })}
 					</span>
 					<span className="nav-link-title">
 						<T id={item.label} />
