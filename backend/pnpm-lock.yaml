@@ -69,8 +69,8 @@ importers:
         specifier: 5.0.1
         version: 5.0.1(express@5.2.1)
       undici:
-        specifier: 8.11.0
-        version: 8.11.0
+        specifier: 8.11.1
+        version: 8.11.1
     devDependencies:
       '@apidevtools/swagger-parser':
         specifier: 13.1.0
@@ -993,6 +993,10 @@ packages:
     resolution: {integrity: sha512-AdzuGcAkzhbha3GgCSoUBx2P0quwym6qdFNCQz/fDGZc8w9XJ741wHUbt2kTmfPz+ZIOMkySFkiY7RXmiDDC8w==}
     engines: {node: '>=22.19.0'}
 
+  undici@8.11.1:
+    resolution: {integrity: sha512-TlM6uPTfw1uM14VFCB/VRq6JGtxY8+aA7vhqB9uH1vGsi/Db7ZjcagIV/wSsICKB+CxXjqtMzdW+QfYE8Ceulg==}
+    engines: {node: '>=22.19.0'}
+
   unpipe@1.0.0:
     resolution: {integrity: sha512-pjy2bYhSsufwWlKwPc+l3cN7+wuJlK6uz0YdJEOlQDbl6jo/YlPi4mb8agUkVC8BF7V8NuzeyPNqRksA3hztKQ==}
     engines: {node: '>= 0.8'}
@@ -1911,6 +1915,8 @@ snapshots:
   undici-types@8.9.0: {}
 
   undici@8.11.0: {}
+
+  undici@8.11.1: {}
 
   unpipe@1.0.0: {}
 
