@@ -122,8 +122,10 @@
 						"test.example.com"
 					],
 					"forward_scheme": "http",
-					"forward_host": "127.0.0.1",
-					"forward_port": 8080
+					"npmplus_upstream_servers": [{
+						"host": "127.0.0.1",
+						"port": 8080
+					}]
 				}
 			}
 		}
