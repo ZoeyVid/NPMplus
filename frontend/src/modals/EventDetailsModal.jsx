@@ -37,15 +37,9 @@ const EventDetailsModal = EasyModal.create(({ id, visible, remove }) => {
 							</div>
 							<hr className="mt-4 mb-3" />
 							<textarea
-								className="form-control"
+								className="form-control font-monospace"
 								spellCheck={false}
-								style={{
-									fontFamily:
-										"ui-monospace,SFMono-Regular,SF Mono,Consolas,Liberation Mono,Menlo,monospace",
-									borderRadius: "0.3rem",
-									minHeight: "200px",
-									backgroundColor: "var(--tblr-bg-surface-dark)",
-								}}
+								rows={9}
 								readOnly
 								value={JSON.stringify(data.meta, null, 2)}
 							/>

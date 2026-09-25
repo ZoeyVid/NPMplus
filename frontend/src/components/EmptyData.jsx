@@ -28,7 +28,7 @@ function EmptyData({
 								<T id="object.empty" tData={{ objects }} />
 							</h2>
 							<HasPermission section={permissionSection} permission={permission || MANAGE} hideError>
-								<p className="text-muted">
+								<p className="text-secondary">
 									<T id="empty-subtitle" />
 								</p>
 								{customAddBtn ? (

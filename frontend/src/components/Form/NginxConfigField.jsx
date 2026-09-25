@@ -10,15 +10,10 @@ export function NginxConfigField({ name = "advancedConfig", label = "nginx-confi
 						<T id={label} />
 					</label>
 					<textarea
-						className="form-control"
+						className="form-control font-monospace"
 						spellCheck={false}
 						placeholder={intl.formatMessage({ id: "nginx-config.placeholder" })}
-						style={{
-							fontFamily: "ui-monospace,SFMono-Regular,SF Mono,Consolas,Liberation Mono,Menlo,monospace",
-							borderRadius: "0.3rem",
-							minHeight: "200px",
-							backgroundColor: "var(--tblr-bg-surface-dark)",
-						}}
+						rows={9}
 						{...field}
 					/>
 				</div>

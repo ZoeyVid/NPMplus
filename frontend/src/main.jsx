@@ -2,7 +2,7 @@ import React from "react";
 import ReactDOM from "react-dom/client";
 import App from "src/App.jsx";
 
-import "@tabler/core/dist/js/tabler.min.js";
+import "@tabler/core";
 
 await (document.dir === "rtl"
 	? import("@tabler/core/dist/css/tabler.rtl.min.css")

@@ -4,19 +4,13 @@ import { useEffect } from "react";
 import { DNSProviderFields, DomainNamesField } from "src/components";
 import { T } from "src/locale";
 
-export function SSLOptionsFields({
-	forHttp = true,
-	forProxyHost = false,
-	forceDNSForNew,
-	requireDomainNames,
-	color = "bg-cyan",
-}) {
+export function SSLOptionsFields({ forHttp = true, forceDNSForNew, requireDomainNames, color = "bg-cyan" }) {
 	const { values, setFieldValue } = useFormikContext();
 	const v = values || {};
 
 	const newCertificate = v?.certificateId === "new";
 	const hasCertificate = newCertificate || (v?.certificateId && v?.certificateId > 0);
-	const { sslForced, http2Support, npmplusHttp3Support, hstsEnabled, hstsSubdomains, trustForwardedProto, meta } = v;
+	const { sslForced, npmplusHttp3Support, hstsEnabled, hstsSubdomains, meta } = v;
 	const { dnsChallenge, reuseKey } = meta || {};
 
 	useEffect(() => {
@@ -35,7 +29,6 @@ export function SSLOptionsFields({
 		if (fieldName === "sslForced" && !e.target.checked) {
 			void setFieldValue("hstsEnabled", false);
 			void setFieldValue("hstsSubdomains", false);
-			void setFieldValue("trustForwardedProto", false);
 		}
 		if (fieldName === "hstsEnabled" && !e.target.checked) {
 			void setFieldValue("hstsSubdomains", false);
@@ -62,24 +55,6 @@ export function SSLOptionsFields({
 
 								<span className="form-check-label">
 									<T id="domains.force-ssl" />
-								</span>
-							</label>
-						)}
-					</Field>
-				</div>
-				<div className="col-6" style={{ display: "none" }}>
-					<Field name="http2Support">
-						{({ field }) => (
-							<label className="form-check form-switch mt-1">
-								<input
-									className={http2Support ? toggleEnabled : toggleClasses}
-									type="checkbox"
-									checked={Boolean(http2Support)}
-									onChange={(e) => handleToggleChange(e, field.name)}
-								/>
-
-								<span className="form-check-label">
-									<T id="domains.http2-support" />
 								</span>
 							</label>
 						)}
@@ -145,37 +120,6 @@ export function SSLOptionsFields({
 					</Field>
 				</div>
 			</div>
-		</div>
-	);
-
-	const getHttpAdvancedOptions = () => (
-		<div style={{ display: "none" }}>
-			<details>
-				<summary className="mb-1">
-					<T id="domains.advanced" />
-				</summary>
-				<div className="row">
-					<div className="col-12">
-						<Field name="trustForwardedProto">
-							{({ field }) => (
-								<label className="form-check form-switch mt-1">
-									<input
-										className={trustForwardedProto ? toggleEnabled : toggleClasses}
-										type="checkbox"
-										checked={Boolean(trustForwardedProto)}
-										onChange={(e) => handleToggleChange(e, field.name)}
-										disabled={!hasCertificate || !sslForced}
-									/>
-
-									<span className="form-check-label">
-										<T id="domains.trust-forwarded-proto" />
-									</span>
-								</label>
-							)}
-						</Field>
-					</div>
-				</div>
-			</details>
 		</div>
 	);
 
@@ -248,7 +192,6 @@ export function SSLOptionsFields({
 					{dnsChallenge ? <DNSProviderFields showBoundaryBox /> : null}
 				</div>
 			) : null}
-			{forProxyHost && forHttp ? getHttpAdvancedOptions() : null}
 		</div>
 	);
 }

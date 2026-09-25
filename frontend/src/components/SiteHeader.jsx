@@ -5,7 +5,6 @@ import { useUser } from "src/hooks";
 import { T } from "src/locale";
 import { showChangePasswordModal, showMfaModal, showUserModal } from "src/modals";
 import { isAdmin } from "src/modules/Permissions";
-import styles from "./SiteHeader.module.css";
 
 export function SiteHeader() {
 	const { data: currentUser } = useUser("me");
@@ -28,15 +27,13 @@ export function SiteHeader() {
 				</button>
 				<div className="navbar-brand navbar-brand-autodark pe-0 pe-md-3">
 					<NavLink to="/">
-						<div className={styles.logo}>
-							<img
-								src="/images/logo-no-text.svg"
-								width={40}
-								height={40}
-								className="navbar-brand-image"
-								alt="Logo"
-							/>
-						</div>
+						<img
+							src="/images/logo-no-text.svg"
+							width={40}
+							height={40}
+							className="navbar-brand-image me-3"
+							alt="Logo"
+						/>
 						NPMplus
 					</NavLink>
 				</div>

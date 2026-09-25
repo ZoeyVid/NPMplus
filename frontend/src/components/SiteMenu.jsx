@@ -9,7 +9,6 @@ import {
 	IconSettings,
 	IconShield,
 } from "@tabler/icons-react";
-import cn from "clsx";
 import React from "react";
 import { HasPermission, NavLink } from "src/components";
 import { useUser } from "src/hooks";
@@ -116,47 +115,39 @@ const getMenuItem = (item, onClick) => {
 	);
 };
 
-const getMenuDropown = (item, onClick) => {
-	const cns = cn("nav-item", "dropdown");
-	return (
-		<HasPermission
-			key={`item-${item.label}`}
-			section={item.permissionSection}
-			permission={item.permission || VIEW}
-			hideError
-		>
-			<li className={cns}>
-				<button
-					type="button"
-					className="nav-link dropdown-toggle"
-					data-bs-toggle="dropdown"
-					aria-expanded="false"
-				>
-					<span className="nav-link-icon d-md-none d-lg-inline-block">
-						{React.createElement(item.icon, { height: 24, width: 24 })}
-					</span>
-					<span className="nav-link-title">
-						<T id={item.label} />
-					</span>
-				</button>
-				<div className="dropdown-menu">
-					{item.items?.map((subitem, idx) => (
-						<HasPermission
-							key={`${idx}-${subitem.to}`}
-							section={subitem.permissionSection}
-							permission={subitem.permission || VIEW}
-							hideError
-						>
-							<NavLink to={subitem.to} isDropdownItem onClick={onClick}>
-								<T id={subitem.label} />
-							</NavLink>
-						</HasPermission>
-					))}
-				</div>
-			</li>
-		</HasPermission>
-	);
-};
+const getMenuDropown = (item, onClick) => (
+	<HasPermission
+		key={`item-${item.label}`}
+		section={item.permissionSection}
+		permission={item.permission || VIEW}
+		hideError
+	>
+		<li className="nav-item dropdown">
+			<button type="button" className="nav-link dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+				<span className="nav-link-icon d-md-none d-lg-inline-block">
+					{React.createElement(item.icon, { height: 24, width: 24 })}
+				</span>
+				<span className="nav-link-title">
+					<T id={item.label} />
+				</span>
+			</button>
+			<div className="dropdown-menu">
+				{item.items?.map((subitem, idx) => (
+					<HasPermission
+						key={`${idx}-${subitem.to}`}
+						section={subitem.permissionSection}
+						permission={subitem.permission || VIEW}
+						hideError
+					>
+						<NavLink to={subitem.to} isDropdownItem onClick={onClick}>
+							<T id={subitem.label} />
+						</NavLink>
+					</HasPermission>
+				))}
+			</div>
+		</li>
+	</HasPermission>
+);
 
 export function SiteMenu() {
 	const { data: user } = useUser("me");

@@ -125,6 +125,7 @@ export default function Table({
 							className="btn dropdown-toggle btn-action btn-sm px-1"
 							data-bs-boundary="viewport"
 							data-bs-toggle="dropdown"
+							data-bs-popper-config='{"strategy":"fixed"}'
 						>
 							<IconDotsVertical />
 						</button>

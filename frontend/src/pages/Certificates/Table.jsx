@@ -200,6 +200,7 @@ export default function Table({
 								className="btn dropdown-toggle btn-action btn-sm px-1"
 								data-bs-boundary="viewport"
 								data-bs-toggle="dropdown"
+								data-bs-popper-config='{"strategy":"fixed"}'
 							>
 								<IconDotsVertical />
 							</button>
@@ -305,7 +306,12 @@ export default function Table({
 
 	const customAddBtn = (
 		<div className="dropdown">
-			<button type="button" className="btn dropdown-toggle btn-pink my-3" data-bs-toggle="dropdown">
+			<button
+				type="button"
+				className="btn dropdown-toggle btn-pink my-3"
+				data-bs-toggle="dropdown"
+				data-bs-popper-config='{"strategy":"fixed"}'
+			>
 				<T id="object.add" tData={{ object: "certificate" }} />
 			</button>
 			<div className="dropdown-menu">

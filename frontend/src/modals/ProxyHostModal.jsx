@@ -115,19 +115,14 @@ const ProxyHostModal = EasyModal.create(({ id, isClone = false, visible, remove 
 						forwardPort: data?.forwardPort || undefined,
 						npmplusAccessListIds: data?.npmplusAccessListIds || [],
 						npmplusAccessListType: data?.npmplusAccessListType || "public",
-						cachingEnabled: data?.cachingEnabled || false,
-						blockExploits: data?.blockExploits || false,
-						allowWebsocketUpgrade: data?.allowWebsocketUpgrade ?? true,
 						// Locations tab
 						locations: data?.locations || [],
 						// SSL tab
 						certificateId: data?.certificateId || 0,
 						sslForced: data?.sslForced || false,
-						http2Support: data?.http2Support ?? true,
 						npmplusHttp3Support: data?.npmplusHttp3Support || false,
 						hstsEnabled: data?.hstsEnabled || false,
 						hstsSubdomains: data?.hstsSubdomains || false,
-						trustForwardedProto: data?.trustForwardedProto || false,
 						// Advanced tab
 						advancedConfig: data?.advancedConfig || "",
 						npmplusLocationConfig: data?.npmplusLocationConfig || "",
@@ -352,77 +347,11 @@ const ProxyHostModal = EasyModal.create(({ id, isClone = false, visible, remove 
 														<T id="options" />
 													</h4>
 													<div className="divide-y">
-														<div style={{ display: "none" }}>
-															<label className="row" htmlFor="cachingEnabled">
-																<span className="col">
-																	<T id="host.flags.cache-assets" />
-																</span>
-																<span className="col-auto">
-																	<Field name="cachingEnabled" type="checkbox">
-																		{({ field }) => (
-																			<span className="form-check form-check-single form-switch">
-																				<input
-																					{...field}
-																					id="cachingEnabled"
-																					className={cn("form-check-input", {
-																						"bg-lime": field.checked,
-																					})}
-																					type="checkbox"
-																				/>
-																			</span>
-																		)}
-																	</Field>
-																</span>
-															</label>
-														</div>
-														<div style={{ display: "none" }}>
-															<label className="row" htmlFor="blockExploits">
-																<span className="col">
-																	<T id="host.flags.block-exploits" />
-																</span>
-																<span className="col-auto">
-																	<Field name="blockExploits" type="checkbox">
-																		{({ field }) => (
-																			<span className="form-check form-check-single form-switch">
-																				<input
-																					{...field}
-																					id="blockExploits"
-																					className={cn("form-check-input", {
-																						"bg-lime": field.checked,
-																					})}
-																					type="checkbox"
-																				/>
-																			</span>
-																		)}
-																	</Field>
-																</span>
-															</label>
-														</div>
-														<div style={{ display: "none" }}>
-															<label className="row" htmlFor="allowWebsocketUpgrade">
-																<span className="col">
-																	<T id="host.flags.websockets-upgrade" />
-																</span>
-																<span className="col-auto">
-																	<Field name="allowWebsocketUpgrade" type="checkbox">
-																		{({ field }) => (
-																			<span className="form-check form-check-single form-switch">
-																				<input
-																					{...field}
-																					id="allowWebsocketUpgrade"
-																					className={cn("form-check-input", {
-																						"bg-lime": field.checked,
-																					})}
-																					type="checkbox"
-																				/>
-																			</span>
-																		)}
-																	</Field>
-																</span>
-															</label>
-														</div>
 														<div>
-															<label className="row" htmlFor="npmplusNoindex">
+															<label
+																className="row cursor-pointer"
+																htmlFor="npmplusNoindex"
+															>
 																<span className="col">
 																	<T id="host.flags.send-noindex" />
 																</span>
@@ -445,7 +374,10 @@ const ProxyHostModal = EasyModal.create(({ id, isClone = false, visible, remove 
 															</label>
 														</div>
 														<div>
-															<label className="row" htmlFor="npmplusCrowdsecAppsec">
+															<label
+																className="row cursor-pointer"
+																htmlFor="npmplusCrowdsecAppsec"
+															>
 																<span className="col">
 																	<T id="host.flags.disable-crowdsec-appsec" />
 																</span>
@@ -477,7 +409,7 @@ const ProxyHostModal = EasyModal.create(({ id, isClone = false, visible, remove 
 														</div>
 														<div>
 															<label
-																className="row"
+																className="row cursor-pointer"
 																htmlFor="npmplusProxyRequestBuffering"
 															>
 																<span className="col">
@@ -520,7 +452,7 @@ const ProxyHostModal = EasyModal.create(({ id, isClone = false, visible, remove 
 														</div>
 														<div>
 															<label
-																className="row"
+																className="row cursor-pointer"
 																htmlFor="npmplusProxyResponseBuffering"
 															>
 																<span className="col">
@@ -554,7 +486,10 @@ const ProxyHostModal = EasyModal.create(({ id, isClone = false, visible, remove 
 															</label>
 														</div>
 														<div>
-															<label className="row" htmlFor="npmplusUpstreamCompression">
+															<label
+																className="row cursor-pointer"
+																htmlFor="npmplusUpstreamCompression"
+															>
 																<span className="col">
 																	<T id="host.flags.upstream-compression" />
 																</span>
@@ -586,7 +521,10 @@ const ProxyHostModal = EasyModal.create(({ id, isClone = false, visible, remove 
 															</label>
 														</div>
 														<div>
-															<label className="row" htmlFor="npmplusFancyindex">
+															<label
+																className="row cursor-pointer"
+																htmlFor="npmplusFancyindex"
+															>
 																<span className="col">
 																	<T id="host.flags.fancyindex" />
 																</span>
@@ -613,7 +551,10 @@ const ProxyHostModal = EasyModal.create(({ id, isClone = false, visible, remove 
 															</label>
 														</div>
 														<div>
-															<label className="row" htmlFor="npmplusXFrameOptions">
+															<label
+																className="row cursor-pointer"
+																htmlFor="npmplusXFrameOptions"
+															>
 																<span className="col">X-Frame-Options</span>
 																<span className="col-auto">
 																	<Field name="npmplusXFrameOptions">
@@ -639,7 +580,10 @@ const ProxyHostModal = EasyModal.create(({ id, isClone = false, visible, remove 
 															</label>
 														</div>
 														<div>
-															<label className="row" htmlFor="npmplusAuthRequest">
+															<label
+																className="row cursor-pointer"
+																htmlFor="npmplusAuthRequest"
+															>
 																<span className="col">
 																	<T id="host.auth-request" />
 																</span>
@@ -681,7 +625,7 @@ const ProxyHostModal = EasyModal.create(({ id, isClone = false, visible, remove 
 														{values.npmplusAuthRequest !== "none" && (
 															<div>
 																<label
-																	className="row"
+																	className="row cursor-pointer"
 																	htmlFor="npmplusAuthRequestUpstream"
 																>
 																	<span className="col">
@@ -741,17 +685,12 @@ const ProxyHostModal = EasyModal.create(({ id, isClone = false, visible, remove 
 															{advVisible && (
 																<div className="">
 																	<textarea
-																		className="form-control"
+																		className="form-control font-monospace"
 																		spellCheck={false}
 																		placeholder={intl.formatMessage({
 																			id: "nginx-config.placeholder",
 																		})}
-																		style={{
-																			fontFamily:
-																				"ui-monospace,SFMono-Regular,SF Mono,Consolas,Liberation Mono,Menlo,monospace",
-																			borderRadius: "0.3rem",
-																			minHeight: "170px",
-																		}}
+																		rows={8}
 																		{...field}
 																	/>
 																</div>
@@ -770,7 +709,7 @@ const ProxyHostModal = EasyModal.create(({ id, isClone = false, visible, remove 
 													allowNew
 												/>
 
-												<SSLOptionsFields color="bg-lime" forProxyHost={true} />
+												<SSLOptionsFields color="bg-lime" />
 											</div>
 											<div className="tab-pane" id="tab-advanced" role="tabpanel">
 												<NginxConfigField />

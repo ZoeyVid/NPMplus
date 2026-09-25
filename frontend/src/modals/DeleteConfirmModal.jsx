@@ -63,7 +63,7 @@ const DeleteConfirmModal = EasyModal.create(
 					<div className="text-center mb-3">
 						{children}
 						{subject ? <div className="mt-2 fw-bold text-break">{subject}</div> : null}
-						{details ? <div className="mt-1 text-muted small text-break">{details}</div> : null}
+						{details ? <div className="mt-1 text-secondary small text-break">{details}</div> : null}
 					</div>
 				</Modal.Body>
 				<Modal.Footer>

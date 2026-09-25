@@ -8,7 +8,6 @@ import { useHealth } from "src/hooks";
 import { intl, T } from "src/locale";
 import { getCookie } from "src/modules/Cookies";
 import { validateEmail, validateString } from "src/modules/Validations";
-import styles from "./index.module.css";
 
 function TotpForm() {
 	const codeRef = useRef(null);
@@ -248,10 +247,10 @@ export default function Login() {
 	const { totpChallenge } = useAuthState();
 
 	return (
-		<Page className="page page-center">
+		<Page className="page-center">
 			<div className="container container-tight py-4">
 				<div className="d-flex justify-content-between align-items-center mb-4 ps-4 pe-3">
-					<img className={styles.logo} src="/images/logo-text-horizontal-grey.png" alt="NPMplus" />
+					<img width={200} src="/images/logo-text-horizontal-grey.png" alt="NPMplus" />
 					<div className="d-flex align-items-center gap-1">
 						<LocalePicker />
 						<ThemeSwitcher />

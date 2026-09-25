@@ -49,12 +49,7 @@ function TableBody(props) {
 						<th
 							scope="rowgroup"
 							colSpan={colSpan}
-							className="fw-bold text-secondary text-uppercase py-2 border-bottom"
-							style={{
-								backgroundColor: "var(--tblr-bg-surface-secondary)",
-								fontSize: "0.75rem",
-								letterSpacing: "0.05em",
-							}}
+							className="subheader fw-bold text-secondary py-2 border-bottom bg-surface-secondary"
 						>
 							{renderGroupLabel ? renderGroupLabel(key) : key}
 						</th>

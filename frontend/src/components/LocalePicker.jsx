@@ -1,19 +1,12 @@
 import cn from "clsx";
 import { Flag } from "src/components";
-import { useThemeState } from "src/context";
 import { changeLocale, getFlagCodeForLocale, localeOptions } from "src/locale";
 import localeList from "translations/lang-list.json" with { type: "json" };
-import styles from "./LocalePicker.module.css";
 
 function LocalePicker({ menuAlign = "start" }) {
-	const { theme } = useThemeState();
-
-	const classes = ["btn", "dropdown-toggle", "btn-sm", styles.btn];
-	const cns = cn(...classes, theme === "dark" ? "btn-ghost-dark" : "btn-ghost-light");
-
 	return (
 		<div className="dropdown">
-			<button type="button" className={cns} data-bs-toggle="dropdown">
+			<button type="button" className="btn dropdown-toggle btn-sm btn-ghost" data-bs-toggle="dropdown">
 				<Flag countryCode={getFlagCodeForLocale()} />
 			</button>
 			<div

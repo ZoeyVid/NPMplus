@@ -45,32 +45,31 @@ export function AccessClientFields({ initialValues, name = "clients" }) {
 
 	return (
 		<>
-			<p className="text-muted">
+			<p className="text-secondary">
 				<T id="access-list.help.rules-order" />
 			</p>
 			{values.slice(0, -1).map((client, idx) => (
 				<div className="row mb-1" key={idx}>
 					<div className="col-11">
 						<div className="input-group mb-2">
-							<span className="input-group-select">
-								<select
-									className={cn(
-										"form-select",
-										"m-0",
-										client.directive === "allow" ? "bg-lime-lt" : "bg-orange-lt",
-									)}
-									name={`clients[${idx}].directive`}
-									value={client.directive}
-									onChange={(e) => handleChange(idx, "directive", e.target.value)}
-								>
-									<option value="allow">
-										<T id="action.allow" />
-									</option>
-									<option value="deny">
-										<T id="action.deny" />
-									</option>
-								</select>
-							</span>
+							<select
+								className={cn(
+									"form-select",
+									"w-auto",
+									"flex-grow-0",
+									client.directive === "allow" ? "bg-lime-lt" : "bg-orange-lt",
+								)}
+								name={`clients[${idx}].directive`}
+								value={client.directive}
+								onChange={(e) => handleChange(idx, "directive", e.target.value)}
+							>
+								<option value="allow">
+									<T id="action.allow" />
+								</option>
+								<option value="deny">
+									<T id="action.deny" />
+								</option>
+							</select>
 							<input
 								name={`clients[${idx}].address`}
 								type="text"
@@ -102,30 +101,29 @@ export function AccessClientFields({ initialValues, name = "clients" }) {
 				</button>
 			</div>
 			<div className="row mb-3">
-				<p className="text-muted">
+				<p className="text-secondary">
 					<T id="access-list.help.rules-last" />
 				</p>
 				<div className="col-11">
 					<div className="input-group mb-2">
-						<span className="input-group-select">
-							<select
-								className={cn(
-									"form-select",
-									"m-0",
-									values[values.length - 1].directive === "allow" ? "bg-lime-lt" : "bg-orange-lt",
-								)}
-								name="clients[last].directive"
-								value={values[values.length - 1].directive}
-								onChange={(e) => handleChange(values.length - 1, "directive", e.target.value)}
-							>
-								<option value="allow">
-									<T id="action.allow" />
-								</option>
-								<option value="deny">
-									<T id="action.deny" />
-								</option>
-							</select>
-						</span>
+						<select
+							className={cn(
+								"form-select",
+								"w-auto",
+								"flex-grow-0",
+								values[values.length - 1].directive === "allow" ? "bg-lime-lt" : "bg-orange-lt",
+							)}
+							name="clients[last].directive"
+							value={values[values.length - 1].directive}
+							onChange={(e) => handleChange(values.length - 1, "directive", e.target.value)}
+						>
+							<option value="allow">
+								<T id="action.allow" />
+							</option>
+							<option value="deny">
+								<T id="action.deny" />
+							</option>
+						</select>
 						<input
 							name="clients[last].address"
 							type="text"

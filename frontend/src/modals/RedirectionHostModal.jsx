@@ -88,11 +88,9 @@ const RedirectionHostModal = EasyModal.create(({ id, visible, remove }) => {
 						forwardScheme: data?.forwardScheme || "auto",
 						forwardHttpCode: data?.forwardHttpCode || 301,
 						preservePath: data?.preservePath || false,
-						blockExploits: data?.blockExploits || false,
 						// SSL tab
 						certificateId: data?.certificateId || 0,
 						sslForced: data?.sslForced || false,
-						http2Support: data?.http2Support ?? true,
 						npmplusHttp3Support: data?.npmplusHttp3Support || false,
 						hstsEnabled: data?.hstsEnabled || false,
 						hstsSubdomains: data?.hstsSubdomains || false,
@@ -267,7 +265,10 @@ const RedirectionHostModal = EasyModal.create(({ id, visible, remove }) => {
 													</h4>
 													<div className="divide-y">
 														<div>
-															<label className="row" htmlFor="preservePath">
+															<label
+																className="row cursor-pointer"
+																htmlFor="preservePath"
+															>
 																<span className="col">
 																	<T id="host.flags.preserve-path" />
 																</span>
@@ -278,29 +279,6 @@ const RedirectionHostModal = EasyModal.create(({ id, visible, remove }) => {
 																				<input
 																					{...field}
 																					id="preservePath"
-																					className={cn("form-check-input", {
-																						"bg-yellow": field.checked,
-																					})}
-																					type="checkbox"
-																				/>
-																			</span>
-																		)}
-																	</Field>
-																</span>
-															</label>
-														</div>
-														<div style={{ display: "none" }}>
-															<label className="row" htmlFor="blockExploits">
-																<span className="col">
-																	<T id="host.flags.block-exploits" />
-																</span>
-																<span className="col-auto">
-																	<Field name="blockExploits" type="checkbox">
-																		{({ field }) => (
-																			<span className="form-check form-check-single form-switch">
-																				<input
-																					{...field}
-																					id="blockExploits"
 																					className={cn("form-check-input", {
 																						"bg-yellow": field.checked,
 																					})}
