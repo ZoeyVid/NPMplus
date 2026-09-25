@@ -34,7 +34,6 @@
 					}
 				]
 			},
-			"default": [],
 			"example": [
 				{
 					"host": "example.com",
