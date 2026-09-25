@@ -3,6 +3,7 @@ import { Field, useFormikContext } from "formik";
 import Select, { components } from "react-select";
 import { useCertificates } from "src/hooks";
 import { formatDateTime, intl, T } from "src/locale";
+import { selectClassNames } from "src/modules/Select";
 
 const Option = (props) => (
 	<components.Option {...props}>
@@ -125,8 +126,8 @@ export function SSLCertificateField({
 						{!isLoading && !isError ? (
 							<Select
 								inputId={id}
-								className="react-select-container"
-								classNamePrefix="react-select"
+								unstyled
+								classNames={selectClassNames}
 								value={options.find((o) => o.value === field.value) || options[0]}
 								options={options}
 								components={{ Option }}
@@ -159,8 +160,8 @@ export function SSLCertificateField({
 						{!isLoading && !isError ? (
 							<Select
 								inputId="mtlsCertificate"
-								className="react-select-container"
-								classNamePrefix="react-select"
+								unstyled
+								classNames={selectClassNames}
 								value={mtlsOptions.find((o) => o.value === field.value) || mtlsOptions[0]}
 								options={mtlsOptions}
 								components={{ Option }}

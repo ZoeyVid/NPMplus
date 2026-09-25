@@ -4,6 +4,7 @@ import { useState } from "react";
 import Select, { components } from "react-select";
 import { useAccessLists } from "src/hooks";
 import { formatDateTime, intl, T } from "src/locale";
+import { selectClassNames } from "src/modules/Select";
 
 const OptionContent = (label, subLabel, icon) => (
 	<div className="flex-fill">
@@ -140,9 +141,11 @@ export function AccessFields({ initialAccessListType, location, initialAccessLis
 				<div className="col-md-10">
 					<div className="input-group mb-3 shadow-none">
 						<Select
-							className="react-select-container col-md-8"
-							classNamePrefix="react-select"
+							className="col-md-8"
+							unstyled
+							classNames={selectClassNames}
 							isSearchable={false}
+							getOptionValue={(o) => o.type}
 							defaultValue={createOption(initialAccessListType)}
 							options={typeOptions()}
 							components={{ Option: TypeOption }}
@@ -168,8 +171,9 @@ export function AccessFields({ initialAccessListType, location, initialAccessLis
 					{values.map((item, idx) => (
 						<div key={item ?? idx} className="input-group mb-1 shadow-none">
 							<Select
-								className="react-select-container col-md-8 mb-1"
-								classNamePrefix="react-select"
+								className="col-md-8 mb-1"
+								unstyled
+								classNames={selectClassNames}
 								value={defaultOptions.find((o) => o.value === item) ?? null}
 								options={options}
 								components={{ Option }}

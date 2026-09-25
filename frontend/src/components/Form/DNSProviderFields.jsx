@@ -4,6 +4,7 @@ import { useState } from "react";
 import Select from "react-select";
 import { useDnsProviders } from "src/hooks";
 import { intl, T } from "src/locale";
+import { selectClassNames } from "src/modules/Select";
 
 export function DNSProviderFields({ showBoundaryBox = false }) {
 	const { values, setFieldValue } = useFormikContext();
@@ -39,8 +40,8 @@ export function DNSProviderFields({ showBoundaryBox = false }) {
 							<T id="certificates.dns.provider" />
 						</label>
 						<Select
-							className="react-select-container"
-							classNamePrefix="react-select"
+							unstyled
+							classNames={selectClassNames}
 							name={field.name}
 							inputId="dnsProvider"
 							closeMenuOnSelect={true}
