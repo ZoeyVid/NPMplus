@@ -33,6 +33,9 @@
 					"allOf": [
 						{
 							"$ref": "../../../../components/load-balancing.json#/$defs/partialLoadBalanceMethodRequirement"
+						},
+						{
+							"$ref": "../../../../components/load-balancing.json#/$defs/proxySchemeUpstreamRequirement"
 						}
 					],
 					"additionalProperties": false,

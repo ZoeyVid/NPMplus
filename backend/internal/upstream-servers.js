@@ -1,3 +1,4 @@
+import { isIPv6 } from "node:net";
 import errs from "../lib/error.js";
 
 const BACKUP_INCOMPATIBLE_METHODS = [
@@ -12,6 +13,24 @@ const BACKUP_INCOMPATIBLE_METHODS = [
 	"random_two_least_time_last_byte",
 ];
 
+const SINGLE_UPSTREAM_SCHEMES = ["path", "empty"];
+
+const normaliseHost = (host) => {
+	if (typeof host !== "string") {
+		return host;
+	}
+
+	const pathIndex = host.indexOf("/");
+	const address = pathIndex === -1 ? host : host.slice(0, pathIndex);
+	const path = pathIndex === -1 ? "" : host.slice(pathIndex);
+
+	if (address.startsWith("[") && address.endsWith("]")) {
+		return host;
+	}
+
+	return isIPv6(address) ? `[${address}]${path}` : host;
+};
+
 const internalUpstreamServers = {
 
 	/**
@@ -20,6 +39,12 @@ const internalUpstreamServers = {
 	 * @returns 
 	 */
 	cleanUpstreamServers: (serverHost) => {
+		if (Array.isArray(serverHost.npmplus_upstream_servers)) {
+			for (const server of serverHost.npmplus_upstream_servers) {
+				server.host = normaliseHost(server.host);
+			}
+		}
+
 		// always remove the load balance method if there is only 1 item in the array
 		if (Array.isArray(serverHost.npmplus_upstream_servers) &&
 			serverHost.npmplus_upstream_servers.length === 1) {
@@ -39,7 +64,7 @@ const internalUpstreamServers = {
 	 * @param {*} serverHost
 	 * @param {*} existingServerHost
 	 */
-	validateLoadBalancing: (serverHost, existingServerHost = {}) => {
+	validateLoadBalancing: (serverHost, existingServerHost = {}, streams = false) => {
 		// use hasOwn to verify if it was specified as null deliberately (clean functions) or is actually missing
 		const upstreamServers = Object.hasOwn(serverHost, "npmplus_upstream_servers")
 			? serverHost.npmplus_upstream_servers
@@ -48,6 +73,19 @@ const internalUpstreamServers = {
 		const loadBalanceMethod = Object.hasOwn(serverHost, "npmplus_load_balance_method")
 			? serverHost.npmplus_load_balance_method
 			: existingServerHost.npmplus_load_balance_method;
+
+		const forwardScheme = Object.hasOwn(serverHost, "forward_scheme")
+			? serverHost.forward_scheme
+			: existingServerHost.forward_scheme;
+
+		if (!streams && SINGLE_UPSTREAM_SCHEMES.includes(forwardScheme) && upstreamServers.length !== 1) {
+			throw new errs.ValidationError(`${forwardScheme} proxy hosts must have exactly one upstream server`);
+		}
+
+		const usesServerPort = upstreamServers.some((server) => server.port === "$server_port");
+		if (usesServerPort && (!streams || upstreamServers.length !== 1 || upstreamServers[0].port !== "$server_port")) {
+			throw new errs.ValidationError("$server_port can only be used by a stream with exactly one upstream server");
+		}
 
 		if (upstreamServers.length > 1 && !loadBalanceMethod) {
 			throw new errs.ValidationError("A load balancing method is required when multiple upstream servers are configured");

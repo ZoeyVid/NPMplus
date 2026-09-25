@@ -231,8 +231,8 @@ export function ForwardHostFields({ scheme="",idPrefix, loadBalanceMethod, upstr
 									>
 										<option value="http">http://</option>
 										<option value="https">https://</option>
-										<option value="path">path: </option>
-										<option value="empty">empty</option>
+										<option value="path" disabled={servers.length > 1}>path: </option>
+										<option value="empty" disabled={servers.length > 1}>empty</option>
 										<option value="grpc">grpc://</option>
 										<option value="grpcs">grpcs://</option>
 									</select>
@@ -386,7 +386,6 @@ export function ForwardHostFields({ scheme="",idPrefix, loadBalanceMethod, upstr
 													type="text"
 													inputMode={streamValidation ? "text" : "numeric"}
 													pattern={streamValidation ? SERVER_PORT_PATTERN : NUMERIC_PATTERN}
-													required={idx === 0}
 													className={`form-control ${meta.touched && meta.error ? "is-invalid" : ""}`}
 													placeholder="eg: 8081"
 													value={server.port?? ""}
@@ -575,7 +574,10 @@ export function ForwardHostFields({ scheme="",idPrefix, loadBalanceMethod, upstr
 					type="button"
 					className="btn btn-sm"
 					onClick={handleAdd}
-					disabled={streams && servers[0]?.port === "$server_port"}
+					disabled={
+						(!streams && ["path", "empty"].includes(scheme)) ||
+						(streams && servers[0]?.port === "$server_port")
+					}
 				>
 					<T id="action.add" />
 				</button>
