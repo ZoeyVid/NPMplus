@@ -1,6 +1,7 @@
 import { Field, useFormikContext } from "formik";
 import CreatableSelect from "react-select/creatable";
 import { intl, T } from "src/locale";
+import { selectClassNames } from "src/modules/Select";
 import { validateDomain, validateDomains } from "src/modules/Validations";
 
 export function DomainNamesField({
@@ -38,8 +39,8 @@ export function DomainNamesField({
 						<T id={label} />
 					</label>
 					<CreatableSelect
-						className="react-select-container"
-						classNamePrefix="react-select"
+						unstyled
+						classNames={selectClassNames}
 						name={field.name}
 						id={id}
 						closeMenuOnSelect={true}
