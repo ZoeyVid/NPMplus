@@ -8,7 +8,7 @@ import internalNginx from "./nginx.js";
 
 const GENERATED_DIR = "/data/access";
 
-const omissions = () => ["is_deleted", "owner.is_deleted", "certificate.is_deleted"];
+const omissions = () => ["is_deleted", "owner.is_deleted", "certificate.is_deleted", "certificate.meta"];
 
 const getMergedItems = (accessLists) => {
 	const seen = new Set();

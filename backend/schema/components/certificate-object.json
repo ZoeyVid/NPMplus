@@ -62,14 +62,6 @@
 			"type": "object",
 			"additionalProperties": false,
 			"properties": {
-				"certificate": {
-					"type": "string",
-					"minLength": 1
-				},
-				"certificate_key": {
-					"type": "string",
-					"minLength": 1
-				},
 				"reuse_key": {
 					"type": "boolean"
 				},
