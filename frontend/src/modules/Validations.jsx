@@ -21,18 +21,24 @@ const validateString = (value, minLength = 0, maxLength = 0, trim = true) => {
 	}
 };
 
-const validateNumber = (value, min = -1, max = -1) => {
-	const int = Number(value);
-	if (min > -1 && !int) {
-		return intl.formatMessage({ id: "error.required" });
+const validateNumber = (min = -1, max = -1, allowZero = false) => {
+	if (min === -1 && max === -1) {
+		// this doesn't require translation
+		console.error("validateNumber() must be called with a min or max or both values in order to work!");
 	}
-	if (min > -1 && int < min) {
-		return intl.formatMessage({ id: "error.minimum" }, { min });
-	}
-	if (max > -1 && int > max) {
-		return intl.formatMessage({ id: "error.maximum" }, { max });
-	}
-};
+
+	return (value) => {
+		const int = Number(value);
+		if (min > -1 && !int && !(allowZero && int === 0)) {
+			return intl.formatMessage({ id: "error.required" });
+		}
+		if (min > -1 && int < min) {
+			return intl.formatMessage({ id: "error.minimum" }, { min });
+		}
+		if (max > -1 && int > max) {
+			return intl.formatMessage({ id: "error.maximum" }, { max });
+		}
+	};
 
 const validateEmail = (value) => {
 	if (value.length === 0) {

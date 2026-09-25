@@ -17,8 +17,12 @@ const parseLocations = (locations) => {
 };
 
 const normalisePort = (port) => {
-	if (typeof port === "string" && /^[0-9]+$/.test(port)) {
-		return Number(port);
+	if (typeof port === "string") {
+		if (port.trim() === "") {
+			return null;
+		} else if (/^[0-9]+$/.test(port)) {
+			return Number(port);
+		}
 	}
 
 	return port;
@@ -40,10 +44,15 @@ const normaliseHost = (host) => {
 	return isIPv6(address) ? `[${address}]${path}` : host;
 };
 
-const createUpstreamServer = (host, port) => ({
-	host: normaliseHost(host),
-	port: normalisePort(port),
-});
+const createUpstreamServer = (host, port) => {
+	const normalisedPort = normalisePort(port);
+
+	return {
+		host: normaliseHost(host),
+		...(normalisedPort === null || normalisedPort === undefined
+			? {} : { port: normalisedPort }),
+	};
+};
 
 /**
  * Adds load-balancing configuration to proxy hosts, custom locations, and streams.

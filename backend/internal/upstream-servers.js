@@ -38,7 +38,7 @@ const internalUpstreamServers = {
 	 * @param {*} serverHost 
 	 * @returns 
 	 */
-	cleanUpstreamServers: (serverHost) => {
+	cleanUpstreamServers: (serverHost, isLocation = false) => {
 		if (Array.isArray(serverHost.npmplus_upstream_servers)) {
 			for (const server of serverHost.npmplus_upstream_servers) {
 				server.host = normaliseHost(server.host);
@@ -46,14 +46,20 @@ const internalUpstreamServers = {
 		}
 
 		// always remove the load balance method if there is only 1 item in the array
+		// however if it is not a location and it is changing from more than 1 to 1 host,
+		// then set it to null so objection will update the field
 		if (Array.isArray(serverHost.npmplus_upstream_servers) &&
 			serverHost.npmplus_upstream_servers.length === 1) {
-			serverHost.npmplus_load_balance_method = null;
+			if (isLocation) {
+				delete serverHost.npmplus_load_balance_method;
+			} else {
+				serverHost.npmplus_load_balance_method = null;
+			}
 		}
 		// streams do not have locations and some hosts may not have them either so do a check before trying to iterate
 		if (Array.isArray(serverHost.locations)) {
 			for (const location of serverHost.locations) {
-				internalUpstreamServers.cleanUpstreamServers(location);
+				internalUpstreamServers.cleanUpstreamServers(location, true);
 			}
 		}
 		return serverHost;

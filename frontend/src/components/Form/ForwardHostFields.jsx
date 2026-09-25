@@ -10,7 +10,7 @@ import { validateNumber } from "src/modules/Validations";
 
 const BACKUP_INCOMPATIBLE_METHODS = ["hash", "hash_consistent", "ip_hash", "random", "random_two_least_connections", "random_two_least_time_connect", "random_two_least_time_header", "random_two_least_time_first_byte", "random_two_least_time_last_byte" ];
 
-const NGINX_TIME_SYNTAX_REGEX = "^[1-9]\\d*\\s*(ms|s|m|h|d|w|M|y)?";
+const NGINX_TIME_SYNTAX_REGEX = "^[1-9]\\d*\\s*(?:ms|s|m|h|d|w|M|y)?$";
 const NUMERIC_PATTERN = "^[0-9]*$";
 const SERVER_PORT_PATTERN = `${NUMERIC_PATTERN}|\\$server_port`;
 
@@ -49,6 +49,14 @@ const validatePort = (streams) => (value) => {
 	}
 	return validateNumber(1, 65535)(value);
 };
+
+const validateNullNumber = (min, max, allowZero) => (value) => {
+	if (value === null || value === undefined){
+		return;
+	}else {
+		return validateNumber(min,max, allowZero)(value);
+	}
+}
 
 const validateTimeout = () => (value) => {
 	if(value && !(new RegExp(`${NGINX_TIME_SYNTAX_REGEX}$`).test(value))){
@@ -432,7 +440,7 @@ export function ForwardHostFields({ scheme="",idPrefix, loadBalanceMethod, upstr
 								<>
 									<div className="row">
 										<div className="col-md-3">
-											<Field name={upstreamFieldName(idx, "weight")} validate={validateNumber(-1, 65535)}>
+											<Field name={upstreamFieldName(idx, "weight")} validate={validateNullNumber(1, 100)}>
 												{({ field, meta }) => (
 													<div className="mb-3">
 														<label className="form-label" htmlFor={controlId("npmplusUpstreamWeight", idx)}>
@@ -458,7 +466,7 @@ export function ForwardHostFields({ scheme="",idPrefix, loadBalanceMethod, upstr
 											</Field>
 										</div>
 										<div className="col-md-3">
-											<Field name={upstreamFieldName(idx, "maxFails")} validate={validateNumber(-1, 65535)}>
+											<Field name={upstreamFieldName(idx, "maxFails")} validate={validateNullNumber(0, -1, true)}>
 												{({ field, meta }) => (
 													<div className="mb-3">
 														<label className="form-label" htmlFor={controlId("npmplusUpstreamMaxFails", idx)}>
@@ -537,7 +545,7 @@ export function ForwardHostFields({ scheme="",idPrefix, loadBalanceMethod, upstr
 									</div>
 									<div className="row">
 										<div className="col-md-4">
-											<Field name={upstreamFieldName(idx, "maxConns")} validate={validateNumber(-1, 65535)}>
+											<Field name={upstreamFieldName(idx, "maxConns")} validate={validateNullNumber(0, -1, true)}>
 												{({ field, meta }) => (
 													<div className="mb-3">
 														<label className="form-label" htmlFor={controlId("npmplusUpstreamMaxConns", idx)}>
