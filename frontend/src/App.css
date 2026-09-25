@@ -1,14 +1,3 @@
-:root {
-	color-scheme: light dark;
-}
-
-.light {
-	color-scheme: light;
-}
-.dark {
-	color-scheme: dark;
-}
-
 .modal-backdrop {
 	--tblr-backdrop-opacity: 0.8 !important;
 }
@@ -22,15 +11,13 @@
 	--tblr-backdrop-opacity: 0.65 !important;
 }
 
-.domain-name {
-	font-family: monospace;
-}
+.btn-ghost-auto {
+	color: light-dark(var(--tblr-dark), var(--tblr-light)) !important;
 
-.mr-1 {
-	margin-right: 0.25rem;
-}
-.ml-1 {
-	margin-left: 0.25rem;
+	&:hover {
+		border: var(--tblr-btn-border-width) solid transparent !important;
+		background: color-mix(in srgb, var(--tblr-btn-hover-bg) 10%, transparent) !important;
+	}
 }
 
 ::selection {

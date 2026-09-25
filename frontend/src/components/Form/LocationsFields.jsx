@@ -205,7 +205,7 @@ export function LocationsFields({ initialValues, name = "locations" }) {
 							onClick={() => toggle(item.uiKey, expanded, setExpanded)}
 						>
 							{isOpen(item) ? <IconChevronDown size={16} /> : <IconChevronRight size={16} />}
-							<span className="ms-2 fw-medium text-nowrap">{locationLabel(item)}</span>
+							<span className="ms-2 fw-medium text-truncate">{locationLabel(item)}</span>
 							<span className="ms-2 text-secondary text-truncate">{forwardSummary(item)}</span>
 							{item.advancedConfig?.trim() && (
 								<span

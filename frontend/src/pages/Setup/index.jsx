@@ -1,6 +1,5 @@
 import { IconEye, IconEyeOff } from "@tabler/icons-react";
 import { useQueryClient } from "@tanstack/react-query";
-import cn from "clsx";
 import { ErrorMessage, Field, Form, Formik } from "formik";
 import { useState } from "react";
 import { Alert } from "react-bootstrap";
@@ -10,7 +9,6 @@ import { useAuthState } from "src/context";
 import { useHealth } from "src/hooks";
 import { intl, T } from "src/locale";
 import { validateEmail, validateString } from "src/modules/Validations";
-import styles from "./index.module.css";
 
 export default function Setup() {
 	const queryClient = useQueryClient();
@@ -58,14 +56,14 @@ export default function Setup() {
 	};
 
 	return (
-		<Page className="page page-center">
-			<div className={cn("d-none", "d-md-flex", styles.helperBtns)}>
+		<Page className="page-center">
+			<div className="d-none d-md-flex position-absolute top-0 end-0 m-2 z-3">
 				<LocalePicker />
 				<ThemeSwitcher />
 			</div>
 			<div className="container container-tight py-4">
 				<div className="text-center mb-4">
-					<img className={styles.logo} src="/images/logo-text-horizontal-grey.png" alt="NPMplus" />
+					<img width={200} src="/images/logo-text-horizontal-grey.png" alt="NPMplus" />
 				</div>
 				<div className="card card-md">
 					<Alert variant="danger" show={Boolean(errorMsg)} onClose={() => setErrorMsg(null)} dismissible>

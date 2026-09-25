@@ -4,7 +4,6 @@ import { useState } from "react";
 import Select from "react-select";
 import { useDnsProviders } from "src/hooks";
 import { intl, T } from "src/locale";
-import styles from "./DNSProviderFields.module.css";
 
 export function DNSProviderFields({ showBoundaryBox = false }) {
 	const { values, setFieldValue } = useFormikContext();
@@ -27,7 +26,7 @@ export function DNSProviderFields({ showBoundaryBox = false }) {
 		})) || [];
 
 	return (
-		<div className={showBoundaryBox ? styles.dnsChallengeWarning : undefined}>
+		<div className={showBoundaryBox ? "py-3 border border-orange border-opacity-10 rounded bg-cyan-lt" : undefined}>
 			<p className="text-warning">
 				<IconAlertTriangle size={16} className="me-1" />
 				<T id="certificates.dns.warning" />

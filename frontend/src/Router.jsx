@@ -52,7 +52,7 @@ function Router() {
 
 	return (
 		<BrowserRouter>
-			<Page>
+			<Page className="min-vh-100">
 				<div>
 					<SiteHeader />
 					<SiteMenu />
