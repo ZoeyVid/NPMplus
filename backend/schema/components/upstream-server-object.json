@@ -10,7 +10,6 @@
 			"type": "string",
 			"minLength": 1,
 			"maxLength": 255,
-			"pattern": "^(?:\\[[0-9A-Fa-f:.]+\\]|[^\\s:;/]+)$",
 			"example": "192.168.1.1"
 		},
 		"port": {

@@ -39,6 +39,9 @@
 	"allOf": [
 		{
 			"$ref": "./load-balancing.json#/$defs/loadBalanceMethodRequirement"
+		},
+		{
+			"$ref": "./load-balancing.json#/$defs/proxySchemeUpstreamRequirement"
 		}
 	],
 	"additionalProperties": false,
@@ -76,25 +79,7 @@
 			"example": "round_robin"
 		},
 		"npmplus_upstream_servers": {
-			"allOf": [
-				{
-					"$ref": "./load-balancing.json#/$defs/upstreamServers"
-				},
-				{
-					"prefixItems": [
-						{
-							"required": [
-								"port"
-							],
-							"properties": {
-								"port": {
-									"$ref": "./load-balancing.json#/$defs/port"
-								}
-							}
-						}
-					]
-				}
-			]
+			"$ref": "./load-balancing.json#/$defs/proxyUpstreamServers"
 		},
 		"npmplus_access_list_ids":{
 			"$ref": "../common.json#/properties/npmplus_access_list_ids"
@@ -216,6 +201,9 @@
 				"allOf": [
 					{
 						"$ref": "./load-balancing.json#/$defs/loadBalanceMethodRequirement"
+					},
+					{
+						"$ref": "./load-balancing.json#/$defs/proxySchemeUpstreamRequirement"
 					}
 				],
 				"additionalProperties": false,

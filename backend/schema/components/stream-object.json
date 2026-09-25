@@ -69,27 +69,6 @@
 					"$ref": "./load-balancing.json#/$defs/upstreamServers"
 				},
 				{
-					"prefixItems": [
-						{
-							"required": [
-								"port"
-							],
-							"properties": {
-								"port": {
-									"oneOf": [
-										{
-											"$ref": "./load-balancing.json#/$defs/port"
-										},
-										{
-											"const": "$server_port"
-										}
-									]
-								}
-							}
-						}
-					]
-				},
-				{
 					"if": {
 						"prefixItems": [
 							{
