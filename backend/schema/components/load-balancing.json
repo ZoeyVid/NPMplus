@@ -47,6 +47,70 @@
 				}
 			]
 		},
+		"proxyUpstreamServers": {
+			"allOf": [
+				{
+					"$ref": "#/$defs/upstreamServers"
+				},
+				{
+					"prefixItems": [
+						{
+							"properties": {
+								"port": {
+									"oneOf": [
+										{
+											"$ref": "#/$defs/port"
+										},
+										{
+											"type": "null"
+										}
+									]
+								}
+							}
+						}
+					]
+				}
+			]
+		},
+		"singleProxyUpstreamServer": {
+			"allOf": [
+				{
+					"$ref": "#/$defs/proxyUpstreamServers"
+				},
+				{
+					"maxItems": 1
+				}
+			]
+		},
+		"proxySchemeUpstreamRequirement": {
+			"if": {
+				"properties": {
+					"forward_scheme": {
+						"enum": [
+							"path",
+							"empty"
+						]
+					}
+				},
+				"required": [
+					"forward_scheme"
+				]
+			},
+			"then": {
+				"properties": {
+					"npmplus_upstream_servers": {
+						"$ref": "#/$defs/singleProxyUpstreamServer"
+					}
+				}
+			},
+			"else": {
+				"properties": {
+					"npmplus_upstream_servers": {
+						"$ref": "#/$defs/proxyUpstreamServers"
+					}
+				}
+			}
+		},
 		"loadBalanceMethodRequirement": {
 			"if": {
 				"properties": {

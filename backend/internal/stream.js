@@ -30,7 +30,7 @@ const internalStream = {
 		thisData.owner_user_id = access.token.getUserId(1);
 
 		internalUpstreamServers.cleanUpstreamServers(thisData);
-		internalUpstreamServers.validateLoadBalancing(thisData);
+		internalUpstreamServers.validateLoadBalancing(thisData, {}, true);
 
 		const createdRow = await streamModel.query().insertAndFetch(thisData);
 
@@ -105,7 +105,7 @@ const internalStream = {
 			thisData.certificate_id = cert.id;
 		}
 		internalUpstreamServers.cleanUpstreamServers(thisData);
-		internalUpstreamServers.validateLoadBalancing(thisData, existingRow);
+		internalUpstreamServers.validateLoadBalancing(thisData, existingRow, true);
 
 		await streamModel.query().where({ id: thisData.id }).patch(thisData);
 
