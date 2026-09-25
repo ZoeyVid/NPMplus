@@ -19,6 +19,9 @@
 					"allOf": [
 						{
 							"$ref": "../../../components/load-balancing.json#/$defs/loadBalanceMethodRequirement"
+						},
+						{
+							"$ref": "../../../components/load-balancing.json#/$defs/proxySchemeUpstreamRequirement"
 						}
 					],
 					"additionalProperties": false,

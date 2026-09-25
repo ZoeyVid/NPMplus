@@ -29,11 +29,15 @@ const normaliseHost = (host) => {
 		return host;
 	}
 
-	if (host.startsWith("[") && host.endsWith("]")) {
+	const pathIndex = host.indexOf("/");
+	const address = pathIndex === -1 ? host : host.slice(0, pathIndex);
+	const path = pathIndex === -1 ? "" : host.slice(pathIndex);
+
+	if (address.startsWith("[") && address.endsWith("]")) {
 		return host;
 	}
 
-	return isIPv6(host) ? `[${host}]` : host;
+	return isIPv6(address) ? `[${address}]${path}` : host;
 };
 
 const createUpstreamServer = (host, port) => ({
