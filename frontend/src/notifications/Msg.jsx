@@ -7,10 +7,10 @@ function Msg({ data }) {
 	let icon = null;
 	switch (data.type) {
 		case "success":
-			icon = <IconCheck className="text-green mr-1" size={16} />;
+			icon = <IconCheck className="text-green me-1" size={16} />;
 			break;
 		case "error":
-			icon = <IconExclamationCircle className="text-red mr-1" size={16} />;
+			icon = <IconExclamationCircle className="text-red me-1" size={16} />;
 			break;
 		default:
 			break;

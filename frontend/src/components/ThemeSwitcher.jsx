@@ -2,7 +2,6 @@ import { IconMoon, IconSun } from "@tabler/icons-react";
 import cn from "clsx";
 import { useThemeState } from "src/context";
 import { intl } from "src/locale";
-import styles from "./ThemeSwitcher.module.css";
 
 function ThemeSwitcher({ className }) {
 	const { setTheme } = useThemeState();
@@ -11,7 +10,7 @@ function ThemeSwitcher({ className }) {
 		<div className={cn("d-print-none", "d-inline-block", className)}>
 			<button
 				type="button"
-				className={cn("btn", "btn-sm", "btn-ghost-dark", "hide-theme-dark", styles.lightBtn)}
+				className="btn btn-sm btn-ghost hide-theme-dark"
 				title={intl.formatMessage({ id: "user.switch-dark" })}
 				onClick={() => setTheme("dark")}
 			>
@@ -19,7 +18,7 @@ function ThemeSwitcher({ className }) {
 			</button>
 			<button
 				type="button"
-				className={cn("btn", "btn-sm", "btn-ghost-light", "hide-theme-light", styles.darkBtn)}
+				className="btn btn-sm btn-ghost hide-theme-light"
 				title={intl.formatMessage({ id: "user.switch-light" })}
 				onClick={() => setTheme("light")}
 			>

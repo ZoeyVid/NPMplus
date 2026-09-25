@@ -10,7 +10,6 @@ import { useUser } from "src/hooks";
 import { T } from "src/locale";
 import EasyModal from "src/modules/easyModal";
 import { isAdmin } from "src/modules/Permissions";
-import styles from "./PermissionsModal.module.css";
 
 const showPermissionsModal = (id) => {
 	EasyModal.show(PermissionsModal, { id });
@@ -41,9 +40,10 @@ const PermissionsModal = EasyModal.create(({ id, visible, remove }) => {
 	};
 
 	const getClasses = (active) =>
-		cn("btn", active ? styles.active : null, {
+		cn("btn", {
 			active,
 			"bg-orange-lt": active,
+			"border-orange": active,
 		});
 
 	// given the field and clicked permission, intelligently set the value, and

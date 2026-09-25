@@ -281,7 +281,10 @@ const StreamModal = EasyModal.create(({ id, visible, remove }) => {
 													</h3>
 													<div className="divide-y">
 														<div>
-															<label className="row" htmlFor="tcpForwarding">
+															<label
+																className="row cursor-pointer"
+																htmlFor="tcpForwarding"
+															>
 																<span className="col">
 																	<T id="streams.tcp" />
 																</span>
@@ -332,7 +335,10 @@ const StreamModal = EasyModal.create(({ id, visible, remove }) => {
 															</label>
 														</div>
 														<div>
-															<label className="row" htmlFor="udpForwarding">
+															<label
+																className="row cursor-pointer"
+																htmlFor="udpForwarding"
+															>
 																<span className="col">
 																	<T id="streams.udp" />
 																</span>
@@ -395,7 +401,10 @@ const StreamModal = EasyModal.create(({ id, visible, remove }) => {
 															</label>
 														</div>
 														<div>
-															<label className="row" htmlFor="npmplusProxyTls">
+															<label
+																className="row cursor-pointer"
+																htmlFor="npmplusProxyTls"
+															>
 																<span className="col">
 																	<T id="streams.tls" />
 																</span>
@@ -425,7 +434,7 @@ const StreamModal = EasyModal.create(({ id, visible, remove }) => {
 														</div>
 														<div>
 															<label
-																className="row"
+																className="row cursor-pointer"
 																htmlFor="npmplusProxyProtocolForwarding"
 															>
 																<span className="col">

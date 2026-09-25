@@ -72,7 +72,7 @@ export default function Table({
 				header: intl.formatMessage({ id: "column.description" }),
 				cell: (info) => {
 					const value = info.row.original.npmplusDescription;
-					return value || <span className="text-muted">—</span>;
+					return value || <span className="text-secondary">—</span>;
 				},
 			}),
 			columnHelper.accessor(
@@ -101,12 +101,12 @@ export default function Table({
 						return (
 							<>
 								{value.tcpForwarding ? (
-									<span className="badge badge-lg domain-name">
+									<span className="badge badge-lg font-monospace">
 										<T id="streams.tcp" />
 									</span>
 								) : null}
 								{value.npmplusProxyProtocolForwarding ? (
-									<span className="badge badge-lg domain-name">
+									<span className="badge badge-lg font-monospace">
 										<T
 											id={
 												value.npmplusProxyProtocolForwarding === 1
@@ -117,12 +117,12 @@ export default function Table({
 									</span>
 								) : null}
 								{value.npmplusProxyTls ? (
-									<span className="badge badge-lg domain-name">
+									<span className="badge badge-lg font-monospace">
 										<T id="streams.tls" />
 									</span>
 								) : null}
 								{value.udpForwarding ? (
-									<span className="badge badge-lg domain-name">
+									<span className="badge badge-lg font-monospace">
 										<T id="streams.udp" />
 									</span>
 								) : null}
@@ -174,6 +174,7 @@ export default function Table({
 							className="btn dropdown-toggle btn-action btn-sm px-1"
 							data-bs-boundary="viewport"
 							data-bs-toggle="dropdown"
+							data-bs-popper-config='{"strategy":"fixed"}'
 						>
 							<IconDotsVertical />
 						</button>

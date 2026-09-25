@@ -225,18 +225,12 @@ export default function DefaultSite() {
 											<div>
 												<textarea
 													id="html"
-													className="form-control"
+													className="form-control font-monospace"
 													spellCheck={false}
 													placeholder={intl.formatMessage({
 														id: "settings.default-site.html.placeholder",
 													})}
-													style={{
-														fontFamily:
-															"ui-monospace,SFMono-Regular,SF Mono,Consolas,Liberation Mono,Menlo,monospace",
-														borderRadius: "0.3rem",
-														minHeight: "300px",
-														backgroundColor: "var(--tblr-bg-surface-dark)",
-													}}
+													rows={14}
 													{...field}
 												/>
 

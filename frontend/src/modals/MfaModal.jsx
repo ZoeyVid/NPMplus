@@ -1,4 +1,4 @@
-import { IconEye, IconEyeOff } from "@tabler/icons-react";
+import { IconCopy, IconEye, IconEyeOff } from "@tabler/icons-react";
 import { ErrorMessage, Field, Form, Formik } from "formik";
 import { QRCodeSVG } from "qrcode.react";
 import { useCallback, useEffect, useState } from "react";
@@ -126,7 +126,7 @@ const MfaModal = EasyModal.create(({ id, visible, remove }) => {
 							</span>
 						</div>
 						{isEnabled && (
-							<p className="text-muted small mb-0">
+							<p className="text-secondary small mb-0">
 								<T id="mfa.backup-codes-remaining" data={{ count: backupCodesRemaining }} />
 							</p>
 						)}
@@ -155,23 +155,35 @@ const MfaModal = EasyModal.create(({ id, visible, remove }) => {
 					<Alert variant="warning">
 						<T id="logout-other-devices" />
 					</Alert>
-					<p className="text-muted mb-3">
+					<p className="text-secondary mb-3">
 						<T id="totp.setup-instructions" />
 					</p>
 					<div className="text-center mb-3">
 						<QRCodeSVG value={setupData.otpauthUrl} size={256} marginSize={4} />
 					</div>
 					<label className="mb-3 d-block">
-						<span className="form-label small text-muted">
+						<span className="form-label small text-secondary">
 							<T id="totp.secret-key" />
 						</span>
-						<input
-							type="text"
-							className="form-control font-monospace"
-							value={setupData.secret}
-							readOnly
-							onClick={(e) => e.target.select()}
-						/>
+						<div className="input-group input-group-flat">
+							<input
+								type="text"
+								className="form-control font-monospace"
+								value={setupData.secret}
+								readOnly
+								onClick={(e) => e.target.select()}
+							/>
+							<span className="input-group-text">
+								<button
+									type="button"
+									aria-label="copy"
+									className="p-0 border-0 bg-transparent text-secondary d-flex align-items-center cursor-pointer"
+									onClick={() => navigator.clipboard.writeText(setupData.secret)}
+								>
+									<IconCopy size={18} />
+								</button>
+							</span>
+						</div>
 					</label>
 					<Formik initialValues={{ code: "" }} onSubmit={handleVerify}>
 						{() => (
@@ -326,7 +338,7 @@ const MfaModal = EasyModal.create(({ id, visible, remove }) => {
 					<Alert variant="warning">
 						<T id="logout-other-devices" />
 					</Alert>
-					<p className="text-muted mb-3">
+					<p className="text-secondary mb-3">
 						<T id="mfa.regenerate-instructions" />
 					</p>
 					<Formik initialValues={{ code: "" }} onSubmit={handleRegenerateBackup}>

@@ -17,8 +17,6 @@ export const ThemeProvider = ({ children }) => {
 
 	useEffect(() => {
 		document.body.dataset.theme = theme;
-		document.body.classList.remove(theme === Light ? Dark : Light);
-		document.body.classList.add(theme);
 		localStorage.setItem(StorageKey, theme);
 		for (const meta of document.querySelectorAll('meta[name="theme-color"]'))
 			meta.media = meta.dataset.theme === theme ? "all" : "not all";

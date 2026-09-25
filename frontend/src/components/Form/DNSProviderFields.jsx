@@ -4,7 +4,6 @@ import { useState } from "react";
 import Select from "react-select";
 import { useDnsProviders } from "src/hooks";
 import { intl, T } from "src/locale";
-import styles from "./DNSProviderFields.module.css";
 
 export function DNSProviderFields({ showBoundaryBox = false }) {
 	const { values, setFieldValue } = useFormikContext();
@@ -27,7 +26,7 @@ export function DNSProviderFields({ showBoundaryBox = false }) {
 		})) || [];
 
 	return (
-		<div className={showBoundaryBox ? styles.dnsChallengeWarning : undefined}>
+		<div className={showBoundaryBox ? "py-3 border border-orange border-opacity-10 rounded bg-cyan-lt" : undefined}>
 			<p className="text-warning">
 				<IconAlertTriangle size={16} className="me-1" />
 				<T id="certificates.dns.warning" />
@@ -67,22 +66,16 @@ export function DNSProviderFields({ showBoundaryBox = false }) {
 									<T id="certificates.dns.credentials" />
 								</label>
 								<textarea
-									className="form-control"
+									className="form-control font-monospace"
 									spellCheck={false}
 									id="dnsProviderCredentials"
-									style={{
-										fontFamily:
-											"ui-monospace,SFMono-Regular,SF Mono,Consolas,Liberation Mono,Menlo,monospace",
-										borderRadius: "0.3rem",
-										minHeight: "130px",
-										backgroundColor: "var(--tblr-bg-surface-dark)",
-									}}
+									rows={6}
 									value={v.meta.dnsProviderCredentials || ""}
 									{...field}
 								/>
 
 								<div>
-									<small className="text-muted">
+									<small className="text-secondary">
 										<T id="certificates.dns.credentials-note" />
 									</small>
 								</div>
@@ -109,7 +102,7 @@ export function DNSProviderFields({ showBoundaryBox = false }) {
 									{...field}
 								/>
 
-								<small className="text-muted">
+								<small className="text-secondary">
 									<T id="certificates.dns.propagation-seconds-note" />
 								</small>
 							</div>

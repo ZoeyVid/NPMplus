@@ -13,7 +13,6 @@ const fetchDeadHost = (id) => {
 			sslForced: false,
 			advancedConfig: "",
 			meta: {},
-			http2Support: true,
 			npmplusHttp3Support: false,
 			enabled: true,
 			hstsEnabled: false,

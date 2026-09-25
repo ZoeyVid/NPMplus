@@ -28,15 +28,12 @@ const CustomCertificateModal = EasyModal.create(({ visible, remove, cert, provid
 		setErrorMsg(null);
 
 		try {
-			const { niceName, certificate, certificateKey, intermediateCertificate } = values;
+			const { niceName, certificate, certificateKey } = values;
 			const formData = new FormData();
 
 			formData.append("certificate", certificate);
 			if (!isMtls) {
 				formData.append("certificate_key", certificateKey);
-			}
-			if (intermediateCertificate !== null) {
-				formData.append("intermediate_certificate", intermediateCertificate);
 			}
 
 			// Validate
@@ -76,7 +73,6 @@ const CustomCertificateModal = EasyModal.create(({ visible, remove, cert, provid
 
 					certificate: null,
 					certificateKey: null,
-					intermediateCertificate: null,
 				}}
 				onSubmit={onSubmit}
 			>
@@ -198,38 +194,6 @@ const CustomCertificateModal = EasyModal.create(({ visible, remove, cert, provid
 											)}
 										</Field>
 									)}
-									<Field name="intermediateCertificate">
-										{({ field, form }) => (
-											<div className="mb-3" style={{ display: "none" }}>
-												<label htmlFor="intermediateCertificate" className="form-label">
-													<T id="certificate.custom-intermediate" />
-												</label>
-												<input
-													id="intermediateCertificate"
-													type="file"
-													autoComplete="off"
-													className="form-control"
-													onChange={(event) => {
-														form.setFieldValue(
-															field.name,
-															event.currentTarget.files?.length
-																? event.currentTarget.files[0]
-																: null,
-														);
-													}}
-												/>
-
-												{form.errors.intermediateCertificate ? (
-													<div className="invalid-feedback">
-														{form.errors.intermediateCertificate &&
-														form.touched.intermediateCertificate
-															? form.errors.intermediateCertificate
-															: null}
-													</div>
-												) : null}
-											</div>
-										)}
-									</Field>
 								</div>
 							</div>
 						</Modal.Body>
