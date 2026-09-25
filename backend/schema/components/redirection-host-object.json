@@ -15,9 +15,7 @@
 		"ssl_forced",
 		"hsts_enabled",
 		"hsts_subdomains",
-		"http2_support",
 		"npmplus_http3_support",
-		"block_exploits",
 		"advanced_config",
 		"enabled",
 		"meta"
@@ -81,14 +79,8 @@
 		"hsts_subdomains": {
 			"$ref": "../common.json#/properties/hsts_subdomains"
 		},
-		"http2_support": {
-			"$ref": "../common.json#/properties/http2_support"
-		},
 		"npmplus_http3_support": {
 			"$ref": "../common.json#/properties/npmplus_http3_support"
-		},
-		"block_exploits": {
-			"$ref": "../common.json#/properties/block_exploits"
 		},
 		"advanced_config": {
 			"type": "string",

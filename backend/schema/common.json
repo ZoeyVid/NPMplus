@@ -70,12 +70,6 @@
 			],
 			"example": 5
 		},
-		"access_list_id": {
-			"description": "Access List ID",
-			"type": "integer",
-			"minimum": 0,
-			"example": 3
-		},
 		"domain_names": {
 			"description": "Domain Names array",
 			"type": "array",
@@ -118,28 +112,8 @@
 			"pattern": "^(letsencrypt|other|mtls)$",
 			"example": "letsencrypt"
 		},
-		"http2_support": {
-			"description": "HTTP2 Protocol Support",
-			"type": "boolean",
-			"example": true
-		},
 		"npmplus_http3_support": {
 			"description": "HTTP3 Protocol Support",
-			"type": "boolean",
-			"example": true
-		},
-		"block_exploits": {
-			"description": "This is always disabled. Your value will be ignored",
-			"type": "boolean",
-			"example": false
-		},
-		"caching_enabled": {
-			"description": "This is always disabled. Your value will be ignored",
-			"type": "boolean",
-			"example": false
-		},
-		"allow_websocket_upgrade": {
-			"description": "This is always enabled. Your value will be ignored",
 			"type": "boolean",
 			"example": true
 		},

@@ -12,17 +12,11 @@ import User from "./user.js";
 Model.knex(db());
 
 const boolFields = [
-	"is_deleted",
 	"ssl_forced",
-	"caching_enabled",
-	"block_exploits",
-	"allow_websocket_upgrade",
-	"http2_support",
 	"npmplus_http3_support",
 	"enabled",
 	"hsts_enabled",
 	"hsts_subdomains",
-	"trust_forwarded_proto",
 	"npmplus_noindex",
 	"npmplus_crowdsec_appsec",
 	"npmplus_proxy_request_buffering",
@@ -62,7 +56,16 @@ class ProxyHost extends Model {
 	}
 
 	$parseDatabaseJson(json) {
-		const thisJson = super.$parseDatabaseJson(json);
+		const {
+			is_deleted,
+			access_list_id,
+			caching_enabled,
+			block_exploits,
+			allow_websocket_upgrade,
+			http2_support,
+			trust_forwarded_proto,
+			...thisJson
+		} = super.$parseDatabaseJson(json);
 		return convertIntFieldsToBool(thisJson, boolFields);
 	}
 

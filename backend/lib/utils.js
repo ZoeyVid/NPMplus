@@ -5,7 +5,6 @@ import { dirname } from "node:path";
 import { fileURLToPath } from "node:url";
 import { promisify } from "node:util";
 import { Liquid } from "liquidjs";
-import _ from "lodash";
 import { debug, global as logger } from "../logger.js";
 import errs from "./error.js";
 
@@ -57,34 +56,6 @@ const execFile = async (cmd, args) => {
 };
 
 /**
- * Used in objection query builder
- *
- * @param   {Array}  omissions
- * @returns {Function}
- */
-const omitRow = (omissions) => {
-	/**
-	 * @param   {Object} row
-	 * @returns {Object}
-	 */
-	return (row) => _.omit(row, omissions);
-};
-
-/**
- * Used in objection query builder
- *
- * @param   {Array}  omissions
- * @returns {Function}
- */
-const omitRows = (omissions) => {
-	/**
-	 * @param   {Array} rows
-	 * @returns {Object}
-	 */
-	return (rows) => rows.map((row) => _.omit(row, omissions));
-};
-
-/**
  * @returns {Object} Liquid render engine
  */
 const getRenderEngine = () => {
@@ -108,4 +79,4 @@ const getRenderEngine = () => {
 	return renderEngine;
 };
 
-export default { writeHash, execFile, omitRow, omitRows, getRenderEngine };
+export default { writeHash, execFile, getRenderEngine };

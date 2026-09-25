@@ -1,8 +1,6 @@
 import { appendFile, rm, writeFile } from "node:fs/promises";
 import bcrypt from "bcryptjs";
-import _ from "lodash";
 import errs from "../lib/error.js";
-import utils from "../lib/utils.js";
 import { access as logger } from "../logger.js";
 import accessListModel from "../models/access_list.js";
 import accessListAuthModel from "../models/access_list_auth.js";
@@ -12,8 +10,6 @@ import internalAuditLog from "./audit-log.js";
 import internalNginx from "./nginx.js";
 import internalProxyHostAccessList from "./proxy-host-access-list.js";
 
-const omissions = () => ["is_deleted", "owner.is_deleted"];
-
 const internalAccessList = {
 	/**
 	 * @param   {Access}  access
@@ -22,14 +18,12 @@ const internalAccessList = {
 	 */
 	create: async (access, data) => {
 		access.can("access_lists:manage");
-		const row = utils.omitRow(omissions())(
-			await accessListModel.query().insertAndFetch({
-				name: data.name,
-				satisfy_any: data.satisfy_any,
-				pass_auth: data.pass_auth,
-				owner_user_id: access.token.getUserId(1),
-			}),
-		);
+		const row = await accessListModel.query().insertAndFetch({
+			name: data.name,
+			satisfy_any: data.satisfy_any,
+			pass_auth: data.pass_auth,
+			owner_user_id: access.token.getUserId(1),
+		});
 
 		data.id = row.id;
 
@@ -56,14 +50,10 @@ const internalAccessList = {
 		);
 
 		// re-fetch with expansions
-		const freshRow = await internalAccessList.get(
-			access,
-			{
-				id: data.id,
-				expand: ["owner", "items", "clients", "proxy_hosts.[access_lists.[clients,items]]"],
-			},
-			true, // skip masking
-		);
+		const freshRow = await internalAccessList.get(access, {
+			id: data.id,
+			expand: ["owner", "items", "clients", "proxy_hosts.[access_lists.[clients,items]]"],
+		});
 
 		// Audit log
 		data.meta = { ...data.meta, ...freshRow.meta };
@@ -84,12 +74,10 @@ const internalAccessList = {
 			action: "created",
 			object_type: "access-list",
 			object_id: freshRow.id,
-			meta: internalAccessList.maskItems(data),
+			meta: data,
 		});
 
-		if (Array.isArray(freshRow.proxy_hosts))
-			freshRow.proxy_hosts = freshRow.proxy_hosts.map(internalProxyHostAccessList.maskAccessListItems);
-		return internalAccessList.maskItems(freshRow);
+		return freshRow;
 	},
 
 	/**
@@ -171,18 +159,14 @@ const internalAccessList = {
 			action: "updated",
 			object_type: "access-list",
 			object_id: data.id,
-			meta: internalAccessList.maskItems(data),
+			meta: data,
 		});
 
 		// re-fetch with expansions
-		const freshRow = await internalAccessList.get(
-			access,
-			{
-				id: data.id,
-				expand: ["owner", "items", "clients", "proxy_hosts.[certificate,access_lists.[clients,items]]"],
-			},
-			true, // skip masking
-		);
+		const freshRow = await internalAccessList.get(access, {
+			id: data.id,
+			expand: ["owner", "items", "clients", "proxy_hosts.[certificate,access_lists.[clients,items]]"],
+		});
 
 		await internalAccessList.build(freshRow);
 		if (Number.parseInt(freshRow.proxy_host_count, 10)) {
@@ -196,9 +180,7 @@ const internalAccessList = {
 			await internalNginx.bulkGenerateConfigs(proxyHostModel, "proxy_host", freshRow.proxy_hosts);
 		}
 		await internalNginx.reload();
-		if (Array.isArray(freshRow.proxy_hosts))
-			freshRow.proxy_hosts = freshRow.proxy_hosts.map(internalProxyHostAccessList.maskAccessListItems);
-		return internalAccessList.maskItems(freshRow);
+		return freshRow;
 	},
 
 	/**
@@ -206,11 +188,9 @@ const internalAccessList = {
 	 * @param  {Object}   data
 	 * @param  {Integer}  data.id
 	 * @param  {Array}    [data.expand]
-	 * @param  {Array}    [data.omit]
-	 * @param  {Boolean}  [skipMasking]
 	 * @return {Promise}
 	 */
-	get: async (access, data, skipMasking) => {
+	get: async (access, data) => {
 		const thisData = data || {};
 		access.can("access_lists:view");
 
@@ -243,19 +223,10 @@ const internalAccessList = {
 			query.withGraphFetched(`[${thisData.expand.join(", ")}]`);
 		}
 
-		let row = utils.omitRow(omissions())(await query);
+		const row = await query;
 
 		if (!row?.id) {
 			throw new errs.ItemNotFoundError(thisData.id);
-		}
-		if (!skipMasking && Array.isArray(row.proxy_hosts))
-			row.proxy_hosts = row.proxy_hosts.map(internalProxyHostAccessList.maskAccessListItems);
-		if (!skipMasking) {
-			row = internalAccessList.maskItems(row);
-		}
-		// Custom omissions
-		if (typeof data.omit !== "undefined" && data.omit !== null) {
-			row = _.omit(row, data.omit);
 		}
 
 		return row;
@@ -364,7 +335,7 @@ const internalAccessList = {
 			action: "deleted",
 			object_type: "access-list",
 			object_id: row.id,
-			meta: _.omit(row, ["is_deleted", "proxy_hosts"]),
+			meta: { ...row, proxy_hosts: undefined },
 		});
 		return true;
 	},
@@ -415,9 +386,7 @@ const internalAccessList = {
 			query.withGraphFetched(`[${expand.join(", ")}]`);
 		}
 
-		return utils
-			.omitRows(omissions())(await query)
-			.map((row) => internalAccessList.maskItems(row));
+		return await query;
 	},
 
 	/**
@@ -436,17 +405,6 @@ const internalAccessList = {
 
 		const row = await query.first();
 		return Number.parseInt(row.count, 10);
-	},
-
-	/**
-	 * @param   {Object}  list
-	 * @returns {Object}
-	 */
-	maskItems: (list) => {
-		if (!list) {
-			return list;
-		}
-		return { ..._.omit(list, omissions()), items: list.items?.map((item) => ({ ...item, password: "" })) };
 	},
 
 	/**

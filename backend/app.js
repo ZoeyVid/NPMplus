@@ -2,6 +2,7 @@ import crypto from "node:crypto";
 import cookieParser from "cookie-parser";
 import express from "express";
 import errs from "./lib/error.js";
+import { jsonReplacer } from "./lib/helpers.js";
 import { debug, express as logger } from "./logger.js";
 import mainRoutes from "./routes/main.js";
 
@@ -13,6 +14,7 @@ const app = express();
 app.set("trust proxy", 1);
 app.disable("x-powered-by");
 app.set("json spaces", 2);
+app.set("json replacer", jsonReplacer);
 
 app.use(cookieParser(process.env.COOKIE_SECRET || crypto.randomBytes(16).toString("hex")));
 app.use(express.json());

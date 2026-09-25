@@ -12,7 +12,7 @@ import User from "./user.js";
 
 Model.knex(db());
 
-const boolFields = ["is_deleted", "satisfy_any", "pass_auth"];
+const boolFields = ["satisfy_any", "pass_auth"];
 
 class AccessList extends Model {
 	$beforeInsert() {
@@ -30,7 +30,7 @@ class AccessList extends Model {
 	}
 
 	$parseDatabaseJson(json) {
-		const thisJson = super.$parseDatabaseJson(json);
+		const { is_deleted, ...thisJson } = super.$parseDatabaseJson(json);
 		return convertIntFieldsToBool(thisJson, boolFields);
 	}
 

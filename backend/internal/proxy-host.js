@@ -1,15 +1,11 @@
-import _ from "lodash";
 import errs from "../lib/error.js";
 import { castJsonIfNeed } from "../lib/helpers.js";
-import utils from "../lib/utils.js";
 import proxyHostModel from "../models/proxy_host.js";
 import internalAuditLog from "./audit-log.js";
 import internalCertificate from "./certificate.js";
 import internalHost from "./host.js";
 import internalNginx from "./nginx.js";
 import internalProxyHostAccessList from "./proxy-host-access-list.js";
-
-const omissions = () => ["is_deleted", "owner.is_deleted", "certificate.is_deleted"];
 
 const internalProxyHost = {
 	/**
@@ -44,18 +40,16 @@ const internalProxyHost = {
 		thisData = internalProxyHostAccessList.cleanAccessListTypes(thisData);
 		await internalProxyHostAccessList.validateAccessLists(access, thisData);
 
-		const createdRow = utils.omitRow(omissions())(
-			await proxyHostModel.transaction(async (trx) => {
-				const insertedRow = await proxyHostModel.query(trx).insertAndFetch(thisData);
+		const createdRow = await proxyHostModel.transaction(async (trx) => {
+			const insertedRow = await proxyHostModel.query(trx).insertAndFetch(thisData);
 
-				const relationRows = internalProxyHostAccessList.getAccessListRelationRows(insertedRow.id, thisData);
-				if (relationRows.length > 0) {
-					await trx("npmplus_proxy_host_access_list").insert(relationRows);
-				}
+			const relationRows = internalProxyHostAccessList.getAccessListRelationRows(insertedRow.id, thisData);
+			if (relationRows.length > 0) {
+				await trx("npmplus_proxy_host_access_list").insert(relationRows);
+			}
 
-				return insertedRow;
-			}),
-		);
+			return insertedRow;
+		});
 
 		if (createCertificate) {
 			const cert = await internalCertificate.createQuickCertificate(access, thisData);
@@ -88,7 +82,7 @@ const internalProxyHost = {
 			meta: thisData,
 		});
 
-		return internalProxyHostAccessList.maskAccessListItems(row);
+		return row;
 	},
 
 	/**
@@ -174,13 +168,13 @@ const internalProxyHost = {
 
 		if (!row.enabled) {
 			// No need to add nginx config if host is disabled
-			return internalProxyHostAccessList.maskAccessListItems(internalHost.cleanRowCertificateMeta(row));
+			return row;
 		}
 
 		// Configure nginx
 		row.meta = await internalNginx.configure(proxyHostModel, "proxy_host", row);
 
-		return internalProxyHostAccessList.maskAccessListItems(internalHost.cleanRowCertificateMeta(row));
+		return row;
 	},
 
 	/**
@@ -188,7 +182,6 @@ const internalProxyHost = {
 	 * @param  {Object}   data
 	 * @param  {Number}   data.id
 	 * @param  {Array}    [data.expand]
-	 * @param  {Array}    [data.omit]
 	 * @return {Promise}
 	 */
 	get: async (access, data) => {
@@ -211,19 +204,12 @@ const internalProxyHost = {
 			query.withGraphFetched(`[${thisData.expand.join(", ")}]`);
 		}
 
-		const row = utils.omitRow(omissions())(await query);
+		const row = await query;
 		if (!row?.id) {
 			throw new errs.ItemNotFoundError(thisData.id);
 		}
 
-		const thisRow = internalHost.cleanRowCertificateMeta(internalProxyHostAccessList.cleanAccessListTypes(row));
-
-		// Custom omissions
-		if (typeof thisData.omit !== "undefined" && thisData.omit !== null) {
-			return _.omit(thisRow, thisData.omit);
-		}
-
-		return thisRow;
+		return internalProxyHostAccessList.cleanAccessListTypes(row);
 	},
 
 	/**
@@ -258,7 +244,7 @@ const internalProxyHost = {
 			action: "deleted",
 			object_type: "proxy-host",
 			object_id: row.id,
-			meta: _.omit(row, omissions()),
+			meta: row,
 		});
 
 		return true;
@@ -313,7 +299,7 @@ const internalProxyHost = {
 			action: "enabled",
 			object_type: "proxy-host",
 			object_id: row.id,
-			meta: internalProxyHostAccessList.maskAccessListItems(row),
+			meta: row,
 		});
 
 		return true;
@@ -352,7 +338,7 @@ const internalProxyHost = {
 			action: "disabled",
 			object_type: "proxy-host",
 			object_id: row.id,
-			meta: _.omit(row, omissions()),
+			meta: row,
 		});
 
 		return true;
@@ -391,14 +377,7 @@ const internalProxyHost = {
 			query.withGraphFetched(`[${expand.join(", ")}]`);
 		}
 
-		const rows = utils
-			.omitRows(omissions())(await query)
-			.map((row) => internalProxyHostAccessList.cleanAccessListTypes(row));
-		if (typeof expand !== "undefined" && expand !== null && expand.indexOf("certificate") !== -1) {
-			return internalHost.cleanAllRowsCertificateMeta(rows);
-		}
-
-		return rows;
+		return (await query).map((row) => internalProxyHostAccessList.cleanAccessListTypes(row));
 	},
 
 	/**

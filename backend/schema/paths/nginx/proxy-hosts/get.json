@@ -46,9 +46,6 @@
 									"npmplus_access_list_type": "public",
 									"certificate_id": 1,
 									"ssl_forced": false,
-									"caching_enabled": false,
-									"block_exploits": false,
-									"allow_websocket_upgrade": false,
 									"npmplus_noindex": false,
 									"npmplus_crowdsec_appsec": false,
 									"npmplus_proxy_request_buffering": false,
@@ -64,14 +61,12 @@
 										"nginx_online": true,
 										"nginx_err": null
 									},
-									"http2_support": false,
 									"npmplus_http3_support": false,
 									"forward_scheme": "http",
 									"enabled": true,
 									"locations": [],
 									"hsts_enabled": false,
-									"hsts_subdomains": false,
-									"trust_forwarded_proto": false
+									"hsts_subdomains": false
 								}
 							]
 						}

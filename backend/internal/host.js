@@ -49,36 +49,6 @@ const internalHost = {
 	},
 
 	/**
-	 * used by the getAll functions of hosts, this removes the certificate meta if present
-	 *
-	 * @param   {Array}  rows
-	 * @returns {Array}
-	 */
-	cleanAllRowsCertificateMeta: (rows) => {
-		for (const row of rows) {
-			if (row.certificate) {
-				row.certificate.meta = {};
-			}
-		}
-
-		return rows;
-	},
-
-	/**
-	 * used by the get/update functions of hosts, this removes the certificate meta if present
-	 *
-	 * @param   {Object}  row
-	 * @returns {Object}
-	 */
-	cleanRowCertificateMeta: (row) => {
-		if (typeof row.certificate !== "undefined" && row.certificate) {
-			row.certificate.meta = {};
-		}
-
-		return row;
-	},
-
-	/**
 	 * Internal use only, checks to see if the domain is already taken by any other record
 	 *
 	 * @param   {String}   hostname

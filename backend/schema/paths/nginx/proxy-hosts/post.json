@@ -48,23 +48,8 @@
 						"hsts_subdomains": {
 							"$ref": "../../../components/proxy-host-object.json#/properties/hsts_subdomains"
 						},
-						"trust_forwarded_proto": {
-							"$ref": "../../../components/proxy-host-object.json#/properties/trust_forwarded_proto"
-						},
-						"http2_support": {
-							"$ref": "../../../components/proxy-host-object.json#/properties/http2_support"
-						},
 						"npmplus_http3_support": {
 							"$ref": "../../../components/proxy-host-object.json#/properties/npmplus_http3_support"
-						},
-						"block_exploits": {
-							"$ref": "../../../components/proxy-host-object.json#/properties/block_exploits"
-						},
-						"caching_enabled": {
-							"$ref": "../../../components/proxy-host-object.json#/properties/caching_enabled"
-						},
-						"allow_websocket_upgrade": {
-							"$ref": "../../../components/proxy-host-object.json#/properties/allow_websocket_upgrade"
 						},
 						"npmplus_access_list_ids": {
 							"$ref": "../../../components/proxy-host-object.json#/properties/npmplus_access_list_ids"
@@ -145,9 +130,6 @@
 								"npmplus_access_list_type": "public",
 								"certificate_id": 0,
 								"ssl_forced": false,
-								"caching_enabled": false,
-								"block_exploits": false,
-								"allow_websocket_upgrade": false,
 								"npmplus_noindex": false,
 								"npmplus_crowdsec_appsec": false,
 								"npmplus_proxy_request_buffering": false,
@@ -160,14 +142,12 @@
 								"advanced_config": "",
 								"npmplus_location_config": "",
 								"meta": {},
-								"http2_support": false,
 								"npmplus_http3_support": false,
 								"forward_scheme": "http",
 								"enabled": true,
 								"locations": [],
 								"hsts_enabled": false,
 								"hsts_subdomains": false,
-								"trust_forwarded_proto": false,
 								"certificate": null,
 								"owner": {
 									"id": 1,

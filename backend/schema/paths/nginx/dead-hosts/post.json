@@ -36,9 +36,6 @@
 						"hsts_subdomains": {
 							"$ref": "../../../components/dead-host-object.json#/properties/hsts_subdomains"
 						},
-						"http2_support": {
-							"$ref": "../../../components/dead-host-object.json#/properties/http2_support"
-						},
 						"npmplus_http3_support": {
 							"$ref": "../../../components/dead-host-object.json#/properties/npmplus_http3_support"
 						},
@@ -57,7 +54,6 @@
 					"certificate_id": 0,
 					"ssl_forced": false,
 					"advanced_config": "",
-					"http2_support": false,
 					"npmplus_http3_support": false,
 					"hsts_enabled": false,
 					"hsts_subdomains": false,
@@ -85,7 +81,6 @@
 								"ssl_forced": false,
 								"advanced_config": "",
 								"meta": {},
-								"http2_support": false,
 								"npmplus_http3_support": false,
 								"enabled": true,
 								"hsts_enabled": false,

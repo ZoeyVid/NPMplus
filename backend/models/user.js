@@ -9,7 +9,7 @@ import UserPermission from "./user_permission.js";
 
 Model.knex(db());
 
-const boolFields = ["is_deleted", "is_disabled"];
+const boolFields = ["is_disabled"];
 
 class User extends Model {
 	$beforeInsert() {
@@ -27,7 +27,7 @@ class User extends Model {
 	}
 
 	$parseDatabaseJson(json) {
-		const thisJson = super.$parseDatabaseJson(json);
+		const { is_deleted, nickname, ...thisJson } = super.$parseDatabaseJson(json);
 		return convertIntFieldsToBool(thisJson, boolFields);
 	}
 

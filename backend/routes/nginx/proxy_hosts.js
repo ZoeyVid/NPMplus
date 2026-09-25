@@ -1,6 +1,5 @@
 import express from "express";
 import internalProxyHost from "../../internal/proxy-host.js";
-import internalProxyHostAccessList from "../../internal/proxy-host-access-list.js";
 import jwtdecode from "../../lib/express/jwt-decode.js";
 import apiValidator from "../../lib/validator/api.js";
 import validator from "../../lib/validator/index.js";
@@ -57,7 +56,7 @@ router
 				query: typeof req.query.query === "string" ? req.query.query : null,
 			});
 			const rows = await internalProxyHost.getAll(res.locals.access, data.expand, data.query);
-			res.status(200).send(rows.map((row) => internalProxyHostAccessList.maskAccessListItems(row)));
+			res.status(200).send(rows);
 		} catch (err) {
 			debug(logger, `${req.method.toUpperCase()} ${req.originalUrl}: ${err}`);
 			next(err);
@@ -107,7 +106,7 @@ router
 				id: Number.parseInt(data.host_id, 10),
 				expand: data.expand,
 			});
-			res.status(200).send(internalProxyHostAccessList.maskAccessListItems(row));
+			res.status(200).send(row);
 		} catch (err) {
 			debug(logger, `${req.method.toUpperCase()} ${req.originalUrl}: ${err}`);
 			next(err);

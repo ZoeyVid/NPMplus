@@ -51,14 +51,8 @@
 						"hsts_subdomains": {
 							"$ref": "../../../components/redirection-host-object.json#/properties/hsts_subdomains"
 						},
-						"http2_support": {
-							"$ref": "../../../components/redirection-host-object.json#/properties/http2_support"
-						},
 						"npmplus_http3_support": {
 							"$ref": "../../../components/redirection-host-object.json#/properties/npmplus_http3_support"
-						},
-						"block_exploits": {
-							"$ref": "../../../components/redirection-host-object.json#/properties/block_exploits"
 						},
 						"advanced_config": {
 							"$ref": "../../../components/redirection-host-object.json#/properties/advanced_config"
@@ -76,10 +70,8 @@
 					"forward_scheme": "auto",
 					"forward_http_code": 301,
 					"preserve_path": false,
-					"block_exploits": false,
 					"certificate_id": 0,
 					"ssl_forced": false,
-					"http2_support": false,
 					"npmplus_http3_support": false,
 					"hsts_enabled": false,
 					"hsts_subdomains": false,
@@ -108,10 +100,8 @@
 								"preserve_path": false,
 								"certificate_id": 0,
 								"ssl_forced": false,
-								"block_exploits": false,
 								"advanced_config": "",
 								"meta": {},
-								"http2_support": false,
 								"npmplus_http3_support": false,
 								"enabled": true,
 								"hsts_enabled": false,

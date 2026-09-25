@@ -11,14 +11,11 @@ import User from "./user.js";
 Model.knex(db());
 
 const boolFields = [
-	"is_deleted",
 	"enabled",
 	"preserve_path",
 	"ssl_forced",
-	"block_exploits",
 	"hsts_enabled",
 	"hsts_subdomains",
-	"http2_support",
 	"npmplus_http3_support",
 ];
 
@@ -43,7 +40,7 @@ class RedirectionHost extends Model {
 	}
 
 	$parseDatabaseJson(json) {
-		const thisJson = super.$parseDatabaseJson(json);
+		const { is_deleted, block_exploits, http2_support, ...thisJson } = super.$parseDatabaseJson(json);
 		return convertIntFieldsToBool(thisJson, boolFields);
 	}
 

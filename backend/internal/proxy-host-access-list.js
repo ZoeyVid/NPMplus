@@ -1,5 +1,4 @@
 import { readdir, rm } from "node:fs/promises";
-import _ from "lodash";
 import errs from "../lib/error.js";
 import { access as logger } from "../logger.js";
 import accessListModel from "../models/access_list.js";
@@ -7,8 +6,6 @@ import internalAccessList from "./access-list.js";
 import internalNginx from "./nginx.js";
 
 const GENERATED_DIR = "/data/access";
-
-const omissions = () => ["is_deleted", "owner.is_deleted", "certificate.is_deleted", "certificate.meta"];
 
 const getMergedItems = (accessLists) => {
 	const seen = new Set();
@@ -297,26 +294,6 @@ const internalProxyHostAccessList = {
 	},
 
 	/**
-	 * Masks the access lists in the locations and the proxy host
-	 * @param {*} proxyHost
-	 * @returns
-	 */
-	maskAccessListItems: (proxyHost) => {
-		if (!proxyHost) {
-			return proxyHost;
-		}
-
-		return {
-			..._.omit(proxyHost, omissions()),
-			access_lists: proxyHost.access_lists?.map((accessList) => internalAccessList.maskItems(accessList)),
-			locations: proxyHost.locations?.map((location) => ({
-				...location,
-				access_lists: location.access_lists?.map((accessList) => internalAccessList.maskItems(accessList)),
-			})),
-		};
-	},
-
-	/**
 	 * Populates the access_lists object in proxyHost and proxyHost.locations with the actual object
 	 * data
 	 * @param {*} proxyHost
@@ -434,17 +411,6 @@ const internalProxyHostAccessList = {
 		// ensure array exists
 		if (!Array.isArray(proxyHost.npmplus_access_list_ids)) {
 			proxyHost.npmplus_access_list_ids = [];
-		}
-
-		// fallback from old column (only if needed)
-		if (
-			typeof proxyHost.npmplus_access_list_type === "undefined" &&
-			proxyHost.npmplus_access_list_ids.length === 0 &&
-			proxyHost.access_list_id &&
-			proxyHost.access_list_id !== 0
-		) {
-			proxyHost.npmplus_access_list_ids = [proxyHost.access_list_id];
-			proxyHost.npmplus_access_list_type = "custom";
 		}
 
 		// ensure type exists
