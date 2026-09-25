@@ -101,12 +101,12 @@ export default function Table({
 						return (
 							<>
 								{value.tcpForwarding ? (
-									<span className="badge badge-lg domain-name">
+									<span className="badge badge-lg font-monospace">
 										<T id="streams.tcp" />
 									</span>
 								) : null}
 								{value.npmplusProxyProtocolForwarding ? (
-									<span className="badge badge-lg domain-name">
+									<span className="badge badge-lg font-monospace">
 										<T
 											id={
 												value.npmplusProxyProtocolForwarding === 1
@@ -117,12 +117,12 @@ export default function Table({
 									</span>
 								) : null}
 								{value.npmplusProxyTls ? (
-									<span className="badge badge-lg domain-name">
+									<span className="badge badge-lg font-monospace">
 										<T id="streams.tls" />
 									</span>
 								) : null}
 								{value.udpForwarding ? (
-									<span className="badge badge-lg domain-name">
+									<span className="badge badge-lg font-monospace">
 										<T id="streams.udp" />
 									</span>
 								) : null}

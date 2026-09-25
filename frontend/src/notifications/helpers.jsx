@@ -1,11 +1,10 @@
 import { toast } from "react-toastify";
 import { intl } from "src/locale";
 import { Msg } from "./Msg";
-import styles from "./Msg.module.css";
 
 const showSuccess = (message) => {
 	toast(Msg, {
-		className: styles.toaster,
+		className: "bg-transparent shadow-none border-0",
 		data: {
 			type: "success",
 			title: intl.formatMessage({ id: "notification.success" }),
@@ -16,6 +15,7 @@ const showSuccess = (message) => {
 
 const showError = (message) => {
 	toast(<Msg />, {
+		className: "bg-transparent shadow-none border-0",
 		data: {
 			type: "error",
 			title: intl.formatMessage({ id: "notification.error" }),
