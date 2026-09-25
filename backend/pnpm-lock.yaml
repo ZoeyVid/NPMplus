@@ -44,9 +44,6 @@ importers:
       liquidjs:
         specifier: 10.29.0
         version: 10.29.0
-      lodash:
-        specifier: 4.18.1
-        version: 4.18.1
       multer:
         specifier: 2.4.0
         version: 2.4.0

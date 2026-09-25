@@ -6,7 +6,6 @@ import path from "node:path";
 import { domainToASCII } from "node:url";
 import { ZipArchive } from "archiver";
 import dayjs from "dayjs";
-import _ from "lodash";
 import dnsPlugins from "../certbot/dns-plugins.json" with { type: "json" };
 import { installPlugin } from "../lib/certbot.js";
 import error from "../lib/error.js";
@@ -22,8 +21,6 @@ import internalAuditLog from "./audit-log.js";
 import internalNginx from "./nginx.js";
 
 const cnPattern = /\bCN=([^\n]+)/i;
-
-const omissions = () => ["is_deleted", "owner.is_deleted", "meta.dns_provider_credentials"];
 
 const internalCertificate = {
 	allowedSslFiles: ["certificate", "certificate_key"],
@@ -140,11 +137,9 @@ const internalCertificate = {
 					const certInfo = await internalCertificate.getCertificateInfoFromFile(
 						`${internalCertificate.getLiveCertPath(certificate.id)}/fullchain.pem`,
 					);
-					const savedRow = utils.omitRow(omissions())(
-						await certificateModel.query().patchAndFetchById(certificate.id, {
-							expires_on: dayjs.unix(certInfo.dates.to).format("YYYY-MM-DD HH:mm:ss"),
-						}),
-					);
+					const savedRow = await certificateModel.query().patchAndFetchById(certificate.id, {
+						expires_on: dayjs.unix(certInfo.dates.to).format("YYYY-MM-DD HH:mm:ss"),
+					});
 
 					// Add cert data for audit log
 					savedRow.meta = { ...savedRow.meta, letsencrypt_certificate: certInfo };
@@ -167,9 +162,9 @@ const internalCertificate = {
 		data.meta = { ...data.meta, ...certificate.meta };
 
 		// Add to audit log
-		await internalCertificate.addCreatedAuditLog(access, certificate.id, utils.omitRow(omissions())(data));
+		await internalCertificate.addCreatedAuditLog(access, certificate.id, data);
 
-		return utils.omitRow(omissions())(certificate);
+		return certificate;
 	},
 
 	addCreatedAuditLog: async (access, certificate_id, meta) => {
@@ -200,10 +195,7 @@ const internalCertificate = {
 			);
 		}
 
-		const savedRow = utils.omitRow(omissions())(await certificateModel.query().patchAndFetchById(row.id, data));
-
-		savedRow.meta = internalCertificate.cleanMeta(savedRow.meta);
-		data.meta = internalCertificate.cleanMeta(data.meta);
+		const savedRow = await certificateModel.query().patchAndFetchById(row.id, data);
 
 		// Add row.nice_name for custom certs
 		if (savedRow.provider === "other") {
@@ -215,7 +207,7 @@ const internalCertificate = {
 			action: "updated",
 			object_type: "certificate",
 			object_id: row.id,
-			meta: _.omit(data, ["expires_on"]), // this prevents json circular reference because expires_on might be raw
+			meta: data,
 		});
 
 		return savedRow;
@@ -226,7 +218,6 @@ const internalCertificate = {
 	 * @param  {Object}   data
 	 * @param  {Number}   data.id
 	 * @param  {Array}    [data.expand]
-	 * @param  {Array}    [data.omit]
 	 * @return {Promise}
 	 */
 	get: async (access, data) => {
@@ -246,31 +237,11 @@ const internalCertificate = {
 			query.withGraphFetched(`[${data.expand.join(", ")}]`);
 		}
 
-		const row = utils.omitRow(omissions())(await query);
+		const row = await query;
 		if (!row?.id) {
 			throw new error.ItemNotFoundError(data.id);
 		}
-		// Custom omissions
-		if (typeof data.omit !== "undefined" && data.omit !== null) {
-			return _.omit(row, [...data.omit]);
-		}
 
-		return internalCertificate.cleanExpansions(row);
-	},
-
-	cleanExpansions: (row) => {
-		if (typeof row.proxy_hosts !== "undefined") {
-			row.proxy_hosts = utils.omitRows(["is_deleted"])(row.proxy_hosts);
-		}
-		if (typeof row.redirection_hosts !== "undefined") {
-			row.redirection_hosts = utils.omitRows(["is_deleted"])(row.redirection_hosts);
-		}
-		if (typeof row.dead_hosts !== "undefined") {
-			row.dead_hosts = utils.omitRows(["is_deleted"])(row.dead_hosts);
-		}
-		if (typeof row.streams !== "undefined") {
-			row.streams = utils.omitRows(["is_deleted"])(row.streams);
-		}
 		return row;
 	},
 
@@ -372,13 +343,11 @@ const internalCertificate = {
 		});
 
 		// Add to audit log
-		row.meta = internalCertificate.cleanMeta(row.meta);
-
 		await internalAuditLog.add(access, {
 			action: "deleted",
 			object_type: "certificate",
 			object_id: row.id,
-			meta: _.omit(row, omissions()),
+			meta: row,
 		});
 
 		if (row.provider === "letsencrypt") {
@@ -426,9 +395,7 @@ const internalCertificate = {
 			query.withGraphFetched(`[${expand.join(", ")}]`);
 		}
 
-		return utils
-			.omitRows(omissions())(await query)
-			.map((row) => internalCertificate.cleanExpansions(row));
+		return await query;
 	},
 
 	/**
@@ -546,13 +513,12 @@ const internalCertificate = {
 			id: data.id,
 			expires_on: dayjs.unix(validations.certificate.dates.to).format("YYYY-MM-DD HH:mm:ss"),
 			domain_names: validations.certificate.cn,
-			meta: { ...row.meta }, // Prevent the update method from changing this value that we'll use later
 		});
 
 		certificate.meta = { ...row.meta, ...certs };
 		await internalCertificate.writeCustomCert(certificate);
 		await internalNginx.reload();
-		return _.omit(certificate.meta, internalCertificate.allowedSslFiles);
+		return certificate.meta;
 	},
 
 	/**
@@ -634,27 +600,6 @@ const internalCertificate = {
 	getCertificateInfoFromFile: async (certificateFile, throwExpired) => {
 		const certContent = await readFile(certificateFile);
 		return internalCertificate.getCertificateInfo(certContent, throwExpired);
-	},
-
-	/**
-	 * Cleans the tls keys from the meta object and sets them
-	 * @param   {String}  email         the email address to use for registration to "true"
-	 *
-	 * @param   {Object}  meta
-	 * @param   {Boolean} [remove]
-	 * @returns {Object}
-	 */
-	cleanMeta: (meta, remove) => {
-		for (const key of internalCertificate.allowedSslFiles) {
-			if (meta[key]) {
-				if (remove) {
-					delete meta[key];
-				} else {
-					meta[key] = true;
-				}
-			}
-		}
-		return meta;
 	},
 
 	/**

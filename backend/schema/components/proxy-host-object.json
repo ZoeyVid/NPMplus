@@ -13,20 +13,15 @@
 		"npmplus_access_list_type",
 		"certificate_id",
 		"ssl_forced",
-		"caching_enabled",
-		"block_exploits",
 		"advanced_config",
 		"npmplus_location_config",
 		"meta",
-		"allow_websocket_upgrade",
-		"http2_support",
 		"npmplus_http3_support",
 		"forward_scheme",
 		"enabled",
 		"locations",
 		"hsts_enabled",
 		"hsts_subdomains",
-		"trust_forwarded_proto",
 		"npmplus_noindex",
 		"npmplus_crowdsec_appsec",
 		"npmplus_proxy_request_buffering",
@@ -80,15 +75,6 @@
 		},
 		"ssl_forced": {
 			"$ref": "../common.json#/properties/ssl_forced"
-		},
-		"caching_enabled": {
-			"$ref": "../common.json#/properties/caching_enabled"
-		},
-		"block_exploits": {
-			"$ref": "../common.json#/properties/block_exploits"
-		},
-		"allow_websocket_upgrade": {
-			"$ref": "../common.json#/properties/allow_websocket_upgrade"
 		},
 		"npmplus_noindex": {
 			"$ref": "../common.json#/properties/npmplus_noindex"
@@ -152,9 +138,6 @@
 				"nginx_online": true,
 				"nginx_err": null
 			}
-		},
-		"http2_support": {
-			"$ref": "../common.json#/properties/http2_support"
 		},
 		"npmplus_http3_support": {
 			"$ref": "../common.json#/properties/npmplus_http3_support"
@@ -223,20 +206,6 @@
 					"forward_port": {
 						"$ref": "#/properties/forward_port"
 					},
-					"caching_enabled": {
-						"$ref": "#/properties/caching_enabled"
-					},
-					"block_exploits": {
-						"$ref": "#/properties/block_exploits"
-					},
-					"allow_websocket_upgrade": {
-						"$ref": "#/properties/allow_websocket_upgrade"
-					},
-					"npmplus_fancyindex_upstream_compression": {
-						"description": "This just exists so that old custom locations don't break",
-						"type": "boolean",
-						"example": false
-					},
 					"npmplus_noindex": {
 						"$ref": "#/properties/npmplus_noindex"
 					},
@@ -248,16 +217,6 @@
 					},
 					"npmplus_proxy_response_buffering": {
 						"$ref": "#/properties/npmplus_proxy_response_buffering"
-					},
-					"npmplus_disable_uri_sanitisation": {
-						"description": "This just exists so that old custom locations don't break",
-						"type": "boolean",
-						"example": false
-					},
-					"npmplus_spoof_host_header": {
-						"description": "This just exists so that old custom locations don't break",
-						"type": "boolean",
-						"example": false
 					},
 					"npmplus_upstream_compression": {
 						"$ref": "#/properties/npmplus_upstream_compression"
@@ -304,11 +263,6 @@
 		},
 		"hsts_subdomains": {
 			"$ref": "../common.json#/properties/hsts_subdomains"
-		},
-		"trust_forwarded_proto":{
-			"type": "boolean",
-			"description": "Trust the forwarded headers",
-			"example": false
 		},
 		"certificate": {
 			"oneOf": [

@@ -10,15 +10,7 @@ import User from "./user.js";
 
 Model.knex(db());
 
-const boolFields = [
-	"is_deleted",
-	"ssl_forced",
-	"http2_support",
-	"npmplus_http3_support",
-	"enabled",
-	"hsts_enabled",
-	"hsts_subdomains",
-];
+const boolFields = ["ssl_forced", "npmplus_http3_support", "enabled", "hsts_enabled", "hsts_subdomains"];
 
 class DeadHost extends Model {
 	$beforeInsert() {
@@ -41,7 +33,7 @@ class DeadHost extends Model {
 	}
 
 	$parseDatabaseJson(json) {
-		const thisJson = super.$parseDatabaseJson(json);
+		const { is_deleted, http2_support, ...thisJson } = super.$parseDatabaseJson(json);
 		return convertIntFieldsToBool(thisJson, boolFields);
 	}
 

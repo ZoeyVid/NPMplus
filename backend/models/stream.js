@@ -10,7 +10,7 @@ import User from "./user.js";
 
 Model.knex(db());
 
-const boolFields = ["is_deleted", "enabled", "tcp_forwarding", "udp_forwarding", "npmplus_proxy_tls"];
+const boolFields = ["enabled", "tcp_forwarding", "udp_forwarding", "npmplus_proxy_tls"];
 
 class Stream extends Model {
 	$beforeInsert() {
@@ -28,7 +28,7 @@ class Stream extends Model {
 	}
 
 	$parseDatabaseJson(json) {
-		const thisJson = super.$parseDatabaseJson(json);
+		const { is_deleted, ...thisJson } = super.$parseDatabaseJson(json);
 		return convertIntFieldsToBool(thisJson, boolFields);
 	}
 

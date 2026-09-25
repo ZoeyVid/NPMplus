@@ -1,14 +1,10 @@
-import _ from "lodash";
 import errs from "../lib/error.js";
 import { castJsonIfNeed } from "../lib/helpers.js";
-import utils from "../lib/utils.js";
 import deadHostModel from "../models/dead_host.js";
 import internalAuditLog from "./audit-log.js";
 import internalCertificate from "./certificate.js";
 import internalHost from "./host.js";
 import internalNginx from "./nginx.js";
-
-const omissions = () => ["is_deleted", "owner.is_deleted", "certificate.is_deleted"];
 
 const internalDeadHost = {
 	/**
@@ -41,7 +37,7 @@ const internalDeadHost = {
 		thisData.owner_user_id = access.token.getUserId(1);
 		thisData = internalHost.cleanSslHstsData(createCertificate, thisData);
 
-		const createdRow = utils.omitRow(omissions())(await deadHostModel.query().insertAndFetch(thisData));
+		const createdRow = await deadHostModel.query().insertAndFetch(thisData);
 
 		if (createCertificate) {
 			const cert = await internalCertificate.createQuickCertificate(access, thisData);
@@ -144,13 +140,13 @@ const internalDeadHost = {
 
 		if (!row.enabled) {
 			// No need to add nginx config if host is disabled
-			return _.omit(internalHost.cleanRowCertificateMeta(row), omissions());
+			return row;
 		}
 
 		// Configure nginx
 		row.meta = await internalNginx.configure(deadHostModel, "dead_host", row);
 
-		return _.omit(internalHost.cleanRowCertificateMeta(row), omissions());
+		return row;
 	},
 
 	/**
@@ -158,7 +154,6 @@ const internalDeadHost = {
 	 * @param  {Object}   data
 	 * @param  {Number}   data.id
 	 * @param  {Array}    [data.expand]
-	 * @param  {Array}    [data.omit]
 	 * @return {Promise}
 	 */
 	get: async (access, data) => {
@@ -181,19 +176,12 @@ const internalDeadHost = {
 			query.withGraphFetched(`[${thisData.expand.join(", ")}]`);
 		}
 
-		const row = utils.omitRow(omissions())(await query);
+		const row = await query;
 		if (!row?.id) {
 			throw new errs.ItemNotFoundError(thisData.id);
 		}
 
-		const thisRow = internalHost.cleanRowCertificateMeta(row);
-
-		// Custom omissions
-		if (typeof thisData.omit !== "undefined" && thisData.omit !== null) {
-			return _.omit(thisRow, thisData.omit);
-		}
-
-		return thisRow;
+		return row;
 	},
 
 	/**
@@ -224,7 +212,7 @@ const internalDeadHost = {
 			action: "deleted",
 			object_type: "dead-host",
 			object_id: row.id,
-			meta: _.omit(row, omissions()),
+			meta: row,
 		});
 
 		return true;
@@ -273,7 +261,7 @@ const internalDeadHost = {
 			action: "enabled",
 			object_type: "dead-host",
 			object_id: row.id,
-			meta: _.omit(row, omissions()),
+			meta: row,
 		});
 
 		return true;
@@ -312,7 +300,7 @@ const internalDeadHost = {
 			action: "disabled",
 			object_type: "dead-host",
 			object_id: row.id,
-			meta: _.omit(row, omissions()),
+			meta: row,
 		});
 
 		return true;
@@ -351,12 +339,7 @@ const internalDeadHost = {
 			query.withGraphFetched(`[${expand.join(", ")}]`);
 		}
 
-		const rows = utils.omitRows(omissions())(await query);
-		if (typeof expand !== "undefined" && expand !== null && expand.indexOf("certificate") !== -1) {
-			return internalHost.cleanAllRowsCertificateMeta(rows);
-		}
-
-		return rows;
+		return await query;
 	},
 
 	/**
