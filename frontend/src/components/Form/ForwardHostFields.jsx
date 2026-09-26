@@ -303,7 +303,7 @@ export function ForwardHostFields({ scheme="",idPrefix, loadBalanceMethod, upstr
 									onClick={() => toggleExpanded(idx)}
 								>
 									{isExpanded(idx) ? <IconChevronDown size={16} /> : <IconChevronRight size={16} />}
-									<span className="ms-2 fw-medium text-nowrap">{server.host}{server.port ?  `:${server.port}`: ""}${server.forwardPath ?? ""}</span>
+									<span className="ms-2 fw-medium text-nowrap">{server.host}{server.port ?  `:${server.port}`: ""}{server.forwardPath ?? ""}</span>
 								</button>
 								{idx > 0 ? (
 									<button
@@ -338,7 +338,7 @@ export function ForwardHostFields({ scheme="",idPrefix, loadBalanceMethod, upstr
 							</div>
 						) : null}
 						<div
-							className={cn("card-body p-0", !isExpanded(idx) && "d-none")}
+							className={cn("card-body", streams && "p-0", !isExpanded(idx) && "d-none")}
 							id={controlId("upstream-body", idx)}
 							onInvalid={() =>
 								flushSync(() => {

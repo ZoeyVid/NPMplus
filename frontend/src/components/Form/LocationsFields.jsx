@@ -14,6 +14,8 @@ import cn from "clsx";
 import { Field, FieldArray, useFormikContext } from "formik";
 import { useRef, useState } from "react";
 import { flushSync } from "react-dom";
+import OverlayTrigger from "react-bootstrap/OverlayTrigger";
+import Popover from "react-bootstrap/Popover";
 import { AccessFields } from "src/components";
 import { useUser } from "src/hooks";
 import { intl, T } from "src/locale";
@@ -127,37 +129,44 @@ export function LocationsFields({ name = "locations", disabled, isClone }) {
 
 	const locationLabel = (item) => `${item.locationType ?? ""}${item.path ?? ""}`;
 
-	const forwardSummary = ({ forwardScheme, npmplusUpstreamServers = [] }) => {
-		// TODO add a full popover for the summary if there are more than 2 items
-		let hostSummary = "";
-		let filled = 0;
-		for (let i =0; filled < 2 && i < npmplusUpstreamServers.length; ++i){
-			const server = npmplusUpstreamServers[i];
-			if(server.host){
-				filled++;
-				if(forwardScheme !== "empty" && forwardScheme !== "path"){
-					hostSummary += `, ${forwardScheme}://${server.host}${server.port ? `:${server.port}` : ""}${server.forwardPath ?? ""}`;
-				}else{
-					hostSummary += `, ${server.host}`;
-				}
-			}
+	const forwardDestination = (forwardScheme, server) => {
+		if (!server?.host) {
+			return "";
 		}
-		// skip the starting comma and space
-		return hostSummary.length > 0 ? hostSummary.substring(2) : hostSummary;
+		if (forwardScheme && !["empty", "path"].includes(forwardScheme)) {
+			return `${forwardScheme}://${server.host}${server.port ? `:${server.port}` : ""}${server.forwardPath ?? ""}`;
+		}
+		return server.host;
 	};
 
-	const handleForwardChange  = (idx, changes) => {
+	const populatedUpstreams = ({ npmplusUpstreamServers = [] }) =>npmplusUpstreamServers.filter((server) => server?.host);
+
+	const forwardSummary = (item) =>
+		populatedUpstreams(item).slice(0, 2).map((server) => forwardDestination(item.forwardScheme, server)).join(", ");
+
+	const forwardSearchText = (item) =>
+		populatedUpstreams(item).map((server) => forwardDestination(item.forwardScheme, server)).join(" ");
+
+	const matchesFilter = (item) =>
+		`${locationLabel(item)} ${forwardSearchText(item)}`.toLowerCase().includes(filter.trim().toLowerCase());
+
+	const handleForwardFieldsChange  = (idx, changes) => {
 		void setFieldValue(`${name}.${idx}.forwardScheme`, forwarding.scheme);
 		void setFieldValue(`${name}.${idx}.npmplusLoadBalanceMethod`, forwarding.method);
 		void setFieldValue(`${name}.${idx}.npmplusUpstreamServers`, forwarding.servers);
 	};
-	const forwardSearchText = ({ forwardScheme, npmplusUpstreamServers = [] }) =>
-		npmplusUpstreamServers.map((server) =>
-			`${forwardScheme ? `${forwardScheme}://` : ""}${server.host}${server.port ? `:${server.port}` : ""}${server.forwardPath ?? ""}`
-		).join(" ");
 
-	const matchesFilter = (item) =>
-		`${locationLabel(item)} ${forwardSearchText(item)}`.toLowerCase().includes(filter.trim().toLowerCase());
+	const forwardPopover = (item) => (
+		<Popover id={`location-upstreams-${item.uiKey}`}>
+			<Popover.Body>
+				{populatedUpstreams(item).map((server, index) => (
+					<div key={`${server.host}-${server.port}-${server.forwardPath ?? ""}-${index}`}>
+						{forwardDestination(item.forwardScheme, server)}
+					</div>
+				))}
+			</Popover.Body>
+		</Popover>
+	);
 
 	return (
 		<FieldArray name={name} validateOnChange={false}>
@@ -235,9 +244,17 @@ export function LocationsFields({ name = "locations", disabled, isClone }) {
 									>
 										{isOpen(item) ? <IconChevronDown size={16} /> : <IconChevronRight size={16} />}
 										<span className="ms-2 fw-medium text-truncate">{locationLabel(item)}</span>
-										<span className="ms-2 text-secondary text-truncate">
-											{forwardSummary(item)}
-										</span>
+										{populatedUpstreams(item).length > 2 ? (
+											<OverlayTrigger trigger="hover" placement="bottom" overlay={forwardPopover(item)}>
+												<span className="ms-2 text-secondary text-truncate">
+													{forwardSummary(item)}
+												</span>
+											</OverlayTrigger>
+										) : (
+											<span className="ms-2 text-secondary text-truncate">
+												{forwardSummary(item)}
+											</span>
+										)}
 										{item.advancedConfig?.trim() && (
 											<span
 												className="ms-2 text-secondary d-flex align-items-center flex-shrink-0"
