@@ -38,8 +38,6 @@ const RedirectionHostModal = EasyModal.create(({ id, visible, remove }) => {
 		const { ...payload } = {
 			id: id === "new" ? undefined : id,
 			...values,
-			npmplusDirectory: values.npmplusDirectory.trim(),
-			forwardDomainName: values.forwardDomainName.trim(),
 		};
 
 		setRedirectionHost(payload, {

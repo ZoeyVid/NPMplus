@@ -38,7 +38,7 @@ const internalUser = {
 		data.avatar = data.avatar || "";
 		data.roles = data.roles || [];
 
-		data.email = data.email.toLowerCase().trim();
+		data.email = data.email.toLowerCase();
 
 		if (typeof data.is_disabled !== "undefined") {
 			data.is_disabled = data.is_disabled ? 1 : 0;
@@ -93,7 +93,7 @@ const internalUser = {
 	fetchGravatar: async (id, email, name) => {
 		if (process.env.DISABLE_GRAVATAR === "true") return "/images/default-avatar.jpg";
 		try {
-			const hash = crypto.createHash("sha256").update(email.trim().toLowerCase()).digest("hex");
+			const hash = crypto.createHash("sha256").update(email.toLowerCase()).digest("hex");
 			const response = await fetch(
 				`https://www.gravatar.com/avatar/${hash}?s=64&default=initials&name=${encodeURIComponent(
 					name
@@ -174,7 +174,7 @@ const internalUser = {
 		const existingUser = await internalUser.get(access, { id: data.id });
 		// 2. if email is to be changed, find other users with that email
 		if (typeof data.email !== "undefined") {
-			data.email = data.email.toLowerCase().trim();
+			data.email = data.email.toLowerCase();
 
 			if (existingUser.email !== data.email && !(await internalUser.isEmailAvailable(data.email, data.id))) {
 				throw new errs.ValidationError(`Email address already in use - ${data.email}`);
@@ -257,7 +257,7 @@ const internalUser = {
 	 * @param user_id
 	 */
 	isEmailAvailable: async (email, user_id) => {
-		const query = userModel.query().where("email", "=", email.toLowerCase().trim()).where("is_deleted", 0).first();
+		const query = userModel.query().where("email", "=", email.toLowerCase()).where("is_deleted", 0).first();
 
 		if (typeof user_id !== "undefined") {
 			query.where("id", "!=", user_id);
@@ -372,7 +372,7 @@ const internalUser = {
 			}
 
 			await internalToken.getTokenFromEmail({
-				identity: user.email.toLowerCase().trim(),
+				identity: user.email.toLowerCase(),
 				secret: data.current,
 			});
 		}

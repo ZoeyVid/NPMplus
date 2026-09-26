@@ -47,7 +47,6 @@ const UserModal = EasyModal.create(({ id, visible, remove }) => {
 			id: id === "new" ? undefined : id,
 			roles: [],
 			...values,
-			name: values.name.trim(),
 		};
 
 		if (data?.id === currentUser?.id) {

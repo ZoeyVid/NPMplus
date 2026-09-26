@@ -18,21 +18,32 @@
 			"required": true,
 			"description": "User ID",
 			"example": 2
-		},
-		{
-			"in": "query",
-			"name": "code",
-			"schema": {
-				"type": "string",
-				"minLength": 6,
-				"maxLength": 8,
-				"example": "012345"
-			},
-			"required": true,
-			"description": "TOTP code or backup code",
-			"example": "012345"
 		}
 	],
+	"requestBody": {
+		"description": "Verification Payload",
+		"required": true,
+		"content": {
+			"application/json": {
+				"schema": {
+					"additionalProperties": false,
+					"properties": {
+						"code": {
+							"minLength": 6,
+							"maxLength": 8,
+							"type": "string",
+							"example": "123456"
+						}
+					},
+					"required": ["code"],
+					"type": "object"
+				},
+				"example": {
+					"code": "123456"
+				}
+			}
+		}
+	},
 	"responses": {
 		"200": {
 			"content": {

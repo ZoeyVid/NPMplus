@@ -386,14 +386,16 @@
 		"/users/{userID}/mfa/totp": {
 			"post": {
 				"$ref": "./paths/users/userID/mfa/totp/post.json"
-			},
-			"delete": {
-				"$ref": "./paths/users/userID/mfa/totp/delete.json"
 			}
 		},
 		"/users/{userID}/mfa/totp/enable": {
 			"post": {
 				"$ref": "./paths/users/userID/mfa/totp/enable/post.json"
+			}
+		},
+		"/users/{userID}/mfa/totp/disable": {
+			"post": {
+				"$ref": "./paths/users/userID/mfa/totp/disable/post.json"
 			}
 		},
 		"/users/{userID}/mfa/backup-codes": {

@@ -22,7 +22,6 @@ export default function Setup() {
 
 		const { password, ...payload } = {
 			...values,
-			name: values.name.trim(),
 			...{
 				auth: {
 					type: "password",

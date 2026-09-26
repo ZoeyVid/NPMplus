@@ -37,7 +37,6 @@ const DeadHostModal = EasyModal.create(({ id, visible, remove }) => {
 		const { ...payload } = {
 			id: id === "new" ? undefined : id,
 			...values,
-			npmplusDirectory: values.npmplusDirectory.trim(),
 		};
 
 		setDeadHost(payload, {

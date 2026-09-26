@@ -248,9 +248,6 @@
 					"advanced_config": {
 						"type": "string"
 					},
-					"npmplus_location_config": {
-						"type": "string"
-					},
 					"npmplus_access_list_ids":{
 						"$ref": "../common.json#/properties/npmplus_access_list_ids"
 					},

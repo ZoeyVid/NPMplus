@@ -45,7 +45,7 @@ const CustomCertificateModal = EasyModal.create(({ visible, remove, cert, provid
 			} else {
 				// Create certificate with the specified provider
 				const newCert = await createCertificate({
-					niceName: niceName.trim(),
+					niceName,
 					provider,
 				});
 

@@ -29,11 +29,7 @@ const StreamModal = EasyModal.create(({ id, visible, remove }) => {
 		const { ...payload } = {
 			id: id === "new" ? undefined : id,
 			...values,
-			npmplusDirectory: values.npmplusDirectory.trim(),
-			incomingPort: values.incomingPort.trim(),
-			forwardingHost: values.forwardingHost.trim(),
-			forwardingPort: values.forwardingPort?.trim() || null,
-			npmplusDescription: values.npmplusDescription.trim(),
+			forwardingPort: values.forwardingPort || null,
 		};
 
 		setStream(payload, {

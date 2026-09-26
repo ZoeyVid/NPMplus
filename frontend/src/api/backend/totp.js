@@ -14,10 +14,8 @@ export async function enableTotp(userId, code) {
 }
 
 export async function disableTotp(userId, code) {
-	return await api.del({
-		url: `/users/${userId}/mfa/totp`,
-		params: {
-			code,
-		},
+	return await api.post({
+		url: `/users/${userId}/mfa/totp/disable`,
+		data: { code },
 	});
 }

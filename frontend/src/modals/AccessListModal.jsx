@@ -51,7 +51,6 @@ const AccessListModal = EasyModal.create(({ id, visible, remove }) => {
 		const { ...payload } = {
 			id: id === "new" ? undefined : id,
 			...values,
-			name: values.name.trim(),
 		};
 
 		// Filter out "items" to only use the "username" and "password" fields
@@ -63,7 +62,7 @@ const AccessListModal = EasyModal.create(({ id, visible, remove }) => {
 		// Filter out "clients" to only use the "directive" and "address" fields
 		payload.clients = (values.clients || []).map((i) => ({
 			directive: i.directive,
-			address: i.address.trim(),
+			address: i.address,
 		}));
 
 		setAccessList(payload, {

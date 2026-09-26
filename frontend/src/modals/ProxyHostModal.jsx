@@ -45,12 +45,7 @@ const ProxyHostModal = EasyModal.create(({ id, isClone = false, visible, remove 
 			globalAclIds = [];
 		}
 		const locations = (values.locations || []).map((loc) => {
-			const newLoc = {
-				...loc,
-				path: loc.path.trim(),
-				forwardHost: loc.forwardHost.trim(),
-				npmplusAuthRequestUpstream: loc.npmplusAuthRequestUpstream?.trim(),
-			};
+			const newLoc = { ...loc };
 			if (loc.npmplusAccessListType === "global" || loc.npmplusAccessListType === "public") {
 				newLoc.npmplusAccessListIds = [];
 			}
@@ -60,12 +55,9 @@ const ProxyHostModal = EasyModal.create(({ id, isClone = false, visible, remove 
 		const { ...payload } = {
 			id: id === "new" || isClone ? undefined : id,
 			...values,
-			npmplusDirectory: values.npmplusDirectory.trim(),
 			npmplusAccessListIds: globalAclIds,
 			locations,
-			forwardHost: values.forwardHost.trim(),
 			forwardPort: values.forwardPort || null,
-			npmplusAuthRequestUpstream: values.npmplusAuthRequestUpstream.trim(),
 		};
 
 		setProxyHost(payload, {

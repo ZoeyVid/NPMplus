@@ -25,7 +25,7 @@ export default {
 
 		const user = await userModel
 			.query()
-			.where("email", data.identity.toLowerCase().trim())
+			.where("email", data.identity.toLowerCase())
 			.andWhere("is_deleted", 0)
 			.andWhere("is_disabled", 0)
 			.first();
@@ -49,7 +49,7 @@ export default {
 		const hasMfa = await mfa.isAnyEnabled(user.id);
 		if (hasMfa) {
 			if (data.code) {
-				const validCode = await mfa.verifyForLogin(user.id, data.code.trim());
+				const validCode = await mfa.verifyForLogin(user.id, data.code);
 				if (!validCode) {
 					throw new errs.PermissionError(ERROR_MESSAGE_INVALID_CODE, ERROR_MESSAGE_INVALID_CODE_I18N);
 				}
@@ -97,7 +97,7 @@ export default {
 
 		const user = await userModel
 			.query()
-			.where("email", data.identity.toLowerCase().trim())
+			.where("email", data.identity.toLowerCase())
 			.andWhere("is_deleted", 0)
 			.andWhere("is_disabled", 0)
 			.first();
@@ -214,7 +214,7 @@ export default {
 		consumedChallenges.set(tokenData.jti, tokenData.exp);
 
 		// Verify TOTP code
-		if (!(await mfa.verifyForLogin(userId, code.trim()))) {
+		if (!(await mfa.verifyForLogin(userId, code))) {
 			consumedChallenges.delete(tokenData.jti);
 			throw new errs.PermissionError(ERROR_MESSAGE_INVALID_CODE, ERROR_MESSAGE_INVALID_CODE_I18N);
 		}
