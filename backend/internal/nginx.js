@@ -118,15 +118,9 @@ const internalNginx = {
 	 * @returns {Promise}
 	 */
 	renderLocations: async (host) => {
-		let template;
-
-		try {
-			template = await readFile(`${__dirname}/../templates/_proxy_host_custom_location.conf`, {
-				encoding: "utf8",
-			});
-		} catch (err) {
-			throw new errs.ConfigurationError(err.message);
-		}
+		const template = await readFile(`${__dirname}/../templates/_proxy_host_custom_location.conf`, {
+			encoding: "utf8",
+		});
 
 		const renderEngine = utils.getRenderEngine();
 		let renderedLocations = "";
@@ -165,15 +159,9 @@ const internalNginx = {
 	 * @returns {Promise}
 	 */
 	renderUpstreams: async (host) => {
-		let template;
-
-		try {
-			template = await readFile(`${__dirname}/../templates/_upstream.conf`, {
-				encoding: "utf8",
-			});
-		} catch (err) {
-			throw new errs.ConfigurationError(err.message);
-		}
+		const template = await readFile(`${__dirname}/../templates/_upstream.conf`, {
+			encoding: "utf8",
+		});
 
 		const renderEngine = utils.getRenderEngine();
 		let renderedUpstreams = "";
@@ -241,14 +229,7 @@ const internalNginx = {
 
 		const renderEngine = utils.getRenderEngine();
 
-		let template = null;
 		const filename = internalNginx.getConfigName(nice_host_type, host.id);
-
-		try {
-			template = await readFile(`${__dirname}/../templates/${nice_host_type}.conf`, { encoding: "utf8" });
-		} catch (err) {
-			throw new errs.ConfigurationError(err.message);
-		}
 
 		host.env = process.env;
 
@@ -362,21 +343,19 @@ const internalNginx = {
 			}
 		}
 
-		try {
-			const config_text = await renderEngine.parseAndRender(template, host);
+		const config_text = await renderEngine.parseAndRender(
+			await readFile(`${__dirname}/../templates/${nice_host_type}.conf`, { encoding: "utf8" }),
+			host,
+		);
 
-			await writeFile(filename, config_text, { encoding: "utf8" });
-			debug(logger, "Wrote config:", filename);
+		await writeFile(filename, config_text, { encoding: "utf8" });
+		debug(logger, "Wrote config:", filename);
 
-			if (process.env.DISABLE_NGINX_BEAUTIFIER === "false") {
-				await utils.execFile("nginxbeautifier", ["-s", "2", filename]).catch(() => {});
-			}
-
-			return true;
-		} catch (err) {
-			debug(logger, `Could not write ${filename}:`, err.message);
-			throw new errs.ConfigurationError(err.message);
+		if (process.env.DISABLE_NGINX_BEAUTIFIER === "false") {
+			await utils.execFile("nginxbeautifier", ["-s", "2", filename]).catch(() => {});
 		}
+
+		return true;
 	},
 
 	/**

@@ -11,7 +11,7 @@ import jwtdecode from "../lib/express/jwt-decode.js";
 import userIdFromMe from "../lib/express/user-id-from-me.js";
 import apiValidator from "../lib/validator/api.js";
 import validator from "../lib/validator/index.js";
-import { debug, express as logger } from "../logger.js";
+import { express as logger } from "../logger.js";
 import { getValidationSchema } from "../schema/index.js";
 import { isSetup } from "../setup.js";
 
@@ -70,17 +70,12 @@ router
 	 *
 	 * Retrieve all users
 	 */
-	.get(async (req, res, next) => {
-		try {
-			const data = await validator(listSchema, {
-				query: typeof req.query.query === "string" ? req.query.query : null,
-			});
-			const users = await internalUser.getAll(res.locals.access, data.query);
-			res.status(200).send(users);
-		} catch (err) {
-			debug(logger, `${req.method.toUpperCase()} ${req.originalUrl}: ${err}`);
-			next(err);
-		}
+	.get(async (req, res) => {
+		const data = await validator(listSchema, {
+			query: typeof req.query.query === "string" ? req.query.query : null,
+		});
+		const users = await internalUser.getAll(res.locals.access, data.query);
+		res.status(200).send(users);
 	})
 
 	/**
@@ -88,15 +83,10 @@ router
 	 *
 	 * Create a new User
 	 */
-	.post(async (req, res, next) => {
-		try {
-			const payload = apiValidator(getValidationSchema("/users", "post"), req.body);
-			const user = await internalUser.create(res.locals.access, payload);
-			res.status(201).send(user);
-		} catch (err) {
-			debug(logger, `${req.method.toUpperCase()} ${req.originalUrl}: ${err}`);
-			next(err);
-		}
+	.post(async (req, res) => {
+		const payload = apiValidator(getValidationSchema("/users", "post"), req.body);
+		const user = await internalUser.create(res.locals.access, payload);
+		res.status(201).send(user);
 	});
 
 /**
@@ -112,31 +102,26 @@ router
 	 *
 	 * Create the initial admin User, only possible while no User exists
 	 */
-	.post(async (req, res, next) => {
+	.post(async (req, res) => {
+		if (setupRunning) {
+			throw new errs.PermissionError();
+		}
+		setupRunning = true;
 		try {
-			if (setupRunning) {
+			if (await isSetup()) {
 				throw new errs.PermissionError();
 			}
-			setupRunning = true;
-			try {
-				if (await isSetup()) {
-					throw new errs.PermissionError();
-				}
-				logger.info("Creating a new user in setup mode");
+			logger.info("Creating a new user in setup mode");
 
-				const access = new Access(null);
-				await access.load(true);
+			const access = new Access(null);
+			await access.load(true);
 
-				// Force this first user to be an admin.
-				const payload = apiValidator(getValidationSchema("/users/setup", "post"), req.body);
-				const user = await internalUser.create(access, { ...payload, roles: ["admin"] });
-				res.status(201).send(user);
-			} finally {
-				setupRunning = false;
-			}
-		} catch (err) {
-			debug(logger, `${req.method.toUpperCase()} ${req.originalUrl}: ${err}`);
-			next(err);
+			// Force this first user to be an admin.
+			const payload = apiValidator(getValidationSchema("/users/setup", "post"), req.body);
+			const user = await internalUser.create(access, { ...payload, roles: ["admin"] });
+			res.status(201).send(user);
+		} finally {
+			setupRunning = false;
 		}
 	});
 
@@ -155,22 +140,17 @@ router
 	 *
 	 * Retrieve a specific user
 	 */
-	.get(async (req, res, next) => {
-		try {
-			const data = await validator(userSchema, {
-				user_id: req.params.user_id,
-				expand: typeof req.query.expand === "string" ? req.query.expand.split(",") : null,
-			});
+	.get(async (req, res) => {
+		const data = await validator(userSchema, {
+			user_id: req.params.user_id,
+			expand: typeof req.query.expand === "string" ? req.query.expand.split(",") : null,
+		});
 
-			const user = await internalUser.get(res.locals.access, {
-				id: data.user_id,
-				expand: data.expand,
-			});
-			res.status(200).send(user);
-		} catch (err) {
-			debug(logger, `${req.method.toUpperCase()} ${req.originalUrl}: ${err}`);
-			next(err);
-		}
+		const user = await internalUser.get(res.locals.access, {
+			id: data.user_id,
+			expand: data.expand,
+		});
+		res.status(200).send(user);
 	})
 
 	/**
@@ -178,16 +158,11 @@ router
 	 *
 	 * Update and existing user
 	 */
-	.put(async (req, res, next) => {
-		try {
-			const payload = apiValidator(getValidationSchema("/users/{userID}", "put"), req.body);
-			payload.id = req.params.user_id;
-			const result = await internalUser.update(res.locals.access, payload);
-			res.status(200).send(result);
-		} catch (err) {
-			debug(logger, `${req.method.toUpperCase()} ${req.originalUrl}: ${err}`);
-			next(err);
-		}
+	.put(async (req, res) => {
+		const payload = apiValidator(getValidationSchema("/users/{userID}", "put"), req.body);
+		payload.id = req.params.user_id;
+		const result = await internalUser.update(res.locals.access, payload);
+		res.status(200).send(result);
 	})
 
 	/**
@@ -195,16 +170,11 @@ router
 	 *
 	 * Update and existing user
 	 */
-	.delete(async (req, res, next) => {
-		try {
-			const result = await internalUser.delete(res.locals.access, {
-				id: req.params.user_id,
-			});
-			res.status(200).send(result);
-		} catch (err) {
-			debug(logger, `${req.method.toUpperCase()} ${req.originalUrl}: ${err}`);
-			next(err);
-		}
+	.delete(async (req, res) => {
+		const result = await internalUser.delete(res.locals.access, {
+			id: req.params.user_id,
+		});
+		res.status(200).send(result);
 	});
 
 /**
@@ -222,26 +192,21 @@ router
 	 *
 	 * Update password for a user
 	 */
-	.put(async (req, res, next) => {
-		try {
-			const payload = apiValidator(getValidationSchema("/users/{userID}/auth", "put"), req.body);
-			payload.id = req.params.user_id;
-			const result = await internalUser.setPassword(res.locals.access, payload);
-			if (Number(req.params.user_id) === res.locals.access.token.getUserId(0)) {
-				const data = await internalToken.getFreshToken(res.locals.access, true);
-				res.cookie("__Host-Http-token", data.token, {
-					signed: true,
-					httpOnly: true,
-					secure: true,
-					sameSite: "Strict",
-					expires: new Date(data.expires),
-				});
-			}
-			res.status(200).send(result);
-		} catch (err) {
-			debug(logger, `${req.method.toUpperCase()} ${req.originalUrl}: ${err}`);
-			next(err);
+	.put(async (req, res) => {
+		const payload = apiValidator(getValidationSchema("/users/{userID}/auth", "put"), req.body);
+		payload.id = req.params.user_id;
+		const result = await internalUser.setPassword(res.locals.access, payload);
+		if (Number(req.params.user_id) === res.locals.access.token.getUserId(0)) {
+			const data = await internalToken.getFreshToken(res.locals.access, true);
+			res.cookie("__Host-Http-token", data.token, {
+				signed: true,
+				httpOnly: true,
+				secure: true,
+				sameSite: "Strict",
+				expires: new Date(data.expires),
+			});
 		}
+		res.status(200).send(result);
 	});
 
 /**
@@ -259,16 +224,11 @@ router
 	 *
 	 * Set some or all permissions for a user
 	 */
-	.put(async (req, res, next) => {
-		try {
-			const payload = apiValidator(getValidationSchema("/users/{userID}/permissions", "put"), req.body);
-			payload.id = req.params.user_id;
-			const result = await internalUser.setPermissions(res.locals.access, payload);
-			res.status(200).send(result);
-		} catch (err) {
-			debug(logger, `${req.method.toUpperCase()} ${req.originalUrl}: ${err}`);
-			next(err);
-		}
+	.put(async (req, res) => {
+		const payload = apiValidator(getValidationSchema("/users/{userID}/permissions", "put"), req.body);
+		payload.id = req.params.user_id;
+		const result = await internalUser.setPermissions(res.locals.access, payload);
+		res.status(200).send(result);
 	});
 
 /**
@@ -286,14 +246,9 @@ router
 	 *
 	 * Get MFA status for a user (all factors and backup codes)
 	 */
-	.get(async (req, res, next) => {
-		try {
-			const status = await internalMfa.getStatus(res.locals.access, req.params.user_id);
-			res.status(200).send(status);
-		} catch (err) {
-			debug(logger, `${req.method.toUpperCase()} ${req.path}: ${err}`);
-			next(err);
-		}
+	.get(async (req, res) => {
+		const status = await internalMfa.getStatus(res.locals.access, req.params.user_id);
+		res.status(200).send(status);
 	})
 
 	/**
@@ -301,14 +256,9 @@ router
 	 *
 	 * Admin reset: disable all second factors and backup codes for a user
 	 */
-	.delete(async (req, res, next) => {
-		try {
-			await internalMfa.adminDisable(res.locals.access, req.params.user_id);
-			res.status(200).send(true);
-		} catch (err) {
-			debug(logger, `${req.method.toUpperCase()} ${req.path}: ${err}`);
-			next(err);
-		}
+	.delete(async (req, res) => {
+		await internalMfa.adminDisable(res.locals.access, req.params.user_id);
+		res.status(200).send(true);
 	});
 
 /**
@@ -326,14 +276,9 @@ router
 	 *
 	 * Start TOTP setup, returns QR code URL
 	 */
-	.post(async (req, res, next) => {
-		try {
-			const result = await internalTotp.startSetup(res.locals.access, req.params.user_id);
-			res.status(200).send(result);
-		} catch (err) {
-			debug(logger, `${req.method.toUpperCase()} ${req.path}: ${err}`);
-			next(err);
-		}
+	.post(async (req, res) => {
+		const result = await internalTotp.startSetup(res.locals.access, req.params.user_id);
+		res.status(200).send(result);
 	});
 
 /**
@@ -351,23 +296,18 @@ router
 	 *
 	 * Verify code and enable TOTP
 	 */
-	.post(async (req, res, next) => {
-		try {
-			const { code } = apiValidator(getValidationSchema("/users/{userID}/mfa/totp/enable", "post"), req.body);
-			const result = await internalMfa.enableTotp(res.locals.access, req.params.user_id, code);
-			const data = await internalToken.getFreshToken(res.locals.access, true);
-			res.cookie("__Host-Http-token", data.token, {
-				signed: true,
-				httpOnly: true,
-				secure: true,
-				sameSite: "Strict",
-				expires: new Date(data.expires),
-			});
-			res.status(200).send(result);
-		} catch (err) {
-			debug(logger, `${req.method.toUpperCase()} ${req.path}: ${err}`);
-			next(err);
-		}
+	.post(async (req, res) => {
+		const { code } = apiValidator(getValidationSchema("/users/{userID}/mfa/totp/enable", "post"), req.body);
+		const result = await internalMfa.enableTotp(res.locals.access, req.params.user_id, code);
+		const data = await internalToken.getFreshToken(res.locals.access, true);
+		res.cookie("__Host-Http-token", data.token, {
+			signed: true,
+			httpOnly: true,
+			secure: true,
+			sameSite: "Strict",
+			expires: new Date(data.expires),
+		});
+		res.status(200).send(result);
 	});
 
 router
@@ -380,15 +320,10 @@ router
 	 *
 	 * Disable TOTP for a user
 	 */
-	.post(async (req, res, next) => {
-		try {
-			const { code } = apiValidator(getValidationSchema("/users/{userID}/mfa/totp/disable", "post"), req.body);
-			await internalMfa.disableTotp(res.locals.access, req.params.user_id, code);
-			res.status(200).send(true);
-		} catch (err) {
-			debug(logger, `${req.method.toUpperCase()} ${req.path}: ${err}`);
-			next(err);
-		}
+	.post(async (req, res) => {
+		const { code } = apiValidator(getValidationSchema("/users/{userID}/mfa/totp/disable", "post"), req.body);
+		await internalMfa.disableTotp(res.locals.access, req.params.user_id, code);
+		res.status(200).send(true);
 	});
 
 /**
@@ -406,23 +341,18 @@ router
 	 *
 	 * Regenerate backup codes
 	 */
-	.post(async (req, res, next) => {
-		try {
-			const { code } = apiValidator(getValidationSchema("/users/{userID}/mfa/backup-codes", "post"), req.body);
-			const result = await internalMfa.regenerateBackupCodes(res.locals.access, req.params.user_id, code);
-			const data = await internalToken.getFreshToken(res.locals.access, true);
-			res.cookie("__Host-Http-token", data.token, {
-				signed: true,
-				httpOnly: true,
-				secure: true,
-				sameSite: "Strict",
-				expires: new Date(data.expires),
-			});
-			res.status(200).send(result);
-		} catch (err) {
-			debug(logger, `${req.method.toUpperCase()} ${req.path}: ${err}`);
-			next(err);
-		}
+	.post(async (req, res) => {
+		const { code } = apiValidator(getValidationSchema("/users/{userID}/mfa/backup-codes", "post"), req.body);
+		const result = await internalMfa.regenerateBackupCodes(res.locals.access, req.params.user_id, code);
+		const data = await internalToken.getFreshToken(res.locals.access, true);
+		res.cookie("__Host-Http-token", data.token, {
+			signed: true,
+			httpOnly: true,
+			secure: true,
+			sameSite: "Strict",
+			expires: new Date(data.expires),
+		});
+		res.status(200).send(result);
 	});
 
 router
@@ -435,26 +365,21 @@ router
 	 *
 	 * Revoke all of a user's sessions (self or admin)
 	 */
-	.delete(async (req, res, next) => {
-		try {
-			await internalUser.revokeSessions(res.locals.access, req.params.user_id);
-			if (Number(req.params.user_id) === res.locals.access.token.getUserId(0)) {
-				res.clearCookie("__Host-Http-token", {
-					httpOnly: true,
-					secure: true,
-					sameSite: "Strict",
-				});
-				res.cookie("__Host-npmplus_oidc_no_redirect", "true", {
-					secure: true,
-					sameSite: "Strict",
-					maxAge: 60 * 60 * 1000,
-				});
-			}
-			res.status(200).send(true);
-		} catch (err) {
-			debug(logger, `${req.method.toUpperCase()} ${req.originalUrl}: ${err}`);
-			next(err);
+	.delete(async (req, res) => {
+		await internalUser.revokeSessions(res.locals.access, req.params.user_id);
+		if (Number(req.params.user_id) === res.locals.access.token.getUserId(0)) {
+			res.clearCookie("__Host-Http-token", {
+				httpOnly: true,
+				secure: true,
+				sameSite: "Strict",
+			});
+			res.cookie("__Host-npmplus_oidc_no_redirect", "true", {
+				secure: true,
+				sameSite: "Strict",
+				maxAge: 60 * 60 * 1000,
+			});
 		}
+		res.status(200).send(true);
 	});
 
 /**
@@ -474,14 +399,9 @@ router
 	 */
 	.post(
 		multer({ storage: multer.memoryStorage(), limits: { fileSize: 1024 * 1024 } }).single("avatar"),
-		async (req, res, next) => {
-			try {
-				const result = await internalUser.setAvatar(res.locals.access, req.params.user_id, req.file);
-				res.status(200).send(result);
-			} catch (err) {
-				debug(logger, `${req.method.toUpperCase()} ${req.originalUrl}: ${err}`);
-				next(err);
-			}
+		async (req, res) => {
+			const result = await internalUser.setAvatar(res.locals.access, req.params.user_id, req.file);
+			res.status(200).send(result);
 		},
 	)
 
@@ -490,14 +410,9 @@ router
 	 *
 	 * Remove the custom avatar, falling back to gravatar
 	 */
-	.delete(async (req, res, next) => {
-		try {
-			const result = await internalUser.deleteAvatar(res.locals.access, req.params.user_id);
-			res.status(200).send(result);
-		} catch (err) {
-			debug(logger, `${req.method.toUpperCase()} ${req.originalUrl}: ${err}`);
-			next(err);
-		}
+	.delete(async (req, res) => {
+		const result = await internalUser.deleteAvatar(res.locals.access, req.params.user_id);
+		res.status(200).send(result);
 	});
 
 export default router;

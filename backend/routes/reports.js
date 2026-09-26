@@ -1,7 +1,6 @@
 import express from "express";
 import internalReport from "../internal/report.js";
 import requireLogin from "../lib/express/require-login.js";
-import { debug, express as logger } from "../logger.js";
 
 const router = express.Router({
 	caseSensitive: true,
@@ -16,14 +15,9 @@ router
 	/**
 	 * GET /reports/hosts
 	 */
-	.get(async (req, res, next) => {
-		try {
-			const data = await internalReport.getHostsReport(res.locals.access);
-			res.status(200).send(data);
-		} catch (err) {
-			debug(logger, `${req.method.toUpperCase()} ${req.originalUrl}: ${err}`);
-			next(err);
-		}
+	.get(async (_, res) => {
+		const data = await internalReport.getHostsReport(res.locals.access);
+		res.status(200).send(data);
 	});
 
 export default router;

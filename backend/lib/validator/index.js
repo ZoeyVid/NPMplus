@@ -32,7 +32,7 @@ const validator = (schema, payload) =>
 					resolve(structuredClone(payload));
 				} else {
 					const message = ajv.errorsText(validate.errors);
-					reject(new errs.InternalValidationError(message));
+					reject(new errs.ValidationError(message));
 				}
 			} catch (err) {
 				reject(err);

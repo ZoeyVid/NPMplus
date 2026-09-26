@@ -20,7 +20,7 @@ const gravatar = createLogger("Gravatar      ");
 const oidc = createLogger("OIDC          ");
 
 const debug = (logger, ...args) => {
-	if (logger !== express) logger.debug(...args);
+	logger.debug(...args);
 };
 
 export { access, certbot, debug, express, global, gravatar, ipRanges, migrate, nginx, oidc, remoteVersion, setup, ssl };

@@ -3,7 +3,6 @@ import internalAccessList from "../../internal/access-list.js";
 import jwtdecode from "../../lib/express/jwt-decode.js";
 import apiValidator from "../../lib/validator/api.js";
 import validator from "../../lib/validator/index.js";
-import { debug, express as logger } from "../../logger.js";
 import { getValidationSchema } from "../../schema/index.js";
 
 const listSchema = {
@@ -51,18 +50,13 @@ router
 	 *
 	 * Retrieve all access-lists
 	 */
-	.get(async (req, res, next) => {
-		try {
-			const data = await validator(listSchema, {
-				expand: typeof req.query.expand === "string" ? req.query.expand.split(",") : null,
-				query: typeof req.query.query === "string" ? req.query.query : null,
-			});
-			const rows = await internalAccessList.getAll(res.locals.access, data.expand, data.query);
-			res.status(200).send(rows);
-		} catch (err) {
-			debug(logger, `${req.method.toUpperCase()} ${req.originalUrl}: ${err}`);
-			next(err);
-		}
+	.get(async (req, res) => {
+		const data = await validator(listSchema, {
+			expand: typeof req.query.expand === "string" ? req.query.expand.split(",") : null,
+			query: typeof req.query.query === "string" ? req.query.query : null,
+		});
+		const rows = await internalAccessList.getAll(res.locals.access, data.expand, data.query);
+		res.status(200).send(rows);
 	})
 
 	/**
@@ -70,15 +64,10 @@ router
 	 *
 	 * Create a new access-list
 	 */
-	.post(async (req, res, next) => {
-		try {
-			const payload = apiValidator(getValidationSchema("/nginx/access-lists", "post"), req.body);
-			const result = await internalAccessList.create(res.locals.access, payload);
-			res.status(201).send(result);
-		} catch (err) {
-			debug(logger, `${req.method.toUpperCase()} ${req.originalUrl}: ${err}`);
-			next(err);
-		}
+	.post(async (req, res) => {
+		const payload = apiValidator(getValidationSchema("/nginx/access-lists", "post"), req.body);
+		const result = await internalAccessList.create(res.locals.access, payload);
+		res.status(201).send(result);
 	});
 
 /**
@@ -95,21 +84,16 @@ router
 	 *
 	 * Retrieve a specific access-list
 	 */
-	.get(async (req, res, next) => {
-		try {
-			const data = await validator(accessListSchema, {
-				list_id: req.params.list_id,
-				expand: typeof req.query.expand === "string" ? req.query.expand.split(",") : null,
-			});
-			const row = await internalAccessList.get(res.locals.access, {
-				id: Number.parseInt(data.list_id, 10),
-				expand: data.expand,
-			});
-			res.status(200).send(row);
-		} catch (err) {
-			debug(logger, `${req.method.toUpperCase()} ${req.originalUrl}: ${err}`);
-			next(err);
-		}
+	.get(async (req, res) => {
+		const data = await validator(accessListSchema, {
+			list_id: req.params.list_id,
+			expand: typeof req.query.expand === "string" ? req.query.expand.split(",") : null,
+		});
+		const row = await internalAccessList.get(res.locals.access, {
+			id: Number.parseInt(data.list_id, 10),
+			expand: data.expand,
+		});
+		res.status(200).send(row);
 	})
 
 	/**
@@ -117,16 +101,11 @@ router
 	 *
 	 * Update and existing access-list
 	 */
-	.put(async (req, res, next) => {
-		try {
-			const payload = apiValidator(getValidationSchema("/nginx/access-lists/{listID}", "put"), req.body);
-			payload.id = Number.parseInt(req.params.list_id, 10);
-			const result = await internalAccessList.update(res.locals.access, payload);
-			res.status(200).send(result);
-		} catch (err) {
-			debug(logger, `${req.method.toUpperCase()} ${req.originalUrl}: ${err}`);
-			next(err);
-		}
+	.put(async (req, res) => {
+		const payload = apiValidator(getValidationSchema("/nginx/access-lists/{listID}", "put"), req.body);
+		payload.id = Number.parseInt(req.params.list_id, 10);
+		const result = await internalAccessList.update(res.locals.access, payload);
+		res.status(200).send(result);
 	})
 
 	/**
@@ -134,16 +113,11 @@ router
 	 *
 	 * Delete and existing access-list
 	 */
-	.delete(async (req, res, next) => {
-		try {
-			const result = await internalAccessList.delete(res.locals.access, {
-				id: Number.parseInt(req.params.list_id, 10),
-			});
-			res.status(200).send(result);
-		} catch (err) {
-			debug(logger, `${req.method.toUpperCase()} ${req.originalUrl}: ${err}`);
-			next(err);
-		}
+	.delete(async (req, res) => {
+		const result = await internalAccessList.delete(res.locals.access, {
+			id: Number.parseInt(req.params.list_id, 10),
+		});
+		res.status(200).send(result);
 	});
 
 export default router;

@@ -1,10 +1,13 @@
 import crypto from "node:crypto";
 import cookieParser from "cookie-parser";
 import express from "express";
+import multer from "multer";
 import errs from "./lib/error.js";
 import { jsonReplacer } from "./lib/helpers.js";
-import { debug, express as logger } from "./logger.js";
+import { express as logger } from "./logger.js";
 import mainRoutes from "./routes/main.js";
+
+Object.assign(multer.MulterError.prototype, { public: true, status: 400 });
 
 /**
  * App
@@ -54,10 +57,11 @@ app.use("/", mainRoutes);
 // no stacktraces leaked to user
 app.use((err, req, res, _) => {
 	const status = err.status || 500;
+	const exposed = err.public || err.expose;
 	const payload = {
 		error: {
 			code: status,
-			message: err.public ? err.message : "Internal Error",
+			message: exposed ? err.message : "Internal Error",
 		},
 	};
 
@@ -70,12 +74,7 @@ app.use((err, req, res, _) => {
 	}
 
 	// Not every error is worth logging - but this is good for now until it gets annoying.
-	if (err.stack) {
-		debug(logger, err.stack);
-		if (!err.public) {
-			logger.warn(`${req.method.toUpperCase()} ${req.originalUrl}: ${err}`);
-		}
-	}
+	if (err.stack && !exposed) logger.warn(`${req.method.toUpperCase()} ${req.originalUrl}: ${err}`);
 
 	res.status(status).send(payload);
 });

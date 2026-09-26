@@ -3,7 +3,6 @@ import internalSetting from "../internal/setting.js";
 import jwtdecode from "../lib/express/jwt-decode.js";
 import apiValidator from "../lib/validator/api.js";
 import validator from "../lib/validator/index.js";
-import { debug, express as logger } from "../logger.js";
 import { getValidationSchema } from "../schema/index.js";
 
 const settingSchema = {
@@ -35,14 +34,9 @@ router
 	 *
 	 * Retrieve all settings
 	 */
-	.get(async (req, res, next) => {
-		try {
-			const rows = await internalSetting.getAll(res.locals.access);
-			res.status(200).send(rows);
-		} catch (err) {
-			debug(logger, `${req.method.toUpperCase()} ${req.originalUrl}: ${err}`);
-			next(err);
-		}
+	.get(async (_, res) => {
+		const rows = await internalSetting.getAll(res.locals.access);
+		res.status(200).send(rows);
 	});
 
 /**
@@ -59,19 +53,14 @@ router
 	 *
 	 * Retrieve a specific setting
 	 */
-	.get(async (req, res, next) => {
-		try {
-			const data = await validator(settingSchema, {
-				setting_id: req.params.setting_id,
-			});
-			const row = await internalSetting.get(res.locals.access, {
-				id: data.setting_id,
-			});
-			res.status(200).send(row);
-		} catch (err) {
-			debug(logger, `${req.method.toUpperCase()} ${req.originalUrl}: ${err}`);
-			next(err);
-		}
+	.get(async (req, res) => {
+		const data = await validator(settingSchema, {
+			setting_id: req.params.setting_id,
+		});
+		const row = await internalSetting.get(res.locals.access, {
+			id: data.setting_id,
+		});
+		res.status(200).send(row);
 	})
 
 	/**
@@ -79,16 +68,11 @@ router
 	 *
 	 * Update and existing setting
 	 */
-	.put(async (req, res, next) => {
-		try {
-			const payload = apiValidator(getValidationSchema("/settings/{settingID}", "put"), req.body);
-			payload.id = req.params.setting_id;
-			const result = await internalSetting.update(res.locals.access, payload);
-			res.status(200).send(result);
-		} catch (err) {
-			debug(logger, `${req.method.toUpperCase()} ${req.originalUrl}: ${err}`);
-			next(err);
-		}
+	.put(async (req, res) => {
+		const payload = apiValidator(getValidationSchema("/settings/{settingID}", "put"), req.body);
+		payload.id = req.params.setting_id;
+		const result = await internalSetting.update(res.locals.access, payload);
+		res.status(200).send(result);
 	});
 
 export default router;

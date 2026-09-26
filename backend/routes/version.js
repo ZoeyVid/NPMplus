@@ -1,7 +1,6 @@
 import express from "express";
 import internalRemoteVersion from "../internal/remote-version.js";
 import requireLogin from "../lib/express/require-login.js";
-import { debug, express as logger } from "../logger.js";
 
 const router = express.Router({
 	caseSensitive: true,
@@ -21,19 +20,8 @@ router
 	 *
 	 * Check for available updates
 	 */
-	.get(async (req, res, _next) => {
-		try {
-			const data = await internalRemoteVersion.get();
-			res.status(200).send(data);
-		} catch (error) {
-			debug(logger, `${req.method.toUpperCase()} ${req.originalUrl}: ${error}`);
-			// Send 200 even though there's an error to avoid triggering update checks repeatedly
-			res.status(200).send({
-				current: null,
-				latest: null,
-				update_available: false,
-			});
-		}
+	.get(async (_, res) => {
+		res.status(200).send(await internalRemoteVersion.get());
 	});
 
 export default router;
