@@ -67,6 +67,9 @@ class ProxyHost extends Model {
 		if (thisJson.npmplus_load_balance_method === null) {
 			delete thisJson.npmplus_load_balance_method;
 		}
+		if (thisJson.npmplus_forward_path === null) {
+			delete thisJson.npmplus_forward_path;
+		}
 		return convertIntFieldsToBool(thisJson, boolFields);
 	}
 

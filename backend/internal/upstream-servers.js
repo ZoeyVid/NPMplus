@@ -12,8 +12,9 @@ const BACKUP_INCOMPATIBLE_METHODS = [
 	"random_two_least_time_first_byte",
 	"random_two_least_time_last_byte",
 ];
-
 const SINGLE_UPSTREAM_SCHEMES = ["path", "empty"];
+const FORWARD_PATH_SCHEMES = ["http", "https"];
+const NETWORK_PROXY_SCHEMES = ["http", "https", "grpc", "grpcs"];
 
 const normaliseHost = (host) => {
 	if (typeof host !== "string") {
@@ -84,6 +85,14 @@ const internalUpstreamServers = {
 			? serverHost.forward_scheme
 			: existingServerHost.forward_scheme;
 
+		const forwardPath = Object.hasOwn(serverHost, "npmplus_forward_path")
+			? serverHost.npmplus_forward_path
+			: existingServerHost.npmplus_forward_path;
+
+		if (forwardPath != null && !FORWARD_PATH_SCHEMES.includes(forwardScheme)) {
+			throw new errs.ValidationError(`A forward path cannot be used with the ${forwardScheme} scheme`);
+		}
+
 		if (!streams && SINGLE_UPSTREAM_SCHEMES.includes(forwardScheme) && upstreamServers.length !== 1) {
 			throw new errs.ValidationError(`${forwardScheme} proxy hosts must have exactly one upstream server`);
 		}
@@ -91,6 +100,10 @@ const internalUpstreamServers = {
 		const usesServerPort = upstreamServers.some((server) => server.port === "$server_port");
 		if (usesServerPort && (!streams || upstreamServers.length !== 1 || upstreamServers[0].port !== "$server_port")) {
 			throw new errs.ValidationError("$server_port can only be used by a stream with exactly one upstream server");
+		}
+
+		if (!streams && NETWORK_PROXY_SCHEMES.includes(forwardScheme) && upstreamServers.some((server) => server.host.includes("/"))) {
+			throw new errs.ValidationError("Network upstream hosts cannot contain a path; use the forward path field instead");
 		}
 
 		if (upstreamServers.length > 1 && !loadBalanceMethod) {
