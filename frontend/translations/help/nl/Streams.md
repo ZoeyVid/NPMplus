@@ -1,6 +1,5 @@
 ## Wat is een Stream?
 
-Streams zijn een nieuwe toevoeging aan Nginx, die toelaat om TCP/UDP
-verkeer naar een ander computer op het netwerk te sturen.
+Als relatief nieuwe functie voor Nginx, dient een Stream om TCP/UDP-verkeer rechtstreeks door te sturen naar een andere computer op het netwerk.
 
-Als je game servers, FTP of SSH servers draait kan dit handig zijn.
+Dit kan van pas komen als u gameservers, FTP- of SSH-servers gebruikt.
