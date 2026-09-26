@@ -1,7 +1,5 @@
 ## Wat is een Redirection Host?
 
-Een Redirection Host zal verzoeken van de inkomende domeinnaam doorsturen, en de bezoeker
-omleiden naar een andere domeinnaam.
+Een Redirection Host zal verzoeken van het binnenkomende domein omleiden en de bezoeker naar een ander domein doorsturen.
 
-Het gebruik van een Redirection Host is vooral handig wanneer je jouw website verandert
-maar je nog zoekmachines of referenties naar de oude domeinnaam hebben.
+De meest voorkomende reden om dit type host te gebruiken is wanneer uw website van domein verandert, maar u nog steeds zoekmachine- of verwijzerkoppelingen heeft die naar het oude domein verwijzen.
