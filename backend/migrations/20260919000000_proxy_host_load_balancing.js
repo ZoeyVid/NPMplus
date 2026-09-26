@@ -3,6 +3,9 @@ import { migrate as logger } from "../logger.js";
 
 const migrateName = "proxy_host_upstream";
 
+const FORWARD_PATH_SCHEMES = ["http", "https"];
+const NETWORK_PROXY_SCHEMES = ["http", "https", "grpc", "grpcs"];
+
 const parseLocations = (locations) => {
 	if (Array.isArray(locations)) {
 		return locations;

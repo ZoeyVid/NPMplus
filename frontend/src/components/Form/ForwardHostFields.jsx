@@ -10,7 +10,7 @@ import { validateNumber } from "src/modules/Validations";
 
 const BACKUP_INCOMPATIBLE_METHODS = ["hash", "hash_consistent", "ip_hash", "random", "random_two_least_connections", "random_two_least_time_connect", "random_two_least_time_header", "random_two_least_time_first_byte", "random_two_least_time_last_byte" ];
 const FORWARD_PATH_SCHEMES = ["http", "https"];
-2.
+
 const NGINX_TIME_SYNTAX_REGEX = "^[1-9]\\d*\\s*(?:ms|s|m|h|d|w|M|y)?$";
 const NUMERIC_PATTERN = "^[0-9]*$";
 const SERVER_PORT_PATTERN = `${NUMERIC_PATTERN}|\\$server_port`;
