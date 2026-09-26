@@ -338,7 +338,7 @@ export function ForwardHostFields({ scheme="",idPrefix, loadBalanceMethod, upstr
 							</div>
 						) : null}
 						<div
-							className={cn("card-body", streams && "p-0", !isExpanded(idx) && "d-none")}
+							className={cn("card-body", !isExpanded(idx) && "d-none")}
 							id={controlId("upstream-body", idx)}
 							onInvalid={() =>
 								flushSync(() => {
