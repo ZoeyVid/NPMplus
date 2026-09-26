@@ -1,7 +1,7 @@
-## Wat is een Toegangslijst?
+## Wat is een toegangslijst?
 
-Toeganslijsten bieden een zwarte- of witte lijst van specifieke client IP-adressen samen met authenticatie voor de Proxy Hosts via Basic HTTP Authenticatie.
+Toegangslijsten bieden een zwarte lijst of witte lijst van specifieke client-IP-adressen, samen met authenticatie voor de Proxy Hosts via Basic HTTP Authentication.
 
-Je kan meerdere client regels, gebruikersnamen en wachtwoorden voor een enkele Toegangslijst configureren en toepassen op één of meerdere _Proxy Hosts_.
+U kunt meerdere clientregels, gebruikersnamen en wachtwoorden configureren voor één enkele toegangslijst en deze vervolgens toepassen op een of meer _Proxy Hosts_.
 
-Dit is het meest nuttig voor doorgestuurde webdiensten die geen authenticatiemechanismen hebben of wanneer je wilt beveiligen tegen onbekende bezoekers.
+Dit is het handigst voor doorgestuurde webservices waarin geen authenticatiemechanismen zijn ingebouwd of wanneer u bescherming wilt bieden tegen onbekende clients.
