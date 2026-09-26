@@ -42,6 +42,9 @@
 		},
 		{
 			"$ref": "./load-balancing.json#/$defs/proxySchemeUpstreamRequirement"
+		},
+		{
+			"$ref": "./load-balancing.json#/$defs/forwardPathSchemeRequirement"
 		}
 	],
 	"additionalProperties": false,
@@ -211,6 +214,9 @@
 					},
 					{
 						"$ref": "./load-balancing.json#/$defs/proxySchemeUpstreamRequirement"
+					},
+					{
+						"$ref": "./load-balancing.json#/$defs/forwardPathSchemeRequirement"
 					}
 				],
 				"additionalProperties": false,

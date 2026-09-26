@@ -143,6 +143,49 @@
 			"then": {
 				"$ref": "#/$defs/loadBalanceMethodRequirement"
 			}
+		},
+		"forwardPathSchemeRequirement": {
+			"if": {
+				"required": [
+					"npmplus_forward_path"
+				]
+			},
+			"then": {
+				"properties": {
+					"forward_scheme": {
+						"enum": [
+							"http",
+							"https"
+						]
+					}
+				},
+				"required": [
+					"forward_scheme"
+				]
+			}
+		},
+		"partialForwardPathSchemeRequirement": {
+			"if": {
+				"properties": {
+					"npmplus_forward_path": {
+						"type": "string"
+					}
+				},
+				"required": [
+					"npmplus_forward_path",
+					"forward_scheme"
+				]
+			},
+			"then": {
+				"properties": {
+					"forward_scheme": {
+						"enum": [
+							"http",
+							"https"
+						]
+					}
+				}
+			}
 		}
 	}
 }
