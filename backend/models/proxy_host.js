@@ -86,10 +86,6 @@ class ProxyHost extends Model {
 		return ["domain_names", "meta", "locations", "npmplus_access_list_ids"];
 	}
 
-	static get defaultAllowGraph() {
-		return "[owner,access_lists.[clients,items],certificate]";
-	}
-
 	static get relationMappings() {
 		return {
 			owner: {

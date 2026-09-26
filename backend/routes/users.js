@@ -18,9 +18,6 @@ import { isSetup } from "../setup.js";
 const listSchema = {
 	additionalProperties: false,
 	properties: {
-		expand: {
-			$ref: "common#/properties/expand",
-		},
 		query: {
 			$ref: "common#/properties/query",
 		},
@@ -36,6 +33,7 @@ const userSchema = {
 		},
 		expand: {
 			$ref: "common#/properties/expand",
+			items: { enum: ["permissions"] },
 		},
 	},
 };
@@ -75,10 +73,9 @@ router
 	.get(async (req, res, next) => {
 		try {
 			const data = await validator(listSchema, {
-				expand: typeof req.query.expand === "string" ? req.query.expand.split(",") : null,
 				query: typeof req.query.query === "string" ? req.query.query : null,
 			});
-			const users = await internalUser.getAll(res.locals.access, data.expand, data.query);
+			const users = await internalUser.getAll(res.locals.access, null, data.query);
 			res.status(200).send(users);
 		} catch (err) {
 			debug(logger, `${req.method.toUpperCase()} ${req.originalUrl}: ${err}`);

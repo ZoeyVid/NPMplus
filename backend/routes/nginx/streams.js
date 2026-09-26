@@ -11,6 +11,7 @@ const listSchema = {
 	properties: {
 		expand: {
 			$ref: "common#/properties/expand",
+			items: { enum: ["owner", "certificate"] },
 		},
 		query: {
 			$ref: "common#/properties/query",
@@ -24,9 +25,6 @@ const streamSchema = {
 	properties: {
 		stream_id: {
 			$ref: "common#/properties/id",
-		},
-		expand: {
-			$ref: "common#/properties/expand",
 		},
 	},
 };
@@ -97,11 +95,9 @@ router
 		try {
 			const data = await validator(streamSchema, {
 				stream_id: req.params.stream_id,
-				expand: typeof req.query.expand === "string" ? req.query.expand.split(",") : null,
 			});
 			const row = await internalStream.get(res.locals.access, {
 				id: Number.parseInt(data.stream_id, 10),
-				expand: data.expand,
 			});
 			res.status(200).send(row);
 		} catch (err) {

@@ -19,7 +19,7 @@ const fetchDeadHost = (id) => {
 			hstsSubdomains: false,
 		});
 	}
-	return getDeadHost(id, ["owner"]);
+	return getDeadHost(id);
 };
 
 const useDeadHost = (id, options = {}) => {

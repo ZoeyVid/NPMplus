@@ -11,6 +11,7 @@ const listSchema = {
 	properties: {
 		expand: {
 			$ref: "common#/properties/expand",
+			items: { enum: ["owner", "items", "clients"] },
 		},
 		query: {
 			$ref: "common#/properties/query",
@@ -27,6 +28,7 @@ const accessListSchema = {
 		},
 		expand: {
 			$ref: "common#/properties/expand",
+			items: { enum: ["items", "clients"] },
 		},
 	},
 };

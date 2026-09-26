@@ -61,10 +61,6 @@ class RedirectionHost extends Model {
 		return ["domain_names", "meta"];
 	}
 
-	static get defaultAllowGraph() {
-		return "[owner,certificate]";
-	}
-
 	static get relationMappings() {
 		return {
 			owner: {

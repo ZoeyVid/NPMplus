@@ -63,7 +63,7 @@ const internalProxyHost = {
 
 		const fetchedRow = await internalProxyHost.get(access, {
 			id: createdRow.id,
-			expand: ["certificate", "owner", "access_lists.[clients,items]"],
+			expand: ["certificate", "access_lists.[clients,items]"],
 		});
 
 		const row = await internalProxyHostAccessList.populateLocationAccessLists(
@@ -159,7 +159,7 @@ const internalProxyHost = {
 
 		const fetchedRow = await internalProxyHost.get(access, {
 			id: thisData.id,
-			expand: ["certificate", "owner", "access_lists.[clients,items]"],
+			expand: ["certificate", "access_lists.[clients,items]"],
 		});
 
 		const row = await internalProxyHostAccessList.populateLocationAccessLists(
@@ -193,7 +193,7 @@ const internalProxyHost = {
 			.query()
 			.where("is_deleted", 0)
 			.andWhere("id", thisData.id)
-			.allowGraph(proxyHostModel.defaultAllowGraph)
+			.allowGraph("[access_lists.[clients,items],certificate]")
 			.first();
 
 		if (access.visibility !== "all") {
@@ -262,7 +262,7 @@ const internalProxyHost = {
 
 		const row = await internalProxyHost.get(access, {
 			id: data.id,
-			expand: ["certificate", "owner", "access_lists.[clients,items]"],
+			expand: ["certificate", "access_lists.[clients,items]"],
 		});
 		if (!row?.id) {
 			throw new errs.ItemNotFoundError(data.id);
@@ -359,7 +359,7 @@ const internalProxyHost = {
 			.query()
 			.where("is_deleted", 0)
 			.groupBy("id")
-			.allowGraph(proxyHostModel.defaultAllowGraph)
+			.allowGraph("[owner,access_lists,certificate]")
 			.orderBy(castJsonIfNeed("domain_names"), "ASC");
 
 		if (access.visibility !== "all") {

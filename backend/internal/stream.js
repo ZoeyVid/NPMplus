@@ -39,7 +39,7 @@ const internalStream = {
 
 		const row = await internalStream.get(access, {
 			id: createdRow.id,
-			expand: ["certificate", "owner"],
+			expand: ["certificate"],
 		});
 
 		// Configure nginx
@@ -105,7 +105,7 @@ const internalStream = {
 
 		const row = await internalStream.get(access, {
 			id: thisData.id,
-			expand: ["certificate", "owner"],
+			expand: ["certificate"],
 		});
 
 		if (!row.enabled) {
@@ -135,7 +135,7 @@ const internalStream = {
 			.query()
 			.where("is_deleted", 0)
 			.andWhere("id", thisData.id)
-			.allowGraph(streamModel.defaultAllowGraph)
+			.allowGraph("[certificate]")
 			.first();
 
 		if (access.visibility !== "all") {
@@ -200,7 +200,7 @@ const internalStream = {
 
 		const row = await internalStream.get(access, {
 			id: data.id,
-			expand: ["certificate", "owner"],
+			expand: ["certificate"],
 		});
 		if (!row?.id) {
 			throw new errs.ItemNotFoundError(data.id);
@@ -283,7 +283,7 @@ const internalStream = {
 			.query()
 			.where("is_deleted", 0)
 			.groupBy("id")
-			.allowGraph(streamModel.defaultAllowGraph)
+			.allowGraph("[owner,certificate]")
 			.orderBy("incoming_port", "ASC");
 
 		if (access.visibility !== "all") {

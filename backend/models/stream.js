@@ -49,10 +49,6 @@ class Stream extends Model {
 		return ["meta"];
 	}
 
-	static get defaultAllowGraph() {
-		return "[owner,certificate]";
-	}
-
 	static get relationMappings() {
 		return {
 			owner: {

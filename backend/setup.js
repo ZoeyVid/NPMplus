@@ -123,7 +123,7 @@ const regenerateAllHosts = async () => {
 			.query()
 			.where("is_deleted", 0)
 			.andWhere("enabled", 1)
-			.withGraphFetched(proxyModel.defaultAllowGraph);
+			.withGraphFetched("[access_lists.[clients,items],certificate]");
 
 		if (proxyHosts?.length > 0) {
 			// locations dont contain access list objects, so prepopulate them before generating the nginx files
@@ -141,7 +141,7 @@ const regenerateAllHosts = async () => {
 			.query()
 			.where("is_deleted", 0)
 			.andWhere("enabled", 1)
-			.withGraphFetched(redirectionModel.defaultAllowGraph);
+			.withGraphFetched("certificate");
 
 		if (redirectionHosts?.length > 0) {
 			await internalNginx.bulkGenerateConfigs(redirectionModel, "redirection_host", redirectionHosts, {
@@ -153,7 +153,7 @@ const regenerateAllHosts = async () => {
 			.query()
 			.where("is_deleted", 0)
 			.andWhere("enabled", 1)
-			.withGraphFetched(deadModel.defaultAllowGraph);
+			.withGraphFetched("certificate");
 
 		if (deadHosts?.length > 0) {
 			await internalNginx.bulkGenerateConfigs(deadModel, "dead_host", deadHosts, { skipReload: true });
@@ -163,7 +163,7 @@ const regenerateAllHosts = async () => {
 			.query()
 			.where("is_deleted", 0)
 			.andWhere("enabled", 1)
-			.withGraphFetched(streamModel.defaultAllowGraph);
+			.withGraphFetched("certificate");
 
 		if (streamHosts?.length > 0) {
 			await internalNginx.bulkGenerateConfigs(streamModel, "stream", streamHosts, { skipReload: true });

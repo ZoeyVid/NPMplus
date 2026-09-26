@@ -1,7 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
 import { getCertificate } from "src/api/backend";
 
-const fetchCertificate = (id) => getCertificate(id, ["owner"]);
+const fetchCertificate = (id) => getCertificate(id);
 
 const useCertificate = (id, options = {}) => {
 	return useQuery({

@@ -19,7 +19,7 @@ const fetchStream = (id) => {
 			npmplusDescription: "",
 		});
 	}
-	return getStream(id, ["owner"]);
+	return getStream(id);
 };
 
 const useStream = (id, options = {}) => {

@@ -17,6 +17,7 @@ const listSchema = {
 	properties: {
 		expand: {
 			$ref: "common#/properties/expand",
+			items: { enum: ["owner", "proxy_hosts", "redirection_hosts", "dead_hosts", "streams"] },
 		},
 		query: {
 			$ref: "common#/properties/query",
@@ -30,9 +31,6 @@ const certificateSchema = {
 	properties: {
 		certificate_id: {
 			$ref: "common#/properties/id",
-		},
-		expand: {
-			$ref: "common#/properties/expand",
 		},
 	},
 };
@@ -209,11 +207,9 @@ router
 		try {
 			const data = await validator(certificateSchema, {
 				certificate_id: req.params.certificate_id,
-				expand: typeof req.query.expand === "string" ? req.query.expand.split(",") : null,
 			});
 			const row = await internalCertificate.get(res.locals.access, {
 				id: Number.parseInt(data.certificate_id, 10),
-				expand: data.expand,
 			});
 			res.status(200).send(row);
 		} catch (err) {

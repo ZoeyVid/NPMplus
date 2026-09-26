@@ -17,7 +17,11 @@
 			"schema": {
 				"type": "string",
 				"enum": [
-					"owner"
+					"owner",
+					"proxy_hosts",
+					"redirection_hosts",
+					"dead_hosts",
+					"streams"
 				]
 			}
 		}

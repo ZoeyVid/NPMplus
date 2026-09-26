@@ -1,7 +1,7 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { createAccessList, getAccessList, updateAccessList } from "src/api/backend";
 
-const fetchAccessList = (id, expand = ["owner"]) => {
+const fetchAccessList = (id, expand) => {
 	if (id === "new") {
 		return Promise.resolve({
 			id: 0,

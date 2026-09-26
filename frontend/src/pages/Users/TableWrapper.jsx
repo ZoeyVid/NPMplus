@@ -13,7 +13,7 @@ import Table from "./Table";
 export default function TableWrapper() {
 	const queryClient = useQueryClient();
 	const [search, setSearch] = useState("");
-	const { isFetching, isLoading, isError, error, data } = useUsers(["permissions"]);
+	const { isFetching, isLoading, isError, error, data } = useUsers();
 
 	useEffect(() => {
 		// this can happen if someone deletes the last item while searching

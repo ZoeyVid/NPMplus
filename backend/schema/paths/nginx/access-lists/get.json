@@ -19,8 +19,7 @@
 				"enum": [
 					"owner",
 					"items",
-					"clients",
-					"proxy_hosts"
+					"clients"
 				]
 			}
 		}

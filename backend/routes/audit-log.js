@@ -9,6 +9,7 @@ const listSchema = {
 	properties: {
 		expand: {
 			$ref: "common#/properties/expand",
+			items: { enum: ["user"] },
 		},
 		query: {
 			$ref: "common#/properties/query",
@@ -25,6 +26,7 @@ const eventSchema = {
 		},
 		expand: {
 			$ref: "common#/properties/expand",
+			items: { enum: ["user"] },
 		},
 	},
 };

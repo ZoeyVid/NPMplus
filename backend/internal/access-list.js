@@ -52,22 +52,12 @@ const internalAccessList = {
 		// re-fetch with expansions
 		const freshRow = await internalAccessList.get(access, {
 			id: data.id,
-			expand: ["owner", "items", "clients", "proxy_hosts.[access_lists.[clients,items]]"],
+			expand: ["items", "clients"],
 		});
 
 		// Audit log
 		data.meta = { ...data.meta, ...freshRow.meta };
 		await internalAccessList.build(freshRow);
-		if (Number.parseInt(freshRow.proxy_host_count, 10)) {
-			// locations don't have accessList objects, only IDs, so populate it with the object itself
-			freshRow.proxy_hosts = await Promise.all(
-				(freshRow.proxy_hosts || []).map((host) => {
-					const cleanedHost = internalProxyHostAccessList.cleanAccessListTypes(host);
-					return internalProxyHostAccessList.populateLocationAccessLists(cleanedHost);
-				}),
-			);
-			await internalNginx.bulkGenerateConfigs(proxyHostModel, "proxy_host", freshRow.proxy_hosts);
-		}
 
 		// Add to audit log
 		await internalAuditLog.add(access, {
@@ -165,7 +155,7 @@ const internalAccessList = {
 		// re-fetch with expansions
 		const freshRow = await internalAccessList.get(access, {
 			id: data.id,
-			expand: ["owner", "items", "clients", "proxy_hosts.[certificate,access_lists.[clients,items]]"],
+			expand: ["items", "clients", "proxy_hosts.[certificate,access_lists.[clients,items]]"],
 		});
 
 		await internalAccessList.build(freshRow);

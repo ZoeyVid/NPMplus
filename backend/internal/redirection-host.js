@@ -51,7 +51,7 @@ const internalRedirectionHost = {
 
 		const row = await internalRedirectionHost.get(access, {
 			id: createdRow.id,
-			expand: ["certificate", "owner"],
+			expand: ["certificate"],
 		});
 
 		// Configure nginx
@@ -135,7 +135,7 @@ const internalRedirectionHost = {
 
 		const row = await internalRedirectionHost.get(access, {
 			id: thisData.id,
-			expand: ["certificate", "owner"],
+			expand: ["certificate"],
 		});
 
 		if (!row.enabled) {
@@ -165,7 +165,7 @@ const internalRedirectionHost = {
 			.query()
 			.where("is_deleted", 0)
 			.andWhere("id", thisData.id)
-			.allowGraph(redirectionHostModel.defaultAllowGraph)
+			.allowGraph("[certificate]")
 			.first();
 
 		if (access.visibility !== "all") {
@@ -230,7 +230,7 @@ const internalRedirectionHost = {
 
 		const row = await internalRedirectionHost.get(access, {
 			id: data.id,
-			expand: ["certificate", "owner"],
+			expand: ["certificate"],
 		});
 		if (!row?.id) {
 			throw new errs.ItemNotFoundError(data.id);
@@ -321,7 +321,7 @@ const internalRedirectionHost = {
 			.query()
 			.where("is_deleted", 0)
 			.groupBy("id")
-			.allowGraph(redirectionHostModel.defaultAllowGraph)
+			.allowGraph("[owner,certificate]")
 			.orderBy(castJsonIfNeed("domain_names"), "ASC");
 
 		if (access.visibility !== "all") {

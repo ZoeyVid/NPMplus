@@ -11,6 +11,7 @@ const listSchema = {
 	properties: {
 		expand: {
 			$ref: "common#/properties/expand",
+			items: { enum: ["owner", "access_lists", "certificate"] },
 		},
 		query: {
 			$ref: "common#/properties/query",
@@ -24,9 +25,6 @@ const hostSchema = {
 	properties: {
 		host_id: {
 			$ref: "common#/properties/id",
-		},
-		expand: {
-			$ref: "common#/properties/expand",
 		},
 	},
 };
@@ -100,11 +98,9 @@ router
 		try {
 			const data = await validator(hostSchema, {
 				host_id: req.params.host_id,
-				expand: typeof req.query.expand === "string" ? req.query.expand.split(",") : null,
 			});
 			const row = await internalProxyHost.get(res.locals.access, {
 				id: Number.parseInt(data.host_id, 10),
-				expand: data.expand,
 			});
 			res.status(200).send(row);
 		} catch (err) {
