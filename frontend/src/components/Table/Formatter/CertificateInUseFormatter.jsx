@@ -36,7 +36,7 @@ const getSectionStream = (items) => {
 			</div>
 			{items.map((stream) => (
 				<div key={stream.id} className="ms-1">
-					{stream.forwardingHost}:{stream.forwardingPort}
+					{(stream.npmplusUpstreamServers ?? []).map((server) => `${server.host}${server.port ? `:${server.port}` : ""}`).join(", ")}
 				</div>
 			))}
 		</>
