@@ -29,13 +29,6 @@
 			],
 			"example": 8080
 		},
-		"forward_path": {
-			"type": "string",
-			"minLength": 1,
-			"maxLength": 255,
-			"example": "/myexample/path",
-			"pattern": "^\\/\\S+$"
-		},
 		"weight": {
 			"type": "integer",
 			"minimum": 1,

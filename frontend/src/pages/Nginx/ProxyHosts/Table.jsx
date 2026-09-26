@@ -81,7 +81,7 @@ export default function Table({
 					const names = [];
 					for (const server of row.npmplusUpstreamServers ?? []) {
 						names.push(
-							`${row.forwardScheme}://${server.host}${server.port ? `:${server.port}` : ""}${server.forwardPath ?? ""}`,
+							`${row.forwardScheme}://${server.host}${server.port ? `:${server.port}` : ""}${row.npmplusForwardPath ?? ""}`,
 						);
 					}
 					return names.join(", ");
@@ -92,6 +92,7 @@ export default function Table({
 					cell: (info) => (
 						<ForwardHostFormatter
 							hostRowId={info.row.original.id}
+							forwardPath={info.row.original.npmplusForwardPath}
 							upstreamServers={info.row.original.npmplusUpstreamServers}
 							scheme={info.row.original.forwardScheme}
 							loadBalanceMethod={info.row.original.npmplusLoadBalanceMethod}

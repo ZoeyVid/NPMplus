@@ -43,6 +43,9 @@
 						"npmplus_upstream_servers": {
 							"$ref": "../../../components/proxy-host-object.json#/properties/npmplus_upstream_servers"
 						},
+						"npmplus_forward_path": {
+							"$ref": "../../../components/proxy-host-object.json#/properties/npmplus_forward_path"
+						},
 						"certificate_id": {
 							"$ref": "../../../components/proxy-host-object.json#/properties/certificate_id"
 						},
