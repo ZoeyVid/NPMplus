@@ -29,7 +29,7 @@ const up = async (knex) => {
 				.update({
 					npmplus_nginx_online: meta.nginx_online ? 1 : 0,
 					npmplus_nginx_err: typeof meta.nginx_err === "string" ? meta.nginx_err : "",
-					npmplus_directory: typeof meta.directory === "string" ? meta.directory.trim() : "",
+					npmplus_directory: typeof meta.directory === "string" ? meta.directory.trim().slice(0, 255) : "",
 					npmplus_mtls_certificate_id: Number.parseInt(meta.npmplus_mtls_certificate_id, 10) || 0,
 					npmplus_mtls_verify_client_optional: meta.npmplus_mtls_verify_client_optional === true ? 1 : 0,
 					meta: "{}",
@@ -54,7 +54,7 @@ const up = async (knex) => {
 			.update({
 				npmplus_reuse_key: meta.reuse_key ? 1 : 0,
 				npmplus_dns_challenge: meta.dns_challenge ? 1 : 0,
-				npmplus_dns_provider: typeof meta.dns_provider === "string" ? meta.dns_provider : "",
+				npmplus_dns_provider: typeof meta.dns_provider === "string" ? meta.dns_provider.slice(0, 255) : "",
 				npmplus_dns_provider_credentials:
 					typeof meta.dns_provider_credentials === "string" ? meta.dns_provider_credentials : "",
 				npmplus_propagation_seconds: Number.parseInt(meta.propagation_seconds, 10) || 0,

@@ -22,6 +22,9 @@ const internalProxyHost = {
 		} else if (Number(thisData.certificate_id) > 0) {
 			await internalCertificate.get(access, { id: thisData.certificate_id });
 		}
+		if (Number(thisData.npmplus_mtls_certificate_id) > 0) {
+			await internalCertificate.get(access, { id: thisData.npmplus_mtls_certificate_id });
+		}
 
 		access.can("proxy_hosts:manage");
 
@@ -101,6 +104,9 @@ const internalProxyHost = {
 			delete thisData.certificate_id;
 		} else if (Number(thisData.certificate_id) > 0) {
 			await internalCertificate.get(access, { id: thisData.certificate_id });
+		}
+		if (Number(thisData.npmplus_mtls_certificate_id) > 0) {
+			await internalCertificate.get(access, { id: thisData.npmplus_mtls_certificate_id });
 		}
 
 		access.can("proxy_hosts:manage");

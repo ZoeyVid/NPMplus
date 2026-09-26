@@ -87,8 +87,9 @@ export default function Table({
 				(row) => {
 					const protocols = [];
 					if (row.tcpForwarding) protocols.push("TCP");
-					if (row.npmplusProxyProtocolForwarding)
+					if (row.npmplusProxyProtocolForwarding) {
 						protocols.push(row.npmplusProxyProtocolForwarding === 1 ? "PPv1" : "PPv2");
+					}
 					if (row.npmplusProxyTls) protocols.push("TLS");
 					if (row.udpForwarding) protocols.push("UDP");
 					return protocols.join(" ");

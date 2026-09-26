@@ -22,7 +22,9 @@ router
 			const swaggerJSON = await getCompiledSchema();
 			swaggerJSON.info.version = PACKAGE.version;
 			swaggerJSON.servers[0].url = `${req.protocol}://${req.host}/api`;
-			res.status(200).send(swaggerJSON);
+			res.status(200)
+				.type("json")
+				.send(JSON.stringify(swaggerJSON, null, req.app.get("json spaces")));
 		} catch (err) {
 			debug(logger, `${req.method.toUpperCase()} ${req.originalUrl}: ${err}`);
 			next(err);

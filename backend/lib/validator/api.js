@@ -3,7 +3,6 @@ import errs from "../error.js";
 
 const ajv = new Ajv({
 	verbose: true,
-	allErrors: true,
 	allowUnionTypes: true,
 	strict: false,
 	coerceTypes: true,

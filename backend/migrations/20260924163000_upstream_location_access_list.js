@@ -18,11 +18,12 @@ const up = async (knex) => {
 		const locations = Array.isArray(row.locations) ? row.locations : JSON.parse(row.locations || "[]");
 		if (!locations.some((location) => location.access_list_id !== undefined)) continue;
 		for (const { access_list_id: id } of locations)
-			if (validIds.has(id))
+			if (validIds.has(id)) {
 				await knex("npmplus_proxy_host_access_list")
 					.insert({ proxy_host_id: row.id, access_list_id: id })
 					.onConflict()
 					.ignore();
+			}
 		await knex("proxy_host")
 			.where("id", row.id)
 			.update({

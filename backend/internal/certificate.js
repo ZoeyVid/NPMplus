@@ -235,7 +235,7 @@ const internalCertificate = {
 	 * @returns {Promise}
 	 */
 	download: async (access, data) => {
-		access.can("certificates:view");
+		access.can("certificates:manage");
 		const certificate = await internalCertificate.get(access, data);
 		if (certificate.provider === "letsencrypt") {
 			const zipDirectory = internalCertificate.getLiveCertPath(data.id);

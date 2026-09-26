@@ -14,12 +14,22 @@ const migrateName = "clean_audit_log_meta";
 const up = async (knex) => {
 	logger.info(`[${migrateName}] Migrating Up...`);
 
-	for (const row of await knex("audit_log").select("id", "meta")) {
-		const meta = typeof row.meta === "string" ? JSON.parse(row.meta) : row.meta;
-		const cleanedMeta = JSON.stringify(meta, jsonReplacer);
-		if (cleanedMeta !== JSON.stringify(meta))
-			await knex("audit_log").where("id", row.id).update({ meta: cleanedMeta });
-	}
+	let rows = [];
+	do {
+		rows = await knex("audit_log")
+			.select("id", "meta")
+			.where("id", ">", rows.at(-1)?.id ?? 0)
+			.orderBy("id")
+			.limit(100);
+
+		for (const row of rows) {
+			const meta = typeof row.meta === "string" ? JSON.parse(row.meta) : row.meta;
+			const cleanedMeta = JSON.stringify(meta, jsonReplacer);
+			if (cleanedMeta !== JSON.stringify(meta)) {
+				await knex("audit_log").where("id", row.id).update({ meta: cleanedMeta });
+			}
+		}
+	} while (rows.length > 0);
 
 	logger.info(`[${migrateName}] audit_log Table altered`);
 };

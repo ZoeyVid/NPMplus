@@ -5,8 +5,9 @@ const upperBoundaryPattern = /(?=[A-Z])/;
 const mapKeys = (fn) => {
 	const walk = (o) => {
 		if (Array.isArray(o)) return o.map(walk);
-		if (o && typeof o === "object" && o.constructor === Object)
+		if (o && typeof o === "object" && o.constructor === Object) {
 			return Object.fromEntries(Object.entries(o).map(([k, v]) => [fn(k), walk(v)]));
+		}
 		return o;
 	};
 	return walk;

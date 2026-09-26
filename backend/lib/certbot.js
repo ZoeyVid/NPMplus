@@ -11,7 +11,7 @@ import utils from "./utils.js";
  * @returns {Object}
  */
 const installPlugin = async (pluginKey) => {
-	if (typeof dnsPlugins[pluginKey] === "undefined") {
+	if (dnsPlugins[pluginKey]?.package_name === undefined) {
 		// throw Error(`Certbot plugin ${pluginKey} not found`);
 		throw new errs.ItemNotFoundError(pluginKey);
 	}
