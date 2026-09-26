@@ -1,31 +1,21 @@
-## Certificaten Hulp
+## Certificaten - Hulp
 
-### HTTP Certificaat
+### HTTP-certificaat
 
-Een HTTP gevalideerd certificaat betekent dat Certbot servers
-zullen proberen om over HTTP te bereiken (niet HTTPS!) en als dat gelukt is, zal
-jouw certificaat worden uitgegeven.
+Een HTTP-gevalideerd certificaat betekent dat Certbot-servers zullen proberen uw domeinen te bereiken via HTTP (niet HTTPS!) en als dit lukt, geven ze uw certificaat af.
 
-Voor deze zal je een _Proxy Host_ moeten hebben die is toegankelijk via HTTP en
-die naar deze Nginx installatie wijst. Nadat een certificaat is uitgegeven kan je
-de _Proxy Host_ wijzigen om ook HTTPS toegang te geven. Maar de _Proxy Host_ zal
-nog moeten worden geconfigureerd voor HTTP toegang om het certificaat te verlengen.
+Voor deze methode moet u een _Proxy Host_ laten maken voor uw domein(en) die toegankelijk is met HTTP en die naar deze Nginx-installatie verwijst. Nadat een certificaat is gegeven, kunt u de _Proxy Host_ wijzigen om dit certificaat ook voor HTTPS-verbindingen te gebruiken. De _Proxy Host_ moet echter nog steeds worden geconfigureerd voor HTTP-toegang voordat het certificaat kan worden verlengd.
 
-Dit proces ondersteunt geen domeinen met wildcards.
+Dit proces ondersteunt _niet_ jokertekendomeinen.
 
-### DNS Certificaat
+### DNS-certificaat
 
-Een DNS gevalideerd certificaat zal gebruik maken van een DNS Provider plugin. De
-DNS Provider zal tijdelijke records op jouw domein maken en Certbot zal deze
-records opvragen om te controleren of je de eigenaar bent. Als dat is gecontroleerd
-is zal Certbot het certificaat uitgeven.
+Een DNS gevalideerd certificaat vereist dat u een DNS-provider plugin gebruikt. Deze DNS-provider wordt gebruikt om tijdelijke records op uw domein aan te maken en vervolgens zal Certbot die records opvragen om er zeker van te zijn dat u de eigenaar bent en als dit lukt, zullen zij uw certificaat afgeven.
 
-Je hebt geen _Proxy Host_ nodig om dit soort certificaat aan te vragen. Je hebt dus
-geen HTTP _Proxy Host_ nodig.
+U heeft geen _Proxy Host_ nodig voordat u dit type certificaat aanvraagt. U hoeft uw _Proxy Host_ ook niet te laten configureren voor HTTP-toegang.
 
-Dit proces ondersteunt _wel_ domeinen met wildcards.
+Dit proces ondersteunt _wel_ wildcard-domeinen.
 
-### Aangepast Certificaat
+### Aangepast certificaat
 
-Gebruik deze optie om jouw eigen TLS Certificaat te uploaden, zoals
-geleverd door jouw eigen Certificate Authority.
+Gebruik deze optie om uw eigen TLS-certificaat te uploaden, zoals verstrekt door uw eigen Certificaatautoriteit.
