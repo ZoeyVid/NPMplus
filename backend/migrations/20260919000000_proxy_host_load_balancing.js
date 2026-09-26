@@ -7,13 +7,14 @@ const parseLocations = (locations) => {
 	if (Array.isArray(locations)) {
 		return locations;
 	}
-
-	try {
-		const parsed = JSON.parse(locations || "[]");
-		return Array.isArray(parsed) ? parsed : [];
-	} catch {
+	if (locations === null || locations === undefined || locations === "") {
 		return [];
 	}
+	const parsed = JSON.parse(locations);
+	if (!Array.isArray(parsed)) {
+		throw new TypeError("Proxy host locations must be an array");
+	}
+	return parsed;
 };
 
 const normalisePort = (port) => {
@@ -33,24 +34,36 @@ const normaliseHost = (host) => {
 		return host;
 	}
 
-	const pathIndex = host.indexOf("/");
-	const address = pathIndex === -1 ? host : host.slice(0, pathIndex);
-	const path = pathIndex === -1 ? "" : host.slice(pathIndex);
-
-	if (address.startsWith("[") && address.endsWith("]")) {
+	if (host.startsWith("[") && host.endsWith("]")) {
 		return host;
 	}
 
-	return isIPv6(address) ? `[${address}]${path}` : host;
+	return isIPv6(host) ? `[${host}]` : host;
 };
 
-const createUpstreamServer = (host, port) => {
+const createUpstreamServer = (host, port, splitPath = false) => {
 	const normalisedPort = normalisePort(port);
+	let upstreamHost = host;
+	let forwardPath;
+
+	if (splitPath && typeof host === "string") {
+		const pathIndex = host.indexOf("/");
+		if (pathIndex !== -1) {
+			upstreamHost = host.slice(0, pathIndex);
+			forwardPath = host.slice(pathIndex);
+		}
+	}
+
+	if (typeof upstreamHost !== "string" || !upstreamHost.trim()) {
+		throw new TypeError("Cannot migrate an upstream with an empty host");
+	}
 
 	return {
-		host: normaliseHost(host),
+		host: normaliseHost(upstreamHost),
 		...(normalisedPort === null || normalisedPort === undefined
-			? {} : { port: normalisedPort }),
+			? {}
+			: { port: normalisedPort }),
+		...(forwardPath ? { forward_path: forwardPath } : {}),
 	};
 };
 
@@ -73,7 +86,7 @@ const up = async (knex) => {
 		stream.string("npmplus_load_balance_method", 64);
 	});
 
-	const proxyHosts = await knex("proxy_host").select("id", "forward_host", "forward_port", "locations");
+	const proxyHosts = await knex("proxy_host").select("id", "forward_scheme", "forward_host", "forward_port", "locations");
 
 	for (const proxyHost of proxyHosts) {
 		const locations = parseLocations(proxyHost.locations).map((location) => {
@@ -82,7 +95,9 @@ const up = async (knex) => {
 				return {
 					...otherLocationData,
 					npmplus_upstream_servers: [
-						createUpstreamServer(forward_host, forward_port),
+						createUpstreamServer(forward_host, forward_port,
+							!["path", "empty"].includes(location.forward_scheme)
+						),
 					],
 				};
 			});
@@ -91,7 +106,9 @@ const up = async (knex) => {
 			.where({ id: proxyHost.id })
 			.update({
 				npmplus_upstream_servers: JSON.stringify([
-					createUpstreamServer(proxyHost.forward_host, proxyHost.forward_port),
+					createUpstreamServer(proxyHost.forward_host, proxyHost.forward_port,
+						!["path", "empty"].includes(proxyHost.forward_scheme)
+					),
 				]),
 				locations: JSON.stringify(locations),
 			});
@@ -109,7 +126,8 @@ const up = async (knex) => {
 			});
 	}
 
-	// this may need to be removed if the goal is to preserve the old tables
+	// this may need to be removed if the goal is to preserve the old tables. Possibly for compatibility with the upstream
+	// NPM repo
 	await knex.schema.alterTable("proxy_host", (proxyHost) => {
 		proxyHost.dropColumns("forward_host", "forward_port");
 	});
