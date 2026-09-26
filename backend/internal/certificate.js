@@ -141,9 +141,6 @@ const internalCertificate = {
 						expires_on: dayjs.unix(certInfo.dates.to).format("YYYY-MM-DD HH:mm:ss"),
 					});
 
-					// Add cert data for audit log
-					savedRow.meta = { ...savedRow.meta, letsencrypt_certificate: certInfo };
-
 					await internalCertificate.addCreatedAuditLog(access, certificate.id, savedRow);
 
 					return savedRow;
@@ -159,10 +156,8 @@ const internalCertificate = {
 			throw err;
 		}
 
-		data.meta = { ...data.meta, ...certificate.meta };
-
 		// Add to audit log
-		await internalCertificate.addCreatedAuditLog(access, certificate.id, data);
+		await internalCertificate.addCreatedAuditLog(access, certificate.id, certificate);
 
 		return certificate;
 	},
@@ -197,17 +192,12 @@ const internalCertificate = {
 
 		const savedRow = await certificateModel.query().patchAndFetchById(row.id, data);
 
-		// Add row.nice_name for custom certs
-		if (savedRow.provider === "other") {
-			data.nice_name = savedRow.nice_name;
-		}
-
 		// Add to audit log
 		await internalAuditLog.add(access, {
 			action: "updated",
 			object_type: "certificate",
 			object_id: row.id,
-			meta: data,
+			meta: savedRow,
 		});
 
 		return savedRow;
@@ -217,24 +207,14 @@ const internalCertificate = {
 	 * @param  {Access}   access
 	 * @param  {Object}   data
 	 * @param  {Number}   data.id
-	 * @param  {Array}    [data.expand]
 	 * @return {Promise}
 	 */
 	get: async (access, data) => {
 		access.can("certificates:view");
-		const query = certificateModel
-			.query()
-			.where("is_deleted", 0)
-			.andWhere("id", data.id)
-			.allowGraph("[owner,proxy_hosts,redirection_hosts,dead_hosts,streams]")
-			.first();
+		const query = certificateModel.query().where("is_deleted", 0).andWhere("id", data.id).first();
 
 		if (access.visibility !== "all") {
 			query.andWhere("owner_user_id", access.token.getUserId(1));
-		}
-
-		if (typeof data.expand !== "undefined" && data.expand !== null) {
-			query.withGraphFetched(`[${data.expand.join(", ")}]`);
 		}
 
 		const row = await query;
@@ -359,7 +339,7 @@ const internalCertificate = {
 			await rm(`/data/tls/custom/npm-${row.id}`, { force: true, recursive: true });
 			await rm(`/data/tls/custom/npm-${row.id}.der`, { force: true });
 		}
-		return true;
+		return row;
 	},
 
 	/**
@@ -515,10 +495,9 @@ const internalCertificate = {
 			domain_names: validations.certificate.cn,
 		});
 
-		certificate.meta = { ...row.meta, ...certs };
-		await internalCertificate.writeCustomCert(certificate);
+		await internalCertificate.writeCustomCert({ ...certificate, meta: { ...row.meta, ...certs } });
 		await internalNginx.reload();
-		return certificate.meta;
+		return certificate;
 	},
 
 	/**
@@ -698,7 +677,6 @@ const internalCertificate = {
 				: internalCertificate.renewCertbot;
 
 			await renewMethod(certificate);
-			await internalNginx.reload();
 			const certInfo = await internalCertificate.getCertificateInfoFromFile(
 				`${internalCertificate.getLiveCertPath(certificate.id)}/fullchain.pem`,
 			);
@@ -707,13 +685,17 @@ const internalCertificate = {
 				expires_on: dayjs.unix(certInfo.dates.to).format("YYYY-MM-DD HH:mm:ss"),
 			});
 
-			// Add to audit log
-			await internalAuditLog.add(access, {
-				action: "renewed",
-				object_type: "certificate",
-				object_id: updatedCertificate.id,
-				meta: updatedCertificate,
-			});
+			try {
+				await internalNginx.reload();
+			} finally {
+				// Add to audit log
+				await internalAuditLog.add(access, {
+					action: "updated",
+					object_type: "certificate",
+					object_id: updatedCertificate.id,
+					meta: updatedCertificate,
+				});
+			}
 
 			return updatedCertificate;
 		}

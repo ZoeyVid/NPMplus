@@ -29,11 +29,30 @@
 				"application/json": {
 					"examples": {
 						"default": {
-							"value": true
+							"value": {
+								"id": 1,
+								"created_on": "2024-10-09T02:33:45.000Z",
+								"modified_on": "2024-10-09T02:33:45.000Z",
+								"owner_user_id": 1,
+								"incoming_port": 9090,
+								"forwarding_host": "router.internal",
+								"forwarding_port": 80,
+								"tcp_forwarding": true,
+								"udp_forwarding": false,
+								"npmplus_proxy_protocol_forwarding": 0,
+								"npmplus_proxy_tls": false,
+								"npmplus_advanced_config": "",
+								"meta": {
+									"nginx_online": true,
+									"nginx_err": null
+								},
+								"enabled": true,
+								"certificate_id": 0
+							}
 						}
 					},
 					"schema": {
-						"type": "boolean"
+						"$ref": "../../../../components/stream-object.json"
 					}
 				}
 			}

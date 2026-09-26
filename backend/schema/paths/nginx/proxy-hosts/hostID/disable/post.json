@@ -29,11 +29,46 @@
 				"application/json": {
 					"examples": {
 						"default": {
-							"value": true
+							"value": {
+								"id": 3,
+								"created_on": "2025-10-30T01:12:05.000Z",
+								"modified_on": "2025-10-30T01:17:06.000Z",
+								"owner_user_id": 1,
+								"domain_names": [
+									"test.example.com"
+								],
+								"forward_host": "127.0.0.1",
+								"forward_port": 8080,
+								"npmplus_access_list_ids": [],
+								"npmplus_access_list_type": "public",
+								"certificate_id": 0,
+								"ssl_forced": false,
+								"npmplus_noindex": false,
+								"npmplus_crowdsec_appsec": false,
+								"npmplus_proxy_request_buffering": false,
+								"npmplus_proxy_response_buffering": false,
+								"npmplus_upstream_compression": false,
+								"npmplus_fancyindex": false,
+								"npmplus_x_frame_options": "DENY",
+								"npmplus_auth_request": "none",
+								"npmplus_auth_request_upstream": "",
+								"advanced_config": "",
+								"npmplus_location_config": "",
+								"meta": {
+									"nginx_online": true,
+									"nginx_err": null
+								},
+								"npmplus_http3_support": false,
+								"forward_scheme": "http",
+								"enabled": false,
+								"locations": [],
+								"hsts_enabled": false,
+								"hsts_subdomains": false
+							}
 						}
 					},
 					"schema": {
-						"type": "boolean"
+						"$ref": "../../../../../components/proxy-host-object.json"
 					}
 				}
 			}

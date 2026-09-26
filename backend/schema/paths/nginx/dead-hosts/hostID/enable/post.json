@@ -29,11 +29,30 @@
 				"application/json": {
 					"examples": {
 						"default": {
-							"value": true
+							"value": {
+								"id": 1,
+								"created_on": "2024-10-09T01:38:52.000Z",
+								"modified_on": "2024-10-09T01:46:06.000Z",
+								"owner_user_id": 1,
+								"domain_names": [
+									"test.example.com"
+								],
+								"certificate_id": 0,
+								"ssl_forced": false,
+								"advanced_config": "",
+								"meta": {
+									"nginx_online": true,
+									"nginx_err": null
+								},
+								"npmplus_http3_support": false,
+								"enabled": true,
+								"hsts_enabled": false,
+								"hsts_subdomains": false
+							}
 						}
 					},
 					"schema": {
-						"type": "boolean"
+						"$ref": "../../../../../components/dead-host-object.json"
 					}
 				}
 			}

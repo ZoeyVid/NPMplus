@@ -27,34 +27,36 @@ const internalStream = {
 
 		const createdRow = await streamModel.query().insertAndFetch(thisData);
 
-		if (createCertificate) {
-			const cert = await internalCertificate.createQuickCertificate(access, thisData);
+		let savedRow;
+		try {
+			if (createCertificate) {
+				// update host with cert id
+				await streamModel
+					.query()
+					.where("id", createdRow.id)
+					.patch({ certificate_id: (await internalCertificate.createQuickCertificate(access, thisData)).id });
+			}
 
-			// update host with cert id
-			await internalStream.update(access, {
+			const row = await internalStream.get(access, {
 				id: createdRow.id,
-				certificate_id: cert.id,
+				expand: ["certificate"],
+			});
+
+			// Configure nginx
+			await internalNginx.configure(streamModel, "stream", row);
+		} finally {
+			savedRow = await internalStream.get(access, { id: createdRow.id });
+
+			// Add to audit log
+			await internalAuditLog.add(access, {
+				action: "created",
+				object_type: "stream",
+				object_id: savedRow.id,
+				meta: savedRow,
 			});
 		}
 
-		const row = await internalStream.get(access, {
-			id: createdRow.id,
-			expand: ["certificate"],
-		});
-
-		// Configure nginx
-		await internalNginx.configure(streamModel, "stream", row);
-
-		// Add to audit log
-		thisData.meta = { ...thisData.meta, ...row.meta };
-		await internalAuditLog.add(access, {
-			action: "created",
-			object_type: "stream",
-			object_id: row.id,
-			meta: thisData,
-		});
-
-		return row;
+		return savedRow;
 	},
 
 	/**
@@ -95,28 +97,31 @@ const internalStream = {
 
 		await streamModel.query().where({ id: thisData.id }).patch(thisData);
 
-		// Add to audit log
-		await internalAuditLog.add(access, {
-			action: "updated",
-			object_type: "stream",
-			object_id: existingRow.id,
-			meta: thisData,
-		});
+		let savedRow;
+		try {
+			const row = await internalStream.get(access, {
+				id: thisData.id,
+				expand: ["certificate"],
+			});
 
-		const row = await internalStream.get(access, {
-			id: thisData.id,
-			expand: ["certificate"],
-		});
-
-		if (!row.enabled) {
 			// No need to add nginx config if host is disabled
-			return row;
+			if (row.enabled) {
+				// Configure nginx
+				await internalNginx.configure(streamModel, "stream", row);
+			}
+		} finally {
+			savedRow = await internalStream.get(access, { id: thisData.id });
+
+			// Add to audit log
+			await internalAuditLog.add(access, {
+				action: "updated",
+				object_type: "stream",
+				object_id: savedRow.id,
+				meta: savedRow,
+			});
 		}
 
-		// Configure nginx
-		row.meta = await internalNginx.configure(streamModel, "stream", row);
-
-		return row;
+		return savedRow;
 	},
 
 	/**
@@ -173,19 +178,21 @@ const internalStream = {
 			is_deleted: 1,
 		});
 
-		// Delete Nginx Config
-		await internalNginx.deleteConfig("stream", row);
-		await internalNginx.reload();
+		try {
+			// Delete Nginx Config
+			await internalNginx.deleteConfig("stream", row);
+			await internalNginx.reload();
+		} finally {
+			// Add to audit log
+			await internalAuditLog.add(access, {
+				action: "deleted",
+				object_type: "stream",
+				object_id: row.id,
+				meta: row,
+			});
+		}
 
-		// Add to audit log
-		await internalAuditLog.add(access, {
-			action: "deleted",
-			object_type: "stream",
-			object_id: row.id,
-			meta: row,
-		});
-
-		return true;
+		return row;
 	},
 
 	/**
@@ -215,18 +222,23 @@ const internalStream = {
 			enabled: 1,
 		});
 
-		// Configure nginx
-		await internalNginx.configure(streamModel, "stream", row);
+		let savedRow;
+		try {
+			// Configure nginx
+			await internalNginx.configure(streamModel, "stream", row);
+		} finally {
+			savedRow = await internalStream.get(access, { id: row.id });
 
-		// Add to audit log
-		await internalAuditLog.add(access, {
-			action: "enabled",
-			object_type: "stream",
-			object_id: row.id,
-			meta: row,
-		});
+			// Add to audit log
+			await internalAuditLog.add(access, {
+				action: "enabled",
+				object_type: "stream",
+				object_id: row.id,
+				meta: savedRow,
+			});
+		}
 
-		return true;
+		return savedRow;
 	},
 
 	/**
@@ -253,19 +265,24 @@ const internalStream = {
 			enabled: 0,
 		});
 
-		// Delete Nginx Config
-		await internalNginx.deleteConfig("stream", row);
-		await internalNginx.reload();
+		let savedRow;
+		try {
+			// Delete Nginx Config
+			await internalNginx.deleteConfig("stream", row);
+			await internalNginx.reload();
+		} finally {
+			savedRow = await internalStream.get(access, { id: row.id });
 
-		// Add to audit log
-		await internalAuditLog.add(access, {
-			action: "disabled",
-			object_type: "stream",
-			object_id: row.id,
-			meta: row,
-		});
+			// Add to audit log
+			await internalAuditLog.add(access, {
+				action: "disabled",
+				object_type: "stream",
+				object_id: row.id,
+				meta: savedRow,
+			});
+		}
 
-		return true;
+		return savedRow;
 	},
 
 	/**

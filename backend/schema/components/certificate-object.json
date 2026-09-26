@@ -74,9 +74,6 @@
 				"dns_provider": {
 					"type": "string"
 				},
-				"letsencrypt_certificate": {
-					"type": "object"
-				},
 				"propagation_seconds": {
 					"type": "integer",
 					"minimum": 0

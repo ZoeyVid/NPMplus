@@ -77,7 +77,7 @@ const internalUser = {
 			.query()
 			.patchAndFetchById(user.id, { avatar: await internalUser.fetchGravatar(user.id, user.email, user.name) });
 
-		user = await internalUser.get(access, { id: user.id, expand: ["permissions"] });
+		user = await internalUser.get(access, { id: user.id });
 
 		await internalAuditLog.add(access, {
 			action: "created",
@@ -131,7 +131,16 @@ const internalUser = {
 		for (const e of avatarExts) await rm(`/data/npmplus/avatar/${user.id}.${e}`, { force: true });
 		await writeFile(`/data/npmplus/avatar/${user.id}.${ext}`, file.buffer);
 		await userModel.query().patchAndFetchById(user.id, { avatar: `/images/avatar/${user.id}.${ext}` });
-		return internalUser.update(access, { id: user.id });
+		const savedUser = await internalUser.get(access, { id: user.id });
+
+		await internalAuditLog.add(access, {
+			action: "updated",
+			object_type: "user",
+			object_id: savedUser.id,
+			meta: { ...savedUser, avatar_changed: true },
+		});
+
+		return savedUser;
 	},
 
 	deleteAvatar: async (access, id) => {
@@ -195,7 +204,7 @@ const internalUser = {
 			action: "updated",
 			object_type: "user",
 			object_id: user.id,
-			meta: { ...data, id: user.id, name: user.name },
+			meta: user,
 		});
 
 		return user;
@@ -289,7 +298,7 @@ const internalUser = {
 			meta: user,
 		});
 
-		return true;
+		return user;
 	},
 
 	/**
@@ -319,28 +328,18 @@ const internalUser = {
 	 * All users
 	 *
 	 * @param   {Access}  access
-	 * @param   {Array}   [expand]
 	 * @param   {String}  [search_query]
 	 * @returns {Promise}
 	 */
-	getAll: async (access, expand, search_query) => {
+	getAll: async (access, search_query) => {
 		access.canAdmin();
-		const query = userModel
-			.query()
-			.where("is_deleted", 0)
-			.groupBy("id")
-			.allowGraph("[permissions]")
-			.orderBy("name", "ASC");
+		const query = userModel.query().where("is_deleted", 0).groupBy("id").orderBy("name", "ASC");
 
 		// Query is used for searching
 		if (typeof search_query === "string") {
 			query.where(function () {
 				this.where("name", "like", `%${search_query}%`).orWhere("email", "like", `%${search_query}%`);
 			});
-		}
-
-		if (typeof expand !== "undefined" && expand !== null) {
-			query.withGraphFetched(`[${expand.join(", ")}]`);
 		}
 
 		return await query;

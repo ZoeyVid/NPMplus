@@ -29,11 +29,34 @@
 				"application/json": {
 					"examples": {
 						"default": {
-							"value": true
+							"value": {
+								"id": 1,
+								"created_on": "2024-10-09T01:13:12.000Z",
+								"modified_on": "2024-10-09T01:18:11.000Z",
+								"owner_user_id": 1,
+								"domain_names": [
+									"test.example.com"
+								],
+								"forward_domain_name": "something-else.com",
+								"preserve_path": false,
+								"certificate_id": 0,
+								"ssl_forced": false,
+								"advanced_config": "",
+								"meta": {
+									"nginx_online": true,
+									"nginx_err": null
+								},
+								"npmplus_http3_support": false,
+								"enabled": true,
+								"hsts_enabled": false,
+								"hsts_subdomains": false,
+								"forward_scheme": "http",
+								"forward_http_code": 301
+							}
 						}
 					},
 					"schema": {
-						"type": "boolean"
+						"$ref": "../../../../../components/redirection-host-object.json"
 					}
 				}
 			}

@@ -1,4 +1,13 @@
-import { IconArrowsCross, IconBolt, IconBoltOff, IconDisc, IconLock, IconShield, IconUser } from "@tabler/icons-react";
+import {
+	IconArrowsCross,
+	IconBolt,
+	IconBoltOff,
+	IconDisc,
+	IconLock,
+	IconSettings,
+	IconShield,
+	IconUser,
+} from "@tabler/icons-react";
 import cn from "clsx";
 import { formatDateTime, T } from "src/locale";
 
@@ -15,6 +24,8 @@ const getEventValue = (event) => {
 			return event.meta?.incomingPort || "N/A";
 		case "certificate":
 			return event.meta?.domainNames?.join(", ") || event.meta?.niceName || "N/A";
+		case "setting":
+			return event.meta?.id;
 		default:
 			return `UNKNOWN EVENT TYPE: ${event.objectType}`;
 	}
@@ -55,6 +66,9 @@ const getIcon = (row) => {
 			break;
 		case "certificate":
 			ico = <IconShield size={16} className={c} />;
+			break;
+		case "setting":
+			ico = <IconSettings size={16} className={c} />;
 			break;
 		default:
 			break;

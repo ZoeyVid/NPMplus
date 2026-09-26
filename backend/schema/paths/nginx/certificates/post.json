@@ -66,15 +66,7 @@
 									"test.example.com"
 								],
 								"meta": {
-									"dns_challenge": false,
-									"letsencrypt_certificate": {
-										"cn": "test.example.com",
-										"issuer": "C = US, O = Let's Encrypt, CN = E5",
-										"dates": {
-											"from": 1728448218,
-											"to": 1736224217
-										}
-									}
+									"dns_challenge": false
 								}
 							}
 						}

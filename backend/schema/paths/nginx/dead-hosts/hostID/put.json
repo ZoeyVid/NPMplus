@@ -86,20 +86,7 @@
 								"npmplus_http3_support": false,
 								"enabled": true,
 								"hsts_enabled": false,
-								"hsts_subdomains": false,
-								"owner": {
-									"id": 1,
-									"created_on": "2024-10-09T00:59:56.000Z",
-									"modified_on": "2024-10-09T00:59:56.000Z",
-									"is_disabled": false,
-									"email": "admin@example.com",
-									"name": "Administrator",
-									"avatar": "",
-									"roles": [
-										"admin"
-									]
-								},
-								"certificate": null
+								"hsts_subdomains": false
 							}
 						}
 					},

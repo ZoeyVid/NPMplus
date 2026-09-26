@@ -75,7 +75,7 @@ router
 			const data = await validator(listSchema, {
 				query: typeof req.query.query === "string" ? req.query.query : null,
 			});
-			const users = await internalUser.getAll(res.locals.access, null, data.query);
+			const users = await internalUser.getAll(res.locals.access, data.query);
 			res.status(200).send(users);
 		} catch (err) {
 			debug(logger, `${req.method.toUpperCase()} ${req.originalUrl}: ${err}`);

@@ -31,10 +31,7 @@ const internalSetting = {
 		await internalAuditLog.add(access, {
 			action: "updated",
 			object_type: "setting",
-			meta: {
-				id: row.id,
-				value: row.value,
-			},
+			meta: row,
 		});
 		if (row.id === "default-site") {
 			// write the html if we need to

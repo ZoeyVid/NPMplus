@@ -55,17 +55,17 @@ const internalAccessList = {
 			expand: ["items", "clients"],
 		});
 
-		// Audit log
-		data.meta = { ...data.meta, ...freshRow.meta };
-		await internalAccessList.build(freshRow);
-
-		// Add to audit log
-		await internalAuditLog.add(access, {
-			action: "created",
-			object_type: "access-list",
-			object_id: freshRow.id,
-			meta: data,
-		});
+		try {
+			await internalAccessList.build(freshRow);
+		} finally {
+			// Add to audit log
+			await internalAuditLog.add(access, {
+				action: "created",
+				object_type: "access-list",
+				object_id: freshRow.id,
+				meta: freshRow,
+			});
+		}
 
 		return freshRow;
 	},
@@ -144,33 +144,38 @@ const internalAccessList = {
 			);
 		}
 
-		// Add to audit log
-		await internalAuditLog.add(access, {
-			action: "updated",
-			object_type: "access-list",
-			object_id: data.id,
-			meta: data,
-		});
-
 		// re-fetch with expansions
 		const freshRow = await internalAccessList.get(access, {
 			id: data.id,
 			expand: ["items", "clients", "proxy_hosts.[certificate,access_lists.[clients,items]]"],
 		});
 
-		await internalAccessList.build(freshRow);
-		if (Number.parseInt(freshRow.proxy_host_count, 10)) {
-			// locations don't have accessList objects, only IDs, so populate it with the object itself
-			freshRow.proxy_hosts = await Promise.all(
-				(freshRow.proxy_hosts || []).map((host) => {
-					const cleanedHost = internalProxyHostAccessList.cleanAccessListTypes(host);
-					return internalProxyHostAccessList.populateLocationAccessLists(cleanedHost);
-				}),
-			);
-			await internalNginx.bulkGenerateConfigs(proxyHostModel, "proxy_host", freshRow.proxy_hosts);
+		const savedRow = { ...freshRow, proxy_hosts: undefined };
+
+		try {
+			await internalAccessList.build(freshRow);
+			if (Number.parseInt(freshRow.proxy_host_count, 10)) {
+				// locations don't have accessList objects, only IDs, so populate it with the object itself
+				freshRow.proxy_hosts = await Promise.all(
+					(freshRow.proxy_hosts || []).map((host) => {
+						const cleanedHost = internalProxyHostAccessList.cleanAccessListTypes(host);
+						return internalProxyHostAccessList.populateLocationAccessLists(cleanedHost);
+					}),
+				);
+				await internalNginx.bulkGenerateConfigs(proxyHostModel, "proxy_host", freshRow.proxy_hosts);
+			}
+			await internalNginx.reload();
+		} finally {
+			// Add to audit log
+			await internalAuditLog.add(access, {
+				action: "updated",
+				object_type: "access-list",
+				object_id: data.id,
+				meta: savedRow,
+			});
 		}
-		await internalNginx.reload();
-		return freshRow;
+
+		return savedRow;
 	},
 
 	/**
@@ -202,7 +207,7 @@ const internalAccessList = {
 			.where("access_list.is_deleted", 0)
 			.andWhere("access_list.id", thisData.id)
 			.groupBy("access_list.id")
-			.allowGraph("[owner,items,clients,proxy_hosts.[certificate,access_lists.[clients,items]]]")
+			.allowGraph("[items,clients,proxy_hosts.[certificate,access_lists.[clients,items]]]")
 			.first();
 
 		if (access.visibility !== "all") {
@@ -288,46 +293,50 @@ const internalAccessList = {
 			});
 			return updatedHost;
 		});
-		// 3. Write the changes to the database and the config
-		if (affectedHosts.length > 0) {
-			await proxyHostModel.transaction(async (trx) => {
-				await Promise.all(
-					affectedHosts.map(async (host) => {
-						await proxyHostModel.query(trx).patchAndFetchById(host.id, {
-							npmplus_access_list_ids: host.npmplus_access_list_ids,
-							npmplus_access_list_type: host.npmplus_access_list_type,
-							locations: host.locations,
-						});
+		const deletedRow = { ...row, proxy_hosts: undefined };
 
-						return internalProxyHostAccessList.syncAccessListRelations(trx, host.id, host);
+		try {
+			// 3. Write the changes to the database and the config
+			if (affectedHosts.length > 0) {
+				await proxyHostModel.transaction(async (trx) => {
+					await Promise.all(
+						affectedHosts.map(async (host) => {
+							await proxyHostModel.query(trx).patchAndFetchById(host.id, {
+								npmplus_access_list_ids: host.npmplus_access_list_ids,
+								npmplus_access_list_type: host.npmplus_access_list_type,
+								locations: host.locations,
+							});
+
+							return internalProxyHostAccessList.syncAccessListRelations(trx, host.id, host);
+						}),
+					);
+				});
+				row.proxy_hosts = affectedHosts;
+				// step 4. Regenerate configs and htpasswd files
+				// locations don't have accessList objects, only IDs, so populate it with the object itself
+				row.proxy_hosts = await Promise.all(
+					(row.proxy_hosts || []).map((host) => {
+						const cleanedHost = internalProxyHostAccessList.cleanAccessListTypes(host);
+						return internalProxyHostAccessList.populateLocationAccessLists(cleanedHost);
 					}),
 				);
+				await internalNginx.bulkGenerateConfigs(proxyHostModel, "proxy_host", row.proxy_hosts);
+			}
+
+			await internalNginx.reload();
+
+			// delete the htpasswd file
+			await rm(internalAccessList.getFilename(row), { force: true });
+		} finally {
+			// 4. audit log
+			await internalAuditLog.add(access, {
+				action: "deleted",
+				object_type: "access-list",
+				object_id: row.id,
+				meta: deletedRow,
 			});
-			row.proxy_hosts = affectedHosts;
-			// step 4. Regenerate configs and htpasswd files
-			// locations don't have accessList objects, only IDs, so populate it with the object itself
-			row.proxy_hosts = await Promise.all(
-				(row.proxy_hosts || []).map((host) => {
-					const cleanedHost = internalProxyHostAccessList.cleanAccessListTypes(host);
-					return internalProxyHostAccessList.populateLocationAccessLists(cleanedHost);
-				}),
-			);
-			await internalNginx.bulkGenerateConfigs(proxyHostModel, "proxy_host", row.proxy_hosts);
 		}
-
-		await internalNginx.reload();
-
-		// delete the htpasswd file
-		await rm(internalAccessList.getFilename(row), { force: true });
-
-		// 4. audit log
-		await internalAuditLog.add(access, {
-			action: "deleted",
-			object_type: "access-list",
-			object_id: row.id,
-			meta: { ...row, proxy_hosts: undefined },
-		});
-		return true;
+		return deletedRow;
 	},
 
 	/**
