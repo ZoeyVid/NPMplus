@@ -12,7 +12,6 @@ import internalUpstreamServers from "./upstream-servers.js"
 
 const omissions = () => ["is_deleted", "owner.is_deleted", "certificate.is_deleted"];
 
-
 const internalProxyHost = {
 	/**
 	 * @param   {Access}  access
@@ -47,6 +46,7 @@ const internalProxyHost = {
 		await internalProxyHostAccessList.validateAccessLists(access, thisData);
 		thisData = internalUpstreamServers.cleanUpstreamServers(thisData);
 		internalUpstreamServers.validateLoadBalancing(thisData);
+
 		const createdRow = utils.omitRow(omissions())(
 			await proxyHostModel.transaction(async (trx) => {
 				const insertedRow = await proxyHostModel.query(trx).insertAndFetch(thisData);

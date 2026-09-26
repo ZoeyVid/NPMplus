@@ -25,7 +25,7 @@ const StreamModal = EasyModal.create(({ id, visible, remove }) => {
 	const onSubmit = (values, { setSubmitting }) => {
 		if (isSubmitting) return;
 		setIsSubmitting(true);
-		setErrorMsg(null);		
+		setErrorMsg(null);
 
 		const meta = { ...(values.meta || {}) };
 		if (typeof meta.directory === "string") {
