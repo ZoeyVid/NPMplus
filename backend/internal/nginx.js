@@ -14,7 +14,7 @@ const controlApi = new Client("http://localhost", { connect: { socketPath: "/run
 
 const NETWORK_PROXY_SCHEMES = ["http", "https", "grpc", "grpcs"];
 
-const prepareUpstreamServers = (serverHost, stream = false) => {
+const prepareUpstreamServers = (serverHost) => {
 	const upstreamServers = serverHost.npmplus_upstream_servers;
 
 	if (!Array.isArray(upstreamServers) || upstreamServers.length === 0) {
@@ -26,22 +26,6 @@ const prepareUpstreamServers = (serverHost, stream = false) => {
 	for (const [index, server] of upstreamServers.entries()) {
 		if (index > 0 && server.port == null && firstPort != null) {
 			server.port = firstPort;
-		}
-
-		if (!stream &&
-			NETWORK_PROXY_SCHEMES.includes(serverHost.forward_scheme) &&
-			!server.host.startsWith("/") &&
-			!server.host.startsWith("unix")) {
-			const pathIndex = server.host.indexOf("/");
-
-			if (pathIndex !== -1) {
-				server.forward_path = server.host.slice(pathIndex);
-				server.host = server.host.slice(0, pathIndex);
-
-				if (index === 0) {
-					serverHost.forward_path = server.forward_path;
-				}
-			}
 		}
 	}
 };
@@ -266,7 +250,7 @@ const internalNginx = {
 				prepareUpstreamServers(location);
 			}
 		} else if (nice_host_type === "stream") {
-			prepareUpstreamServers(host, true);
+			prepareUpstreamServers(host);
 		}
 
 		if (host.domain_names) {

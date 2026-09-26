@@ -60,11 +60,11 @@ export function LocationsFields({ initialValues, name = "locations" }) {
 		advancedConfig: "",
 		forwardScheme: "http",
 		npmplusLoadBalanceMethod: "round_robin",
+		npmplusForwardPath: null,
 		npmplusUpstreamServers: [
 			{
 				host: "",
 				port: null,
-				forwardPath: null,
 				backup: false,
 				down: false,
 			},
@@ -142,12 +142,12 @@ export function LocationsFields({ initialValues, name = "locations" }) {
 
 	const locationLabel = (item) => `${item.locationType ?? ""}${item.path ?? ""}`;
 
-	const forwardDestination = (forwardScheme, server) => {
+	const forwardDestination = (forwardScheme, forwardPath, server) => {
 		if (!server?.host) {
 			return "";
 		}
 		if (forwardScheme && !["empty", "path"].includes(forwardScheme)) {
-			return `${forwardScheme}://${server.host}${server.port ? `:${server.port}` : ""}${server.forwardPath ?? ""}`;
+			return `${forwardScheme}://${server.host}${server.port ? `:${server.port}` : ""}${forwardPath ?? ""}`;
 		}
 		return server.host;
 	};
@@ -155,10 +155,10 @@ export function LocationsFields({ initialValues, name = "locations" }) {
 	const populatedUpstreams = ({ npmplusUpstreamServers = [] }) =>npmplusUpstreamServers.filter((server) => server?.host);
 
 	const forwardSummary = (item) =>
-		populatedUpstreams(item).slice(0, 2).map((server) => forwardDestination(item.forwardScheme, server)).join(", ");
+		populatedUpstreams(item).slice(0, 2).map((server) => forwardDestination(item.forwardScheme, item.npmplusForwardPath, server)).join(", ");
 
 	const forwardSearchText = (item) =>
-		populatedUpstreams(item).map((server) => forwardDestination(item.forwardScheme, server)).join(" ");
+		populatedUpstreams(item).map((server) => forwardDestination(item.forwardScheme, item.npmplusForwardPath, server)).join(" ");
 
 	const matchesFilter = (item) =>
 		`${locationLabel(item)} ${forwardSearchText(item)}`.toLowerCase().includes(filter.trim().toLowerCase());
@@ -182,8 +182,8 @@ export function LocationsFields({ initialValues, name = "locations" }) {
 		<Popover id={`location-upstreams-${item.uiKey}`}>
 			<Popover.Body>
 				{populatedUpstreams(item).map((server, index) => (
-					<div key={`${server.host}-${server.port}-${server.forwardPath ?? ""}-${index}`}>
-						{forwardDestination(item.forwardScheme, server)}
+					<div key={`${server.host}-${server.port}-${index}`}>
+						{forwardDestination(item.forwardScheme, item.npmplusForwardPath, server)}
 					</div>
 				))}
 			</Popover.Body>
@@ -375,6 +375,7 @@ export function LocationsFields({ initialValues, name = "locations" }) {
 								idPrefix={`location-${item.uiKey}`}
 								namePrefix={`${name}[${idx}]`}
 								scheme={item.forwardScheme}
+								initialForwardPath={item.npmplusForwardPath}
 								loadBalanceMethod={item.npmplusLoadBalanceMethod}
 								loadBalanceMethodFieldName={`${name}[${idx}].npmplusLoadBalanceMethod`}
 								upstreamServers={item.npmplusUpstreamServers}

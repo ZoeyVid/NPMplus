@@ -81,6 +81,13 @@
 		"npmplus_upstream_servers": {
 			"$ref": "./load-balancing.json#/$defs/proxyUpstreamServers"
 		},
+		"npmplus_forward_path": {
+			"type": "string",
+			"minLength": 1,
+			"maxLength": 255,
+			"example": "/myexample/path",
+			"pattern": "^\\/\\S*$"
+		},
 		"npmplus_access_list_ids":{
 			"$ref": "../common.json#/properties/npmplus_access_list_ids"
 		},
@@ -240,6 +247,9 @@
 					},
 					"npmplus_upstream_servers": {
 						"$ref": "#/properties/npmplus_upstream_servers"
+					},
+					"npmplus_forward_path": {
+						"$ref": "#/properties/npmplus_forward_path"
 					},
 					"caching_enabled": {
 						"$ref": "#/properties/caching_enabled"

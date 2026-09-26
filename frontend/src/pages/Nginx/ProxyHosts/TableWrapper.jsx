@@ -54,10 +54,9 @@ export default function TableWrapper() {
 			const matchesUpstream = (item.npmplusUpstreamServers ?? []).some((server) => {
 				const destination =
 					`${item.forwardScheme}://${server.host ?? ""}` +
-					`${server.port ? `:${server.port}` : ""}` +
-					`${server.forwardPath ?? ""}`;
+					`${server.port ? `:${server.port}` : ""}`;
 				return destination.toLowerCase().includes(search);
-			});
+			}) || item.npmplusForwardPath?.toLowerCase().includes(search);
 			return (
 				item.domainNames.some((domain) => domain.toLowerCase().includes(search)) ||
 				matchesUpstream ||
@@ -79,7 +78,7 @@ export default function TableWrapper() {
 		onDelete: (id) => {
 			const host = data?.find((item) => item.id === id);
 			const upstreamDetails = (host?.npmplusUpstreamServers ?? []).map((server) => 
-				`${host.forwardScheme}://${server.host}` +`${server.port ? `:${server.port}` : ""}` + `${server.forwardPath ?? ""}`
+				`${host.forwardScheme}://${server.host}` +`${server.port ? `:${server.port}` : ""}` + `${host.npmplusForwardPath ?? ""}`
 			);
 			showDeleteConfirmModal({
 				title: <T id="object.delete" tData={{ object: "proxy-host" }} />,

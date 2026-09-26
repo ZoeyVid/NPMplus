@@ -57,6 +57,9 @@ const ProxyHostModal = EasyModal.create(({ id, isClone = false, visible, remove 
 			if (loc.npmplusAccessListType === "global" || loc.npmplusAccessListType === "public") {
 				newLoc.npmplusAccessListIds = [];
 			}
+			if (!newLoc.npmplusForwardPath) {
+				delete newLoc.npmplusForwardPath;
+			}
 			return newLoc;
 		});
 
@@ -85,7 +88,9 @@ const ProxyHostModal = EasyModal.create(({ id, isClone = false, visible, remove 
 		};
 		// Keep payload construction separate from submission cleanup so future cleanup steps remain explicit
 		const cleanPayload = CleanLoadBalanceMethod(payload);
-
+		if (!cleanPayload.npmplusForwardPath) {
+			delete cleanPayload.npmplusForwardPath;
+		}
 		setProxyHost(cleanPayload, {
 			onError: (err) => {
 				if (err.payload?.error?.output) {
@@ -132,11 +137,11 @@ const ProxyHostModal = EasyModal.create(({ id, isClone = false, visible, remove 
 																					{
 																						host: "",
 																						port: null,
-																						forwardPath: null,
 																						backup: false,
 																						down: false,
 																					},
 																				],
+						npmplusForwardPath: data?.npmplusForwardPath || "",
 						npmplusAccessListIds: data?.npmplusAccessListIds || [],
 						npmplusAccessListType: data?.npmplusAccessListType || "public",
 						cachingEnabled: data?.cachingEnabled || false,
@@ -265,6 +270,7 @@ const ProxyHostModal = EasyModal.create(({ id, isClone = false, visible, remove 
 												<ForwardHostFields
 													idPrefix="proxy-host"
 													scheme={values.forwardScheme}
+													initialForwardPath={values.npmplusForwardPath}
 													loadBalanceMethod={values.npmplusLoadBalanceMethod}
 													loadBalanceMethodFieldName="npmplusLoadBalanceMethod"
 													upstreamServers={values.npmplusUpstreamServers}

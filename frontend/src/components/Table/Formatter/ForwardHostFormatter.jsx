@@ -24,12 +24,12 @@ const ForwardHostLink = ({ forwardScheme, forwardhost, forwardPort, forwardPath,
 	);
 };
 
-export function ForwardHostFormatter({ hostRowId, upstreamServers = [], scheme="", loadBalanceMethod, streams=false }) {
+export function ForwardHostFormatter({ hostRowId, upstreamServers = [], scheme="", forwardPath="", loadBalanceMethod, streams=false }) {
 	
     const elms = [];
     for (let i = 0; i < 2 && i < upstreamServers.length; ++i){
         const server = upstreamServers[i];
-        elms.push(<ForwardHostLink key={`${hostRowId}-${server.host}-${server.port}${server.forwardPath ?? ""}-${i}`} streams={streams} forwardScheme={scheme} forwardhost={server.host} forwardPort={server.port} forwardPath={server.forwardPath} />);
+        elms.push(<ForwardHostLink key={`${hostRowId}-${server.host}-${server.port}${forwardPath ?? ""}-${i}`} streams={streams} forwardScheme={scheme} forwardhost={server.host} forwardPort={server.port} forwardPath={forwardPath} />);
     }
 
     const popover = (
@@ -37,7 +37,7 @@ export function ForwardHostFormatter({ hostRowId, upstreamServers = [], scheme="
 			<Popover.Body>
 				{upstreamServers.slice(2).map((server, index) => (
                     <div key={`${server.host}-${server.port}-${index}`}>
-                        {`${streams ? "" : `${scheme}://`}${server.host}${getPort(server.port)}${server.forwardPath ?? ""}`}
+                        {`${streams ? "" : `${scheme}://`}${server.host}${getPort(server.port)}${forwardPath ?? ""}`}
                     </div>
                 ))}
 			</Popover.Body>

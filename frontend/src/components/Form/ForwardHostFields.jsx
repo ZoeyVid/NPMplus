@@ -68,7 +68,7 @@ export function CleanUpstreamServers(servers = []) {
 	return servers.map((server) => {
 		const cleaned = { ...server };
 
-		for (const field of ["weight", "maxFails", "maxConns", "failTimeout", "forwardPath"]) {
+		for (const field of ["weight", "maxFails", "maxConns", "failTimeout"]) {
 			if (cleaned[field] === null || 
 				cleaned[field] === undefined || 
 				cleaned[field] === "") {
@@ -86,9 +86,10 @@ export function CleanLoadBalanceMethod(object) {
 	return object;
 }
 
-export function ForwardHostFields({ scheme="",idPrefix, loadBalanceMethod, upstreamServers, onChange, loadBalanceMethodFieldName, namePrefix = "", streams = false }) {
+export function ForwardHostFields({ scheme="",idPrefix, loadBalanceMethod, upstreamServers, initialForwardPath, onChange, loadBalanceMethodFieldName, namePrefix = "", streams = false }) {
 	const [servers, setServers] = useState(upstreamServers);
 	const [method, setMethod] = useState(loadBalanceMethod);
+	const [forwardPath, setForwardPath] = useState(initialForwardPath);
 	const [expanded, setExpanded] = useState([0]);
 	const { setFieldValue } = useFormikContext();
 	const fieldName = (name) => namePrefix ? `${namePrefix}.${name}` : name;
@@ -97,7 +98,6 @@ export function ForwardHostFields({ scheme="",idPrefix, loadBalanceMethod, upstr
 	const blankServer = {
 		host: "",
 		port: null,
-		forwardPath: null,
 		weight: null,
 		maxFails: null,
 		failTimeout: "",
@@ -114,10 +114,11 @@ export function ForwardHostFields({ scheme="",idPrefix, loadBalanceMethod, upstr
 		onChange?.(changes);
 	};
 
-	const syncField = (newServers, newMethod) => {
+	const syncField = (newServers, newMethod, newForwardPath) => {
 		applyChanges({
 			npmplusUpstreamServers: newServers,
 			npmplusLoadBalanceMethod: newMethod,
+			npmplusForwardPath: newForwardPath
 		});
 	};
 
@@ -126,7 +127,7 @@ export function ForwardHostFields({ scheme="",idPrefix, loadBalanceMethod, upstr
 		const updated = [...servers, { ...blankServer }];
 		setServers(updated);
 		setExpanded((current) => [...current, newServerIdx]);
-		syncField(updated, method);
+		syncField(updated, method, forwardPath);
 	};
 
 	const handleRemove = (idx) => {
@@ -146,7 +147,7 @@ export function ForwardHostFields({ scheme="",idPrefix, loadBalanceMethod, upstr
 					expandedIdx > idx ? expandedIdx - 1 : expandedIdx,
 				);
 		});
-		syncField(updated, method);
+		syncField(updated, method, forwardPath);
 	};
 
 	const handleMove = (idx, newIdx) => {
@@ -167,13 +168,13 @@ export function ForwardHostFields({ scheme="",idPrefix, loadBalanceMethod, upstr
 				return expandedIdx;
 			}),
 		);
-		syncField(updated, method);
+		syncField(updated, method, forwardPath);
 	};
 
 	const handleChange = (idx, field, value) => {
 		const updated = servers.map((s, i) => (i === idx ? { ...s, [field]: value } : s));
 		setServers(updated);
-		syncField(updated, method);
+		syncField(updated, method, forwardPath);
 	};
 
 	const handleMethodChange = (newMethod) => {
@@ -183,7 +184,7 @@ export function ForwardHostFields({ scheme="",idPrefix, loadBalanceMethod, upstr
 			setServers(updated);
 		}
 		setMethod(newMethod);
-		syncField(updated, newMethod);
+		syncField(updated, newMethod, forwardPath);
 	};
 
 	const handleSchemeChange = (newScheme) => {
@@ -203,6 +204,11 @@ export function ForwardHostFields({ scheme="",idPrefix, loadBalanceMethod, upstr
 		}
 
 		applyChanges(changes);
+	};
+
+	const handleForwardPathChange = (newForwardPath) => {
+		setForwardPath(newForwardPath);
+		syncField(servers, method, newForwardPath);
 	};
 
 	const backupDisabled = BACKUP_INCOMPATIBLE_METHODS.includes(method);
@@ -253,41 +259,66 @@ export function ForwardHostFields({ scheme="",idPrefix, loadBalanceMethod, upstr
 				{servers.length > 1 ? (
 					<Field name={loadBalanceMethodFieldName}>
 						{({ field, form }) => (
-							<>
-								<div className="col-md-7 mb-3">
-									<label className="form-label" htmlFor={controlId("npmplusLoadBalanceMethod")}>
-										<T id="host.loadbalancer.method" />
-										<InfoPopover messageId="host.loadbalancer.method-help" />
-									</label>
-									<select
-										id={controlId("npmplusLoadBalanceMethod")}
-										className="form-select"
-										{...field}
-										value={method}
-										onChange={(e) => handleMethodChange(e.target.value)}
-									>
-										<option value="round_robin"><T id="host.loadbalancer.round-robin" /></option>
-										<option value="least_conn"><T id="host.loadbalancer.least-connections" /></option>
-										{streams ? null : (<option value="ip_hash"><T id={"host.loadbalancer.ip-hash"} /></option>)}
-										{streams ? (<option value="hash"><T id={"host.loadbalancer.hash"} /></option>):null}
-										{streams ? (<option value="hash_consistent"><T id={"host.loadbalancer.hash-consistent"} /></option>):null}
-										{streams ? (<option value="least_time_connect"><T id="host.loadbalancer.least-time-connect"/></option>) : null}
-										{streams ? (<option value="least_time_first_byte"><T id="host.loadbalancer.least-time-first-byte"/></option>) : null}
-										{streams ? null : (<option value="least_time_header"><T id="host.loadbalancer.least-time-header"/></option>)}
-										<option value="least_time_last_byte"><T id="host.loadbalancer.least-time-last-byte" /></option>
-										<option value="least_time_last_byte_inflight"><T id="host.loadbalancer.least-time-last-byte-inflight" /></option>
-										<option value="random"><T id="host.loadbalancer.random" /></option>
-										<option value="random_two_least_connections"><T id="host.loadbalancer.random-two-least-connections" /></option>
-										{streams ? (<option value="random_two_least_time_connect"><T id="host.loadbalancer.random-two-least-time-connect"/></option>) : null}
-										{streams ? (<option value="random_two_least_time_first_byte"><T id="host.loadbalancer.random-two-least-time-first-byte"/></option>) : null}
-										{streams ? null : (<option value="random_two_least_time_header"><T id="host.loadbalancer.random-two-least-time-header"/></option>) }
-										<option value="random_two_least_time_last_byte"><T id="host.loadbalancer.random-two-least-time-last-byte" /></option>
-									</select>
-								</div>
-							</>
+							<div className="col-md-5 mb-3">
+								<label className="form-label" htmlFor={controlId("npmplusLoadBalanceMethod")}>
+									<T id="host.loadbalancer.method" />
+									<InfoPopover messageId="host.loadbalancer.method-help" />
+								</label>
+								<select
+									id={controlId("npmplusLoadBalanceMethod")}
+									className="form-select"
+									{...field}
+									value={method}
+									onChange={(e) => handleMethodChange(e.target.value)}
+								>
+									<option value="round_robin"><T id="host.loadbalancer.round-robin" /></option>
+									<option value="least_conn"><T id="host.loadbalancer.least-connections" /></option>
+									{streams ? null : (<option value="ip_hash"><T id={"host.loadbalancer.ip-hash"} /></option>)}
+									{streams ? (<option value="hash"><T id={"host.loadbalancer.hash"} /></option>):null}
+									{streams ? (<option value="hash_consistent"><T id={"host.loadbalancer.hash-consistent"} /></option>):null}
+									{streams ? (<option value="least_time_connect"><T id="host.loadbalancer.least-time-connect"/></option>) : null}
+									{streams ? (<option value="least_time_first_byte"><T id="host.loadbalancer.least-time-first-byte"/></option>) : null}
+									{streams ? null : (<option value="least_time_header"><T id="host.loadbalancer.least-time-header"/></option>)}
+									<option value="least_time_last_byte"><T id="host.loadbalancer.least-time-last-byte" /></option>
+									<option value="least_time_last_byte_inflight"><T id="host.loadbalancer.least-time-last-byte-inflight" /></option>
+									<option value="random"><T id="host.loadbalancer.random" /></option>
+									<option value="random_two_least_connections"><T id="host.loadbalancer.random-two-least-connections" /></option>
+									{streams ? (<option value="random_two_least_time_connect"><T id="host.loadbalancer.random-two-least-time-connect"/></option>) : null}
+									{streams ? (<option value="random_two_least_time_first_byte"><T id="host.loadbalancer.random-two-least-time-first-byte"/></option>) : null}
+									{streams ? null : (<option value="random_two_least_time_header"><T id="host.loadbalancer.random-two-least-time-header"/></option>) }
+									<option value="random_two_least_time_last_byte"><T id="host.loadbalancer.random-two-least-time-last-byte" /></option>
+								</select>
+							</div>
 						)}
 					</Field>
 				) : null}
+				{streams ? null : (
+					<div className="col-md-4">
+						<Field name={fieldName("npmplusForwardPath")} >
+							{({ field, meta }) => (
+								<div className="mb-3">
+									<label className="form-label" htmlFor={controlId("npmplusForwardPath")}>
+										<T id={"host.forward-path"} />
+									</label>
+									<input
+										{...field}
+										id={controlId("npmplusForwardPath")}
+										type="text"
+										pattern={"^\\/\\S*"}
+										maxLength={255}
+										className={`form-control ${meta.touched && meta.error ? "is-invalid" : ""}`}
+										placeholder="/example/path"
+										value={forwardPath ?? ""}
+										onChange={(event) => handleForwardPathChange(event.target.value)}
+									/>
+									{meta.touched && meta.error ? (
+										<div className="invalid-feedback">{meta.error}</div>
+									) : null}
+								</div>
+							)}
+						</Field>
+					</div>
+				)}
 			</div>
 			{servers.map((server, idx) => {
 				const streamValidation = streams && servers.length === 1 && idx === 0;
@@ -303,7 +334,7 @@ export function ForwardHostFields({ scheme="",idPrefix, loadBalanceMethod, upstr
 									onClick={() => toggleExpanded(idx)}
 								>
 									{isExpanded(idx) ? <IconChevronDown size={16} /> : <IconChevronRight size={16} />}
-									<span className="ms-2 fw-medium text-nowrap">{server.host}{server.port ?  `:${server.port}`: ""}{server.forwardPath ?? ""}</span>
+									<span className="ms-2 fw-medium text-nowrap">{server.host}{server.port ?  `:${server.port}`: ""}</span>
 								</button>
 								{idx > 0 ? (
 									<button
@@ -349,7 +380,7 @@ export function ForwardHostFields({ scheme="",idPrefix, loadBalanceMethod, upstr
 							}
 						>
 							<div className="row m-0">
-								<div className={ streams ? "col-md-6" : "col-md-5"}>
+								<div className="col-md-6">
 									<Field 
 										name={upstreamFieldName(idx, "host")}
 										validate={(value) => {
@@ -408,32 +439,32 @@ export function ForwardHostFields({ scheme="",idPrefix, loadBalanceMethod, upstr
 										)}
 									</Field>
 								</div>
-								{streams ? null : (
-									<div className="col-md-4">
-										<Field name={upstreamFieldName(idx, "forwardPath")} >
-											{({ field, meta }) => (
+								{servers.length > 1 ? (
+									<div className="col-md-3">
+										<Field name={upstreamFieldName(idx, "down")} type="checkbox">
+											{({ field }) => (
 												<div className="mb-3">
-													<label className="form-label" htmlFor={controlId("forwardPath", idx)}>
-														<T id={"proxy-host.forward-path"} />
+													<label className="form-label" htmlFor={controlId("npmplusUpstreamEnable", idx)}>
+														<T id="enabled" />
+														<InfoPopover messageId="host.upstream.enabled-down-help" />
 													</label>
-													<input
-														{...field}
-														id={controlId("forwardPath", idx)}
-														type="text"
-														pattern={"^\\/\\S+"}
-														className={`form-control ${meta.touched && meta.error ? "is-invalid" : ""}`}
-														placeholder="/example/path"
-														value={server.forwardPath ?? ""}
-														onChange={(event) => handleChange(idx, "forwardPath", event.target.value)}
-													/>
-													{meta.touched && meta.error ? (
-														<div className="invalid-feedback">{meta.error}</div>
-													) : null}
+													<span className="form-check form-check-single form-switch p-0">
+														<input
+															{...field}
+															id={controlId("npmplusUpstreamEnable", idx)}
+															className={cn("form-check-input", {
+																"bg-lime": !server.down, // invert it to represent the UI which shows 'enabled'
+															})}
+															type="checkbox"
+															checked={!Boolean(server.down)}
+															onChange={(event) =>handleChange(idx, "down", !event.target.checked)}
+														/>
+													</span>
 												</div>
 											)}
 										</Field>
 									</div>
-								)}
+								) : null}
 							</div>
 							{servers.length > 1 ? (
 								<>
@@ -568,32 +599,6 @@ export function ForwardHostFields({ scheme="",idPrefix, loadBalanceMethod, upstr
 												)}
 											</Field>
 										</div>
-										{servers.length > 1 ? (
-											<div className="col-md-3">
-												<Field name={upstreamFieldName(idx, "down")} type="checkbox">
-													{({ field }) => (
-														<div className="mb-3">
-															<label className="form-label" htmlFor={controlId("npmplusUpstreamEnable", idx)}>
-																<T id="enabled" />
-																<InfoPopover messageId="host.upstream.enabled-down-help" />
-															</label>
-															<span className="form-check form-check-single form-switch p-0">
-																<input
-																	{...field}
-																	id={controlId("npmplusUpstreamEnable", idx)}
-																	className={cn("form-check-input", {
-																		"bg-lime": !server.down, // invert it to represent the UI which shows 'enabled'
-																	})}
-																	type="checkbox"
-																	checked={!Boolean(server.down)}
-																	onChange={(event) =>handleChange(idx, "down", !event.target.checked)}
-																/>
-															</span>
-														</div>
-													)}
-												</Field>
-											</div>
-										) : null}
 									</div>
 								</>
 							) : null}
