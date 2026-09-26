@@ -128,12 +128,22 @@ export function LocationsFields({ name = "locations", disabled, isClone }) {
 	const locationLabel = (item) => `${item.locationType ?? ""}${item.path ?? ""}`;
 
 	const forwardSummary = ({ forwardScheme, npmplusUpstreamServers = [] }) => {
-		const server = npmplusUpstreamServers[0];
-		if (!server?.host || forwardScheme === "empty") return "";
-		if (forwardScheme && forwardScheme !== "path") {
-			return `${forwardScheme}://${server.host}${server.port ? `:${server.port}` : ""}`;
+		// TODO add a full popover for the summary if there are more than 2 items
+		let hostSummary = "";
+		let filled = 0;
+		for (let i =0; filled < 2 && i < npmplusUpstreamServers.length; ++i){
+			const server = npmplusUpstreamServers[i];
+			if(server.host){
+				filled++;
+				if(forwardScheme !== "empty" && forwardScheme !== "path"){
+					hostSummary += `, ${forwardScheme}://${server.host}${server.port ? `:${server.port}` : ""}${server.forwardPath ?? ""}`;
+				}else{
+					hostSummary += `, ${server.host}`;
+				}
+			}
 		}
-		return server.host;
+		// skip the starting comma and space
+		return hostSummary.length > 0 ? hostSummary.substring(2) : hostSummary;
 	};
 
 	const handleForwardChange  = (idx, changes) => {
@@ -141,9 +151,13 @@ export function LocationsFields({ name = "locations", disabled, isClone }) {
 		void setFieldValue(`${name}.${idx}.npmplusLoadBalanceMethod`, forwarding.method);
 		void setFieldValue(`${name}.${idx}.npmplusUpstreamServers`, forwarding.servers);
 	};
+	const forwardSearchText = ({ forwardScheme, npmplusUpstreamServers = [] }) =>
+		npmplusUpstreamServers.map((server) =>
+			`${forwardScheme ? `${forwardScheme}://` : ""}${server.host}${server.port ? `:${server.port}` : ""}${server.forwardPath ?? ""}`
+		).join(" ");
 
 	const matchesFilter = (item) =>
-		`${locationLabel(item)} ${forwardSummary(item)}`.toLowerCase().includes(filter.trim().toLowerCase());
+		`${locationLabel(item)} ${forwardSearchText(item)}`.toLowerCase().includes(filter.trim().toLowerCase());
 
 	return (
 		<FieldArray name={name} validateOnChange={false}>

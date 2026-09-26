@@ -68,7 +68,7 @@ export function CleanUpstreamServers(servers = []) {
 	return servers.map((server) => {
 		const cleaned = { ...server };
 
-		for (const field of ["weight", "maxFails", "maxConns", "failTimeout"]) {
+		for (const field of ["weight", "maxFails", "maxConns", "failTimeout", "forwardPath"]) {
 			if (cleaned[field] === null || 
 				cleaned[field] === undefined || 
 				cleaned[field] === "") {
@@ -97,6 +97,7 @@ export function ForwardHostFields({ scheme="",idPrefix, loadBalanceMethod, upstr
 	const blankServer = {
 		host: "",
 		port: null,
+		forwardPath: null,
 		weight: null,
 		maxFails: null,
 		failTimeout: "",
@@ -291,7 +292,7 @@ export function ForwardHostFields({ scheme="",idPrefix, loadBalanceMethod, upstr
 			{servers.map((server, idx) => {
 				const streamValidation = streams && servers.length === 1 && idx === 0;
 				return (
-					<div key={idx} className={cn(servers.length > 1 && "card card-active p-2 mb-2")}>
+					<div key={idx} className={cn(servers.length > 1 && "card card-active p-0 mb-2")}>
 						{servers.length > 1 ? (
 							<div className={cn("card-header", "p-2", !isExpanded(idx) && "border-bottom-0")}>
 								<button
@@ -302,7 +303,7 @@ export function ForwardHostFields({ scheme="",idPrefix, loadBalanceMethod, upstr
 									onClick={() => toggleExpanded(idx)}
 								>
 									{isExpanded(idx) ? <IconChevronDown size={16} /> : <IconChevronRight size={16} />}
-									<span className="ms-2 fw-medium text-nowrap">{server.host}{server.port ?  `:${server.port}`: ""}</span>
+									<span className="ms-2 fw-medium text-nowrap">{server.host}{server.port ?  `:${server.port}`: ""}${server.forwardPath ?? ""}</span>
 								</button>
 								{idx > 0 ? (
 									<button
@@ -337,7 +338,7 @@ export function ForwardHostFields({ scheme="",idPrefix, loadBalanceMethod, upstr
 							</div>
 						) : null}
 						<div
-							className={cn("card-body", !isExpanded(idx) && "d-none")}
+							className={cn("card-body p-0", !isExpanded(idx) && "d-none")}
 							id={controlId("upstream-body", idx)}
 							onInvalid={() =>
 								flushSync(() => {
@@ -347,8 +348,8 @@ export function ForwardHostFields({ scheme="",idPrefix, loadBalanceMethod, upstr
 								})
 							}
 						>
-							<div className="row">
-								<div className="col-md-6">
+							<div className="row m-0">
+								<div className={ streams ? "col-md-6" : "col-md-5"}>
 									<Field 
 										name={upstreamFieldName(idx, "host")}
 										validate={(value) => {
@@ -357,7 +358,7 @@ export function ForwardHostFields({ scheme="",idPrefix, loadBalanceMethod, upstr
 											}
 										}}
 									>
-										{({ field, meta  }) => (
+										{({ field, meta }) => (
 											<div className="mb-3">
 												<label className="form-label" htmlFor={controlId("host", idx)}>
 													<T id={streams ? "stream.forward-host": "proxy-host.forward-host-path"} />
@@ -407,38 +408,36 @@ export function ForwardHostFields({ scheme="",idPrefix, loadBalanceMethod, upstr
 										)}
 									</Field>
 								</div>
-								{servers.length > 1 ? (
-									<>
-										<div className="col-md-3">
-											<Field name={upstreamFieldName(idx, "down")} type="checkbox">
-												{({ field }) => (
-													<div className="mb-3">
-														<label className="form-label" htmlFor={controlId("npmplusUpstreamEnable", idx)}>
-															<T id="enabled" />
-															<InfoPopover messageId="host.upstream.enabled-down-help" />
-														</label>
-														<span className="form-check form-check-single form-switch p-0">
-															<input
-																{...field}
-																id={controlId("npmplusUpstreamEnable", idx)}
-																className={cn("form-check-input", {
-																	"bg-lime": !server.down, // invert it to represent the UI which shows 'enabled'
-																})}
-																type="checkbox"
-																checked={!Boolean(server.down)}
-																onChange={(event) =>handleChange(idx, "down", !event.target.checked)}
-															/>
-														</span>
-													</div>
-												)}
-											</Field>
-										</div>
-									</>
-								) : null}
+								{streams ? null : (
+									<div className="col-md-4">
+										<Field name={upstreamFieldName(idx, "forwardPath")} >
+											{({ field, meta }) => (
+												<div className="mb-3">
+													<label className="form-label" htmlFor={controlId("forwardPath", idx)}>
+														<T id={"proxy-host.forward-path"} />
+													</label>
+													<input
+														{...field}
+														id={controlId("forwardPath", idx)}
+														type="text"
+														pattern={"^\\/\\S+"}
+														className={`form-control ${meta.touched && meta.error ? "is-invalid" : ""}`}
+														placeholder="/example/path"
+														value={server.forwardPath ?? ""}
+														onChange={(event) => handleChange(idx, "forwardPath", event.target.value)}
+													/>
+													{meta.touched && meta.error ? (
+														<div className="invalid-feedback">{meta.error}</div>
+													) : null}
+												</div>
+											)}
+										</Field>
+									</div>
+								)}
 							</div>
 							{servers.length > 1 ? (
 								<>
-									<div className="row">
+									<div className="row m-0">
 										<div className="col-md-3">
 											<Field name={upstreamFieldName(idx, "weight")} validate={validateNullNumber(1, 100)}>
 												{({ field, meta }) => (
@@ -543,7 +542,7 @@ export function ForwardHostFields({ scheme="",idPrefix, loadBalanceMethod, upstr
 											</Field>
 										</div>
 									</div>
-									<div className="row">
+									<div className="row m-0">
 										<div className="col-md-4">
 											<Field name={upstreamFieldName(idx, "maxConns")} validate={validateNullNumber(0, -1, true)}>
 												{({ field, meta }) => (
@@ -569,6 +568,32 @@ export function ForwardHostFields({ scheme="",idPrefix, loadBalanceMethod, upstr
 												)}
 											</Field>
 										</div>
+										{servers.length > 1 ? (
+											<div className="col-md-3">
+												<Field name={upstreamFieldName(idx, "down")} type="checkbox">
+													{({ field }) => (
+														<div className="mb-3">
+															<label className="form-label" htmlFor={controlId("npmplusUpstreamEnable", idx)}>
+																<T id="enabled" />
+																<InfoPopover messageId="host.upstream.enabled-down-help" />
+															</label>
+															<span className="form-check form-check-single form-switch p-0">
+																<input
+																	{...field}
+																	id={controlId("npmplusUpstreamEnable", idx)}
+																	className={cn("form-check-input", {
+																		"bg-lime": !server.down, // invert it to represent the UI which shows 'enabled'
+																	})}
+																	type="checkbox"
+																	checked={!Boolean(server.down)}
+																	onChange={(event) =>handleChange(idx, "down", !event.target.checked)}
+																/>
+															</span>
+														</div>
+													)}
+												</Field>
+											</div>
+										) : null}
 									</div>
 								</>
 							) : null}

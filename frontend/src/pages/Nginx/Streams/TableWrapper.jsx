@@ -39,10 +39,16 @@ export default function TableWrapper() {
 	if (search) {
 		filtered = data?.filter((item) => {
 			const directory = getDirectory(item).toLowerCase();
+			const matchesUpstream = (item.npmplusUpstreamServers ?? []).some((server) => {
+				const destination =
+					`${server.host ?? ""}` +
+					`${server.port ? `:${server.port}` : ""}`;
+				return destination.toLowerCase().includes(search);
+			});
 			return (
 				`${item.incomingPort}`.includes(search) ||
-				`${item.forwardingHost}:${item.forwardingPort}`.toLowerCase().includes(search) ||
-				item.npmplusDescription?.toLowerCase().includes(search) ||
+				matchesUpstream ||
+				item.npmplusDescription?.toLowerCase().includes(search.toLowerCase()) ||
 				directory.includes(search)
 			);
 		});
@@ -60,6 +66,8 @@ export default function TableWrapper() {
 		onClone: (id) => showStreamModal(id, true),
 		onDelete: (id) => {
 			const stream = data?.find((item) => item.id === id);
+			const upstreamDetails = (stream?.npmplusUpstreamServers ?? [])
+				.map((server) => `${server.host}${server.port ? `:${server.port}` : ""}`).join(", ");
 			showDeleteConfirmModal({
 				title: <T id="object.delete" tData={{ object: "stream" }} />,
 				onConfirm: async () => {
@@ -67,9 +75,7 @@ export default function TableWrapper() {
 					showObjectSuccess("stream", "deleted");
 				},
 				children: <T id="object.delete.content" tData={{ object: "stream" }} />,
-				subject: stream
-					? `${stream.incomingPort} → ${stream.forwardingHost}${stream.forwardingPort ? `:${stream.forwardingPort}` : ""}`
-					: null,
+				subject: stream ? `${stream.incomingPort} → ${upstreamDetails}` : null,
 				details: stream?.npmplusDescription,
 			});
 		},
