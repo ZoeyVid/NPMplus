@@ -41,29 +41,39 @@ const normaliseHost = (host) => {
 	return isIPv6(host) ? `[${host}]` : host;
 };
 
-const createUpstreamServer = (host, port, splitPath = false) => {
-	const normalisedPort = normalisePort(port);
-	let upstreamHost = host;
-	let forwardPath;
-
-	if (splitPath && typeof host === "string") {
-		const pathIndex = host.indexOf("/");
-		if (pathIndex !== -1) {
-			upstreamHost = host.slice(0, pathIndex);
-			forwardPath = host.slice(pathIndex);
-		}
+const splitForwardHost = (host, splitPath = false) => {
+	if (!splitPath || typeof host !== "string") {
+		return {
+			upstreamHost: host,
+			forwardPath: undefined
+		};
 	}
 
-	if (typeof upstreamHost !== "string" || !upstreamHost.trim()) {
+	const pathIndex = host.indexOf("/");
+	if (pathIndex === -1) {
+		return {
+			upstreamHost: host,
+			forwardPath: undefined
+		};
+	}
+
+	return {
+		upstreamHost: host.slice(0, pathIndex),
+		forwardPath: host.slice(pathIndex),
+	};
+};
+
+const createUpstreamServer = (host, port) => {
+	const normalisedPort = normalisePort(port);
+
+	if (typeof host !== "string" || !host.trim()) {
 		throw new TypeError("Cannot migrate an upstream with an empty host");
 	}
 
 	return {
-		host: normaliseHost(upstreamHost),
+		host: normaliseHost(host),
 		...(normalisedPort === null || normalisedPort === undefined
-			? {}
-			: { port: normalisedPort }),
-		...(forwardPath ? { forward_path: forwardPath } : {}),
+			? {} : { port: normalisedPort }),
 	};
 };
 
@@ -79,6 +89,7 @@ const up = async (knex) => {
 	await knex.schema.alterTable("proxy_host", (proxyHost) => {
 		proxyHost.json("npmplus_upstream_servers").notNull().defaultTo("[]");
 		proxyHost.string("npmplus_load_balance_method", 64);
+		proxyHost.string("npmplus_forward_path", 255);
 	});
 
 	await knex.schema.alterTable("stream", (stream) => {
@@ -90,25 +101,32 @@ const up = async (knex) => {
 
 	for (const proxyHost of proxyHosts) {
 		const locations = parseLocations(proxyHost.locations).map((location) => {
-				const {forward_host, forward_port, ...otherLocationData } = location;
+				const { forward_host, forward_port, ...otherLocationData } = location;
+				const { upstreamHost, forwardPath } = splitForwardHost(
+					forward_host,
+					!["path", "empty"].includes(location.forward_scheme),
+				);
 
 				return {
 					...otherLocationData,
+					...(forwardPath ? { npmplus_forward_path: forwardPath } : {}),
 					npmplus_upstream_servers: [
-						createUpstreamServer(forward_host, forward_port,
-							!["path", "empty"].includes(location.forward_scheme)
-						),
+						createUpstreamServer(upstreamHost, forward_port),
 					],
 				};
 			});
 
+		const { upstreamHost, forwardPath } = splitForwardHost(
+			proxyHost.forward_host,
+			!["path", "empty"].includes(proxyHost.forward_scheme)
+		);
+
 		await knex("proxy_host")
 			.where({ id: proxyHost.id })
 			.update({
+				npmplus_forward_path: forwardPath ?? null,
 				npmplus_upstream_servers: JSON.stringify([
-					createUpstreamServer(proxyHost.forward_host, proxyHost.forward_port,
-						!["path", "empty"].includes(proxyHost.forward_scheme)
-					),
+					createUpstreamServer(upstreamHost, proxyHost.forward_port)
 				]),
 				locations: JSON.stringify(locations),
 			});

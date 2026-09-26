@@ -129,12 +129,12 @@ export function LocationsFields({ name = "locations", disabled, isClone }) {
 
 	const locationLabel = (item) => `${item.locationType ?? ""}${item.path ?? ""}`;
 
-	const forwardDestination = (forwardScheme, server) => {
+	const forwardDestination = (forwardScheme, forwardPath, server) => {
 		if (!server?.host) {
 			return "";
 		}
 		if (forwardScheme && !["empty", "path"].includes(forwardScheme)) {
-			return `${forwardScheme}://${server.host}${server.port ? `:${server.port}` : ""}${server.forwardPath ?? ""}`;
+			return `${forwardScheme}://${server.host}${server.port ? `:${server.port}` : ""}${forwardPath ?? ""}`;
 		}
 		return server.host;
 	};
@@ -142,10 +142,10 @@ export function LocationsFields({ name = "locations", disabled, isClone }) {
 	const populatedUpstreams = ({ npmplusUpstreamServers = [] }) =>npmplusUpstreamServers.filter((server) => server?.host);
 
 	const forwardSummary = (item) =>
-		populatedUpstreams(item).slice(0, 2).map((server) => forwardDestination(item.forwardScheme, server)).join(", ");
+		populatedUpstreams(item).slice(0, 2).map((server) => forwardDestination(item.forwardScheme, item.npmplusForwardPath, server)).join(", ");
 
 	const forwardSearchText = (item) =>
-		populatedUpstreams(item).map((server) => forwardDestination(item.forwardScheme, server)).join(" ");
+		populatedUpstreams(item).map((server) => forwardDestination(item.forwardScheme, item.npmplusForwardPath, server)).join(" ");
 
 	const matchesFilter = (item) =>
 		`${locationLabel(item)} ${forwardSearchText(item)}`.toLowerCase().includes(filter.trim().toLowerCase());
@@ -160,8 +160,8 @@ export function LocationsFields({ name = "locations", disabled, isClone }) {
 		<Popover id={`location-upstreams-${item.uiKey}`}>
 			<Popover.Body>
 				{populatedUpstreams(item).map((server, index) => (
-					<div key={`${server.host}-${server.port}-${server.forwardPath ?? ""}-${index}`}>
-						{forwardDestination(item.forwardScheme, server)}
+					<div key={`${server.host}-${server.port}-${index}`}>
+						{forwardDestination(item.forwardScheme, item.npmplusForwardPath, server)}
 					</div>
 				))}
 			</Popover.Body>

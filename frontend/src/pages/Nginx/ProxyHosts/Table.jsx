@@ -85,19 +85,30 @@ export default function Table({
 				);
 			},
 		}),
-		columnHelper.accessor(forwardSummary, {
-			id: "forwardHost",
-			header: intl.formatMessage({ id: "column.destination" }),
-			cell: (info) => {
-				<ForwardHostFormatter
-					proxyHostId={info.row.original.id}
-					upstreamServers={info.row.original.npmplusUpstreamServers}
-					scheme={info.row.original.forwardScheme}
-					loadBalanceMethod={info.row.original.npmplusLoadBalanceMethod}
-					streams={false}
-				/>
+		columnHelper.accessor((row) => {
+			const names = [];
+				for (const server of row.npmplusUpstreamServers ?? []) {
+					names.push(
+						`${row.forwardScheme}://${server.host}${server.port ? `:${server.port}` : ""}${row.npmplusForwardPath ?? ""}`,
+					);
+				}
+				return names.join(", ");
 			},
-		}),
+			{
+				id: "forwardHost",
+				header: intl.formatMessage({ id: "column.destination" }),
+				cell: (info) => (
+					<ForwardHostFormatter
+						hostRowId={info.row.original.id}
+						forwardPath={info.row.original.npmplusForwardPath}
+						upstreamServers={info.row.original.npmplusUpstreamServers}
+						scheme={info.row.original.forwardScheme}
+						loadBalanceMethod={info.row.original.npmplusLoadBalanceMethod}
+						streams={false}
+					/>
+				),
+			}
+		),
 		columnHelper.accessor((row) => (row.certificate ? row.certificate.provider : "http-only"), {
 			id: "certificate",
 			header: intl.formatMessage({ id: "column.ssl" }),
