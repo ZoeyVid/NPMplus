@@ -33,34 +33,19 @@ const features = tableFeatures({
 	},
 });
 
-export default function Table({
-	data,
-	allData,
-	isFetching,
-	onDelete,
-	onRenew,
-	onDownload,
-	onTest,
-	onEdit,
-	isFiltered,
-}) {
-	const mtlsInUseIds = new Set();
+const isInUse = (row) =>
+	[
+		row.proxyHosts,
+		row.redirectionHosts,
+		row.deadHosts,
+		row.streams,
+		row.mtlsProxyHosts,
+		row.mtlsRedirectionHosts,
+		row.mtlsDeadHosts,
+		row.mtlsStreams,
+	].some((hosts) => hosts?.length > 0);
 
-	for (const certificate of allData) {
-		const usageRows = [
-			...(certificate.proxyHosts || []),
-			...(certificate.redirectionHosts || []),
-			...(certificate.deadHosts || []),
-			...(certificate.streams || []),
-		];
-
-		for (const usageRow of usageRows) {
-			if (Number(usageRow.meta?.npmplusMtlsCertificateId) > 0) {
-				mtlsInUseIds.add(Number(usageRow.meta?.npmplusMtlsCertificateId));
-			}
-		}
-	}
-
+export default function Table({ data, isFetching, onDelete, onRenew, onDownload, onTest, onEdit, isFiltered }) {
 	const columnHelper = createColumnHelper();
 	const columns = useMemo(
 		() => [
@@ -90,17 +75,17 @@ export default function Table({
 				},
 			}),
 			columnHelper.accessor(
-				(row) => (row.meta?.dnsProvider ? `${row.provider} - ${row.meta.dnsProvider}` : row.provider),
+				(row) => (row.npmplusDnsProvider ? `${row.provider} - ${row.npmplusDnsProvider}` : row.provider),
 				{
 					id: "provider",
 					header: intl.formatMessage({ id: "column.provider" }),
 					cell: (info) => {
 						const r = info.row.original;
 						if (r.provider === "letsencrypt") {
-							if (r.meta?.dnsChallenge && r.meta?.dnsProvider) {
+							if (r.npmplusDnsChallenge && r.npmplusDnsProvider) {
 								return (
 									<>
-										<T id="lets-encrypt" /> &ndash; {r.meta?.dnsProvider}
+										<T id="lets-encrypt" /> &ndash; {r.npmplusDnsProvider}
 									</>
 								);
 							}
@@ -118,62 +103,21 @@ export default function Table({
 				header: intl.formatMessage({ id: "column.expires" }),
 				cell: (info) => <DateFormatter value={info.getValue()} highlightPast />,
 			}),
-			columnHelper.accessor(
-				(row) =>
-					(row.proxyHosts?.length || 0) +
-						(row.redirectionHosts?.length || 0) +
-						(row.deadHosts?.length || 0) +
-						(row.streams?.length || 0) >
-						0 || mtlsInUseIds.has(row.id),
-				{
-					id: "inUse",
-					header: intl.formatMessage({ id: "column.status" }),
-					cell: (info) => {
-						const r = info.row.original;
-						return (
-							<CertificateInUseFormatter
-								proxyHosts={
-									r.provider === "mtls"
-										? allData.flatMap((certificate) =>
-												(certificate.proxyHosts || []).filter(
-													(host) => Number(host.meta?.npmplusMtlsCertificateId) === r.id,
-												),
-											)
-										: r.proxyHosts
-								}
-								redirectionHosts={
-									r.provider === "mtls"
-										? allData.flatMap((certificate) =>
-												(certificate.redirectionHosts || []).filter(
-													(host) => Number(host.meta?.npmplusMtlsCertificateId) === r.id,
-												),
-											)
-										: r.redirectionHosts
-								}
-								deadHosts={
-									r.provider === "mtls"
-										? allData.flatMap((certificate) =>
-												(certificate.deadHosts || []).filter(
-													(host) => Number(host.meta?.npmplusMtlsCertificateId) === r.id,
-												),
-											)
-										: r.deadHosts
-								}
-								streams={
-									r.provider === "mtls"
-										? allData.flatMap((certificate) =>
-												(certificate.streams || []).filter(
-													(stream) => Number(stream.meta?.npmplusMtlsCertificateId) === r.id,
-												),
-											)
-										: r.streams
-								}
-								mtlsInUse={mtlsInUseIds.has(r.id)}
-							/>
-						);
-					},
+			columnHelper.accessor(isInUse, {
+				id: "inUse",
+				header: intl.formatMessage({ id: "column.status" }),
+				cell: (info) => {
+					const r = info.row.original;
+					return (
+						<CertificateInUseFormatter
+							proxyHosts={[...(r.proxyHosts || []), ...(r.mtlsProxyHosts || [])]}
+							redirectionHosts={[...(r.redirectionHosts || []), ...(r.mtlsRedirectionHosts || [])]}
+							deadHosts={[...(r.deadHosts || []), ...(r.mtlsDeadHosts || [])]}
+							streams={[...(r.streams || []), ...(r.mtlsStreams || [])]}
+						/>
+					);
 				},
-			),
+			}),
 			columnHelper.accessor((row) => row.id, {
 				id: "id",
 				header: "ID",
@@ -186,12 +130,7 @@ export default function Table({
 				id: "actions",
 				cell: (info) => {
 					const row = info.row.original;
-					const inUse =
-						(row.proxyHosts?.length || 0) +
-							(row.redirectionHosts?.length || 0) +
-							(row.deadHosts?.length || 0) +
-							(row.streams?.length || 0) >
-							0 || mtlsInUseIds.has(row.id);
+					const inUse = isInUse(row);
 
 					return (
 						<span className="dropdown">
@@ -213,7 +152,7 @@ export default function Table({
 									/>
 								</span>
 
-								{row.provider === "letsencrypt" && !row.meta?.dnsProvider && (
+								{row.provider === "letsencrypt" && !row.npmplusDnsProvider && (
 									<button
 										type="button"
 										className="dropdown-item"
@@ -291,7 +230,7 @@ export default function Table({
 				},
 			}),
 		],
-		[columnHelper, mtlsInUseIds, onDelete, onRenew, onDownload, onTest, onEdit, allData],
+		[columnHelper, onDelete, onRenew, onDownload, onTest, onEdit],
 	);
 
 	const tableInstance = useTable({

@@ -26,6 +26,10 @@ export default function TableWrapper() {
 		"proxy_hosts",
 		"redirection_hosts",
 		"streams",
+		"mtls_dead_hosts",
+		"mtls_proxy_hosts",
+		"mtls_redirection_hosts",
+		"mtls_streams",
 	]);
 
 	useEffect(() => {
@@ -148,7 +152,6 @@ export default function TableWrapper() {
 				</div>
 				<Table
 					data={filtered ?? data ?? []}
-					allData={data ?? []}
 					isFiltered={Boolean(search)}
 					isFetching={isFetching}
 					onRenew={showRenewCertificateModal}
@@ -174,7 +177,7 @@ export default function TableWrapper() {
 									) : null}
 									<div>
 										<T id={certificateProviderTranslation(certificate.provider)} />
-										{certificate.meta?.dnsProvider ? ` – ${certificate.meta.dnsProvider}` : null}
+										{certificate.npmplusDnsProvider ? ` – ${certificate.npmplusDnsProvider}` : null}
 									</div>
 									{certificate.expiresOn ? (
 										<div>

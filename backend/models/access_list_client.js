@@ -23,6 +23,11 @@ class AccessListClient extends Model {
 		this.modified_on = now();
 	}
 
+	$parseDatabaseJson(json) {
+		const { meta, ...thisJson } = super.$parseDatabaseJson(json);
+		return thisJson;
+	}
+
 	static get name() {
 		return "AccessListClient";
 	}

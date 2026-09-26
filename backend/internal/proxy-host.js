@@ -129,8 +129,8 @@ const internalProxyHost = {
 
 		if (createCertificate) {
 			const cert = await internalCertificate.createQuickCertificate(access, {
+				...thisData,
 				domain_names: thisData.domain_names || existingRow.domain_names,
-				meta: { ...existingRow.meta, ...thisData.meta },
 			});
 
 			// update host with cert id

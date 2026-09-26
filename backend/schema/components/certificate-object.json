@@ -10,7 +10,10 @@
 		"nice_name",
 		"domain_names",
 		"expires_on",
-		"meta"
+		"npmplus_reuse_key",
+		"npmplus_dns_challenge",
+		"npmplus_dns_provider",
+		"npmplus_propagation_seconds"
 	],
 	"additionalProperties": false,
 	"properties": {
@@ -58,30 +61,33 @@
 		"owner": {
 			"$ref": "./user-object.json"
 		},
-		"meta": {
-			"type": "object",
-			"additionalProperties": false,
-			"properties": {
-				"reuse_key": {
-					"type": "boolean"
-				},
-				"dns_challenge": {
-					"type": "boolean"
-				},
-				"dns_provider_credentials": {
-					"type": "string"
-				},
-				"dns_provider": {
-					"type": "string"
-				},
-				"propagation_seconds": {
-					"type": "integer",
-					"minimum": 0
-				}
-			},
-			"example": {
-				"dns_challenge": false
-			}
+		"npmplus_reuse_key": {
+			"description": "Reuse the private key on renewal",
+			"type": "boolean",
+			"example": false
+		},
+		"npmplus_dns_challenge": {
+			"description": "Use the DNS challenge",
+			"type": "boolean",
+			"example": false
+		},
+		"npmplus_dns_provider": {
+			"description": "DNS provider",
+			"type": "string",
+			"maxLength": 255,
+			"example": "cloudflare"
+		},
+		"npmplus_dns_provider_credentials": {
+			"description": "DNS provider credentials",
+			"type": "string",
+			"writeOnly": true,
+			"example": "dns_cloudflare_api_token=123"
+		},
+		"npmplus_propagation_seconds": {
+			"description": "DNS propagation seconds, 0 uses the default of the DNS plugin",
+			"type": "integer",
+			"minimum": 0,
+			"example": 0
 		}
 	}
 }

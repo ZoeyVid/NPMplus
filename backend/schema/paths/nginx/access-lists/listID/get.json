@@ -35,7 +35,6 @@
 								"modified_on": "2025-10-29T22:48:20.000Z",
 								"owner_user_id": 1,
 								"name": "My Access List",
-								"meta": {},
 								"satisfy_any": false,
 								"pass_auth": false,
 								"proxy_host_count": 1

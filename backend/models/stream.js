@@ -3,14 +3,21 @@
 
 import { Model } from "objection";
 import db from "../db.js";
-import { convertBoolFieldsToInt, convertIntFieldsToBool } from "../lib/helpers.js";
+import { convertBoolFieldsToInt, convertIntFieldsToBool, removeCertificateFields } from "../lib/helpers.js";
 import Certificate from "./certificate.js";
 import now from "./now_helper.js";
 import User from "./user.js";
 
 Model.knex(db());
 
-const boolFields = ["enabled", "tcp_forwarding", "udp_forwarding", "npmplus_proxy_tls"];
+const boolFields = [
+	"enabled",
+	"tcp_forwarding",
+	"udp_forwarding",
+	"npmplus_proxy_tls",
+	"npmplus_nginx_online",
+	"npmplus_mtls_verify_client_optional",
+];
 
 class Stream extends Model {
 	$beforeInsert() {
@@ -28,12 +35,12 @@ class Stream extends Model {
 	}
 
 	$parseDatabaseJson(json) {
-		const { is_deleted, ...thisJson } = super.$parseDatabaseJson(json);
+		const { is_deleted, meta, ...thisJson } = super.$parseDatabaseJson(json);
 		return convertIntFieldsToBool(thisJson, boolFields);
 	}
 
 	$formatDatabaseJson(json) {
-		const thisJson = convertBoolFieldsToInt(json, boolFields);
+		const thisJson = convertBoolFieldsToInt(removeCertificateFields(json), boolFields);
 		return super.$formatDatabaseJson(thisJson);
 	}
 

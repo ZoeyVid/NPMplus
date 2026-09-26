@@ -7,7 +7,6 @@
 		"modified_on",
 		"owner_user_id",
 		"name",
-		"meta",
 		"satisfy_any",
 		"pass_auth",
 		"proxy_host_count"
@@ -30,10 +29,6 @@
 			"minLength": 1,
 			"maxLength": 255,
 			"example": "My Access List"
-		},
-		"meta": {
-			"type": "object",
-			"example": {}
 		},
 		"satisfy_any": {
 			"type": "boolean",

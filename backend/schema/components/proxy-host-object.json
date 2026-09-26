@@ -15,7 +15,11 @@
 		"ssl_forced",
 		"advanced_config",
 		"npmplus_location_config",
-		"meta",
+		"npmplus_nginx_online",
+		"npmplus_nginx_err",
+		"npmplus_directory",
+		"npmplus_mtls_certificate_id",
+		"npmplus_mtls_verify_client_optional",
 		"npmplus_http3_support",
 		"forward_scheme",
 		"enabled",
@@ -132,12 +136,20 @@
 			"type": "string",
 			"example": ""
 		},
-		"meta": {
-			"type": "object",
-			"example": {
-				"nginx_online": true,
-				"nginx_err": null
-			}
+		"npmplus_nginx_online": {
+			"$ref": "../common.json#/properties/npmplus_nginx_online"
+		},
+		"npmplus_nginx_err": {
+			"$ref": "../common.json#/properties/npmplus_nginx_err"
+		},
+		"npmplus_directory": {
+			"$ref": "../common.json#/properties/npmplus_directory"
+		},
+		"npmplus_mtls_certificate_id": {
+			"$ref": "../common.json#/properties/npmplus_mtls_certificate_id"
+		},
+		"npmplus_mtls_verify_client_optional": {
+			"$ref": "../common.json#/properties/npmplus_mtls_verify_client_optional"
 		},
 		"npmplus_http3_support": {
 			"$ref": "../common.json#/properties/npmplus_http3_support"

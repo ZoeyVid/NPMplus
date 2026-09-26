@@ -9,6 +9,7 @@ import dayjs from "dayjs";
 import dnsPlugins from "../certbot/dns-plugins.json" with { type: "json" };
 import { installPlugin } from "../lib/certbot.js";
 import error from "../lib/error.js";
+import { pickCertificateFields } from "../lib/helpers.js";
 import utils from "../lib/utils.js";
 import { debug, ssl as logger } from "../logger.js";
 import certificateModel from "../models/certificate.js";
@@ -125,7 +126,7 @@ const internalCertificate = {
 		try {
 			if (certificate.provider === "letsencrypt") {
 				// Request a new Cert with Certbot. Let the fun begin.
-				if (certificate.meta?.dns_challenge) {
+				if (certificate.npmplus_dns_challenge) {
 					await internalCertificate.requestCertbotWithDnsChallenge(certificate);
 				} else {
 					await internalCertificate.requestCertbot(certificate);
@@ -156,10 +157,12 @@ const internalCertificate = {
 			throw err;
 		}
 
-		// Add to audit log
-		await internalCertificate.addCreatedAuditLog(access, certificate.id, certificate);
+		const savedRow = await internalCertificate.get(access, { id: certificate.id });
 
-		return certificate;
+		// Add to audit log
+		await internalCertificate.addCreatedAuditLog(access, certificate.id, savedRow);
+
+		return savedRow;
 	},
 
 	addCreatedAuditLog: async (access, certificate_id, meta) => {
@@ -306,13 +309,12 @@ const internalCertificate = {
 		}
 
 		for (const hostModel of [proxyHostModel, redirectionHostModel, deadHostModel, streamModel]) {
-			const hosts = await hostModel.query().where("is_deleted", 0).select("id", "certificate_id", "meta");
 			if (
-				hosts.some(
-					(host) =>
-						Number(host.certificate_id) === row.id ||
-						Number(host.meta?.npmplus_mtls_certificate_id) === row.id,
-				)
+				(await hostModel
+					.query()
+					.where("is_deleted", 0)
+					.andWhere((qb) => qb.where("certificate_id", row.id).orWhere("npmplus_mtls_certificate_id", row.id))
+					.resultSize()) > 0
 			) {
 				throw new error.ValidationError("Certificate is still in use");
 			}
@@ -357,7 +359,9 @@ const internalCertificate = {
 			.query()
 			.where("is_deleted", 0)
 			.groupBy("id")
-			.allowGraph("[owner,proxy_hosts,redirection_hosts,dead_hosts,streams]")
+			.allowGraph(
+				"[owner,proxy_hosts,redirection_hosts,dead_hosts,streams,mtls_proxy_hosts,mtls_redirection_hosts,mtls_dead_hosts,mtls_streams]",
+			)
 			.orderBy("nice_name", "ASC");
 
 		if (access.visibility !== "all") {
@@ -408,15 +412,15 @@ const internalCertificate = {
 		logger.info("Writing Custom Certificate:", certificate.id);
 
 		if (certificate.provider === "mtls") {
-			await writeFile(`/data/tls/mtls/npm-${certificate.id}.pem`, certificate.meta.certificate);
+			await writeFile(`/data/tls/mtls/npm-${certificate.id}.pem`, certificate.certificate);
 			return;
 		}
 
 		const dir = `/data/tls/custom/npm-${certificate.id}`;
 
 		await mkdir(dir, { recursive: true });
-		await writeFile(`${dir}/fullchain.pem`, certificate.meta.certificate);
-		await writeFile(`${dir}/privkey.pem`, certificate.meta.certificate_key);
+		await writeFile(`${dir}/fullchain.pem`, certificate.certificate);
+		await writeFile(`${dir}/privkey.pem`, certificate.certificate_key);
 	},
 
 	/**
@@ -429,7 +433,7 @@ const internalCertificate = {
 		internalCertificate.create(access, {
 			provider: "letsencrypt",
 			domain_names: data.domain_names,
-			meta: data.meta,
+			...pickCertificateFields(data),
 		}),
 
 	/**
@@ -495,7 +499,7 @@ const internalCertificate = {
 			domain_names: validations.certificate.cn,
 		});
 
-		await internalCertificate.writeCustomCert({ ...certificate, meta: { ...row.meta, ...certs } });
+		await internalCertificate.writeCustomCert({ ...certificate, ...certs });
 		await internalNginx.reload();
 		return certificate;
 	},
@@ -606,7 +610,7 @@ const internalCertificate = {
 			`npm-${certificate.id}`,
 			...(domains.length > 0 ? ["--domains", domains.map(domainToASCII).join(",")] : []),
 			...ips.flatMap((ip) => ["--ip-address", ip]),
-			...(certificate.meta.reuse_key ? ["--reuse-key"] : ["--no-reuse-key"]),
+			...(certificate.npmplus_reuse_key ? ["--reuse-key"] : ["--no-reuse-key"]),
 			"--authenticator",
 			"webroot",
 		]);
@@ -619,18 +623,18 @@ const internalCertificate = {
 	 * @returns {Promise}
 	 */
 	requestCertbotWithDnsChallenge: async (certificate) => {
-		const dnsPlugin = dnsPlugins[certificate.meta.dns_provider];
+		const dnsPlugin = dnsPlugins[certificate.npmplus_dns_provider];
 		if (!dnsPlugin) {
-			throw new Error(`Unknown DNS provider '${certificate.meta.dns_provider}'`);
+			throw new Error(`Unknown DNS provider '${certificate.npmplus_dns_provider}'`);
 		}
-		await installPlugin(certificate.meta.dns_provider);
+		await installPlugin(certificate.npmplus_dns_provider);
 
 		logger.info(
 			`Requesting Certbot certificates via ${dnsPlugin.name} for Cert #${certificate.id}: ${certificate.domain_names.join(", ")}`,
 		);
 
 		const credentialsLocation = `/tmp/certbot-credentials/credentials-${certificate.id}`;
-		await writeFile(credentialsLocation, certificate.meta.dns_provider_credentials, { mode: 0o600 });
+		await writeFile(credentialsLocation, certificate.npmplus_dns_provider_credentials, { mode: 0o600 });
 
 		try {
 			const result = await utils.execFile("certbot", [
@@ -643,15 +647,15 @@ const internalCertificate = {
 				`npm-${certificate.id}`,
 				"--domains",
 				certificate.domain_names.map(domainToASCII).join(","),
-				...(certificate.meta.reuse_key ? ["--reuse-key"] : ["--no-reuse-key"]),
+				...(certificate.npmplus_reuse_key ? ["--reuse-key"] : ["--no-reuse-key"]),
 				"--authenticator",
 				dnsPlugin.full_plugin_name,
 				`--${dnsPlugin.full_plugin_name}-credentials`,
 				credentialsLocation,
-				...(certificate.meta.propagation_seconds !== undefined
+				...(certificate.npmplus_propagation_seconds > 0
 					? [`--${dnsPlugin.full_plugin_name}-propagation-seconds`]
 					: []),
-				...(certificate.meta.propagation_seconds !== undefined ? [certificate.meta.propagation_seconds] : []),
+				...(certificate.npmplus_propagation_seconds > 0 ? [certificate.npmplus_propagation_seconds] : []),
 			]);
 			logger.info(result);
 			return result;
@@ -672,7 +676,7 @@ const internalCertificate = {
 		const certificate = await internalCertificate.get(access, data);
 
 		if (certificate.provider === "letsencrypt") {
-			const renewMethod = certificate.meta.dns_challenge
+			const renewMethod = certificate.npmplus_dns_challenge
 				? internalCertificate.renewCertbotWithDnsChallenge
 				: internalCertificate.renewCertbot;
 
@@ -749,9 +753,9 @@ const internalCertificate = {
 	 * @returns {Promise}
 	 */
 	renewCertbotWithDnsChallenge: async (certificate) => {
-		const dnsPlugin = dnsPlugins[certificate.meta.dns_provider];
+		const dnsPlugin = dnsPlugins[certificate.npmplus_dns_provider];
 		if (!dnsPlugin) {
-			throw new Error(`Unknown DNS provider '${certificate.meta.dns_provider}'`);
+			throw new Error(`Unknown DNS provider '${certificate.npmplus_dns_provider}'`);
 		}
 
 		logger.info(

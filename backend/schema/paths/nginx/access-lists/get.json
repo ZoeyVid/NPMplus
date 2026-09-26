@@ -35,7 +35,6 @@
 						"modified_on": "2024-10-08T22:15:40.000Z",
 						"owner_user_id": 1,
 						"name": "test1234",
-						"meta": {},
 						"satisfy_any": true,
 						"pass_auth": false,
 						"proxy_host_count": 0

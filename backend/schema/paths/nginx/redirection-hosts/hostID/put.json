@@ -65,8 +65,29 @@
 						"advanced_config": {
 							"$ref": "../../../../components/redirection-host-object.json#/properties/advanced_config"
 						},
-						"meta": {
-							"$ref": "../../../../components/redirection-host-object.json#/properties/meta"
+						"npmplus_directory": {
+							"$ref": "../../../../components/redirection-host-object.json#/properties/npmplus_directory"
+						},
+						"npmplus_mtls_certificate_id": {
+							"$ref": "../../../../components/redirection-host-object.json#/properties/npmplus_mtls_certificate_id"
+						},
+						"npmplus_mtls_verify_client_optional": {
+							"$ref": "../../../../components/redirection-host-object.json#/properties/npmplus_mtls_verify_client_optional"
+						},
+						"npmplus_reuse_key": {
+							"$ref": "../../../../components/certificate-object.json#/properties/npmplus_reuse_key"
+						},
+						"npmplus_dns_challenge": {
+							"$ref": "../../../../components/certificate-object.json#/properties/npmplus_dns_challenge"
+						},
+						"npmplus_dns_provider": {
+							"$ref": "../../../../components/certificate-object.json#/properties/npmplus_dns_provider"
+						},
+						"npmplus_dns_provider_credentials": {
+							"$ref": "../../../../components/certificate-object.json#/properties/npmplus_dns_provider_credentials"
+						},
+						"npmplus_propagation_seconds": {
+							"$ref": "../../../../components/certificate-object.json#/properties/npmplus_propagation_seconds"
 						}
 					}
 				}
@@ -93,10 +114,11 @@
 								"certificate_id": 0,
 								"ssl_forced": false,
 								"advanced_config": "",
-								"meta": {
-									"nginx_online": true,
-									"nginx_err": null
-								},
+								"npmplus_nginx_online": true,
+								"npmplus_nginx_err": "",
+								"npmplus_directory": "",
+								"npmplus_mtls_certificate_id": 0,
+								"npmplus_mtls_verify_client_optional": false,
 								"npmplus_http3_support": false,
 								"enabled": true,
 								"hsts_enabled": false,

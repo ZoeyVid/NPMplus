@@ -57,14 +57,10 @@ const ProxyHostModal = EasyModal.create(({ id, isClone = false, visible, remove 
 			return newLoc;
 		});
 
-		const meta = { ...(values.meta || {}) };
-		meta.directory = typeof meta.directory === "string" ? meta.directory.trim() : "";
-		if (!meta.directory) delete meta.directory;
-
 		const { ...payload } = {
 			id: id === "new" || isClone ? undefined : id,
 			...values,
-			meta,
+			npmplusDirectory: values.npmplusDirectory.trim(),
 			npmplusAccessListIds: globalAclIds,
 			locations,
 			forwardHost: values.forwardHost.trim(),
@@ -126,7 +122,9 @@ const ProxyHostModal = EasyModal.create(({ id, isClone = false, visible, remove 
 						// Advanced tab
 						advancedConfig: data?.advancedConfig || "",
 						npmplusLocationConfig: data?.npmplusLocationConfig || "",
-						meta: data?.meta || {},
+						npmplusDirectory: data?.npmplusDirectory || "",
+						npmplusMtlsCertificateId: data?.npmplusMtlsCertificateId || 0,
+						npmplusMtlsVerifyClientOptional: data?.npmplusMtlsVerifyClientOptional || false,
 						npmplusNoindex: data?.npmplusNoindex || false,
 						npmplusCrowdsecAppsec: data?.npmplusCrowdsecAppsec || false,
 						npmplusProxyResponseBuffering: data?.npmplusProxyResponseBuffering || false,

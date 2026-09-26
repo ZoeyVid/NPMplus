@@ -44,10 +44,11 @@
 									"npmplus_proxy_protocol_forwarding": 0,
 									"npmplus_proxy_tls": false,
 									"npmplus_advanced_config": "",
-									"meta": {
-										"nginx_online": true,
-										"nginx_err": null
-									},
+									"npmplus_nginx_online": true,
+									"npmplus_nginx_err": "",
+									"npmplus_directory": "",
+									"npmplus_mtls_certificate_id": 0,
+									"npmplus_mtls_verify_client_optional": false,
 									"enabled": true,
 									"certificate_id": 0
 								}

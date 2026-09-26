@@ -40,9 +40,10 @@
 								"domain_names": [
 									"test.jc21.supernerd.pro"
 								],
-								"meta": {
-									"dns_challenge": false
-								}
+								"npmplus_reuse_key": false,
+								"npmplus_dns_challenge": false,
+								"npmplus_dns_provider": "",
+								"npmplus_propagation_seconds": 0
 							}
 						}
 					},

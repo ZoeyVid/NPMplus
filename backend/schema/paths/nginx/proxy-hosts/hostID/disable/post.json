@@ -54,10 +54,11 @@
 								"npmplus_auth_request_upstream": "",
 								"advanced_config": "",
 								"npmplus_location_config": "",
-								"meta": {
-									"nginx_online": true,
-									"nginx_err": null
-								},
+								"npmplus_nginx_online": true,
+								"npmplus_nginx_err": "",
+								"npmplus_directory": "",
+								"npmplus_mtls_certificate_id": 0,
+								"npmplus_mtls_verify_client_optional": false,
 								"npmplus_http3_support": false,
 								"forward_scheme": "http",
 								"enabled": false,

@@ -30,8 +30,20 @@
 						"domain_names": {
 							"$ref": "../../../components/certificate-object.json#/properties/domain_names"
 						},
-						"meta": {
-							"$ref": "../../../components/certificate-object.json#/properties/meta"
+						"npmplus_reuse_key": {
+							"$ref": "../../../components/certificate-object.json#/properties/npmplus_reuse_key"
+						},
+						"npmplus_dns_challenge": {
+							"$ref": "../../../components/certificate-object.json#/properties/npmplus_dns_challenge"
+						},
+						"npmplus_dns_provider": {
+							"$ref": "../../../components/certificate-object.json#/properties/npmplus_dns_provider"
+						},
+						"npmplus_dns_provider_credentials": {
+							"$ref": "../../../components/certificate-object.json#/properties/npmplus_dns_provider_credentials"
+						},
+						"npmplus_propagation_seconds": {
+							"$ref": "../../../components/certificate-object.json#/properties/npmplus_propagation_seconds"
 						}
 					}
 				},
@@ -39,10 +51,7 @@
 					"provider": "letsencrypt",
 					"domain_names": [
 						"test.example.com"
-					],
-					"meta": {
-						"dns_challenge": false
-					}
+					]
 				}
 			}
 		}
@@ -65,9 +74,10 @@
 								"domain_names": [
 									"test.example.com"
 								],
-								"meta": {
-									"dns_challenge": false
-								}
+								"npmplus_reuse_key": false,
+								"npmplus_dns_challenge": false,
+								"npmplus_dns_provider": "",
+								"npmplus_propagation_seconds": 0
 							}
 						}
 					},

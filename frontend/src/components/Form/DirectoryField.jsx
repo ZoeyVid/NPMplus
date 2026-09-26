@@ -4,7 +4,7 @@ import { T } from "src/locale";
 export function DirectoryField({
 	labelId,
 	datalistId,
-	name = "meta.directory",
+	name = "npmplusDirectory",
 	suggestions,
 	placeholder = "eg: Production, Staging",
 }) {

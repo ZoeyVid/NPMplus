@@ -17,7 +17,19 @@ const listSchema = {
 	properties: {
 		expand: {
 			$ref: "common#/properties/expand",
-			items: { enum: ["owner", "proxy_hosts", "redirection_hosts", "dead_hosts", "streams"] },
+			items: {
+				enum: [
+					"owner",
+					"proxy_hosts",
+					"redirection_hosts",
+					"dead_hosts",
+					"streams",
+					"mtls_proxy_hosts",
+					"mtls_redirection_hosts",
+					"mtls_dead_hosts",
+					"mtls_streams",
+				],
+			},
 		},
 		query: {
 			$ref: "common#/properties/query",

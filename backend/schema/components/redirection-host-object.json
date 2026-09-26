@@ -18,7 +18,11 @@
 		"npmplus_http3_support",
 		"advanced_config",
 		"enabled",
-		"meta"
+		"npmplus_nginx_online",
+		"npmplus_nginx_err",
+		"npmplus_directory",
+		"npmplus_mtls_certificate_id",
+		"npmplus_mtls_verify_client_optional"
 	],
 	"additionalProperties": false,
 	"properties": {
@@ -89,12 +93,20 @@
 		"enabled": {
 			"$ref": "../common.json#/properties/enabled"
 		},
-		"meta": {
-			"type": "object",
-			"example": {
-				"nginx_online": true,
-				"nginx_err": null
-			}
+		"npmplus_nginx_online": {
+			"$ref": "../common.json#/properties/npmplus_nginx_online"
+		},
+		"npmplus_nginx_err": {
+			"$ref": "../common.json#/properties/npmplus_nginx_err"
+		},
+		"npmplus_directory": {
+			"$ref": "../common.json#/properties/npmplus_directory"
+		},
+		"npmplus_mtls_certificate_id": {
+			"$ref": "../common.json#/properties/npmplus_mtls_certificate_id"
+		},
+		"npmplus_mtls_verify_client_optional": {
+			"$ref": "../common.json#/properties/npmplus_mtls_verify_client_optional"
 		},
 		"certificate": {
 			"oneOf": [

@@ -3,7 +3,7 @@
 
 import { Model } from "objection";
 import db from "../db.js";
-import { convertBoolFieldsToInt, convertIntFieldsToBool } from "../lib/helpers.js";
+import { convertBoolFieldsToInt, convertIntFieldsToBool, removeCertificateFields } from "../lib/helpers.js";
 import AccessList from "./access_list.js";
 import Certificate from "./certificate.js";
 import now from "./now_helper.js";
@@ -23,6 +23,8 @@ const boolFields = [
 	"npmplus_proxy_response_buffering",
 	"npmplus_upstream_compression",
 	"npmplus_fancyindex",
+	"npmplus_nginx_online",
+	"npmplus_mtls_verify_client_optional",
 ];
 
 class ProxyHost extends Model {
@@ -58,6 +60,7 @@ class ProxyHost extends Model {
 	$parseDatabaseJson(json) {
 		const {
 			is_deleted,
+			meta,
 			access_list_id,
 			caching_enabled,
 			block_exploits,
@@ -70,7 +73,7 @@ class ProxyHost extends Model {
 	}
 
 	$formatDatabaseJson(json) {
-		const thisJson = convertBoolFieldsToInt(json, boolFields);
+		const thisJson = convertBoolFieldsToInt(removeCertificateFields(json), boolFields);
 		return super.$formatDatabaseJson(thisJson);
 	}
 

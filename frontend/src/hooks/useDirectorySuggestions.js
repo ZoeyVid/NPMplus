@@ -1,7 +1,7 @@
 import { useMemo } from "react";
 
 const getDirectory = (item) => {
-	const dir = item?.meta?.directory;
+	const dir = item?.npmplusDirectory;
 	return typeof dir === "string" ? dir.trim() : "";
 };
 

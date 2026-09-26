@@ -38,7 +38,7 @@ class Auth extends Model {
 	}
 
 	$parseDatabaseJson(json) {
-		const { is_deleted, ...thisJson } = super.$parseDatabaseJson(json);
+		const { is_deleted, meta, ...thisJson } = super.$parseDatabaseJson(json);
 		return thisJson;
 	}
 

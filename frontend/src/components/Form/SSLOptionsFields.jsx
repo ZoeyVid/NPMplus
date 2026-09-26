@@ -10,21 +10,29 @@ export function SSLOptionsFields({ forHttp = true, forceDNSForNew, requireDomain
 
 	const newCertificate = v?.certificateId === "new";
 	const hasCertificate = newCertificate || (v?.certificateId && v?.certificateId > 0);
-	const { sslForced, npmplusHttp3Support, hstsEnabled, hstsSubdomains, meta } = v;
-	const { dnsChallenge, reuseKey } = meta || {};
+	const {
+		sslForced,
+		npmplusHttp3Support,
+		hstsEnabled,
+		hstsSubdomains,
+		npmplusDnsChallenge: dnsChallenge,
+		npmplusReuseKey: reuseKey,
+		npmplusMtlsCertificateId,
+		npmplusMtlsVerifyClientOptional,
+	} = v;
 
 	useEffect(() => {
 		if (forceDNSForNew && newCertificate && !dnsChallenge) {
-			void setFieldValue("meta.dnsChallenge", true);
+			void setFieldValue("npmplusDnsChallenge", true);
 		}
 	});
 
 	const handleToggleChange = (e, fieldName) => {
 		void setFieldValue(fieldName, e.target.checked);
-		if (fieldName === "meta.dnsChallenge" && !e.target.checked) {
-			void setFieldValue("meta.dnsProvider", undefined);
-			void setFieldValue("meta.dnsProviderCredentials", undefined);
-			void setFieldValue("meta.propagationSeconds", undefined);
+		if (fieldName === "npmplusDnsChallenge" && !e.target.checked) {
+			void setFieldValue("npmplusDnsProvider", undefined);
+			void setFieldValue("npmplusDnsProviderCredentials", undefined);
+			void setFieldValue("npmplusPropagationSeconds", undefined);
 		}
 		if (fieldName === "sslForced" && !e.target.checked) {
 			void setFieldValue("hstsEnabled", false);
@@ -127,17 +135,15 @@ export function SSLOptionsFields({ forHttp = true, forceDNSForNew, requireDomain
 		<div>
 			<div className="row">
 				<div className="col-12">
-					<Field name="meta.npmplusMtlsVerifyClientOptional">
+					<Field name="npmplusMtlsVerifyClientOptional">
 						{({ field }) => (
 							<label className="form-check form-switch mt-1">
 								<input
-									className={
-										meta?.npmplusMtlsVerifyClientOptional === true ? toggleEnabled : toggleClasses
-									}
+									className={npmplusMtlsVerifyClientOptional === true ? toggleEnabled : toggleClasses}
 									type="checkbox"
-									checked={meta?.npmplusMtlsVerifyClientOptional === true}
+									checked={npmplusMtlsVerifyClientOptional === true}
 									onChange={(e) => handleToggleChange(e, field.name)}
-									disabled={!(v?.certificateId > 0 && meta?.npmplusMtlsCertificateId > 0)}
+									disabled={!(v?.certificateId > 0 && npmplusMtlsCertificateId > 0)}
 								/>
 
 								<span className="form-check-label">
@@ -152,7 +158,7 @@ export function SSLOptionsFields({ forHttp = true, forceDNSForNew, requireDomain
 			{newCertificate ? (
 				<div className="row">
 					<div className="col-6">
-						<Field name="meta.reuseKey">
+						<Field name="npmplusReuseKey">
 							{({ field }) => (
 								<label className="form-check form-switch mt-1">
 									<input
@@ -170,7 +176,7 @@ export function SSLOptionsFields({ forHttp = true, forceDNSForNew, requireDomain
 						</Field>
 					</div>
 					<div className="col-6">
-						<Field name="meta.dnsChallenge">
+						<Field name="npmplusDnsChallenge">
 							{({ field }) => (
 								<label className="form-check form-switch mt-1">
 									<input

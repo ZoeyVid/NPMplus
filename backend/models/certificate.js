@@ -3,6 +3,7 @@
 
 import { Model } from "objection";
 import db from "../db.js";
+import { convertBoolFieldsToInt, convertIntFieldsToBool } from "../lib/helpers.js";
 import deadHostModel from "./dead_host.js";
 import now from "./now_helper.js";
 import proxyHostModel from "./proxy_host.js";
@@ -11,6 +12,8 @@ import streamModel from "./stream.js";
 import userModel from "./user.js";
 
 Model.knex(db());
+
+const boolFields = ["npmplus_reuse_key", "npmplus_dns_challenge"];
 
 class Certificate extends Model {
 	$beforeInsert() {
@@ -38,8 +41,13 @@ class Certificate extends Model {
 	}
 
 	$parseDatabaseJson(json) {
-		const { is_deleted, ...thisJson } = super.$parseDatabaseJson(json);
-		return thisJson;
+		const { is_deleted, meta, ...thisJson } = super.$parseDatabaseJson(json);
+		return convertIntFieldsToBool(thisJson, boolFields);
+	}
+
+	$formatDatabaseJson(json) {
+		const thisJson = convertBoolFieldsToInt(json, boolFields);
+		return super.$formatDatabaseJson(thisJson);
 	}
 
 	static get name() {
@@ -106,6 +114,50 @@ class Certificate extends Model {
 				join: {
 					from: "certificate.id",
 					to: "stream.certificate_id",
+				},
+				modify: (qb) => {
+					qb.where("stream.is_deleted", 0);
+				},
+			},
+			mtls_proxy_hosts: {
+				relation: Model.HasManyRelation,
+				modelClass: proxyHostModel,
+				join: {
+					from: "certificate.id",
+					to: "proxy_host.npmplus_mtls_certificate_id",
+				},
+				modify: (qb) => {
+					qb.where("proxy_host.is_deleted", 0);
+				},
+			},
+			mtls_dead_hosts: {
+				relation: Model.HasManyRelation,
+				modelClass: deadHostModel,
+				join: {
+					from: "certificate.id",
+					to: "dead_host.npmplus_mtls_certificate_id",
+				},
+				modify: (qb) => {
+					qb.where("dead_host.is_deleted", 0);
+				},
+			},
+			mtls_redirection_hosts: {
+				relation: Model.HasManyRelation,
+				modelClass: redirectionHostModel,
+				join: {
+					from: "certificate.id",
+					to: "redirection_host.npmplus_mtls_certificate_id",
+				},
+				modify: (qb) => {
+					qb.where("redirection_host.is_deleted", 0);
+				},
+			},
+			mtls_streams: {
+				relation: Model.HasManyRelation,
+				modelClass: streamModel,
+				join: {
+					from: "certificate.id",
+					to: "stream.npmplus_mtls_certificate_id",
 				},
 				modify: (qb) => {
 					qb.where("stream.is_deleted", 0);

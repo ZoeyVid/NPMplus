@@ -117,6 +117,35 @@
 			"type": "boolean",
 			"example": true
 		},
+		"npmplus_nginx_online": {
+			"description": "Whether the nginx config of this host is loaded",
+			"type": "boolean",
+			"readOnly": true,
+			"example": true
+		},
+		"npmplus_nginx_err": {
+			"description": "nginx error if the config of this host could not be loaded",
+			"type": "string",
+			"readOnly": true,
+			"example": ""
+		},
+		"npmplus_directory": {
+			"description": "Directory to group this host in the UI",
+			"type": "string",
+			"maxLength": 255,
+			"example": "Production"
+		},
+		"npmplus_mtls_certificate_id": {
+			"description": "mTLS Certificate ID",
+			"type": "integer",
+			"minimum": 0,
+			"example": 0
+		},
+		"npmplus_mtls_verify_client_optional": {
+			"description": "Make the mTLS client verification optional",
+			"type": "boolean",
+			"example": false
+		},
 		"npmplus_noindex": {
 			"description": "Send noindex header and block some user agents",
 			"type": "boolean",

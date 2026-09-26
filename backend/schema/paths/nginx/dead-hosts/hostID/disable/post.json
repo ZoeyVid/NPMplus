@@ -40,10 +40,11 @@
 								"certificate_id": 0,
 								"ssl_forced": false,
 								"advanced_config": "",
-								"meta": {
-									"nginx_online": true,
-									"nginx_err": null
-								},
+								"npmplus_nginx_online": true,
+								"npmplus_nginx_err": "",
+								"npmplus_directory": "",
+								"npmplus_mtls_certificate_id": 0,
+								"npmplus_mtls_verify_client_optional": false,
 								"npmplus_http3_support": false,
 								"enabled": false,
 								"hsts_enabled": false,

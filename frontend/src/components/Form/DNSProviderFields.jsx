@@ -14,8 +14,8 @@ export function DNSProviderFields({ showBoundaryBox = false }) {
 	const v = values || {};
 
 	const handleChange = (newValue, _actionMeta) => {
-		void setFieldValue("meta.dnsProvider", newValue?.value);
-		void setFieldValue("meta.dnsProviderCredentials", newValue?.credentials);
+		void setFieldValue("npmplusDnsProvider", newValue?.value);
+		void setFieldValue("npmplusDnsProviderCredentials", newValue?.credentials);
 		setDnsProviderId(newValue?.value);
 	};
 
@@ -33,7 +33,7 @@ export function DNSProviderFields({ showBoundaryBox = false }) {
 				<T id="certificates.dns.warning" />
 			</p>
 
-			<Field name="meta.dnsProvider">
+			<Field name="npmplusDnsProvider">
 				{({ field }) => (
 					<div className="row">
 						<label htmlFor="dnsProvider" className="form-label">
@@ -60,7 +60,7 @@ export function DNSProviderFields({ showBoundaryBox = false }) {
 
 			{dnsProviderId ? (
 				<>
-					<Field name="meta.dnsProviderCredentials">
+					<Field name="npmplusDnsProviderCredentials">
 						{({ field }) => (
 							<div className="mt-3">
 								<label htmlFor="dnsProviderCredentials" className="form-label">
@@ -71,7 +71,7 @@ export function DNSProviderFields({ showBoundaryBox = false }) {
 									spellCheck={false}
 									id="dnsProviderCredentials"
 									rows={6}
-									value={v.meta.dnsProviderCredentials || ""}
+									value={v.npmplusDnsProviderCredentials || ""}
 									{...field}
 								/>
 
@@ -88,7 +88,7 @@ export function DNSProviderFields({ showBoundaryBox = false }) {
 							</div>
 						)}
 					</Field>
-					<Field name="meta.propagationSeconds">
+					<Field name="npmplusPropagationSeconds">
 						{({ field }) => (
 							<div className="mt-3">
 								<label htmlFor="propagationSeconds" className="form-label">

@@ -11,7 +11,6 @@ const fetchAccessList = (id, expand) => {
 			name: "",
 			satisfyAny: false,
 			passAuth: false,
-			meta: {},
 		});
 	}
 	return getAccessList(id, expand);

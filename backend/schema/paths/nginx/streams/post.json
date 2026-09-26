@@ -50,8 +50,14 @@
 						"npmplus_advanced_config": {
 							"$ref": "../../../components/stream-object.json#/properties/npmplus_advanced_config"
 						},
-						"meta": {
-							"$ref": "../../../components/stream-object.json#/properties/meta"
+						"npmplus_directory": {
+							"$ref": "../../../components/stream-object.json#/properties/npmplus_directory"
+						},
+						"npmplus_mtls_certificate_id": {
+							"$ref": "../../../components/stream-object.json#/properties/npmplus_mtls_certificate_id"
+						},
+						"npmplus_mtls_verify_client_optional": {
+							"$ref": "../../../components/stream-object.json#/properties/npmplus_mtls_verify_client_optional"
 						},
 						"npmplus_description": {
 							"$ref": "../../../components/stream-object.json#/properties/npmplus_description"
@@ -64,8 +70,7 @@
 					"forwarding_port": 8080,
 					"tcp_forwarding": true,
 					"udp_forwarding": false,
-					"certificate_id": 0,
-					"meta": {}
+					"certificate_id": 0
 				}
 			}
 		}
@@ -90,10 +95,11 @@
 								"npmplus_proxy_protocol_forwarding": 0,
 								"npmplus_proxy_tls": false,
 								"npmplus_advanced_config": "",
-								"meta": {
-									"nginx_online": true,
-									"nginx_err": null
-								},
+								"npmplus_nginx_online": true,
+								"npmplus_nginx_err": "",
+								"npmplus_directory": "",
+								"npmplus_mtls_certificate_id": 0,
+								"npmplus_mtls_verify_client_optional": false,
 								"enabled": true,
 								"certificate_id": 0
 							}

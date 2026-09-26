@@ -55,10 +55,8 @@ const DNSCertificateModal = EasyModal.create(({ visible, remove }) => {
 				initialValues={{
 					domainNames: [],
 					provider: "letsencrypt",
-					meta: {
-						dnsChallenge: true,
-						reuseKey: false,
-					},
+					npmplusDnsChallenge: true,
+					npmplusReuseKey: false,
 				}}
 				onSubmit={onSubmit}
 			>
@@ -84,7 +82,7 @@ const DNSCertificateModal = EasyModal.create(({ visible, remove }) => {
 									<DNSProviderFields />
 									<div className="row">
 										<div className="col-6">
-											<Field name="meta.reuseKey">
+											<Field name="npmplusReuseKey">
 												{({ field }) => (
 													<label className="form-check form-switch mt-1">
 														<input

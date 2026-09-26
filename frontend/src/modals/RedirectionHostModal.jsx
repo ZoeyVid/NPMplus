@@ -35,14 +35,10 @@ const RedirectionHostModal = EasyModal.create(({ id, visible, remove }) => {
 		setIsSubmitting(true);
 		setErrorMsg(null);
 
-		const meta = { ...(values.meta || {}) };
-		meta.directory = typeof meta.directory === "string" ? meta.directory.trim() : "";
-		if (!meta.directory) delete meta.directory;
-
 		const { ...payload } = {
 			id: id === "new" ? undefined : id,
 			...values,
-			meta,
+			npmplusDirectory: values.npmplusDirectory.trim(),
 			forwardDomainName: values.forwardDomainName.trim(),
 		};
 
@@ -96,7 +92,9 @@ const RedirectionHostModal = EasyModal.create(({ id, visible, remove }) => {
 						hstsSubdomains: data?.hstsSubdomains || false,
 						// Advanced tab
 						advancedConfig: data?.advancedConfig || "",
-						meta: data?.meta || {},
+						npmplusDirectory: data?.npmplusDirectory || "",
+						npmplusMtlsCertificateId: data?.npmplusMtlsCertificateId || 0,
+						npmplusMtlsVerifyClientOptional: data?.npmplusMtlsVerifyClientOptional || false,
 					}}
 					onSubmit={onSubmit}
 				>

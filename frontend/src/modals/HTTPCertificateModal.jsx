@@ -114,9 +114,7 @@ const HTTPCertificateModal = EasyModal.create(({ visible, remove }) => {
 				initialValues={{
 					domainNames: [],
 					provider: "letsencrypt",
-					meta: {
-						reuseKey: false,
-					},
+					npmplusReuseKey: false,
 				}}
 				onSubmit={onSubmit}
 			>
@@ -151,7 +149,7 @@ const HTTPCertificateModal = EasyModal.create(({ visible, remove }) => {
 
 									<div className="row">
 										<div className="col-6">
-											<Field name="meta.reuseKey">
+											<Field name="npmplusReuseKey">
 												{({ field }) => (
 													<label className="form-check form-switch mt-1">
 														<input

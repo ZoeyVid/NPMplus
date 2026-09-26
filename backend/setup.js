@@ -91,14 +91,14 @@ const setupCertbotPlugins = async () => {
 		const plugins = [];
 
 		for (const certificate of certificates) {
-			if (certificate.meta && certificate.meta.dns_challenge === true) {
-				if (plugins.indexOf(certificate.meta.dns_provider) === -1) {
-					plugins.push(certificate.meta.dns_provider);
+			if (certificate.npmplus_dns_challenge) {
+				if (plugins.indexOf(certificate.npmplus_dns_provider) === -1) {
+					plugins.push(certificate.npmplus_dns_provider);
 				}
 
 				await writeFile(
 					`/tmp/certbot-credentials/credentials-${certificate.id}`,
-					certificate.meta.dns_provider_credentials,
+					certificate.npmplus_dns_provider_credentials,
 					{ mode: 0o600 },
 				);
 			}
