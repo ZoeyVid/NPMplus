@@ -34,7 +34,7 @@ const StreamModal = EasyModal.create(({ id, visible, remove }) => {
 	const onSubmit = (values, { setSubmitting }) => {
 		if (isSubmitting) return;
 		setIsSubmitting(true);
-		setErrorMsg(null);		
+		setErrorMsg(null);
 
 		const { ...payload } = {
 			id: id === "new" ? undefined : id,
