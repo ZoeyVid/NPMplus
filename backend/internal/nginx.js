@@ -11,6 +11,51 @@ const controlApi = new Client("http://localhost", { connect: { socketPath: "/run
 const authRequestProviders = ["anubis", "tinyauth", "oauth2proxy", "voidauth", "authelia", "authentik"];
 const rawPlaceholderPattern = /^[ \t]*npmplus#raw#(?<index>\d+);$/gmu;
 
+const NETWORK_PROXY_SCHEMES = ["http", "https", "grpc", "grpcs"];
+
+const prepareUpstreamServers = (serverHost, stream = false) => {
+	const upstreamServers = serverHost.npmplus_upstream_servers;
+
+	if (!Array.isArray(upstreamServers) || upstreamServers.length === 0) {
+		return;
+	}
+
+	const firstPort = upstreamServers[0].port;
+
+	for (const [index, server] of upstreamServers.entries()) {
+		if (index > 0 && server.port == null && firstPort != null) {
+			server.port = firstPort;
+		}
+
+		if (!stream &&
+			NETWORK_PROXY_SCHEMES.includes(serverHost.forward_scheme) &&
+			!server.host.startsWith("/") &&
+			!server.host.startsWith("unix")) {
+			const pathIndex = server.host.indexOf("/");
+
+			if (pathIndex !== -1) {
+				server.forward_path = server.host.slice(pathIndex);
+				server.host = server.host.slice(0, pathIndex);
+
+				if (index === 0) {
+					serverHost.forward_path = server.forward_path;
+				}
+			}
+		}
+	}
+
+	const firstServer = upstreamServers[0];
+	if (stream) {
+		// Temporary render values used by stream.conf.
+		serverHost.forwarding_host = firstServer.host;
+		serverHost.forwarding_port = firstServer.port;
+	} else {
+		// Temporary render values used for path/empty schemes and custom upstream detection.
+		serverHost.forward_host = firstServer.host;
+		serverHost.forward_port = firstServer.port;
+	}
+};
+
 const internalNginx = {
 	/**
 	 * This will:
@@ -104,17 +149,6 @@ const internalNginx = {
 				continue;
 			}
 
-			if (
-				location.forward_host?.includes("/") &&
-				!location.forward_host.startsWith("/") &&
-				!location.forward_host.startsWith("unix")
-			) {
-				const split = location.forward_host.split("/");
-
-				location.forward_host = split.shift();
-				location.forward_path = `/${split.join("/")}`;
-			}
-
 			if (location.forward_host?.startsWith("cu_")) {
 				location.forward_upstream_name = location.forward_host;
 			} else {
@@ -141,17 +175,7 @@ const internalNginx = {
 	renderUpstreams: async (host) => {
 		let renderedUpstreams = "";
 
-		if (["http", "https", "grpc", "grpcs"].includes(host.forward_scheme)) {
-			if (
-				host.forward_host?.includes("/") &&
-				!host.forward_host.startsWith("/") &&
-				!host.forward_host.startsWith("unix")
-			) {
-				const split = host.forward_host.split("/");
-				host.forward_host = split.shift();
-				host.forward_path = `/${split.join("/")}`;
-			}
-
+		if (NETWORK_PROXY_SCHEMES.includes(host.forward_scheme)) {
 			if (host.forward_host?.startsWith("cu_")) {
 				host.forward_upstream_name = host.forward_host;
 			} else {
@@ -165,18 +189,8 @@ const internalNginx = {
 				continue;
 			}
 
-			if (!["http", "https", "grpc", "grpcs"].includes(location.forward_scheme)) {
+			if (!NETWORK_PROXY_SCHEMES.includes(location.forward_scheme)) {
 				continue;
-			}
-
-			if (
-				location.forward_host?.includes("/") &&
-				!location.forward_host.startsWith("/") &&
-				!location.forward_host.startsWith("unix")
-			) {
-				const split = location.forward_host.split("/");
-				location.forward_host = split.shift();
-				location.forward_path = `/${split.join("/")}`;
 			}
 
 			if (location.forward_host?.startsWith("cu_")) {
@@ -209,14 +223,14 @@ const internalNginx = {
 
 		host.env = process.env;
 
-		if (
-			host.forward_host?.includes("/") &&
-			!host.forward_host.startsWith("/") &&
-			!host.forward_host.startsWith("unix")
-		) {
-			const split = host.forward_host.split("/");
-			host.forward_host = split.shift();
-			host.forward_path = `/${split.join("/")}`;
+		if (nice_host_type === "proxy_host") {
+			prepareUpstreamServers(host);
+
+			for (const location of host.locations || []) {
+				prepareUpstreamServers(location);
+			}
+		} else if (nice_host_type === "stream") {
+			prepareUpstreamServers(host, true);
 		}
 
 		if (host.domain_names) {
