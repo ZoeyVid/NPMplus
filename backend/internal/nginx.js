@@ -44,17 +44,6 @@ const prepareUpstreamServers = (serverHost, stream = false) => {
 			}
 		}
 	}
-
-	const firstServer = upstreamServers[0];
-	if (stream) {
-		// Temporary render values used by stream.conf.
-		serverHost.forwarding_host = firstServer.host;
-		serverHost.forwarding_port = firstServer.port;
-	} else {
-		// Temporary render values used for path/empty schemes and custom upstream detection.
-		serverHost.forward_host = firstServer.host;
-		serverHost.forward_port = firstServer.port;
-	}
 };
 
 const internalNginx = {
@@ -185,8 +174,10 @@ const internalNginx = {
 				continue;
 			}
 
-			if (location.forward_host?.startsWith("cu_")) {
-				location.forward_upstream_name = location.forward_host;
+			const firstServer = location.npmplus_upstream_servers?.[0];
+
+			if (firstServer?.host.startsWith("cu_")) {
+				location.forward_upstream_name = firstServer.host;
 			} else {
 				location.forward_upstream_name = `upstream_${host.id}_location_${idx}`;
 			}
@@ -216,8 +207,9 @@ const internalNginx = {
 		let renderedUpstreams = "";
 
 		if (NETWORK_PROXY_SCHEMES.includes(host.forward_scheme)) {
-			if (host.forward_host?.startsWith("cu_")) {
-				host.forward_upstream_name = host.forward_host;
+			const firstServer = host.npmplus_upstream_servers?.[0];
+			if (firstServer?.host.startsWith("cu_")) {
+				host.forward_upstream_name = firstServer.host;
 			} else {
 				host.forward_upstream_name = `upstream_${host.id}`;
 				renderedUpstreams += await renderEngine.parseAndRender(template, host);
@@ -232,9 +224,9 @@ const internalNginx = {
 			if (!NETWORK_PROXY_SCHEMES.includes(location.forward_scheme)) {
 				continue;
 			}
-
-			if (location.forward_host?.startsWith("cu_")) {
-				location.forward_upstream_name = location.forward_host;
+			const firstServer = location.npmplus_upstream_servers?.[0];
+			if (firstServer?.host.startsWith("cu_")) {
+				location.forward_upstream_name = firstServer.host;
 			} else {
 				location.forward_upstream_name = `upstream_${host.id}_location_${idx}`;
 				renderedUpstreams += await renderEngine.parseAndRender(template, location);
