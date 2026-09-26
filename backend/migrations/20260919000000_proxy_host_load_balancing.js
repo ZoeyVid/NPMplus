@@ -116,15 +116,16 @@ const up = async (knex) => {
 				};
 			});
 
+		const supportsForwardPath = FORWARD_PATH_SCHEMES.includes(proxyHost.forward_scheme);
 		const { upstreamHost, forwardPath } = splitForwardHost(
 			proxyHost.forward_host,
-			!["path", "empty"].includes(proxyHost.forward_scheme)
+			NETWORK_PROXY_SCHEMES.includes(proxyHost.forward_scheme),
 		);
 
 		await knex("proxy_host")
 			.where({ id: proxyHost.id })
 			.update({
-				npmplus_forward_path: forwardPath ?? null,
+				npmplus_forward_path: supportsForwardPath ? forwardPath ?? null : null,
 				npmplus_upstream_servers: JSON.stringify([
 					createUpstreamServer(upstreamHost, proxyHost.forward_port)
 				]),
