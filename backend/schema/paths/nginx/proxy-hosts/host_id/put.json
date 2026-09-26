@@ -36,6 +36,9 @@
 						},
 						{
 							"$ref": "../../../../components/load-balancing.json#/$defs/proxySchemeUpstreamRequirement"
+						},
+						{
+							"$ref": "../../../../components/load-balancing.json#/$defs/partialForwardPathSchemeRequirement"
 						}
 					],
 					"additionalProperties": false,
