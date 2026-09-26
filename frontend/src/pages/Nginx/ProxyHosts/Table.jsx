@@ -76,17 +76,15 @@ export default function Table({
 					return <DomainsFormatter domains={value.domainNames} createdOn={value.createdOn} />;
 				},
 			}),
-			columnHelper.accessor(forwardSummary, {
-				id: "forwardHost",
-				header: intl.formatMessage({ id: "column.destination" }),
-				cell: (info) => {
-					<ForwardHostFormatter
-						proxyHostId={info.row.original.id}
-						upstreamServers={info.row.original.npmplusUpstreamServers}
-						scheme={info.row.original.forwardScheme}
-						loadBalanceMethod={info.row.original.npmplusLoadBalanceMethod}
-						streams={false}
-					/>
+			columnHelper.accessor(
+				(row) => {
+					const names = [];
+					for (const server of row.npmplusUpstreamServers ?? []) {
+						names.push(
+							`${row.forwardScheme}://${server.host}${server.port ? `:${server.port}` : ""}${server.forwardPath ?? ""}`,
+						);
+					}
+					return names.join(", ");
 				},
 			}),
 			columnHelper.accessor((row) => (row.certificate ? row.certificate.provider : "http-only"), {
