@@ -11,7 +11,7 @@
 			"minLength": 1,
 			"maxLength": 255,
 			"example": "192.168.1.1",
-			"pattern": "\\S"
+			"pattern": "^\\S+$"
 		},
 		"port": {
 			"oneOf": [
@@ -28,6 +28,13 @@
 				}
 			],
 			"example": 8080
+		},
+		"forward_path": {
+			"type": "string",
+			"minLength": 1,
+			"maxLength": 255,
+			"example": "/myexample/path",
+			"pattern": "^\\/\\S+$"
 		},
 		"weight": {
 			"type": "integer",

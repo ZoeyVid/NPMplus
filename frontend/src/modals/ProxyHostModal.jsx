@@ -132,6 +132,7 @@ const ProxyHostModal = EasyModal.create(({ id, isClone = false, visible, remove 
 																					{
 																						host: "",
 																						port: null,
+																						forwardPath: null,
 																						backup: false,
 																						down: false,
 																					},

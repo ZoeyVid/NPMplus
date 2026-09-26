@@ -75,7 +75,7 @@ export default function Table({
 					const names = [];
 					for (const server of row.npmplusUpstreamServers ?? []) {
 						names.push(
-							`${row.forwardScheme}://${server.host}${server.port ? `:${server.port}` : ""}`,
+							`${row.forwardScheme}://${server.host}${server.port ? `:${server.port}` : ""}${server.forwardPath ?? ""}`,
 						);
 					}
 					return names.join(", ");

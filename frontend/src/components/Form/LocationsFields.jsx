@@ -62,10 +62,7 @@ export function LocationsFields({ initialValues, name = "locations" }) {
 			{
 				host: "",
 				port: null,
-				weight: null,
-				maxFails: null,
-				maxConns: null,
-				failTimeout: "",
+				forwardPath: null,
 				backup: false,
 				down: false,
 			},
@@ -144,12 +141,22 @@ export function LocationsFields({ initialValues, name = "locations" }) {
 	const locationLabel = (item) => `${item.locationType ?? ""}${item.path ?? ""}`;
 
 	const forwardSummary = ({ forwardScheme, npmplusUpstreamServers = [] }) => {
-		const server = npmplusUpstreamServers[0];
-		if (!server?.host || forwardScheme === "empty") return "";
-		if (forwardScheme && forwardScheme !== "path") {
-			return `${forwardScheme}://${server.host}${server.port ? `:${server.port}` : ""}`;
+		// TODO add a full popover for the summary if there are more than 2 items
+		let hostSummary = "";
+		let filled = 0;
+		for (let i =0; filled < 2 && i < npmplusUpstreamServers.length; ++i){
+			const server = npmplusUpstreamServers[i];
+			if(server.host){
+				filled++;
+				if(forwardScheme !== "empty" && forwardScheme !== "path"){
+					hostSummary += `, ${forwardScheme}://${server.host}${server.port ? `:${server.port}` : ""}${server.forwardPath ?? ""}`;
+				}else{
+					hostSummary += `, ${server.host}`;
+				}
+			}
 		}
-		return server.host;
+		// skip the starting comma and space
+		return hostSummary.length > 0 ? hostSummary.substring(2) : hostSummary;
 	};
 
 	const handleForwardFieldsChange = (idx, changes) => {
@@ -166,9 +173,13 @@ export function LocationsFields({ initialValues, name = "locations" }) {
 		setValues(newValues);
 		setFormField(newValues);
 	};
+	const forwardSearchText = ({ forwardScheme, npmplusUpstreamServers = [] }) =>
+		npmplusUpstreamServers.map((server) =>
+			`${forwardScheme ? `${forwardScheme}://` : ""}${server.host}${server.port ? `:${server.port}` : ""}${server.forwardPath ?? ""}`
+		).join(" ");
 
 	const matchesFilter = (item) =>
-		`${locationLabel(item)} ${forwardSummary(item)}`.toLowerCase().includes(filter.trim().toLowerCase());
+		`${locationLabel(item)} ${forwardSearchText(item)}`.toLowerCase().includes(filter.trim().toLowerCase());
 
 	if (values.length === 0) {
 		return (
