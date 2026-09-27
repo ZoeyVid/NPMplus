@@ -18,18 +18,18 @@
 		"express-rate-limit": "8.7.0",
 		"jsonwebtoken": "9.0.3",
 		"knex": "3.3.0",
-		"liquidjs": "10.29.0",
+		"liquidjs": "10.30.0",
 		"multer": "2.4.0",
-		"mysql2": "3.24.4",
+		"mysql2": "3.24.5",
 		"objection": "3.1.5",
 		"openid-client": "6.8.8",
 		"otplib": "13.5.0",
-		"pg": "8.23.0",
+		"pg": "8.23.1",
 		"swagger-ui-express": "5.0.1",
 		"undici": "8.11.2"
 	},
 	"devDependencies": {
 		"@apidevtools/swagger-parser": "13.1.0",
-		"@biomejs/biome": "2.5.14"
+		"@biomejs/biome": "2.5.15"
 	}
 }
