@@ -35,6 +35,7 @@ If you don't need the web GUI of NPMplus, you may also have a look at caddy: htt
 - alpine based, much smaller image
 - punycode domain support
 - option to replace custom certs
+- load balancing
 - many other things, see this README.md and the compose.yaml
 
 ## Compatibility (to Upstream)
@@ -342,6 +343,52 @@ If you need to run scripts before NPMplus launches put them under: `/opt/npmplus
 ## Access Lists
 When using multiple Access Lists on a Proxy Host or a Proxy Location, they are evaluated in a top-down order from the UI. 
 The `Satisfy Any` or `Pass Auth to Upstream` only get applied if they are set on the first Access List assigned to a proxy host/location
+
+## Load Balancing
+When using load balancing, setting a Host with a path and having other servers will automatically apply the path of the first server to every other server in the group.
+E.g.
+```
+Forward Path: Empty
+192.168.1.2:80/an/example/path
+192.168.1.3:81
+
+Will generate a configuration that is equivalent to
+192.168.1.2:80/an/example/path
+192.168.1.3:81/an/example/path
+```
+Having a host path in any upstream such as `192.168.1.2:80/an/example/path` while `Forward Path` is not empty is invalid.
+Having a path in any upstream that is not the first is invalid. E.g below is invalid
+```
+Forward Path: Empty
+192.168.1.2:80
+192.168.1.3:81/an/example/path
+```
+
+Having a path specified in more than 1 upstream is invalid even if they are the same
+E.g. Setting the below in the UI is invalid
+```
+Forward Path: Empty
+192.168.1.2:80/an/example/path
+192.168.1.3:81/an/example/path
+```
+and should be written as
+```
+Forward Path: /an/example/path
+192.168.1.2:80
+192.168.1.3:81
+```
+
+Setting a Fail timeout supports numbers followed by
+- `ms`: milliseconds
+- `s`: seconds
+- `m`: minutes
+- `h`: hours
+- `d`: days
+- `w`: weeks
+- `M`: months
+- `y`: years
+Omitting the unit will default to seconds
+
 
 ## Contributing
 All are welcome to create pull requests for this project, but this does not mean that they will be merged, so better ask if your PR would be merged before creating one (via Discussion), typos and translations are excluded from this.
