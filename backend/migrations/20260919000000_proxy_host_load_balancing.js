@@ -22,10 +22,16 @@ const parseLocations = (locations) => {
 
 const normalisePort = (port) => {
 	if (typeof port === "string") {
-		if (port.trim() === "") {
+		const trimmedPort = port.trim();
+
+		if (trimmedPort === "") {
 			return null;
-		} else if (/^[0-9]+$/.test(port)) {
-			return Number(port);
+		}
+		if (/^[0-9]+$/.test(trimmedPort)) {
+			return Number(trimmedPort);
+		}
+		if (trimmedPort === "$server_port") {
+			return trimmedPort;
 		}
 	}
 
@@ -105,14 +111,15 @@ const up = async (knex) => {
 	for (const proxyHost of proxyHosts) {
 		const locations = parseLocations(proxyHost.locations).map((location) => {
 				const { forward_host, forward_port, ...otherLocationData } = location;
+				const supportsForwardPath = FORWARD_PATH_SCHEMES.includes(location.forward_scheme);
 				const { upstreamHost, forwardPath } = splitForwardHost(
 					forward_host,
-					!["path", "empty"].includes(location.forward_scheme),
+					NETWORK_PROXY_SCHEMES.includes(location.forward_scheme)
 				);
 
 				return {
 					...otherLocationData,
-					...(forwardPath ? { npmplus_forward_path: forwardPath } : {}),
+					...(supportsForwardPath  && forwardPath ? { npmplus_forward_path: forwardPath } : {}),
 					npmplus_upstream_servers: [
 						createUpstreamServer(upstreamHost, forward_port),
 					],
