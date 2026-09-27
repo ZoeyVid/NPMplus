@@ -67,6 +67,46 @@ const internalUpstreamServers = {
 	},
 
 	/**
+	 * @param {*} serverHost
+	 * @param {*} existingServerHost
+	 * @returns
+	 */
+	splitHostAndPath: (serverHost, existingServerHost = {}) => {
+		const forwardScheme = Object.hasOwn(serverHost, "forward_scheme")
+			? serverHost.forward_scheme
+			: existingServerHost.forward_scheme;
+
+		const forwardPath = Object.hasOwn(serverHost, "npmplus_forward_path")
+			? serverHost.npmplus_forward_path
+			: existingServerHost.npmplus_forward_path;
+
+		if (FORWARD_PATH_SCHEMES.includes(forwardScheme) &&
+			Array.isArray(serverHost.npmplus_upstream_servers) &&
+			serverHost.npmplus_upstream_servers.length > 0) {
+			// apply only to the first server. If subsequent servers have a path, they will cause a validation
+			// failure. If they dont have a path, it will apply this path to them.
+
+			const firstServer = serverHost.npmplus_upstream_servers[0];
+			if (typeof firstServer.host === "string" && !firstServer.host.includes("://")) {
+				const pathIndex = firstServer.host.indexOf("/");
+				if (pathIndex > 0) {
+					if (forwardPath != null && forwardPath !== "") {
+						throw new errs.ValidationError("An upstream host path cannot be used when the forward path field already has a value");
+					}
+					serverHost.npmplus_forward_path = firstServer.host.slice(pathIndex);
+					firstServer.host = firstServer.host.slice(0, pathIndex);
+				}
+			}
+		}
+		if (Array.isArray(serverHost.locations)) {
+			for (const location of serverHost.locations) {
+				internalUpstreamServers.splitHostAndPath(location);
+			}
+		}
+		return serverHost;
+	},
+
+	/**
 	 * 
 	 * @param {*} serverHost
 	 * @param {*} existingServerHost
