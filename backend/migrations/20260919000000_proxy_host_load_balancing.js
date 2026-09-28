@@ -156,7 +156,7 @@ const up = async (knex) => {
 				// grpc and grpcs were not used previously and this discards the paths so store it for the output
 				// so users can see which hosts had a "destructive" migration rather than discarding it silently
 				// forward path on a grpc/grpcs scheme was like the human appendix. maybe once it was useful,
-				// but now it isn't really used
+				// but it wasn't really used for anything critical
 				if (forwardPath && !supportsForwardPath) {
 					discardedPaths.push({
 						proxy_host_id: proxyHost.id,
@@ -188,7 +188,7 @@ const up = async (knex) => {
 		// grpc and grpcs were not used previously and this discards the paths so store it for the output
 		// so users can see which hosts had a "destructive" migration rather than discarding it silently
 		// forward path on a grpc/grpcs scheme was like the human appendix. maybe once it was useful,
-		// but now it isn't really used
+		// but it wasn't really used for anything critical
 		if (forwardPath && !supportsForwardPath) {
 			discardedPaths.push({
 				proxy_host_id: proxyHost.id,
