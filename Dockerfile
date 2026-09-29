@@ -64,7 +64,7 @@ RUN git-clone-commit.sh https://github.com/nginx/nginx "$NGINX_VER" /src/nginx &
     echo "73fdee62748f1624f87015a951a2480fd0d4fe566a81d92b852b51536d954b91  /src/nginx/1.patch" | sha256sum -c - && \
     git apply /src/nginx/1.patch && \
     wget -q https://patch-diff.githubusercontent.com/raw/nginx/nginx/pull/1756.patch -O /src/nginx/2.patch && \
-    echo "a92ce5bc2cdd4c77ae72da45f2fa8753f7d11484035cd24ba60e0be1dce4df5f  /src/nginx/2.patch" | sha256sum -c - && \
+    echo "e812e3a8a18bcc13a3ddb4b63c29da5fe91f8b04c23b3e443a3bf9989bb04aa9  /src/nginx/2.patch" | sha256sum -c - && \
     git apply /src/nginx/2.patch && \
     wget -q https://patch-diff.githubusercontent.com/raw/nginx/nginx/pull/1333.patch -O /src/nginx/3.patch && \
     echo "01bf75b130b8f91075ec913a400a8debfab6da0ac609711c7d412ddbe59dd898  /src/nginx/3.patch" | sha256sum -c - && \
