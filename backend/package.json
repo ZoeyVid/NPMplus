@@ -20,7 +20,7 @@
 		"knex": "3.3.0",
 		"liquidjs": "10.29.0",
 		"multer": "2.4.0",
-		"mysql2": "3.24.4",
+		"mysql2": "3.24.5",
 		"objection": "3.1.5",
 		"openid-client": "6.8.8",
 		"otplib": "13.5.0",
