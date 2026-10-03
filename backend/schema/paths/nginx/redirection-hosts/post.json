@@ -88,7 +88,7 @@
 						"test.example.com"
 					],
 					"forward_domain_name": "example.com",
-					"forward_scheme": "auto",
+					"forward_scheme": "$scheme",
 					"forward_http_code": 301,
 					"preserve_path": false,
 					"certificate_id": 0,
@@ -130,7 +130,7 @@
 								"enabled": true,
 								"hsts_enabled": false,
 								"hsts_subdomains": false,
-								"forward_scheme": "auto",
+								"forward_scheme": "$scheme",
 								"forward_http_code": 301
 							}
 						}
