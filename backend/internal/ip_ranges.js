@@ -21,6 +21,7 @@ const internalIpRanges = {
 	interval_processing: false,
 
 	initTimer: () => {
+		if (internalIpRanges.interval) return;
 		logger.info("IP Ranges Renewal Timer initialized");
 		internalIpRanges.interval = setInterval(internalIpRanges.fetch, internalIpRanges.interval_timeout);
 	},

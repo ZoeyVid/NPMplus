@@ -79,7 +79,7 @@ const RedirectionHostModal = EasyModal.create(({ id, visible, remove }) => {
 						// Details tab
 						domainNames: data?.domainNames || [],
 						forwardDomainName: data?.forwardDomainName || "",
-						forwardScheme: data?.forwardScheme || "auto",
+						forwardScheme: data?.forwardScheme || "$scheme",
 						forwardHttpCode: data?.forwardHttpCode || 301,
 						preservePath: data?.preservePath || false,
 						// SSL tab
