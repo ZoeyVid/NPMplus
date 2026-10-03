@@ -30,6 +30,7 @@ const internalCertificate = {
 	intervalProcessing: false,
 
 	initTimer: () => {
+		if (internalCertificate.interval) return;
 		logger.info("Certbot Renewal Timer initialized");
 		internalCertificate.interval = setInterval(
 			internalCertificate.processExpiringHosts,
