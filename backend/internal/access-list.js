@@ -18,6 +18,10 @@ const internalAccessList = {
 	 */
 	create: async (access, data) => {
 		access.can("access_lists:manage");
+		if (data.items?.some((item) => !item.password)) {
+			throw new errs.ValidationError("New access list users need a password");
+		}
+
 		const row = await accessListModel.query().insertAndFetch({
 			name: data.name,
 			satisfy_any: data.satisfy_any,
@@ -80,12 +84,17 @@ const internalAccessList = {
 	 */
 	update: async (access, data) => {
 		access.can("access_lists:manage");
-		const row = await internalAccessList.get(access, { id: data.id });
+		const row = await internalAccessList.get(access, { id: data.id, expand: ["items"] });
 		if (row.id !== data.id) {
 			// Sanity check that something crazy hasn't happened
 			throw new errs.InternalValidationError(
 				`Access List could not be updated, IDs do not match: ${row.id} !== ${data.id}`,
 			);
+		}
+		if (
+			data.items?.some((item) => !item.password && !row.items.some(({ username }) => username === item.username))
+		) {
+			throw new errs.ValidationError("New access list users need a password");
 		}
 
 		// patch name if specified

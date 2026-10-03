@@ -51,7 +51,6 @@
 		"forward_scheme": {
 			"type": "string",
 			"enum": [
-				"auto",
 				"$scheme",
 				"http",
 				"https"
