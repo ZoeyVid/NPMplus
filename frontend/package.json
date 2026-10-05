@@ -29,7 +29,7 @@
 	},
 	"devDependencies": {
 		"@biomejs/biome": "2.5.15",
-		"@vitejs/plugin-react": "6.1.1",
+		"@vitejs/plugin-react": "6.1.2",
 		"vite": "8.3.2"
 	}
 }
