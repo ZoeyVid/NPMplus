@@ -173,9 +173,6 @@ jobs:
           - name: nginx
             repo: nginx/nginx
             pull: 1333
-          - name: nginx
-            repo: nginx/nginx
-            pull: 1430
           - name: fancyindex
             repo: aperezdc/ngx-fancyindex
             pull: 176
