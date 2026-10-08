@@ -45,6 +45,13 @@ const internalHost = {
 			combinedData.hsts_subdomains = false;
 		}
 
+		combinedData.npmplus_mtls_bypass_auth_request &&=
+			combinedData.npmplus_mtls_certificate_id > 0 &&
+			combinedData.npmplus_mtls_verify_client_optional === true &&
+			[combinedData, ...(combinedData.locations ?? [])].some(
+				({ npmplus_auth_request = "none" }) => npmplus_auth_request !== "none",
+			);
+
 		return combinedData;
 	},
 

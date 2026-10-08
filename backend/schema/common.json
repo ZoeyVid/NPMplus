@@ -147,6 +147,11 @@
 			"type": "boolean",
 			"example": false
 		},
+		"npmplus_mtls_bypass_auth_request": {
+			"description": "Skip the auth request if the mTLS client verification succeeded",
+			"type": "boolean",
+			"example": false
+		},
 		"npmplus_noindex": {
 			"description": "Send noindex header and block some user agents",
 			"type": "boolean",

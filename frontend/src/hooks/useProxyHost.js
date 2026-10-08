@@ -19,6 +19,7 @@ const fetchProxyHost = (id) => {
 			npmplusDirectory: "",
 			npmplusMtlsCertificateId: 0,
 			npmplusMtlsVerifyClientOptional: false,
+			npmplusMtlsBypassAuthRequest: false,
 			npmplusHttp3Support: false,
 			forwardScheme: "",
 			enabled: true,

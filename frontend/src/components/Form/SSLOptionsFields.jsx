@@ -4,7 +4,13 @@ import { useEffect } from "react";
 import { DNSProviderFields, DomainNamesField } from "src/components";
 import { T } from "src/locale";
 
-export function SSLOptionsFields({ forHttp = true, forceDNSForNew, requireDomainNames, color = "bg-cyan" }) {
+export function SSLOptionsFields({
+	forHttp = true,
+	forProxy = false,
+	forceDNSForNew,
+	requireDomainNames,
+	color = "bg-cyan",
+}) {
 	const { values, setFieldValue } = useFormikContext();
 	const v = values || {};
 
@@ -19,7 +25,12 @@ export function SSLOptionsFields({ forHttp = true, forceDNSForNew, requireDomain
 		npmplusReuseKey: reuseKey,
 		npmplusMtlsCertificateId,
 		npmplusMtlsVerifyClientOptional,
+		npmplusMtlsBypassAuthRequest,
 	} = v;
+
+	const mtlsBypassAuthRequestPossible =
+		npmplusMtlsVerifyClientOptional === true &&
+		[v, ...(v.locations ?? [])].some(({ npmplusAuthRequest = "none" }) => npmplusAuthRequest !== "none");
 
 	useEffect(() => {
 		if (forceDNSForNew && newCertificate && !dnsChallenge) {
@@ -134,7 +145,7 @@ export function SSLOptionsFields({ forHttp = true, forceDNSForNew, requireDomain
 	return (
 		<div>
 			<div className="row">
-				<div className="col-12">
+				<div className="col-6">
 					<Field name="npmplusMtlsVerifyClientOptional">
 						{({ field }) => (
 							<label className="form-check form-switch mt-1">
@@ -153,6 +164,31 @@ export function SSLOptionsFields({ forHttp = true, forceDNSForNew, requireDomain
 						)}
 					</Field>
 				</div>
+				{forProxy ? (
+					<div className="col-6">
+						<Field name="npmplusMtlsBypassAuthRequest">
+							{({ field }) => (
+								<label className="form-check form-switch mt-1">
+									<input
+										className={
+											npmplusMtlsBypassAuthRequest === true && mtlsBypassAuthRequestPossible
+												? toggleEnabled
+												: toggleClasses
+										}
+										type="checkbox"
+										checked={npmplusMtlsBypassAuthRequest === true && mtlsBypassAuthRequestPossible}
+										onChange={(e) => handleToggleChange(e, field.name)}
+										disabled={!mtlsBypassAuthRequestPossible}
+									/>
+
+									<span className="form-check-label">
+										<T id="domains.mtls-bypass-auth-request" />
+									</span>
+								</label>
+							)}
+						</Field>
+					</div>
+				) : null}
 			</div>
 			{forHttp ? getHttpOptions() : null}
 			{newCertificate ? (

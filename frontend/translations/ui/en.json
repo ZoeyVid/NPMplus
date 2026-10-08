@@ -120,6 +120,7 @@
 	"domains.hsts-subdomains": "HSTS Sub-domains",
 	"domains.http2-support": "HTTP/2 Support",
 	"domains.http3-support": "HTTP/3 Support",
+	"domains.mtls-bypass-auth-request": "mTLS bypass Auth Request",
 	"domains.mtls-verify-client-optional": "Make mTLS Optional",
 	"domains.reuse-key": "Reuse Key (not recommended)",
 	"domains.trust-forwarded-proto": "Trust Upstream Forwarded Proto Headers",

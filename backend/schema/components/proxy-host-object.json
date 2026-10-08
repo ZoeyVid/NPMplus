@@ -20,6 +20,7 @@
 		"npmplus_directory",
 		"npmplus_mtls_certificate_id",
 		"npmplus_mtls_verify_client_optional",
+		"npmplus_mtls_bypass_auth_request",
 		"npmplus_http3_support",
 		"forward_scheme",
 		"enabled",
@@ -150,6 +151,9 @@
 		},
 		"npmplus_mtls_verify_client_optional": {
 			"$ref": "../common.json#/properties/npmplus_mtls_verify_client_optional"
+		},
+		"npmplus_mtls_bypass_auth_request": {
+			"$ref": "../common.json#/properties/npmplus_mtls_bypass_auth_request"
 		},
 		"npmplus_http3_support": {
 			"$ref": "../common.json#/properties/npmplus_http3_support"

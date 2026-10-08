@@ -290,6 +290,7 @@ const internalNginx = {
 				if (htpasswdFileName.length > 0) {
 					location.filename = htpasswdFileName;
 				}
+				if (location.npmplus_enabled === false) continue;
 				if (location.npmplus_auth_request === "anubis") {
 					host.create_anubis_locations = true;
 				}
@@ -328,6 +329,7 @@ const internalNginx = {
 				} else {
 					for (const location of originalLocations) {
 						if (
+							location.npmplus_enabled !== false &&
 							(location.npmplus_auth_request === provider ||
 								(provider === "authentik" &&
 									location.npmplus_auth_request === "authentik-send-basic-auth")) &&

@@ -117,6 +117,7 @@ const ProxyHostModal = EasyModal.create(({ id, isClone = false, visible, remove 
 						npmplusDirectory: data?.npmplusDirectory || "",
 						npmplusMtlsCertificateId: data?.npmplusMtlsCertificateId || 0,
 						npmplusMtlsVerifyClientOptional: data?.npmplusMtlsVerifyClientOptional || false,
+						npmplusMtlsBypassAuthRequest: data?.npmplusMtlsBypassAuthRequest || false,
 						npmplusNoindex: data?.npmplusNoindex || false,
 						npmplusCrowdsecAppsec: data?.npmplusCrowdsecAppsec || false,
 						npmplusProxyResponseBuffering: data?.npmplusProxyResponseBuffering || false,
@@ -701,7 +702,7 @@ const ProxyHostModal = EasyModal.create(({ id, isClone = false, visible, remove 
 													allowNew
 												/>
 
-												<SSLOptionsFields color="bg-lime" />
+												<SSLOptionsFields color="bg-lime" forProxy />
 											</div>
 											<div className="tab-pane" id="tab-advanced" role="tabpanel">
 												<NginxConfigField />

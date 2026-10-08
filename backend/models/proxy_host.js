@@ -25,6 +25,7 @@ const boolFields = [
 	"npmplus_fancyindex",
 	"npmplus_nginx_online",
 	"npmplus_mtls_verify_client_optional",
+	"npmplus_mtls_bypass_auth_request",
 ];
 
 class ProxyHost extends Model {
