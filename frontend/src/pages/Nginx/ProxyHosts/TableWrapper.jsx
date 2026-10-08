@@ -14,7 +14,7 @@ import Table from "./Table";
 export default function TableWrapper() {
 	const queryClient = useQueryClient();
 	const [search, setSearch] = useState("");
-	const [sorting, setSorting] = useState([]);
+	const [sorting, setSorting] = useState([{ id: "enabled", desc: false }]);
 	const { isFetching, isLoading, isError, error, data } = useProxyHosts(["owner", "access_lists", "certificate"]);
 
 	useEffect(() => {
