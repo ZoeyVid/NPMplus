@@ -16,6 +16,7 @@
 	"access-list.public.subtitle": "Keine Authentifizierung erforderlich",
 	"access-list.rule-source.placeholder": "192.168.1.100 oder 192.168.1.0/24 oder 2001:0db8::/32",
 	"access-list.satisfy-any": "Satisfy Any",
+	"access-list.satisfy-any-warning": "\"{name}\" nutzt Satisfy Any. Das gilt auch für Auth Request: Eine passende Regel oder ein gültiger User überspringt es.",
 	"access-list.subtitle": "{users} {users, plural, one {User} other {Users}}, {rules} {rules, plural, one {Regel} other {Regeln}} - Erstellt: {date}",
 	"access-lists": "Zugriffslisten",
 	"access-lists.count": "{count} {count, plural, one {Zugriffsliste} other {Zugriffslisten}}",

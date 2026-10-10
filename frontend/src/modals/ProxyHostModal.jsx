@@ -670,6 +670,7 @@ const ProxyHostModal = EasyModal.create(({ id, isClone = false, visible, remove 
 														initialAccessListIds={data?.npmplusAccessListIds || []}
 														name="npmplusAccessListIds"
 														typeFieldName="npmplusAccessListType"
+														authRequest={values.npmplusAuthRequest}
 													/>
 												</div>
 												<Field name="npmplusLocationConfig">

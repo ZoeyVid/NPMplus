@@ -1,4 +1,12 @@
-import { IconArrowDown, IconArrowUp, IconLock, IconLockOpen2, IconWorld, IconX } from "@tabler/icons-react";
+import {
+	IconAlertTriangle,
+	IconArrowDown,
+	IconArrowUp,
+	IconLock,
+	IconLockOpen2,
+	IconWorld,
+	IconX,
+} from "@tabler/icons-react";
 import { useFormikContext } from "formik";
 import { useState } from "react";
 import Select, { components } from "react-select";
@@ -26,10 +34,18 @@ const TypeOption = (props) => (
 	</components.Option>
 );
 
-export function AccessFields({ initialAccessListType, location, initialAccessListIds, name, typeFieldName, onChange }) {
+export function AccessFields({
+	initialAccessListType,
+	location,
+	initialAccessListIds,
+	name,
+	typeFieldName,
+	onChange,
+	authRequest,
+}) {
 	const [values, setValues] = useState(initialAccessListIds || []);
 	const [aclValue, setAclValue] = useState(initialAccessListType);
-	const { setFieldValue } = useFormikContext();
+	const { values: formValues, setFieldValue } = useFormikContext();
 	const { isLoading, isError, error, data } = useAccessLists(["owner", "items", "clients"]);
 
 	const createDefaultItem = (item) => ({
@@ -133,6 +149,15 @@ export function AccessFields({ initialAccessListType, location, initialAccessLis
 		applyUpdatedValues(newValues);
 	};
 
+	const acls = (
+		{
+			custom: values,
+			global: formValues.npmplusAccessListType === "custom" ? formValues.npmplusAccessListIds : [],
+		}[aclValue] ?? []
+	)
+		.map((id) => data?.find((acl) => acl.id === id))
+		.filter(Boolean);
+
 	return (
 		<div className="mb-3">
 			{isLoading ? <div className="placeholder placeholder-lg col-12 my-3 placeholder-glow" /> : null}
@@ -235,6 +260,19 @@ export function AccessFields({ initialAccessListType, location, initialAccessLis
 					)}
 				</>
 			) : null}
+			{authRequest &&
+				authRequest !== "none" &&
+				acls[0]?.satisfyAny &&
+				acls.some(
+					(acl) =>
+						acl.items?.length > 0 ||
+						acl.clients?.some((client) => client.address?.trim().toLowerCase() !== "all"),
+				) && (
+					<p className="text-warning">
+						<IconAlertTriangle size={16} className="me-1" />
+						<T id="access-list.satisfy-any-warning" data={{ name: acls[0].name }} />
+					</p>
+				)}
 		</div>
 	);
 }

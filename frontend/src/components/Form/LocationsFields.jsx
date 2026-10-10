@@ -626,6 +626,7 @@ export function LocationsFields({ initialValues, name = "locations" }) {
 									name={`locations[${idx}].npmplusAccessListIds`}
 									typeFieldName={`locations[${idx}].npmplusAccessListType`}
 									onChange={(changes) => handleAccessFieldsChange(idx, changes)}
+									authRequest={item.npmplusAuthRequest}
 								/>
 							</div>
 						</div>

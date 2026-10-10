@@ -16,6 +16,7 @@
 	"access-list.public.subtitle": "No basic auth required",
 	"access-list.rule-source.placeholder": "192.168.1.100 or 192.168.1.0/24 or 2001:0db8::/32",
 	"access-list.satisfy-any": "Satisfy Any",
+	"access-list.satisfy-any-warning": "\"{name}\" uses Satisfy Any, which also applies to Auth Request: a matching rule or a valid user skips it.",
 	"access-list.subtitle": "{users} {users, plural, one {User} other {Users}}, {rules} {rules, plural, one {Rule} other {Rules}} - Created: {date}",
 	"access-lists": "Access Lists",
 	"access-lists.count": "{count} {count, plural, one {Access List} other {Access Lists}}",

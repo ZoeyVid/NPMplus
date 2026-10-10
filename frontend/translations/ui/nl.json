@@ -16,6 +16,7 @@
 	"access-list.public.subtitle": "Geen basisautentificatie vereist",
 	"access-list.rule-source.placeholder": "192.168.1.100 of 192.168.1.0/24 of 2001:0db8::/32",
 	"access-list.satisfy-any": "Voldoen aan minstens een",
+	"access-list.satisfy-any-warning": "\"{name}\" gebruikt \"Voldoen aan minstens een\". Dit geldt ook voor auth-verzoeken: een overeenkomende regel of een geldige gebruiker slaat deze over.",
 	"access-list.subtitle": "{users} {users, plural, one {Gebruiker} other {Gebruikers}}, {rules} {rules, plural, one {Regel} other {Regels}} - Aangemaakt: {date}",
 	"access-lists": "Toegangslijsten",
 	"access-lists.count": "{count} {count, plural, one {Toegangslijst} other {Toegangslijsten}}",
