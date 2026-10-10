@@ -321,6 +321,7 @@
 	"user.change-password": "Wachtwoord wijzigen",
 	"user.confirm-password": "Wachtwoord bevestigen",
 	"user.current-password": "Huidig wachtwoord",
+	"user.deleted": "Verwijderde gebruiker",
 	"user.edit-profile": "Profiel bewerken",
 	"user.full-name": "Volledige naam",
 	"user.login-as": "Inloggen als {name}",

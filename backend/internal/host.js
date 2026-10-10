@@ -67,19 +67,13 @@ const internalHost = {
 		const promises = [
 			proxyHostModel
 				.query()
-				.where("is_deleted", 0)
-				.andWhere("enabled", 1)
+				.where("enabled", 1)
 				.andWhere(castJsonIfNeed("domain_names"), "like", `%${hostname}%`),
 			redirectionHostModel
 				.query()
-				.where("is_deleted", 0)
-				.andWhere("enabled", 1)
+				.where("enabled", 1)
 				.andWhere(castJsonIfNeed("domain_names"), "like", `%${hostname}%`),
-			deadHostModel
-				.query()
-				.where("is_deleted", 0)
-				.andWhere("enabled", 1)
-				.andWhere(castJsonIfNeed("domain_names"), "like", `%${hostname}%`),
+			deadHostModel.query().where("enabled", 1).andWhere(castJsonIfNeed("domain_names"), "like", `%${hostname}%`),
 		];
 
 		const promises_results = await Promise.all(promises);

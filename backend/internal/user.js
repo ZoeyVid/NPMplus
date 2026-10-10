@@ -91,6 +91,7 @@ const internalUser = {
 	},
 
 	fetchGravatar: async (id, email, name) => {
+		for (const e of avatarExts) await rm(`/data/npmplus/gravatar/${id}.${e}`, { force: true });
 		if (process.env.DISABLE_GRAVATAR === "true") return "/images/default-avatar.jpg";
 		try {
 			const hash = crypto.createHash("sha256").update(email.toLowerCase()).digest("hex");
@@ -114,7 +115,6 @@ const internalUser = {
 			const ext = avatarExt(buffer);
 			if (!ext) throw new Error("Unsupported image format");
 
-			for (const e of avatarExts) await rm(`/data/npmplus/gravatar/${id}.${e}`, { force: true });
 			await writeFile(`/data/npmplus/gravatar/${id}.${ext}`, buffer);
 
 			return `/images/gravatar/${id}.${ext}`;
@@ -124,12 +124,19 @@ const internalUser = {
 		}
 	},
 
+	deleteAvatarFiles: async (id) => {
+		for (const e of avatarExts) {
+			await rm(`/data/npmplus/avatar/${id}.${e}`, { force: true });
+			await rm(`/data/npmplus/gravatar/${id}.${e}`, { force: true });
+		}
+	},
+
 	setAvatar: async (access, id, file) => {
 		access.canUser(id);
 		const ext = avatarExt(file?.buffer);
 		if (!ext) throw new errs.ValidationError("Invalid avatar file type");
 		const user = await internalUser.get(access, { id });
-		for (const e of avatarExts) await rm(`/data/npmplus/avatar/${user.id}.${e}`, { force: true });
+		await internalUser.deleteAvatarFiles(user.id);
 		await writeFile(`/data/npmplus/avatar/${user.id}.${ext}`, file.buffer);
 		await userModel.query().patchAndFetchById(user.id, { avatar: `/images/avatar/${user.id}.${ext}` });
 		const savedUser = await internalUser.get(access, { id: user.id });
@@ -225,12 +232,7 @@ const internalUser = {
 
 		access.canUser(thisData.id);
 
-		const query = userModel
-			.query()
-			.where("is_deleted", 0)
-			.andWhere("id", thisData.id)
-			.allowGraph("[permissions]")
-			.first();
+		const query = userModel.query().where("id", thisData.id).allowGraph("[permissions]").first();
 
 		if (typeof thisData.expand !== "undefined" && thisData.expand !== null) {
 			query.withGraphFetched(`[${thisData.expand.join(", ")}]`);
@@ -255,7 +257,7 @@ const internalUser = {
 	 * @param user_id
 	 */
 	isEmailAvailable: async (email, user_id) => {
-		const query = userModel.query().where("email", "=", email.toLowerCase()).where("is_deleted", 0).first();
+		const query = userModel.query().where("email", "=", email.toLowerCase()).first();
 
 		if (typeof user_id !== "undefined") {
 			query.where("id", "!=", user_id);
@@ -286,9 +288,12 @@ const internalUser = {
 			throw new errs.PermissionError("You cannot delete yourself.");
 		}
 
-		await userModel.query().where("id", user.id).patch({
-			is_deleted: 1,
+		await userModel.transaction(async (trx) => {
+			await authModel.query(trx).where("user_id", user.id).delete();
+			await userPermissionModel.query(trx).where("user_id", user.id).delete();
+			await userModel.query(trx).deleteById(user.id);
 		});
+		await internalUser.deleteAvatarFiles(user.id);
 
 		await internalAuditLog.add(access, {
 			action: "deleted",
@@ -310,7 +315,7 @@ const internalUser = {
 	getCount: async (access, search_query) => {
 		access.canAdmin();
 
-		const query = userModel.query().count("id as count").where("is_deleted", 0).first();
+		const query = userModel.query().count("id as count").first();
 
 		// Query is used for searching
 		if (typeof search_query === "string") {
@@ -332,7 +337,7 @@ const internalUser = {
 	 */
 	getAll: async (access, search_query) => {
 		access.canAdmin();
-		const query = userModel.query().where("is_deleted", 0).groupBy("id").orderBy("name", "ASC");
+		const query = userModel.query().groupBy("id").orderBy("name", "ASC");
 
 		// Query is used for searching
 		if (typeof search_query === "string") {

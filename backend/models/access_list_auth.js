@@ -47,9 +47,6 @@ class AccessListAuth extends Model {
 					from: "access_list_auth.access_list_id",
 					to: "access_list.id",
 				},
-				modify: (qb) => {
-					qb.where("access_list.is_deleted", 0);
-				},
 			},
 		};
 	}

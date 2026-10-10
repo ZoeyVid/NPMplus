@@ -321,6 +321,7 @@
 	"user.change-password": "Change Password",
 	"user.confirm-password": "Confirm Password",
 	"user.current-password": "Current Password",
+	"user.deleted": "Deleted User",
 	"user.edit-profile": "Edit Profile",
 	"user.full-name": "Full Name",
 	"user.login-as": "Sign in as {name}",

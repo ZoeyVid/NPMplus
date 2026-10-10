@@ -70,9 +70,6 @@ class RedirectionHost extends Model {
 					from: "redirection_host.owner_user_id",
 					to: "user.id",
 				},
-				modify: (qb) => {
-					qb.where("user.is_deleted", 0);
-				},
 			},
 			certificate: {
 				relation: Model.HasOneRelation,
@@ -80,9 +77,6 @@ class RedirectionHost extends Model {
 				join: {
 					from: "redirection_host.certificate_id",
 					to: "certificate.id",
-				},
-				modify: (qb) => {
-					qb.where("certificate.is_deleted", 0);
 				},
 			},
 		};

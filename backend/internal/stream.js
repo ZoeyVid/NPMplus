@@ -142,12 +142,7 @@ const internalStream = {
 
 		access.can("streams:view");
 
-		const query = streamModel
-			.query()
-			.where("is_deleted", 0)
-			.andWhere("id", thisData.id)
-			.allowGraph("[certificate]")
-			.first();
+		const query = streamModel.query().where("id", thisData.id).allowGraph("[certificate]").first();
 
 		if (access.visibility !== "all") {
 			query.andWhere("owner_user_id", access.token.getUserId(1));
@@ -180,9 +175,7 @@ const internalStream = {
 			throw new errs.ItemNotFoundError(data.id);
 		}
 
-		await streamModel.query().where("id", row.id).patch({
-			is_deleted: 1,
-		});
+		await streamModel.query().deleteById(row.id);
 
 		try {
 			// Delete Nginx Config
@@ -304,7 +297,6 @@ const internalStream = {
 
 		const query = streamModel
 			.query()
-			.where("is_deleted", 0)
 			.groupBy("id")
 			.allowGraph("[owner,certificate]")
 			.orderBy("incoming_port", "ASC");
@@ -338,7 +330,7 @@ const internalStream = {
 	 * @returns {Promise}
 	 */
 	getCount: async (user_id, visibility) => {
-		const query = streamModel.query().count("id as count").where("is_deleted", 0);
+		const query = streamModel.query().count("id as count");
 
 		if (visibility !== "all") {
 			query.andWhere("owner_user_id", user_id);

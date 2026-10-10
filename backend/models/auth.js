@@ -85,9 +85,6 @@ class Auth extends Model {
 					from: "auth.user_id",
 					to: "user.id",
 				},
-				filter: {
-					is_deleted: 0,
-				},
 			},
 		};
 	}

@@ -26,7 +26,6 @@ export default {
 		const user = await userModel
 			.query()
 			.where("email", data.identity.toLowerCase())
-			.andWhere("is_deleted", 0)
 			.andWhere("is_disabled", 0)
 			.first();
 
@@ -98,7 +97,6 @@ export default {
 		const user = await userModel
 			.query()
 			.where("email", data.identity.toLowerCase())
-			.andWhere("is_deleted", 0)
 			.andWhere("is_disabled", 0)
 			.first();
 
@@ -194,12 +192,7 @@ export default {
 			throw new errs.AuthError("Invalid challenge token");
 		}
 
-		const user = await userModel
-			.query()
-			.where("id", userId)
-			.andWhere("is_deleted", 0)
-			.andWhere("is_disabled", 0)
-			.first();
+		const user = await userModel.query().where("id", userId).andWhere("is_disabled", 0).first();
 		if (!user || tokenData.iat <= user.npmplus_token_valid_after) {
 			throw new errs.AuthError("Invalid challenge token");
 		}

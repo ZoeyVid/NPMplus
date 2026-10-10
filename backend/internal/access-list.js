@@ -206,15 +206,8 @@ const internalAccessList = {
 				"npmplus_proxy_host_access_list.access_list_id",
 				"access_list.id",
 			)
-			.leftJoin("proxy_host", function () {
-				this.on("proxy_host.id", "=", "npmplus_proxy_host_access_list.proxy_host_id").andOn(
-					"proxy_host.is_deleted",
-					"=",
-					0,
-				);
-			})
-			.where("access_list.is_deleted", 0)
-			.andWhere("access_list.id", thisData.id)
+			.leftJoin("proxy_host", "proxy_host.id", "npmplus_proxy_host_access_list.proxy_host_id")
+			.where("access_list.id", thisData.id)
 			.groupBy("access_list.id")
 			.allowGraph("[items,clients,proxy_hosts.[certificate,access_lists.[clients,items]]]")
 			.first();
@@ -259,8 +252,11 @@ const internalAccessList = {
 		// 4. audit log
 
 		// 1. update row to be deleted
-		await accessListModel.query().where("id", row.id).patch({
-			is_deleted: 1,
+		await accessListModel.transaction(async (trx) => {
+			await trx("npmplus_proxy_host_access_list").where("access_list_id", row.id).delete();
+			await accessListAuthModel.query(trx).where("access_list_id", row.id).delete();
+			await accessListClientModel.query(trx).where("access_list_id", row.id).delete();
+			await accessListModel.query(trx).deleteById(row.id);
 		});
 
 		// 2. update any proxy hosts that were using it (ignoring permissions)
@@ -367,14 +363,7 @@ const internalAccessList = {
 				"npmplus_proxy_host_access_list.access_list_id",
 				"access_list.id",
 			)
-			.leftJoin("proxy_host", function () {
-				this.on("proxy_host.id", "=", "npmplus_proxy_host_access_list.proxy_host_id").andOn(
-					"proxy_host.is_deleted",
-					"=",
-					0,
-				);
-			})
-			.where("access_list.is_deleted", 0)
+			.leftJoin("proxy_host", "proxy_host.id", "npmplus_proxy_host_access_list.proxy_host_id")
 			.groupBy("access_list.id")
 			.allowGraph("[owner,items,clients]")
 			.orderBy("access_list.name", "ASC");
@@ -405,7 +394,7 @@ const internalAccessList = {
 	 * @returns {Promise}
 	 */
 	getCount: async (userId, visibility) => {
-		const query = accessListModel.query().count("id as count").where("is_deleted", 0);
+		const query = accessListModel.query().count("id as count");
 
 		if (visibility !== "all") {
 			query.andWhere("owner_user_id", userId);

@@ -200,8 +200,7 @@ const internalProxyHost = {
 
 		const query = proxyHostModel
 			.query()
-			.where("is_deleted", 0)
-			.andWhere("id", thisData.id)
+			.where("id", thisData.id)
 			.allowGraph("[access_lists.[clients,items],certificate]")
 			.first();
 
@@ -236,11 +235,10 @@ const internalProxyHost = {
 			throw new errs.ItemNotFoundError(data.id);
 		}
 
-		await proxyHostModel.transaction((trx) =>
-			proxyHostModel.query(trx).where("id", row.id).patch({
-				is_deleted: 1,
-			}),
-		);
+		await proxyHostModel.transaction(async (trx) => {
+			await trx("npmplus_proxy_host_access_list").where("proxy_host_id", row.id).delete();
+			await proxyHostModel.query(trx).deleteById(row.id);
+		});
 
 		try {
 			// Delete Nginx Config
@@ -378,7 +376,6 @@ const internalProxyHost = {
 
 		const query = proxyHostModel
 			.query()
-			.where("is_deleted", 0)
 			.groupBy("id")
 			.allowGraph("[owner,access_lists,certificate]")
 			.orderBy(castJsonIfNeed("domain_names"), "ASC");
@@ -409,7 +406,7 @@ const internalProxyHost = {
 	 * @returns {Promise}
 	 */
 	getCount: async (user_id, visibility) => {
-		const query = proxyHostModel.query().count("id as count").where("is_deleted", 0);
+		const query = proxyHostModel.query().count("id as count");
 
 		if (visibility !== "all") {
 			query.andWhere("owner_user_id", user_id);

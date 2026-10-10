@@ -322,11 +322,7 @@ const internalProxyHostAccessList = {
 			return proxyHost;
 		}
 
-		const rows = await accessListModel
-			.query()
-			.whereIn("id", allIds)
-			.andWhere("is_deleted", 0)
-			.withGraphFetched("[clients,items]");
+		const rows = await accessListModel.query().whereIn("id", allIds).withGraphFetched("[clients,items]");
 
 		const byId = new Map(rows.map((row) => [row.id, row]));
 
@@ -375,12 +371,11 @@ const internalProxyHostAccessList = {
 				validateCustomSelection(location.npmplus_access_list_type, location.npmplus_access_list_ids);
 			}
 		}
-		// make sure no ACLs that are being uploaded have been soft deleted
+		// make sure no ACLs that are being uploaded have been deleted
 		if (aclIds.size > 0) {
 			const query = accessListModel
 				.query()
 				.whereIn("id", [...aclIds])
-				.andWhere("is_deleted", 0)
 				.select("id");
 
 			if (access.visibility !== "all") {

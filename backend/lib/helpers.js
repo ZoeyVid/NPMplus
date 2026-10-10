@@ -66,9 +66,13 @@ const removeCertificateFields = (obj) =>
 const jsonReplacer = (key, value) => {
 	if (typeof value !== "string") return value;
 	if (key === "password") return "";
-	return ["certificate", "certificate_key", "dns_provider_credentials", "npmplus_dns_provider_credentials"].includes(
-		key,
-	)
+	return [
+		"certificate",
+		"certificate_key",
+		"dns_provider_credentials",
+		"npmplus_dns_provider_credentials",
+		"hint",
+	].includes(key)
 		? undefined
 		: value;
 };

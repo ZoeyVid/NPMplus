@@ -73,10 +73,7 @@ const internalCertificate = {
 				logger.error(err);
 			}
 
-			const certificates = await certificateModel
-				.query()
-				.where("is_deleted", 0)
-				.andWhere("provider", "letsencrypt");
+			const certificates = await certificateModel.query().where("provider", "letsencrypt");
 
 			if (certificates && certificates.length > 0) {
 				const updatePromises = certificates.map(async (certificate) => {
@@ -215,7 +212,7 @@ const internalCertificate = {
 	 */
 	get: async (access, data) => {
 		access.can("certificates:view");
-		const query = certificateModel.query().where("is_deleted", 0).andWhere("id", data.id).first();
+		const query = certificateModel.query().where("id", data.id).first();
 
 		if (access.visibility !== "all") {
 			query.andWhere("owner_user_id", access.token.getUserId(1));
@@ -313,17 +310,15 @@ const internalCertificate = {
 			if (
 				(await hostModel
 					.query()
-					.where("is_deleted", 0)
-					.andWhere((qb) => qb.where("certificate_id", row.id).orWhere("npmplus_mtls_certificate_id", row.id))
+					.where("certificate_id", row.id)
+					.orWhere("npmplus_mtls_certificate_id", row.id)
 					.resultSize()) > 0
 			) {
 				throw new error.ValidationError("Certificate is still in use");
 			}
 		}
 
-		await certificateModel.query().where("id", row.id).patch({
-			is_deleted: 1,
-		});
+		await certificateModel.query().deleteById(row.id);
 
 		// Add to audit log
 		await internalAuditLog.add(access, {
@@ -358,7 +353,6 @@ const internalCertificate = {
 
 		const query = certificateModel
 			.query()
-			.where("is_deleted", 0)
 			.groupBy("id")
 			.allowGraph(
 				"[owner,proxy_hosts,redirection_hosts,dead_hosts,streams,mtls_proxy_hosts,mtls_redirection_hosts,mtls_dead_hosts,mtls_streams]",
@@ -391,7 +385,7 @@ const internalCertificate = {
 	 * @returns {Promise}
 	 */
 	getCount: async (userId, visibility) => {
-		const query = certificateModel.query().count("id as count").where("is_deleted", 0);
+		const query = certificateModel.query().count("id as count");
 
 		if (visibility !== "all") {
 			query.andWhere("owner_user_id", userId);

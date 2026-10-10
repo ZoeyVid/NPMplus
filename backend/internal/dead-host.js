@@ -170,12 +170,7 @@ const internalDeadHost = {
 
 		access.can("dead_hosts:view");
 
-		const query = deadHostModel
-			.query()
-			.where("is_deleted", 0)
-			.andWhere("id", thisData.id)
-			.allowGraph("[certificate]")
-			.first();
+		const query = deadHostModel.query().where("id", thisData.id).allowGraph("[certificate]").first();
 
 		if (access.visibility !== "all") {
 			query.andWhere("owner_user_id", access.token.getUserId(1));
@@ -208,9 +203,7 @@ const internalDeadHost = {
 			throw new errs.ItemNotFoundError(data.id);
 		}
 
-		await deadHostModel.query().where("id", row.id).patch({
-			is_deleted: 1,
-		});
+		await deadHostModel.query().deleteById(row.id);
 
 		try {
 			// Delete Nginx Config
@@ -340,7 +333,6 @@ const internalDeadHost = {
 
 		const query = deadHostModel
 			.query()
-			.where("is_deleted", 0)
 			.groupBy("id")
 			.allowGraph("[owner,certificate]")
 			.orderBy(castJsonIfNeed("domain_names"), "ASC");
@@ -371,7 +363,7 @@ const internalDeadHost = {
 	 * @returns {Promise}
 	 */
 	getCount: async (user_id, visibility) => {
-		const query = deadHostModel.query().count("id as count").where("is_deleted", 0);
+		const query = deadHostModel.query().count("id as count");
 
 		if (visibility !== "all") {
 			query.andWhere("owner_user_id", user_id);

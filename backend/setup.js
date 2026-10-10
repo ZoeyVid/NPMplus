@@ -85,7 +85,7 @@ const setupDefaultSettings = async () => {
  * @returns {Promise}
  */
 const setupCertbotPlugins = async () => {
-	const certificates = await certificateModel.query().where("is_deleted", 0).andWhere("provider", "letsencrypt");
+	const certificates = await certificateModel.query().where("provider", "letsencrypt");
 
 	if (certificates?.length > 0) {
 		const plugins = [];
@@ -121,8 +121,7 @@ const regenerateAllHosts = async () => {
 	if (process.env.REGENERATE_ALL === "true") {
 		const proxyHosts = await proxyModel
 			.query()
-			.where("is_deleted", 0)
-			.andWhere("enabled", 1)
+			.where("enabled", 1)
 			.withGraphFetched("[access_lists.[clients,items],certificate]");
 
 		if (proxyHosts?.length > 0) {
@@ -137,11 +136,7 @@ const regenerateAllHosts = async () => {
 			await internalNginx.bulkGenerateConfigs(proxyModel, "proxy_host", updatedProxyHosts, { skipReload: true });
 		}
 
-		const redirectionHosts = await redirectionModel
-			.query()
-			.where("is_deleted", 0)
-			.andWhere("enabled", 1)
-			.withGraphFetched("certificate");
+		const redirectionHosts = await redirectionModel.query().where("enabled", 1).withGraphFetched("certificate");
 
 		if (redirectionHosts?.length > 0) {
 			await internalNginx.bulkGenerateConfigs(redirectionModel, "redirection_host", redirectionHosts, {
@@ -149,21 +144,13 @@ const regenerateAllHosts = async () => {
 			});
 		}
 
-		const deadHosts = await deadModel
-			.query()
-			.where("is_deleted", 0)
-			.andWhere("enabled", 1)
-			.withGraphFetched("certificate");
+		const deadHosts = await deadModel.query().where("enabled", 1).withGraphFetched("certificate");
 
 		if (deadHosts?.length > 0) {
 			await internalNginx.bulkGenerateConfigs(deadModel, "dead_host", deadHosts, { skipReload: true });
 		}
 
-		const streamHosts = await streamModel
-			.query()
-			.where("is_deleted", 0)
-			.andWhere("enabled", 1)
-			.withGraphFetched("certificate");
+		const streamHosts = await streamModel.query().where("enabled", 1).withGraphFetched("certificate");
 
 		if (streamHosts?.length > 0) {
 			await internalNginx.bulkGenerateConfigs(streamModel, "stream", streamHosts, { skipReload: true });
@@ -210,7 +197,7 @@ const setupAio = async () => {
 };
 
 export const isSetup = async () => {
-	const row = await userModel.query().select("id").where("is_deleted", 0).first();
+	const row = await userModel.query().select("id").first();
 	return row?.id > 0;
 };
 

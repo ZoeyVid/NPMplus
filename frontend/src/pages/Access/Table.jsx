@@ -29,11 +29,16 @@ export default function Table({ data, isFetching, isFiltered, onEdit, onDelete, 
 	const columnHelper = createColumnHelper();
 	const columns = useMemo(
 		() => [
-			columnHelper.accessor((row) => row.owner.name, {
+			columnHelper.accessor((row) => row.owner?.name, {
 				id: "owner",
 				cell: (info) => {
 					const value = info.row.original.owner;
-					return <GravatarFormatter url={value ? value.avatar : ""} name={value ? value.name : ""} />;
+					return (
+						<GravatarFormatter
+							url={value ? value.avatar : ""}
+							name={value ? value.name : intl.formatMessage({ id: "user.deleted" })}
+						/>
+					);
 				},
 				meta: {
 					className: "w-1",

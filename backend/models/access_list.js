@@ -58,9 +58,6 @@ class AccessList extends Model {
 					from: "access_list.owner_user_id",
 					to: "user.id",
 				},
-				modify: (qb) => {
-					qb.where("user.is_deleted", 0);
-				},
 			},
 			items: {
 				relation: Model.HasManyRelation,
@@ -88,9 +85,6 @@ class AccessList extends Model {
 						to: "npmplus_proxy_host_access_list.proxy_host_id",
 					},
 					to: "proxy_host.id",
-				},
-				modify: (qb) => {
-					qb.where("proxy_host.is_deleted", 0);
 				},
 			},
 		};

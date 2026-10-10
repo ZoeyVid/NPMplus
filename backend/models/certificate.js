@@ -66,9 +66,6 @@ class Certificate extends Model {
 					from: "certificate.owner_user_id",
 					to: "user.id",
 				},
-				modify: (qb) => {
-					qb.where("user.is_deleted", 0);
-				},
 			},
 			proxy_hosts: {
 				relation: Model.HasManyRelation,
@@ -76,9 +73,6 @@ class Certificate extends Model {
 				join: {
 					from: "certificate.id",
 					to: "proxy_host.certificate_id",
-				},
-				modify: (qb) => {
-					qb.where("proxy_host.is_deleted", 0);
 				},
 			},
 			dead_hosts: {
@@ -88,9 +82,6 @@ class Certificate extends Model {
 					from: "certificate.id",
 					to: "dead_host.certificate_id",
 				},
-				modify: (qb) => {
-					qb.where("dead_host.is_deleted", 0);
-				},
 			},
 			redirection_hosts: {
 				relation: Model.HasManyRelation,
@@ -98,9 +89,6 @@ class Certificate extends Model {
 				join: {
 					from: "certificate.id",
 					to: "redirection_host.certificate_id",
-				},
-				modify: (qb) => {
-					qb.where("redirection_host.is_deleted", 0);
 				},
 			},
 			streams: {
@@ -110,9 +98,6 @@ class Certificate extends Model {
 					from: "certificate.id",
 					to: "stream.certificate_id",
 				},
-				modify: (qb) => {
-					qb.where("stream.is_deleted", 0);
-				},
 			},
 			mtls_proxy_hosts: {
 				relation: Model.HasManyRelation,
@@ -120,9 +105,6 @@ class Certificate extends Model {
 				join: {
 					from: "certificate.id",
 					to: "proxy_host.npmplus_mtls_certificate_id",
-				},
-				modify: (qb) => {
-					qb.where("proxy_host.is_deleted", 0);
 				},
 			},
 			mtls_dead_hosts: {
@@ -132,9 +114,6 @@ class Certificate extends Model {
 					from: "certificate.id",
 					to: "dead_host.npmplus_mtls_certificate_id",
 				},
-				modify: (qb) => {
-					qb.where("dead_host.is_deleted", 0);
-				},
 			},
 			mtls_redirection_hosts: {
 				relation: Model.HasManyRelation,
@@ -143,9 +122,6 @@ class Certificate extends Model {
 					from: "certificate.id",
 					to: "redirection_host.npmplus_mtls_certificate_id",
 				},
-				modify: (qb) => {
-					qb.where("redirection_host.is_deleted", 0);
-				},
 			},
 			mtls_streams: {
 				relation: Model.HasManyRelation,
@@ -153,9 +129,6 @@ class Certificate extends Model {
 				join: {
 					from: "certificate.id",
 					to: "stream.npmplus_mtls_certificate_id",
-				},
-				modify: (qb) => {
-					qb.where("stream.is_deleted", 0);
 				},
 			},
 		};

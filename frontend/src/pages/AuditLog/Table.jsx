@@ -31,7 +31,12 @@ export default function Table({ data, isFetching, onSelectItem }) {
 				id: "avatar",
 				cell: (info) => {
 					const value = info.row.original.user;
-					return <GravatarFormatter url={value ? value.avatar : ""} name={value ? value.name : ""} />;
+					return (
+						<GravatarFormatter
+							url={value ? value.avatar : ""}
+							name={value ? value.name : intl.formatMessage({ id: "user.deleted" })}
+						/>
+					);
 				},
 				meta: {
 					className: "w-1",

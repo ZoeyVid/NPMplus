@@ -95,9 +95,6 @@ class ProxyHost extends Model {
 					from: "proxy_host.owner_user_id",
 					to: "user.id",
 				},
-				modify: (qb) => {
-					qb.where("user.is_deleted", 0);
-				},
 			},
 			access_lists: {
 				relation: Model.ManyToManyRelation,
@@ -110,9 +107,6 @@ class ProxyHost extends Model {
 					},
 					to: "access_list.id",
 				},
-				modify: (qb) => {
-					qb.where("access_list.is_deleted", 0);
-				},
 			},
 			certificate: {
 				relation: Model.HasOneRelation,
@@ -120,9 +114,6 @@ class ProxyHost extends Model {
 				join: {
 					from: "proxy_host.certificate_id",
 					to: "certificate.id",
-				},
-				modify: (qb) => {
-					qb.where("certificate.is_deleted", 0);
 				},
 			},
 		};

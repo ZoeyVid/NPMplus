@@ -69,9 +69,6 @@ class DeadHost extends Model {
 					from: "dead_host.owner_user_id",
 					to: "user.id",
 				},
-				modify: (qb) => {
-					qb.where("user.is_deleted", 0);
-				},
 			},
 			certificate: {
 				relation: Model.HasOneRelation,
@@ -79,9 +76,6 @@ class DeadHost extends Model {
 				join: {
 					from: "dead_host.certificate_id",
 					to: "certificate.id",
-				},
-				modify: (qb) => {
-					qb.where("certificate.is_deleted", 0);
 				},
 			},
 		};

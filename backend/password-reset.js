@@ -43,7 +43,7 @@ try {
 
 	const auth = db
 		.prepare(
-			"SELECT auth.user_id FROM auth JOIN user ON user.id = auth.user_id WHERE auth.type = 'password' AND auth.is_deleted = 0 AND user.is_deleted = 0 AND user.email = ?",
+			"SELECT auth.user_id FROM auth JOIN user ON user.id = auth.user_id WHERE auth.type = 'password' AND user.email = ?",
 		)
 		.get(EMAIL);
 

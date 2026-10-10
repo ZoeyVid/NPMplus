@@ -39,7 +39,6 @@ export default function (tokenString) {
 			const user = await userModel
 				.query()
 				.where("id", tokenData.attrs.id)
-				.andWhere("is_deleted", 0)
 				.andWhere("is_disabled", 0)
 				.allowGraph("[permissions]")
 				.withGraphFetched("[permissions]")
