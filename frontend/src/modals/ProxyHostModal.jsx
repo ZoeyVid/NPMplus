@@ -16,15 +16,14 @@ import {
 	SSLCertificateField,
 	SSLOptionsFields,
 } from "src/components";
-import { useDirectorySuggestions, useProxyHost, useProxyHosts, useSetProxyHost, useUser } from "src/hooks";
+import { useDirectorySuggestions, useProxyHost, useProxyHosts, useSetProxyHost } from "src/hooks";
 import { intl, T } from "src/locale";
 import EasyModal from "src/modules/easyModal";
 import { MANAGE, PROXY_HOSTS } from "src/modules/Permissions";
 import { showTabOfInvalid, validateNumber, validateUpstreamUrl } from "src/modules/Validations";
 import { showObjectSuccess } from "src/notifications";
 
-const ProxyHostModal = EasyModal.create(({ id, isClone = false, visible, remove }) => {
-	const { data: currentUser, isLoading: userIsLoading, error: userError } = useUser("me");
+const ProxyHostModal = EasyModal.create(({ id, isClone, visible, remove }) => {
 	const { data, isLoading, error } = useProxyHost(id);
 	const { data: allProxyHosts } = useProxyHosts();
 	const suggestions = useDirectorySuggestions(allProxyHosts);
@@ -79,13 +78,13 @@ const ProxyHostModal = EasyModal.create(({ id, isClone = false, visible, remove 
 
 	return (
 		<Modal show={visible} onHide={remove}>
-			{!isLoading && (error || userError) && (
+			{error && (
 				<Alert variant="danger" className="m-3">
-					{error?.message || userError?.message || "Unknown error"}
+					{error?.message}
 				</Alert>
 			)}
-			{isLoading || (userIsLoading && <Loading noLogo />)}
-			{!isLoading && !userIsLoading && data && currentUser && (
+			{isLoading && <Loading noLogo />}
+			{data && (
 				<Formik
 					initialValues={{
 						// Details tab
@@ -133,12 +132,7 @@ const ProxyHostModal = EasyModal.create(({ id, isClone = false, visible, remove 
 								</Modal.Title>
 							</Modal.Header>
 							<Modal.Body className="p-0">
-								<Alert
-									variant="danger"
-									show={Boolean(errorMsg)}
-									onClose={() => setErrorMsg(null)}
-									dismissible
-								>
+								<Alert variant="danger" show={errorMsg} onClose={() => setErrorMsg(null)} dismissible>
 									{errorMsg}
 								</Alert>
 								<div className="card m-0 border-0">
@@ -256,7 +250,7 @@ const ProxyHostModal = EasyModal.create(({ id, isClone = false, visible, remove 
 													</div>
 													<div className="col-md-5">
 														<Field name="forwardHost">
-															{({ field, form }) => (
+															{({ field }) => (
 																<div className="mb-3">
 																	<label className="form-label" htmlFor="forwardHost">
 																		<T id="proxy-host.forward-host-path" />
@@ -264,19 +258,10 @@ const ProxyHostModal = EasyModal.create(({ id, isClone = false, visible, remove 
 																	<input
 																		id="forwardHost"
 																		type="text"
-																		className={`form-control ${form.errors.forwardHost && form.touched.forwardHost ? "is-invalid" : ""}`}
+																		className="form-control"
 																		placeholder="example.com"
 																		{...field}
 																	/>
-
-																	{form.errors.forwardHost ? (
-																		<div className="invalid-feedback">
-																			{form.errors.forwardHost &&
-																			form.touched.forwardHost
-																				? form.errors.forwardHost
-																				: null}
-																		</div>
-																	) : null}
 																</div>
 															)}
 														</Field>
@@ -300,8 +285,7 @@ const ProxyHostModal = EasyModal.create(({ id, isClone = false, visible, remove 
 
 																	{form.errors.forwardPort ? (
 																		<div className="invalid-feedback">
-																			{form.errors.forwardPort &&
-																			form.touched.forwardPort
+																			{form.touched.forwardPort
 																				? form.errors.forwardPort
 																				: null}
 																		</div>
@@ -635,9 +619,7 @@ const ProxyHostModal = EasyModal.create(({ id, isClone = false, visible, remove 
 																					{form.errors
 																						.npmplusAuthRequestUpstream ? (
 																						<div className="invalid-feedback">
-																							{form.errors
-																								.npmplusAuthRequestUpstream &&
-																							form.touched
+																							{form.touched
 																								.npmplusAuthRequestUpstream
 																								? form.errors
 																										.npmplusAuthRequestUpstream
@@ -737,7 +719,7 @@ const ProxyHostModal = EasyModal.create(({ id, isClone = false, visible, remove 
 	);
 });
 
-const showProxyHostModal = (id, isClone = false) => {
+const showProxyHostModal = (id, isClone) => {
 	EasyModal.show(ProxyHostModal, { id, isClone });
 };
 

@@ -29,7 +29,7 @@ export default function TableWrapper() {
 	}
 
 	if (isError) {
-		return <Alert variant="danger">{error?.message || "Unknown error"}</Alert>;
+		return <Alert variant="danger">{error?.message}</Alert>;
 	}
 
 	const handleDisableToggle = async (id, enabled) => {
@@ -42,7 +42,7 @@ export default function TableWrapper() {
 	};
 
 	let filtered = null;
-	if (search && data) {
+	if (search) {
 		filtered = data?.filter((item) => {
 			const directory = getDirectory(item).toLowerCase();
 			return (
@@ -57,7 +57,7 @@ export default function TableWrapper() {
 	const groupingActive = displayedHosts.some(getDirectory);
 
 	const sharedTableProps = {
-		isFiltered: Boolean(search),
+		isFiltered: search,
 		isFetching,
 		sorting,
 		onSortingChange: setSorting,

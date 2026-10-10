@@ -1,21 +1,13 @@
 import cn from "clsx";
 import { Field, useFormikContext } from "formik";
-import { useEffect } from "react";
-import { DNSProviderFields, DomainNamesField } from "src/components";
+import { DNSProviderFields } from "src/components";
 import { T } from "src/locale";
 
-export function SSLOptionsFields({
-	forHttp = true,
-	forProxy = false,
-	forceDNSForNew,
-	requireDomainNames,
-	color = "bg-cyan",
-}) {
-	const { values, setFieldValue } = useFormikContext();
-	const v = values || {};
+export function SSLOptionsFields({ forProxy, color }) {
+	const { values: v, setFieldValue } = useFormikContext();
 
 	const newCertificate = v?.certificateId === "new";
-	const hasCertificate = newCertificate || (v?.certificateId && v?.certificateId > 0);
+	const hasCertificate = newCertificate || v?.certificateId > 0;
 	const {
 		sslForced,
 		npmplusHttp3Support,
@@ -29,14 +21,8 @@ export function SSLOptionsFields({
 	} = v;
 
 	const mtlsBypassAuthRequestPossible =
-		npmplusMtlsVerifyClientOptional === true &&
+		npmplusMtlsVerifyClientOptional &&
 		[v, ...(v.locations ?? [])].some(({ npmplusAuthRequest = "none" }) => npmplusAuthRequest !== "none");
-
-	useEffect(() => {
-		if (forceDNSForNew && newCertificate && !dnsChallenge) {
-			void setFieldValue("npmplusDnsChallenge", true);
-		}
-	});
 
 	const handleToggleChange = (e, fieldName) => {
 		void setFieldValue(fieldName, e.target.checked);
@@ -67,7 +53,7 @@ export function SSLOptionsFields({
 								<input
 									className={sslForced ? toggleEnabled : toggleClasses}
 									type="checkbox"
-									checked={Boolean(sslForced)}
+									checked={sslForced}
 									onChange={(e) => handleToggleChange(e, field.name)}
 									disabled={!hasCertificate}
 								/>
@@ -86,7 +72,7 @@ export function SSLOptionsFields({
 								<input
 									className={npmplusHttp3Support ? toggleEnabled : toggleClasses}
 									type="checkbox"
-									checked={Boolean(npmplusHttp3Support)}
+									checked={npmplusHttp3Support}
 									onChange={(e) => handleToggleChange(e, field.name)}
 									disabled={!hasCertificate}
 								/>
@@ -107,7 +93,7 @@ export function SSLOptionsFields({
 								<input
 									className={hstsEnabled ? toggleEnabled : toggleClasses}
 									type="checkbox"
-									checked={Boolean(hstsEnabled)}
+									checked={hstsEnabled}
 									onChange={(e) => handleToggleChange(e, field.name)}
 									disabled={!hasCertificate || !sslForced}
 								/>
@@ -126,7 +112,7 @@ export function SSLOptionsFields({
 								<input
 									className={hstsSubdomains ? toggleEnabled : toggleClasses}
 									type="checkbox"
-									checked={Boolean(hstsSubdomains)}
+									checked={hstsSubdomains}
 									onChange={(e) => handleToggleChange(e, field.name)}
 									disabled={!hasCertificate || !hstsEnabled}
 								/>
@@ -150,9 +136,9 @@ export function SSLOptionsFields({
 						{({ field }) => (
 							<label className="form-check form-switch mt-1">
 								<input
-									className={npmplusMtlsVerifyClientOptional === true ? toggleEnabled : toggleClasses}
+									className={npmplusMtlsVerifyClientOptional ? toggleEnabled : toggleClasses}
 									type="checkbox"
-									checked={npmplusMtlsVerifyClientOptional === true}
+									checked={npmplusMtlsVerifyClientOptional}
 									onChange={(e) => handleToggleChange(e, field.name)}
 									disabled={!(v?.certificateId > 0 && npmplusMtlsCertificateId > 0)}
 								/>
@@ -190,7 +176,7 @@ export function SSLOptionsFields({
 					</div>
 				) : null}
 			</div>
-			{forHttp ? getHttpOptions() : null}
+			{getHttpOptions()}
 			{newCertificate ? (
 				<div className="row">
 					<div className="col-6">
@@ -218,8 +204,7 @@ export function SSLOptionsFields({
 									<input
 										className={dnsChallenge ? toggleEnabled : toggleClasses}
 										type="checkbox"
-										checked={forceDNSForNew ? true : Boolean(dnsChallenge)}
-										disabled={forceDNSForNew}
+										checked={Boolean(dnsChallenge)}
 										onChange={(e) => handleToggleChange(e, field.name)}
 									/>
 
@@ -230,7 +215,6 @@ export function SSLOptionsFields({
 							)}
 						</Field>
 					</div>
-					{requireDomainNames ? <DomainNamesField isWildcardPermitted dnsProviderWildcardSupported /> : null}
 					{dnsChallenge ? <DNSProviderFields showBoundaryBox /> : null}
 				</div>
 			) : null}

@@ -22,9 +22,6 @@ export function BasicAuthFields({ initialValues, name = "items" }) {
 
 	const handleRemove = (idx) => {
 		const newValues = values.filter((_, i) => i !== idx);
-		if (newValues.length === 0) {
-			newValues.push(blankItem);
-		}
 		setValues(newValues);
 		setFormField(newValues);
 	};

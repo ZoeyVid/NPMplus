@@ -55,7 +55,7 @@ const validateEmail = () => (value) => {
 
 const validateDomain = (allowWildcards = false) => {
 	return (d) => {
-		const dom = d.trim().toLowerCase();
+		const dom = d.trim();
 
 		if (!allowWildcards) {
 			// Block wildcards
@@ -93,7 +93,7 @@ const validateDomains = (allowWildcards, maxDomains) => {
 		}
 
 		// validate each domain
-		for (const domain of value ?? []) {
+		for (const domain of value) {
 			if (!vDom(domain)) {
 				return intl.formatMessage({ id: "error.invalid-domain" }, { domain });
 			}

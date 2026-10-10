@@ -1,6 +1,6 @@
 import { useMemo } from "react";
 
-const getDirectory = (item) => item?.npmplusDirectory || "";
+const getDirectory = (item) => item?.npmplusDirectory;
 
 const useDirectorySuggestions = (items) =>
 	useMemo(

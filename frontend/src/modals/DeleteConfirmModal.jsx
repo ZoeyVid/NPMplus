@@ -24,7 +24,7 @@ const DeleteConfirmModal = EasyModal.create(
 				await onConfirm();
 				remove();
 				// invalidate caches as requested
-				await Promise.all((invalidations ?? []).map((inv) => queryClient.invalidateQueries({ queryKey: inv })));
+				await Promise.all(invalidations.map((inv) => queryClient.invalidateQueries({ queryKey: inv })));
 			} catch (err) {
 				setError(<T id={err.message} />);
 			}
@@ -37,7 +37,7 @@ const DeleteConfirmModal = EasyModal.create(
 					<Modal.Title>{tTitle ? <T id={tTitle} /> : title}</Modal.Title>
 				</Modal.Header>
 				<Modal.Body>
-					<Alert variant="danger" show={Boolean(error)} onClose={() => setError(null)} dismissible>
+					<Alert variant="danger" show={error} onClose={() => setError(null)} dismissible>
 						{error}
 					</Alert>
 					<div className="text-center mb-3">

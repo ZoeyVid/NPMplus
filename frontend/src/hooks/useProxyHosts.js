@@ -3,12 +3,11 @@ import { getProxyHosts } from "src/api/backend";
 
 const fetchProxyHosts = (expand) => getProxyHosts(expand);
 
-const useProxyHosts = (expand, options = {}) =>
+const useProxyHosts = (expand) =>
 	useQuery({
 		queryKey: ["proxy-hosts", { expand }],
 		queryFn: () => fetchProxyHosts(expand),
 		staleTime: 60 * 1000,
-		...options,
 	});
 
 export { useProxyHosts };

@@ -72,7 +72,7 @@ export default function Table({
 					return <ValueWithDateFormatter value={value.incomingPort} createdOn={value.createdOn} />;
 				},
 			}),
-			columnHelper.accessor((row) => row.npmplusDescription || "", {
+			columnHelper.accessor((row) => row.npmplusDescription, {
 				id: "npmplusDescription",
 				header: intl.formatMessage({ id: "column.description" }),
 				cell: (info) => {
@@ -244,7 +244,7 @@ export default function Table({
 			isFetching,
 		},
 		enableSortingRemoval: false,
-		state: sorting ? { sorting } : undefined,
+		state: { sorting },
 		onSortingChange,
 	});
 

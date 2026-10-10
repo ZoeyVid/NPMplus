@@ -3,7 +3,7 @@ import { getHostsReport } from "src/api/backend";
 
 const fetchHostReport = () => getHostsReport();
 
-const useHostReport = (options = {}) => {
+const useHostReport = () => {
 	return useQuery({
 		queryKey: ["host-report"],
 		queryFn: fetchHostReport,
@@ -11,7 +11,6 @@ const useHostReport = (options = {}) => {
 		retry: 5,
 		refetchInterval: 15 * 1000, // 15 seconds
 		staleTime: 14 * 1000, // 14 seconds
-		...options,
 	});
 };
 

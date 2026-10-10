@@ -3,12 +3,11 @@ import { getCertificateDNSProviders } from "src/api/backend";
 
 const fetchDnsProviders = () => getCertificateDNSProviders();
 
-const useDnsProviders = (options = {}) =>
+const useDnsProviders = () =>
 	useQuery({
 		queryKey: ["dns-providers"],
 		queryFn: () => fetchDnsProviders(),
 		staleTime: 300 * 1000,
-		...options,
 	});
 
 export { useDnsProviders };

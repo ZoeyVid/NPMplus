@@ -3,7 +3,7 @@ import { getHealth } from "src/api/backend";
 
 const fetchHealth = () => getHealth();
 
-const useHealth = (options = {}) => {
+const useHealth = () => {
 	return useQuery({
 		queryKey: ["health"],
 		queryFn: fetchHealth,
@@ -11,7 +11,6 @@ const useHealth = (options = {}) => {
 		retry: 5,
 		refetchInterval: 15 * 1000, // 15 seconds
 		staleTime: 14 * 1000, // 14 seconds
-		...options,
 	});
 };
 

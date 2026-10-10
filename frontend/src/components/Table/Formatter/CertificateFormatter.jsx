@@ -7,7 +7,7 @@ const providerTranslations = {
 };
 
 export function certificateProviderTranslation(provider) {
-	return providerTranslations[provider] ?? provider;
+	return providerTranslations[provider];
 }
 
 export function CertificateFormatter({ certificate }) {

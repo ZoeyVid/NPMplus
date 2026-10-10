@@ -194,7 +194,7 @@ export default function Table({
 			isFetching,
 		},
 		enableSortingRemoval: false,
-		state: sorting ? { sorting } : undefined,
+		state: { sorting },
 		onSortingChange,
 	});
 

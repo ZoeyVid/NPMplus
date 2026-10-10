@@ -6,11 +6,9 @@ export function ValueWithDateFormatter({ value, createdOn, disabled }) {
 			<div className="font-weight-medium">
 				<div className={`font-weight-medium ${disabled ? "text-red" : ""}`}>{value}</div>
 			</div>
-			{createdOn ? (
-				<div className={`text-secondary mt-1 ${disabled ? "text-red" : ""}`}>
-					<T id={disabled ? "disabled" : "created-on"} data={{ date: formatDateTime(createdOn) }} />
-				</div>
-			) : null}
+			<div className={`text-secondary mt-1 ${disabled ? "text-red" : ""}`}>
+				<T id={disabled ? "disabled" : "created-on"} data={{ date: formatDateTime(createdOn) }} />
+			</div>
 		</div>
 	);
 }

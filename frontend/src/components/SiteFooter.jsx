@@ -63,7 +63,7 @@ export function SiteFooter() {
 									{version}{" "}
 								</a>
 							</li>
-							{versionData?.updateAvailable && versionData?.latest && (
+							{versionData?.updateAvailable && (
 								<li className="list-inline-item">
 									<a
 										href={`https://github.com/ZoeyVid/NPMplus/releases/tag/${versionData.latest}`}

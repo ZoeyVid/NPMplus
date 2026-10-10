@@ -4,14 +4,7 @@ import { useUser } from "src/hooks";
 import { T } from "src/locale";
 import { hasPermission } from "src/modules/Permissions";
 
-function HasPermission({
-	section,
-	permission,
-	children,
-	hideError = false,
-	pageLoading = false,
-	loadingNoLogo = false,
-}) {
+function HasPermission({ section, permission, children, hideError, pageLoading, loadingNoLogo }) {
 	const { data, isLoading } = useUser("me");
 
 	if (!section) {

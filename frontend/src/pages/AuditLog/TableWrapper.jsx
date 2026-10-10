@@ -23,14 +23,14 @@ export default function TableWrapper() {
 	}
 
 	if (isError) {
-		return <Alert variant="danger">{error?.message || "Unknown error"}</Alert>;
+		return <Alert variant="danger">{error?.message}</Alert>;
 	}
 
 	let filtered = null;
-	if (search && data) {
+	if (search) {
 		filtered = data.filter((item) => {
-			const metaText = JSON.stringify(item.meta || {}).toLowerCase();
-			const value = [item.objectType, item.action, metaText].filter(Boolean).join(" ").toLowerCase();
+			const metaText = JSON.stringify(item.meta).toLowerCase();
+			const value = [item.objectType, item.action, metaText].join(" ");
 
 			return value.includes(search);
 		});

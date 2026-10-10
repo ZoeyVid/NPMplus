@@ -26,11 +26,11 @@ export default function TableWrapper() {
 	}
 
 	if (isError) {
-		return <Alert variant="danger">{error?.message || "Unknown error"}</Alert>;
+		return <Alert variant="danger">{error?.message}</Alert>;
 	}
 
 	let filtered = null;
-	if (search && data) {
+	if (search) {
 		filtered = data?.filter((item) => item.name.toLowerCase().includes(search));
 	}
 
@@ -82,7 +82,7 @@ export default function TableWrapper() {
 				<Table
 					data={filtered ?? data ?? []}
 					isFetching={isFetching}
-					isFiltered={Boolean(filtered)}
+					isFiltered={search}
 					onEdit={(id) => showAccessListModal(id)}
 					onDelete={(id) => {
 						const accessList = data?.find((item) => item.id === id);

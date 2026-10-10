@@ -22,7 +22,6 @@ export function DirectoryField({
 						placeholder={placeholder}
 						list={datalistId}
 						{...field}
-						value={field.value || ""}
 					/>
 
 					<datalist id={datalistId}>

@@ -14,7 +14,7 @@ export function StatusFormatter({ enabled, nginxOnline, nginxErr }) {
 	}
 
 	return (
-		<span className={cn("status", `status-${color}`)} title={nginxErr ? nginxErr : undefined}>
+		<span className={cn("status", `status-${color}`)} title={nginxErr}>
 			<span className="status-dot status-dot-animated" />
 			<T id={label} />
 		</span>

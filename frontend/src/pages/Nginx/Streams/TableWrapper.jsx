@@ -29,7 +29,7 @@ export default function TableWrapper() {
 	}
 
 	if (isError) {
-		return <Alert variant="danger">{error?.message || "Unknown error"}</Alert>;
+		return <Alert variant="danger">{error?.message}</Alert>;
 	}
 
 	const handleDisableToggle = async (id, enabled) => {
@@ -42,14 +42,14 @@ export default function TableWrapper() {
 	};
 
 	let filtered = null;
-	if (search && data) {
+	if (search) {
 		filtered = data?.filter((item) => {
 			const directory = getDirectory(item).toLowerCase();
 			return (
 				`${item.incomingPort}`.includes(search) ||
 				`${item.forwardingPort}`.includes(search) ||
 				item.forwardingHost.includes(search) ||
-				item.npmplusDescription?.toLowerCase().includes(search.toLowerCase()) ||
+				item.npmplusDescription?.toLowerCase().includes(search) ||
 				directory.includes(search)
 			);
 		});
@@ -59,7 +59,7 @@ export default function TableWrapper() {
 	const groupingActive = displayedStreams.some(getDirectory);
 
 	const sharedTableProps = {
-		isFiltered: Boolean(search),
+		isFiltered: search,
 		isFetching,
 		sorting,
 		onSortingChange: setSorting,

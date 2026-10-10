@@ -19,15 +19,15 @@ const getEventValue = (event) => {
 		case "proxy-host":
 		case "redirection-host":
 		case "dead-host":
-			return event.meta?.domainNames?.join(", ") || "N/A";
+			return event.meta?.domainNames?.join(", ");
 		case "stream":
-			return event.meta?.incomingPort || "N/A";
+			return event.meta?.incomingPort;
 		case "certificate":
 			return event.meta?.domainNames?.join(", ") || event.meta?.niceName || "N/A";
 		case "setting":
 			return event.meta?.id;
 		default:
-			return `UNKNOWN EVENT TYPE: ${event.objectType}`;
+			break;
 	}
 };
 

@@ -21,7 +21,7 @@ const RenewCertificateModal = EasyModal.create(({ id, visible, remove }) => {
 	const [isSubmitting, setIsSubmitting] = useState(false);
 
 	useEffect(() => {
-		if (!data || !isFresh || isSubmitting) return;
+		if (!data || !isFresh) return;
 		setIsFresh(false);
 		setIsSubmitting(true);
 
@@ -47,7 +47,7 @@ const RenewCertificateModal = EasyModal.create(({ id, visible, remove }) => {
 				setIsSubmitting(false);
 			}
 		})();
-	}, [id, data, isFresh, isSubmitting, remove, queryClient]);
+	}, [id, data, isFresh, remove, queryClient]);
 
 	return (
 		<Modal show={visible} onHide={isSubmitting ? undefined : remove}>
@@ -57,16 +57,16 @@ const RenewCertificateModal = EasyModal.create(({ id, visible, remove }) => {
 				</Modal.Title>
 			</Modal.Header>
 			<Modal.Body>
-				<Alert variant="danger" show={Boolean(errorMsg)}>
+				<Alert variant="danger" show={errorMsg}>
 					{errorMsg}
 				</Alert>
 				{isLoading && <Loading noLogo />}
-				{!isLoading && error && (
+				{error && (
 					<Alert variant="danger" className="m-3">
-						{error?.message || "Unknown error"}
+						{error?.message}
 					</Alert>
 				)}
-				{data && isSubmitting && !errorMsg ? <p className="text-center mt-3">Please wait ...</p> : null}
+				{isSubmitting ? <p className="text-center mt-3">Please wait ...</p> : null}
 			</Modal.Body>
 			<Modal.Footer>
 				<Button onClick={remove} disabled={isSubmitting}>

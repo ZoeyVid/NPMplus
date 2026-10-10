@@ -3,12 +3,11 @@ import { getSetting, updateSetting } from "src/api/backend";
 
 const fetchSetting = (id) => getSetting(id);
 
-const useSetting = (id, options = {}) => {
+const useSetting = (id) => {
 	return useQuery({
 		queryKey: ["setting", id],
 		queryFn: () => fetchSetting(id),
 		staleTime: 60 * 1000, // 1 minute
-		...options,
 	});
 };
 

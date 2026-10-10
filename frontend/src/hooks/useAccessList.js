@@ -18,12 +18,11 @@ const fetchAccessList = (id, expand) => {
 	return getAccessList(id, expand);
 };
 
-const useAccessList = (id, expand, options = {}) => {
+const useAccessList = (id, expand) => {
 	return useQuery({
 		queryKey: ["access-list", id, expand],
 		queryFn: () => fetchAccessList(id, expand),
 		staleTime: 60 * 1000, // 1 minute
-		...options,
 	});
 };
 

@@ -43,16 +43,11 @@ const getSectionStream = (items) => {
 	);
 };
 
-export function CertificateInUseFormatter({ proxyHosts = [], redirectionHosts = [], deadHosts = [], streams = [] }) {
+export function CertificateInUseFormatter({ proxyHosts, redirectionHosts, deadHosts, streams }) {
 	const totalCount = proxyHosts.length + redirectionHosts.length + deadHosts.length + streams.length;
 	if (totalCount === 0) {
 		return <TrueFalseFormatter value={false} falseLabel="certificate.not-in-use" />;
 	}
-
-	proxyHosts.sort();
-	redirectionHosts.sort();
-	deadHosts.sort();
-	streams.sort();
 
 	const popover = (
 		<Popover id="popover-basic">

@@ -3,7 +3,7 @@ import { Flag } from "src/components";
 import { changeLocale, getFlagCodeForLocale, localeOptions } from "src/locale";
 import localeList from "translations/lang-list.json" with { type: "json" };
 
-function LocalePicker({ menuAlign = "start" }) {
+function LocalePicker({ menuAlign }) {
 	return (
 		<div className="dropdown">
 			<button type="button" className="btn dropdown-toggle btn-sm btn-ghost" data-bs-toggle="dropdown">

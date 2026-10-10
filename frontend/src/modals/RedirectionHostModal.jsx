@@ -67,13 +67,13 @@ const RedirectionHostModal = EasyModal.create(({ id, visible, remove }) => {
 
 	return (
 		<Modal show={visible} onHide={remove}>
-			{!isLoading && error && (
+			{error && (
 				<Alert variant="danger" className="m-3">
-					{error?.message || "Unknown error"}
+					{error?.message}
 				</Alert>
 			)}
 			{isLoading && <Loading noLogo />}
-			{!isLoading && data && (
+			{data && (
 				<Formik
 					initialValues={{
 						// Details tab
@@ -107,12 +107,7 @@ const RedirectionHostModal = EasyModal.create(({ id, visible, remove }) => {
 								</Modal.Title>
 							</Modal.Header>
 							<Modal.Body className="p-0">
-								<Alert
-									variant="danger"
-									show={Boolean(errorMsg)}
-									onClose={() => setErrorMsg(null)}
-									dismissible
-								>
+								<Alert variant="danger" show={errorMsg} onClose={() => setErrorMsg(null)} dismissible>
 									{errorMsg}
 								</Alert>
 								<div className="card m-0 border-0">
@@ -210,8 +205,7 @@ const RedirectionHostModal = EasyModal.create(({ id, visible, remove }) => {
 
 																	{form.errors.forwardDomainName ? (
 																		<div className="invalid-feedback">
-																			{form.errors.forwardDomainName &&
-																			form.touched.forwardDomainName
+																			{form.touched.forwardDomainName
 																				? form.errors.forwardDomainName
 																				: null}
 																		</div>

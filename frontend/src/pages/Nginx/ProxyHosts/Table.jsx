@@ -93,7 +93,7 @@ export default function Table({
 			}),
 			columnHelper.accessor(
 				(row) => {
-					const accessLists = row.accessLists || [];
+					const { accessLists } = row;
 					const triggerLabel = intl.formatMessage({
 						id: row.npmplusAccessListType === "custom" ? "access-list.custom" : "access-list.public",
 					});
@@ -227,7 +227,7 @@ export default function Table({
 			isFetching,
 		},
 		enableSortingRemoval: false,
-		state: sorting ? { sorting } : undefined,
+		state: { sorting },
 		onSortingChange,
 	});
 

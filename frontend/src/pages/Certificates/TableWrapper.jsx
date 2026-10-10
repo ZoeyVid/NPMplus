@@ -44,7 +44,7 @@ export default function TableWrapper() {
 	}
 
 	if (isError) {
-		return <Alert variant="danger">{error?.message || "Unknown error"}</Alert>;
+		return <Alert variant="danger">{error?.message}</Alert>;
 	}
 
 	const handleDownload = async (id) => {
@@ -56,7 +56,7 @@ export default function TableWrapper() {
 	};
 
 	let filtered = null;
-	if (search && data) {
+	if (search) {
 		filtered = data?.filter(
 			(item) =>
 				item.domainNames.some((domain) => domain.toLowerCase().includes(search)) ||
@@ -152,7 +152,7 @@ export default function TableWrapper() {
 				</div>
 				<Table
 					data={filtered ?? data ?? []}
-					isFiltered={Boolean(search)}
+					isFiltered={search}
 					isFetching={isFetching}
 					onRenew={showRenewCertificateModal}
 					onDownload={handleDownload}
@@ -179,16 +179,14 @@ export default function TableWrapper() {
 										<T id={certificateProviderTranslation(certificate.provider)} />
 										{certificate.npmplusDnsProvider ? ` – ${certificate.npmplusDnsProvider}` : null}
 									</div>
-									{certificate.expiresOn ? (
-										<div>
-											<T
-												id="expires.on"
-												data={{
-													date: formatDateTime(certificate.expiresOn),
-												}}
-											/>
-										</div>
-									) : null}
+									<div>
+										<T
+											id="expires.on"
+											data={{
+												date: formatDateTime(certificate.expiresOn),
+											}}
+										/>
+									</div>
 								</>
 							) : null,
 						});

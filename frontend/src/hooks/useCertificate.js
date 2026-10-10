@@ -3,12 +3,11 @@ import { getCertificate } from "src/api/backend";
 
 const fetchCertificate = (id) => getCertificate(id);
 
-const useCertificate = (id, options = {}) => {
+const useCertificate = (id) => {
 	return useQuery({
 		queryKey: ["certificate", id],
 		queryFn: () => fetchCertificate(id),
 		staleTime: 60 * 1000, // 1 minute
-		...options,
 	});
 };
 

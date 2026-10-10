@@ -19,6 +19,6 @@ const hasPermission = (section, perm, userPerms, roles) => {
 	return acceptable.indexOf(v) !== -1;
 };
 
-const isAdmin = (roles) => roles?.includes("admin") || false;
+const isAdmin = (roles) => roles?.includes("admin");
 
 export { hasPermission, isAdmin };

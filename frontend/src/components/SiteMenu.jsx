@@ -14,7 +14,7 @@ import {
 } from "@tabler/icons-react";
 import React from "react";
 import { useLocation } from "react-router";
-import { HasPermission, NavLink } from "src/components";
+import { NavLink } from "src/components";
 import { useUser } from "src/hooks";
 import { T } from "src/locale";
 import {
@@ -109,7 +109,7 @@ const menuGroups = [
 ];
 
 const getMenuItem = (item, onClick, pathname) => {
-	if (item.items && item.items.length > 0) {
+	if (item.items) {
 		return getMenuDropown(item, onClick, pathname);
 	}
 
@@ -119,9 +119,7 @@ const getMenuItem = (item, onClick, pathname) => {
 			className={`nav-item${item.to && pathname.startsWith(item.to) ? " active" : ""}`}
 		>
 			<NavLink to={item.to} href={item.href} onClick={onClick}>
-				<span className="nav-link-icon">
-					{item.icon && React.createElement(item.icon, { height: 24, width: 24 })}
-				</span>
+				<span className="nav-link-icon">{React.createElement(item.icon, { height: 24, width: 24 })}</span>
 				<span className="nav-link-title d-flex align-items-center gap-1">
 					{item.href ? item.label : <T id={item.label} />}
 					{item.href && <IconExternalLink height={16} width={16} />}
@@ -144,17 +142,16 @@ const getMenuDropown = (item, onClick, pathname) => (
 		</button>
 		<div className="dropdown-menu">
 			{item.items?.map((subitem, idx) => (
-				<HasPermission
+				<NavLink
 					key={`${idx}-${subitem.to}`}
-					section={subitem.permissionSection}
-					permission={subitem.permission || VIEW}
-					hideError
+					to={subitem.to}
+					isDropdownItem
+					active={pathname.startsWith(subitem.to)}
+					onClick={onClick}
 				>
-					<NavLink to={subitem.to} isDropdownItem active={pathname.startsWith(subitem.to)} onClick={onClick}>
-						{React.createElement(subitem.icon, { width: 18 })}
-						<T id={subitem.label} />
-					</NavLink>
-				</HasPermission>
+					{React.createElement(subitem.icon, { width: 18 })}
+					<T id={subitem.label} />
+				</NavLink>
 			))}
 		</div>
 	</li>
@@ -188,7 +185,7 @@ export function SiteMenu() {
 													? user?.goaccess
 													: hasPermission(
 															item.permissionSection,
-															item.permission || VIEW,
+															item.permission,
 															user?.permissions,
 															user?.roles,
 														),

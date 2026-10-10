@@ -1,5 +1,4 @@
 const separatorPattern = /[-_\s]+(.)?/g;
-const firstCharPattern = /^./;
 const upperBoundaryPattern = /(?=[A-Z])/;
 
 const mapKeys = (fn) => {
@@ -12,7 +11,5 @@ const mapKeys = (fn) => {
 	};
 	return walk;
 };
-export const camelizeKeys = mapKeys((s) =>
-	s.replace(separatorPattern, (_, c) => (c ? c.toUpperCase() : "")).replace(firstCharPattern, (c) => c.toLowerCase()),
-);
+export const camelizeKeys = mapKeys((s) => s.replace(separatorPattern, (_, c) => c.toUpperCase()));
 export const decamelizeKeys = mapKeys((s) => s.split(upperBoundaryPattern).join("_").toLowerCase());

@@ -6,7 +6,7 @@ import { intl, T } from "src/locale";
 
 export function AccessClientFields({ initialValues, name = "clients" }) {
 	const [values, setValues] = useState(
-		initialValues.at(-1)?.address?.trim().toLowerCase() === "all"
+		initialValues.at(-1)?.address?.toLowerCase() === "all"
 			? initialValues
 			: [...initialValues, { directive: "deny", address: "all" }],
 	);
@@ -24,9 +24,6 @@ export function AccessClientFields({ initialValues, name = "clients" }) {
 
 	const handleRemove = (idx) => {
 		const newValues = values.toSpliced(idx, 1);
-		if (newValues.length === 1) {
-			newValues.splice(newValues.length - 1, 0, blankClient);
-		}
 		setValues(newValues);
 		setFormField(newValues);
 	};

@@ -20,9 +20,7 @@ function TotpForm() {
 		try {
 			await submitTotp(values);
 		} catch (err) {
-			if (err instanceof Error) {
-				setFormErr(err.message);
-			}
+			setFormErr(err.message);
 			resetForm();
 		}
 		setSubmitting(false);
@@ -40,9 +38,7 @@ function TotpForm() {
 			<p className="text-secondary text-center mb-4">
 				<T id="login.totp-description" />
 			</p>
-			{formErr !== "" && (
-				<Alert variant="danger">{intl.formatMessage({ id: formErr, defaultMessage: formErr })}</Alert>
-			)}
+			{formErr !== "" && <Alert variant="danger">{intl.formatMessage({ id: formErr })}</Alert>}
 			<Formik initialValues={{ code: "" }} onSubmit={onSubmit}>
 				{({ isSubmitting }) => (
 					<Form>
@@ -117,9 +113,7 @@ function PasswordForm() {
 		try {
 			await login(values.email, values.password);
 		} catch (err) {
-			if (err instanceof Error) {
-				setFormErr(err.message);
-			}
+			setFormErr(err.message);
 		}
 		setSubmitting(false);
 	};
@@ -140,9 +134,7 @@ function PasswordForm() {
 			<h2 className="h2 text-center mb-4">
 				<T id="login.title" />
 			</h2>
-			{formErr !== "" && (
-				<Alert variant="danger">{intl.formatMessage({ id: formErr, defaultMessage: formErr })}</Alert>
-			)}
+			{formErr !== "" && <Alert variant="danger">{intl.formatMessage({ id: formErr })}</Alert>}
 			{health.data?.password && (
 				<Formik
 					initialValues={{

@@ -58,13 +58,13 @@ const StreamModal = EasyModal.create(({ id, visible, remove }) => {
 
 	return (
 		<Modal show={visible} onHide={remove}>
-			{!isLoading && error && (
+			{error && (
 				<Alert variant="danger" className="m-3">
-					{error?.message || "Unknown error"}
+					{error?.message}
 				</Alert>
 			)}
 			{isLoading && <Loading noLogo />}
-			{!isLoading && data && (
+			{data && (
 				<Formik
 					initialValues={{
 						incomingPort: data?.incomingPort,
@@ -91,12 +91,7 @@ const StreamModal = EasyModal.create(({ id, visible, remove }) => {
 								</Modal.Title>
 							</Modal.Header>
 							<Modal.Body className="p-0">
-								<Alert
-									variant="danger"
-									show={Boolean(errorMsg)}
-									onClose={() => setErrorMsg(null)}
-									dismissible
-								>
+								<Alert variant="danger" show={errorMsg} onClose={() => setErrorMsg(null)} dismissible>
 									{errorMsg}
 								</Alert>
 
@@ -165,8 +160,7 @@ const StreamModal = EasyModal.create(({ id, visible, remove }) => {
 
 															{form.errors.incomingPort ? (
 																<div className="invalid-feedback">
-																	{form.errors.incomingPort &&
-																	form.touched.incomingPort
+																	{form.touched.incomingPort
 																		? form.errors.incomingPort
 																		: null}
 																</div>
@@ -193,8 +187,7 @@ const StreamModal = EasyModal.create(({ id, visible, remove }) => {
 
 															{form.errors.npmplusDescription ? (
 																<div className="invalid-feedback">
-																	{form.errors.npmplusDescription &&
-																	form.touched.npmplusDescription
+																	{form.touched.npmplusDescription
 																		? form.errors.npmplusDescription
 																		: null}
 																</div>
@@ -226,8 +219,7 @@ const StreamModal = EasyModal.create(({ id, visible, remove }) => {
 
 																	{form.errors.forwardingHost ? (
 																		<div className="invalid-feedback">
-																			{form.errors.forwardingHost &&
-																			form.touched.forwardingHost
+																			{form.touched.forwardingHost
 																				? form.errors.forwardingHost
 																				: null}
 																		</div>
@@ -257,8 +249,7 @@ const StreamModal = EasyModal.create(({ id, visible, remove }) => {
 
 																	{form.errors.forwardingPort ? (
 																		<div className="invalid-feedback">
-																			{form.errors.forwardingPort &&
-																			form.touched.forwardingPort
+																			{form.touched.forwardingPort
 																				? form.errors.forwardingPort
 																				: null}
 																		</div>

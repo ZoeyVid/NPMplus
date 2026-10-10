@@ -87,12 +87,7 @@ const CustomCertificateModal = EasyModal.create(({ visible, remove, cert, provid
 							</Modal.Title>
 						</Modal.Header>
 						<Modal.Body className="p-0">
-							<Alert
-								variant="danger"
-								show={Boolean(errorMsg)}
-								onClose={() => setErrorMsg(null)}
-								dismissible
-							>
+							<Alert variant="danger" show={errorMsg} onClose={() => setErrorMsg(null)} dismissible>
 								{errorMsg}
 							</Alert>
 							<div className="card m-0 border-0">
@@ -120,9 +115,7 @@ const CustomCertificateModal = EasyModal.create(({ visible, remove, cert, provid
 
 												{form.errors.niceName ? (
 													<div className="invalid-feedback">
-														{form.errors.niceName && form.touched.niceName
-															? form.errors.niceName
-															: null}
+														{form.touched.niceName ? form.errors.niceName : null}
 													</div>
 												) : null}
 											</div>
@@ -141,22 +134,9 @@ const CustomCertificateModal = EasyModal.create(({ visible, remove, cert, provid
 													autoComplete="off"
 													className="form-control"
 													onChange={(event) => {
-														form.setFieldValue(
-															field.name,
-															event.currentTarget.files?.length
-																? event.currentTarget.files[0]
-																: null,
-														);
+														form.setFieldValue(field.name, event.currentTarget.files[0]);
 													}}
 												/>
-
-												{form.errors.certificate ? (
-													<div className="invalid-feedback">
-														{form.errors.certificate && form.touched.certificate
-															? form.errors.certificate
-															: null}
-													</div>
-												) : null}
 											</div>
 										)}
 									</Field>
@@ -176,20 +156,10 @@ const CustomCertificateModal = EasyModal.create(({ visible, remove, cert, provid
 														onChange={(event) => {
 															form.setFieldValue(
 																field.name,
-																event.currentTarget.files?.length
-																	? event.currentTarget.files[0]
-																	: null,
+																event.currentTarget.files[0],
 															);
 														}}
 													/>
-
-													{form.errors.certificateKey ? (
-														<div className="invalid-feedback">
-															{form.errors.certificateKey && form.touched.certificateKey
-																? form.errors.certificateKey
-																: null}
-														</div>
-													) : null}
 												</div>
 											)}
 										</Field>

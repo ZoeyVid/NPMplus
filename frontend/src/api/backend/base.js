@@ -7,7 +7,7 @@ export const queryClient = new QueryClient();
 const contentTypeHeader = "Content-Type";
 
 function buildUrl({ url, params }) {
-	const endpoint = url.replace(/^\/|\/$/g, "");
+	const endpoint = url.slice(1);
 	const baseUrl = `/api/${endpoint}`;
 	const apiUrl = queryString.stringifyUrl({
 		url: baseUrl,
@@ -17,9 +17,7 @@ function buildUrl({ url, params }) {
 }
 
 function buildBody(data) {
-	if (data) {
-		return JSON.stringify(decamelizeKeys(data));
-	}
+	return JSON.stringify(decamelizeKeys(data));
 }
 
 async function processResponse(response, reload = true) {
@@ -48,7 +46,7 @@ export async function get({ url, params, reload }, abortController) {
 	return processResponse(response, reload);
 }
 
-export async function download({ url, params }, filename = "download.file") {
+export async function download({ url, params }, filename) {
 	const res = await fetch(buildUrl({ url, params }));
 	if (!res.ok) await processResponse(res);
 	const bl = await res.blob();

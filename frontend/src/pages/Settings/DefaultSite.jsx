@@ -40,7 +40,7 @@ export default function DefaultSite() {
 		});
 	};
 
-	if (!isLoading && error) {
+	if (error) {
 		return (
 			<div className="card-body">
 				<div className="mb-3">
@@ -75,7 +75,7 @@ export default function DefaultSite() {
 			{({ values }) => (
 				<Form>
 					<div className="card-body">
-						<Alert variant="danger" show={Boolean(errorMsg)} onClose={() => setErrorMsg(null)} dismissible>
+						<Alert variant="danger" show={errorMsg} onClose={() => setErrorMsg(null)} dismissible>
 							{errorMsg}
 						</Alert>
 						<Field name="value">
@@ -204,9 +204,7 @@ export default function DefaultSite() {
 
 											{form.errors.redirect ? (
 												<div className="invalid-feedback">
-													{form.errors.redirect && form.touched.redirect
-														? form.errors.redirect
-														: null}
+													{form.touched.redirect ? form.errors.redirect : null}
 												</div>
 											) : null}
 										</div>
@@ -236,9 +234,7 @@ export default function DefaultSite() {
 
 												{form.errors.html ? (
 													<div className="invalid-feedback">
-														{form.errors.html && form.touched.html
-															? form.errors.html
-															: null}
+														{form.touched.html ? form.errors.html : null}
 													</div>
 												) : null}
 											</div>

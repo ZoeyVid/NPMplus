@@ -74,7 +74,7 @@ export default function Table({ data, isFetching, onDelete, onRenew, onDownload,
 							domains={value.domainNames}
 							createdOn={value.createdOn}
 							niceName={value.niceName}
-							provider={value.provider || ""}
+							provider={value.provider}
 						/>
 					);
 				},
@@ -87,7 +87,7 @@ export default function Table({ data, isFetching, onDelete, onRenew, onDownload,
 					cell: (info) => {
 						const r = info.row.original;
 						if (r.provider === "letsencrypt") {
-							if (r.npmplusDnsChallenge && r.npmplusDnsProvider) {
+							if (r.npmplusDnsChallenge) {
 								return (
 									<>
 										<T id="lets-encrypt" /> &ndash; {r.npmplusDnsProvider}
@@ -106,7 +106,7 @@ export default function Table({ data, isFetching, onDelete, onRenew, onDownload,
 			columnHelper.accessor((row) => row.expiresOn, {
 				id: "expiresOn",
 				header: intl.formatMessage({ id: "column.expires" }),
-				cell: (info) => <DateFormatter value={info.getValue()} highlightPast />,
+				cell: (info) => <DateFormatter value={info.getValue()} />,
 			}),
 			columnHelper.accessor(isInUse, {
 				id: "inUse",
@@ -115,10 +115,10 @@ export default function Table({ data, isFetching, onDelete, onRenew, onDownload,
 					const r = info.row.original;
 					return (
 						<CertificateInUseFormatter
-							proxyHosts={[...(r.proxyHosts || []), ...(r.mtlsProxyHosts || [])]}
-							redirectionHosts={[...(r.redirectionHosts || []), ...(r.mtlsRedirectionHosts || [])]}
-							deadHosts={[...(r.deadHosts || []), ...(r.mtlsDeadHosts || [])]}
-							streams={[...(r.streams || []), ...(r.mtlsStreams || [])]}
+							proxyHosts={[...r.proxyHosts, ...r.mtlsProxyHosts]}
+							redirectionHosts={[...r.redirectionHosts, ...r.mtlsRedirectionHosts]}
+							deadHosts={[...r.deadHosts, ...r.mtlsDeadHosts]}
+							streams={[...r.streams, ...r.mtlsStreams]}
 						/>
 					);
 				},

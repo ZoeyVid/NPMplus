@@ -41,12 +41,11 @@ const fetchProxyHost = (id) => {
 	return getProxyHost(id);
 };
 
-const useProxyHost = (id, options = {}) => {
+const useProxyHost = (id) => {
 	return useQuery({
 		queryKey: ["proxy-host", id],
 		queryFn: () => fetchProxyHost(id),
 		staleTime: 60 * 1000, // 1 minute
-		...options,
 	});
 };
 

@@ -3,12 +3,11 @@ import { getUsers } from "src/api/backend";
 
 const fetchUsers = (expand) => getUsers(expand);
 
-const useUsers = (expand, options = {}) =>
+const useUsers = (expand) =>
 	useQuery({
 		queryKey: ["users", { expand }],
 		queryFn: () => fetchUsers(expand),
 		staleTime: 60 * 1000,
-		...options,
 	});
 
 export { useUsers };

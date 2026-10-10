@@ -9,7 +9,7 @@ function EmptyData({
 	isFiltered,
 	object,
 	objects,
-	color = "primary",
+	color,
 	customAddBtn,
 	permissionSection,
 	permission,

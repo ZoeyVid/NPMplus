@@ -24,12 +24,11 @@ const fetchDeadHost = (id) => {
 	return getDeadHost(id);
 };
 
-const useDeadHost = (id, options = {}) => {
+const useDeadHost = (id) => {
 	return useQuery({
 		queryKey: ["dead-host", id],
 		queryFn: () => fetchDeadHost(id),
 		staleTime: 60 * 1000, // 1 minute
-		...options,
 	});
 };
 

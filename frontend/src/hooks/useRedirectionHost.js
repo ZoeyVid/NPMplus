@@ -28,12 +28,11 @@ const fetchRedirectionHost = (id) => {
 	return getRedirectionHost(id);
 };
 
-const useRedirectionHost = (id, options = {}) => {
+const useRedirectionHost = (id) => {
 	return useQuery({
 		queryKey: ["redirection-host", id],
 		queryFn: () => fetchRedirectionHost(id),
 		staleTime: 60 * 1000, // 1 minute
-		...options,
 	});
 };
 

@@ -74,13 +74,13 @@ const UserModal = EasyModal.create(({ id, visible, remove }) => {
 
 	return (
 		<Modal show={visible} onHide={remove}>
-			{!isLoading && error && (
+			{error && (
 				<Alert variant="danger" className="m-3">
-					{error?.message || "Unknown error"}
+					{error?.message}
 				</Alert>
 			)}
 			{(isLoading || currentIsLoading) && <Loading noLogo />}
-			{!isLoading && !currentIsLoading && data && currentUser && (
+			{data && currentUser && (
 				<Formik
 					initialValues={{
 						name: data?.name,
@@ -98,12 +98,7 @@ const UserModal = EasyModal.create(({ id, visible, remove }) => {
 								</Modal.Title>
 							</Modal.Header>
 							<Modal.Body>
-								<Alert
-									variant="danger"
-									show={Boolean(errorMsg)}
-									onClose={() => setErrorMsg(null)}
-									dismissible
-								>
+								<Alert variant="danger" show={errorMsg} onClose={() => setErrorMsg(null)} dismissible>
 									{errorMsg}
 								</Alert>
 								{id !== "new" && (
@@ -111,7 +106,7 @@ const UserModal = EasyModal.create(({ id, visible, remove }) => {
 										<span
 											className="avatar avatar-square avatar-lg me-3"
 											style={{
-												backgroundImage: `url(${data?.avatar || "/images/default-avatar.jpg"})`,
+												backgroundImage: `url(${data?.avatar})`,
 											}}
 										/>
 
@@ -122,7 +117,7 @@ const UserModal = EasyModal.create(({ id, visible, remove }) => {
 											className="d-none"
 											onChange={(e) => {
 												const file = e.target.files?.[0];
-												if (file) void changeAvatar(() => uploadAvatar(id, file));
+												void changeAvatar(() => uploadAvatar(id, file));
 												e.target.value = "";
 											}}
 										/>
@@ -160,9 +155,7 @@ const UserModal = EasyModal.create(({ id, visible, remove }) => {
 												</label>
 												{form.errors.name ? (
 													<div className="invalid-feedback">
-														{form.errors.name && form.touched.name
-															? form.errors.name
-															: null}
+														{form.touched.name ? form.errors.name : null}
 													</div>
 												) : null}
 											</div>
@@ -189,16 +182,14 @@ const UserModal = EasyModal.create(({ id, visible, remove }) => {
 												</label>
 												{form.errors.email ? (
 													<div className="invalid-feedback">
-														{form.errors.email && form.touched.email
-															? form.errors.email
-															: null}
+														{form.touched.email ? form.errors.email : null}
 													</div>
 												) : null}
 											</div>
 										)}
 									</Field>
 								</div>
-								{currentUser && data && currentUser?.id !== data?.id ? (
+								{currentUser?.id !== data?.id ? (
 									<div className="my-3">
 										<h4 className="py-2">
 											<T id="options" />

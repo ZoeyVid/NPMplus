@@ -30,21 +30,17 @@ export default function Setup() {
 
 		try {
 			const user = await createSetupUser(payload);
-			if (user?.id) {
-				if (health.data?.password === false) {
-					window.location.href = "/api/oidc";
-					return;
-				}
-				try {
-					await login(user.email, password);
-					// Trigger a Health change
-					await queryClient.refetchQueries({ queryKey: ["health"] });
-					// window.location.reload();
-				} catch (err) {
-					setErrorMsg(err.message);
-				}
-			} else {
-				setErrorMsg("cannot_create_user");
+			if (health.data?.password === false) {
+				window.location.href = "/api/oidc";
+				return;
+			}
+			try {
+				await login(user.email, password);
+				// Trigger a Health change
+				await queryClient.refetchQueries({ queryKey: ["health"] });
+				// window.location.reload();
+			} catch (err) {
+				setErrorMsg(err.message);
 			}
 		} catch (err) {
 			setErrorMsg(err.message);
@@ -63,7 +59,7 @@ export default function Setup() {
 					</div>
 				</div>
 				<div className="card card-md">
-					<Alert variant="danger" show={Boolean(errorMsg)} onClose={() => setErrorMsg(null)} dismissible>
+					<Alert variant="danger" show={errorMsg} onClose={() => setErrorMsg(null)} dismissible>
 						{errorMsg}
 					</Alert>
 					<Formik
@@ -105,9 +101,7 @@ export default function Setup() {
 													</label>
 													{form.errors.name ? (
 														<div className="invalid-feedback">
-															{form.errors.name && form.touched.name
-																? form.errors.name
-																: null}
+															{form.touched.name ? form.errors.name : null}
 														</div>
 													) : null}
 												</div>
@@ -134,9 +128,7 @@ export default function Setup() {
 													</label>
 													{form.errors.email ? (
 														<div className="invalid-feedback">
-															{form.errors.email && form.touched.email
-																? form.errors.email
-																: null}
+															{form.touched.email ? form.errors.email : null}
 														</div>
 													) : null}
 												</div>

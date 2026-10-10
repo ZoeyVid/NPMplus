@@ -3,11 +3,10 @@ import Popover from "react-bootstrap/Popover";
 import { intl } from "src/locale";
 import { showAccessListModal, showProxyHostModal } from "src/modals";
 
-export function AccessListFormatter({ proxyHostId, access = [], type = "public", locations = [] }) {
+export function AccessListFormatter({ proxyHostId, access, type, locations }) {
 	const hasLocationAcls =
-		(locations || []).filter(
-			(loc) => loc.npmplusAccessListType === "custom" && (loc.npmplusAccessListIds || []).length > 0,
-		).length > 0;
+		locations.filter((loc) => loc.npmplusAccessListType === "custom" && loc.npmplusAccessListIds.length > 0)
+			.length > 0;
 
 	let triggerLabel =
 		type === "custom"
@@ -35,7 +34,7 @@ export function AccessListFormatter({ proxyHostId, access = [], type = "public",
 			onClick={(e) => {
 				e.preventDefault();
 				if (access.length === 1) {
-					showAccessListModal(access[0].id || 0);
+					showAccessListModal(access[0].id);
 				} else {
 					showProxyHostModal(proxyHostId);
 				}

@@ -9,8 +9,8 @@ export function DomainNamesField({
 	label = "domain-names",
 	id = "domainNames",
 	maxDomains,
-	isWildcardPermitted = false,
-	dnsProviderWildcardSupported = false,
+	isWildcardPermitted,
+	dnsProviderWildcardSupported,
 	onChange,
 }) {
 	const { setFieldValue } = useFormikContext();

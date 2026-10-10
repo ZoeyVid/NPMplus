@@ -28,7 +28,7 @@ export default function TableWrapper() {
 	}
 
 	if (isError) {
-		return <Alert variant="danger">{error?.message || "Unknown error"}</Alert>;
+		return <Alert variant="danger">{error?.message}</Alert>;
 	}
 
 	const handleDisableToggle = async (id, enabled) => {
@@ -41,7 +41,7 @@ export default function TableWrapper() {
 	};
 
 	let filtered = null;
-	if (search && data) {
+	if (search) {
 		filtered = data?.filter(
 			(item) => item.name.toLowerCase().includes(search) || item.email.toLowerCase().includes(search),
 		);
@@ -83,7 +83,7 @@ export default function TableWrapper() {
 				</div>
 				<Table
 					data={filtered ?? data ?? []}
-					isFiltered={Boolean(search)}
+					isFiltered={search}
 					isFetching={isFetching}
 					currentUserId={currentUser?.id}
 					onEditUser={(id) => showUserModal(id)}

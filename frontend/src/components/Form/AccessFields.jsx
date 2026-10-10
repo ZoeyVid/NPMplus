@@ -49,14 +49,14 @@ export function AccessFields({
 	const { isLoading, isError, error, data } = useAccessLists(["owner", "items", "clients"]);
 
 	const createDefaultItem = (item) => ({
-		value: item.id || 0,
+		value: item.id,
 		label: item.name,
 		subLabel: intl.formatMessage(
 			{ id: "access-list.subtitle" },
 			{
 				users: item?.items?.length,
 				rules: item?.clients?.length,
-				date: item?.createdOn ? formatDateTime(item?.createdOn) : "N/A",
+				date: formatDateTime(item?.createdOn),
 			},
 		),
 		meta: item,
@@ -88,7 +88,7 @@ export function AccessFields({
 	};
 
 	const defaultOptions = data?.map(createDefaultItem) || [];
-	const valuesSet = new Set(values?.map((item) => item || 0) || []);
+	const valuesSet = new Set(values);
 	const options = defaultOptions.filter((option) => !valuesSet.has(option.value));
 
 	const typeOptions = () => {
@@ -110,16 +110,14 @@ export function AccessFields({
 	};
 
 	const onAccessListChange = (acl, idx) => {
-		const newValues = values.map((id, i) => (i === idx ? acl.id || 0 : id));
+		const newValues = values.map((id, i) => (i === idx ? acl.id : id));
 		applyUpdatedValues(newValues);
 	};
 
 	const handleAdd = () => {
 		const newAccessOption = options[0];
-		if (newAccessOption?.meta.id) {
-			const newValues = [...values, newAccessOption.meta.id];
-			applyUpdatedValues(newValues);
-		}
+		const newValues = [...values, newAccessOption.meta.id];
+		applyUpdatedValues(newValues);
 	};
 
 	const handleMoveUp = (idx) => {
@@ -181,7 +179,6 @@ export function AccessFields({
 								}),
 							}}
 							onChange={(e) => {
-								if (!e || Array.isArray(e)) return;
 								const value = e.type;
 								setAclValue(value);
 								void setFieldValue(typeFieldName, value);
@@ -194,7 +191,7 @@ export function AccessFields({
 			{!isLoading && !isError && aclValue === "custom" ? (
 				<>
 					{values.map((item, idx) => (
-						<div key={item ?? idx} className="input-group mb-1 shadow-none">
+						<div key={item} className="input-group mb-1 shadow-none">
 							<Select
 								className="col-md-8 mb-1"
 								unstyled
@@ -209,10 +206,8 @@ export function AccessFields({
 									}),
 								}}
 								onChange={(e) => {
-									if (!e || Array.isArray(e)) return;
 									onAccessListChange(e.meta, idx);
 								}}
-								isDisabled={aclValue !== "custom"}
 							/>
 
 							{idx > 0 ? (
@@ -265,8 +260,7 @@ export function AccessFields({
 				acls[0]?.satisfyAny &&
 				acls.some(
 					(acl) =>
-						acl.items?.length > 0 ||
-						acl.clients?.some((client) => client.address?.trim().toLowerCase() !== "all"),
+						acl.items?.length > 0 || acl.clients?.some((client) => client.address?.toLowerCase() !== "all"),
 				) && (
 					<p className="text-warning">
 						<IconAlertTriangle size={16} className="me-1" />

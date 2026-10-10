@@ -17,12 +17,11 @@ const fetchUser = (id) => {
 	return getUser(id, ["permissions"]);
 };
 
-const useUser = (id, options = {}) => {
+const useUser = (id) => {
 	return useQuery({
 		queryKey: ["user", id],
 		queryFn: () => fetchUser(id),
 		staleTime: 60 * 1000, // 1 minute
-		...options,
 	});
 };
 

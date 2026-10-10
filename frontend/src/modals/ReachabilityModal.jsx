@@ -28,47 +28,43 @@ const ReachabilityModal = EasyModal.create(({ visible, remove, domains }) => {
 		void handleTest();
 	}, [domains]);
 
-	const parseTestResults = () => {
-		if (!testResults) return null;
+	const parseTestResults = () => (
+		<>
+			{testResults.map((testResult) => {
+				const { domain, status } = testResult;
+				let messageComponent;
 
-		return (
-			<>
-				{testResults.map((testResult) => {
-					const { domain, status } = testResult;
-					let messageComponent;
-
-					switch (status) {
-						case "ok":
-							messageComponent = <T id="certificates.http.reachability-ok" />;
-							break;
-						case "no-host":
-							messageComponent = <T id="certificates.http.reachability-not-resolved" />;
-							break;
-						case "failed":
-							messageComponent = <T id="certificates.http.reachability-failed-to-check" />;
-							break;
-						case "404":
-							messageComponent = <T id="certificates.http.reachability-404" />;
-							break;
-						case "wrong-data":
-							messageComponent = <T id="certificates.http.reachability-wrong-data" />;
-							break;
-						default: {
-							const code = status.slice(6);
-							messageComponent = <T id="certificates.http.reachability-other" data={{ code }} />;
-							break;
-						}
+				switch (status) {
+					case "ok":
+						messageComponent = <T id="certificates.http.reachability-ok" />;
+						break;
+					case "no-host":
+						messageComponent = <T id="certificates.http.reachability-not-resolved" />;
+						break;
+					case "failed":
+						messageComponent = <T id="certificates.http.reachability-failed-to-check" />;
+						break;
+					case "404":
+						messageComponent = <T id="certificates.http.reachability-404" />;
+						break;
+					case "wrong-data":
+						messageComponent = <T id="certificates.http.reachability-wrong-data" />;
+						break;
+					default: {
+						const code = status.slice(6);
+						messageComponent = <T id="certificates.http.reachability-other" data={{ code }} />;
+						break;
 					}
+				}
 
-					return (
-						<p key={domain}>
-							<strong>{domain}:</strong> {messageComponent}
-						</p>
-					);
-				})}
-			</>
-		);
-	};
+				return (
+					<p key={domain}>
+						<strong>{domain}:</strong> {messageComponent}
+					</p>
+				);
+			})}
+		</>
+	);
 
 	return (
 		<Modal show={visible} onHide={remove}>
@@ -78,7 +74,7 @@ const ReachabilityModal = EasyModal.create(({ visible, remove, domains }) => {
 				</Modal.Title>
 			</Modal.Header>
 			<Modal.Body className="p-0">
-				<Alert variant="danger" show={Boolean(errorMsg)} onClose={() => setErrorMsg(null)} dismissible>
+				<Alert variant="danger" show={errorMsg} onClose={() => setErrorMsg(null)} dismissible>
 					{errorMsg}
 				</Alert>
 				<div className="card m-0 border-0">

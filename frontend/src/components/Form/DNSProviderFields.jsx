@@ -1,30 +1,24 @@
 import { IconAlertTriangle } from "@tabler/icons-react";
 import { Field, useFormikContext } from "formik";
-import { useState } from "react";
 import Select from "react-select";
 import { useDnsProviders } from "src/hooks";
 import { intl, T } from "src/locale";
 import { selectClassNames } from "src/modules/Select";
 
-export function DNSProviderFields({ showBoundaryBox = false }) {
+export function DNSProviderFields({ showBoundaryBox }) {
 	const { values, setFieldValue } = useFormikContext();
 	const { data: dnsProviders, isLoading } = useDnsProviders();
-	const [dnsProviderId, setDnsProviderId] = useState(null);
-
-	const v = values || {};
 
 	const handleChange = (newValue, _actionMeta) => {
 		void setFieldValue("npmplusDnsProvider", newValue?.value);
 		void setFieldValue("npmplusDnsProviderCredentials", newValue?.credentials);
-		setDnsProviderId(newValue?.value);
 	};
 
-	const options =
-		dnsProviders?.map((p) => ({
-			value: p.id,
-			label: p.name,
-			credentials: p.credentials,
-		})) || [];
+	const options = dnsProviders?.map((p) => ({
+		value: p.id,
+		label: p.name,
+		credentials: p.credentials,
+	}));
 
 	return (
 		<div className={showBoundaryBox ? "py-3 border border-orange border-opacity-10 rounded bg-cyan-lt" : undefined}>
@@ -58,7 +52,7 @@ export function DNSProviderFields({ showBoundaryBox = false }) {
 				)}
 			</Field>
 
-			{dnsProviderId ? (
+			{values.npmplusDnsProvider ? (
 				<>
 					<Field name="npmplusDnsProviderCredentials">
 						{({ field }) => (
@@ -71,7 +65,6 @@ export function DNSProviderFields({ showBoundaryBox = false }) {
 									spellCheck={false}
 									id="dnsProviderCredentials"
 									rows={6}
-									value={v.npmplusDnsProviderCredentials || ""}
 									{...field}
 								/>
 

@@ -26,9 +26,7 @@ export function NavLink({ children, to, href, isDropdownItem, active, onClick })
 				if (onClick) {
 					onClick();
 				}
-				if (to) {
-					void navigate(to);
-				}
+				void navigate(to);
 			}}
 		>
 			{children}

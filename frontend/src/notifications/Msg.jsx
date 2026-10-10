@@ -2,7 +2,7 @@ import { IconCheck, IconExclamationCircle } from "@tabler/icons-react";
 import cn from "clsx";
 
 function Msg({ data }) {
-	const cns = cn("toast", "show", data.type || null);
+	const cns = cn("toast", "show", data.type);
 
 	let icon = null;
 	switch (data.type) {
@@ -25,11 +25,9 @@ function Msg({ data }) {
 			data-bs-autohide="false"
 			data-bs-toggle="toast"
 		>
-			{data.title && (
-				<div className="toast-header">
-					{icon} {data.title}
-				</div>
-			)}
+			<div className="toast-header">
+				{icon} {data.title}
+			</div>
 			<div className="toast-body">{data.message}</div>
 		</div>
 	);

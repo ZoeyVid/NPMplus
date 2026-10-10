@@ -58,7 +58,6 @@ export function LocationsFields({ initialValues, name = "locations" }) {
 		const item = createUiLocation(blankItem);
 		const newValues = [...values, item];
 		setValues(newValues);
-		setFormField(newValues);
 		setExpanded([...expanded, item.uiKey]);
 		setFilter("");
 		scrollToKey.current = item.uiKey;
@@ -117,11 +116,11 @@ export function LocationsFields({ initialValues, name = "locations" }) {
 
 	const isOpen = (item) => expanded.includes(item.uiKey);
 
-	const locationLabel = (item) => `${item.locationType ?? ""}${item.path ?? ""}`;
+	const locationLabel = (item) => `${item.locationType ?? ""}${item.path}`;
 
 	const forwardSummary = ({ forwardScheme, forwardHost, forwardPort }) => {
 		if (!forwardHost || forwardScheme === "empty") return "";
-		if (forwardScheme && forwardScheme !== "path") {
+		if (forwardScheme !== "path") {
 			return `${forwardScheme}://${forwardHost}${forwardPort ? `:${forwardPort}` : ""}`;
 		}
 		return forwardHost;

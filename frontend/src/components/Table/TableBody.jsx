@@ -51,7 +51,7 @@ function TableBody(props) {
 							colSpan={colSpan}
 							className="subheader fw-bold text-secondary py-2 border-bottom bg-surface-secondary"
 						>
-							{renderGroupLabel ? renderGroupLabel(key) : key}
+							{renderGroupLabel(key)}
 						</th>
 					</tr>
 					{groups.get(key)?.map(renderRow)}

@@ -17,18 +17,16 @@ const Option = (props) => (
 );
 
 export function SSLCertificateField({
-	name = "certificateId",
-	label = "ssl-certificate",
+	name,
+	label,
 	id = "certificateId",
-	required,
 	allowNew,
 	forHttp = true,
 	mtlsName = "npmplusMtlsCertificateId",
 	mtlsLabel = "mtls-certificate",
 }) {
 	const { isLoading, isError, error, data } = useCertificates();
-	const { values, setFieldValue } = useFormikContext();
-	const v = values || {};
+	const { values: v, setFieldValue } = useFormikContext();
 
 	const handleChange = (newValue, _actionMeta) => {
 		void setFieldValue(name, newValue?.value);
@@ -70,7 +68,7 @@ export function SSLCertificateField({
 			.map((cert) => ({
 				value: cert.id,
 				label: cert.niceName,
-				subLabel: `${cert.provider === "letsencrypt" ? intl.formatMessage({ id: "lets-encrypt" }) : cert.provider} — ${intl.formatMessage({ id: "expires.on" }, { date: cert.expiresOn ? formatDateTime(cert.expiresOn) : "N/A" })}`,
+				subLabel: `${cert.provider === "letsencrypt" ? intl.formatMessage({ id: "lets-encrypt" }) : cert.provider} — ${intl.formatMessage({ id: "expires.on" }, { date: formatDateTime(cert.expiresOn) })}`,
 				icon: <IconShield size={14} className="text-pink" />,
 			})) || [];
 
@@ -80,7 +78,7 @@ export function SSLCertificateField({
 			.map((cert) => ({
 				value: cert.id,
 				label: cert.niceName,
-				subLabel: `${cert.provider} — ${intl.formatMessage({ id: "expires.on" }, { date: cert.expiresOn ? formatDateTime(cert.expiresOn) : "N/A" })}`,
+				subLabel: `${cert.provider} — ${intl.formatMessage({ id: "expires.on" }, { date: formatDateTime(cert.expiresOn) })}`,
 				icon: <IconShield size={14} className="text-pink" />,
 			})) || [];
 
@@ -95,16 +93,14 @@ export function SSLCertificateField({
 	}
 
 	// Prepend the None option
-	if (!required) {
-		options?.unshift({
-			value: 0,
-			label: intl.formatMessage({ id: "certificate.none.title" }),
-			subLabel: forHttp
-				? intl.formatMessage({ id: "certificate.none.subtitle.for-http" })
-				: intl.formatMessage({ id: "certificate.none.subtitle" }),
-			icon: <IconShield size={14} className="text-red" />,
-		});
-	}
+	options?.unshift({
+		value: 0,
+		label: intl.formatMessage({ id: "certificate.none.title" }),
+		subLabel: forHttp
+			? intl.formatMessage({ id: "certificate.none.subtitle.for-http" })
+			: intl.formatMessage({ id: "certificate.none.subtitle" }),
+		icon: <IconShield size={14} className="text-red" />,
+	});
 
 	mtlsOptions?.unshift({
 		value: 0,
@@ -116,7 +112,7 @@ export function SSLCertificateField({
 	return (
 		<>
 			<Field name={name}>
-				{({ field, form }) => (
+				{({ field }) => (
 					<div className="mb-3">
 						<label className="form-label" htmlFor={id}>
 							<T id={label} />
@@ -141,16 +137,11 @@ export function SSLCertificateField({
 								isDisabled={v?.udpForwarding}
 							/>
 						) : null}
-						{form.errors[field.name] ? (
-							<div className="invalid-feedback">
-								{form.errors[field.name] && form.touched[field.name] ? form.errors[field.name] : null}
-							</div>
-						) : null}
 					</div>
 				)}
 			</Field>
 			<Field name={mtlsName}>
-				{({ field, form }) => (
+				{({ field }) => (
 					<div className="mb-3">
 						<label className="form-label" htmlFor="mtlsCertificate">
 							<T id={mtlsLabel} />
@@ -179,11 +170,6 @@ export function SSLCertificateField({
 								}}
 								isDisabled={v?.udpForwarding || !(v?.certificateId > 0)}
 							/>
-						) : null}
-						{form.errors[field.name] ? (
-							<div className="invalid-feedback">
-								{form.errors[field.name] && form.touched[field.name] ? form.errors[field.name] : null}
-							</div>
 						) : null}
 					</div>
 				)}
