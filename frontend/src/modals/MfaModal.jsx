@@ -57,7 +57,7 @@ const MfaModal = EasyModal.create(({ id, visible, remove }) => {
 		setError(null);
 		setIsSubmitting(true);
 		try {
-			const result = await enableTotp(id, values.code);
+			const result = await enableTotp(id, values);
 			if (result.backupCodes) {
 				setBackupCodes(result.backupCodes);
 				setStep("backup");
@@ -74,7 +74,7 @@ const MfaModal = EasyModal.create(({ id, visible, remove }) => {
 		setError(null);
 		setIsSubmitting(true);
 		try {
-			await disableTotp(id, values.code);
+			await disableTotp(id, values);
 			setIsEnabled(false);
 			setStep("status");
 		} catch (err) {
@@ -87,7 +87,7 @@ const MfaModal = EasyModal.create(({ id, visible, remove }) => {
 		setError(null);
 		setIsSubmitting(true);
 		try {
-			const result = await regenerateBackupCodes(id, values.code);
+			const result = await regenerateBackupCodes(id, values);
 			setBackupCodes(result.backupCodes);
 			setStep("backup");
 		} catch (err) {

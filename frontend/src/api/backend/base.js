@@ -11,7 +11,7 @@ function buildUrl({ url, params }) {
 	const baseUrl = `/api/${endpoint}`;
 	const apiUrl = queryString.stringifyUrl({
 		url: baseUrl,
-		query: decamelizeKeys(params),
+		query: params,
 	});
 	return apiUrl;
 }

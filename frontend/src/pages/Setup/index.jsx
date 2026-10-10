@@ -22,11 +22,9 @@ export default function Setup() {
 
 		const { password, ...payload } = {
 			...values,
-			...{
-				auth: {
-					type: "password",
-					secret: values.password,
-				},
+			auth: {
+				type: "password",
+				secret: values.password,
 			},
 		};
 

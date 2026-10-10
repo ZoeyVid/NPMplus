@@ -35,7 +35,7 @@ const RedirectionHostModal = EasyModal.create(({ id, visible, remove }) => {
 		setIsSubmitting(true);
 		setErrorMsg(null);
 
-		const { ...payload } = {
+		const payload = {
 			id: id === "new" ? undefined : id,
 			...values,
 		};

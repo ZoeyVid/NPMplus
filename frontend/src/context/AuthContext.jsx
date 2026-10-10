@@ -27,11 +27,11 @@ function AuthProvider({ children, tokenRefreshInterval = 5 * 60 * 1000 }) {
 		handleTokenUpdate(response);
 	};
 
-	const submitTotp = async (code) => {
+	const submitTotp = async (data) => {
 		if (!totpChallenge) {
 			throw new Error("No TOTP challenge pending");
 		}
-		const response = await verifyTotp(code);
+		const response = await verifyTotp(data);
 		handleTokenUpdate(response);
 	};
 

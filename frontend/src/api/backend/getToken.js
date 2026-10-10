@@ -7,9 +7,9 @@ export async function getToken(identity, secret) {
 	});
 }
 
-export async function verifyTotp(code) {
+export async function verifyTotp(data) {
 	return await api.post({
 		url: "/tokens/totp",
-		data: { code },
+		data,
 	});
 }

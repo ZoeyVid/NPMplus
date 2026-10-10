@@ -6,16 +6,16 @@ export async function startTotpSetup(userId) {
 	});
 }
 
-export async function enableTotp(userId, code) {
+export async function enableTotp(userId, data) {
 	return await api.post({
 		url: `/users/${userId}/mfa/totp/enable`,
-		data: { code },
+		data,
 	});
 }
 
-export async function disableTotp(userId, code) {
+export async function disableTotp(userId, data) {
 	return await api.post({
 		url: `/users/${userId}/mfa/totp/disable`,
-		data: { code },
+		data,
 	});
 }

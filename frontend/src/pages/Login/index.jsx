@@ -18,7 +18,7 @@ function TotpForm() {
 	const onSubmit = async (values, { setSubmitting, resetForm }) => {
 		setFormErr("");
 		try {
-			await submitTotp(values.code);
+			await submitTotp(values);
 		} catch (err) {
 			if (err instanceof Error) {
 				setFormErr(err.message);

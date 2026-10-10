@@ -39,7 +39,7 @@ const CustomCertificateModal = EasyModal.create(({ visible, remove, cert, provid
 			// Validate
 			await validateCertificate(formData);
 
-			if (isEdit && cert) {
+			if (isEdit) {
 				// Upload the certificates to the exiting certificate
 				await uploadCertificate(cert.id, formData);
 			} else {

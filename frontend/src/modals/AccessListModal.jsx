@@ -22,7 +22,7 @@ const AccessListModal = EasyModal.create(({ id, visible, remove }) => {
 
 	const validate = (values) => {
 		// either Auths or Clients must be defined
-		if (values.items?.length === 0 && values.clients?.length === 0) {
+		if (values.items.length === 0 && values.clients.length === 0) {
 			return intl.formatMessage({ id: "error.access.at-least-one" });
 		}
 
@@ -48,19 +48,19 @@ const AccessListModal = EasyModal.create(({ id, visible, remove }) => {
 		setIsSubmitting(true);
 		setErrorMsg(null);
 
-		const { ...payload } = {
+		const payload = {
 			id: id === "new" ? undefined : id,
 			...values,
 		};
 
 		// Filter out "items" to only use the "username" and "password" fields
-		payload.items = (values.items || []).map((i) => ({
+		payload.items = values.items.map((i) => ({
 			username: i.username,
 			password: i.password,
 		}));
 
 		// Filter out "clients" to only use the "directive" and "address" fields
-		payload.clients = (values.clients || []).map((i) => ({
+		payload.clients = values.clients.map((i) => ({
 			directive: i.directive,
 			address: i.address,
 		}));

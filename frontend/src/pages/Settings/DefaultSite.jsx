@@ -24,7 +24,7 @@ export default function DefaultSite() {
 			meta: {
 				redirect: values.redirect,
 				html: values.html,
-				status: values.status ? Number(values.status) : undefined,
+				status: values.status || undefined,
 			},
 		};
 

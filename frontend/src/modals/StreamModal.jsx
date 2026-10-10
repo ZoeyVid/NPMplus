@@ -26,10 +26,9 @@ const StreamModal = EasyModal.create(({ id, visible, remove }) => {
 		setIsSubmitting(true);
 		setErrorMsg(null);
 
-		const { ...payload } = {
+		const payload = {
 			id: id === "new" ? undefined : id,
 			...values,
-			forwardingPort: values.forwardingPort || null,
 		};
 
 		setStream(payload, {
@@ -70,7 +69,7 @@ const StreamModal = EasyModal.create(({ id, visible, remove }) => {
 					initialValues={{
 						incomingPort: data?.incomingPort,
 						forwardingHost: data?.forwardingHost,
-						forwardingPort: data?.forwardingPort,
+						forwardingPort: data?.forwardingPort ?? "",
 						tcpForwarding: data?.tcpForwarding,
 						udpForwarding: data?.udpForwarding,
 						npmplusProxyProtocolForwarding: data?.npmplusProxyProtocolForwarding,

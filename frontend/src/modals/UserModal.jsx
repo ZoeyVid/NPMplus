@@ -43,7 +43,7 @@ const UserModal = EasyModal.create(({ id, visible, remove }) => {
 		setIsSubmitting(true);
 		setErrorMsg(null);
 
-		const { ...payload } = {
+		const payload = {
 			id: id === "new" ? undefined : id,
 			roles: [],
 			...values,
@@ -51,7 +51,6 @@ const UserModal = EasyModal.create(({ id, visible, remove }) => {
 
 		if (data?.id === currentUser?.id) {
 			// Prevent user from locking themselves out
-			delete payload.isDisabled;
 			delete payload.roles;
 		} else if (payload.isAdmin) {
 			payload.roles = ["admin"];

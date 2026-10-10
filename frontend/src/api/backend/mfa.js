@@ -6,10 +6,10 @@ export async function getMfaStatus(userId) {
 	});
 }
 
-export async function regenerateBackupCodes(userId, code) {
+export async function regenerateBackupCodes(userId, data) {
 	return await api.post({
 		url: `/users/${userId}/mfa/backup-codes`,
-		data: { code },
+		data,
 	});
 }
 
