@@ -1,15 +1,19 @@
 import {
+	IconAdjustments,
 	IconArrowsCross,
 	IconBolt,
 	IconBoltOff,
 	IconChartBar,
 	IconDisc,
 	IconExternalLink,
+	IconHistory,
 	IconLock,
 	IconSettings,
 	IconShield,
+	IconUsers,
 } from "@tabler/icons-react";
 import React from "react";
+import { useLocation } from "react-router";
 import { HasPermission, NavLink } from "src/components";
 import { useUser } from "src/hooks";
 import { T } from "src/locale";
@@ -56,6 +60,7 @@ const menuItems = [
 	{
 		to: "/certificates",
 		icon: IconShield,
+		separator: true,
 		label: "certificates",
 		permissionSection: CERTIFICATES,
 		permission: VIEW,
@@ -71,26 +76,30 @@ const menuItems = [
 		icon: IconSettings,
 		label: "settings",
 		permissionSection: ADMIN,
+		separator: true,
 		items: [
 			{
 				to: "/settings",
+				icon: IconAdjustments,
 				label: "settings",
 			},
 			{
 				to: "/users",
+				icon: IconUsers,
 				label: "users",
 			},
 			{
 				to: "/audit-log",
+				icon: IconHistory,
 				label: "auditlogs",
 			},
 		],
 	},
 ];
 
-const getMenuItem = (item, onClick) => {
+const getMenuItem = (item, onClick, pathname) => {
 	if (item.items && item.items.length > 0) {
-		return getMenuDropown(item, onClick);
+		return getMenuDropown(item, onClick, pathname);
 	}
 
 	return (
@@ -100,9 +109,14 @@ const getMenuItem = (item, onClick) => {
 			permission={item.permission || VIEW}
 			hideError
 		>
-			<li className="nav-item">
+			{item.separator && (
+				<li className="d-none d-lg-flex">
+					<div className="vr h-50 my-auto" />
+				</li>
+			)}
+			<li className={`nav-item${item.to && pathname.startsWith(item.to) ? " active" : ""}`}>
 				<NavLink to={item.to} href={item.href} onClick={onClick}>
-					<span className="nav-link-icon d-md-none d-lg-inline-block">
+					<span className="nav-link-icon">
 						{item.icon && React.createElement(item.icon, { height: 24, width: 24 })}
 					</span>
 					<span className="nav-link-title d-flex align-items-center gap-1">
@@ -115,18 +129,23 @@ const getMenuItem = (item, onClick) => {
 	);
 };
 
-const getMenuDropown = (item, onClick) => (
+const getMenuDropown = (item, onClick, pathname) => (
 	<HasPermission
 		key={`item-${item.label}`}
 		section={item.permissionSection}
 		permission={item.permission || VIEW}
 		hideError
 	>
-		<li className="nav-item dropdown">
+		{item.separator && (
+			<li className="d-none d-lg-flex">
+				<div className="vr h-50 my-auto" />
+			</li>
+		)}
+		<li
+			className={`nav-item dropdown${item.items.some((subitem) => pathname.startsWith(subitem.to)) ? " active" : ""}`}
+		>
 			<button type="button" className="nav-link dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
-				<span className="nav-link-icon d-md-none d-lg-inline-block">
-					{React.createElement(item.icon, { height: 24, width: 24 })}
-				</span>
+				<span className="nav-link-icon">{React.createElement(item.icon, { height: 24, width: 24 })}</span>
 				<span className="nav-link-title">
 					<T id={item.label} />
 				</span>
@@ -139,7 +158,13 @@ const getMenuDropown = (item, onClick) => (
 						permission={subitem.permission || VIEW}
 						hideError
 					>
-						<NavLink to={subitem.to} isDropdownItem onClick={onClick}>
+						<NavLink
+							to={subitem.to}
+							isDropdownItem
+							active={pathname.startsWith(subitem.to)}
+							onClick={onClick}
+						>
+							{React.createElement(subitem.icon, { width: 18 })}
 							<T id={subitem.label} />
 						</NavLink>
 					</HasPermission>
@@ -151,6 +176,7 @@ const getMenuDropown = (item, onClick) => (
 
 export function SiteMenu() {
 	const { data: user } = useUser("me");
+	const { pathname } = useLocation();
 
 	const closeMenu = () =>
 		setTimeout(() => {
@@ -162,7 +188,7 @@ export function SiteMenu() {
 		}, 300);
 
 	return (
-		<header className="navbar-expand-md">
+		<header className="navbar-expand-lg">
 			<div className="collapse navbar-collapse" id="navbar-menu">
 				<div className="navbar">
 					<div className="container-xl">
@@ -181,7 +207,7 @@ export function SiteMenu() {
 													},
 												]
 											: []),
-									].map((item) => getMenuItem(item, closeMenu))}
+									].map((item) => getMenuItem(item, closeMenu, pathname))}
 								</ul>
 							</div>
 						</div>

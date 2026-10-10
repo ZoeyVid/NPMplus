@@ -12,7 +12,7 @@ export function SiteHeader() {
 	const { logout, logoutEverywhere } = useAuthState();
 
 	return (
-		<header className="navbar navbar-expand-md d-print-none">
+		<header className="navbar navbar-expand-lg d-print-none">
 			<div className="container-xl">
 				<button
 					className="navbar-toggler"
