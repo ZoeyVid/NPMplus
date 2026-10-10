@@ -94,9 +94,6 @@ RUN git-clone-commit.sh https://github.com/nginx/nginx "$NGINX_VER" /src/nginx &
     git apply /src/nginx-ech-boringssl-awslc.patch && \
     git apply /src/nginx-cert-compression-brotli.patch && \
     \
-    wget -q https://patch-diff.githubusercontent.com/raw/nginx/nginx/pull/1825.patch -O /src/nginx/1825.patch && \
-    git apply /src/nginx/1825.patch && \
-    \
     git-clone-commit.sh https://github.com/HanadaLee/ngx_http_brotli_module "$NB_VER" /src/ngx_http_brotli_module && \
     git-clone-commit.sh https://github.com/HanadaLee/ngx_http_unbrotli_filter_module "$NUB_VER" /src/ngx_http_unbrotli_filter_module && \
     git-clone-commit.sh https://github.com/hsw/zstd-nginx-module "$ZNM_VER" /src/zstd-nginx-module && \
