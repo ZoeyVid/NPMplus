@@ -22,79 +22,90 @@ import {
 	ADMIN,
 	CERTIFICATES,
 	DEAD_HOSTS,
+	hasPermission,
 	PROXY_HOSTS,
 	REDIRECTION_HOSTS,
 	STREAMS,
 	VIEW,
 } from "src/modules/Permissions";
 
-const menuItems = [
-	{
-		to: "/nginx/proxy",
-		icon: IconBolt,
-		label: "proxy-hosts",
-		permissionSection: PROXY_HOSTS,
-		permission: VIEW,
-	},
-	{
-		to: "/nginx/redirection",
-		icon: IconArrowsCross,
-		label: "redirection-hosts",
-		permissionSection: REDIRECTION_HOSTS,
-		permission: VIEW,
-	},
-	{
-		to: "/nginx/404",
-		icon: IconBoltOff,
-		label: "dead-hosts",
-		permissionSection: DEAD_HOSTS,
-		permission: VIEW,
-	},
-	{
-		to: "/nginx/stream",
-		icon: IconDisc,
-		label: "streams",
-		permissionSection: STREAMS,
-		permission: VIEW,
-	},
-	{
-		to: "/certificates",
-		icon: IconShield,
-		separator: true,
-		label: "certificates",
-		permissionSection: CERTIFICATES,
-		permission: VIEW,
-	},
-	{
-		to: "/access",
-		icon: IconLock,
-		label: "access-lists",
-		permissionSection: ACCESS_LISTS,
-		permission: VIEW,
-	},
-	{
-		icon: IconSettings,
-		label: "settings",
-		permissionSection: ADMIN,
-		separator: true,
-		items: [
-			{
-				to: "/settings",
-				icon: IconAdjustments,
-				label: "settings",
-			},
-			{
-				to: "/users",
-				icon: IconUsers,
-				label: "users",
-			},
-			{
-				to: "/audit-log",
-				icon: IconHistory,
-				label: "auditlogs",
-			},
-		],
-	},
+const menuGroups = [
+	[
+		{
+			to: "/nginx/proxy",
+			icon: IconBolt,
+			label: "proxy-hosts",
+			permissionSection: PROXY_HOSTS,
+			permission: VIEW,
+		},
+		{
+			to: "/nginx/redirection",
+			icon: IconArrowsCross,
+			label: "redirection-hosts",
+			permissionSection: REDIRECTION_HOSTS,
+			permission: VIEW,
+		},
+		{
+			to: "/nginx/404",
+			icon: IconBoltOff,
+			label: "dead-hosts",
+			permissionSection: DEAD_HOSTS,
+			permission: VIEW,
+		},
+		{
+			to: "/nginx/stream",
+			icon: IconDisc,
+			label: "streams",
+			permissionSection: STREAMS,
+			permission: VIEW,
+		},
+	],
+	[
+		{
+			to: "/certificates",
+			icon: IconShield,
+			label: "certificates",
+			permissionSection: CERTIFICATES,
+			permission: VIEW,
+		},
+		{
+			to: "/access",
+			icon: IconLock,
+			label: "access-lists",
+			permissionSection: ACCESS_LISTS,
+			permission: VIEW,
+		},
+	],
+	[
+		{
+			icon: IconSettings,
+			label: "settings",
+			permissionSection: ADMIN,
+			items: [
+				{
+					to: "/settings",
+					icon: IconAdjustments,
+					label: "settings",
+				},
+				{
+					to: "/users",
+					icon: IconUsers,
+					label: "users",
+				},
+				{
+					to: "/audit-log",
+					icon: IconHistory,
+					label: "auditlogs",
+				},
+			],
+		},
+		{
+			href: "/goaccess",
+			icon: IconChartBar,
+			label: "GoAccess",
+			goaccess: true,
+		},
+	],
 ];
 
 const getMenuItem = (item, onClick, pathname) => {
@@ -103,75 +114,50 @@ const getMenuItem = (item, onClick, pathname) => {
 	}
 
 	return (
-		<HasPermission
+		<li
 			key={`item-${item.label}`}
-			section={item.permissionSection}
-			permission={item.permission || VIEW}
-			hideError
+			className={`nav-item${item.to && pathname.startsWith(item.to) ? " active" : ""}`}
 		>
-			{item.separator && (
-				<li className="d-none d-lg-flex">
-					<div className="vr h-50 my-auto" />
-				</li>
-			)}
-			<li className={`nav-item${item.to && pathname.startsWith(item.to) ? " active" : ""}`}>
-				<NavLink to={item.to} href={item.href} onClick={onClick}>
-					<span className="nav-link-icon">
-						{item.icon && React.createElement(item.icon, { height: 24, width: 24 })}
-					</span>
-					<span className="nav-link-title d-flex align-items-center gap-1">
-						{item.href ? item.label : <T id={item.label} />}
-						{item.href && <IconExternalLink height={16} width={16} />}
-					</span>
-				</NavLink>
-			</li>
-		</HasPermission>
+			<NavLink to={item.to} href={item.href} onClick={onClick}>
+				<span className="nav-link-icon">
+					{item.icon && React.createElement(item.icon, { height: 24, width: 24 })}
+				</span>
+				<span className="nav-link-title d-flex align-items-center gap-1">
+					{item.href ? item.label : <T id={item.label} />}
+					{item.href && <IconExternalLink height={16} width={16} />}
+				</span>
+			</NavLink>
+		</li>
 	);
 };
 
 const getMenuDropown = (item, onClick, pathname) => (
-	<HasPermission
+	<li
 		key={`item-${item.label}`}
-		section={item.permissionSection}
-		permission={item.permission || VIEW}
-		hideError
+		className={`nav-item dropdown${item.items.some((subitem) => pathname.startsWith(subitem.to)) ? " active" : ""}`}
 	>
-		{item.separator && (
-			<li className="d-none d-lg-flex">
-				<div className="vr h-50 my-auto" />
-			</li>
-		)}
-		<li
-			className={`nav-item dropdown${item.items.some((subitem) => pathname.startsWith(subitem.to)) ? " active" : ""}`}
-		>
-			<button type="button" className="nav-link dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
-				<span className="nav-link-icon">{React.createElement(item.icon, { height: 24, width: 24 })}</span>
-				<span className="nav-link-title">
-					<T id={item.label} />
-				</span>
-			</button>
-			<div className="dropdown-menu">
-				{item.items?.map((subitem, idx) => (
-					<HasPermission
-						key={`${idx}-${subitem.to}`}
-						section={subitem.permissionSection}
-						permission={subitem.permission || VIEW}
-						hideError
-					>
-						<NavLink
-							to={subitem.to}
-							isDropdownItem
-							active={pathname.startsWith(subitem.to)}
-							onClick={onClick}
-						>
-							{React.createElement(subitem.icon, { width: 18 })}
-							<T id={subitem.label} />
-						</NavLink>
-					</HasPermission>
-				))}
-			</div>
-		</li>
-	</HasPermission>
+		<button type="button" className="nav-link dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+			<span className="nav-link-icon">{React.createElement(item.icon, { height: 24, width: 24 })}</span>
+			<span className="nav-link-title">
+				<T id={item.label} />
+			</span>
+		</button>
+		<div className="dropdown-menu">
+			{item.items?.map((subitem, idx) => (
+				<HasPermission
+					key={`${idx}-${subitem.to}`}
+					section={subitem.permissionSection}
+					permission={subitem.permission || VIEW}
+					hideError
+				>
+					<NavLink to={subitem.to} isDropdownItem active={pathname.startsWith(subitem.to)} onClick={onClick}>
+						{React.createElement(subitem.icon, { width: 18 })}
+						<T id={subitem.label} />
+					</NavLink>
+				</HasPermission>
+			))}
+		</div>
+	</li>
 );
 
 export function SiteMenu() {
@@ -195,19 +181,30 @@ export function SiteMenu() {
 						<div className="row flex-column flex-md-row flex-fill align-items-center">
 							<div className="col">
 								<ul className="navbar-nav">
-									{[
-										...menuItems,
-										...(user?.goaccess
-											? [
-													{
-														href: "/goaccess",
-														icon: IconChartBar,
-														label: "GoAccess",
-														permissionSection: ADMIN,
-													},
-												]
-											: []),
-									].map((item) => getMenuItem(item, closeMenu, pathname))}
+									{menuGroups
+										.map((group) =>
+											group.filter((item) =>
+												item.goaccess
+													? user?.goaccess
+													: hasPermission(
+															item.permissionSection,
+															item.permission || VIEW,
+															user?.permissions,
+															user?.roles,
+														),
+											),
+										)
+										.filter((group) => group.length)
+										.map((group, idx) => (
+											<React.Fragment key={group[0].label}>
+												{idx > 0 && (
+													<li className="d-none d-lg-flex">
+														<div className="vr h-50 my-auto" />
+													</li>
+												)}
+												{group.map((item) => getMenuItem(item, closeMenu, pathname))}
+											</React.Fragment>
+										))}
 								</ul>
 							</div>
 						</div>
