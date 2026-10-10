@@ -12,7 +12,7 @@ const internalMfa = {
 	 * @param   {number} userId
 	 * @returns {Promise<boolean>}
 	 */
-	isAnyEnabled: async (userId) => await totp.isEnabled(userId),
+	isAnyEnabled: async (userId, trx) => await totp.isEnabled(userId, trx),
 
 	/**
 	 * Get MFA status for user (all factors and backup codes)
@@ -37,12 +37,12 @@ const internalMfa = {
 	 * @param   {number} userId
 	 * @returns {Promise<{backup_codes: string[]} | null>}
 	 */
-	ensureBackupCodes: async (userId) => {
-		if (await backupCodes.count(userId)) {
+	ensureBackupCodes: async (userId, trx) => {
+		if (await backupCodes.count(userId, trx)) {
 			return null;
 		}
 
-		return { backup_codes: await backupCodes.create(userId) };
+		return { backup_codes: await backupCodes.create(userId, trx) };
 	},
 
 	/**
@@ -54,8 +54,10 @@ const internalMfa = {
 	 * @returns {Promise<{backup_codes: string[] | null}>}
 	 */
 	enableTotp: async (access, userId, code) => {
-		await totp.enable(access, userId, code);
-		const codes = await internalMfa.ensureBackupCodes(userId);
+		let codes = null;
+		await totp.enable(access, userId, code, async (trx) => {
+			codes = await internalMfa.ensureBackupCodes(userId, trx);
+		});
 		return codes ?? { backup_codes: null };
 	},
 
@@ -78,11 +80,9 @@ const internalMfa = {
 			throw new errs.ValidationError("Invalid verification code");
 		}
 
-		await totp.disable(access, userId);
-
-		if (!(await internalMfa.isAnyEnabled(userId))) {
-			await backupCodes.delete(userId);
-		}
+		await totp.disable(access, userId, false, async (trx) => {
+			if (!(await internalMfa.isAnyEnabled(userId, trx))) await backupCodes.delete(userId, trx);
+		});
 	},
 
 	/**
@@ -123,8 +123,7 @@ const internalMfa = {
 			throw new errs.ValidationError("MFA is not enabled");
 		}
 
-		await totp.disable(access, userId, false);
-		await backupCodes.delete(userId);
+		await totp.disable(access, userId, true, (trx) => backupCodes.delete(userId, trx));
 
 		await internalAuditLog.add(access, {
 			action: "updated",
@@ -163,12 +162,13 @@ const internalMfa = {
 			throw new errs.ValidationError("Invalid verification code");
 		}
 
-		const plain = await backupCodes.create(userId);
-
-		await userModel
-			.query()
-			.where("id", userId)
-			.patch({ npmplus_token_valid_after: Math.floor(Date.now() / 1000) });
+		const plain = await userModel.transaction(async (trx) => {
+			await userModel
+				.query(trx)
+				.where("id", userId)
+				.patch({ npmplus_token_valid_after: Math.floor(Date.now() / 1000) });
+			return backupCodes.create(userId, trx);
+		});
 
 		await internalAuditLog.add(access, {
 			action: "updated",

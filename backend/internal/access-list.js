@@ -22,36 +22,40 @@ const internalAccessList = {
 			throw new errs.ValidationError("New access list users need a password");
 		}
 
-		const row = await accessListModel.query().insertAndFetch({
-			name: data.name,
-			satisfy_any: data.satisfy_any,
-			pass_auth: data.pass_auth,
-			owner_user_id: access.token.getUserId(1),
+		const row = await accessListModel.transaction(async (trx) => {
+			const insertedRow = await accessListModel.query(trx).insertAndFetch({
+				name: data.name,
+				satisfy_any: data.satisfy_any,
+				pass_auth: data.pass_auth,
+				owner_user_id: access.token.getUserId(1),
+			});
+
+			// Items
+			await Promise.all(
+				(data.items ?? []).map(async (item) =>
+					accessListAuthModel.query(trx).insert({
+						access_list_id: insertedRow.id,
+						username: item.username,
+						password: await bcrypt.hash(item.password, 5),
+					}),
+				),
+			);
+
+			// Clients
+			await Promise.all(
+				(data.clients ?? []).map((client) =>
+					accessListClientModel.query(trx).insert({
+						access_list_id: insertedRow.id,
+						address: client.address,
+						directive: client.directive,
+					}),
+				),
+			);
+
+			return insertedRow;
 		});
 
 		data.id = row.id;
-
-		// Items
-		await Promise.all(
-			(data.items ?? []).map(async (item) =>
-				accessListAuthModel.query().insert({
-					access_list_id: row.id,
-					username: item.username,
-					password: await bcrypt.hash(item.password, 5),
-				}),
-			),
-		);
-
-		// Clients
-		await Promise.all(
-			(data.clients ?? []).map((client) =>
-				accessListClientModel.query().insert({
-					access_list_id: row.id,
-					address: client.address,
-					directive: client.directive,
-				}),
-			),
-		);
 
 		// re-fetch with expansions
 		const freshRow = await internalAccessList.get(access, {
@@ -97,61 +101,63 @@ const internalAccessList = {
 			throw new errs.ValidationError("New access list users need a password");
 		}
 
-		// patch name if specified
-		if (
-			typeof data.name !== "undefined" ||
-			typeof data.satisfy_any !== "undefined" ||
-			typeof data.pass_auth !== "undefined"
-		) {
-			await accessListModel.query().where({ id: data.id }).patch({
-				name: data.name,
-				satisfy_any: data.satisfy_any,
-				pass_auth: data.pass_auth,
-			});
-		}
-
-		// Check for items and add/update/remove them
-		if (typeof data.items !== "undefined" && data.items) {
-			// Items supplied with an empty password are kept, but their password is left untouched
-			const itemsToKeep = data.items.filter((item) => !item.password).map((item) => item.username);
-
-			const query = accessListAuthModel.query().delete().where("access_list_id", data.id);
-
-			if (itemsToKeep.length > 0) {
-				query.andWhere("username", "NOT IN", itemsToKeep);
+		await accessListModel.transaction(async (trx) => {
+			// patch name if specified
+			if (
+				typeof data.name !== "undefined" ||
+				typeof data.satisfy_any !== "undefined" ||
+				typeof data.pass_auth !== "undefined"
+			) {
+				await accessListModel.query(trx).where({ id: data.id }).patch({
+					name: data.name,
+					satisfy_any: data.satisfy_any,
+					pass_auth: data.pass_auth,
+				});
 			}
 
-			await query;
-			// Add new items
-			await Promise.all(
-				data.items
-					.filter((item) => item.password)
-					.map(async (item) =>
-						accessListAuthModel.query().insert({
-							access_list_id: data.id,
-							username: item.username,
-							password: await bcrypt.hash(item.password, 5),
-						}),
-					),
-			);
-		}
+			// Check for items and add/update/remove them
+			if (typeof data.items !== "undefined" && data.items) {
+				// Items supplied with an empty password are kept, but their password is left untouched
+				const itemsToKeep = data.items.filter((item) => !item.password).map((item) => item.username);
 
-		// Check for clients and add/update/remove them
-		if (typeof data.clients !== "undefined" && data.clients) {
-			await accessListClientModel.query().delete().where("access_list_id", data.id);
+				const query = accessListAuthModel.query(trx).delete().where("access_list_id", data.id);
 
-			await Promise.all(
-				data.clients
-					.filter((client) => client.address)
-					.map((client) =>
-						accessListClientModel.query().insert({
-							access_list_id: data.id,
-							address: client.address,
-							directive: client.directive,
-						}),
-					),
-			);
-		}
+				if (itemsToKeep.length > 0) {
+					query.andWhere("username", "NOT IN", itemsToKeep);
+				}
+
+				await query;
+				// Add new items
+				await Promise.all(
+					data.items
+						.filter((item) => item.password)
+						.map(async (item) =>
+							accessListAuthModel.query(trx).insert({
+								access_list_id: data.id,
+								username: item.username,
+								password: await bcrypt.hash(item.password, 5),
+							}),
+						),
+				);
+			}
+
+			// Check for clients and add/update/remove them
+			if (typeof data.clients !== "undefined" && data.clients) {
+				await accessListClientModel.query(trx).delete().where("access_list_id", data.id);
+
+				await Promise.all(
+					data.clients
+						.filter((client) => client.address)
+						.map((client) =>
+							accessListClientModel.query(trx).insert({
+								access_list_id: data.id,
+								address: client.address,
+								directive: client.directive,
+							}),
+						),
+				);
+			}
+		});
 
 		// re-fetch with expansions
 		const freshRow = await internalAccessList.get(access, {
@@ -251,15 +257,6 @@ const internalAccessList = {
 		// 3. reconfigure those hosts
 		// 4. audit log
 
-		// 1. update row to be deleted
-		await accessListModel.transaction(async (trx) => {
-			await trx("npmplus_proxy_host_access_list").where("access_list_id", row.id).delete();
-			await accessListAuthModel.query(trx).where("access_list_id", row.id).delete();
-			await accessListClientModel.query(trx).where("access_list_id", row.id).delete();
-			await accessListModel.query(trx).deleteById(row.id);
-		});
-
-		// 2. update any proxy hosts that were using it (ignoring permissions)
 		const affectedHosts = (row.proxy_hosts || []).map((host) => {
 			const updatedHost = { ...host };
 			// check in case something crazy happened. This should never be the case, but safeguard
@@ -300,24 +297,31 @@ const internalAccessList = {
 		});
 		const deletedRow = { ...row, proxy_hosts: undefined };
 
-		try {
-			// 3. Write the changes to the database and the config
-			if (affectedHosts.length > 0) {
-				await proxyHostModel.transaction(async (trx) => {
-					await Promise.all(
-						affectedHosts.map(async (host) => {
-							await proxyHostModel.query(trx).patchAndFetchById(host.id, {
-								npmplus_access_list_ids: host.npmplus_access_list_ids,
-								npmplus_access_list_type: host.npmplus_access_list_type,
-								locations: host.locations,
-							});
+		await accessListModel.transaction(async (trx) => {
+			// 1. update row to be deleted
+			await trx("npmplus_proxy_host_access_list").where("access_list_id", row.id).delete();
+			await accessListAuthModel.query(trx).where("access_list_id", row.id).delete();
+			await accessListClientModel.query(trx).where("access_list_id", row.id).delete();
+			await accessListModel.query(trx).deleteById(row.id);
+			// 2. update any proxy hosts that were using it (ignoring permissions)
+			await Promise.all(
+				affectedHosts.map(async (host) => {
+					await proxyHostModel.query(trx).patchAndFetchById(host.id, {
+						npmplus_access_list_ids: host.npmplus_access_list_ids,
+						npmplus_access_list_type: host.npmplus_access_list_type,
+						locations: host.locations,
+					});
 
-							return internalProxyHostAccessList.syncAccessListRelations(trx, host.id, host);
-						}),
-					);
-				});
+					return internalProxyHostAccessList.syncAccessListRelations(trx, host.id, host);
+				}),
+			);
+		});
+
+		try {
+			// 3. Write the changes to the config
+			if (affectedHosts.length > 0) {
 				row.proxy_hosts = affectedHosts;
-				// step 4. Regenerate configs and htpasswd files
+				// Regenerate configs and htpasswd files
 				// locations don't have accessList objects, only IDs, so populate it with the object itself
 				row.proxy_hosts = await Promise.all(
 					(row.proxy_hosts || []).map((host) => {

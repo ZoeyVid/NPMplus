@@ -15,8 +15,8 @@ const internalTotp = {
 	 * @param {number} userId
 	 * @returns {Promise<boolean>}
 	 */
-	isEnabled: async (userId) =>
-		(await authModel.query().where("user_id", userId).andWhere("type", "totp").resultSize()) > 0,
+	isEnabled: async (userId, trx) =>
+		(await authModel.query(trx).where("user_id", userId).andWhere("type", "totp").resultSize()) > 0,
 
 	/**
 	 * Start TOTP setup - store pending secret
@@ -43,8 +43,10 @@ const internalTotp = {
 			secret,
 		});
 
-		await authModel.query().where("user_id", userId).andWhere("type", "totp_pending").delete();
-		await authModel.query().insert({ user_id: userId, type: "totp_pending", secret, meta: {} });
+		await authModel.transaction(async (trx) => {
+			await authModel.query(trx).where("user_id", userId).andWhere("type", "totp_pending").delete();
+			await authModel.query(trx).insert({ user_id: userId, type: "totp_pending", secret, meta: {} });
+		});
 
 		return { secret, otpauth_url };
 	},
@@ -57,7 +59,7 @@ const internalTotp = {
 	 * @param   {string}  code
 	 * @returns {Promise<void>}
 	 */
-	enable: async (access, userId, code) => {
+	enable: async (access, userId, code, onEnable) => {
 		if (Number(userId) !== access.token.getUserId(0)) {
 			throw new errs.PermissionError("TOTP can only be managed for your own account");
 		}
@@ -83,21 +85,25 @@ const internalTotp = {
 			throw new errs.ValidationError("Invalid verification code");
 		}
 
-		const enabled = await authModel
-			.query()
-			.findById(pending.id)
-			.andWhere("type", "totp_pending")
-			.patch({ type: "totp" });
+		await authModel.transaction(async (trx) => {
+			const enabled = await authModel
+				.query(trx)
+				.findById(pending.id)
+				.andWhere("type", "totp_pending")
+				.patch({ type: "totp" });
 
-		if (enabled !== 1) {
-			throw new errs.ValidationError("No pending TOTP setup found");
-		}
+			if (enabled !== 1) {
+				throw new errs.ValidationError("No pending TOTP setup found");
+			}
+
+			await userModel
+				.query(trx)
+				.where("id", userId)
+				.patch({ npmplus_token_valid_after: Math.floor(Date.now() / 1000) });
+
+			await onEnable?.(trx);
+		});
 		usedSteps.set(pending.id, result.timeStep);
-
-		await userModel
-			.query()
-			.where("id", userId)
-			.patch({ npmplus_token_valid_after: Math.floor(Date.now() / 1000) });
 
 		await internalAuditLog.add(access, {
 			action: "updated",
@@ -115,13 +121,16 @@ const internalTotp = {
 	 *
 	 * @param   {Access}  access
 	 * @param   {number}  userId
-	 * @param   {boolean} audit
+	 * @param   {boolean} skipAudit
 	 * @returns {Promise<void>}
 	 */
-	disable: async (access, userId, audit = true) => {
-		await authModel.query().where("user_id", userId).whereIn("type", ["totp", "totp_pending"]).delete();
+	disable: async (access, userId, skipAudit, onDisable) => {
+		await authModel.transaction(async (trx) => {
+			await authModel.query(trx).where("user_id", userId).whereIn("type", ["totp", "totp_pending"]).delete();
+			await onDisable?.(trx);
+		});
 
-		if (audit) {
+		if (!skipAudit) {
 			const user = await internalUser.get(access, { id: userId });
 			await internalAuditLog.add(access, {
 				action: "updated",

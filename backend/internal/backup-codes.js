@@ -3,7 +3,7 @@ import bcrypt from "bcryptjs";
 import { hash, verify } from "../lib/argon2.js";
 import authModel from "../models/auth.js";
 
-const codesOf = (userId) => authModel.query().where("user_id", userId).andWhere("type", "backup_code");
+const codesOf = (userId, trx) => authModel.query(trx).where("user_id", userId).andWhere("type", "backup_code");
 
 /**
  * Generate backup codes
@@ -31,7 +31,7 @@ const internalBackupCodes = {
 	 * @param   {number} userId
 	 * @returns {Promise<number>}
 	 */
-	count: async (userId) => await codesOf(userId).resultSize(),
+	count: async (userId, trx) => await codesOf(userId, trx).resultSize(),
 
 	/**
 	 * Replace all backup codes of a user with a freshly generated set
@@ -39,13 +39,15 @@ const internalBackupCodes = {
 	 * @param   {number} userId
 	 * @returns {Promise<string[]>}
 	 */
-	create: async (userId) => {
+	create: async (userId, outerTrx) => {
 		const { plain, hashed } = await generate();
 
-		await codesOf(userId).delete();
-		for (const secret of hashed) {
-			await authModel.query().insert({ user_id: userId, type: "backup_code", secret, meta: {} });
-		}
+		await authModel.transaction(outerTrx, async (trx) => {
+			await codesOf(userId, trx).delete();
+			for (const secret of hashed) {
+				await authModel.query(trx).insert({ user_id: userId, type: "backup_code", secret, meta: {} });
+			}
+		});
 
 		return plain;
 	},
@@ -56,8 +58,8 @@ const internalBackupCodes = {
 	 * @param   {number} userId
 	 * @returns {Promise<void>}
 	 */
-	delete: async (userId) => {
-		await codesOf(userId).delete();
+	delete: async (userId, trx) => {
+		await codesOf(userId, trx).delete();
 	},
 
 	/**

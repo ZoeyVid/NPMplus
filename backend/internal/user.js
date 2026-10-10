@@ -50,28 +50,32 @@ const internalUser = {
 			throw new errs.ValidationError(`Email address already in use - ${data.email}`);
 		}
 
-		let user = await userModel.query().insertAndFetch(data);
-		if (auth) {
-			await authModel.query().insert({
-				user_id: user.id,
-				type: auth.type,
-				secret: auth.secret,
-				meta: {},
+		let user = await userModel.transaction(async (trx) => {
+			const insertedUser = await userModel.query(trx).insertAndFetch(data);
+			if (auth) {
+				await authModel.query(trx).insert({
+					user_id: insertedUser.id,
+					type: auth.type,
+					secret: auth.secret,
+					meta: {},
+				});
+			}
+
+			// Create permissions row as well
+			const isAdmin = data.roles.indexOf("admin") !== -1;
+
+			await userPermissionModel.query(trx).insert({
+				user_id: insertedUser.id,
+				visibility: isAdmin ? "all" : "user",
+				proxy_hosts: "hidden",
+				redirection_hosts: "hidden",
+				dead_hosts: "hidden",
+				streams: "hidden",
+				access_lists: "hidden",
+				certificates: "hidden",
 			});
-		}
 
-		// Create permissions row as well
-		const isAdmin = data.roles.indexOf("admin") !== -1;
-
-		await userPermissionModel.query().insert({
-			user_id: user.id,
-			visibility: isAdmin ? "all" : "user",
-			proxy_hosts: "hidden",
-			redirection_hosts: "hidden",
-			dead_hosts: "hidden",
-			streams: "hidden",
-			access_lists: "hidden",
-			certificates: "hidden",
+			return insertedUser;
 		});
 
 		await userModel
@@ -380,26 +384,32 @@ const internalUser = {
 			});
 		}
 
-		const existing_auth = await authModel.query().where("user_id", user.id).andWhere("type", data.type).first();
+		await userModel.transaction(async (trx) => {
+			const existing_auth = await authModel
+				.query(trx)
+				.where("user_id", user.id)
+				.andWhere("type", data.type)
+				.first();
 
-		if (existing_auth) {
-			await authModel.query().where("user_id", user.id).andWhere("type", data.type).patch({
-				type: data.type, // This is required for the model to encrypt on save
-				secret: data.secret,
-			});
-		} else {
-			await authModel.query().insert({
-				user_id: user.id,
-				type: data.type,
-				secret: data.secret,
-				meta: {},
-			});
-		}
+			if (existing_auth) {
+				await authModel.query(trx).where("user_id", user.id).andWhere("type", data.type).patch({
+					type: data.type, // This is required for the model to encrypt on save
+					secret: data.secret,
+				});
+			} else {
+				await authModel.query(trx).insert({
+					user_id: user.id,
+					type: data.type,
+					secret: data.secret,
+					meta: {},
+				});
+			}
 
-		await userModel
-			.query()
-			.where("id", user.id)
-			.patch({ npmplus_token_valid_after: Math.floor(Date.now() / 1000) });
+			await userModel
+				.query(trx)
+				.where("id", user.id)
+				.patch({ npmplus_token_valid_after: Math.floor(Date.now() / 1000) });
+		});
 
 		await internalAuditLog.add(access, {
 			action: "updated",
