@@ -1,3 +1,4 @@
+import { IconBrandGithub } from "@tabler/icons-react";
 import { useCheckVersion } from "src/hooks";
 import { T } from "src/locale";
 
@@ -22,6 +23,7 @@ export function SiteFooter() {
 									rel="noopener"
 								>
 									<T id="footer.github" />
+									<IconBrandGithub className="icon icon-inline me-1" />
 								</a>
 							</li>
 						</ul>

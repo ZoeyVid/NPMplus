@@ -144,7 +144,7 @@
 	"error.passwords-must-match": "Wachtwoorden moeten overeenkomen",
 	"error.required": "Dit is verplicht",
 	"expires.on": "Verloopt: {date}",
-	"footer.github": "Repo op Github",
+	"footer.github": "Repository op Github",
 	"footer.github-fork": "Maak een Fork op Github",
 	"help": "Hulp",
 	"host.auth-request": "Auth-verzoeken",

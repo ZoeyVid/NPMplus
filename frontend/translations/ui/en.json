@@ -144,7 +144,7 @@
 	"error.passwords-must-match": "Passwords must match",
 	"error.required": "This is required",
 	"expires.on": "Expires: {date}",
-	"footer.github": "Repo on Github",
+	"footer.github": "Repository on Github",
 	"footer.github-fork": "Fork me on Github",
 	"help": "Help",
 	"host.auth-request": "Auth Request",
