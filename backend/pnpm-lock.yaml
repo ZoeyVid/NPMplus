@@ -9,8 +9,8 @@ importers:
   .:
     dependencies:
       '@apidevtools/json-schema-ref-parser':
-        specifier: 16.0.3
-        version: 16.0.3(@types/json-schema@7.0.15)
+        specifier: 16.0.5
+        version: 16.0.5(@types/json-schema@7.0.15)
       ajv:
         specifier: 8.20.0
         version: 8.20.0
@@ -78,8 +78,8 @@ importers:
 
 packages:
 
-  '@apidevtools/json-schema-ref-parser@16.0.3':
-    resolution: {integrity: sha512-7lZp4XCTZhU/AgiGpIG+j4uJeWPdGbpQ+8wqXrzuHy+tboKsjSacjGH9/kNThRDIFhMWHF3ba+ejS8J3PeSI1Q==}
+  '@apidevtools/json-schema-ref-parser@16.0.5':
+    resolution: {integrity: sha512-z3LiEMqTP2FNu6u8bdUgBYErVuwMSZReOJy1MCEIB0BDHMoNgBtkciby32HOlcrfWwrOSzRU8YIsZ0CogYRuYQ==}
     engines: {node: '>=22.19.0'}
     peerDependencies:
       '@types/json-schema': ^7.0.15
@@ -734,6 +734,7 @@ packages:
   objection@3.6.0:
     resolution: {integrity: sha512-zuaPNTMKC1MGaVmMxh/hozIMJBYR3SnoCgC+5ZZRJ/o3WLVCdFcNh6DndPdrMI9nJiXY8Vuy1O4PKY+/6+FWdw==}
     engines: {node: '>=14.0.0'}
+    deprecated: 'Graph data can bypass noDelete/noUnrelate via #delete/#unrelate markers, plus regressions. Upgrade to 3.7.0.'
     peerDependencies:
       knex: '>=2.3.0'
 
@@ -1010,11 +1011,10 @@ packages:
 
 snapshots:
 
-  '@apidevtools/json-schema-ref-parser@16.0.3(@types/json-schema@7.0.15)':
+  '@apidevtools/json-schema-ref-parser@16.0.5(@types/json-schema@7.0.15)':
     dependencies:
       '@types/json-schema': 7.0.15
       js-yaml: 5.4.2
-      undici: 8.11.2
 
   '@apidevtools/openapi-schemas@2.1.0': {}
 
@@ -1022,7 +1022,7 @@ snapshots:
 
   '@apidevtools/swagger-parser@13.1.0(openapi-types@12.1.3)':
     dependencies:
-      '@apidevtools/json-schema-ref-parser': 16.0.3(@types/json-schema@7.0.15)
+      '@apidevtools/json-schema-ref-parser': 16.0.5(@types/json-schema@7.0.15)
       '@apidevtools/openapi-schemas': 2.1.0
       '@apidevtools/swagger-methods': 3.0.2
       '@types/json-schema': 7.0.15
