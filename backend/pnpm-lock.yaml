@@ -51,8 +51,8 @@ importers:
         specifier: 3.24.5
         version: 3.24.5(@types/node@26.6.4)
       objection:
-        specifier: 3.5.0
-        version: 3.5.0(knex@3.3.0(better-sqlite3@13.0.3)(mysql2@3.24.5(@types/node@26.6.4))(pg@8.23.1))
+        specifier: 3.6.0
+        version: 3.6.0(knex@3.3.0(better-sqlite3@13.0.3)(mysql2@3.24.5(@types/node@26.6.4))(pg@8.23.1))
       openid-client:
         specifier: 6.8.8
         version: 6.8.8
@@ -731,8 +731,8 @@ packages:
     resolution: {integrity: sha512-W67iLl4J2EXEGTbfeHCffrjDfitvLANg0UlX3wFUUSTx92KXRFegMHUVgSqE+wvhAbi4WqjGg9czysTV2Epbew==}
     engines: {node: '>= 0.4'}
 
-  objection@3.5.0:
-    resolution: {integrity: sha512-uHKovRPeQX/h6u3yyBB+rWary9Q/Phr6epgiotioqTuive4PjWOyRvjrRT9GALetQCNMvcrymXy5s44AbsQLpQ==}
+  objection@3.6.0:
+    resolution: {integrity: sha512-zuaPNTMKC1MGaVmMxh/hozIMJBYR3SnoCgC+5ZZRJ/o3WLVCdFcNh6DndPdrMI9nJiXY8Vuy1O4PKY+/6+FWdw==}
     engines: {node: '>=14.0.0'}
     peerDependencies:
       knex: '>=2.3.0'
@@ -1605,7 +1605,7 @@ snapshots:
 
   object-inspect@1.13.4: {}
 
-  objection@3.5.0(knex@3.3.0(better-sqlite3@13.0.3)(mysql2@3.24.5(@types/node@26.6.4))(pg@8.23.1)):
+  objection@3.6.0(knex@3.3.0(better-sqlite3@13.0.3)(mysql2@3.24.5(@types/node@26.6.4))(pg@8.23.1)):
     dependencies:
       ajv: 8.20.0
       ajv-formats: 3.0.1(ajv@8.20.0)
