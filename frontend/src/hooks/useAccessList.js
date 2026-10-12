@@ -1,7 +1,7 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { createAccessList, getAccessList, updateAccessList } from "src/api/backend";
 
-const fetchAccessList = (id, expand) => {
+const fetchAccessList = (id) => {
 	if (id === "new") {
 		return Promise.resolve({
 			id: 0,
@@ -15,13 +15,13 @@ const fetchAccessList = (id, expand) => {
 			clients: [],
 		});
 	}
-	return getAccessList(id, expand);
+	return getAccessList(id, ["items", "clients"]);
 };
 
-const useAccessList = (id, expand) => {
+const useAccessList = (id) => {
 	return useQuery({
-		queryKey: ["access-list", id, expand],
-		queryFn: () => fetchAccessList(id, expand),
+		queryKey: ["access-list", id],
+		queryFn: () => fetchAccessList(id),
 		staleTime: 60 * 1000, // 1 minute
 	});
 };

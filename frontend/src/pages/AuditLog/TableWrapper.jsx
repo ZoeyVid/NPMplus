@@ -13,7 +13,7 @@ export default function TableWrapper() {
 
 	useEffect(() => {
 		// this can happen if someone deletes the last item while searching
-		if (search !== "" && !data) {
+		if (search !== "" && !data?.length) {
 			setSearch("");
 		}
 	});

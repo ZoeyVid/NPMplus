@@ -14,6 +14,7 @@ import { useRef, useState } from "react";
 import { flushSync } from "react-dom";
 import { AccessFields } from "src/components";
 import { intl, T } from "src/locale";
+import { forwardSummary } from "src/modules/Forward";
 import { upstreamUrlPattern } from "src/modules/Validations";
 
 export function LocationsFields({ initialValues, name = "locations" }) {
@@ -78,6 +79,9 @@ export function LocationsFields({ initialValues, name = "locations" }) {
 			if (field === "npmplusProxyRequestBuffering" && fieldValue === true) {
 				updatedLocation.npmplusCrowdsecAppsec = true;
 			}
+			if (field === "npmplusAuthRequest" && fieldValue === "none") {
+				updatedLocation.npmplusAuthRequestUpstream = "";
+			}
 			if (field === "forwardScheme" && fieldValue !== "empty") {
 				if (!["http", "https"].includes(fieldValue)) {
 					updatedLocation.npmplusProxyRequestBuffering = false;
@@ -114,14 +118,6 @@ export function LocationsFields({ initialValues, name = "locations" }) {
 	const isOpen = (item) => expanded.includes(item.uiKey);
 
 	const locationLabel = (item) => `${item.locationType}${item.path}`;
-
-	const forwardSummary = ({ forwardScheme, forwardHost, forwardPort }) => {
-		if (!forwardHost || forwardScheme === "empty") return "";
-		if (forwardScheme !== "path") {
-			return `${forwardScheme}://${forwardHost}${forwardPort ? `:${forwardPort}` : ""}`;
-		}
-		return forwardHost;
-	};
 
 	const matchesFilter = (item) =>
 		`${locationLabel(item)} ${forwardSummary(item)}`.toLowerCase().includes(filter.trim().toLowerCase());
@@ -273,6 +269,8 @@ export function LocationsFields({ initialValues, name = "locations" }) {
 										className="form-control"
 										placeholder="/path"
 										autoComplete="off"
+										required
+										pattern="\S{1,255}"
 										value={item.path}
 										onChange={(e) => handleChange(idx, "path", e.target.value)}
 									/>
@@ -327,6 +325,7 @@ export function LocationsFields({ initialValues, name = "locations" }) {
 										type="text"
 										className="form-control"
 										required={item.forwardScheme !== "empty"}
+										pattern="\S{0,255}"
 										placeholder="eg: 10.0.0.1/path/"
 										value={item.forwardHost}
 										onChange={(e) => handleChange(idx, "forwardHost", e.target.value)}
@@ -345,7 +344,7 @@ export function LocationsFields({ initialValues, name = "locations" }) {
 										max={65535}
 										className="form-control"
 										placeholder="eg: 8081"
-										value={item.forwardPort}
+										value={item.forwardPort ?? ""}
 										onChange={(e) => handleChange(idx, "forwardPort", e.target.value)}
 									/>
 								</div>
@@ -619,8 +618,6 @@ export function LocationsFields({ initialValues, name = "locations" }) {
 									initialAccessListType={item?.npmplusAccessListType}
 									location={item.path}
 									initialAccessListIds={item?.npmplusAccessListIds}
-									name={`locations[${idx}].npmplusAccessListIds`}
-									typeFieldName={`locations[${idx}].npmplusAccessListType`}
 									onChange={(changes) => handleAccessFieldsChange(idx, changes)}
 									authRequest={item.npmplusAuthRequest}
 								/>

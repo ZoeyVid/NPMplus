@@ -34,7 +34,7 @@ export default function TableWrapper() {
 
 	useEffect(() => {
 		// this can happen if someone deletes the last item while searching
-		if (search !== "" && !data) {
+		if (search !== "" && !data?.length) {
 			setSearch("");
 		}
 	});
@@ -51,7 +51,7 @@ export default function TableWrapper() {
 		try {
 			await downloadCertificate(id);
 		} catch (err) {
-			showError(err.message);
+			showError(<T id={err.message} />);
 		}
 	};
 

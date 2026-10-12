@@ -15,14 +15,14 @@ const showAccessListModal = (id) => {
 };
 
 const AccessListModal = EasyModal.create(({ id, visible, remove }) => {
-	const { data, isLoading, error } = useAccessList(id, ["items", "clients"]);
+	const { data, isPending, error } = useAccessList(id);
 	const { mutate: setAccessList } = useSetAccessList();
 	const [errorMsg, setErrorMsg] = useState(null);
 	const [isSubmitting, setIsSubmitting] = useState(false);
 
 	const validate = (values) => {
 		// either Auths or Clients must be defined
-		if (values.items.length === 0 && values.clients.length === 0) {
+		if (values.items.length === 0 && values.clients.every((c) => c.address.trim().toLowerCase() === "all")) {
 			return intl.formatMessage({ id: "error.access.at-least-one" });
 		}
 
@@ -88,7 +88,7 @@ const AccessListModal = EasyModal.create(({ id, visible, remove }) => {
 					{error?.message}
 				</Alert>
 			)}
-			{isLoading && <Loading noLogo />}
+			{isPending && <Loading noLogo />}
 			{data && (
 				<Formik
 					initialValues={{
@@ -165,7 +165,7 @@ const AccessListModal = EasyModal.create(({ id, visible, remove }) => {
 																type="text"
 																required
 																autoComplete="off"
-																className="form-control"
+																className={`form-control ${form.errors.name && form.touched.name ? "is-invalid" : ""}`}
 																{...field}
 															/>
 

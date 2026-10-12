@@ -7,8 +7,9 @@ import { Button, HasPermission, LoadingPage } from "src/components";
 import { getDirectory, useProxyHosts } from "src/hooks";
 import { T } from "src/locale";
 import { showDeleteConfirmModal, showHelpModal, showProxyHostModal } from "src/modals";
+import { forwardSummary } from "src/modules/Forward";
 import { MANAGE, PROXY_HOSTS } from "src/modules/Permissions";
-import { showObjectSuccess } from "src/notifications";
+import { showError, showObjectSuccess } from "src/notifications";
 import Table from "./Table";
 
 export default function TableWrapper() {
@@ -19,7 +20,7 @@ export default function TableWrapper() {
 
 	useEffect(() => {
 		// this can happen if someone deletes the last item while searching
-		if (search !== "" && !data) {
+		if (search !== "" && !data?.length) {
 			setSearch("");
 		}
 	});
@@ -33,12 +34,16 @@ export default function TableWrapper() {
 	}
 
 	const handleDisableToggle = async (id, enabled) => {
-		await toggleProxyHost(id, enabled);
-		await Promise.all([
-			queryClient.invalidateQueries({ queryKey: ["proxy-hosts"] }),
-			queryClient.invalidateQueries({ queryKey: ["proxy-host", id] }),
-		]);
-		showObjectSuccess("proxy-host", enabled ? "enabled" : "disabled");
+		try {
+			await toggleProxyHost(id, enabled);
+			await Promise.all([
+				queryClient.invalidateQueries({ queryKey: ["proxy-hosts"] }),
+				queryClient.invalidateQueries({ queryKey: ["proxy-host", id] }),
+			]);
+			showObjectSuccess("proxy-host", enabled ? "enabled" : "disabled");
+		} catch (err) {
+			showError(<T id={err.message} />);
+		}
 	};
 
 	let filtered = null;
@@ -48,7 +53,7 @@ export default function TableWrapper() {
 			return (
 				item.domainNames.some((domain) => domain.toLowerCase().includes(search)) ||
 				item.forwardHost.toLowerCase().includes(search) ||
-				`${item.forwardPort}`.includes(search) ||
+				`${item.forwardPort ?? ""}`.includes(search) ||
 				directory.includes(search)
 			);
 		});
@@ -75,9 +80,7 @@ export default function TableWrapper() {
 				invalidations: [["proxy-hosts"], ["proxy-host", id]],
 				children: <T id="object.delete.content" tData={{ object: "proxy-host" }} />,
 				subject: host?.domainNames.join(", "),
-				details: host?.forwardHost
-					? `${host.forwardScheme}://${host.forwardHost}${host.forwardPort ? `:${host.forwardPort}` : ""}`
-					: null,
+				details: host && forwardSummary(host),
 			});
 		},
 		onDisableToggle: handleDisableToggle,

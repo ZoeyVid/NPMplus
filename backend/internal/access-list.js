@@ -10,6 +10,9 @@ import internalAuditLog from "./audit-log.js";
 import internalNginx from "./nginx.js";
 import internalProxyHostAccessList from "./proxy-host-access-list.js";
 
+const hasNoRules = (items = [], clients = []) =>
+	items.length === 0 && clients.every(({ address = "" }) => ["", "all"].includes(address.trim().toLowerCase()));
+
 const internalAccessList = {
 	/**
 	 * @param   {Access}  access
@@ -20,6 +23,9 @@ const internalAccessList = {
 		access.can("access_lists:manage");
 		if (data.items?.some((item) => !item.password)) {
 			throw new errs.ValidationError("New access list users need a password");
+		}
+		if (hasNoRules(data.items, data.clients)) {
+			throw new errs.ValidationError("Access list needs at least one user or one rule that is not all");
 		}
 
 		const row = await accessListModel.transaction(async (trx) => {
@@ -88,7 +94,7 @@ const internalAccessList = {
 	 */
 	update: async (access, data) => {
 		access.can("access_lists:manage");
-		const row = await internalAccessList.get(access, { id: data.id, expand: ["items"] });
+		const row = await internalAccessList.get(access, { id: data.id, expand: ["items", "clients"] });
 		if (row.id !== data.id) {
 			// Sanity check that something crazy hasn't happened
 			throw new errs.InternalValidationError(
@@ -99,6 +105,9 @@ const internalAccessList = {
 			data.items?.some((item) => !item.password && !row.items.some(({ username }) => username === item.username))
 		) {
 			throw new errs.ValidationError("New access list users need a password");
+		}
+		if (hasNoRules(data.items ?? row.items, data.clients ?? row.clients)) {
+			throw new errs.ValidationError("Access list needs at least one user or one rule that is not all");
 		}
 
 		await accessListModel.transaction(async (trx) => {
@@ -169,7 +178,7 @@ const internalAccessList = {
 
 		try {
 			await internalAccessList.build(freshRow);
-			if (Number.parseInt(freshRow.proxy_host_count, 10)) {
+			if (freshRow.proxy_host_count) {
 				// locations don't have accessList objects, only IDs, so populate it with the object itself
 				freshRow.proxy_hosts = await Promise.all(
 					(freshRow.proxy_hosts || []).map((host) => {
