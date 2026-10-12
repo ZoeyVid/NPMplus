@@ -105,8 +105,11 @@ export function AccessFields({
 
 	const applyUpdatedValues = (newValues) => {
 		setValues(newValues);
-		void setFieldValue(name, newValues);
-		onChange?.({ npmplusAccessListIds: newValues });
+		if (onChange) {
+			onChange({ npmplusAccessListIds: newValues });
+		} else {
+			void setFieldValue(name, newValues);
+		}
 	};
 
 	const onAccessListChange = (acl, idx) => {
@@ -159,7 +162,11 @@ export function AccessFields({
 	return (
 		<div className="mb-3">
 			{isLoading ? <div className="placeholder placeholder-lg col-12 my-3 placeholder-glow" /> : null}
-			{isError ? <div className="invalid-feedback">{`${error}`}</div> : null}
+			{isError ? (
+				<div className="invalid-feedback d-block">
+					<T id={error.message} />
+				</div>
+			) : null}
 			<div className="row">
 				<div className="col-md-10">
 					<div className="input-group mb-3 shadow-none">
@@ -181,8 +188,11 @@ export function AccessFields({
 							onChange={(e) => {
 								const value = e.type;
 								setAclValue(value);
-								void setFieldValue(typeFieldName, value);
-								onChange?.({ npmplusAccessListType: value });
+								if (onChange) {
+									onChange({ npmplusAccessListType: value });
+								} else {
+									void setFieldValue(typeFieldName, value);
+								}
 							}}
 						/>
 					</div>
@@ -196,7 +206,9 @@ export function AccessFields({
 								className="col-md-8 mb-1"
 								unstyled
 								classNames={selectClassNames}
-								value={defaultOptions.find((o) => o.value === item) ?? null}
+								value={
+									defaultOptions.find((o) => o.value === item) ?? { value: item, label: `#${item}` }
+								}
 								options={options}
 								components={{ Option }}
 								styles={{
@@ -246,7 +258,7 @@ export function AccessFields({
 							</button>
 						</div>
 					))}
-					{values.length < defaultOptions.length && ( // only show add button if there are more acls that can be added
+					{options.length > 0 && ( // only show add button if there are more acls that can be added
 						<div className="text-center">
 							<button type="button" className="btn my-3" onClick={handleAdd}>
 								<T id="action.add" />
@@ -255,8 +267,7 @@ export function AccessFields({
 					)}
 				</>
 			) : null}
-			{authRequest &&
-				authRequest !== "none" &&
+			{authRequest !== "none" &&
 				acls[0]?.satisfyAny &&
 				acls.some(
 					(acl) =>

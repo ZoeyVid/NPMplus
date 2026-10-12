@@ -24,7 +24,7 @@ import { showTabOfInvalid, validateNumber, validateUpstreamUrl } from "src/modul
 import { showObjectSuccess } from "src/notifications";
 
 const ProxyHostModal = EasyModal.create(({ id, isClone, visible, remove }) => {
-	const { data, isLoading, error } = useProxyHost(id);
+	const { data, isPending, error } = useProxyHost(id);
 	const { data: allProxyHosts } = useProxyHosts();
 	const suggestions = useDirectorySuggestions(allProxyHosts);
 	const { mutate: setProxyHost } = useSetProxyHost();
@@ -83,7 +83,7 @@ const ProxyHostModal = EasyModal.create(({ id, isClone, visible, remove }) => {
 					{error?.message}
 				</Alert>
 			)}
-			{isLoading && <Loading noLogo />}
+			{isPending && <Loading noLogo />}
 			{data && (
 				<Formik
 					initialValues={{
@@ -91,7 +91,7 @@ const ProxyHostModal = EasyModal.create(({ id, isClone, visible, remove }) => {
 						domainNames: data?.domainNames,
 						forwardScheme: data?.forwardScheme,
 						forwardHost: data?.forwardHost,
-						forwardPort: data?.forwardPort || undefined,
+						forwardPort: data?.forwardPort || "",
 						npmplusAccessListIds: data?.npmplusAccessListIds,
 						npmplusAccessListType: data?.npmplusAccessListType,
 						// Locations tab
@@ -250,7 +250,7 @@ const ProxyHostModal = EasyModal.create(({ id, isClone, visible, remove }) => {
 													</div>
 													<div className="col-md-5">
 														<Field name="forwardHost">
-															{({ field }) => (
+															{({ field, form }) => (
 																<div className="mb-3">
 																	<label className="form-label" htmlFor="forwardHost">
 																		<T id="proxy-host.forward-host-path" />
@@ -260,6 +260,8 @@ const ProxyHostModal = EasyModal.create(({ id, isClone, visible, remove }) => {
 																		type="text"
 																		className="form-control"
 																		placeholder="example.com"
+																		required={form.values.forwardScheme !== "empty"}
+																		pattern="\S{0,255}"
 																		{...field}
 																	/>
 																</div>
@@ -558,12 +560,21 @@ const ProxyHostModal = EasyModal.create(({ id, isClone, visible, remove }) => {
 																</span>
 																<span className="col-auto">
 																	<Field name="npmplusAuthRequest">
-																		{({ field }) => (
+																		{({ field, form }) => (
 																			<select
 																				id="npmplusAuthRequest"
 																				className="form-select"
 																				required
 																				{...field}
+																				onChange={(e) => {
+																					field.onChange(e);
+																					if (e.target.value === "none") {
+																						form.setFieldValue(
+																							"npmplusAuthRequestUpstream",
+																							"",
+																						);
+																					}
+																				}}
 																			>
 																				<option value="none">none</option>
 																				<option value="anubis">anubis</option>
