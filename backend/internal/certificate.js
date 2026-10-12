@@ -235,35 +235,45 @@ const internalCertificate = {
 	download: async (access, data) => {
 		access.can("certificates:manage");
 		const certificate = await internalCertificate.get(access, data);
+
+		let zipDirectory;
+		let fileNames = ["fullchain.pem", "privkey.pem"];
 		if (certificate.provider === "letsencrypt") {
-			const zipDirectory = internalCertificate.getLiveCertPath(data.id);
-			try {
-				await stat(zipDirectory);
-			} catch (err) {
-				throw new error.ItemNotFoundError(`Certificate ${certificate.nice_name} does not exists`, err);
-			}
-
-			const certFiles = [];
-			for (const fileName of ["fullchain.pem", "privkey.pem"]) {
-				try {
-					certFiles.push(await realpath(path.join(zipDirectory, fileName)));
-				} catch (err) {
-					throw new error.ItemNotFoundError(
-						`Certificate ${certificate.nice_name} is missing ${fileName}`,
-						err,
-					);
-				}
-			}
-
-			const opName = path.join(await mkdtemp(path.join(tmpdir(), "npm-")), `npm-${data.id}-${Date.now()}.zip`);
-
-			await internalCertificate.zipFiles(certFiles, opName);
-			debug(logger, "zip completed : ", opName);
-			return {
-				fileName: opName,
-			};
+			zipDirectory = internalCertificate.getLiveCertPath(data.id);
+		} else if (certificate.provider === "other") {
+			// custom certs are not stored in the database, only on disk (see writeCustomCert)
+			zipDirectory = internalCertificate.getCustomCertPath(data.id);
+		} else if (certificate.provider === "mtls") {
+			// mtls certs only consist of a single certificate file, there is no private key
+			const mtlsFile = internalCertificate.getMtlsCertFile(data.id);
+			zipDirectory = path.dirname(mtlsFile);
+			fileNames = [path.basename(mtlsFile)];
+		} else {
+			throw new error.ValidationError("Cannot download certificates for this type of provider");
 		}
-		throw new error.ValidationError("Only Certbot certificates can be downloaded");
+
+		try {
+			await stat(zipDirectory);
+		} catch (err) {
+			throw new error.ItemNotFoundError(`Certificate ${certificate.nice_name} does not exists`, err);
+		}
+
+		const certFiles = [];
+		for (const fileName of fileNames) {
+			try {
+				certFiles.push(await realpath(path.join(zipDirectory, fileName)));
+			} catch (err) {
+				throw new error.ItemNotFoundError(`Certificate ${certificate.nice_name} is missing ${fileName}`, err);
+			}
+		}
+
+		const opName = path.join(await mkdtemp(path.join(tmpdir(), "npm-")), `npm-${data.id}-${Date.now()}.zip`);
+
+		await internalCertificate.zipFiles(certFiles, opName);
+		debug(logger, "zip completed : ", opName);
+		return {
+			fileName: opName,
+		};
 	},
 
 	/**
@@ -332,7 +342,7 @@ const internalCertificate = {
 			// Revoke the cert
 			await internalCertificate.revokeCertbot(row);
 		} else if (row.provider === "mtls") {
-			await rm(`/data/tls/mtls/npm-${row.id}.pem`, { force: true });
+			await rm(internalCertificate.getMtlsCertFile(row.id), { force: true });
 		} else {
 			await rm(`/data/tls/custom/npm-${row.id}`, { force: true, recursive: true });
 			await rm(`/data/tls/custom/npm-${row.id}.der`, { force: true });
@@ -407,11 +417,11 @@ const internalCertificate = {
 		logger.info("Writing Custom Certificate:", certificate.id);
 
 		if (certificate.provider === "mtls") {
-			await writeFile(`/data/tls/mtls/npm-${certificate.id}.pem`, certificate.certificate);
+			await writeFile(internalCertificate.getMtlsCertFile(certificate.id), certificate.certificate);
 			return;
 		}
 
-		const dir = `/data/tls/custom/npm-${certificate.id}`;
+		const dir = internalCertificate.getCustomCertPath(certificate.id);
 
 		await mkdir(dir, { recursive: true });
 		await writeFile(`${dir}/fullchain.pem`, certificate.certificate);
@@ -923,6 +933,10 @@ const internalCertificate = {
 	},
 
 	getLiveCertPath: (certificateId) => `/data/tls/certbot/live/npm-${certificateId}`,
+
+	getCustomCertPath: (certificateId) => `/data/tls/custom/npm-${certificateId}`,
+
+	getMtlsCertFile: (certificateId) => `/data/tls/mtls/npm-${certificateId}.pem`,
 };
 
 export default internalCertificate;
