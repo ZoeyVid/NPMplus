@@ -21,6 +21,7 @@ import {
 } from "src/components";
 import { TableLayout } from "src/components/Table/TableLayout";
 import { intl, T } from "src/locale";
+import { forwardSummary } from "src/modules/Forward";
 import { MANAGE, PROXY_HOSTS } from "src/modules/Permissions";
 
 const features = tableFeatures({
@@ -74,18 +75,18 @@ export default function Table({
 					return <DomainsFormatter domains={value.domainNames} createdOn={value.createdOn} />;
 				},
 			}),
-			columnHelper.accessor(
-				(row) => `${row.forwardScheme}://${row.forwardHost}${row.forwardPort ? `:${row.forwardPort}` : ""}`,
-				{
-					id: "forwardHost",
-					header: intl.formatMessage({ id: "column.destination" }),
-					cell: (info) => (
+			columnHelper.accessor(forwardSummary, {
+				id: "forwardHost",
+				header: intl.formatMessage({ id: "column.destination" }),
+				cell: (info) =>
+					info.row.original.forwardScheme === "path" || !info.getValue() ? (
+						info.getValue()
+					) : (
 						<a href={info.getValue()} target="_blank" rel="noopener">
 							{info.getValue()}
 						</a>
 					),
-				},
-			),
+			}),
 			columnHelper.accessor((row) => (row.certificate ? row.certificate.provider : "http-only"), {
 				id: "certificate",
 				header: intl.formatMessage({ id: "column.ssl" }),
