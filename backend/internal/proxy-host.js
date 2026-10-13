@@ -7,7 +7,7 @@ import internalCertificate from "./certificate.js";
 import internalHost from "./host.js";
 import internalNginx from "./nginx.js";
 import internalProxyHostAccessList from "./proxy-host-access-list.js";
-import internalUpstreamServers from "./upstream-servers.js"
+import internalUpstreamServers from "./upstream-servers.js";
 
 const authProvider = (authRequest) => authRequest?.replace("-send-basic-auth", "");
 

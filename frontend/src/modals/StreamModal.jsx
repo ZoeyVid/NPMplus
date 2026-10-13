@@ -98,7 +98,7 @@ const StreamModal = EasyModal.create(({ id, isClone, visible, remove, close, for
 					initialValues={{
 						incomingPort: data?.incomingPort,
 						npmplusLoadBalanceMethod: data?.npmplusLoadBalanceMethod || "round_robin",
-						npmplusUpstreamServers: data?.npmplusUpstreamServers?.length ? 
+						npmplusUpstreamServers: data?.npmplusUpstreamServers?.length ?
 														data.npmplusUpstreamServers :
 																				[
 																					{

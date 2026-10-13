@@ -25,7 +25,7 @@ const ForwardHostLink = ({ forwardScheme, forwardhost, forwardPort, forwardPath,
 };
 
 export function ForwardHostFormatter({ hostRowId, upstreamServers = [], scheme="", forwardPath="", loadBalanceMethod, streams=false }) {
-	
+
     const elms = [];
     for (let i = 0; i < 2 && i < upstreamServers.length; ++i){
         const server = upstreamServers[i];

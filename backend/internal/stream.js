@@ -4,7 +4,7 @@ import internalAuditLog from "./audit-log.js";
 import internalCertificate from "./certificate.js";
 import internalHost from "./host.js";
 import internalNginx from "./nginx.js";
-import internalUpstreamServers from "./upstream-servers.js"
+import internalUpstreamServers from "./upstream-servers.js";
 
 const cleanStreamData = (data, existingData) => {
 	const combinedData = { ...existingData, ...data };

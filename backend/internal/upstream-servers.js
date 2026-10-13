@@ -35,7 +35,7 @@ const normaliseHost = (host) => {
 const internalUpstreamServers = {
 
 	/**
-	 * 
+	 *
 	 * @param {*} serverHost 
 	 * @returns 
 	 */

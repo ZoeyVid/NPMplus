@@ -70,7 +70,7 @@ export function CleanUpstreamServers(servers = []) {
 		const cleaned = { ...server };
 
 		for (const field of ["weight", "maxFails", "maxConns", "failTimeout"]) {
-			if (cleaned[field] === null || 
+			if (cleaned[field] === null ||
 				cleaned[field] === undefined || 
 				cleaned[field] === "") {
 				delete cleaned[field];
