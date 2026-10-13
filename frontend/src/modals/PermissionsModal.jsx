@@ -18,7 +18,7 @@ const showPermissionsModal = (id) => {
 const PermissionsModal = EasyModal.create(({ id, visible, remove }) => {
 	const queryClient = useQueryClient();
 	const [errorMsg, setErrorMsg] = useState(null);
-	const { data, isLoading, error } = useUser(id);
+	const { data, isPending, error } = useUser(id);
 	const [isSubmitting, setIsSubmitting] = useState(false);
 
 	const onSubmit = async (values, { setSubmitting }) => {
@@ -139,7 +139,7 @@ const PermissionsModal = EasyModal.create(({ id, visible, remove }) => {
 					{error?.message}
 				</Alert>
 			)}
-			{isLoading && <Loading noLogo />}
+			{isPending && <Loading noLogo />}
 			{data && (
 				<Formik
 					initialValues={{

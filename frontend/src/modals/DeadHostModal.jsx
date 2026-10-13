@@ -22,7 +22,7 @@ const showDeadHostModal = (id) => {
 };
 
 const DeadHostModal = EasyModal.create(({ id, visible, remove }) => {
-	const { data, isLoading, error } = useDeadHost(id);
+	const { data, isPending, error } = useDeadHost(id);
 	const { mutate: setDeadHost } = useSetDeadHost();
 	const { data: allDeadHosts } = useDeadHosts();
 	const suggestions = useDirectorySuggestions(allDeadHosts);
@@ -71,7 +71,7 @@ const DeadHostModal = EasyModal.create(({ id, visible, remove }) => {
 					{error?.message}
 				</Alert>
 			)}
-			{isLoading && <Loading noLogo />}
+			{isPending && <Loading noLogo />}
 			{data && (
 				<Formik
 					initialValues={{
