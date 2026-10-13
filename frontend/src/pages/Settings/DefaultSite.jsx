@@ -8,7 +8,7 @@ import { validateString } from "src/modules/Validations";
 import { showObjectSuccess } from "src/notifications";
 
 export default function DefaultSite() {
-	const { data, isLoading, error } = useSetting("default-site");
+	const { data, isPending, error } = useSetting("default-site");
 	const { mutate: setSetting } = useSetSetting();
 	const [errorMsg, setErrorMsg] = useState(null);
 	const [isSubmitting, setIsSubmitting] = useState(false);
@@ -52,7 +52,7 @@ export default function DefaultSite() {
 		);
 	}
 
-	if (isLoading) {
+	if (isPending) {
 		return (
 			<div className="card-body">
 				<div className="mb-3">
