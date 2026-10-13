@@ -15,7 +15,7 @@ const showRenewCertificateModal = (id) => {
 
 const RenewCertificateModal = EasyModal.create(({ id, visible, remove }) => {
 	const queryClient = useQueryClient();
-	const { data, isLoading, error } = useCertificate(id);
+	const { data, isPending, error } = useCertificate(id);
 	const [errorMsg, setErrorMsg] = useState(null);
 	const [isFresh, setIsFresh] = useState(true);
 	const [isSubmitting, setIsSubmitting] = useState(false);
@@ -60,7 +60,7 @@ const RenewCertificateModal = EasyModal.create(({ id, visible, remove }) => {
 				<Alert variant="danger" show={errorMsg}>
 					{errorMsg}
 				</Alert>
-				{isLoading && <Loading noLogo />}
+				{isPending && <Loading noLogo />}
 				{error && (
 					<Alert variant="danger" className="m-3">
 						{error?.message}

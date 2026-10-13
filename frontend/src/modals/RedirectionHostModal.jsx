@@ -23,7 +23,7 @@ const showRedirectionHostModal = (id) => {
 };
 
 const RedirectionHostModal = EasyModal.create(({ id, visible, remove }) => {
-	const { data, isLoading, error } = useRedirectionHost(id);
+	const { data, isPending, error } = useRedirectionHost(id);
 	const { mutate: setRedirectionHost } = useSetRedirectionHost();
 	const { data: allRedirectionHosts } = useRedirectionHosts();
 	const suggestions = useDirectorySuggestions(allRedirectionHosts);
@@ -72,7 +72,7 @@ const RedirectionHostModal = EasyModal.create(({ id, visible, remove }) => {
 					{error?.message}
 				</Alert>
 			)}
-			{isLoading && <Loading noLogo />}
+			{isPending && <Loading noLogo />}
 			{data && (
 				<Formik
 					initialValues={{

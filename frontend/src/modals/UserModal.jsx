@@ -17,8 +17,8 @@ const showUserModal = (id) => {
 };
 
 const UserModal = EasyModal.create(({ id, visible, remove }) => {
-	const { data, isLoading, error } = useUser(id);
-	const { data: currentUser, isLoading: currentIsLoading } = useUser("me");
+	const { data, isPending, error } = useUser(id);
+	const { data: currentUser, isPending: currentIsPending } = useUser("me");
 	const { mutate: setUser } = useSetUser();
 	const [errorMsg, setErrorMsg] = useState(null);
 	const [isSubmitting, setIsSubmitting] = useState(false);
@@ -79,7 +79,7 @@ const UserModal = EasyModal.create(({ id, visible, remove }) => {
 					{error?.message}
 				</Alert>
 			)}
-			{(isLoading || currentIsLoading) && <Loading noLogo />}
+			{(isPending || currentIsPending) && <Loading noLogo />}
 			{data && currentUser && (
 				<Formik
 					initialValues={{

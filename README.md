@@ -330,6 +330,7 @@ If you need to run scripts before NPMplus launches put them under: `/opt/npmplus
     - or you are under (a) DDoS-attack(s), which you can't handle yourself and the attacker does not know your real ip/does not use it to attack you, but instead your domain: you could use cloudflare as dns nameserver for your domain with the proxy disabled and only enable it if you are under an attack (only work if the attacker did not cache your real ip)
     - or you want to hide your IP and only expose http(s) services, but then: don't use NPMplus at all, install cloudflared and use cloudflare tunnels and point it directly to your upstreams, this way you can still manage everything in a GUI and you don't even need to expose any ports
 - If you still want to use cloudflare proxy make sure to set `your domain => SSL/TLS => SSL/TLS encryption => Current encryption mode => Configure` to "Full (strict)"
+- If you use cloudflare proxy and your local dns server resolves your domains directly to NPMplus (split dns/dns rewrites), make sure it also overrides or blocks (empty answer) their HTTPS (type 65) records, otherwise browsers may use the ECH config of cloudflare (public name `cloudflare-ech.com`) and the connection to NPMplus will fail, since NPMplus does not have the ECH keys of cloudflare
 - Just using cloudflare as a dns nameserver provider for your domain is fine
 - If you use cloudflare to forward mails to your inbox, note that cloudflare also acts as man-in-the-middle in this case
 
