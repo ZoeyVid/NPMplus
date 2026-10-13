@@ -14,7 +14,7 @@ const showStreamModal = (id) => {
 };
 
 const StreamModal = EasyModal.create(({ id, visible, remove }) => {
-	const { data, isLoading, error } = useStream(id);
+	const { data, isPending, error } = useStream(id);
 	const { data: allStreams } = useStreams();
 	const suggestions = useDirectorySuggestions(allStreams);
 	const { mutate: setStream } = useSetStream();
@@ -63,7 +63,7 @@ const StreamModal = EasyModal.create(({ id, visible, remove }) => {
 					{error?.message}
 				</Alert>
 			)}
-			{isLoading && <Loading noLogo />}
+			{isPending && <Loading noLogo />}
 			{data && (
 				<Formik
 					initialValues={{
