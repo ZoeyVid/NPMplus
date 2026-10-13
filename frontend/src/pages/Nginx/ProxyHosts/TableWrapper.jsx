@@ -77,7 +77,7 @@ export default function TableWrapper() {
 		onClone: (id) => showProxyHostModal(id, true),
 		onDelete: (id) => {
 			const host = data?.find((item) => item.id === id);
-			const upstreamDetails = (host?.npmplusUpstreamServers ?? []).map((server) => 
+			const upstreamDetails = (host?.npmplusUpstreamServers ?? []).map((server) =>
 				`${host.forwardScheme}://${server.host}` +`${server.port ? `:${server.port}` : ""}` + `${host.npmplusForwardPath ?? ""}`
 			);
 			showDeleteConfirmModal({

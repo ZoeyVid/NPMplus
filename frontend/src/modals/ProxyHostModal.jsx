@@ -49,8 +49,8 @@ const ProxyHostModal = EasyModal.create(({ id, isClone, visible, remove }) => {
 			globalAclIds = [];
 		}
 		const locations = (values.locations || []).map((loc) => {
-			let newLoc = { 
-				...loc, 
+			let newLoc = {
+				...loc,
 				// remove entries that are null or undefined or empty to pass schema validation
 				npmplusUpstreamServers: CleanUpstreamServers(
 					loc.npmplusUpstreamServers,
@@ -118,7 +118,7 @@ const ProxyHostModal = EasyModal.create(({ id, isClone, visible, remove }) => {
 						domainNames: data?.domainNames,
 						forwardScheme: data?.forwardScheme || "http",
 						npmplusLoadBalanceMethod: data?.npmplusLoadBalanceMethod || "round_robin",
-						npmplusUpstreamServers: data?.npmplusUpstreamServers?.length ? 
+						npmplusUpstreamServers: data?.npmplusUpstreamServers?.length ?
 														data.npmplusUpstreamServers :
 																				[
 																					{
