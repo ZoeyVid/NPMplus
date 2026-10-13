@@ -7,7 +7,7 @@ import internalCertificate from "./certificate.js";
 import internalHost from "./host.js";
 import internalNginx from "./nginx.js";
 import internalProxyHostAccessList from "./proxy-host-access-list.js";
-import internalUpstreamServers from "./upstream-servers.js"
+import internalUpstreamServers from "./upstream-servers.js";
 
 const replaceLocationsAndAccessLists = async (trx, proxyHostId, data) => {
 	const insertAccessLists = async (locationId, accessListIds) => {
@@ -183,7 +183,7 @@ const internalProxyHost = {
 		internalUpstreamServers.validateLoadBalancing(thisData, existingRow);
 
 		await proxyHostModel.transaction(async (trx) => {
-			
+
 			const patchResult = await proxyHostModel.query(trx).where({ id: thisData.id }).patch(thisData);
 			await replaceLocationsAndAccessLists(trx, thisData.id, thisData);
 			return patchResult;
