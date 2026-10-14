@@ -3,7 +3,7 @@ import crypto from "node:crypto";
 import { readdir, readFile, writeFile } from "node:fs/promises";
 import { promisify } from "node:util";
 import { Liquid } from "liquidjs";
-import { debug, global as logger } from "../logger.js";
+import { global as logger } from "../logger.js";
 import errs from "./error.js";
 
 const nodeExecFilePromises = promisify(nodeExecFile);
@@ -36,7 +36,7 @@ const writeHash = async () => {
  * @returns {Promise}
  */
 const execFile = async (cmd, args) => {
-	debug(logger, `CMD: ${cmd} ${args ? args.join(" ") : ""}`);
+	logger.debug(`CMD: ${cmd} ${args ? args.join(" ") : ""}`);
 
 	try {
 		const { stdout, stderr } = await nodeExecFilePromises(cmd, args);
@@ -64,9 +64,7 @@ const getRenderEngine = () => {
 	 * address    string
 	 */
 	renderEngine.registerFilter("nginxAccessRule", (v) => {
-		if (typeof v.directive !== "undefined" && typeof v.address !== "undefined" && v.directive && v.address) {
-			return `${v.directive} ${v.address};`;
-		}
+		if (v.directive && v.address) return `${v.directive} ${v.address};`;
 		return "";
 	});
 

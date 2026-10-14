@@ -180,16 +180,17 @@ export function SiteMenu() {
 								<ul className="navbar-nav">
 									{menuGroups
 										.map((group) =>
-											group.filter((item) =>
-												item.goaccess
-													? user?.goaccess
-													: hasPermission(
-															item.permissionSection,
-															item.permission,
-															user?.permissions,
-															user?.roles,
-														),
-											),
+											group.filter((item) => {
+												if (item.goaccess) {
+													return user?.goaccess;
+												}
+												return hasPermission(
+													item.permissionSection,
+													item.permission,
+													user?.permissions,
+													user?.roles,
+												);
+											}),
 										)
 										.filter((group) => group.length)
 										.map((group, idx) => (

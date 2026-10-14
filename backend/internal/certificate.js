@@ -11,7 +11,7 @@ import { installPlugin } from "../lib/certbot.js";
 import error from "../lib/error.js";
 import { pickCertificateFields } from "../lib/helpers.js";
 import utils from "../lib/utils.js";
-import { debug, ssl as logger } from "../logger.js";
+import { ssl as logger } from "../logger.js";
 import certificateModel from "../models/certificate.js";
 import deadHostModel from "../models/dead_host.js";
 import proxyHostModel from "../models/proxy_host.js";
@@ -270,7 +270,7 @@ const internalCertificate = {
 		const opName = path.join(dir, `npm-${data.id}-${Date.now()}.zip`);
 
 		await internalCertificate.zipFiles(certFiles, opName);
-		debug(logger, "zip completed : ", opName);
+		logger.debug("zip completed : ", opName);
 		return {
 			fileName: opName,
 		};
@@ -301,10 +301,6 @@ const internalCertificate = {
 	delete: async (access, data) => {
 		access.can("certificates:manage");
 		const row = await internalCertificate.get(access, { id: data.id });
-
-		if (!row?.id) {
-			throw new error.ItemNotFoundError(data.id);
-		}
 
 		for (const hostModel of [proxyHostModel, redirectionHostModel, deadHostModel, streamModel]) {
 			if (
@@ -348,7 +344,7 @@ const internalCertificate = {
 	 * @param   {String}  [searchQuery]
 	 * @returns {Promise}
 	 */
-	getAll: async (access, expand, searchQuery) => {
+	getAll: (access, expand, searchQuery) => {
 		access.can("certificates:view");
 
 		const query = certificateModel
@@ -370,11 +366,9 @@ const internalCertificate = {
 			});
 		}
 
-		if (typeof expand !== "undefined" && expand !== null) {
-			query.withGraphFetched(`[${expand.join(", ")}]`);
-		}
+		if (expand) query.withGraphFetched(`[${expand.join(", ")}]`);
 
-		return await query;
+		return query;
 	},
 
 	/**
@@ -474,10 +468,8 @@ const internalCertificate = {
 		const isMtls = row.provider === "mtls";
 
 		const validations = internalCertificate.validate(access, data);
-		if (typeof validations.certificate === "undefined") {
-			throw new error.ValidationError("Certificate file was not provided");
-		}
-		if (!isMtls && typeof validations.certificate_key === "undefined") {
+		if (validations.certificate === undefined) throw new error.ValidationError("Certificate file was not provided");
+		if (!isMtls && validations.certificate_key === undefined) {
 			throw new error.ValidationError("Certificate Key file was not provided");
 		}
 
@@ -648,9 +640,8 @@ const internalCertificate = {
 				`--${dnsPlugin.full_plugin_name}-credentials`,
 				credentialsLocation,
 				...(certificate.npmplus_propagation_seconds > 0
-					? [`--${dnsPlugin.full_plugin_name}-propagation-seconds`]
+					? [`--${dnsPlugin.full_plugin_name}-propagation-seconds`, certificate.npmplus_propagation_seconds]
 					: []),
-				...(certificate.npmplus_propagation_seconds > 0 ? [certificate.npmplus_propagation_seconds] : []),
 			]);
 			logger.info(result);
 			return result;
@@ -671,11 +662,7 @@ const internalCertificate = {
 		const certificate = await internalCertificate.get(access, data);
 
 		if (certificate.provider === "letsencrypt") {
-			const renewMethod = certificate.npmplus_dns_challenge
-				? internalCertificate.renewCertbotWithDnsChallenge
-				: internalCertificate.renewCertbot;
-
-			await renewMethod(certificate);
+			await internalCertificate.renewCertbot(certificate);
 			const certInfo = await internalCertificate.getCertificateInfoFromFile(
 				`${internalCertificate.getLiveCertPath(certificate.id)}/fullchain.pem`,
 			);
@@ -707,54 +694,13 @@ const internalCertificate = {
 	 * @returns {Promise}
 	 */
 	renewCertbot: async (certificate) => {
-		logger.info(
-			`Renewing Certbot certificates for Cert #${certificate.id}: ${certificate.domain_names.join(", ")}`,
-		);
-
-		try {
-			const revokeResult = await utils.execFile("certbot", [
-				"--config",
-				"/etc/certbot.ini",
-				"revoke",
-				"--cert-name",
-				`npm-${certificate.id}`,
-				"--reason",
-				"superseded",
-				"--no-delete-after-revoke",
-			]);
-			logger.info(revokeResult);
-		} catch {
-			// do nothing
-		}
-
-		const renewResult = await utils.execFile("certbot", [
-			"--config",
-			"/etc/certbot.ini",
-			"renew",
-			"--server",
-			process.env.ACME_SERVER,
-			"--cert-name",
-			`npm-${certificate.id}`,
-			"--new-key",
-			"--force-renewal",
-		]);
-		logger.info(renewResult);
-
-		return renewResult;
-	},
-
-	/**
-	 * @param   {Object}  certificate   the certificate row
-	 * @returns {Promise}
-	 */
-	renewCertbotWithDnsChallenge: async (certificate) => {
-		const dnsPlugin = dnsPlugins[certificate.npmplus_dns_provider];
-		if (!dnsPlugin) {
+		const dnsPlugin = certificate.npmplus_dns_challenge ? dnsPlugins[certificate.npmplus_dns_provider] : null;
+		if (certificate.npmplus_dns_challenge && !dnsPlugin) {
 			throw new Error(`Unknown DNS provider '${certificate.npmplus_dns_provider}'`);
 		}
 
 		logger.info(
-			`Renewing Certbot certificates via ${dnsPlugin.name} for Cert #${certificate.id}: ${certificate.domain_names.join(", ")}`,
+			`Renewing Certbot certificates ${dnsPlugin ? `via ${dnsPlugin.name} ` : ""}for Cert #${certificate.id}: ${certificate.domain_names.join(", ")}`,
 		);
 
 		try {
@@ -785,6 +731,7 @@ const internalCertificate = {
 			"--force-renewal",
 		]);
 		logger.info(renewResult);
+
 		return renewResult;
 	},
 

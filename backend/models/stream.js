@@ -44,17 +44,9 @@ class Stream extends Model {
 		return super.$formatDatabaseJson(thisJson);
 	}
 
-	static get name() {
-		return "Stream";
-	}
+	static tableName = "stream";
 
-	static get tableName() {
-		return "stream";
-	}
-
-	static get jsonAttributes() {
-		return ["meta"];
-	}
+	static jsonAttributes = ["meta"];
 
 	static get relationMappings() {
 		return {

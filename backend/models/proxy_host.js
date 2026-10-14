@@ -75,17 +75,9 @@ class ProxyHost extends Model {
 		return super.$formatDatabaseJson(thisJson);
 	}
 
-	static get name() {
-		return "ProxyHost";
-	}
+	static tableName = "proxy_host";
 
-	static get tableName() {
-		return "proxy_host";
-	}
-
-	static get jsonAttributes() {
-		return ["domain_names", "meta"];
-	}
+	static jsonAttributes = ["domain_names", "meta"];
 
 	static get relationMappings() {
 		return {

@@ -31,13 +31,7 @@ class Location extends Model {
 		return super.$formatDatabaseJson(convertBoolFieldsToInt(json, boolFields));
 	}
 
-	static get name() {
-		return "Location";
-	}
-
-	static get tableName() {
-		return "npmplus_location";
-	}
+	static tableName = "npmplus_location";
 
 	static get relationMappings() {
 		return {

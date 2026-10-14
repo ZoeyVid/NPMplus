@@ -41,11 +41,12 @@ export function AccessListFormatter({ proxyHostId, access, type, locations }) {
 			{hasLocationAcls ? <strong>{triggerLabel}</strong> : triggerLabel}
 		</button>
 	);
-	return access.length > 1 ? (
-		<OverlayTrigger trigger={["hover", "focus"]} placement="bottom" overlay={popover}>
-			{button}
-		</OverlayTrigger>
-	) : (
-		button
-	);
+	if (access.length > 1) {
+		return (
+			<OverlayTrigger trigger={["hover", "focus"]} placement="bottom" overlay={popover}>
+				{button}
+			</OverlayTrigger>
+		);
+	}
+	return button;
 }

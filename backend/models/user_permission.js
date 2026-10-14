@@ -17,13 +17,7 @@ class UserPermission extends Model {
 		this.modified_on = now();
 	}
 
-	static get name() {
-		return "UserPermission";
-	}
-
-	static get tableName() {
-		return "user_permission";
-	}
+	static tableName = "user_permission";
 }
 
 export default UserPermission;
