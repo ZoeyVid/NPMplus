@@ -138,23 +138,19 @@ const internalStream = {
 	 * @return {Promise}
 	 */
 	get: async (access, data) => {
-		const thisData = data || {};
-
 		access.can("streams:view");
 
-		const query = streamModel.query().where("id", thisData.id).allowGraph("[certificate]").first();
+		const query = streamModel.query().where("id", data.id).allowGraph("[certificate]").first();
 
 		if (access.visibility !== "all") {
 			query.andWhere("owner_user_id", access.token.getUserId(1));
 		}
 
-		if (typeof thisData.expand !== "undefined" && thisData.expand !== null) {
-			query.withGraphFetched(`[${thisData.expand.join(", ")}]`);
-		}
+		if (data.expand) query.withGraphFetched(`[${data.expand.join(", ")}]`);
 
 		const row = await query;
 		if (!row?.id) {
-			throw new errs.ItemNotFoundError(thisData.id);
+			throw new errs.ItemNotFoundError(data.id);
 		}
 
 		return row;
@@ -171,9 +167,6 @@ const internalStream = {
 		access.can("streams:manage");
 
 		const row = await internalStream.get(access, { id: data.id });
-		if (!row?.id) {
-			throw new errs.ItemNotFoundError(data.id);
-		}
 
 		await streamModel.query().deleteById(row.id);
 
@@ -208,9 +201,6 @@ const internalStream = {
 			id: data.id,
 			expand: ["certificate"],
 		});
-		if (!row?.id) {
-			throw new errs.ItemNotFoundError(data.id);
-		}
 		if (row.enabled) {
 			throw new errs.ValidationError("Stream is already enabled");
 		}
@@ -251,9 +241,6 @@ const internalStream = {
 		access.can("streams:manage");
 
 		const row = await internalStream.get(access, { id: data.id });
-		if (!row?.id) {
-			throw new errs.ItemNotFoundError(data.id);
-		}
 		if (!row.enabled) {
 			throw new errs.ValidationError("Stream is already disabled");
 		}
@@ -292,7 +279,7 @@ const internalStream = {
 	 * @param   {String}  [searchQuery]
 	 * @returns {Promise}
 	 */
-	getAll: async (access, expand, searchQuery) => {
+	getAll: (access, expand, searchQuery) => {
 		access.can("streams:view");
 
 		const query = streamModel
@@ -315,11 +302,9 @@ const internalStream = {
 			});
 		}
 
-		if (typeof expand !== "undefined" && expand !== null) {
-			query.withGraphFetched(`[${expand.join(", ")}]`);
-		}
+		if (expand) query.withGraphFetched(`[${expand.join(", ")}]`);
 
-		return await query;
+		return query;
 	},
 
 	/**

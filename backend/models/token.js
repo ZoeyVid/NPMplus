@@ -14,7 +14,7 @@ const ALGO = "ES512";
 export default () => {
 	let tokenData = {};
 
-	const self = {
+	return {
 		/**
 		 * @param {Object}  payload
 		 * @returns {Object}
@@ -67,27 +67,12 @@ export default () => {
 		 * @param  {String}  key
 		 * @return {*}
 		 */
-		get: (key) => {
-			if (typeof tokenData[key] !== "undefined") {
-				return tokenData[key];
-			}
-
-			return null;
-		},
+		get: (key) => tokenData[key] ?? null,
 
 		/**
 		 * @param   [defaultValue]
 		 * @returns {Integer}
 		 */
-		getUserId: (defaultValue) => {
-			const attrs = self.get("attrs");
-			if (attrs?.id) {
-				return attrs.id;
-			}
-
-			return defaultValue || 0;
-		},
+		getUserId: (defaultValue) => tokenData.attrs?.id || defaultValue || 0,
 	};
-
-	return self;
 };

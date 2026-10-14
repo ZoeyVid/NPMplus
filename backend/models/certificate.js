@@ -45,17 +45,9 @@ class Certificate extends Model {
 		return super.$formatDatabaseJson(thisJson);
 	}
 
-	static get name() {
-		return "Certificate";
-	}
+	static tableName = "certificate";
 
-	static get tableName() {
-		return "certificate";
-	}
-
-	static get jsonAttributes() {
-		return ["domain_names", "meta"];
-	}
+	static jsonAttributes = ["domain_names", "meta"];
 
 	static get relationMappings() {
 		return {

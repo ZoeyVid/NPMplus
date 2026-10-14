@@ -1,4 +1,4 @@
-import { appendFile, rm, writeFile } from "node:fs/promises";
+import { rm, writeFile } from "node:fs/promises";
 import bcrypt from "bcryptjs";
 import errs from "../lib/error.js";
 import { access as logger } from "../logger.js";
@@ -112,11 +112,7 @@ const internalAccessList = {
 
 		await accessListModel.transaction(async (trx) => {
 			// patch name if specified
-			if (
-				typeof data.name !== "undefined" ||
-				typeof data.satisfy_any !== "undefined" ||
-				typeof data.pass_auth !== "undefined"
-			) {
+			if (data.name !== undefined || data.satisfy_any !== undefined || data.pass_auth !== undefined) {
 				await accessListModel.query(trx).where({ id: data.id }).patch({
 					name: data.name,
 					satisfy_any: data.satisfy_any,
@@ -125,7 +121,7 @@ const internalAccessList = {
 			}
 
 			// Check for items and add/update/remove them
-			if (typeof data.items !== "undefined" && data.items) {
+			if (data.items) {
 				// Items supplied with an empty password are kept, but their password is left untouched
 				const itemsToKeep = data.items.filter((item) => !item.password).map((item) => item.username);
 
@@ -151,7 +147,7 @@ const internalAccessList = {
 			}
 
 			// Check for clients and add/update/remove them
-			if (typeof data.clients !== "undefined" && data.clients) {
+			if (data.clients) {
 				await accessListClientModel.query(trx).delete().where("access_list_id", data.id);
 
 				await Promise.all(
@@ -207,7 +203,6 @@ const internalAccessList = {
 	 * @return {Promise}
 	 */
 	get: async (access, data) => {
-		const thisData = data || {};
 		access.can("access_lists:view");
 
 		const query = accessListModel
@@ -219,7 +214,7 @@ const internalAccessList = {
 				"access_list.id",
 			)
 			.leftJoin("proxy_host", "proxy_host.id", "npmplus_proxy_host_access_list.proxy_host_id")
-			.where("access_list.id", thisData.id)
+			.where("access_list.id", data.id)
 			.groupBy("access_list.id")
 			.allowGraph(
 				"[items,clients,proxy_hosts.[certificate,access_lists.[clients,items],locations.access_lists.[clients,items]]]",
@@ -230,14 +225,11 @@ const internalAccessList = {
 			query.andWhere("access_list.owner_user_id", access.token.getUserId(1));
 		}
 
-		if (typeof thisData.expand !== "undefined" && thisData.expand !== null) {
-			query.withGraphFetched(`[${thisData.expand.join(", ")}]`);
-		}
+		if (data.expand) query.withGraphFetched(`[${data.expand.join(", ")}]`);
 
 		const row = await query;
-
 		if (!row?.id) {
-			throw new errs.ItemNotFoundError(thisData.id);
+			throw new errs.ItemNotFoundError(data.id);
 		}
 		if (Array.isArray(row.proxy_hosts)) {
 			row.proxy_hosts = [...new Map(row.proxy_hosts.map((host) => [host.id, host])).values()];
@@ -263,10 +255,6 @@ const internalAccessList = {
 				"clients",
 			],
 		});
-
-		if (!row?.id) {
-			throw new errs.ItemNotFoundError(data.id);
-		}
 		// 1. update row to be deleted
 		// 2. update any proxy hosts that were using it (ignoring permissions)
 		// 3. reconfigure those hosts
@@ -352,7 +340,7 @@ const internalAccessList = {
 	 * @param   {String}  [searchQuery]
 	 * @returns {Promise}
 	 */
-	getAll: async (access, expand, searchQuery) => {
+	getAll: (access, expand, searchQuery) => {
 		access.can("access_lists:view");
 
 		const query = accessListModel
@@ -379,11 +367,9 @@ const internalAccessList = {
 			});
 		}
 
-		if (typeof expand !== "undefined" && expand !== null) {
-			query.withGraphFetched(`[${expand.join(", ")}]`);
-		}
+		if (expand) query.withGraphFetched(`[${expand.join(", ")}]`);
 
-		return await query;
+		return query;
 	},
 
 	/**
@@ -417,24 +403,11 @@ const internalAccessList = {
 	 * @param {*} items
 	 */
 	writeData: async (htpasswdFile, items) => {
-		await writeFile(htpasswdFile, "", { encoding: "utf8" });
-
-		if (items?.length > 0) {
-			for (const item of items) {
-				if (item.username?.length > 0 && item.password?.length > 0) {
-					logger.info(`Adding: ${item.username}`);
-
-					try {
-						await appendFile(htpasswdFile, `${item.username}:${item.password}\n`, {
-							encoding: "utf8",
-						});
-					} catch (err) {
-						logger.error(err);
-						throw err;
-					}
-				}
-			}
-		}
+		const validItems = (items ?? []).filter((item) => item.username?.length > 0 && item.password?.length > 0);
+		for (const item of validItems) logger.info(`Adding: ${item.username}`);
+		await writeFile(htpasswdFile, validItems.map((item) => `${item.username}:${item.password}\n`).join(""), {
+			encoding: "utf8",
+		});
 	},
 
 	/**

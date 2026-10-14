@@ -131,7 +131,7 @@ const internalProxyHost = {
 		const existingRow = await internalProxyHost.get(access, { id: thisData.id });
 
 		// Get a list of the domain names and check each of them against existing records
-		if (typeof thisData.domain_names !== "undefined") {
+		if (thisData.domain_names !== undefined) {
 			const checkResults = await Promise.all(
 				thisData.domain_names.map((domainName) =>
 					internalHost.isHostnameTaken(domainName, "proxy", thisData.id),
@@ -205,13 +205,11 @@ const internalProxyHost = {
 	 * @return {Promise}
 	 */
 	get: async (access, data) => {
-		const thisData = data || {};
-
 		access.can("proxy_hosts:view");
 
 		const query = proxyHostModel
 			.query()
-			.where("id", thisData.id)
+			.where("id", data.id)
 			.allowGraph("[access_lists.[clients,items],certificate,locations.access_lists.[clients,items]]")
 			.withGraphFetched("[access_lists, locations.access_lists]")
 			.first();
@@ -220,13 +218,11 @@ const internalProxyHost = {
 			query.andWhere("owner_user_id", access.token.getUserId(1));
 		}
 
-		if (typeof thisData.expand !== "undefined" && thisData.expand !== null) {
-			query.withGraphFetched(`[${thisData.expand.join(", ")}]`);
-		}
+		if (data.expand) query.withGraphFetched(`[${data.expand.join(", ")}]`);
 
 		const row = await query;
 		if (!row?.id) {
-			throw new errs.ItemNotFoundError(thisData.id);
+			throw new errs.ItemNotFoundError(data.id);
 		}
 
 		return row;
@@ -243,9 +239,6 @@ const internalProxyHost = {
 		access.can("proxy_hosts:manage");
 
 		const row = await internalProxyHost.get(access, { id: data.id });
-		if (!row?.id) {
-			throw new errs.ItemNotFoundError(data.id);
-		}
 
 		await proxyHostModel.transaction(async (trx) => {
 			await trx("npmplus_proxy_host_access_list").where("proxy_host_id", row.id).delete();
@@ -286,9 +279,6 @@ const internalProxyHost = {
 			id: data.id,
 			expand: ["certificate", "access_lists.[clients,items]", "locations.access_lists.[clients,items]"],
 		});
-		if (!row?.id) {
-			throw new errs.ItemNotFoundError(data.id);
-		}
 		if (row.enabled) {
 			throw new errs.ValidationError("Host is already enabled");
 		}
@@ -337,9 +327,6 @@ const internalProxyHost = {
 		access.can("proxy_hosts:manage");
 
 		const row = await internalProxyHost.get(access, { id: data.id });
-		if (!row?.id) {
-			throw new errs.ItemNotFoundError(data.id);
-		}
 		if (!row.enabled) {
 			throw new errs.ValidationError("Host is already disabled");
 		}
@@ -378,7 +365,7 @@ const internalProxyHost = {
 	 * @param   {String}  [searchQuery]
 	 * @returns {Promise}
 	 */
-	getAll: async (access, expand, searchQuery) => {
+	getAll: (access, expand, searchQuery) => {
 		access.can("proxy_hosts:view");
 
 		const query = proxyHostModel
@@ -399,11 +386,9 @@ const internalProxyHost = {
 			});
 		}
 
-		if (typeof expand !== "undefined" && expand !== null) {
-			query.withGraphFetched(`[${expand.join(", ")}]`);
-		}
+		if (expand) query.withGraphFetched(`[${expand.join(", ")}]`);
 
-		return await query;
+		return query;
 	},
 
 	/**

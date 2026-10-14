@@ -142,27 +142,6 @@ const generateKeys = () => {
 };
 
 /**
- *
- * @param   {string}  key   ie: 'database' or 'database.engine'
- * @returns {boolean}
- */
-const configHas = (key) => {
-	if (instance === null) configure();
-	const keys = key.split(".");
-	let level = instance;
-	let has = true;
-	for (const keyItem of keys) {
-		if (typeof level[keyItem] === "undefined") {
-			has = false;
-			break;
-		}
-		level = level[keyItem];
-	}
-
-	return has;
-};
-
-/**
  * Gets a specific key from the top level
  *
  * @param {string} key
@@ -170,9 +149,7 @@ const configHas = (key) => {
  */
 const configGet = (key) => {
 	if (instance === null) configure();
-	if (key && typeof instance[key] !== "undefined") {
-		return instance[key];
-	}
+	if (key && instance[key] !== undefined) return instance[key];
 	return instance;
 };
 
@@ -226,4 +203,4 @@ const getPrivateKey = () => {
 	return instance.keys.key;
 };
 
-export { configGet, configHas, getPrivateKey, getPublicKey, isMysql, isPostgres, isSqlite };
+export { configGet, getPrivateKey, getPublicKey, isMysql, isPostgres, isSqlite };

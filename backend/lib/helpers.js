@@ -33,18 +33,14 @@ const parseDatePeriod = (expression) => {
 
 const convertIntFieldsToBool = (obj, fields) => {
 	for (const field of fields) {
-		if (typeof obj[field] !== "undefined") {
-			obj[field] = obj[field] === 1;
-		}
+		if (obj[field] !== undefined) obj[field] = obj[field] === 1;
 	}
 	return obj;
 };
 
 const convertBoolFieldsToInt = (obj, fields) => {
 	for (const field of fields) {
-		if (typeof obj[field] !== "undefined") {
-			obj[field] = obj[field] ? 1 : 0;
-		}
+		if (obj[field] !== undefined) obj[field] = obj[field] ? 1 : 0;
 	}
 	return obj;
 };
@@ -66,15 +62,18 @@ const removeCertificateFields = (obj) =>
 const jsonReplacer = (key, value) => {
 	if (typeof value !== "string") return value;
 	if (key === "password") return "";
-	return [
-		"certificate",
-		"certificate_key",
-		"dns_provider_credentials",
-		"npmplus_dns_provider_credentials",
-		"hint",
-	].includes(key)
-		? undefined
-		: value;
+	if (
+		[
+			"certificate",
+			"certificate_key",
+			"dns_provider_credentials",
+			"npmplus_dns_provider_credentials",
+			"hint",
+		].includes(key)
+	) {
+		return;
+	}
+	return value;
 };
 
 /**

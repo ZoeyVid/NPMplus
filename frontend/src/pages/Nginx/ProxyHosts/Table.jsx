@@ -78,14 +78,16 @@ export default function Table({
 			columnHelper.accessor(forwardSummary, {
 				id: "forwardHost",
 				header: intl.formatMessage({ id: "column.destination" }),
-				cell: (info) =>
-					info.row.original.forwardScheme === "path" || !info.getValue() ? (
-						info.getValue()
-					) : (
+				cell: (info) => {
+					if (info.row.original.forwardScheme === "path" || !info.getValue()) {
+						return info.getValue();
+					}
+					return (
 						<a href={info.getValue()} target="_blank" rel="noopener">
 							{info.getValue()}
 						</a>
-					),
+					);
+				},
 			}),
 			columnHelper.accessor((row) => (row.certificate ? row.certificate.provider : "http-only"), {
 				id: "certificate",

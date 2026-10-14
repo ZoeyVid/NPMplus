@@ -91,12 +91,14 @@ const up = async (knex) => {
 		proxy_host_id,
 		location_id,
 		{ npmplus_access_list_type: type, npmplus_access_list_ids: ids },
-	) =>
-		type === "custom"
-			? [...new Set(Array.isArray(ids) ? ids : JSON.parse(ids))]
-					.filter((id) => validIds.has(id))
-					.map((access_list_id, position) => ({ proxy_host_id, location_id, access_list_id, position }))
-			: [];
+	) => {
+		if (type === "custom") {
+			return [...new Set(Array.isArray(ids) ? ids : JSON.parse(ids))]
+				.filter((id) => validIds.has(id))
+				.map((access_list_id, position) => ({ proxy_host_id, location_id, access_list_id, position }));
+		}
+		return [];
+	};
 	const relations = [
 		...hosts.flatMap((host) => toRelations(host.id, 0, host)),
 		...locations.flatMap((location, index) => toRelations(location.proxy_host_id, locationIds[index], location)),

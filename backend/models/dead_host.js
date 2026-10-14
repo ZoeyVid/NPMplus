@@ -48,17 +48,9 @@ class DeadHost extends Model {
 		return super.$formatDatabaseJson(thisJson);
 	}
 
-	static get name() {
-		return "DeadHost";
-	}
+	static tableName = "dead_host";
 
-	static get tableName() {
-		return "dead_host";
-	}
-
-	static get jsonAttributes() {
-		return ["domain_names", "meta"];
-	}
+	static jsonAttributes = ["domain_names", "meta"];
 
 	static get relationMappings() {
 		return {

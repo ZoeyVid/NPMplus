@@ -26,17 +26,9 @@ class AccessListAuth extends Model {
 		return thisJson;
 	}
 
-	static get name() {
-		return "AccessListAuth";
-	}
+	static tableName = "access_list_auth";
 
-	static get tableName() {
-		return "access_list_auth";
-	}
-
-	static get jsonAttributes() {
-		return ["meta"];
-	}
+	static jsonAttributes = ["meta"];
 
 	static get relationMappings() {
 		return {
