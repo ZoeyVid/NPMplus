@@ -57,6 +57,9 @@ const ProxyHostModal = EasyModal.create(({ id, isClone, visible, remove }) => {
 				),
 			};
 			newLoc = CleanLoadBalanceMethod(newLoc);
+			if (!newLoc.npmplusForwardPath) {
+				delete newLoc.npmplusForwardPath;
+			}
 			return newLoc;
 		});
 
@@ -128,6 +131,7 @@ const ProxyHostModal = EasyModal.create(({ id, isClone, visible, remove }) => {
 																						down: false,
 																					},
 																				],
+						npmplusForwardPath: data?.npmplusForwardPath,
 						npmplusAccessListIds: data?.accessLists.map((accessList) => accessList.id),
 						npmplusAccessListType: data?.npmplusAccessListType,
 						// Locations tab
@@ -230,7 +234,7 @@ const ProxyHostModal = EasyModal.create(({ id, isClone, visible, remove }) => {
 										<div className="tab-content">
 											<div className="tab-pane active show" id="tab-details" role="tabpanel">
 												<DomainNamesField isWildcardPermitted dnsProviderWildcardSupported />
-												<div class="row">
+												<div className="row">
 													<div className="col-md-1 text-end">
 														<div className="mb-3">
 															<div className="form-label invisible">​</div>

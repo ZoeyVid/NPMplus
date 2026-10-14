@@ -20,11 +20,6 @@ const validateString =
 	};
 
 const validateNumber = (min = -1, max = -1, allowZero = false) => {
-	if (min === -1 && max === -1) {
-		// this doesn't require translation
-		console.error("validateNumber() must be called with a min or max or both values in order to work!");
-	}
-
 	return (value) => {
 		const int = Number(value);
 		if (min > -1 && !int && !(allowZero && int === 0)) {
@@ -37,6 +32,7 @@ const validateNumber = (min = -1, max = -1, allowZero = false) => {
 			return intl.formatMessage({ id: "error.maximum" }, { max });
 		}
 	};
+};
 
 const validateEmail = () => (value) => {
 	if (value.length === 0) {

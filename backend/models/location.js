@@ -24,7 +24,16 @@ class Location extends Model {
 	}
 
 	$parseDatabaseJson(json) {
-		return convertIntFieldsToBool(super.$parseDatabaseJson(json), boolFields);
+		const thisJson = convertIntFieldsToBool(super.$parseDatabaseJson(json), boolFields);
+
+		if (thisJson.npmplus_load_balance_method === null) {
+			delete thisJson.npmplus_load_balance_method;
+		}
+		if (thisJson.npmplus_forward_path === null) {
+			delete thisJson.npmplus_forward_path;
+		}
+
+		return thisJson;
 	}
 
 	$formatDatabaseJson(json) {
@@ -57,6 +66,10 @@ class Location extends Model {
 				},
 			},
 		};
+	}
+
+	static get jsonAttributes() {
+		return ["npmplus_upstream_servers"];
 	}
 }
 

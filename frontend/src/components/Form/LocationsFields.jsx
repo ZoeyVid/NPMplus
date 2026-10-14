@@ -16,7 +16,6 @@ import OverlayTrigger from "react-bootstrap/OverlayTrigger";
 import Popover from "react-bootstrap/Popover";
 import { AccessFields } from "src/components";
 import { intl, T } from "src/locale";
-import { forwardSummary } from "src/modules/Forward";
 import { upstreamUrlPattern } from "src/modules/Validations";
 import { ForwardHostFields } from "./ForwardHostFields";
 
@@ -88,6 +87,7 @@ export function LocationsFields({ initialValues, name = "locations" }) {
 	const handleAdd = () => {
 		const item = createUiLocation();
 		const newValues = [...values, item];
+		setFormField(newValues);
 		setValues(newValues);
 		setExpanded([...expanded, item.uiKey]);
 		setFilter("");
@@ -345,10 +345,8 @@ export function LocationsFields({ initialValues, name = "locations" }) {
 										className="form-control"
 										placeholder="/path"
 										autoComplete="off"
-										required
 										pattern="\S{1,255}"
 										value={item.path}
-										pattern=".*\S.*"
 										required
 										onChange={(e) => handleChange(idx, "path", e.target.value)}
 									/>
