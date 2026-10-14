@@ -1,75 +1,64 @@
 const errs = {
-	PermissionError: function (message, messageI18n) {
-		Error.captureStackTrace(this, this.constructor);
-		this.name = this.constructor.name;
-		this.message = message || "Permission Denied";
-		this.message_i18n = messageI18n;
-		this.public = true;
-		this.status = 403;
-	},
+	PermissionError: class extends Error {
+		name = this.constructor.name;
+		public = true;
+		status = 403;
 
-	ItemNotFoundError: function (id) {
-		Error.captureStackTrace(this, this.constructor);
-		this.name = this.constructor.name;
-		this.message = "Not Found";
-		if (id) {
-			this.message = `Not Found - ${id}`;
+		constructor(message, messageI18n, options) {
+			super(message || "Permission Denied", options);
+			this.message_i18n = messageI18n;
 		}
-		this.public = true;
-		this.status = 404;
 	},
 
-	AuthError: function (message, messageI18n) {
-		Error.captureStackTrace(this, this.constructor);
-		this.name = this.constructor.name;
-		this.message = message;
-		this.message_i18n = messageI18n;
-		this.public = true;
-		this.status = 401;
+	ItemNotFoundError: class extends Error {
+		name = this.constructor.name;
+		public = true;
+		status = 404;
+
+		constructor(id, options) {
+			super(id ? `Not Found - ${id}` : "Not Found", options);
+		}
 	},
 
-	InternalValidationError: function (message) {
-		Error.captureStackTrace(this, this.constructor);
-		this.name = this.constructor.name;
-		this.message = message;
-		this.status = 400;
-		this.public = false;
+	AuthError: class extends Error {
+		name = this.constructor.name;
+		public = true;
+		status = 401;
+
+		constructor(message, messageI18n, options) {
+			super(message, options);
+			this.message_i18n = messageI18n;
+		}
 	},
 
-	ConfigurationError: function (message) {
-		Error.captureStackTrace(this, this.constructor);
-		this.name = this.constructor.name;
-		this.message = message;
-		this.status = 400;
-		this.public = true;
+	InternalValidationError: class extends Error {
+		name = this.constructor.name;
+		public = false;
+		status = 400;
 	},
 
-	ValidationError: function (message) {
-		Error.captureStackTrace(this, this.constructor);
-		this.name = this.constructor.name;
-		this.message = message;
-		this.public = true;
-		this.status = 400;
+	ConfigurationError: class extends Error {
+		name = this.constructor.name;
+		public = true;
+		status = 400;
 	},
 
-	AssertionFailedError: function (message) {
-		Error.captureStackTrace(this, this.constructor);
-		this.name = this.constructor.name;
-		this.message = message;
-		this.public = false;
-		this.status = 400;
+	ValidationError: class extends Error {
+		name = this.constructor.name;
+		public = true;
+		status = 400;
 	},
 
-	CommandError: function (stdErr) {
-		Error.captureStackTrace(this, this.constructor);
-		this.name = this.constructor.name;
-		this.message = stdErr;
-		this.public = false;
+	AssertionFailedError: class extends Error {
+		name = this.constructor.name;
+		public = false;
+		status = 400;
+	},
+
+	CommandError: class extends Error {
+		name = this.constructor.name;
+		public = false;
 	},
 };
-
-for (const err of Object.values(errs)) {
-	err.prototype = Object.create(Error.prototype);
-}
 
 export default errs;

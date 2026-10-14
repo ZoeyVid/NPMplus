@@ -6,6 +6,7 @@ import validator from "../../lib/validator/index.js";
 import { getValidationSchema } from "../../schema/index.js";
 
 const listSchema = {
+	type: "object",
 	additionalProperties: false,
 	properties: {
 		expand: {
@@ -19,6 +20,7 @@ const listSchema = {
 };
 
 const streamSchema = {
+	type: "object",
 	required: ["stream_id"],
 	additionalProperties: false,
 	properties: {
@@ -47,7 +49,7 @@ router
 	 * Retrieve all streams
 	 */
 	.get(async (req, res) => {
-		const data = await validator(listSchema, {
+		const data = validator(listSchema, {
 			expand: typeof req.query.expand === "string" ? req.query.expand.split(",") : null,
 			query: typeof req.query.query === "string" ? req.query.query : null,
 		});
@@ -81,7 +83,7 @@ router
 	 * Retrieve a specific stream
 	 */
 	.get(async (req, res) => {
-		const data = await validator(streamSchema, {
+		const data = validator(streamSchema, {
 			stream_id: req.params.stream_id,
 		});
 		const row = await internalStream.get(res.locals.access, {

@@ -16,6 +16,7 @@ import { getValidationSchema } from "../schema/index.js";
 import { isSetup } from "../setup.js";
 
 const listSchema = {
+	type: "object",
 	additionalProperties: false,
 	properties: {
 		query: {
@@ -25,6 +26,7 @@ const listSchema = {
 };
 
 const userSchema = {
+	type: "object",
 	required: ["user_id"],
 	additionalProperties: false,
 	properties: {
@@ -71,7 +73,7 @@ router
 	 * Retrieve all users
 	 */
 	.get(async (req, res) => {
-		const data = await validator(listSchema, {
+		const data = validator(listSchema, {
 			query: typeof req.query.query === "string" ? req.query.query : null,
 		});
 		const users = await internalUser.getAll(res.locals.access, data.query);
@@ -141,7 +143,7 @@ router
 	 * Retrieve a specific user
 	 */
 	.get(async (req, res) => {
-		const data = await validator(userSchema, {
+		const data = validator(userSchema, {
 			user_id: req.params.user_id,
 			expand: typeof req.query.expand === "string" ? req.query.expand.split(",") : null,
 		});
@@ -197,7 +199,7 @@ router
 		payload.id = req.params.user_id;
 		const result = await internalUser.setPassword(res.locals.access, payload);
 		if (Number(req.params.user_id) === res.locals.access.token.getUserId(0)) {
-			const data = await internalToken.getFreshToken(res.locals.access, true);
+			const data = internalToken.getFreshToken(res.locals.access, true);
 			res.cookie("__Host-Http-token", data.token, {
 				signed: true,
 				httpOnly: true,
@@ -299,7 +301,7 @@ router
 	.post(async (req, res) => {
 		const { code } = apiValidator(getValidationSchema("/users/{userID}/mfa/totp/enable", "post"), req.body);
 		const result = await internalMfa.enableTotp(res.locals.access, req.params.user_id, code);
-		const data = await internalToken.getFreshToken(res.locals.access, true);
+		const data = internalToken.getFreshToken(res.locals.access, true);
 		res.cookie("__Host-Http-token", data.token, {
 			signed: true,
 			httpOnly: true,
@@ -344,7 +346,7 @@ router
 	.post(async (req, res) => {
 		const { code } = apiValidator(getValidationSchema("/users/{userID}/mfa/backup-codes", "post"), req.body);
 		const result = await internalMfa.regenerateBackupCodes(res.locals.access, req.params.user_id, code);
-		const data = await internalToken.getFreshToken(res.locals.access, true);
+		const data = internalToken.getFreshToken(res.locals.access, true);
 		res.cookie("__Host-Http-token", data.token, {
 			signed: true,
 			httpOnly: true,

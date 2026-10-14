@@ -6,6 +6,7 @@ import validator from "../../lib/validator/index.js";
 import { getValidationSchema } from "../../schema/index.js";
 
 const listSchema = {
+	type: "object",
 	additionalProperties: false,
 	properties: {
 		expand: {
@@ -19,6 +20,7 @@ const listSchema = {
 };
 
 const accessListSchema = {
+	type: "object",
 	required: ["list_id"],
 	additionalProperties: false,
 	properties: {
@@ -51,7 +53,7 @@ router
 	 * Retrieve all access-lists
 	 */
 	.get(async (req, res) => {
-		const data = await validator(listSchema, {
+		const data = validator(listSchema, {
 			expand: typeof req.query.expand === "string" ? req.query.expand.split(",") : null,
 			query: typeof req.query.query === "string" ? req.query.query : null,
 		});
@@ -85,7 +87,7 @@ router
 	 * Retrieve a specific access-list
 	 */
 	.get(async (req, res) => {
-		const data = await validator(accessListSchema, {
+		const data = validator(accessListSchema, {
 			list_id: req.params.list_id,
 			expand: typeof req.query.expand === "string" ? req.query.expand.split(",") : null,
 		});

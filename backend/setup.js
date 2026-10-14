@@ -96,7 +96,7 @@ const setupCertbotPlugins = async () => {
 					logger.warn(
 						`Unknown DNS provider '${certificate.npmplus_dns_provider}' for Cert #${certificate.id}, skipping Certbot plugin installation`,
 					);
-				} else if (plugins.indexOf(certificate.npmplus_dns_provider) === -1) {
+				} else if (!plugins.includes(certificate.npmplus_dns_provider)) {
 					plugins.push(certificate.npmplus_dns_provider);
 				}
 

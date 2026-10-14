@@ -1,8 +1,8 @@
 import { createPrivateKey, X509Certificate } from "node:crypto";
-import { mkdir, mkdtemp, open, readFile, realpath, rm, stat, writeFile } from "node:fs/promises";
+import { mkdir, open, readFile, realpath, rm, stat, writeFile } from "node:fs/promises";
 import net from "node:net";
-import { tmpdir } from "node:os";
 import path from "node:path";
+import { pipeline } from "node:stream/promises";
 import { domainToASCII } from "node:url";
 import { ZipArchive } from "archiver";
 import dayjs from "dayjs";
@@ -232,7 +232,7 @@ const internalCertificate = {
 	 * @param   {Number}  data.id
 	 * @returns {Promise}
 	 */
-	download: async (access, data) => {
+	download: async (access, data, dir) => {
 		access.can("certificates:manage");
 		const certificate = await internalCertificate.get(access, data);
 
@@ -253,7 +253,7 @@ const internalCertificate = {
 		try {
 			await stat(zipDirectory);
 		} catch (err) {
-			throw new error.ItemNotFoundError(`Certificate ${certificate.nice_name} does not exists`, err);
+			throw new error.ItemNotFoundError(`Certificate ${certificate.nice_name} does not exists`, { cause: err });
 		}
 
 		const certFiles = [];
@@ -261,11 +261,13 @@ const internalCertificate = {
 			try {
 				certFiles.push(await realpath(path.join(zipDirectory, fileName)));
 			} catch (err) {
-				throw new error.ItemNotFoundError(`Certificate ${certificate.nice_name} is missing ${fileName}`, err);
+				throw new error.ItemNotFoundError(`Certificate ${certificate.nice_name} is missing ${fileName}`, {
+					cause: err,
+				});
 			}
 		}
 
-		const opName = path.join(await mkdtemp(path.join(tmpdir(), "npm-")), `npm-${data.id}-${Date.now()}.zip`);
+		const opName = path.join(dir, `npm-${data.id}-${Date.now()}.zip`);
 
 		await internalCertificate.zipFiles(certFiles, opName);
 		debug(logger, "zip completed : ", opName);
@@ -280,23 +282,13 @@ const internalCertificate = {
 	 * @returns {Promise}
 	 */
 	zipFiles: async (source, out) => {
-		const file = await open(out, "w");
-		const stream = file.createWriteStream();
 		const archive = new ZipArchive({ zlib: { level: 9 } });
+		archive.on("warning", (err) => archive.destroy(err));
+		const written = pipeline(archive, (await open(out, "w")).createWriteStream());
 
-		return new Promise((resolve, reject) => {
-			stream.on("close", resolve);
-			archive.on("warning", reject);
-			archive.on("error", reject);
+		for (const filePath of source) archive.file(filePath, { name: path.basename(filePath) });
 
-			archive.pipe(stream);
-
-			for (const filePath of source) {
-				archive.file(filePath, { name: path.basename(filePath) });
-			}
-
-			archive.finalize();
-		});
+		await Promise.all([written, archive.finalize()]);
 	},
 
 	/**
@@ -518,7 +510,7 @@ const internalCertificate = {
 			createPrivateKey(privateKey);
 			return true;
 		} catch (err) {
-			throw new error.ValidationError(`Certificate Key is not valid (${err.message})`, err);
+			throw new error.ValidationError(`Certificate Key is not valid (${err.message})`, { cause: err });
 		}
 	},
 
@@ -550,11 +542,11 @@ const internalCertificate = {
 			}
 
 			if (cert.issuer) {
-				certData.issuer = cert.issuer.replace(/\n/g, ", ");
+				certData.issuer = cert.issuer.replaceAll("\n", ", ");
 			}
 
-			const validFrom = Math.floor(new Date(cert.validFrom).getTime() / 1000);
-			const validTo = Math.floor(new Date(cert.validTo).getTime() / 1000);
+			const validFrom = Math.floor(cert.validFromDate.getTime() / 1000);
+			const validTo = Math.floor(cert.validToDate.getTime() / 1000);
 
 			if (Number.isNaN(validFrom) || Number.isNaN(validTo)) {
 				throw new error.ValidationError("Could not determine dates from certificate");
@@ -572,7 +564,7 @@ const internalCertificate = {
 
 			return certData;
 		} catch (err) {
-			throw new error.ValidationError(`Certificate is not valid (${err.message})`, err);
+			throw new error.ValidationError(`Certificate is not valid (${err.message})`, { cause: err });
 		}
 	},
 

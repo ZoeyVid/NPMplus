@@ -17,27 +17,13 @@ const ajv = new Ajv({
  *
  * @param   {Object} schema
  * @param   {Object} payload
- * @returns {Promise}
+ * @returns {Object}
  */
-const validator = (schema, payload) =>
-	new Promise((resolve, reject) => {
-		if (!payload) {
-			reject(new errs.InternalValidationError("Payload is falsy"));
-		} else {
-			try {
-				const validate = ajv.compile(schema);
-				const valid = validate(payload);
+const validator = (schema, payload) => {
+	const validate = ajv.compile(schema);
+	if (validate(payload) && !validate.errors) return structuredClone(payload);
 
-				if (valid && !validate.errors) {
-					resolve(structuredClone(payload));
-				} else {
-					const message = ajv.errorsText(validate.errors);
-					reject(new errs.ValidationError(message));
-				}
-			} catch (err) {
-				reject(err);
-			}
-		}
-	});
+	throw new errs.ValidationError(ajv.errorsText(validate.errors));
+};
 
 export default validator;
