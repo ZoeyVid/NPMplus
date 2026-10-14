@@ -28,9 +28,7 @@ const internalAuditLog = {
 			});
 		}
 
-		if (typeof expand !== "undefined" && expand !== null) {
-			query.withGraphFetched(`[${expand.join(", ")}]`);
-		}
+		if (expand) query.withGraphFetched(`[${expand.join(", ")}]`);
 
 		return query;
 	},
@@ -47,12 +45,9 @@ const internalAuditLog = {
 
 		const query = auditLogModel.query().andWhere("id", data.id).allowGraph("[user]").first();
 
-		if (typeof data.expand !== "undefined" && data.expand !== null) {
-			query.withGraphFetched(`[${data.expand.join(", ")}]`);
-		}
+		if (data.expand) query.withGraphFetched(`[${data.expand.join(", ")}]`);
 
 		const row = await query;
-
 		if (!row?.id) {
 			throw new errs.ItemNotFoundError(data.id);
 		}
@@ -77,9 +72,7 @@ const internalAuditLog = {
 	add: (access, data) => {
 		data.user_id ||= access.token.getUserId(1);
 
-		if (typeof data.action === "undefined" || !data.action) {
-			throw new errs.InternalValidationError("Audit log entry must contain an Action");
-		}
+		if (!data.action) throw new errs.InternalValidationError("Audit log entry must contain an Action");
 
 		// Make sure at least 1 of the IDs are set and action
 		return auditLogModel.query().insert({

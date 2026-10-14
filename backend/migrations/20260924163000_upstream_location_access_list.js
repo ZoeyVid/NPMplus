@@ -28,11 +28,12 @@ const up = async (knex) => {
 			.where("id", row.id)
 			.update({
 				locations: JSON.stringify(
-					locations.map(({ access_list_id: id, ...location }) =>
-						validIds.has(id)
-							? { ...location, npmplus_access_list_type: "custom", npmplus_access_list_ids: [id] }
-							: location,
-					),
+					locations.map(({ access_list_id: id, ...location }) => {
+						if (validIds.has(id)) {
+							return { ...location, npmplus_access_list_type: "custom", npmplus_access_list_ids: [id] };
+						}
+						return location;
+					}),
 				),
 			});
 	}

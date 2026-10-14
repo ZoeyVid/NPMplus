@@ -261,10 +261,12 @@ const internalProxyHostAccessList = {
 	 * @returns {Object}
 	 */
 	cleanAccessListTypes(proxyHost) {
-		const getAccessListIds = (item) =>
-			item.npmplus_access_list_type === "custom"
-				? (item.npmplus_access_list_ids ?? item.access_lists?.map(({ id }) => id) ?? [])
-				: [];
+		const getAccessListIds = (item) => {
+			if (item.npmplus_access_list_type === "custom") {
+				return item.npmplus_access_list_ids ?? item.access_lists?.map(({ id }) => id) ?? [];
+			}
+			return [];
+		};
 
 		proxyHost.npmplus_access_list_ids = getAccessListIds(proxyHost);
 		for (const location of proxyHost.locations ?? []) location.npmplus_access_list_ids = getAccessListIds(location);

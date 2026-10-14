@@ -64,10 +64,11 @@ const internalSetting = {
 		access.canAdmin();
 
 		const row = await settingModel.query().where("id", data.id).first();
-		if (row) {
-			return row;
+		if (!row?.id) {
+			throw new errs.ItemNotFoundError(data.id);
 		}
-		throw new errs.ItemNotFoundError(data.id);
+
+		return row;
 	},
 
 	/**

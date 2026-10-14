@@ -35,14 +35,12 @@ const internalUser = {
 		const auth = data.auth || null;
 		delete data.auth;
 
-		data.avatar = data.avatar || "";
-		data.roles = data.roles || [];
+		data.avatar ||= "";
+		data.roles ||= [];
 
 		data.email = data.email.toLowerCase();
 
-		if (typeof data.is_disabled !== "undefined") {
-			data.is_disabled = data.is_disabled ? 1 : 0;
-		}
+		if (data.is_disabled !== undefined) data.is_disabled = data.is_disabled ? 1 : 0;
 
 		access.canAdmin();
 
@@ -169,9 +167,7 @@ const internalUser = {
 	 * @return {Promise}
 	 */
 	update: async (access, data) => {
-		if (typeof data.is_disabled !== "undefined") {
-			data.is_disabled = data.is_disabled ? 1 : 0;
-		}
+		if (data.is_disabled !== undefined) data.is_disabled = data.is_disabled ? 1 : 0;
 
 		access.canUser(data.id);
 		try {
@@ -181,7 +177,7 @@ const internalUser = {
 		}
 		const existingUser = await internalUser.get(access, { id: data.id });
 		// 2. if email is to be changed, find other users with that email
-		if (typeof data.email !== "undefined") {
+		if (data.email !== undefined) {
 			data.email = data.email.toLowerCase();
 
 			if (existingUser.email !== data.email && !(await internalUser.isEmailAvailable(data.email, data.id))) {
@@ -227,21 +223,17 @@ const internalUser = {
 	 * @return {Promise}
 	 */
 	get: async (access, data) => {
-		const thisData = data || {};
+		data.id ||= access.token.getUserId(0);
 
-		thisData.id ||= access.token.getUserId(0);
+		access.canUser(data.id);
 
-		access.canUser(thisData.id);
+		const query = userModel.query().where("id", data.id).allowGraph("[permissions]").first();
 
-		const query = userModel.query().where("id", thisData.id).allowGraph("[permissions]").first();
-
-		if (typeof thisData.expand !== "undefined" && thisData.expand !== null) {
-			query.withGraphFetched(`[${thisData.expand.join(", ")}]`);
-		}
+		if (data.expand) query.withGraphFetched(`[${data.expand.join(", ")}]`);
 
 		const row = await query;
 		if (!row?.id) {
-			throw new errs.ItemNotFoundError(thisData.id);
+			throw new errs.ItemNotFoundError(data.id);
 		}
 
 		if (row.id === access.token.getUserId(0)) {
@@ -260,9 +252,7 @@ const internalUser = {
 	isEmailAvailable: async (email, user_id) => {
 		const query = userModel.query().where("email", "=", email).first();
 
-		if (typeof user_id !== "undefined") {
-			query.where("id", "!=", user_id);
-		}
+		if (user_id !== undefined) query.where("id", "!=", user_id);
 
 		const user = await query;
 
@@ -280,9 +270,6 @@ const internalUser = {
 		access.canAdmin();
 
 		const user = await internalUser.get(access, { id: data.id });
-		if (!user) {
-			throw new errs.ItemNotFoundError(data.id);
-		}
 
 		// Make sure user can't delete themselves
 		if (user.id === access.token.getUserId(0)) {
@@ -336,7 +323,7 @@ const internalUser = {
 	 * @param   {String}  [search_query]
 	 * @returns {Promise}
 	 */
-	getAll: async (access, search_query) => {
+	getAll: (access, search_query) => {
 		access.canAdmin();
 		const query = userModel.query().groupBy("id").orderBy("name", "ASC");
 
@@ -347,7 +334,7 @@ const internalUser = {
 			});
 		}
 
-		return await query;
+		return query;
 	},
 
 	/**
@@ -371,9 +358,7 @@ const internalUser = {
 
 		if (user.id === access.token.getUserId(0)) {
 			// they're setting their own password. Make sure their current password is correct
-			if (typeof data.current === "undefined" || !data.current) {
-				throw new errs.ValidationError("Current password was not supplied");
-			}
+			if (!data.current) throw new errs.ValidationError("Current password was not supplied");
 
 			await internalToken.getTokenFromEmail({
 				identity: user.email,

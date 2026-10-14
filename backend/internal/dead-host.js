@@ -98,7 +98,7 @@ const internalDeadHost = {
 		const existingRow = await internalDeadHost.get(access, { id: thisData.id });
 
 		// Get a list of the domain names and check each of them against existing records
-		if (typeof thisData.domain_names !== "undefined") {
+		if (thisData.domain_names !== undefined) {
 			const checkResults = await Promise.all(
 				thisData.domain_names.map((domainName) =>
 					internalHost.isHostnameTaken(domainName, "dead", thisData.id),
@@ -166,23 +166,19 @@ const internalDeadHost = {
 	 * @return {Promise}
 	 */
 	get: async (access, data) => {
-		const thisData = data || {};
-
 		access.can("dead_hosts:view");
 
-		const query = deadHostModel.query().where("id", thisData.id).allowGraph("[certificate]").first();
+		const query = deadHostModel.query().where("id", data.id).allowGraph("[certificate]").first();
 
 		if (access.visibility !== "all") {
 			query.andWhere("owner_user_id", access.token.getUserId(1));
 		}
 
-		if (typeof thisData.expand !== "undefined" && thisData.expand !== null) {
-			query.withGraphFetched(`[${thisData.expand.join(", ")}]`);
-		}
+		if (data.expand) query.withGraphFetched(`[${data.expand.join(", ")}]`);
 
 		const row = await query;
 		if (!row?.id) {
-			throw new errs.ItemNotFoundError(thisData.id);
+			throw new errs.ItemNotFoundError(data.id);
 		}
 
 		return row;
@@ -199,9 +195,6 @@ const internalDeadHost = {
 		access.can("dead_hosts:manage");
 
 		const row = await internalDeadHost.get(access, { id: data.id });
-		if (!row?.id) {
-			throw new errs.ItemNotFoundError(data.id);
-		}
 
 		await deadHostModel.query().deleteById(row.id);
 
@@ -236,9 +229,6 @@ const internalDeadHost = {
 			id: data.id,
 			expand: ["certificate"],
 		});
-		if (!row?.id) {
-			throw new errs.ItemNotFoundError(data.id);
-		}
 		if (row.enabled) {
 			throw new errs.ValidationError("Host is already enabled");
 		}
@@ -287,9 +277,6 @@ const internalDeadHost = {
 		access.can("dead_hosts:manage");
 
 		const row = await internalDeadHost.get(access, { id: data.id });
-		if (!row?.id) {
-			throw new errs.ItemNotFoundError(data.id);
-		}
 		if (!row.enabled) {
 			throw new errs.ValidationError("Host is already disabled");
 		}
@@ -328,7 +315,7 @@ const internalDeadHost = {
 	 * @param   {String}  [searchQuery]
 	 * @returns {Promise}
 	 */
-	getAll: async (access, expand, searchQuery) => {
+	getAll: (access, expand, searchQuery) => {
 		access.can("dead_hosts:view");
 
 		const query = deadHostModel
@@ -348,11 +335,9 @@ const internalDeadHost = {
 			});
 		}
 
-		if (typeof expand !== "undefined" && expand !== null) {
-			query.withGraphFetched(`[${expand.join(", ")}]`);
-		}
+		if (expand) query.withGraphFetched(`[${expand.join(", ")}]`);
 
-		return await query;
+		return query;
 	},
 
 	/**

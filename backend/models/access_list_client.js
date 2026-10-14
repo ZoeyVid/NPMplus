@@ -26,17 +26,9 @@ class AccessListClient extends Model {
 		return thisJson;
 	}
 
-	static get name() {
-		return "AccessListClient";
-	}
+	static tableName = "access_list_client";
 
-	static get tableName() {
-		return "access_list_client";
-	}
-
-	static get jsonAttributes() {
-		return ["meta"];
-	}
+	static jsonAttributes = ["meta"];
 
 	static get relationMappings() {
 		return {

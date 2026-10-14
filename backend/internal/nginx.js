@@ -3,10 +3,11 @@ import { domainToASCII } from "node:url";
 import { Client, fetch } from "undici";
 import errs from "../lib/error.js";
 import utils from "../lib/utils.js";
-import { debug, nginx as logger } from "../logger.js";
+import { nginx as logger } from "../logger.js";
 import internalProxyHostAccessList from "./proxy-host-access-list.js";
 
 const controlApi = new Client("http://localhost", { connect: { socketPath: "/run/nginx-control.sock" } });
+const authRequestProviders = ["anubis", "tinyauth", "oauth2proxy", "voidauth", "authelia", "authentik"];
 
 const internalNginx = {
 	/**
@@ -268,33 +269,17 @@ const internalNginx = {
 					location.filename = htpasswdFileName;
 				}
 				if (location.npmplus_enabled === false) continue;
-				if (location.npmplus_auth_request === "anubis") {
-					host.create_anubis_locations = true;
-				}
-				if (location.npmplus_auth_request === "tinyauth") {
-					host.create_tinyauth_locations = true;
-				}
-				if (location.npmplus_auth_request === "oauth2proxy") {
-					host.create_oauth2proxy_locations = true;
-				}
-				if (location.npmplus_auth_request === "voidauth") {
-					host.create_voidauth_locations = true;
-				}
-				if (location.npmplus_auth_request === "authelia") {
-					host.create_authelia_locations = true;
-				}
-				if (
-					location.npmplus_auth_request === "authentik" ||
+				const provider =
 					location.npmplus_auth_request === "authentik-send-basic-auth"
-				) {
-					host.create_authentik_locations = true;
-				}
+						? "authentik"
+						: location.npmplus_auth_request;
+				if (authRequestProviders.includes(provider)) host[`create_${provider}_locations`] = true;
 			}
 
 			const originalLocations = [...host.locations];
 			host.locations = await internalNginx.renderLocations(host);
 
-			for (const provider of ["anubis", "tinyauth", "oauth2proxy", "voidauth", "authelia", "authentik"]) {
+			for (const provider of authRequestProviders) {
 				let effectiveUpstream = "";
 
 				if (
@@ -328,7 +313,7 @@ const internalNginx = {
 		);
 
 		await writeFile(filename, config_text, { encoding: "utf8" });
-		debug(logger, "Wrote config:", filename);
+		logger.debug("Wrote config:", filename);
 
 		if (process.env.DISABLE_NGINX_BEAUTIFIER === "false") {
 			await utils.execFile("nginxbeautifier", ["-s", "2", filename]).catch(() => {});
@@ -352,7 +337,7 @@ const internalNginx = {
 	deleteConfig: async (host_type, host) => {
 		const config_file = internalNginx.getConfigName(
 			internalNginx.getFileFriendlyHostType(host_type),
-			typeof host === "undefined" ? 0 : host.id,
+			host?.id ?? 0,
 		);
 
 		await rm(config_file, { force: true });
@@ -367,7 +352,7 @@ const internalNginx = {
 	renameConfigAsError: async (host_type, host) => {
 		const config_file = internalNginx.getConfigName(
 			internalNginx.getFileFriendlyHostType(host_type),
-			typeof host === "undefined" ? 0 : host.id,
+			host?.id ?? 0,
 		);
 
 		await rename(config_file, `${config_file}.err`);
