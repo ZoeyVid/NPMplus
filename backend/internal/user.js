@@ -97,7 +97,7 @@ const internalUser = {
 		if (process.env.DISABLE_GRAVATAR === "true") return "/images/default-avatar.jpg";
 		try {
 			const response = await fetch(
-				`https://www.gravatar.com/avatar/${crypto.hash("sha256", email.toLowerCase())}?s=64&default=initials&name=${encodeURIComponent(
+				`https://www.gravatar.com/avatar/${crypto.hash("sha256", email)}?s=64&default=initials&name=${encodeURIComponent(
 					name
 						.split(" ")
 						.map((n) => n[0])
@@ -258,7 +258,7 @@ const internalUser = {
 	 * @param user_id
 	 */
 	isEmailAvailable: async (email, user_id) => {
-		const query = userModel.query().where("email", "=", email.toLowerCase()).first();
+		const query = userModel.query().where("email", "=", email).first();
 
 		if (typeof user_id !== "undefined") {
 			query.where("id", "!=", user_id);
@@ -376,7 +376,7 @@ const internalUser = {
 			}
 
 			await internalToken.getTokenFromEmail({
-				identity: user.email.toLowerCase(),
+				identity: user.email,
 				secret: data.current,
 			});
 		}

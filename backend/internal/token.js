@@ -94,11 +94,7 @@ export default {
 	getTokenFromOAuthClaim: async (data) => {
 		const Token = TokenModel();
 
-		const user = await userModel
-			.query()
-			.where("email", data.identity.toLowerCase())
-			.andWhere("is_disabled", 0)
-			.first();
+		const user = await userModel.query().where("email", data.identity).andWhere("is_disabled", 0).first();
 
 		if (!user) {
 			throw new errs.PermissionError(ERROR_MESSAGE_INVALID_AUTH);
