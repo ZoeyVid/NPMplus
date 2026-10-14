@@ -1,24 +1,19 @@
 import { execFile as nodeExecFile } from "node:child_process";
 import crypto from "node:crypto";
 import { readdir, readFile, writeFile } from "node:fs/promises";
-import { dirname } from "node:path";
-import { fileURLToPath } from "node:url";
 import { promisify } from "node:util";
 import { Liquid } from "liquidjs";
 import { debug, global as logger } from "../logger.js";
 import errs from "./error.js";
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = dirname(__filename);
-
 const nodeExecFilePromises = promisify(nodeExecFile);
 
 const writeHash = async () => {
 	const referencedEnvVars = new Set();
-	const templateFiles = await readdir(`${__dirname}/../templates`);
+	const templateFiles = await readdir(`${import.meta.dirname}/../templates`);
 
 	for (const fileName of templateFiles) {
-		const content = await readFile(`${__dirname}/../templates/${fileName}`, "utf8");
+		const content = await readFile(`${import.meta.dirname}/../templates/${fileName}`, "utf8");
 		const matches = content.match(/env\.[A-Z0-9_]+/g) || [];
 
 		for (const match of matches) {
@@ -32,8 +27,7 @@ const writeHash = async () => {
 	}
 	hashInput += process.env.TV;
 
-	const hash = crypto.createHash("sha512").update(hashInput).digest("hex");
-	await writeFile("/data/npmplus/env.sha512sum", hash);
+	await writeFile("/data/npmplus/env.sha512sum", crypto.hash("sha512", hashInput));
 };
 
 /**
@@ -49,7 +43,7 @@ const execFile = async (cmd, args) => {
 		return `${stdout || ""}${stderr || ""}`.trim();
 	} catch (err) {
 		if (err && typeof err === "object") {
-			throw new errs.CommandError(`${err.stdout || ""}${err.stderr || ""}`.trim(), err);
+			throw new errs.CommandError(`${err.stdout || ""}${err.stderr || ""}`.trim(), { cause: err });
 		}
 		throw err;
 	}
@@ -60,7 +54,7 @@ const execFile = async (cmd, args) => {
  */
 const getRenderEngine = () => {
 	const renderEngine = new Liquid({
-		root: `${__dirname}/../templates/`,
+		root: `${import.meta.dirname}/../templates/`,
 	});
 
 	/**

@@ -1,4 +1,5 @@
-import { rm } from "node:fs/promises";
+import { mkdtempDisposable } from "node:fs/promises";
+import { tmpdir } from "node:os";
 import path from "node:path";
 import express from "express";
 import { rateLimit } from "express-rate-limit";
@@ -9,10 +10,10 @@ import jwtdecode from "../../lib/express/jwt-decode.js";
 import requireLogin from "../../lib/express/require-login.js";
 import apiValidator from "../../lib/validator/api.js";
 import validator from "../../lib/validator/index.js";
-import { debug, express as logger } from "../../logger.js";
 import { getValidationSchema } from "../../schema/index.js";
 
 const listSchema = {
+	type: "object",
 	additionalProperties: false,
 	properties: {
 		expand: {
@@ -38,6 +39,7 @@ const listSchema = {
 };
 
 const certificateSchema = {
+	type: "object",
 	required: ["certificate_id"],
 	additionalProperties: false,
 	properties: {
@@ -85,7 +87,7 @@ router
 	 * Retrieve all certificates
 	 */
 	.get(async (req, res) => {
-		const data = await validator(listSchema, {
+		const data = validator(listSchema, {
 			expand: typeof req.query.expand === "string" ? req.query.expand.split(",") : null,
 			query: typeof req.query.query === "string" ? req.query.query : null,
 		});
@@ -188,7 +190,7 @@ router
 	 * Retrieve a specific certificate
 	 */
 	.get(async (req, res) => {
-		const data = await validator(certificateSchema, {
+		const data = validator(certificateSchema, {
 			certificate_id: req.params.certificate_id,
 		});
 		const row = await internalCertificate.get(res.locals.access, {
@@ -269,18 +271,16 @@ router
 	 *
 	 * Download certificate
 	 */
-	.get(downloadLimiter, async (req, res, next) => {
-		const result = await internalCertificate.download(res.locals.access, {
-			id: Number.parseInt(req.params.certificate_id, 10),
-		});
-		res.status(200).download(result.fileName, async (err) => {
-			try {
-				await rm(path.dirname(result.fileName), { recursive: true, force: true });
-			} catch (rmErr) {
-				debug(logger, `${req.method.toUpperCase()} ${req.originalUrl}: ${rmErr}`);
-			}
-			if (err && !res.headersSent) next(err);
-		});
+	.get(downloadLimiter, async (req, res) => {
+		await using dir = await mkdtempDisposable(path.join(tmpdir(), "npm-"));
+		const result = await internalCertificate.download(
+			res.locals.access,
+			{ id: Number.parseInt(req.params.certificate_id, 10) },
+			dir.path,
+		);
+		await new Promise((resolve, reject) =>
+			res.status(200).download(result.fileName, (err) => (err && !res.headersSent ? reject(err) : resolve())),
+		);
 	});
 
 export default router;

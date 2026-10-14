@@ -28,7 +28,7 @@ export default function (tokenString) {
 			throw new errs.PermissionError();
 		}
 
-		const tokenData = await Token.load(tokenString);
+		const tokenData = Token.load(tokenString);
 
 		// At this point we need to load the user from the DB and make sure they:
 		// - exist (and not soft deleted)

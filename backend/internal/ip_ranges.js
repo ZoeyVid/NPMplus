@@ -1,13 +1,8 @@
 import { readFile, writeFile } from "node:fs/promises";
-import { dirname } from "node:path";
-import { fileURLToPath } from "node:url";
 import utils from "../lib/utils.js";
 import { ipRanges as logger } from "../logger.js";
 import pjson from "../package.json" with { type: "json" };
 import internalNginx from "./nginx.js";
-
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = dirname(__filename);
 
 const CLOUDFLARE_V4_URL = "https://www.cloudflare.com/ips-v4";
 const CLOUDFLARE_V6_URL = "https://www.cloudflare.com/ips-v6";
@@ -83,7 +78,7 @@ const internalIpRanges = {
 	generateConfig: async (ip_ranges) => {
 		try {
 			const renderEngine = utils.getRenderEngine();
-			const template = await readFile(`${__dirname}/../templates/ip_ranges.conf`, { encoding: "utf8" });
+			const template = await readFile(`${import.meta.dirname}/../templates/ip_ranges.conf`, { encoding: "utf8" });
 			const newConfig = await renderEngine.parseAndRender(template, { ip_ranges, env: process.env });
 			const filePath = "/usr/local/nginx/conf/conf.d/ip_ranges.conf";
 

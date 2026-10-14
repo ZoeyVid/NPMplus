@@ -17,13 +17,13 @@ export default () => {
 	const self = {
 		/**
 		 * @param {Object}  payload
-		 * @returns {Promise}
+		 * @returns {Object}
 		 */
 		create: (payload) => {
 			if (!getPrivateKey()) {
 				logger.error("Private key is empty!");
 			}
-			// sign with RSA SHA256
+			// sign with ECDSA P-521 SHA-512
 			const options = {
 				algorithm: ALGO,
 				expiresIn: payload.expiresIn || "1d",
@@ -31,63 +31,28 @@ export default () => {
 
 			payload.jti = crypto.randomBytes(12).toString("base64url");
 
-			return new Promise((resolve, reject) => {
-				jwt.sign(payload, getPrivateKey(), options, (err, token) => {
-					if (err) {
-						reject(err);
-					} else {
-						tokenData = payload;
-						resolve({
-							token,
-							payload,
-						});
-					}
-				});
-			});
+			return { token: jwt.sign(payload, getPrivateKey(), options), payload };
 		},
 
 		/**
 		 * @param {String} token
-		 * @returns {Promise}
+		 * @returns {Object}
 		 */
 		load: (token) => {
 			if (!getPublicKey()) {
 				logger.error("Public key is empty!");
 			}
-			return new Promise((resolve, reject) => {
-				try {
-					if (!token || token === "null") {
-						reject(new errs.PermissionError("Empty token"));
-					} else {
-						jwt.verify(
-							token,
-							getPublicKey(),
-							{ ignoreExpiration: false, algorithms: [ALGO] },
-							(err, result) => {
-								if (err) {
-									if (err.name === "TokenExpiredError") {
-										reject(new errs.PermissionError("Token has expired"));
-									} else {
-										reject(err);
-									}
-								} else {
-									tokenData = result;
 
-									// Hack: some tokens out in the wild have a scope of 'all' instead of 'user'.
-									// For 30 days at least, we need to replace 'all' with user.
-									if (tokenData.scope?.includes("all")) {
-										tokenData.scope = ["user"];
-									}
-
-									resolve(tokenData);
-								}
-							},
-						);
-					}
-				} catch (err) {
-					reject(err);
+			try {
+				tokenData = jwt.verify(token, getPublicKey(), { ignoreExpiration: false, algorithms: [ALGO] });
+			} catch (err) {
+				if (err.name === "TokenExpiredError") {
+					throw new errs.PermissionError("Token has expired", undefined, { cause: err });
 				}
-			});
+				throw err;
+			}
+
+			return tokenData;
 		},
 
 		/**
@@ -108,14 +73,6 @@ export default () => {
 			}
 
 			return null;
-		},
-
-		/**
-		 * @param  {String}  key
-		 * @param  {*}       value
-		 */
-		set: (key, value) => {
-			tokenData[key] = value;
 		},
 
 		/**
