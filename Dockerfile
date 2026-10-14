@@ -7,7 +7,7 @@ ARG LUAJIT_LIB=/usr/lib
 
 ARG AWSLC_VER=fa9bc8d6f7cfb2cf849b247fb06bbbfc41ecc9d6 # v5.11.0
 
-ARG NGINX_VER=45a318d05a0fd23f57ffe9579f7f0969c0fe402a # release-1.31.6
+ARG NGINX_VER=aaecf65316bb4af1e4f12f6a8746da2ab278c967 # release-1.31.7
 ARG DTR_VER=1.29.2
 ARG ORP_VER=1.31.6
 ARG ZNP_VER=1.30.0
@@ -21,7 +21,7 @@ ARG HMNM_VER=0bf283ff92017acd616814b0e5153e0ccf93e2c9 # v0.40
 ARG NDK_VER=bd44d16302273052d6005d7bdb55f74e23813de3 # v0.3.4
 ARG LNM_VER=58ece96055227399bbffa5e06cb5b54ebeeacef9 # v0.10.32rc5
 
-ARG NJS_VER=1b648f8805596c95368f8fa428a5c38c5d279857 # 1.0.1
+ARG NJS_VER=72e6a980b9bf2a28ae2d568bbc3b6830a5d7c39e # 1.0.2
 ARG NAL_VER=241200eac8e4acae74d353291bd27f79e5ca3dc4 # master
 ARG VTS_VER=38b8612527ecb003ea15cefe934f302cf1a7c27e # v0.2.7
 ARG NNTLM_VER=3da77b0cb30e517dfee01d7e7f7d649144d24051 # master
@@ -63,31 +63,28 @@ RUN git-clone-commit.sh https://github.com/nginx/nginx "$NGINX_VER" /src/nginx &
     wget -q https://patch-diff.githubusercontent.com/raw/nginx/nginx/pull/689.patch -O /src/nginx/1.patch && \
     echo "73fdee62748f1624f87015a951a2480fd0d4fe566a81d92b852b51536d954b91  /src/nginx/1.patch" | sha256sum -c - && \
     git apply /src/nginx/1.patch && \
-    wget -q https://patch-diff.githubusercontent.com/raw/nginx/nginx/pull/1756.patch -O /src/nginx/2.patch && \
-    echo "1f720c05c166e15f41d78fbd598561745591847ba1b892bae42a2f47758b1fc6  /src/nginx/2.patch" | sha256sum -c - && \
+    wget -q https://patch-diff.githubusercontent.com/raw/nginx/nginx/pull/1333.patch -O /src/nginx/2.patch && \
+    echo "01bf75b130b8f91075ec913a400a8debfab6da0ac609711c7d412ddbe59dd898  /src/nginx/2.patch" | sha256sum -c - && \
     git apply /src/nginx/2.patch && \
-    wget -q https://patch-diff.githubusercontent.com/raw/nginx/nginx/pull/1333.patch -O /src/nginx/3.patch && \
-    echo "01bf75b130b8f91075ec913a400a8debfab6da0ac609711c7d412ddbe59dd898  /src/nginx/3.patch" | sha256sum -c - && \
+    wget -q https://raw.githubusercontent.com/nginx-modules/ngx_http_tls_dyn_size/master/nginx__dynamic_tls_records_"$DTR_VER"%2B.patch -O /src/nginx/3.patch && \
+    echo "0aa9c73e7515dbbd48ecc798f7894412c1a50e96e98aee25847e823059faf821  /src/nginx/3.patch" | sha256sum -c - && \
     git apply /src/nginx/3.patch && \
-    wget -q https://raw.githubusercontent.com/nginx-modules/ngx_http_tls_dyn_size/master/nginx__dynamic_tls_records_"$DTR_VER"%2B.patch -O /src/nginx/4.patch && \
-    echo "0aa9c73e7515dbbd48ecc798f7894412c1a50e96e98aee25847e823059faf821  /src/nginx/4.patch" | sha256sum -c - && \
+    wget -q https://raw.githubusercontent.com/openresty/openresty/master/patches/nginx/"$ORP_VER"/nginx-"$ORP_VER"-resolver_conf_parsing.patch -O /src/nginx/4.patch && \
+    echo "354bb2c05a41357efe3ea9d28a2fc8ff2a5fe6482e0fdda61a237d6bb5a96d51  /src/nginx/4.patch" | sha256sum -c - && \
     git apply /src/nginx/4.patch && \
-    wget -q https://raw.githubusercontent.com/openresty/openresty/master/patches/nginx/"$ORP_VER"/nginx-"$ORP_VER"-resolver_conf_parsing.patch -O /src/nginx/5.patch && \
-    echo "354bb2c05a41357efe3ea9d28a2fc8ff2a5fe6482e0fdda61a237d6bb5a96d51  /src/nginx/5.patch" | sha256sum -c - && \
+    wget -q https://raw.githubusercontent.com/zlib-ng/patches/master/nginx/"$ZNP_VER"-zlib-ng.patch -O /src/nginx/5.patch && \
+    echo "bcd0f2fb9723fc1f251f94cead8d5160e767f7d4a04365331396a72a9ba54c6b  /src/nginx/5.patch" | sha256sum -c - && \
     git apply /src/nginx/5.patch && \
-    wget -q https://raw.githubusercontent.com/zlib-ng/patches/master/nginx/"$ZNP_VER"-zlib-ng.patch -O /src/nginx/6.patch && \
-    echo "bcd0f2fb9723fc1f251f94cead8d5160e767f7d4a04365331396a72a9ba54c6b  /src/nginx/6.patch" | sha256sum -c - && \
+    wget -q https://raw.githubusercontent.com/openresty/openresty/master/patches/nginx/"$ORP_VER"/nginx-"$ORP_VER"-resolver_hosts.patch -O /src/nginx/6.patch && \
+    echo "7a3e9ebe4fafaef0a90773ed093bed83c3e753af5983718b0aee50881c32151b  /src/nginx/6.patch" | sha256sum -c - && \
     git apply /src/nginx/6.patch && \
-    wget -q https://raw.githubusercontent.com/openresty/openresty/master/patches/nginx/"$ORP_VER"/nginx-"$ORP_VER"-resolver_hosts.patch -O /src/nginx/7.patch && \
-    echo "7a3e9ebe4fafaef0a90773ed093bed83c3e753af5983718b0aee50881c32151b  /src/nginx/7.patch" | sha256sum -c - && \
-    git apply /src/nginx/7.patch && \
     sed -i "s|ngx_destroy_pool(r->hosts->pool);|r->hosts->pool->log = r->log; &|" /src/nginx/src/core/ngx_resolver.c && \
-    wget -q https://raw.githubusercontent.com/openresty/openresty/master/patches/nginx/"$ORP_VER"/nginx-"$ORP_VER"-upstream_pipelining.patch -O /src/nginx/8.patch && \
-    echo "f147c9724a0ad33084a3cb51acdafbd4dbd2c40ba5840af1684b7b9595b24ae2  /src/nginx/8.patch" | sha256sum -c - && \
-    git apply /src/nginx/8.patch && \
-    wget -q https://raw.githubusercontent.com/openresty/openresty/master/patches/nginx/"$ORP_VER"/nginx-"$ORP_VER"-reuseport_close_unused_fds.patch -O /src/nginx/9.patch && \
-    echo "7f1c3eefcd841502515f529e3a0c0a17492e7e44ba5c47fc50ae6a3123d8937f  /src/nginx/9.patch" | sha256sum -c - && \
-    git apply -C1 /src/nginx/9.patch && \
+    wget -q https://raw.githubusercontent.com/openresty/openresty/master/patches/nginx/"$ORP_VER"/nginx-"$ORP_VER"-upstream_pipelining.patch -O /src/nginx/7.patch && \
+    echo "f147c9724a0ad33084a3cb51acdafbd4dbd2c40ba5840af1684b7b9595b24ae2  /src/nginx/7.patch" | sha256sum -c - && \
+    git apply /src/nginx/7.patch && \
+    wget -q https://raw.githubusercontent.com/openresty/openresty/master/patches/nginx/"$ORP_VER"/nginx-"$ORP_VER"-reuseport_close_unused_fds.patch -O /src/nginx/8.patch && \
+    echo "7f1c3eefcd841502515f529e3a0c0a17492e7e44ba5c47fc50ae6a3123d8937f  /src/nginx/8.patch" | sha256sum -c - && \
+    git apply -C1 /src/nginx/8.patch && \
     git apply /src/nginx-footer.patch && \
     git apply /src/nginx-ip-sni.patch && \
     git apply /src/nginx-buffer-log.patch && \
