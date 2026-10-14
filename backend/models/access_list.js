@@ -37,17 +37,9 @@ class AccessList extends Model {
 		return super.$formatDatabaseJson(thisJson);
 	}
 
-	static get name() {
-		return "AccessList";
-	}
+	static tableName = "access_list";
 
-	static get tableName() {
-		return "access_list";
-	}
-
-	static get jsonAttributes() {
-		return ["meta"];
-	}
+	static jsonAttributes = ["meta"];
 
 	static get relationMappings() {
 		return {

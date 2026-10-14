@@ -49,17 +49,9 @@ class RedirectionHost extends Model {
 		return super.$formatDatabaseJson(thisJson);
 	}
 
-	static get name() {
-		return "RedirectionHost";
-	}
+	static tableName = "redirection_host";
 
-	static get tableName() {
-		return "redirection_host";
-	}
-
-	static get jsonAttributes() {
-		return ["domain_names", "meta"];
-	}
+	static jsonAttributes = ["domain_names", "meta"];
 
 	static get relationMappings() {
 		return {

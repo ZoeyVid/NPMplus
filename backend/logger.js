@@ -19,8 +19,4 @@ const remoteVersion = createLogger("Remote Version");
 const gravatar = createLogger("Gravatar      ");
 const oidc = createLogger("OIDC          ");
 
-const debug = (logger, ...args) => {
-	logger.debug(...args);
-};
-
-export { access, certbot, debug, express, global, gravatar, ipRanges, migrate, nginx, oidc, remoteVersion, setup, ssl };
+export { access, certbot, express, global, gravatar, ipRanges, migrate, nginx, oidc, remoteVersion, setup, ssl };

@@ -23,17 +23,9 @@ class AuditLog extends Model {
 		this.modified_on = now();
 	}
 
-	static get name() {
-		return "AuditLog";
-	}
+	static tableName = "audit_log";
 
-	static get tableName() {
-		return "audit_log";
-	}
-
-	static get jsonAttributes() {
-		return ["meta"];
-	}
+	static jsonAttributes = ["meta"];
 
 	static get relationMappings() {
 		return {

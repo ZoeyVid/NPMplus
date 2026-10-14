@@ -64,17 +64,9 @@ class Auth extends Model {
 		return Auth.query().where("user_id", userId).andWhere("type", "password").first();
 	}
 
-	static get name() {
-		return "Auth";
-	}
+	static tableName = "auth";
 
-	static get tableName() {
-		return "auth";
-	}
-
-	static get jsonAttributes() {
-		return ["meta"];
-	}
+	static jsonAttributes = ["meta"];
 
 	static get relationMappings() {
 		return {

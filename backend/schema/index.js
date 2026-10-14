@@ -7,11 +7,9 @@ let compiledSchema = null;
  * and returns the memory cached value
  */
 const getCompiledSchema = async () => {
-	if (compiledSchema === null) {
-		compiledSchema = await $RefParser.dereference(`${import.meta.dirname}/swagger.json`, {
-			mutateInputSchema: false,
-		});
-	}
+	compiledSchema ??= await $RefParser.dereference(`${import.meta.dirname}/swagger.json`, {
+		mutateInputSchema: false,
+	});
 	return compiledSchema;
 };
 

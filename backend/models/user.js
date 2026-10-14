@@ -34,17 +34,9 @@ class User extends Model {
 		return super.$formatDatabaseJson(thisJson);
 	}
 
-	static get name() {
-		return "User";
-	}
+	static tableName = "user";
 
-	static get tableName() {
-		return "user";
-	}
-
-	static get jsonAttributes() {
-		return ["roles"];
-	}
+	static jsonAttributes = ["roles"];
 
 	static get relationMappings() {
 		return {

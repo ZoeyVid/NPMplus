@@ -12,17 +12,9 @@ class Setting extends Model {
 		this.meta ??= {};
 	}
 
-	static get name() {
-		return "Setting";
-	}
+	static tableName = "setting";
 
-	static get tableName() {
-		return "setting";
-	}
-
-	static get jsonAttributes() {
-		return ["meta"];
-	}
+	static jsonAttributes = ["meta"];
 }
 
 export default Setting;

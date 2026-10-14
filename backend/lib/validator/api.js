@@ -44,9 +44,7 @@ const apiValidator = (schema, payload /*, description*/) => {
 	}
 
 	// Can't use falsy check here as valid payload could be `0` or `false`
-	if (typeof payload === "undefined") {
-		throw new errs.ValidationError("Payload is undefined");
-	}
+	if (payload === undefined) throw new errs.ValidationError("Payload is undefined");
 
 	const validate = ajv.compile(schema);
 
