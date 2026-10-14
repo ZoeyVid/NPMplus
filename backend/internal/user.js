@@ -40,8 +40,6 @@ const internalUser = {
 
 		data.email = data.email.toLowerCase();
 
-		if (data.is_disabled !== undefined) data.is_disabled = data.is_disabled ? 1 : 0;
-
 		access.canAdmin();
 
 		if (!(await internalUser.isEmailAvailable(data.email))) {
@@ -76,7 +74,8 @@ const internalUser = {
 
 		await userModel
 			.query()
-			.patchAndFetchById(user.id, { avatar: await internalUser.fetchGravatar(user.id, user.email, user.name) });
+			.findById(user.id)
+			.patch({ avatar: await internalUser.fetchGravatar(user.id, user.email, user.name) });
 
 		user = await internalUser.get(access, { id: user.id });
 
@@ -137,7 +136,10 @@ const internalUser = {
 		const user = await internalUser.get(access, { id });
 		await internalUser.deleteAvatarFiles(user.id);
 		await writeFile(`/data/npmplus/avatar/${user.id}.${ext}`, file.buffer);
-		await userModel.query().patchAndFetchById(user.id, { avatar: `/images/avatar/${user.id}.${ext}` });
+		await userModel
+			.query()
+			.findById(user.id)
+			.patch({ avatar: `/images/avatar/${user.id}.${ext}` });
 		const savedUser = await internalUser.get(access, { id: user.id });
 
 		await internalAuditLog.add(access, {
@@ -154,7 +156,7 @@ const internalUser = {
 		access.canUser(id);
 		const user = await internalUser.get(access, { id });
 		for (const e of avatarExts) await rm(`/data/npmplus/avatar/${user.id}.${e}`, { force: true });
-		await userModel.query().patchAndFetchById(user.id, { avatar: "" });
+		await userModel.query().findById(user.id).patch({ avatar: "" });
 		return internalUser.update(access, { id: user.id });
 	},
 
@@ -167,8 +169,6 @@ const internalUser = {
 	 * @return {Promise}
 	 */
 	update: async (access, data) => {
-		if (data.is_disabled !== undefined) data.is_disabled = data.is_disabled ? 1 : 0;
-
 		access.canUser(data.id);
 		try {
 			access.canAdmin();
@@ -202,7 +202,7 @@ const internalUser = {
 			);
 		}
 
-		await userModel.query().patchAndFetchById(existingUser.id, data);
+		await userModel.query().findById(existingUser.id).patch(data);
 		const user = await internalUser.get(access, { id: data.id });
 
 		await internalAuditLog.add(access, {
@@ -291,29 +291,6 @@ const internalUser = {
 		});
 
 		return user;
-	},
-
-	/**
-	 * This will only count the users
-	 *
-	 * @param   {Access}  access
-	 * @param   {String}  [search_query]
-	 * @returns {*}
-	 */
-	getCount: async (access, search_query) => {
-		access.canAdmin();
-
-		const query = userModel.query().count("id as count").first();
-
-		// Query is used for searching
-		if (typeof search_query === "string") {
-			query.where(function () {
-				this.where("user.name", "like", `%${search_query}%`).orWhere("user.email", "like", `%${search_query}%`);
-			});
-		}
-
-		const row = await query;
-		return Number.parseInt(row.count, 10);
 	},
 
 	/**

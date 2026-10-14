@@ -29,10 +29,6 @@ const installPlugin = async (pluginKey) => {
  * @param {array} pluginKeys
  */
 const installPlugins = async (pluginKeys) => {
-	if (pluginKeys.length === 0) {
-		return;
-	}
-
 	for (const pluginKey of pluginKeys) {
 		try {
 			await installPlugin(pluginKey);

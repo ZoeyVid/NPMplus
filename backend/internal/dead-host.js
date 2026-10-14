@@ -138,11 +138,8 @@ const internalDeadHost = {
 				expand: ["certificate"],
 			});
 
-			// No need to add nginx config if host is disabled
-			if (row.enabled) {
-				// Configure nginx
-				await internalNginx.configure(deadHostModel, "dead_host", row);
-			}
+			// Configure nginx
+			await internalNginx.configure(deadHostModel, "dead_host", row);
 		} finally {
 			savedRow = await internalDeadHost.get(access, { id: thisData.id });
 
@@ -281,8 +278,6 @@ const internalDeadHost = {
 			throw new errs.ValidationError("Host is already disabled");
 		}
 
-		row.enabled = 0;
-
 		await deadHostModel.query().where("id", row.id).patch({
 			enabled: 0,
 		});
@@ -347,16 +342,14 @@ const internalDeadHost = {
 	 * @param   {String}  visibility
 	 * @returns {Promise}
 	 */
-	getCount: async (user_id, visibility) => {
-		const query = deadHostModel.query().count("id as count");
+	getCount: (user_id, visibility) => {
+		const query = deadHostModel.query();
 
 		if (visibility !== "all") {
 			query.andWhere("owner_user_id", user_id);
 		}
 
-		const row = await query.first();
-
-		return Number.parseInt(row.count, 10);
+		return query.resultSize();
 	},
 };
 

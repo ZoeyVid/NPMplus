@@ -14,10 +14,8 @@ const writeHash = async () => {
 
 	for (const fileName of templateFiles) {
 		const content = await readFile(`${import.meta.dirname}/../templates/${fileName}`, "utf8");
-		const matches = content.match(/env\.[A-Z0-9_]+/g) || [];
-
-		for (const match of matches) {
-			referencedEnvVars.add(match.replace("env.", ""));
+		for (const [, varName] of content.matchAll(/env\.([A-Z0-9_]+)/g)) {
+			referencedEnvVars.add(varName);
 		}
 	}
 
@@ -42,10 +40,7 @@ const execFile = async (cmd, args) => {
 		const { stdout, stderr } = await nodeExecFilePromises(cmd, args);
 		return `${stdout || ""}${stderr || ""}`.trim();
 	} catch (err) {
-		if (err && typeof err === "object") {
-			throw new errs.CommandError(`${err.stdout || ""}${err.stderr || ""}`.trim(), { cause: err });
-		}
-		throw err;
+		throw new errs.CommandError(`${err.stdout || ""}${err.stderr || ""}`.trim(), { cause: err });
 	}
 };
 

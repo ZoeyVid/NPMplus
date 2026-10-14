@@ -44,7 +44,7 @@ export default () => {
 			}
 
 			try {
-				tokenData = jwt.verify(token, getPublicKey(), { ignoreExpiration: false, algorithms: [ALGO] });
+				tokenData = jwt.verify(token, getPublicKey(), { algorithms: [ALGO] });
 			} catch (err) {
 				if (err.name === "TokenExpiredError") {
 					throw new errs.PermissionError("Token has expired", undefined, { cause: err });
@@ -62,12 +62,6 @@ export default () => {
 		 * @returns {Boolean}
 		 */
 		hasScope: (scope) => tokenData.scope?.includes(scope) ?? false,
-
-		/**
-		 * @param  {String}  key
-		 * @return {*}
-		 */
-		get: (key) => tokenData[key] ?? null,
 
 		/**
 		 * @param   [defaultValue]

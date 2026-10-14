@@ -3,7 +3,6 @@ import errs from "../lib/error.js";
 import { access as logger } from "../logger.js";
 import accessListModel from "../models/access_list.js";
 import internalAccessList from "./access-list.js";
-import internalNginx from "./nginx.js";
 
 const GENERATED_DIR = "/data/access";
 
@@ -52,8 +51,6 @@ const findHostFiles = async (proxyHost) => {
 const writeHtpasswdFile = async (filename, items, label) => {
 	logger.info(`Building multi Access file ${filename} for: ${label}`);
 
-	await rm(filename, { force: true });
-
 	await internalAccessList.writeData(filename, items);
 	logger.success(`Built merged Access file ${filename} for: ${label}`);
 };
@@ -70,13 +67,9 @@ const buildHostFile = async (proxyHost, accessLists) => {
 		return;
 	}
 	const effectiveAccess = internalProxyHostAccessList.buildAclFile(accessLists);
-	const filename = getProxyHostFilename(proxyHost);
 
-	if (effectiveAccess.items.length === 0) {
-		await rm(filename, { force: true });
-		return; // don't create an empty file
-	}
-	await writeHtpasswdFile(filename, effectiveAccess.items, `proxy host #${proxyHost.id}`);
+	if (effectiveAccess.items.length === 0) return; // don't create an empty file
+	await writeHtpasswdFile(getProxyHostFilename(proxyHost), effectiveAccess.items, `proxy host #${proxyHost.id}`);
 };
 
 /**
@@ -92,13 +85,13 @@ const buildLocationFile = async (proxyHost, location, accessLists) => {
 		return;
 	}
 	const effectiveAccess = internalProxyHostAccessList.buildAclFile(accessLists);
-	const filename = getProxyLocationFilename(proxyHost, location);
 
-	if (effectiveAccess.items.length === 0) {
-		await rm(filename, { force: true });
-		return; // don't create an empty file
-	}
-	await writeHtpasswdFile(filename, effectiveAccess.items, `proxy host #${proxyHost.id} location #${location.id}`);
+	if (effectiveAccess.items.length === 0) return; // don't create an empty file
+	await writeHtpasswdFile(
+		getProxyLocationFilename(proxyHost, location),
+		effectiveAccess.items,
+		`proxy host #${proxyHost.id} location #${location.id}`,
+	);
 };
 
 const internalProxyHostAccessList = {
@@ -124,8 +117,8 @@ const internalProxyHostAccessList = {
 		return {
 			items: getMergedItems(lists),
 			clients,
-			satisfy_any: first ? Boolean(first.satisfy_any) : false,
-			pass_auth: first ? Boolean(first.pass_auth) : false,
+			satisfy_any: Boolean(first?.satisfy_any),
+			pass_auth: Boolean(first?.pass_auth),
 			source_acl_ids: lists.map((l) => l.id).filter((id) => Number.isInteger(id)),
 		};
 	},
@@ -182,7 +175,7 @@ const internalProxyHostAccessList = {
 	 * @param {*} proxyHost
 	 */
 	build: async (host_type, proxyHost) => {
-		if (internalNginx.getFileFriendlyHostType(host_type) !== "proxy_host") {
+		if (host_type !== "proxy_host") {
 			return;
 		}
 
@@ -244,12 +237,7 @@ const internalProxyHostAccessList = {
 				query.andWhere("owner_user_id", access.token.getUserId(1));
 			}
 
-			const rows = await query;
-
-			const validIds = new Set(rows.map((row) => row.id));
-			const invalidIds = [...aclIds].filter((id) => !validIds.has(id));
-
-			if (invalidIds.length > 0) {
+			if (!aclIds.isSubsetOf(new Set((await query).map((row) => row.id)))) {
 				throw new errs.ValidationError("One or more selected Access Lists no longer exist");
 			}
 		}

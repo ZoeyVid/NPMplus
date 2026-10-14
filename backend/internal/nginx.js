@@ -106,7 +106,7 @@ const internalNginx = {
 		if (host_type === "default") {
 			return "/usr/local/nginx/conf/conf.d/default.conf";
 		}
-		return `/data/nginx/${internalNginx.getFileFriendlyHostType(host_type)}/${host_id}.conf`;
+		return `/data/nginx/${host_type}/${host_id}.conf`;
 	},
 
 	/**
@@ -219,11 +219,10 @@ const internalNginx = {
 	generateConfig: async (host_type, host_row) => {
 		// Prevent modifying the original object:
 		const host = structuredClone(host_row);
-		const nice_host_type = internalNginx.getFileFriendlyHostType(host_type);
 
 		const renderEngine = utils.getRenderEngine();
 
-		const filename = internalNginx.getConfigName(nice_host_type, host.id);
+		const filename = internalNginx.getConfigName(host_type, host.id);
 
 		host.env = process.env;
 
@@ -308,7 +307,7 @@ const internalNginx = {
 		}
 
 		const config_text = await renderEngine.parseAndRender(
-			await readFile(`${import.meta.dirname}/../templates/${nice_host_type}.conf`, { encoding: "utf8" }),
+			await readFile(`${import.meta.dirname}/../templates/${host_type}.conf`, { encoding: "utf8" }),
 			host,
 		);
 
@@ -323,22 +322,12 @@ const internalNginx = {
 	},
 
 	/**
-	 *
-	 * @param   {String} host_type
-	 * @returns String
-	 */
-	getFileFriendlyHostType: (host_type) => host_type.replaceAll("-", "_"),
-
-	/**
 	 * @param   {String}  host_type
 	 * @param   {Object}  [host]
 	 * @returns {Promise}
 	 */
 	deleteConfig: async (host_type, host) => {
-		const config_file = internalNginx.getConfigName(
-			internalNginx.getFileFriendlyHostType(host_type),
-			host?.id ?? 0,
-		);
+		const config_file = internalNginx.getConfigName(host_type, host?.id ?? 0);
 
 		await rm(config_file, { force: true });
 		await rm(`${config_file}.err`, { force: true });
@@ -350,28 +339,9 @@ const internalNginx = {
 	 * @returns {Promise}
 	 */
 	renameConfigAsError: async (host_type, host) => {
-		const config_file = internalNginx.getConfigName(
-			internalNginx.getFileFriendlyHostType(host_type),
-			host?.id ?? 0,
-		);
+		const config_file = internalNginx.getConfigName(host_type, host?.id ?? 0);
 
 		await rename(config_file, `${config_file}.err`);
-	},
-
-	/**
-	 * @param   {String}  hostType
-	 * @param   {Array}   hosts
-	 * @returns {Promise}
-	 */
-	bulkGenerateConfigs: async (model, hostType, hosts, { skipReload = false } = {}) => {
-		const results = [];
-
-		for (const host of hosts) {
-			const result = await internalNginx.configure(model, hostType, host, { skipReload });
-			results.push(result);
-		}
-
-		return results;
 	},
 };
 
