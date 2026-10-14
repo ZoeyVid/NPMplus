@@ -57,6 +57,9 @@ const ProxyHostModal = EasyModal.create(({ id, isClone, visible, remove }) => {
 				),
 			};
 			newLoc = CleanLoadBalanceMethod(newLoc);
+			if (!newLoc.npmplusForwardPath) {
+				delete newLoc.npmplusForwardPath;
+			}
 			return newLoc;
 		});
 
@@ -128,6 +131,7 @@ const ProxyHostModal = EasyModal.create(({ id, isClone, visible, remove }) => {
 																						down: false,
 																					},
 																				],
+						npmplusForwardPath: data?.npmplusForwardPath,
 						npmplusAccessListIds: data?.accessLists.map((accessList) => accessList.id),
 						npmplusAccessListType: data?.npmplusAccessListType,
 						// Locations tab
@@ -233,8 +237,8 @@ const ProxyHostModal = EasyModal.create(({ id, isClone, visible, remove }) => {
 													dnsProviderWildcardSupported
 													forCertificate={values.certificateId === "new"}
 												/>
-												<ForwardHostFields />
 												<div class="row">
+													<ForwardHostFields />
 													<div className="col-md-1 text-end">
 														<div className="mb-3">
 															<div className="form-label invisible">​</div>
