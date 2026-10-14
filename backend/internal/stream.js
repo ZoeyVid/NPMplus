@@ -110,11 +110,8 @@ const internalStream = {
 				expand: ["certificate"],
 			});
 
-			// No need to add nginx config if host is disabled
-			if (row.enabled) {
-				// Configure nginx
-				await internalNginx.configure(streamModel, "stream", row);
-			}
+			// Configure nginx
+			await internalNginx.configure(streamModel, "stream", row);
 		} finally {
 			savedRow = await internalStream.get(access, { id: thisData.id });
 
@@ -245,8 +242,6 @@ const internalStream = {
 			throw new errs.ValidationError("Stream is already disabled");
 		}
 
-		row.enabled = 0;
-
 		await streamModel.query().where("id", row.id).patch({
 			enabled: 0,
 		});
@@ -314,16 +309,14 @@ const internalStream = {
 	 * @param   {String}  visibility
 	 * @returns {Promise}
 	 */
-	getCount: async (user_id, visibility) => {
-		const query = streamModel.query().count("id as count");
+	getCount: (user_id, visibility) => {
+		const query = streamModel.query();
 
 		if (visibility !== "all") {
 			query.andWhere("owner_user_id", user_id);
 		}
 
-		const row = await query.first();
-
-		return Number.parseInt(row.count, 10);
+		return query.resultSize();
 	},
 };
 

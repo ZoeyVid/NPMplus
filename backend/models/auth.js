@@ -10,29 +10,24 @@ import User from "./user.js";
 
 Model.knex(db());
 
-async function encryptPassword() {
-	if (this.type === "password" && this.secret) {
-		this.secret = await hash(this.secret);
-		return;
-	}
-
-	return null;
-}
+const encryptPassword = async (auth) => {
+	if (auth.type === "password" && auth.secret) auth.secret = await hash(auth.secret);
+};
 
 class Auth extends Model {
-	$beforeInsert(queryContext) {
+	$beforeInsert() {
 		this.created_on = now();
 		this.modified_on = now();
 
 		// Default for meta
 		this.meta ??= {};
 
-		return encryptPassword.apply(this, queryContext);
+		return encryptPassword(this);
 	}
 
-	$beforeUpdate(queryContext) {
+	$beforeUpdate() {
 		this.modified_on = now();
-		return encryptPassword.apply(this, queryContext);
+		return encryptPassword(this);
 	}
 
 	$parseDatabaseJson(json) {

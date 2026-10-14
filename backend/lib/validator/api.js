@@ -49,11 +49,8 @@ const apiValidator = (schema, payload /*, description*/) => {
 	const validate = ajv.compile(schema);
 
 	const data = trimStrings(payload);
-	const valid = validate(data);
 
-	if (valid && !validate.errors) {
-		return data;
-	}
+	if (validate(data)) return data;
 
 	const message = ajv.errorsText(validate.errors);
 	const err = new errs.ValidationError(message);

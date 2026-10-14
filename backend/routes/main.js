@@ -83,8 +83,7 @@ router.use("/api/nginx/certificates", certificatesHostsRoutes);
  * ALL /api/*
  */
 router.all(/(.+)/, (req, _, next) => {
-	req.params.page = req.params["0"];
-	next(new errs.ItemNotFoundError(req.params.page));
+	next(new errs.ItemNotFoundError(req.params["0"]));
 });
 
 export default router;

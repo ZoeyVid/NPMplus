@@ -74,7 +74,7 @@ app.use((err, req, res, _) => {
 	}
 
 	// Not every error is worth logging - but this is good for now until it gets annoying.
-	if (err.stack && !exposed) logger.warn(`${req.method.toUpperCase()} ${req.originalUrl}: ${err}`);
+	if (err.stack && !exposed) logger.warn(`${req.method} ${req.originalUrl}: ${err}`);
 
 	res.status(status).send(payload);
 });

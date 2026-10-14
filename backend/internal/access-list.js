@@ -123,15 +123,14 @@ const internalAccessList = {
 			// Check for items and add/update/remove them
 			if (data.items) {
 				// Items supplied with an empty password are kept, but their password is left untouched
-				const itemsToKeep = data.items.filter((item) => !item.password).map((item) => item.username);
-
-				const query = accessListAuthModel.query(trx).delete().where("access_list_id", data.id);
-
-				if (itemsToKeep.length > 0) {
-					query.andWhere("username", "NOT IN", itemsToKeep);
-				}
-
-				await query;
+				await accessListAuthModel
+					.query(trx)
+					.delete()
+					.where("access_list_id", data.id)
+					.whereNotIn(
+						"username",
+						data.items.filter((item) => !item.password).map((item) => item.username),
+					);
 				// Add new items
 				await Promise.all(
 					data.items
@@ -178,9 +177,7 @@ const internalAccessList = {
 
 		try {
 			await internalAccessList.build(freshRow);
-			if (freshRow.proxy_host_count) {
-				await internalNginx.bulkGenerateConfigs(proxyHostModel, "proxy_host", freshRow.proxy_hosts);
-			}
+			for (const host of freshRow.proxy_hosts) await internalNginx.configure(proxyHostModel, "proxy_host", host);
 			await internalNginx.reload();
 		} finally {
 			// Add to audit log
@@ -297,7 +294,7 @@ const internalAccessList = {
 			await accessListModel.query(trx).deleteById(row.id);
 			// 2. update any proxy hosts that were using it (ignoring permissions)
 			for (const host of affectedHosts) {
-				await proxyHostModel.query(trx).patchAndFetchById(host.id, {
+				await proxyHostModel.query(trx).findById(host.id).patch({
 					npmplus_access_list_type: host.npmplus_access_list_type,
 				});
 				for (const location of host.locations) {
@@ -310,11 +307,8 @@ const internalAccessList = {
 
 		try {
 			// 3. Write the changes to the config
-			if (affectedHosts.length > 0) {
-				row.proxy_hosts = affectedHosts;
-				// Regenerate configs and htpasswd files
-				await internalNginx.bulkGenerateConfigs(proxyHostModel, "proxy_host", row.proxy_hosts);
-			}
+			// Regenerate configs and htpasswd files
+			for (const host of affectedHosts) await internalNginx.configure(proxyHostModel, "proxy_host", host);
 
 			await internalNginx.reload();
 
@@ -379,15 +373,14 @@ const internalAccessList = {
 	 * @param   {String}  visibility
 	 * @returns {Promise}
 	 */
-	getCount: async (userId, visibility) => {
-		const query = accessListModel.query().count("id as count");
+	getCount: (userId, visibility) => {
+		const query = accessListModel.query();
 
 		if (visibility !== "all") {
 			query.andWhere("owner_user_id", userId);
 		}
 
-		const row = await query.first();
-		return Number.parseInt(row.count, 10);
+		return query.resultSize();
 	},
 
 	/**

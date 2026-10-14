@@ -165,9 +165,8 @@ const internalProxyHost = {
 		await internalProxyHostAccessList.validateAccessLists(access, thisData);
 
 		await proxyHostModel.transaction(async (trx) => {
-			const patchResult = await proxyHostModel.query(trx).where({ id: thisData.id }).patch(thisData);
+			await proxyHostModel.query(trx).where({ id: thisData.id }).patch(thisData);
 			await replaceLocationsAndAccessLists(trx, thisData.id, thisData);
-			return patchResult;
 		});
 
 		let savedRow;
@@ -177,11 +176,8 @@ const internalProxyHost = {
 				expand: ["certificate", "access_lists.[clients,items]", "locations.access_lists.[clients,items]"],
 			});
 
-			// No need to add nginx config if host is disabled
-			if (row.enabled) {
-				// Configure nginx
-				await internalNginx.configure(proxyHostModel, "proxy_host", row);
-			}
+			// Configure nginx
+			await internalNginx.configure(proxyHostModel, "proxy_host", row);
 		} finally {
 			savedRow = await internalProxyHost.get(access, { id: thisData.id });
 
@@ -331,8 +327,6 @@ const internalProxyHost = {
 			throw new errs.ValidationError("Host is already disabled");
 		}
 
-		row.enabled = 0;
-
 		await proxyHostModel.query().where("id", row.id).patch({
 			enabled: 0,
 		});
@@ -398,16 +392,14 @@ const internalProxyHost = {
 	 * @param   {String}  visibility
 	 * @returns {Promise}
 	 */
-	getCount: async (user_id, visibility) => {
-		const query = proxyHostModel.query().count("id as count");
+	getCount: (user_id, visibility) => {
+		const query = proxyHostModel.query();
 
 		if (visibility !== "all") {
 			query.andWhere("owner_user_id", user_id);
 		}
 
-		const row = await query.first();
-
-		return Number.parseInt(row.count, 10);
+		return query.resultSize();
 	},
 };
 

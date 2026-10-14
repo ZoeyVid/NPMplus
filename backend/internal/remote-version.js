@@ -14,7 +14,6 @@ const internalRemoteVersion = {
 		try {
 			if (
 				!internalRemoteVersion.last_result ||
-				!internalRemoteVersion.last_fetch_time ||
 				Date.now() - internalRemoteVersion.last_fetch_time > internalRemoteVersion.cache_timeout
 			) {
 				const response = await fetch("https://api.github.com/repos/ZoeyVid/NPMplus/releases/latest", {

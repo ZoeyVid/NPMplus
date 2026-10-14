@@ -132,22 +132,16 @@ const internalCertificate = {
 
 				// At this point, the letsencrypt cert should exist on disk.
 				// Lets get the expiry date from the file and update the row silently
-				try {
-					const certInfo = await internalCertificate.getCertificateInfoFromFile(
-						`${internalCertificate.getLiveCertPath(certificate.id)}/fullchain.pem`,
-					);
-					const savedRow = await certificateModel.query().patchAndFetchById(certificate.id, {
-						expires_on: dayjs.unix(certInfo.dates.to).format("YYYY-MM-DD HH:mm:ss"),
-					});
+				const certInfo = await internalCertificate.getCertificateInfoFromFile(
+					`${internalCertificate.getLiveCertPath(certificate.id)}/fullchain.pem`,
+				);
+				const savedRow = await certificateModel.query().patchAndFetchById(certificate.id, {
+					expires_on: dayjs.unix(certInfo.dates.to).format("YYYY-MM-DD HH:mm:ss"),
+				});
 
-					await internalCertificate.addCreatedAuditLog(access, certificate.id, savedRow);
+				await internalCertificate.addCreatedAuditLog(access, certificate.id, savedRow);
 
-					return savedRow;
-				} catch (err) {
-					// Delete the certificate from the database if it was not created successfully
-					await certificateModel.query().deleteById(certificate.id);
-					throw err;
-				}
+				return savedRow;
 			}
 		} catch (err) {
 			// Delete the certificate here. This is a hard delete, since it never existed properly
@@ -378,15 +372,14 @@ const internalCertificate = {
 	 * @param   {String}  visibility
 	 * @returns {Promise}
 	 */
-	getCount: async (userId, visibility) => {
-		const query = certificateModel.query().count("id as count");
+	getCount: (userId, visibility) => {
+		const query = certificateModel.query();
 
 		if (visibility !== "all") {
 			query.andWhere("owner_user_id", userId);
 		}
 
-		const row = await query.first();
-		return Number.parseInt(row.count, 10);
+		return query.resultSize();
 	},
 
 	/**
@@ -440,13 +433,11 @@ const internalCertificate = {
 		for (const [name, [file]] of Object.entries(data.files)) {
 			if (internalCertificate.allowedSslFiles.includes(name)) {
 				const content = file.buffer.toString();
-				let res;
 				if (name === "certificate_key") {
-					res = internalCertificate.checkPrivateKey(content);
+					finalData[name] = internalCertificate.checkPrivateKey(content);
 				} else {
-					res = internalCertificate.getCertificateInfo(content, true);
+					finalData[name] = internalCertificate.getCertificateInfo(content, true);
 				}
-				finalData[name] = res;
 			}
 		}
 
@@ -520,10 +511,9 @@ const internalCertificate = {
 			const cert = new X509Certificate(certificate);
 
 			if (cert.subjectAltName) {
-				certData.cn = cert.subjectAltName.split(", ").map((entry) => {
-					const firstColonIdx = entry.indexOf(":");
-					return firstColonIdx === -1 ? entry.trim() : entry.slice(firstColonIdx + 1).trim();
-				});
+				certData.cn = cert.subjectAltName
+					.split(", ")
+					.map((entry) => entry.slice(entry.indexOf(":") + 1).trim());
 			} else {
 				const cnMatch = cnPattern.exec(cert.subject);
 				if (cnMatch?.[1]) {
@@ -737,10 +727,9 @@ const internalCertificate = {
 
 	/**
 	 * @param   {Object}  certificate    the certificate row
-	 * @param   {Boolean} [throwErrors]
 	 * @returns {Promise}
 	 */
-	revokeCertbot: async (certificate, throwErrors) => {
+	revokeCertbot: async (certificate) => {
 		logger.info(
 			`Revoking Certbot certificates for Cert #${certificate.id}: ${certificate.domain_names.join(", ")}`,
 		);
@@ -761,9 +750,6 @@ const internalCertificate = {
 			return result;
 		} catch (err) {
 			logger.error(err.message);
-			if (throwErrors) {
-				throw err;
-			}
 		}
 	},
 
