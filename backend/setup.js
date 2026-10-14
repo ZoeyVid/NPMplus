@@ -22,7 +22,7 @@ import userModel from "./models/user.js";
  * @returns {Promise}
  */
 const setupDefaultUser = async () => {
-	const initialAdminEmail = process.env.INITIAL_ADMIN_EMAIL?.toLowerCase().trim();
+	const initialAdminEmail = process.env.INITIAL_ADMIN_EMAIL?.trim();
 	const initialAdminPassword = process.env.INITIAL_ADMIN_PASSWORD;
 
 	// This will only create a new user when there are no active users in the database

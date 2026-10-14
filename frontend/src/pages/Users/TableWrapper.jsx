@@ -46,9 +46,7 @@ export default function TableWrapper() {
 
 	let filtered = null;
 	if (search) {
-		filtered = data?.filter(
-			(item) => item.name.toLowerCase().includes(search) || item.email.toLowerCase().includes(search),
-		);
+		filtered = data?.filter((item) => item.name.toLowerCase().includes(search) || item.email.includes(search));
 	}
 
 	return (
