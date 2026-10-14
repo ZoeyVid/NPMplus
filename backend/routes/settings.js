@@ -6,6 +6,7 @@ import validator from "../lib/validator/index.js";
 import { getValidationSchema } from "../schema/index.js";
 
 const settingSchema = {
+	type: "object",
 	required: ["setting_id"],
 	additionalProperties: false,
 	properties: {
@@ -54,7 +55,7 @@ router
 	 * Retrieve a specific setting
 	 */
 	.get(async (req, res) => {
-		const data = await validator(settingSchema, {
+		const data = validator(settingSchema, {
 			setting_id: req.params.setting_id,
 		});
 		const row = await internalSetting.get(res.locals.access, {

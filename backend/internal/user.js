@@ -62,11 +62,9 @@ const internalUser = {
 			}
 
 			// Create permissions row as well
-			const isAdmin = data.roles.indexOf("admin") !== -1;
-
 			await userPermissionModel.query(trx).insert({
 				user_id: insertedUser.id,
-				visibility: isAdmin ? "all" : "user",
+				visibility: data.roles.includes("admin") ? "all" : "user",
 				proxy_hosts: "hidden",
 				redirection_hosts: "hidden",
 				dead_hosts: "hidden",
@@ -98,9 +96,8 @@ const internalUser = {
 		for (const e of avatarExts) await rm(`/data/npmplus/gravatar/${id}.${e}`, { force: true });
 		if (process.env.DISABLE_GRAVATAR === "true") return "/images/default-avatar.jpg";
 		try {
-			const hash = crypto.createHash("sha256").update(email.toLowerCase()).digest("hex");
 			const response = await fetch(
-				`https://www.gravatar.com/avatar/${hash}?s=64&default=initials&name=${encodeURIComponent(
+				`https://www.gravatar.com/avatar/${crypto.hash("sha256", email.toLowerCase())}?s=64&default=initials&name=${encodeURIComponent(
 					name
 						.split(" ")
 						.map((n) => n[0])

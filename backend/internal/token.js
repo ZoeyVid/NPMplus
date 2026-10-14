@@ -54,7 +54,7 @@ export default {
 				}
 			} else {
 				// Return challenge token instead of full token
-				const challengeToken = await Token.create({
+				const challengeToken = Token.create({
 					iss: "api",
 					attrs: {
 						id: user.id,
@@ -71,7 +71,7 @@ export default {
 			}
 		}
 
-		const signed = await Token.create({
+		const signed = Token.create({
 			iss: "api",
 			attrs: {
 				id: user.id,
@@ -108,7 +108,7 @@ export default {
 		const hasMfa = await mfa.isAnyEnabled(user.id);
 		if (hasMfa && process.env.OIDC_SKIP_MFA === "false") {
 			// Return challenge token instead of full token
-			const challengeToken = await Token.create({
+			const challengeToken = Token.create({
 				iss: "api",
 				attrs: {
 					id: user.id,
@@ -124,7 +124,7 @@ export default {
 			};
 		}
 
-		const signed = await Token.create({
+		const signed = Token.create({
 			iss: "api",
 			attrs: {
 				id: user.id,
@@ -141,13 +141,13 @@ export default {
 
 	/**
 	 * @param {Access} access
-	 * @returns {Promise}
+	 * @returns {Object}
 	 */
-	getFreshToken: async (access, afterRevoke) => {
+	getFreshToken: (access, afterRevoke) => {
 		const Token = TokenModel();
 
 		if (access?.token.getUserId(0) && access.token.hasScope("user")) {
-			const signed = await Token.create({
+			const signed = Token.create({
 				iss: "api",
 				scope: ["user"],
 				attrs: {
@@ -177,9 +177,9 @@ export default {
 		// Verify challenge token
 		let tokenData;
 		try {
-			tokenData = await Token.load(challengeToken);
-		} catch {
-			throw new errs.AuthError("Invalid or expired challenge token");
+			tokenData = Token.load(challengeToken);
+		} catch (err) {
+			throw new errs.AuthError("Invalid or expired challenge token", undefined, { cause: err });
 		}
 
 		// Check scope
@@ -212,7 +212,7 @@ export default {
 			throw new errs.PermissionError(ERROR_MESSAGE_INVALID_CODE, ERROR_MESSAGE_INVALID_CODE_I18N);
 		}
 
-		const signed = await Token.create({
+		const signed = Token.create({
 			iss: "api",
 			attrs: {
 				id: userId,

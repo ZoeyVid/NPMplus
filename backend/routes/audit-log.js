@@ -4,6 +4,7 @@ import jwtdecode from "../lib/express/jwt-decode.js";
 import validator from "../lib/validator/index.js";
 
 const listSchema = {
+	type: "object",
 	additionalProperties: false,
 	properties: {
 		expand: {
@@ -17,6 +18,7 @@ const listSchema = {
 };
 
 const eventSchema = {
+	type: "object",
 	required: ["event_id"],
 	additionalProperties: false,
 	properties: {
@@ -49,7 +51,7 @@ router
 	 * Retrieve all logs
 	 */
 	.get(async (req, res) => {
-		const data = await validator(listSchema, {
+		const data = validator(listSchema, {
 			expand: typeof req.query.expand === "string" ? req.query.expand.split(",") : null,
 			query: typeof req.query.query === "string" ? req.query.query : null,
 		});
@@ -72,7 +74,7 @@ router
 	 * Retrieve a specific entry
 	 */
 	.get(async (req, res) => {
-		const data = await validator(eventSchema, {
+		const data = validator(eventSchema, {
 			event_id: req.params.event_id,
 			expand: typeof req.query.expand === "string" ? req.query.expand.split(",") : null,
 		});
