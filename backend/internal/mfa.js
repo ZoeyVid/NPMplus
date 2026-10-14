@@ -155,10 +155,7 @@ const internalMfa = {
 			throw new errs.ValidationError("MFA is not enabled");
 		}
 
-		if (token.length !== 6) {
-			throw new errs.ValidationError("Invalid verification code");
-		}
-		if (!(await totp.verifyCode(userId, token))) {
+		if (token.length !== 6 || !(await totp.verifyCode(userId, token))) {
 			throw new errs.ValidationError("Invalid verification code");
 		}
 

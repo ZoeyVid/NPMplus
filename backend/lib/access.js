@@ -19,7 +19,7 @@ export default function (tokenString) {
 	 *
 	 * @returns {Promise}
 	 */
-	this.init = async () => {
+	const init = async () => {
 		if (initialised) {
 			return;
 		}
@@ -56,7 +56,6 @@ export default function (tokenString) {
 				if (!(tokenData.scope ?? []).every((scopeItem) => user.roles.includes(scopeItem))) {
 					throw new errs.PermissionError("Invalid token scope for User");
 				}
-				initialised = true;
 				isAdmin = user.roles.includes("admin");
 				permissions = user.permissions ?? {};
 			} else {
@@ -103,7 +102,7 @@ export default function (tokenString) {
 				isAdmin = true;
 				permissions = { visibility: "all" };
 			}
-			return this.init();
+			return init();
 		},
 
 		/**

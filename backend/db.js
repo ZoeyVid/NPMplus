@@ -27,9 +27,7 @@ const generateDbConfig = () => {
 };
 
 const getInstance = () => {
-	if (!instance) {
-		instance = knex(generateDbConfig());
-	}
+	instance ??= knex(generateDbConfig());
 	return instance;
 };
 

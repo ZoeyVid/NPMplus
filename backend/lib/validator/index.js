@@ -21,7 +21,7 @@ const ajv = new Ajv({
  */
 const validator = (schema, payload) => {
 	const validate = ajv.compile(schema);
-	if (validate(payload) && !validate.errors) return structuredClone(payload);
+	if (validate(payload)) return structuredClone(payload);
 
 	throw new errs.ValidationError(ajv.errorsText(validate.errors));
 };

@@ -72,9 +72,7 @@ const setupDefaultSettings = async () => {
 		logger.info("Default settings added");
 	}
 
-	if ((await settingModel.query().select("id").where({ id: "oidc-config" }).first())?.id) {
-		await settingModel.query().deleteById("oidc-config");
-	}
+	await settingModel.query().deleteById("oidc-config");
 
 	await internalNginx.generateConfig("default", await settingModel.query().where({ id: "default-site" }).first());
 };
@@ -85,34 +83,30 @@ const setupDefaultSettings = async () => {
  * @returns {Promise}
  */
 const setupCertbotPlugins = async () => {
-	const certificates = await certificateModel.query().where("provider", "letsencrypt");
+	const plugins = [];
 
-	if (certificates?.length > 0) {
-		const plugins = [];
-
-		for (const certificate of certificates) {
-			if (certificate.npmplus_dns_challenge) {
-				if (dnsPlugins[certificate.npmplus_dns_provider]?.package_name === undefined) {
-					logger.warn(
-						`Unknown DNS provider '${certificate.npmplus_dns_provider}' for Cert #${certificate.id}, skipping Certbot plugin installation`,
-					);
-				} else if (!plugins.includes(certificate.npmplus_dns_provider)) {
-					plugins.push(certificate.npmplus_dns_provider);
-				}
-
-				await writeFile(
-					`/tmp/certbot-credentials/credentials-${certificate.id}`,
-					certificate.npmplus_dns_provider_credentials,
-					{ mode: 0o600 },
+	for (const certificate of await certificateModel.query().where("provider", "letsencrypt")) {
+		if (certificate.npmplus_dns_challenge) {
+			if (dnsPlugins[certificate.npmplus_dns_provider]?.package_name === undefined) {
+				logger.warn(
+					`Unknown DNS provider '${certificate.npmplus_dns_provider}' for Cert #${certificate.id}, skipping Certbot plugin installation`,
 				);
+			} else if (!plugins.includes(certificate.npmplus_dns_provider)) {
+				plugins.push(certificate.npmplus_dns_provider);
 			}
-		}
 
-		await installPlugins(plugins);
-
-		if (plugins.length > 0) {
-			logger.info(`Added Certbot plugins ${plugins.join(", ")}`);
+			await writeFile(
+				`/tmp/certbot-credentials/credentials-${certificate.id}`,
+				certificate.npmplus_dns_provider_credentials,
+				{ mode: 0o600 },
+			);
 		}
+	}
+
+	await installPlugins(plugins);
+
+	if (plugins.length > 0) {
+		logger.info(`Added Certbot plugins ${plugins.join(", ")}`);
 	}
 };
 
@@ -127,29 +121,23 @@ const regenerateAllHosts = async () => {
 			.query()
 			.where("enabled", 1)
 			.withGraphFetched("[access_lists.[clients,items],certificate,locations.access_lists.[clients,items]]");
-
-		if (proxyHosts?.length > 0) {
-			await internalNginx.bulkGenerateConfigs(proxyModel, "proxy_host", proxyHosts, { skipReload: true });
+		for (const host of proxyHosts) {
+			await internalNginx.configure(proxyModel, "proxy_host", host, { skipReload: true });
 		}
 
 		const redirectionHosts = await redirectionModel.query().where("enabled", 1).withGraphFetched("certificate");
-
-		if (redirectionHosts?.length > 0) {
-			await internalNginx.bulkGenerateConfigs(redirectionModel, "redirection_host", redirectionHosts, {
-				skipReload: true,
-			});
+		for (const host of redirectionHosts) {
+			await internalNginx.configure(redirectionModel, "redirection_host", host, { skipReload: true });
 		}
 
 		const deadHosts = await deadModel.query().where("enabled", 1).withGraphFetched("certificate");
-
-		if (deadHosts?.length > 0) {
-			await internalNginx.bulkGenerateConfigs(deadModel, "dead_host", deadHosts, { skipReload: true });
+		for (const host of deadHosts) {
+			await internalNginx.configure(deadModel, "dead_host", host, { skipReload: true });
 		}
 
 		const streamHosts = await streamModel.query().where("enabled", 1).withGraphFetched("certificate");
-
-		if (streamHosts?.length > 0) {
-			await internalNginx.bulkGenerateConfigs(streamModel, "stream", streamHosts, { skipReload: true });
+		for (const host of streamHosts) {
+			await internalNginx.configure(streamModel, "stream", host, { skipReload: true });
 		}
 
 		await utils.writeHash();
