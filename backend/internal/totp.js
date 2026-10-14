@@ -8,6 +8,7 @@ import internalUser from "./user.js";
 const APP_NAME = "NPMplus";
 
 const usedSteps = new Map();
+const startStep = Math.floor(Date.now() / 30000);
 
 const internalTotp = {
 	/**
@@ -170,7 +171,7 @@ const internalTotp = {
 			}),
 		});
 
-		if (!result.valid || usedSteps.get(enrolled.id) >= result.timeStep) return false;
+		if (!result.valid || (usedSteps.get(enrolled.id) ?? startStep) >= result.timeStep) return false;
 
 		usedSteps.set(enrolled.id, result.timeStep);
 		return true;
