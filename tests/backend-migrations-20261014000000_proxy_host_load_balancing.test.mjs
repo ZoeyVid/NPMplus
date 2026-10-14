@@ -1,7 +1,7 @@
 import assert from "node:assert/strict";
 import { createRequire } from "node:module";
 import test from "node:test";
-import { down, up } from "../backend/migrations/20260919000000_proxy_host_load_balancing.js";
+import { down, up } from "../backend/migrations/20261014000000_proxy_host_load_balancing.js";
 
 const require = createRequire(new URL("../backend/package.json", import.meta.url));
 const knexFactory = require("knex");
@@ -30,6 +30,18 @@ const createLegacyDatabase = async () => {
 		table.increments("id").primary();
 		table.string("forwarding_host");
 		table.string("forwarding_port");
+	});
+
+	// This migration runs after custom locations have been extracted from
+	// proxy_host.locations into their own table.
+	await knex.schema.createTable("npmplus_location", (table) => {
+		table.increments("id").primary();
+		table.integer("proxy_host_id").notNull();
+		table.text("path").notNull();
+		table.string("forward_scheme").notNull().defaultTo("http");
+		table.string("forward_host").notNull().defaultTo("");
+		table.integer("forward_port").notNull().defaultTo(0);
+		table.text("advanced_config").notNull().defaultTo("");
 	});
 
 	return knex;
@@ -62,9 +74,15 @@ const proxyHostScenarios = [
 	},
 	{
 		name: "HTTP host with an embedded port and path",
-		input: { forward_scheme: "http", forward_host: "example.com:8080/test/path", forward_port: null },
+		input: { forward_scheme: "http", forward_host: "example.com:8080/test/path", forward_port: 0 },
 		expectedPath: "/test/path",
 		expectedServer: { host: "example.com:8080" },
+	},
+	{
+		name: "HTTP domain treats the normalized zero port as absent",
+		input: { forward_scheme: "http", forward_host: "example.com", forward_port: 0 },
+		expectedPath: null,
+		expectedServer: { host: "example.com" },
 	},
 	{
 		name: "unbracketed IPv6 host with a path",
@@ -100,13 +118,13 @@ const proxyHostScenarios = [
 	},
 	{
 		name: "path scheme keeps its host path unchanged",
-		input: { forward_scheme: "path", forward_host: "/srv/application/public", forward_port: null },
+		input: { forward_scheme: "path", forward_host: "/srv/application/public", forward_port: 0 },
 		expectedPath: null,
 		expectedServer: { host: "/srv/application/public" },
 	},
 	{
 		name: "empty scheme keeps a Unix socket unchanged",
-		input: { forward_scheme: "empty", forward_host: "unix:/run/application.sock", forward_port: null },
+		input: { forward_scheme: "empty", forward_host: "unix:/run/application.sock", forward_port: 0 },
 		expectedPath: null,
 		expectedServer: { host: "unix:/run/application.sock" },
 	},
@@ -192,7 +210,7 @@ const locationScenarios = [
 	},
 	{
 		name: "path location keeps its filesystem path",
-		input: { path: "/static", forward_scheme: "path", forward_host: "/srv/static/files", forward_port: "" },
+		input: { path: "/static", forward_scheme: "path", forward_host: "/srv/static/files", forward_port: 0 },
 		expected: {
 			path: "/static",
 			forward_scheme: "path",
@@ -201,11 +219,20 @@ const locationScenarios = [
 	},
 	{
 		name: "empty location keeps a Unix socket",
-		input: { path: "/socket", forward_scheme: "empty", forward_host: "unix:/run/location.sock", forward_port: null },
+		input: { path: "/socket", forward_scheme: "empty", forward_host: "unix:/run/location.sock", forward_port: 0 },
 		expected: {
 			path: "/socket",
 			forward_scheme: "empty",
 			npmplus_upstream_servers: [{ host: "unix:/run/location.sock" }],
+		},
+	},
+	{
+		name: "HTTP location treats the normalized zero port as absent",
+		input: { path: "/no-port", forward_scheme: "http", forward_host: "location.example.com", forward_port: 0 },
+		expected: {
+			path: "/no-port",
+			forward_scheme: "http",
+			npmplus_upstream_servers: [{ host: "location.example.com" }],
 		},
 	},
 ];
@@ -214,41 +241,27 @@ for (const scenario of locationScenarios) {
 	test(`custom location: ${scenario.name}`, async (t) => {
 		const knex = await useLegacyDatabase(t);
 
-		await knex("proxy_host").insert({
+		const [proxyHostId] = await knex("proxy_host").insert({
 			forward_scheme: "http",
 			forward_host: "root.example.com",
 			forward_port: "80",
-			locations: JSON.stringify([scenario.input]),
+			locations: "[]",
+		});
+		await knex("npmplus_location").insert({
+			proxy_host_id: proxyHostId,
+			...scenario.input,
 		});
 
 		await up(knex);
 
-		const row = await knex("proxy_host").first();
-		assert.deepEqual(parseJson(row.locations), [scenario.expected]);
-	});
-}
-
-const emptyLocations = [
-	{ name: "null", value: null },
-	{ name: "an empty string", value: "" },
-	{ name: "an empty JSON array", value: "[]" },
-];
-
-for (const scenario of emptyLocations) {
-	test(`locations: ${scenario.name} becomes an empty array`, async (t) => {
-		const knex = await useLegacyDatabase(t);
-
-		await knex("proxy_host").insert({
-			forward_scheme: "http",
-			forward_host: "example.com",
-			forward_port: "80",
-			locations: scenario.value,
-		});
-
-		await up(knex);
-
-		const row = await knex("proxy_host").first();
-		assert.deepEqual(parseJson(row.locations), []);
+		const row = await knex("npmplus_location").first();
+		assert.equal(row.path, scenario.expected.path);
+		assert.equal(row.forward_scheme, scenario.expected.forward_scheme);
+		assert.equal(row.npmplus_forward_path, scenario.expected.npmplus_forward_path ?? null);
+		assert.deepEqual(parseJson(row.npmplus_upstream_servers), scenario.expected.npmplus_upstream_servers);
+		if (Object.hasOwn(scenario.expected, "advanced_config")) {
+			assert.equal(row.advanced_config, scenario.expected.advanced_config);
+		}
 	});
 }
 
@@ -261,6 +274,11 @@ const streamScenarios = [
 	{
 		name: "domain with a blank port",
 		input: { forwarding_host: "stream.example.com", forwarding_port: "" },
+		expectedServer: { host: "stream.example.com" },
+	},
+	{
+		name: "domain with a zero port",
+		input: { forwarding_host: "stream.example.com", forwarding_port: "0" },
 		expectedServer: { host: "stream.example.com" },
 	},
 	{
@@ -312,30 +330,6 @@ for (const scenario of streamScenarios) {
 	});
 }
 
-const invalidLocationValues = [
-	{ name: "invalid JSON", value: "not-json", error: SyntaxError },
-	{
-		name: "a JSON object instead of an array",
-		value: JSON.stringify({ forward_host: "example.com" }),
-		error: { name: "TypeError", message: "Proxy host locations must be an array" },
-	},
-];
-
-for (const scenario of invalidLocationValues) {
-	test(`rejects locations containing ${scenario.name}`, async (t) => {
-		const knex = await useLegacyDatabase(t);
-
-		await knex("proxy_host").insert({
-			forward_scheme: "http",
-			forward_host: "example.com",
-			forward_port: "80",
-			locations: scenario.value,
-		});
-
-		await assert.rejects(up(knex), scenario.error);
-	});
-}
-
 const invalidHosts = [
 	{ name: "a null proxy host", table: "proxy_host", host: null },
 	{ name: "an empty proxy host", table: "proxy_host", host: "" },
@@ -370,12 +364,53 @@ for (const scenario of invalidHosts) {
 	});
 }
 
-test("migrates every proxy host and stream row", async (t) => {
+for (const host of ["", "   "]) {
+	test(`rejects a custom location with ${host ? "a whitespace-only" : "an empty"} host`, async (t) => {
+		const knex = await useLegacyDatabase(t);
+		const [proxyHostId] = await knex("proxy_host").insert({
+			forward_scheme: "http",
+			forward_host: "root.example.com",
+			forward_port: 80,
+			locations: "[]",
+		});
+		await knex("npmplus_location").insert({
+			proxy_host_id: proxyHostId,
+			path: "/invalid",
+			forward_scheme: "http",
+			forward_host: host,
+			forward_port: 80,
+		});
+
+		await assert.rejects(up(knex), {
+			name: "TypeError",
+			message: "Cannot migrate an upstream with an empty host",
+		});
+	});
+}
+
+test("migrates every proxy host, custom location, and stream row", async (t) => {
 	const knex = await useLegacyDatabase(t);
 
 	await knex("proxy_host").insert([
 		{ forward_scheme: "http", forward_host: "first.example.com", forward_port: "80", locations: "[]" },
 		{ forward_scheme: "https", forward_host: "second.example.com/path", forward_port: "443", locations: "[]" },
+	]);
+	const proxyHostIds = await knex("proxy_host").orderBy("id").pluck("id");
+	await knex("npmplus_location").insert([
+		{
+			proxy_host_id: proxyHostIds[0],
+			path: "/first",
+			forward_scheme: "http",
+			forward_host: "10.0.0.30/location",
+			forward_port: 8080,
+		},
+		{
+			proxy_host_id: proxyHostIds[1],
+			path: "/second",
+			forward_scheme: "https",
+			forward_host: "10.0.0.31",
+			forward_port: 0,
+		},
 	]);
 	await knex("stream").insert([
 		{ forwarding_host: "10.0.0.20", forwarding_port: "9000" },
@@ -385,13 +420,19 @@ test("migrates every proxy host and stream row", async (t) => {
 	await up(knex);
 
 	const proxyHosts = await knex("proxy_host").orderBy("id");
+	const locations = await knex("npmplus_location").orderBy("id");
 	const streams = await knex("stream").orderBy("id");
 
 	assert.equal(proxyHosts.length, 2);
+	assert.equal(locations.length, 2);
 	assert.equal(streams.length, 2);
 	assert.deepEqual(parseJson(proxyHosts[0].npmplus_upstream_servers), [{ host: "first.example.com", port: 80 }]);
 	assert.deepEqual(parseJson(proxyHosts[1].npmplus_upstream_servers), [{ host: "second.example.com", port: 443 }]);
 	assert.equal(proxyHosts[1].npmplus_forward_path, "/path");
+	assert.deepEqual(parseJson(locations[0].npmplus_upstream_servers), [{ host: "10.0.0.30", port: 8080 }]);
+	assert.equal(locations[0].npmplus_forward_path, "/location");
+	assert.deepEqual(parseJson(locations[1].npmplus_upstream_servers), [{ host: "10.0.0.31" }]);
+	assert.equal(locations[1].npmplus_forward_path, null);
 	assert.deepEqual(parseJson(streams[0].npmplus_upstream_servers), [{ host: "10.0.0.20", port: 9000 }]);
 	assert.deepEqual(parseJson(streams[1].npmplus_upstream_servers), [{ host: "10.0.0.21", port: 9001 }]);
 });
@@ -406,6 +447,11 @@ test("adds the new columns and removes the legacy columns", async (t) => {
 	assert.equal(await knex.schema.hasColumn("proxy_host", "npmplus_forward_path"), true);
 	assert.equal(await knex.schema.hasColumn("proxy_host", "forward_host"), false);
 	assert.equal(await knex.schema.hasColumn("proxy_host", "forward_port"), false);
+	assert.equal(await knex.schema.hasColumn("npmplus_location", "npmplus_upstream_servers"), true);
+	assert.equal(await knex.schema.hasColumn("npmplus_location", "npmplus_load_balance_method"), true);
+	assert.equal(await knex.schema.hasColumn("npmplus_location", "npmplus_forward_path"), true);
+	assert.equal(await knex.schema.hasColumn("npmplus_location", "forward_host"), false);
+	assert.equal(await knex.schema.hasColumn("npmplus_location", "forward_port"), false);
 	assert.equal(await knex.schema.hasColumn("stream", "npmplus_upstream_servers"), true);
 	assert.equal(await knex.schema.hasColumn("stream", "npmplus_load_balance_method"), true);
 	assert.equal(await knex.schema.hasColumn("stream", "forwarding_host"), false);
@@ -417,12 +463,15 @@ test("new upstream columns default to empty arrays when no legacy rows exist", a
 
 	await up(knex);
 	await knex("proxy_host").insert({ locations: "[]" });
+	await knex("npmplus_location").insert({ proxy_host_id: 1, path: "/default" });
 	await knex("stream").insert({});
 
 	const proxyHost = await knex("proxy_host").first();
+	const location = await knex("npmplus_location").first();
 	const stream = await knex("stream").first();
 
 	assert.deepEqual(parseJson(proxyHost.npmplus_upstream_servers), []);
+	assert.deepEqual(parseJson(location.npmplus_upstream_servers), []);
 	assert.deepEqual(parseJson(stream.npmplus_upstream_servers), []);
 });
 

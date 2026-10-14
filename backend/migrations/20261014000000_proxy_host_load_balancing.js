@@ -57,6 +57,9 @@ const parseLocations = (locations) => {
 };
 
 const normalisePort = (port) => {
+	if (port === 0 || port === "0") {
+		return null;
+	}
 	if (typeof port === "string") {
 		const trimmedPort = port.trim();
 
@@ -142,7 +145,38 @@ const up = async (knex) => {
 		stream.string("npmplus_load_balance_method", 64);
 	});
 
-	const proxyHosts = await knex("proxy_host").select("id", "forward_scheme", "forward_host", "forward_port", "locations");
+	await knex.schema.alterTable("npmplus_location", (location) => {
+		location.json("npmplus_upstream_servers").notNull().defaultTo("[]");
+		location.string("npmplus_load_balance_method", 64);
+		location.string("npmplus_forward_path", 255);
+	});
+
+	const locations = await knex("npmplus_location").select(
+		"id",
+		"proxy_host_id",
+		"path",
+		"forward_scheme",
+		"forward_host",
+		"forward_port"
+	);
+
+	for (const location of locations) {
+		const supportsForwardPath = FORWARD_PATH_SCHEMES.includes(location.forward_scheme);
+		const { upstreamHost, forwardPath } = splitForwardHost(
+			location.forward_host,
+			NETWORK_PROXY_SCHEMES.includes(location.forward_scheme),
+		);
+
+		// Keep the existing discarded-gRPC-path reporting here.
+		await knex("npmplus_location").where({ id: location.id }).update({
+			npmplus_forward_path: supportsForwardPath ? forwardPath ?? null : null,
+			npmplus_upstream_servers: JSON.stringify([
+				createUpstreamServer(upstreamHost, location.forward_port),
+			]),
+		});
+	}
+
+	const proxyHosts = await knex("proxy_host").select("id", "forward_scheme", "forward_host", "forward_port");
 
 	for (const proxyHost of proxyHosts) {
 		const locations = parseLocations(proxyHost.locations).map((location, locationIndex) => {
@@ -238,6 +272,10 @@ const up = async (knex) => {
 	// NPM repo
 	await knex.schema.alterTable("proxy_host", (proxyHost) => {
 		proxyHost.dropColumns("forward_host", "forward_port");
+	});
+
+	await knex.schema.alterTable("npmplus_location", (location) => {
+		location.dropColumns("forward_host", "forward_port");
 	});
 
 	await knex.schema.alterTable("stream", (stream) => {

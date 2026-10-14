@@ -120,6 +120,9 @@ const ProxyHostModal = EasyModal.create(({ id, isClone, visible, remove, close, 
 					location.npmplusAccessListType === "custom" ? location.npmplusAccessListIds : [],
 			};
 			newLoc = CleanLoadBalanceMethod(newLoc);
+			if (!newLoc.npmplusForwardPath) {
+				delete newLoc.npmplusForwardPath;
+			}
 			return newLoc;
 		});
 
