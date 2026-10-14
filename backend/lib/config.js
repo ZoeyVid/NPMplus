@@ -31,7 +31,7 @@ const configure = () => {
 		logger.warn(
 			"MariaDB/MySQL is unsupported, has no advantage over SQLite and is not recommended, note that you can't migrate to SQLite without a fresh install",
 		);
-		instance = {
+		return {
 			database: {
 				engine: mysqlEngine,
 				host: envMysqlHost,
@@ -45,7 +45,6 @@ const configure = () => {
 			},
 			keys: getKeys(),
 		};
-		return;
 	}
 
 	const envPostgresHost = process.env.DB_POSTGRES_HOST || null;
@@ -57,7 +56,7 @@ const configure = () => {
 		logger.warn(
 			"PostgreSQL is unsupported, has no advantage over SQLite and is not recommended, note that you can't migrate to SQLite without a fresh install",
 		);
-		instance = {
+		return {
 			database: {
 				engine: postgresEngine,
 				host: envPostgresHost,
@@ -68,13 +67,12 @@ const configure = () => {
 			},
 			keys: getKeys(),
 		};
-		return;
 	}
 
 	const envSqliteFile = "/data/npmplus/database.sqlite";
 
 	logger.info(`Using Sqlite: ${envSqliteFile}`);
-	instance = {
+	return {
 		database: {
 			engine: "knex-native",
 			knex: {
@@ -148,7 +146,7 @@ const generateKeys = () => {
  * @returns {*}
  */
 const configGet = (key) => {
-	if (instance === null) configure();
+	instance ??= configure();
 	if (key && instance[key] !== undefined) return instance[key];
 	return instance;
 };
@@ -159,7 +157,7 @@ const configGet = (key) => {
  * @returns {boolean}
  */
 const isSqlite = () => {
-	if (instance === null) configure();
+	instance ??= configure();
 	return instance.database.knex?.client === sqliteEngine;
 };
 
@@ -169,7 +167,7 @@ const isSqlite = () => {
  * @returns {boolean}
  */
 const isMysql = () => {
-	if (instance === null) configure();
+	instance ??= configure();
 	return instance.database.engine === mysqlEngine;
 };
 
@@ -179,7 +177,7 @@ const isMysql = () => {
  * @returns {boolean}
  */
 const isPostgres = () => {
-	if (instance === null) configure();
+	instance ??= configure();
 	return instance.database.engine === postgresEngine;
 };
 
@@ -189,7 +187,7 @@ const isPostgres = () => {
  * @returns {string}
  */
 const getPublicKey = () => {
-	if (instance === null) configure();
+	instance ??= configure();
 	return instance.keys.pub;
 };
 
@@ -199,7 +197,7 @@ const getPublicKey = () => {
  * @returns {string}
  */
 const getPrivateKey = () => {
-	if (instance === null) configure();
+	instance ??= configure();
 	return instance.keys.key;
 };
 
