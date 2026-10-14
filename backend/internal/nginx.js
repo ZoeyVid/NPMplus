@@ -1,14 +1,10 @@
 import { readFile, rename, rm, writeFile } from "node:fs/promises";
-import { dirname } from "node:path";
-import { domainToASCII, fileURLToPath } from "node:url";
+import { domainToASCII } from "node:url";
 import { Client, fetch } from "undici";
 import errs from "../lib/error.js";
 import utils from "../lib/utils.js";
 import { debug, nginx as logger } from "../logger.js";
 import internalProxyHostAccessList from "./proxy-host-access-list.js";
-
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = dirname(__filename);
 
 const controlApi = new Client("http://localhost", { connect: { socketPath: "/run/nginx-control.sock" } });
 
@@ -118,7 +114,7 @@ const internalNginx = {
 	 * @returns {Promise}
 	 */
 	renderLocations: async (host) => {
-		const template = await readFile(`${__dirname}/../templates/_proxy_host_custom_location.conf`, {
+		const template = await readFile(`${import.meta.dirname}/../templates/_proxy_host_custom_location.conf`, {
 			encoding: "utf8",
 		});
 
@@ -131,8 +127,7 @@ const internalNginx = {
 			}
 
 			if (
-				location.forward_host &&
-				location.forward_host.indexOf("/") > -1 &&
+				location.forward_host?.includes("/") &&
 				!location.forward_host.startsWith("/") &&
 				!location.forward_host.startsWith("unix")
 			) {
@@ -159,7 +154,7 @@ const internalNginx = {
 	 * @returns {Promise}
 	 */
 	renderUpstreams: async (host) => {
-		const template = await readFile(`${__dirname}/../templates/_upstream.conf`, {
+		const template = await readFile(`${import.meta.dirname}/../templates/_upstream.conf`, {
 			encoding: "utf8",
 		});
 
@@ -168,8 +163,7 @@ const internalNginx = {
 
 		if (["http", "https", "grpc", "grpcs"].includes(host.forward_scheme)) {
 			if (
-				host.forward_host &&
-				host.forward_host.indexOf("/") > -1 &&
+				host.forward_host?.includes("/") &&
 				!host.forward_host.startsWith("/") &&
 				!host.forward_host.startsWith("unix")
 			) {
@@ -196,8 +190,7 @@ const internalNginx = {
 			}
 
 			if (
-				location.forward_host &&
-				location.forward_host.indexOf("/") > -1 &&
+				location.forward_host?.includes("/") &&
 				!location.forward_host.startsWith("/") &&
 				!location.forward_host.startsWith("unix")
 			) {
@@ -224,7 +217,7 @@ const internalNginx = {
 	 */
 	generateConfig: async (host_type, host_row) => {
 		// Prevent modifying the original object:
-		const host = JSON.parse(JSON.stringify(host_row));
+		const host = structuredClone(host_row);
 		const nice_host_type = internalNginx.getFileFriendlyHostType(host_type);
 
 		const renderEngine = utils.getRenderEngine();
@@ -234,8 +227,7 @@ const internalNginx = {
 		host.env = process.env;
 
 		if (
-			host.forward_host &&
-			host.forward_host.indexOf("/") > -1 &&
+			host.forward_host?.includes("/") &&
 			!host.forward_host.startsWith("/") &&
 			!host.forward_host.startsWith("unix")
 		) {
@@ -331,7 +323,7 @@ const internalNginx = {
 		}
 
 		const config_text = await renderEngine.parseAndRender(
-			await readFile(`${__dirname}/../templates/${nice_host_type}.conf`, { encoding: "utf8" }),
+			await readFile(`${import.meta.dirname}/../templates/${nice_host_type}.conf`, { encoding: "utf8" }),
 			host,
 		);
 
@@ -350,7 +342,7 @@ const internalNginx = {
 	 * @param   {String} host_type
 	 * @returns String
 	 */
-	getFileFriendlyHostType: (host_type) => host_type.replace(/-/g, "_"),
+	getFileFriendlyHostType: (host_type) => host_type.replaceAll("-", "_"),
 
 	/**
 	 * @param   {String}  host_type

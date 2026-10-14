@@ -33,20 +33,13 @@ const installPlugins = async (pluginKeys) => {
 		return;
 	}
 
-	let hasErrors = false;
-
 	for (const pluginKey of pluginKeys) {
 		try {
 			await installPlugin(pluginKey);
 		} catch (err) {
-			hasErrors = true;
 			logger.error(err.message);
-			break;
+			throw new errs.CommandError("Some plugins failed to install. Please check the logs above", { cause: err });
 		}
-	}
-
-	if (hasErrors) {
-		throw new errs.CommandError("Some plugins failed to install. Please check the logs above");
 	}
 };
 

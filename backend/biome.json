@@ -42,6 +42,7 @@
 			"style": {
 				"noContinue": "off",
 				"noDefaultExport": "off",
+				"noExcessiveClassesPerFile": "off",
 				"noExcessiveLinesPerFile": "off",
 				"noIncrementDecrement": "off",
 				"noMagicNumbers": "off",

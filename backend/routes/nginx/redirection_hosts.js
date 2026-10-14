@@ -6,6 +6,7 @@ import validator from "../../lib/validator/index.js";
 import { getValidationSchema } from "../../schema/index.js";
 
 const listSchema = {
+	type: "object",
 	additionalProperties: false,
 	properties: {
 		expand: {
@@ -19,6 +20,7 @@ const listSchema = {
 };
 
 const hostSchema = {
+	type: "object",
 	required: ["host_id"],
 	additionalProperties: false,
 	properties: {
@@ -47,7 +49,7 @@ router
 	 * Retrieve all redirection-hosts
 	 */
 	.get(async (req, res) => {
-		const data = await validator(listSchema, {
+		const data = validator(listSchema, {
 			expand: typeof req.query.expand === "string" ? req.query.expand.split(",") : null,
 			query: typeof req.query.query === "string" ? req.query.query : null,
 		});
@@ -81,7 +83,7 @@ router
 	 * Retrieve a specific redirection-host
 	 */
 	.get(async (req, res) => {
-		const data = await validator(hostSchema, {
+		const data = validator(hostSchema, {
 			host_id: req.params.host_id,
 		});
 		const row = await internalRedirectionHost.get(res.locals.access, {
