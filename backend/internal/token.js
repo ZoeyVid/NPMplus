@@ -12,6 +12,7 @@ const ERROR_MESSAGE_INVALID_CODE = "Invalid verification code";
 const ERROR_MESSAGE_INVALID_CODE_I18N = "error.invalid-code";
 
 const consumedChallenges = new Map();
+const startTime = Math.floor(Date.now() / 1000);
 
 export default {
 	/**
@@ -189,7 +190,7 @@ export default {
 		}
 
 		const user = await userModel.query().where("id", userId).andWhere("is_disabled", 0).first();
-		if (!user || tokenData.iat <= user.npmplus_token_valid_after) {
+		if (!user || tokenData.iat <= user.npmplus_token_valid_after || tokenData.iat <= startTime) {
 			throw new errs.AuthError("Invalid challenge token");
 		}
 
