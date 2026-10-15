@@ -1,4 +1,5 @@
 import assert from "node:assert/strict";
+import { readdir, readFile } from "node:fs/promises";
 import { createRequire } from "node:module";
 import test from "node:test";
 import { down, up } from "../backend/migrations/20261014000000_proxy_host_load_balancing.js";
@@ -8,6 +9,27 @@ const knexFactory = require("knex");
 
 const parseJson = (value) =>
 	typeof value === "string" ? JSON.parse(value) : value;
+
+const migrationReportDirectory = "/data/npmplus/backups";
+const migrationReportPrefix = "proxy-host-load-balancing-discarded-paths-";
+
+const readMigrationReports = async () => {
+	let names;
+	try {
+		names = await readdir(migrationReportDirectory);
+	} catch (err) {
+		if (err.code === "ENOENT") {
+			return [];
+		}
+		throw err;
+	}
+
+	return Promise.all(
+		names
+			.filter((name) => name.startsWith(migrationReportPrefix) && name.endsWith(".json"))
+			.map(async (name) => JSON.parse(await readFile(`${migrationReportDirectory}/${name}`, "utf8"))),
+	);
+};
 
 const createLegacyDatabase = async () => {
 	const knex = knexFactory({
@@ -264,6 +286,39 @@ for (const scenario of locationScenarios) {
 		}
 	});
 }
+
+test("reports a discarded gRPC path from a standalone custom location", async (t) => {
+	const knex = await useLegacyDatabase(t);
+	const originalForwardHost = "grpc-report.example.com/discarded/location/path";
+	const [proxyHostId] = await knex("proxy_host").insert({
+		forward_scheme: "http",
+		forward_host: "root.example.com",
+		forward_port: 80,
+		locations: "[]",
+	});
+	const [locationId] = await knex("npmplus_location").insert({
+		proxy_host_id: proxyHostId,
+		path: "/grpc-report",
+		forward_scheme: "grpc",
+		forward_host: originalForwardHost,
+		forward_port: 50051,
+	});
+
+	await up(knex);
+
+	const reports = await readMigrationReports();
+	const affected = reports.flatMap((report) => report.affected ?? []);
+	assert.ok(affected.some((entry) =>
+		entry.proxy_host_id === proxyHostId &&
+		entry.scope === "location" &&
+		entry.location_id === locationId &&
+		entry.location_path === "/grpc-report" &&
+		entry.forward_scheme === "grpc" &&
+		entry.original_forward_host === originalForwardHost &&
+		entry.migrated_upstream_host === "grpc-report.example.com" &&
+		entry.discarded_forward_path === "/discarded/location/path"
+	));
+});
 
 const streamScenarios = [
 	{
