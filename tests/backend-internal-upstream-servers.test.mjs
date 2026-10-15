@@ -241,6 +241,22 @@ const validLoadBalancingScenarios = [
 		},
 	},
 	{
+		name: "only custom upstreams without an enabled generated server",
+		input: {
+			forward_scheme: "http",
+			npmplus_load_balance_method: "round_robin",
+			npmplus_upstream_servers: [server("cu_primary"), server("cu_secondary")],
+		},
+	},
+	{
+		name: "an enabled generated server after a custom upstream",
+		input: {
+			forward_scheme: "http",
+			npmplus_load_balance_method: "round_robin",
+			npmplus_upstream_servers: [server("cu_unused"), server("one.example.com")],
+		},
+	},
+	{
 		name: "one path upstream",
 		input: {
 			forward_scheme: "path",
@@ -387,6 +403,39 @@ const invalidLoadBalancingScenarios = [
 			npmplus_upstream_servers: [server("one.example.com"), server("two.example.com")],
 		},
 		message: "A load balancing method is required when multiple upstream servers are configured",
+	},
+	{
+		name: "one disabled generated upstream",
+		input: {
+			forward_scheme: "http",
+			npmplus_upstream_servers: [server("one.example.com", { down: true })],
+		},
+		message: "At least one upstream server must be enabled",
+	},
+	{
+		name: "a disabled generated upstream with a custom upstream",
+		input: {
+			forward_scheme: "http",
+			npmplus_load_balance_method: "round_robin",
+			npmplus_upstream_servers: [
+				server("one.example.com", { down: true }),
+				server("cu_unused"),
+			],
+		},
+		message: "At least one upstream server must be enabled",
+	},
+	{
+		name: "multiple disabled generated upstreams with a custom upstream",
+		input: {
+			forward_scheme: "http",
+			npmplus_load_balance_method: "round_robin",
+			npmplus_upstream_servers: [
+				server("cu_unused"),
+				server("one.example.com", { down: true }),
+				server("two.example.com", { down: true }),
+			],
+		},
+		message: "At least one upstream server must be enabled",
 	},
 	{
 		name: "one upstream with a method",
