@@ -104,6 +104,7 @@ const upstreamServer = (host, port, overrides = {}) => ({
 	weight: 1,
 	backup: false,
 	down: false,
+	custom: false,
 	...overrides,
 });
 
@@ -229,24 +230,74 @@ test("HTTP upstream renders every optional server parameter", async () => {
 	));
 });
 
-test("HTTP upstream omits a null port and ignores custom-upstream entries", async () => {
+test("HTTP upstream uses the custom flag instead of the hostname prefix", async () => {
 	const output = compact(await renderTemplate("_upstream.conf", {
 		forward_upstream_name: "upstream_42",
 		npmplus_load_balance_method: "round_robin",
 		npmplus_upstream_servers: [
 			upstreamServer("192.168.1.2", null),
-			upstreamServer("cu_external_backend", null),
+			upstreamServer("external_backend", null, { custom: true }),
+			upstreamServer("cu_regular_backend", 8081),
 			upstreamServer("[fd19:2168:ab1:1::3]", 8080),
 		],
 	}));
 
 	assert.match(output, /server 192\.168\.1\.2 resolve;/);
+	assert.match(output, /server cu_regular_backend:8081 resolve;/);
 	assert.match(output, /server \[fd19:2168:ab1:1::3\]:8080 resolve;/);
-	assert.doesNotMatch(output, /cu_external_backend/);
+	assert.doesNotMatch(output, /external_backend/);
 	assertAppearsInOrder(output, [
 		"server 192.168.1.2 resolve;",
+		"server cu_regular_backend:8081 resolve;",
 		"server [fd19:2168:ab1:1::3]:8080 resolve;",
 	]);
+});
+
+test("proxy-host generation uses an arbitrary first custom upstream directly", async () => {
+	const data = proxyHostData({
+		npmplus_load_balance_method: "round_robin",
+		npmplus_upstream_servers: [
+			upstreamServer("external_backend", null, { custom: true }),
+			upstreamServer("192.168.1.3", 8080),
+		],
+	});
+
+	data.upstreams = await internalNginx.renderUpstreams(data);
+	const output = compact(await renderTemplate("proxy_host.conf", data));
+
+	assert.equal(compact(data.upstreams), "");
+	assert.equal(data.forward_upstream_name, "external_backend");
+	assert.ok(output.includes("proxy_pass http://external_backend/forward/path;"));
+	assert.doesNotMatch(output, /192\.168\.1\.3/);
+});
+
+test("proxy-host generation treats a cu_-prefixed non-custom server normally", async () => {
+	const data = proxyHostData({
+		npmplus_forward_path: undefined,
+		npmplus_upstream_servers: [upstreamServer("cu_regular_backend", 8080)],
+	});
+
+	data.upstreams = await internalNginx.renderUpstreams(data);
+	const output = compact(await renderTemplate("proxy_host.conf", data));
+
+	assert.equal(data.forward_upstream_name, "upstream_42");
+	assert.match(compact(data.upstreams), /server cu_regular_backend:8080 resolve;/);
+	assert.ok(output.includes("proxy_pass http://upstream_42;"));
+});
+
+test("custom-location generation uses its first custom upstream directly", async () => {
+	const location = locationData({
+		npmplus_upstream_servers: [upstreamServer("location_backend", null, { custom: true })],
+	});
+	const data = proxyHostData({ locations: [location] });
+
+	const upstreams = compact(await internalNginx.renderUpstreams(data));
+	const locations = compact(await internalNginx.renderLocations(data));
+
+	assert.match(upstreams, /upstream upstream_42 \{/);
+	assert.doesNotMatch(upstreams, /upstream upstream_42_location_0 \{/);
+	assert.equal(location.forward_upstream_name, "location_backend");
+	assert.ok(locations.includes("proxy_pass http://location_backend/location/path;"));
 });
 
 test("generated stream config preserves upstream order and inherits the first port", async (t) => {
@@ -388,13 +439,13 @@ test("stream config uses a first custom upstream directly and ignores later serv
 	const output = compact(await renderTemplate("stream.conf", streamData({
 		npmplus_load_balance_method: "round_robin",
 		npmplus_upstream_servers: [
-			upstreamServer("cu_stream_backend", null),
+			upstreamServer("stream_backend", null, { custom: true }),
 			upstreamServer("192.168.3.3", 9002),
 		],
 	})));
 
 	assert.doesNotMatch(output, /upstream stream_upstream_73 \{/);
-	assert.ok(output.includes("proxy_pass cu_stream_backend;"));
+	assert.ok(output.includes("proxy_pass stream_backend;"));
 	assert.doesNotMatch(output, /192\.168\.3\.3/);
 });
 

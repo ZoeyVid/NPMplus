@@ -13,7 +13,8 @@ const expectValidationError = (fn, message) => {
 	});
 };
 
-const server = (host, overrides = {}) => ({ host, ...overrides });
+const server = (host, overrides = {}) => ({ host, custom: false, ...overrides });
+const customServer = (host) => server(host, { custom: true });
 
 test("cleanUpstreamServers normalises IPv6 hosts recursively", () => {
 	const data = {
@@ -245,7 +246,7 @@ const validLoadBalancingScenarios = [
 		input: {
 			forward_scheme: "http",
 			npmplus_load_balance_method: "round_robin",
-			npmplus_upstream_servers: [server("cu_primary"), server("cu_secondary")],
+			npmplus_upstream_servers: [customServer("primary_backend"), customServer("secondary_backend")],
 		},
 	},
 	{
@@ -253,7 +254,14 @@ const validLoadBalancingScenarios = [
 		input: {
 			forward_scheme: "http",
 			npmplus_load_balance_method: "round_robin",
-			npmplus_upstream_servers: [server("cu_unused"), server("one.example.com")],
+			npmplus_upstream_servers: [customServer("unused_backend"), server("one.example.com")],
+		},
+	},
+	{
+		name: "a cu_-prefixed generated upstream",
+		input: {
+			forward_scheme: "http",
+			npmplus_upstream_servers: [server("cu_regular_backend", { port: 8080 })],
 		},
 	},
 	{
@@ -419,7 +427,7 @@ const invalidLoadBalancingScenarios = [
 			npmplus_load_balance_method: "round_robin",
 			npmplus_upstream_servers: [
 				server("one.example.com", { down: true }),
-				server("cu_unused"),
+				customServer("unused_backend"),
 			],
 		},
 		message: "At least one upstream server must be enabled",
@@ -430,7 +438,7 @@ const invalidLoadBalancingScenarios = [
 			forward_scheme: "http",
 			npmplus_load_balance_method: "round_robin",
 			npmplus_upstream_servers: [
-				server("cu_unused"),
+				customServer("unused_backend"),
 				server("one.example.com", { down: true }),
 				server("two.example.com", { down: true }),
 			],

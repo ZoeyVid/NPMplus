@@ -190,20 +190,76 @@ status_codes:
 1. Set the AUTH_REQUEST_AUTHENTIK_UPSTREAM env in the NPMplus compose.yaml and select authentik/authentik-send-basic-auth in the Auth Request selection, no custom/advanced config/locations needed
 
 ## Load Balancing
+When using load balancing, setting a Host with a path and having other servers will automatically apply the path of the first server to every other server in the group.
+E.g.
+```
+Forward Path: Empty
+192.168.1.2:80/an/example/path
+192.168.1.3:81
+
+Will generate a configuration that is equivalent to
+192.168.1.2:80/an/example/path
+192.168.1.3:81/an/example/path
+```
+Having a host path in any upstream such as `192.168.1.2:80/an/example/path` while `Forward Path` is not empty is invalid.
+Having a path in any upstream that is not the first is invalid. E.g below is invalid
+```
+Forward Path: Empty
+192.168.1.2:80
+192.168.1.3:81/an/example/path
+```
+
+Having a path specified in more than 1 upstream is invalid even if they are the same
+E.g. Setting the below in the UI is invalid
+```
+Forward Path: Empty
+192.168.1.2:80/an/example/path
+192.168.1.3:81/an/example/path
+```
+and should be written as
+```
+Forward Path: /an/example/path
+192.168.1.2:80
+192.168.1.3:81
+```
+
+Setting a Fail timeout supports numbers followed by
+- `ms`: milliseconds
+- `s`: seconds
+- `m`: minutes
+- `h`: hours
+- `d`: days
+- `w`: weeks
+- `M`: months
+- `y`: years
+Omitting the unit will default to seconds
+
+### Custom Upstreams
 1. Open and edit this file: `/opt/npmplus/custom_nginx/http_top.conf` (or `/opt/npmplus/custom_nginx/stream_top.conf` for streams), if you changed /opt/npmplus to a different path make sure to change the path to fit
 2. Set the upstream directive(s) with your servers which should be load balanced (https://nginx.org/en/docs/http/ngx_http_upstream_module.html / https://nginx.org/en/docs/stream/ngx_stream_upstream_module.html), they need to run the same protocol (either http(s) or grpc(s) for proxy hosts or tcp/udp/proxy protocol for streams), like this for example:
-```
-upstream cu_mybackend {
-  zone cu_mybackend 128k;
+```nginx
+upstream mybackend {
+  zone mybackend 128k;
   server 127.0.0.1:44 resolve;
   server 127.0.0.1:33 resolve;
   server 127.0.0.1:22 resolve;
   server 192.168.1.11:44 backup resolve;
 }
 ```
-3. Configure your proxy host/stream like always in the UI, but set the hostname to the exact name of your upstream block (e.g. `cu_mybackend`) and leave the forward port field empty (ports are defined inside the upstream block)
-   - The `cu_` prefix (short for **c**ustom **u**pstream) is required: NPMplus uses it to detect that the hostname refers to a custom upstream block and skips generating its own upstream block for it
-   - This also works for auth request upstreams (env or UI field), use the scheme and the name of your upstream block without port (e.g. `http://cu_myauth`), SNI and Host header are then set to the requested host like for proxy hosts, so the servers inside the upstream block need to point directly to the auth service and not to NPMplus itself
+3. Configure your proxy host/stream like always in the UI, but set the hostname to the exact name of your upstream block (e.g. `mybackend`) and enable the `Custom Upstream` switch
+4. With multiple upstreams, in order to use a custom upstream the custom upstream must be the first element in the list of upstreams for a host/stream/location otherwise, it will be ignored
+
+**Note**
+- The `cu_` prefix (short for **c**ustom **u**pstream) is required for auth request upstreams (env or UI field), use the scheme and the name of your upstream block without port (e.g. `http://cu_myauth`), SNI and Host header are then set to the requested host like for proxy hosts, so the servers inside the upstream block need to point directly to the auth service and not to NPMplus itself. The upstream must also have the `cu_` prefix. E.g.
+```nginx
+upstream cu_myauth {
+  zone myauth 128k;
+  server 127.0.0.1:44 resolve;
+  server 127.0.0.1:33 resolve;
+  server 127.0.0.1:22 resolve;
+  server 192.168.1.11:44 backup resolve;
+}
+```
 
 ## Encrypted Client Hello (ECH)
 
@@ -365,54 +421,6 @@ If you need to run scripts before NPMplus launches put them under: `/opt/npmplus
 ## Access Lists
 When using multiple Access Lists on a Proxy Host or a Proxy Location, they are evaluated in a top-down order from the UI. 
 The `Satisfy Any` or `Pass Auth to Upstream` only get applied if they are set on the first Access List assigned to a proxy host/location
-
-## Load Balancing
-When using load balancing, setting a Host with a path and having other servers will automatically apply the path of the first server to every other server in the group.
-E.g.
-```
-Forward Path: Empty
-192.168.1.2:80/an/example/path
-192.168.1.3:81
-
-Will generate a configuration that is equivalent to
-192.168.1.2:80/an/example/path
-192.168.1.3:81/an/example/path
-```
-Having a host path in any upstream such as `192.168.1.2:80/an/example/path` while `Forward Path` is not empty is invalid.
-Having a path in any upstream that is not the first is invalid. E.g below is invalid
-```
-Forward Path: Empty
-192.168.1.2:80
-192.168.1.3:81/an/example/path
-```
-
-Having a path specified in more than 1 upstream is invalid even if they are the same
-E.g. Setting the below in the UI is invalid
-```
-Forward Path: Empty
-192.168.1.2:80/an/example/path
-192.168.1.3:81/an/example/path
-```
-and should be written as
-```
-Forward Path: /an/example/path
-192.168.1.2:80
-192.168.1.3:81
-```
-
-Setting a Fail timeout supports numbers followed by
-- `ms`: milliseconds
-- `s`: seconds
-- `m`: minutes
-- `h`: hours
-- `d`: days
-- `w`: weeks
-- `M`: months
-- `y`: years
-Omitting the unit will default to seconds
-
-### Custom Upstreams
-With multiple upstreams, in order to use a custom upstream manually prefixed with `cu_` the upstream must be the first element in the list of upstreams for a host/stream/location otherwise, it will be ignored
 
 ## Contributing
 All are welcome to create pull requests for this project, but this does not mean that they will be merged, so better ask if your PR would be merged before creating one (via Discussion), typos and translations are excluded from this.
