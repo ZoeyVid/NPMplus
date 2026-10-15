@@ -6,7 +6,7 @@ import OverlayTrigger from "react-bootstrap/OverlayTrigger";
 import Popover from "react-bootstrap/Popover";
 import { flushSync } from "react-dom";
 import { intl, T } from "src/locale";
-import { isCustomUpstream } from "src/modules/Forward";
+import { forwardDestination, isCustomUpstream } from "src/modules/Forward";
 import { validateNumber } from "src/modules/Validations";
 
 const BACKUP_INCOMPATIBLE_METHODS = ["hash", "hash_consistent", "ip_hash", "random", "random_two_least_connections", "random_two_least_time_connect", "random_two_least_time_header", "random_two_least_time_first_byte", "random_two_least_time_last_byte" ];
@@ -345,7 +345,9 @@ export function ForwardHostFields({ scheme="",idPrefix, loadBalanceMethod, upstr
 									onClick={() => toggleExpanded(idx)}
 								>
 									{isExpanded(idx) ? <IconChevronDown size={16} /> : <IconChevronRight size={16} />}
-									<span className="ms-2 fw-medium text-nowrap">{server.host}{server.port ?  `:${server.port}`: ""}</span>
+									<span className="ms-2 fw-medium text-nowrap">
+										{forwardDestination({forwardScheme: scheme, npmplusForwardPath: forwardPath}, server, { streams })}
+									</span>
 								</button>
 								{idx > 0 ? (
 									<button

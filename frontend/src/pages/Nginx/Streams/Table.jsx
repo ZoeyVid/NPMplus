@@ -21,6 +21,7 @@ import {
 } from "src/components";
 import { TableLayout } from "src/components/Table/TableLayout";
 import { intl, T } from "src/locale";
+import { forwardDestinations } from "src/modules/Forward";
 import { MANAGE, STREAMS } from "src/modules/Permissions";
 
 const features = tableFeatures({
@@ -82,15 +83,7 @@ export default function Table({
 				},
 			}),
 			columnHelper.accessor(
-				(row) => {
-					const names = [];
-					for (const server of row.npmplusUpstreamServers ?? []) {
-						names.push(
-							`${server.host}${server.port ? `:${server.port}` : ""}`,
-						);
-					}
-					return names.join(", ");
-				},
+				(row) => forwardDestinations(row, { streams: true }).join(", "),
 				{
 					id: "forwardHost",
 					header: intl.formatMessage({ id: "column.destination" }),
