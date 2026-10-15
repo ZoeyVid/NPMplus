@@ -18,7 +18,7 @@ const ForwardHostLink = ({ item, server, streams }) => {
 
 export function ForwardHostFormatter({ hostRowId, upstreamServers = [], scheme="", forwardPath="", loadBalanceMethod, streams=false }) {
 	const customUpstream = isCustomUpstream(upstreamServers);
-	const containsCustomUpstream = hasCustomUpstream(servers);
+	const containsCustomUpstream = hasCustomUpstream(upstreamServers);
 
 	const item = {
 		forwardScheme: scheme,
