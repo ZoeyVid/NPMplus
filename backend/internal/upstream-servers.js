@@ -115,6 +115,7 @@ const internalUpstreamServers = {
 		const loadBalanceMethod = getEffectiveValue(serverHost, existingServerHost, "npmplus_load_balance_method");
 		const forwardScheme = getEffectiveValue(serverHost, existingServerHost, "forward_scheme");
 		const forwardPath = getEffectiveValue(serverHost, existingServerHost, "npmplus_forward_path");
+		const generatedUpstreamServers = upstreamServers.filter((server) => !server.host.startsWith("cu_"));
 
 		if (forwardPath != null && !FORWARD_PATH_SCHEMES.includes(forwardScheme)) {
 			throw new errs.ValidationError(`A forward path cannot be used with the ${forwardScheme} scheme`);
@@ -133,7 +134,7 @@ const internalUpstreamServers = {
 			throw new errs.ValidationError("Network upstream hosts cannot contain a path; use the forward path field instead");
 		}
 
-		if (upstreamServers.length > 0 && upstreamServers.every((server) => server.down === true)) {
+		if (generatedUpstreamServers.length > 0 && generatedUpstreamServers.every((server) => server.down === true)) {
 			throw new errs.ValidationError("At least one upstream server must be enabled");
 		}
 

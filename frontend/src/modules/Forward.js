@@ -33,14 +33,15 @@ const forwardSummary = (item, { limit = 2, ...options } = {}) =>
 
 const forwardSearchText = (item, options) => forwardDestinations(item, options).join(" ");
 
+const isCustomUpstreamServer = (server) =>
+	typeof server?.host === "string" && server.host.startsWith("cu_");
+
 // has custom upstreams if its not first
-const hasCustomUpstream = (upstreamServers = []) =>
-	upstreamServers.some((server) => typeof server?.host === "string" && server.host.startsWith("cu_"));
+const hasCustomUpstream = (upstreamServers = []) => upstreamServers.some(isCustomUpstreamServer);
 
 // a custom upstream is only active if its first
-const isCustomUpstream = (upstreamServers = []) =>
-	typeof upstreamServers[0]?.host === "string" &&
-	upstreamServers[0].host.startsWith("cu_");
+const isCustomUpstream = (upstreamServers = []) => isCustomUpstreamServer(upstreamServers[0]);
+
 
 export {
 	forwardDestination,
@@ -49,5 +50,6 @@ export {
 	forwardSummary,
 	hasCustomUpstream,
 	isCustomUpstream,
+	isCustomUpstreamServer,
 	populatedUpstreams
 };

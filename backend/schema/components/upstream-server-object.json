@@ -64,5 +64,60 @@
 			"default": false,
 			"example": false
 		}
-	}
+	},
+	"allOf": [
+		{
+			"if": {
+				"properties": {
+					"host": {
+						"pattern": "^cu_"
+					}
+				},
+				"required": [
+					"host"
+				]
+			},
+			"then": {
+				"not": {
+					"anyOf": [
+						{
+							"required": [
+								"port"
+							]
+						},
+						{
+							"required": [
+								"weight"
+							]
+						},
+						{
+							"required": [
+								"max_fails"
+							]
+						},
+						{
+							"required": [
+								"max_conns"
+							]
+						},
+						{
+							"required": [
+								"fail_timeout"
+							]
+						},
+						{
+							"required": [
+								"backup"
+							]
+						},
+						{
+							"required": [
+								"down"
+							]
+						}
+					]
+				}
+			}
+		}
+	]
 }

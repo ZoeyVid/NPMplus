@@ -34,15 +34,47 @@
 					}
 				]
 			},
-			"contains": {
-				"not": {
+			"if": {
+				"contains": {
 					"properties": {
-						"down": {
-							"const": true
+						"host": {
+							"not": {
+								"pattern": "^cu_"
+							}
 						}
 					},
 					"required": [
-						"down"
+						"host"
+					]
+				}
+			},
+			"then": {
+				"contains": {
+					"allOf": [
+						{
+							"properties": {
+								"host": {
+									"not": {
+										"pattern": "^cu_"
+									}
+								}
+							},
+							"required": [
+								"host"
+							]
+						},
+						{
+							"not": {
+								"properties": {
+									"down": {
+										"const": true
+									}
+								},
+								"required": [
+									"down"
+								]
+							}
+						}
 					]
 				}
 			},

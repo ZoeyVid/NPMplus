@@ -6,7 +6,7 @@ import OverlayTrigger from "react-bootstrap/OverlayTrigger";
 import Popover from "react-bootstrap/Popover";
 import { flushSync } from "react-dom";
 import { intl, T } from "src/locale";
-import { forwardDestination, isCustomUpstream, hasCustomUpstream } from "src/modules/Forward";
+import { forwardDestination, isCustomUpstream, isCustomUpstreamServer, hasCustomUpstream } from "src/modules/Forward";
 import { validateNumber } from "src/modules/Validations";
 
 const BACKUP_INCOMPATIBLE_METHODS = ["hash", "hash_consistent", "ip_hash", "random", "random_two_least_connections", "random_two_least_time_connect", "random_two_least_time_header", "random_two_least_time_first_byte", "random_two_least_time_last_byte" ];
@@ -37,6 +37,19 @@ const hostHasEmbeddedPort = (host = "") => {
 	const address = pathIndex === -1 ? host : host.slice(0, pathIndex);
 
 	return /^\[[^\]]+\]:\d+$/.test(address) || /^[^:]+:\d+$/.test(address);
+};
+
+const ensureEnabledUpstream = (upstreamServers = []) => {
+	const firstGeneratedServerIdx = upstreamServers.findIndex((server) => !isCustomUpstreamServer(server));
+
+	if (firstGeneratedServerIdx === -1 ||
+		upstreamServers.some((server) => !isCustomUpstreamServer(server) && !Boolean(server.down))) {
+		return upstreamServers;
+	}
+
+	return upstreamServers.map((server, idx) =>
+		idx === firstGeneratedServerIdx ? { ...server, down: false } : server
+	);
 };
 
 const numberOrNull = (value, currentValue, allowText = false) => {
@@ -76,6 +89,9 @@ const validateTimeout = () => (value) => {
 
 export function CleanUpstreamServers(servers = []) {
 	return servers.map((server) => {
+		if (isCustomUpstreamServer(server)) {
+			return { host: server.host };
+		}
 		const cleaned = { ...server };
 
 		for (const field of ["weight", "maxFails", "maxConns", "failTimeout"]) {
@@ -117,6 +133,10 @@ export function ForwardHostFields({ scheme="",idPrefix, loadBalanceMethod, upstr
 			return ((effectivePort === null || effectivePort === undefined || effectivePort === "") 
 				&& !hostHasEmbeddedPort(server.host));
 		});
+	const isOnlyEnabledServer = (idx) => !isCustomUpstreamServer(servers[idx]) && !Boolean(servers[idx]?.down) &&
+		servers.every((server, serverIdx) =>
+			serverIdx === idx || isCustomUpstreamServer(server) || Boolean(server.down)
+		);
 
 	const fieldName = (name) => namePrefix ? `${namePrefix}.${name}` : name;
 	const upstreamFieldName = (idx, property) => fieldName(`npmplusUpstreamServers[${idx}].${property}`);
@@ -157,9 +177,16 @@ export function ForwardHostFields({ scheme="",idPrefix, loadBalanceMethod, upstr
 	};
 
 	const handleRemove = (idx) => {
-		const updated = servers.filter((_, serverIdx) => serverIdx !== idx);
-		if (updated.every((server) => Boolean(server.down))) {
-			updated[0] = { ...updated[0], down: false };
+		const updated = ensureEnabledUpstream(servers.filter((_, serverIdx) => serverIdx !== idx));
+		const generatedUpstreamServers = updated.filter((server) => !isCustomUpstreamServer(server));
+
+		if (generatedUpstreamServers.length > 0 && generatedUpstreamServers.every((server) => Boolean(server.down))) {
+			const firstGeneratedServerIdx = updated.findIndex((server) => !isCustomUpstreamServer(server));
+
+			updated[firstGeneratedServerIdx] = {
+				...updated[firstGeneratedServerIdx],
+				down: false
+			};
 		}
 		setServers(updated);
 		setExpanded((current) => {
@@ -169,9 +196,7 @@ export function ForwardHostFields({ scheme="",idPrefix, loadBalanceMethod, upstr
 
 			return current
 				.filter((expandedIdx) => expandedIdx !== idx)
-				.map((expandedIdx) =>
-					expandedIdx > idx ? expandedIdx - 1 : expandedIdx,
-				);
+				.map((expandedIdx) => expandedIdx > idx ? expandedIdx - 1 : expandedIdx);
 		});
 		syncField(updated, method, forwardPath);
 	};
@@ -198,7 +223,9 @@ export function ForwardHostFields({ scheme="",idPrefix, loadBalanceMethod, upstr
 	};
 
 	const handleChange = (idx, field, value) => {
-		const updated = servers.map((s, i) => (i === idx ? { ...s, [field]: value } : s));
+		const updated = ensureEnabledUpstream(
+			servers.map((server, serverIdx) => serverIdx === idx ? { ...server, [field]: value } : server)
+		);
 		setServers(updated);
 		syncField(updated, method, forwardPath);
 	};
@@ -242,9 +269,6 @@ export function ForwardHostFields({ scheme="",idPrefix, loadBalanceMethod, upstr
 
 	const backupDisabled = BACKUP_INCOMPATIBLE_METHODS.includes(method);
 	const isExpanded = (idx) => expanded.includes(idx);
-
-	const isOnlyEnabledServer = (idx) => !Boolean(servers[idx]?.down) &&
-		servers.every((server, serverIdx) => serverIdx === idx || Boolean(server.down));
 
 	const toggleExpanded = (idx) => {
 		setExpanded((current) =>
@@ -374,6 +398,7 @@ export function ForwardHostFields({ scheme="",idPrefix, loadBalanceMethod, upstr
 				)}
 			</div>
 			{servers.map((server, idx) => {
+				const customServer = isCustomUpstreamServer(server);
 				const streamValidation = streams && servers.length === 1 && idx === 0;
 				return (
 					<div key={idx} className={cn(servers.length > 1 && "card card-active p-0 mb-2")}>
@@ -435,7 +460,7 @@ export function ForwardHostFields({ scheme="",idPrefix, loadBalanceMethod, upstr
 							}
 						>
 							<div className="row m-0">
-								<div className="col-md-6">
+								<div className={customServer ? "col-md-12" : "col-md-6"}>
 									<Field 
 										name={upstreamFieldName(idx, "host")}
 										validate={(value) => {
@@ -468,33 +493,35 @@ export function ForwardHostFields({ scheme="",idPrefix, loadBalanceMethod, upstr
 										)}
 									</Field>
 								</div>
-								<div className="col-md-3">
-									<Field name={upstreamFieldName(idx, "port")} validate={validatePort(streamValidation)}>
-										{({ field, meta }) => (
-											<div className="mb-3">
-												<label className="form-label" htmlFor={controlId("port", idx)}>
-													<T id="host.forward-port" />
-												</label>
-												<input
-													{...field}
-													id={controlId("port", idx)}
-													type="text"
-													inputMode={streamValidation ? "text" : "numeric"}
-													pattern={streamValidation ? SERVER_PORT_PATTERN : NUMERIC_PATTERN}
-													className={`form-control ${meta.touched && meta.error ? "is-invalid" : ""}`}
-													placeholder="eg: 8081"
-													value={server.port?? ""}
-													onChange={(event) => handleChange(idx, "port", numberOrNull(event.target.value, server.port, streamValidation))}
-												/>
+								{customServer ? null : (
+									<div className="col-md-3">
+										<Field name={upstreamFieldName(idx, "port")} validate={validatePort(streamValidation)}>
+											{({ field, meta }) => (
+												<div className="mb-3">
+													<label className="form-label" htmlFor={controlId("port", idx)}>
+														<T id="host.forward-port" />
+													</label>
+													<input
+														{...field}
+														id={controlId("port", idx)}
+														type="text"
+														inputMode={streamValidation ? "text" : "numeric"}
+														pattern={streamValidation ? SERVER_PORT_PATTERN : NUMERIC_PATTERN}
+														className={`form-control ${meta.touched && meta.error ? "is-invalid" : ""}`}
+														placeholder="eg: 8081"
+														value={server.port?? ""}
+														onChange={(event) => handleChange(idx, "port", numberOrNull(event.target.value, server.port, streamValidation))}
+													/>
 
-												{meta.touched && meta.error ? (
-													<div className="invalid-feedback">{meta.error}</div>
-												) : null}
-											</div>
-										)}
-									</Field>
-								</div>
-								{servers.length > 1 ? (
+													{meta.touched && meta.error ? (
+														<div className="invalid-feedback">{meta.error}</div>
+													) : null}
+												</div>
+											)}
+										</Field>
+									</div>
+								)}
+								{!customServer && servers.length > 1 ? (
 									<div className="col-md-3">
 										<Field name={upstreamFieldName(idx, "down")} type="checkbox">
 											{({ field }) => (
@@ -522,7 +549,7 @@ export function ForwardHostFields({ scheme="",idPrefix, loadBalanceMethod, upstr
 									</div>
 								) : null}
 							</div>
-							{servers.length > 1 ? (
+							{!customServer && servers.length > 1 ? (
 								<>
 									<div className="row m-0">
 										<div className="col-md-3">
