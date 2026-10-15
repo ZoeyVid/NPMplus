@@ -54,9 +54,17 @@ for (const file of runtimeFiles) {
 
 const keysFile = "/data/npmplus/keys-ec.json";
 const keysFileExisted = await pathExists(keysFile);
+const nginxConfigFile = "/usr/local/nginx/conf/conf.d/npmplus.conf";
+const originalNginxConfig = await readFile(nginxConfigFile, "utf8");
+const testNginxConfig = originalNginxConfig
+	.replace(/(listen\s+[^;]*?)\s+ssl(?=\s|;)/g, "$1")
+	.replace(/^\s*ssl_certificate(?:_key)?\s*;\s*$/gm, "");
+
+await writeFile(nginxConfigFile, testNginxConfig);
 const { default: internalNginx } = await import("../backend/internal/nginx.js");
 
 after(async () => {
+	await writeFile(nginxConfigFile, originalNginxConfig);
 	if (!keysFileExisted) {
 		await rm(keysFile, { force: true });
 	}
