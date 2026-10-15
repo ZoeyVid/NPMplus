@@ -13,19 +13,29 @@ const rawPlaceholderPattern = /^[ \t]*npmplus#raw#(?<index>\d+);$/gmu;
 
 const NETWORK_PROXY_SCHEMES = ["http", "https", "grpc", "grpcs"];
 
+const setForwardUpstreamName = (serverHost, generatedName) => {
+	const firstHost = serverHost.npmplus_upstream_servers?.[0]?.host;
+	const customUpstream = firstHost?.startsWith("cu_") === true;
+
+	serverHost.forward_upstream_name = customUpstream ? firstHost : generatedName;
+	return customUpstream;
+};
+
 const prepareUpstreamServers = (serverHost) => {
 	const upstreamServers = serverHost.npmplus_upstream_servers;
 
-	if (!Array.isArray(upstreamServers) || upstreamServers.length === 0) {
-		return;
+	if (Array.isArray(upstreamServers) && upstreamServers.length > 0) {
+		const firstPort = upstreamServers[0].port;
+
+		for (const [index, server] of upstreamServers.entries()) {
+			if (index > 0 && server.port == null && firstPort != null) {
+				server.port = firstPort;
+			}
+		}
 	}
 
-	const firstPort = upstreamServers[0].port;
-
-	for (const [index, server] of upstreamServers.entries()) {
-		if (index > 0 && server.port == null && firstPort != null) {
-			server.port = firstPort;
-		}
+	for (const location of serverHost.locations || []) {
+		prepareUpstreamServers(location);
 	}
 };
 
@@ -122,13 +132,7 @@ const internalNginx = {
 				continue;
 			}
 
-			const firstServer = location.npmplus_upstream_servers?.[0];
-
-			if (firstServer?.host.startsWith("cu_")) {
-				location.forward_upstream_name = firstServer.host;
-			} else {
-				location.forward_upstream_name = `upstream_${host.id}_location_${idx}`;
-			}
+			setForwardUpstreamName(location, `upstream_${host.id}_location_${idx}`);
 			if (["~", "~*"].includes(location.location_type)) {
 				location.path = utils.nginxQuote(`${location.location_type}${location.path}`);
 			} else if (["@", "=", "~", "~*", "^~", "$"].some((prefix) => location.path.startsWith(prefix))) {
@@ -151,11 +155,8 @@ const internalNginx = {
 		let renderedUpstreams = "";
 
 		if (NETWORK_PROXY_SCHEMES.includes(host.forward_scheme)) {
-			const firstServer = host.npmplus_upstream_servers?.[0];
-			if (firstServer?.host.startsWith("cu_")) {
-				host.forward_upstream_name = firstServer.host;
-			} else {
-				host.forward_upstream_name = `upstream_${host.id}`;
+			const customUpstream = setForwardUpstreamName(host, `upstream_${host.id}`);
+			if (!customUpstream) {
 				renderedUpstreams += await utils.renderEngine.renderFile("_upstream.conf", host);
 			}
 		}
@@ -168,11 +169,8 @@ const internalNginx = {
 			if (!NETWORK_PROXY_SCHEMES.includes(location.forward_scheme)) {
 				continue;
 			}
-			const firstServer = location.npmplus_upstream_servers?.[0];
-			if (firstServer?.host.startsWith("cu_")) {
-				location.forward_upstream_name = firstServer.host;
-			} else {
-				location.forward_upstream_name = `upstream_${host.id}_location_${idx}`;
+			const customUpstream = setForwardUpstreamName(location, `upstream_${host.id}_location_${idx}`);
+			if (!customUpstream) {
 				renderedUpstreams += await utils.renderEngine.renderFile("_upstream.conf", location);
 			}
 		}
@@ -199,15 +197,7 @@ const internalNginx = {
 
 		host.env = process.env;
 
-		if (nice_host_type === "proxy_host") {
-			prepareUpstreamServers(host);
-
-			for (const location of host.locations || []) {
-				prepareUpstreamServers(location);
-			}
-		} else if (nice_host_type === "stream") {
-			prepareUpstreamServers(host);
-		}
+		prepareUpstreamServers(host);
 
 		if (host.domain_names) {
 			host.server_names = host.domain_names.map((domain) => utils.nginxQuote(toAsciiDomain(domain)));
