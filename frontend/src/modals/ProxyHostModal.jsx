@@ -34,7 +34,7 @@ const ProxyHostModal = EasyModal.create(({ id, isClone, visible, remove }) => {
 	const [advVisible, setAdvVisible] = useState(false);
 	const initialLocations = data?.locations.map(({ id: locationId, proxyHostId, accessLists, ...location }) => ({
 		...location,
-		npmplusAccessListIds: accessLists.map((accessList) => accessList.id),
+		npmplusAccessListIds: accessLists?.map((accessList) => accessList.id) ?? location.npmplusAccessListIds ?? [],
 	}));
 
 	const onSubmit = (values, { setSubmitting }) => {

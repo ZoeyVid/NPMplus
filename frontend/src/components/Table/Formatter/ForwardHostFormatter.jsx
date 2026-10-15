@@ -16,10 +16,15 @@ const ForwardHostLink = ({ item, server, streams }) => {
 	);
 };
 
-export function ForwardHostFormatter({ hostRowId, upstreamServers = [], scheme="", forwardPath="", loadBalanceMethod, streams=false }) {
-	const customUpstream = isCustomUpstream(upstreamServers);
+export function ForwardHostFormatter({ hostRowId, upstreamServers = [], scheme="", forwardPath="", loadBalanceMethod, locations = [], streams=false }) {
+	const usesCustomUpstream = isCustomUpstream(upstreamServers);
 	const containsCustomUpstream = hasCustomUpstream(upstreamServers);
-
+	const locationUsesCustomUpstream = locations.some(
+		(location) => location.npmplusEnabled !== false && isCustomUpstream(location.npmplusUpstreamServers)
+	);
+	const locationContainsCustomUpstream = locations.some(
+		(location) => location.npmplusEnabled !== false && hasCustomUpstream(location.npmplusUpstreamServers)
+	);
 	const item = {
 		forwardScheme: scheme,
 		npmplusForwardPath: forwardPath,
@@ -34,13 +39,22 @@ export function ForwardHostFormatter({ hostRowId, upstreamServers = [], scheme="
     const popover = (
 		<Popover id={`upstream-host-${hostRowId}`}>
 			<Popover.Body>
-				{customUpstream ? (
-					<span className="bg-yellow-lt">
+				{usesCustomUpstream ? (
+					<div className="bg-yellow-lt">
 						<T id="host.custom-upstream-used" />
-					</span>
+					</div>
 				) : containsCustomUpstream ? (
 					<div className="row bg-blue-lt">
 						<T id="host.custom-upstream-unused" />
+					</div>
+				) : null}
+				{locationUsesCustomUpstream ? (
+					<div className="bg-yellow-lt">
+						<T id="host.location-custom-upstream-used" />
+					</div>
+				) : locationContainsCustomUpstream ? (
+					<div className="row bg-blue-lt">
+						<T id="host.location-custom-upstream-unused" />
 					</div>
 				) : null}
 				{upstreamServers.length > 2 && upstreamServers.slice(2).map((server, index) => (
@@ -52,10 +66,10 @@ export function ForwardHostFormatter({ hostRowId, upstreamServers = [], scheme="
 		</Popover>
 	);
 
-	return upstreamServers.length > 2 || customUpstream? 
+	return upstreamServers.length > 2 || usesCustomUpstream || locationUsesCustomUpstream? 
 	(
 		<OverlayTrigger trigger={["hover", "focus"]} placement="bottom" overlay={popover}>
-			<div className={cn("font-weight-medium", "d-flex", "flex-column", "align-items-start", "gap-1", customUpstream && "badge", containsCustomUpstream && !customUpstream && "bg-blue-lt")}>{...elms}</div>
+			<div className={cn("font-weight-medium", "d-flex", "flex-column", "align-items-start", "gap-1", usesCustomUpstream && "badge", containsCustomUpstream && !usesCustomUpstream && "bg-blue-lt")}>{...elms}</div>
 		</OverlayTrigger>
 	) : (
 		<div className="font-weight-medium d-flex flex-column align-items-start gap-1">{...elms}</div>

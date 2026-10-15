@@ -88,6 +88,7 @@ export default function Table({
 							upstreamServers={info.row.original.npmplusUpstreamServers}
 							scheme={info.row.original.forwardScheme}
 							loadBalanceMethod={info.row.original.npmplusLoadBalanceMethod}
+							locations={info.row.original.locations}
 							streams={false}
 						/>
 					),
