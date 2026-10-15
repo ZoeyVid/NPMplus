@@ -249,8 +249,7 @@ export function ForwardHostFields({ scheme="",idPrefix, loadBalanceMethod, upstr
 	const toggleExpanded = (idx) => {
 		setExpanded((current) =>
 			current.includes(idx)
-				? current.filter((expandedIdx) => expandedIdx !== idx)
-				: [...current, idx],
+				? current.filter((expandedIdx) => expandedIdx !== idx) : [...current, idx],
 		);
 	};
 

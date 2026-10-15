@@ -11,8 +11,7 @@ const forwardDestination = ({ forwardScheme, npmplusForwardPath },server,{ strea
 	const port = server.port === null ||
 		server.port === undefined ||
 		server.port === ""
-			? ""
-			: `:${server.port}`;
+			? "" : `:${server.port}`;
 
 	if (streams) {
 		return `${server.host}${port}`;
@@ -30,7 +29,7 @@ const forwardDestinations = (item, options) =>
 	populatedUpstreams(item).map((server) => forwardDestination(item, server, options));
 
 const forwardSummary = (item, { limit = 2, ...options } = {}) =>
-forwardDestinations(item, options).slice(0, limit).join(", ");
+	forwardDestinations(item, options).slice(0, limit).join(", ");
 
 const forwardSearchText = (item, options) => forwardDestinations(item, options).join(" ");
 

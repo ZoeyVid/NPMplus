@@ -56,9 +56,7 @@ const StreamModal = EasyModal.create(({ id, isClone, visible, remove, close, for
 			...values,
 			domainNames: values.certificateId === "new" ? values.domainNames : undefined,
 			// remove entries that are null or undefined or empty to pass schema validation
-			npmplusUpstreamServers: CleanUpstreamServers(
-				values.npmplusUpstreamServers,
-			),
+			npmplusUpstreamServers: CleanUpstreamServers(values.npmplusUpstreamServers),
 		};
 		// Keep payload construction separate from submission cleanup so future cleanup steps remain explicit
 		const cleanPayload = CleanLoadBalanceMethod(payload);

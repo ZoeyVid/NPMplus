@@ -32,46 +32,40 @@ const authProvider = (authRequest) => authRequest?.replace("-send-basic-auth", "
 
 let nextUiKey = 0;
 
-export const createUiLocation = (item) => {
-	const npmplusUpstreamServers = item?.npmplusUpstreamServers?.length
-		? item.npmplusUpstreamServers
-		: [
-				{
-					host: item?.host || "",
-					port: item?.port ?? null,
-					weight: null,
-					maxFails: null,
-					maxConns: null,
-					failTimeout: null,
-					backup: false,
-					down: false,
-				},
-			];
-
-	return {
-		npmplusEnabled: true,
-		path: "",
-		locationType: "",
-		advancedConfig: "",
-		forwardScheme: "http",
-		npmplusAccessListIds: [],
-		npmplusNoindex: false,
-		npmplusDisableCrowdsecAppsec: false,
-		npmplusProxyResponseBuffering: "on_auto",
-		npmplusDisableProxyRequestBuffering: false,
-		npmplusUpstreamCompression: false,
-		npmplusFancyindex: false,
-		npmplusXFrameOptions: "SAMEORIGIN",
-		npmplusAuthRequest: "global",
-		npmplusAuthRequestUpstream: "",
-		npmplusAccessListType: "global",
-		id: null,
-		...item,
-		npmplusLoadBalanceMethod: item?.npmplusLoadBalanceMethod || "round_robin",
-		npmplusUpstreamServers,
-		uiKey: nextUiKey++,
-	};
-};
+export const createUiLocation = (item) => ({
+	npmplusEnabled: true,
+	path: "",
+	locationType: "",
+	advancedConfig: "",
+	forwardScheme: "http",
+	npmplusLoadBalanceMethod: "round_robin",
+	npmplusUpstreamServers: [
+		{
+			host: item?.host || "",
+			port: item?.port ?? null,
+			weight: null,
+			maxFails: null,
+			maxConns: null,
+			failTimeout: null,
+			backup: false,
+			down: false,
+		},
+	],
+	npmplusAccessListIds: [],
+	npmplusNoindex: false,
+	npmplusDisableCrowdsecAppsec: false,
+	npmplusProxyResponseBuffering: "on_auto",
+	npmplusDisableProxyRequestBuffering: false,
+	npmplusUpstreamCompression: false,
+	npmplusFancyindex: false,
+	npmplusXFrameOptions: "SAMEORIGIN",
+	npmplusAuthRequest: "global",
+	npmplusAuthRequestUpstream: "",
+	npmplusAccessListType: "global",
+	id: null,
+	...item,
+	uiKey: nextUiKey++,
+});
 
 const requestBufferingTitle = ({ npmplusDisableCrowdsecAppsec, forwardScheme }) => {
 	if (!npmplusDisableCrowdsecAppsec && ["http", "https"].includes(forwardScheme)) {
