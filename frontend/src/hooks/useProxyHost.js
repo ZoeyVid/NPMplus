@@ -61,6 +61,7 @@ const useSetProxyHost = () => {
 			queryClient.setQueryData(["proxy-host", values.id], (old) => ({
 				...old,
 				...values,
+				locations: old?.locations ?? [],
 			}));
 			return () => queryClient.setQueryData(["proxy-host", values.id], previousObject);
 		},
