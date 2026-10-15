@@ -7,6 +7,7 @@ import { Button, HasPermission, LoadingPage } from "src/components";
 import { getDirectory, useStreams } from "src/hooks";
 import { T } from "src/locale";
 import { showDeleteConfirmModal, showHelpModal, showStreamModal } from "src/modals";
+import { forwardDestinations, forwardSearchText } from "src/modules/Forward";
 import { MANAGE, STREAMS } from "src/modules/Permissions";
 import { showError, showObjectSuccess } from "src/notifications";
 import Table from "./Table";
@@ -48,18 +49,11 @@ export default function TableWrapper() {
 	let filtered = null;
 	if (search) {
 		filtered = data?.filter((item) => {
-			const directory = getDirectory(item).toLowerCase();
-			const matchesUpstream = (item.npmplusUpstreamServers ?? []).some((server) => {
-				const destination =
-					`${server.host ?? ""}` +
-					`${server.port ? `:${server.port}` : ""}`;
-				return destination.toLowerCase().includes(search);
-			});
 			return (
 				`${item.incomingPort}`.includes(search) ||
-				matchesUpstream ||
+				forwardSearchText(item, { streams: true }).toLowerCase().includes(search) ||
 				item.npmplusDescription?.toLowerCase().includes(search.toLowerCase()) ||
-				directory.includes(search)
+				getDirectory(item).toLowerCase().includes(search)
 			);
 		});
 	}
@@ -75,8 +69,7 @@ export default function TableWrapper() {
 		onEdit: (id) => showStreamModal(id),
 		onDelete: (id) => {
 			const stream = data?.find((item) => item.id === id);
-			const upstreamDetails = (stream?.npmplusUpstreamServers ?? [])
-				.map((server) => `${server.host}${server.port ? `:${server.port}` : ""}`).join(", ");
+			const upstreamDetails = stream ? forwardDestinations(stream, { streams: true }).join(", ") : "";
 			showDeleteConfirmModal({
 				title: <T id="object.delete" tData={{ object: "stream" }} />,
 				onConfirm: async () => {

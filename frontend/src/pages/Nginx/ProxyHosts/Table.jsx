@@ -22,7 +22,7 @@ import {
 } from "src/components";
 import { TableLayout } from "src/components/Table/TableLayout";
 import { intl, T } from "src/locale";
-import { forwardSummary } from "src/modules/Forward";
+import { forwardDestinations } from "src/modules/Forward";
 import { MANAGE, PROXY_HOSTS } from "src/modules/Permissions";
 
 const features = tableFeatures({
@@ -77,15 +77,7 @@ export default function Table({
 				},
 			}),
 			columnHelper.accessor(
-				(row) => {
-					const names = [];
-					for (const server of row.npmplusUpstreamServers ?? []) {
-						names.push(
-							`${row.forwardScheme}://${server.host}${server.port ? `:${server.port}` : ""}${row.npmplusForwardPath ?? ""}`,
-						);
-					}
-					return names.join(", ");
-				},
+				(row) => forwardDestinations(row).join(", "),
 				{
 					id: "forwardHost",
 					header: intl.formatMessage({ id: "column.destination" }),
