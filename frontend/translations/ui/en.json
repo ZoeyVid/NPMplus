@@ -152,6 +152,7 @@
 	"host.auth-request": "Auth Request",
 	"host.auth-request-upstream": "Auth Request Upstream",
 	"host.custom-upstream-used": "This host uses custom Nginx upstreams (cu_). Upstreams specified in the UI will be ignored",
+	"host.custom-upstream-unused": "This host contains a custom Nginx upstream (cu_) that is currently unused",
 	"host.loadbalancer.method": "Load Balancer Method",
 	"host.loadbalancer.method-help": "Set the load balancing behavior of the host",
 	"host.loadbalancer.round-robin": "Round Robin",
