@@ -37,14 +37,14 @@
 			"if": {
 				"contains": {
 					"properties": {
-						"host": {
+						"custom": {
 							"not": {
-								"pattern": "^cu_"
+								"const": true
 							}
 						}
 					},
 					"required": [
-						"host"
+						"custom"
 					]
 				}
 			},
@@ -53,14 +53,14 @@
 					"allOf": [
 						{
 							"properties": {
-								"host": {
+								"custom": {
 									"not": {
-										"pattern": "^cu_"
+										"const": true
 									}
 								}
 							},
 							"required": [
-								"host"
+								"custom"
 							]
 						},
 						{
@@ -86,7 +86,8 @@
 					"weight": 2,
 					"backup": true,
 					"down": false,
-					"fail_timeout": "60s"
+					"fail_timeout": "60s",
+					"custom": false
 				}
 			]
 		},

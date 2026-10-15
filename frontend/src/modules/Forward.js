@@ -33,8 +33,7 @@ const forwardSummary = (item, { limit = 2, ...options } = {}) =>
 
 const forwardSearchText = (item, options) => forwardDestinations(item, options).join(" ");
 
-const isCustomUpstreamServer = (server) =>
-	typeof server?.host === "string" && server.host.startsWith("cu_");
+const isCustomUpstreamServer = (server) => server?.custom === true;
 
 // has custom upstreams if its not first
 const hasCustomUpstream = (upstreamServers = []) => upstreamServers.some(isCustomUpstreamServer);

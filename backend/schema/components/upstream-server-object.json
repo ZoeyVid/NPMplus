@@ -3,7 +3,8 @@
 	"description": "Upstream server definition for load balancing",
 	"additionalProperties": false,
 	"required": [
-		"host"
+		"host",
+		"custom"
 	],
 	"properties": {
 		"host": {
@@ -63,18 +64,23 @@
 			"type": "boolean",
 			"default": false,
 			"example": false
+		},
+		"custom": {
+			"type": "boolean",
+			"default": false,
+			"example": false
 		}
 	},
 	"allOf": [
 		{
 			"if": {
 				"properties": {
-					"host": {
-						"pattern": "^cu_"
+					"custom": {
+						"const": true
 					}
 				},
 				"required": [
-					"host"
+					"custom"
 				]
 			},
 			"then": {
