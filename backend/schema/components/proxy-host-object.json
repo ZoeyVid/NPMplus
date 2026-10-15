@@ -354,7 +354,8 @@
 							"weight": 2,
 							"backup": true,
 							"down": false,
-							"fail_timeout": "60s"
+							"fail_timeout": "60s",
+							"custom": false
 						}
 					],
 					"npmplus_access_list_ids": [1, 2],
