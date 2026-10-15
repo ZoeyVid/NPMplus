@@ -47,8 +47,8 @@ export default function TableWrapper() {
 	};
 
 	let filtered = null;
-	if (search && data) {
-		filtered = data.filter((item) => {
+	if (search) {
+		filtered = data?.filter((item) => {
 			const directory = getDirectory(item).toLowerCase();
 			// search all upstreams for each host
 			return (
