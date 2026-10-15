@@ -19,9 +19,15 @@ import Popover from "react-bootstrap/Popover";
 import { AccessFields } from "src/components";
 import { useUser } from "src/hooks";
 import { intl, T } from "src/locale";
-import { forwardSummary } from "src/modules/Forward";
 import { isAdminTarget, validateUpstreamUrl } from "src/modules/Validations";
+import {
+	forwardDestination,
+	forwardSearchText,
+	forwardSummary,
+	populatedUpstreams,
+} from "src/modules/Forward";
 import { ForwardHostFields } from "./ForwardHostFields";
+
 const authProvider = (authRequest) => authRequest?.replace("-send-basic-auth", "");
 
 let nextUiKey = 0;
@@ -129,24 +135,6 @@ export function LocationsFields({ name = "locations", disabled, isClone }) {
 
 	const locationLabel = (item) => `${item.locationType ?? ""}${item.path ?? ""}`;
 
-	const forwardDestination = (forwardScheme, forwardPath, server) => {
-		if (!server?.host) {
-			return "";
-		}
-		if (forwardScheme && !["empty", "path"].includes(forwardScheme)) {
-			return `${forwardScheme}://${server.host}${server.port ? `:${server.port}` : ""}${forwardPath ?? ""}`;
-		}
-		return server.host;
-	};
-
-	const populatedUpstreams = ({ npmplusUpstreamServers = [] }) =>npmplusUpstreamServers.filter((server) => server?.host);
-
-	const forwardSummary = (item) =>
-		populatedUpstreams(item).slice(0, 2).map((server) => forwardDestination(item.forwardScheme, item.npmplusForwardPath, server)).join(", ");
-
-	const forwardSearchText = (item) =>
-		populatedUpstreams(item).map((server) => forwardDestination(item.forwardScheme, item.npmplusForwardPath, server)).join(" ");
-
 	const matchesFilter = (item) =>
 		`${locationLabel(item)} ${forwardSearchText(item)}`.toLowerCase().includes(filter.trim().toLowerCase());
 
@@ -161,7 +149,7 @@ export function LocationsFields({ name = "locations", disabled, isClone }) {
 			<Popover.Body>
 				{populatedUpstreams(item).map((server, index) => (
 					<div key={`${server.host}-${server.port}-${index}`}>
-						{forwardDestination(item.forwardScheme, item.npmplusForwardPath, server)}
+						{forwardDestination(item, server)}
 					</div>
 				))}
 			</Popover.Body>
