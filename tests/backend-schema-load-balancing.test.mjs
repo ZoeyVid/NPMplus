@@ -26,30 +26,37 @@ const assertInvalid = (servers) => {
 	assert.equal(validate(structuredClone(servers)), false);
 };
 
+const generatedServer = (host, overrides = {}) => ({ host, custom: false, ...overrides });
+const customServer = (host) => ({ host, custom: true });
+
 const validEnabledScenarios = [
 	{
 		name: "one generated upstream with down omitted",
-		servers: [{ host: "one.example.com" }],
+		servers: [generatedServer("one.example.com")],
 	},
 	{
 		name: "one explicitly enabled generated upstream",
-		servers: [{ host: "one.example.com", down: false }],
+		servers: [generatedServer("one.example.com", { down: false })],
 	},
 	{
 		name: "only custom upstreams",
-		servers: [{ host: "cu_primary" }, { host: "cu_secondary" }],
+		servers: [customServer("primary_backend"), customServer("secondary_backend")],
 	},
 	{
 		name: "an enabled generated upstream after a custom upstream",
-		servers: [{ host: "cu_unused" }, { host: "one.example.com" }],
+		servers: [customServer("unused_backend"), generatedServer("one.example.com")],
 	},
 	{
 		name: "one enabled generated upstream among disabled generated and custom upstreams",
 		servers: [
-			{ host: "one.example.com", down: true },
-			{ host: "cu_unused" },
-			{ host: "two.example.com", down: false },
+			generatedServer("one.example.com", { down: true }),
+			customServer("unused_backend"),
+			generatedServer("two.example.com", { down: false }),
 		],
+	},
+	{
+		name: "a cu_-prefixed generated upstream",
+		servers: [generatedServer("cu_regular_backend", { port: 8080 })],
 	},
 ];
 
@@ -62,21 +69,21 @@ for (const scenario of validEnabledScenarios) {
 const invalidEnabledScenarios = [
 	{
 		name: "one disabled generated upstream",
-		servers: [{ host: "one.example.com", down: true }],
+		servers: [generatedServer("one.example.com", { down: true })],
 	},
 	{
 		name: "a disabled generated upstream with a custom upstream",
 		servers: [
-			{ host: "one.example.com", down: true },
-			{ host: "cu_unused" },
+			generatedServer("one.example.com", { down: true }),
+			customServer("unused_backend"),
 		],
 	},
 	{
 		name: "multiple disabled generated upstreams with a custom upstream first",
 		servers: [
-			{ host: "cu_unused" },
-			{ host: "one.example.com", down: true },
-			{ host: "two.example.com", down: true },
+			customServer("unused_backend"),
+			generatedServer("one.example.com", { down: true }),
+			generatedServer("two.example.com", { down: true }),
 		],
 	},
 ];
@@ -99,6 +106,10 @@ const forbiddenCustomUpstreamFields = [
 
 for (const [field, value] of forbiddenCustomUpstreamFields) {
 	test(`custom upstream schema rejects the ${field} field`, () => {
-		assertInvalid([{ host: "cu_primary", [field]: value }]);
+		assertInvalid([{ ...customServer("primary_backend"), [field]: value }]);
 	});
 }
+
+test("upstream schema requires the custom flag", () => {
+	assertInvalid([{ host: "one.example.com" }]);
+});

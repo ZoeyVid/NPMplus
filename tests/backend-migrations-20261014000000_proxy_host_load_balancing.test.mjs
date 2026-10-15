@@ -10,6 +10,8 @@ const knexFactory = require("knex");
 const parseJson = (value) =>
 	typeof value === "string" ? JSON.parse(value) : value;
 
+const withCustomFlags = (servers) => servers.map((server) => ({ custom: false, ...server }));
+
 const migrationReportDirectory = "/data/npmplus/backups";
 const migrationReportPrefix = "proxy-host-load-balancing-discarded-paths-";
 
@@ -150,6 +152,12 @@ const proxyHostScenarios = [
 		expectedPath: null,
 		expectedServer: { host: "unix:/run/application.sock" },
 	},
+	{
+		name: "legacy cu_ host becomes a custom upstream and drops its port",
+		input: { forward_scheme: "http", forward_host: "cu_external_backend", forward_port: 8080 },
+		expectedPath: null,
+		expectedServer: { host: "cu_external_backend", custom: true },
+	},
 ];
 
 for (const scenario of proxyHostScenarios) {
@@ -165,7 +173,7 @@ for (const scenario of proxyHostScenarios) {
 
 		const row = await knex("proxy_host").first();
 		assert.equal(row.npmplus_forward_path, scenario.expectedPath);
-		assert.deepEqual(parseJson(row.npmplus_upstream_servers), [scenario.expectedServer]);
+		assert.deepEqual(parseJson(row.npmplus_upstream_servers), withCustomFlags([scenario.expectedServer]));
 	});
 }
 
@@ -257,6 +265,15 @@ const locationScenarios = [
 			npmplus_upstream_servers: [{ host: "location.example.com" }],
 		},
 	},
+	{
+		name: "legacy cu_ location becomes a custom upstream and drops its port",
+		input: { path: "/custom", forward_scheme: "http", forward_host: "cu_location_backend", forward_port: 8080 },
+		expected: {
+			path: "/custom",
+			forward_scheme: "http",
+			npmplus_upstream_servers: [{ host: "cu_location_backend", custom: true }],
+		},
+	},
 ];
 
 for (const scenario of locationScenarios) {
@@ -280,7 +297,10 @@ for (const scenario of locationScenarios) {
 		assert.equal(row.path, scenario.expected.path);
 		assert.equal(row.forward_scheme, scenario.expected.forward_scheme);
 		assert.equal(row.npmplus_forward_path, scenario.expected.npmplus_forward_path ?? null);
-		assert.deepEqual(parseJson(row.npmplus_upstream_servers), scenario.expected.npmplus_upstream_servers);
+		assert.deepEqual(
+			parseJson(row.npmplus_upstream_servers),
+			withCustomFlags(scenario.expected.npmplus_upstream_servers),
+		);
 		if (Object.hasOwn(scenario.expected, "advanced_config")) {
 			assert.equal(row.advanced_config, scenario.expected.advanced_config);
 		}
@@ -371,6 +391,11 @@ const streamScenarios = [
 		input: { forwarding_host: "unix:/run/stream.sock", forwarding_port: null },
 		expectedServer: { host: "unix:/run/stream.sock" },
 	},
+	{
+		name: "legacy cu_ host becomes a custom upstream and drops its port",
+		input: { forwarding_host: "cu_stream_backend", forwarding_port: "9000" },
+		expectedServer: { host: "cu_stream_backend", custom: true },
+	},
 ];
 
 for (const scenario of streamScenarios) {
@@ -381,7 +406,7 @@ for (const scenario of streamScenarios) {
 		await up(knex);
 
 		const row = await knex("stream").first();
-		assert.deepEqual(parseJson(row.npmplus_upstream_servers), [scenario.expectedServer]);
+		assert.deepEqual(parseJson(row.npmplus_upstream_servers), withCustomFlags([scenario.expectedServer]));
 	});
 }
 
@@ -481,15 +506,15 @@ test("migrates every proxy host, custom location, and stream row", async (t) => 
 	assert.equal(proxyHosts.length, 2);
 	assert.equal(locations.length, 2);
 	assert.equal(streams.length, 2);
-	assert.deepEqual(parseJson(proxyHosts[0].npmplus_upstream_servers), [{ host: "first.example.com", port: 80 }]);
-	assert.deepEqual(parseJson(proxyHosts[1].npmplus_upstream_servers), [{ host: "second.example.com", port: 443 }]);
+	assert.deepEqual(parseJson(proxyHosts[0].npmplus_upstream_servers), [{ host: "first.example.com", port: 80, custom: false }]);
+	assert.deepEqual(parseJson(proxyHosts[1].npmplus_upstream_servers), [{ host: "second.example.com", port: 443, custom: false }]);
 	assert.equal(proxyHosts[1].npmplus_forward_path, "/path");
-	assert.deepEqual(parseJson(locations[0].npmplus_upstream_servers), [{ host: "10.0.0.30", port: 8080 }]);
+	assert.deepEqual(parseJson(locations[0].npmplus_upstream_servers), [{ host: "10.0.0.30", port: 8080, custom: false }]);
 	assert.equal(locations[0].npmplus_forward_path, "/location");
-	assert.deepEqual(parseJson(locations[1].npmplus_upstream_servers), [{ host: "10.0.0.31" }]);
+	assert.deepEqual(parseJson(locations[1].npmplus_upstream_servers), [{ host: "10.0.0.31", custom: false }]);
 	assert.equal(locations[1].npmplus_forward_path, null);
-	assert.deepEqual(parseJson(streams[0].npmplus_upstream_servers), [{ host: "10.0.0.20", port: 9000 }]);
-	assert.deepEqual(parseJson(streams[1].npmplus_upstream_servers), [{ host: "10.0.0.21", port: 9001 }]);
+	assert.deepEqual(parseJson(streams[0].npmplus_upstream_servers), [{ host: "10.0.0.20", port: 9000, custom: false }]);
+	assert.deepEqual(parseJson(streams[1].npmplus_upstream_servers), [{ host: "10.0.0.21", port: 9001, custom: false }]);
 });
 
 test("adds the new columns and removes the legacy columns", async (t) => {
