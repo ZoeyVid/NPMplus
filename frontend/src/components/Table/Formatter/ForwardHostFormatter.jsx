@@ -1,6 +1,8 @@
 import cn from "clsx";
 import OverlayTrigger from "react-bootstrap/OverlayTrigger";
 import Popover from "react-bootstrap/Popover";
+import { T } from "src/locale";
+import { isCustomUpstream } from "src/modules/Forward";
 
 function getPort (forwardPort) {
     return `${forwardPort ? `:${forwardPort}` : ""}`;
@@ -25,7 +27,7 @@ const ForwardHostLink = ({ forwardScheme, forwardhost, forwardPort, forwardPath,
 };
 
 export function ForwardHostFormatter({ hostRowId, upstreamServers = [], scheme="", forwardPath="", loadBalanceMethod, streams=false }) {
-
+	const customUpstream = isCustomUpstream(upstreamServers);
     const elms = [];
     for (let i = 0; i < 2 && i < upstreamServers.length; ++i){
         const server = upstreamServers[i];
@@ -35,6 +37,12 @@ export function ForwardHostFormatter({ hostRowId, upstreamServers = [], scheme="
     const popover = (
 		<Popover id={`upstream-host-${hostRowId}`}>
 			<Popover.Body>
+				{customUpstream ?
+					(
+						<span className="bg-yellow-lt">
+							<T id="host.custom-upstream-used" />
+						</span>
+					): null}
 				{upstreamServers.slice(2).map((server, index) => (
                     <div key={`${server.host}-${server.port}-${index}`}>
                         {`${streams ? "" : `${scheme}://`}${server.host}${getPort(server.port)}${forwardPath ?? ""}`}
@@ -44,12 +52,26 @@ export function ForwardHostFormatter({ hostRowId, upstreamServers = [], scheme="
 		</Popover>
 	);
 
-	return upstreamServers.length > 2 ? (
+	const customUpstreamPopover = (
+		<Popover id={`upstream-host-${hostRowId}`}>
+			<Popover.Body>
+				<span className="bg-yellow-lt">
+					<T id="host.custom-upstream-used" />
+				</span>
+			</Popover.Body>
+		</Popover>
+	);
+
+	return upstreamServers.length > 2 ? 
+	(
 		<OverlayTrigger trigger={["hover", "focus"]} placement="bottom" overlay={popover}>
-			<div className="font-weight-medium d-flex flex-column align-items-start gap-1">{...elms}</div>
+			<div className={cn("font-weight-medium", "d-flex", "flex-column", "align-items-start", "gap-1", customUpstream && "badge")}>{...elms}</div>
+		</OverlayTrigger>
+	) : customUpstream ? (
+		<OverlayTrigger trigger={["hover", "focus"]} placement="bottom" overlay={customUpstreamPopover}>
+			<div className="font-weight-medium d-flex flex-column align-items-start gap-1 badge">{...elms}</div>
 		</OverlayTrigger>
 	) : (
 		<div className="font-weight-medium d-flex flex-column align-items-start gap-1">{...elms}</div>
 	);
-
 }

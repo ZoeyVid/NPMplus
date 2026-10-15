@@ -230,15 +230,14 @@ const ProxyHostModal = EasyModal.create(({ id, isClone, visible, remove }) => {
 									<div className="card-body">
 										<div className="tab-content">
 											<div className="tab-pane active show" id="tab-details" role="tabpanel">
-												<DomainNamesField
-													isWildcardPermitted={
-														values.certificateId !== "new" || values.npmplusDnsChallenge
-													}
-													dnsProviderWildcardSupported
-													forCertificate={values.certificateId === "new"}
-												/>
-												<div class="row">
-													<ForwardHostFields />
+												<div className="row">
+													<DomainNamesField
+														isWildcardPermitted={
+															values.certificateId !== "new" || values.npmplusDnsChallenge
+														}
+														dnsProviderWildcardSupported
+														forCertificate={values.certificateId === "new"}
+													/>
 													<div className="col-md-1 text-end">
 														<div className="mb-3">
 															<div className="form-label invisible">​</div>

@@ -411,6 +411,8 @@ Setting a Fail timeout supports numbers followed by
 - `y`: years
 Omitting the unit will default to seconds
 
+### Custom Upstreams
+With multiple upstreams, in order to use a custom upstream manually prefixed with `cu_` the upstream must be the first element in the list of upstreams for a host/stream/location otherwise, it will be ignored
 
 ## Contributing
 All are welcome to create pull requests for this project, but this does not mean that they will be merged, so better ask if your PR would be merged before creating one (via Discussion), typos and translations are excluded from this.
