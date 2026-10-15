@@ -16,6 +16,9 @@ const SINGLE_UPSTREAM_SCHEMES = ["path", "empty"];
 const FORWARD_PATH_SCHEMES = ["http", "https"];
 const NETWORK_PROXY_SCHEMES = ["http", "https", "grpc", "grpcs"];
 
+const getEffectiveValue = (serverHost, existingServerHost, field) =>
+	Object.hasOwn(serverHost, field) ? serverHost[field] : existingServerHost[field];
+
 const normaliseHost = (host) => {
 	if (typeof host !== "string") {
 		return host;
@@ -72,13 +75,8 @@ const internalUpstreamServers = {
 	 * @returns
 	 */
 	splitHostAndPath: (serverHost, existingServerHost = {}) => {
-		const forwardScheme = Object.hasOwn(serverHost, "forward_scheme")
-			? serverHost.forward_scheme
-			: existingServerHost.forward_scheme;
-
-		const forwardPath = Object.hasOwn(serverHost, "npmplus_forward_path")
-			? serverHost.npmplus_forward_path
-			: existingServerHost.npmplus_forward_path;
+		const forwardScheme = getEffectiveValue(serverHost, existingServerHost, "forward_scheme");
+		const forwardPath = getEffectiveValue(serverHost, existingServerHost, "npmplus_forward_path");
 
 		if (FORWARD_PATH_SCHEMES.includes(forwardScheme) &&
 			Array.isArray(serverHost.npmplus_upstream_servers) &&
@@ -113,21 +111,10 @@ const internalUpstreamServers = {
 	 */
 	validateLoadBalancing: (serverHost, existingServerHost = {}, streams = false) => {
 		// use hasOwn to verify if it was specified as null deliberately (clean functions) or is actually missing
-		const upstreamServers = Object.hasOwn(serverHost, "npmplus_upstream_servers")
-			? serverHost.npmplus_upstream_servers
-			: existingServerHost.npmplus_upstream_servers || [];
-
-		const loadBalanceMethod = Object.hasOwn(serverHost, "npmplus_load_balance_method")
-			? serverHost.npmplus_load_balance_method
-			: existingServerHost.npmplus_load_balance_method;
-
-		const forwardScheme = Object.hasOwn(serverHost, "forward_scheme")
-			? serverHost.forward_scheme
-			: existingServerHost.forward_scheme;
-
-		const forwardPath = Object.hasOwn(serverHost, "npmplus_forward_path")
-			? serverHost.npmplus_forward_path
-			: existingServerHost.npmplus_forward_path;
+		const upstreamServers = getEffectiveValue(serverHost, existingServerHost, "npmplus_upstream_servers") || [];
+		const loadBalanceMethod = getEffectiveValue(serverHost, existingServerHost, "npmplus_load_balance_method");
+		const forwardScheme = getEffectiveValue(serverHost, existingServerHost, "forward_scheme");
+		const forwardPath = getEffectiveValue(serverHost, existingServerHost, "npmplus_forward_path");
 
 		if (forwardPath != null && !FORWARD_PATH_SCHEMES.includes(forwardScheme)) {
 			throw new errs.ValidationError(`A forward path cannot be used with the ${forwardScheme} scheme`);

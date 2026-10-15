@@ -6,7 +6,7 @@ import OverlayTrigger from "react-bootstrap/OverlayTrigger";
 import Popover from "react-bootstrap/Popover";
 import { flushSync } from "react-dom";
 import { intl, T } from "src/locale";
-import { forwardDestination, isCustomUpstream } from "src/modules/Forward";
+import { forwardDestination, isCustomUpstream, hasCustomUpstream } from "src/modules/Forward";
 import { validateNumber } from "src/modules/Validations";
 
 const BACKUP_INCOMPATIBLE_METHODS = ["hash", "hash_consistent", "ip_hash", "random", "random_two_least_connections", "random_two_least_time_connect", "random_two_least_time_header", "random_two_least_time_first_byte", "random_two_least_time_last_byte" ];
@@ -95,6 +95,8 @@ export function ForwardHostFields({ scheme="",idPrefix, loadBalanceMethod, upstr
 	const [expanded, setExpanded] = useState([0]);
 	const { setFieldValue } = useFormikContext();
 	const customUpstream = isCustomUpstream(servers);
+	const containsCustomUpstream = hasCustomUpstream(servers);
+
 	const fieldName = (name) => namePrefix ? `${namePrefix}.${name}` : name;
 	const upstreamFieldName = (idx, property) => fieldName(`npmplusUpstreamServers[${idx}].${property}`);
 	const controlId = (name, idx) => `${idPrefix}-${name}${idx === undefined ? "" : `-${idx}`}`;
@@ -233,6 +235,10 @@ export function ForwardHostFields({ scheme="",idPrefix, loadBalanceMethod, upstr
 			{customUpstream ? (
 				<div className="row bg-yellow-lt">
 					<T id="host.custom-upstream-used" />
+				</div>
+			) : containsCustomUpstream ? (
+				<div className="row bg-blue-lt">
+					<T id="host.custom-upstream-unused" />
 				</div>
 			) : null}
 			<div className="row">
