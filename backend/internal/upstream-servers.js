@@ -133,6 +133,10 @@ const internalUpstreamServers = {
 			throw new errs.ValidationError("Network upstream hosts cannot contain a path; use the forward path field instead");
 		}
 
+		if (upstreamServers.length > 0 && upstreamServers.every((server) => server.down === true)) {
+			throw new errs.ValidationError("At least one upstream server must be enabled");
+		}
+
 		if (upstreamServers.length > 1 && !loadBalanceMethod) {
 			throw new errs.ValidationError("A load balancing method is required when multiple upstream servers are configured");
 		}

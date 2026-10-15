@@ -158,8 +158,8 @@ export function ForwardHostFields({ scheme="",idPrefix, loadBalanceMethod, upstr
 
 	const handleRemove = (idx) => {
 		const updated = servers.filter((_, serverIdx) => serverIdx !== idx);
-		if(updated.length === 1){
-			updated[0] = { ...updated[0], down: false }; // always enable the last server
+		if (updated.every((server) => Boolean(server.down))) {
+			updated[0] = { ...updated[0], down: false };
 		}
 		setServers(updated);
 		setExpanded((current) => {
@@ -242,6 +242,9 @@ export function ForwardHostFields({ scheme="",idPrefix, loadBalanceMethod, upstr
 
 	const backupDisabled = BACKUP_INCOMPATIBLE_METHODS.includes(method);
 	const isExpanded = (idx) => expanded.includes(idx);
+
+	const isOnlyEnabledServer = (idx) => !Boolean(servers[idx]?.down) &&
+		servers.every((server, serverIdx) => serverIdx === idx || Boolean(server.down));
 
 	const toggleExpanded = (idx) => {
 		setExpanded((current) =>
@@ -510,6 +513,7 @@ export function ForwardHostFields({ scheme="",idPrefix, loadBalanceMethod, upstr
 															})}
 															type="checkbox"
 															checked={!Boolean(server.down)}
+															disabled={isOnlyEnabledServer(idx)}
 															onChange={(event) =>handleChange(idx, "down", !event.target.checked)}
 														/>
 													</span>
