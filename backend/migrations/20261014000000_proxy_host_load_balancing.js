@@ -103,10 +103,12 @@ const createUpstreamServer = (host, port) => {
 	if (typeof host !== "string" || !host.trim()) {
 		throw new TypeError("Cannot migrate an upstream with an empty host");
 	}
+	const custom = host.startsWith("cu_");
 
 	return {
 		host: normaliseHost(host),
-		...(normalisedPort === null || normalisedPort === undefined
+		custom,
+		...(custom || normalisedPort === null || normalisedPort === undefined
 			? {} : { port: normalisedPort }),
 	};
 };

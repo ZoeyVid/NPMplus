@@ -90,7 +90,7 @@ const validateTimeout = () => (value) => {
 export function CleanUpstreamServers(servers = []) {
 	return servers.map((server) => {
 		if (isCustomUpstreamServer(server)) {
-			return { host: server.host };
+			return { host: server.host, custom: server.custom };
 		}
 		const cleaned = { ...server };
 
@@ -124,7 +124,7 @@ export function ForwardHostFields({ scheme="",idPrefix, loadBalanceMethod, upstr
 	const firstPort = servers[0]?.port;
 	const usesImplicitTlsDefaultPort =!streams && !customUpstream && TLS_FORWARD_SCHEMES.includes(scheme) &&
 		servers.some((server, idx) => {
-			if (!server?.host || server.host.startsWith("cu_")) {
+			if (!server?.host || server.custom) {
 				return false;
 			}
 
@@ -150,6 +150,7 @@ export function ForwardHostFields({ scheme="",idPrefix, loadBalanceMethod, upstr
 		maxConns: "",
 		backup: false,
 		down: false, // ui is shown as enabled for better UX
+		custom: false,
 	};
 
 	const applyChanges = (changes) => {
@@ -460,7 +461,7 @@ export function ForwardHostFields({ scheme="",idPrefix, loadBalanceMethod, upstr
 							}
 						>
 							<div className="row m-0">
-								<div className={customServer ? "col-md-12" : "col-md-6"}>
+								<div className={customServer ? "col-md-9" : "col-md-6"}>
 									<Field 
 										name={upstreamFieldName(idx, "host")}
 										validate={(value) => {
@@ -521,33 +522,28 @@ export function ForwardHostFields({ scheme="",idPrefix, loadBalanceMethod, upstr
 										</Field>
 									</div>
 								)}
-								{!customServer && servers.length > 1 ? (
-									<div className="col-md-3">
-										<Field name={upstreamFieldName(idx, "down")} type="checkbox">
-											{({ field }) => (
-												<div className="mb-3">
-													<label className="form-label" htmlFor={controlId("npmplusUpstreamEnable", idx)}>
-														<T id="enabled" />
-														<InfoPopover messageId="host.upstream.enabled-down-help" />
-													</label>
-													<span className="form-check form-check-single form-switch p-0">
-														<input
-															{...field}
-															id={controlId("npmplusUpstreamEnable", idx)}
-															className={cn("form-check-input", {
-																"bg-lime": !server.down, // invert it to represent the UI which shows 'enabled'
-															})}
-															type="checkbox"
-															checked={!Boolean(server.down)}
-															disabled={isOnlyEnabledServer(idx)}
-															onChange={(event) =>handleChange(idx, "down", !event.target.checked)}
-														/>
-													</span>
-												</div>
-											)}
-										</Field>
-									</div>
-								) : null}
+								<div className="col-md-3">
+									<Field name={upstreamFieldName(idx, "custom")} type="checkbox">
+										{({ field }) => (
+											<div className="mb-3">
+												<label className="form-label" htmlFor={controlId("npmplusCustomUpstream", idx)}>
+													<T id="host.custom-upstream" />
+													<InfoPopover messageId="host.custom-upstream-help" />
+												</label>
+												<span className="form-check form-check-single form-switch p-0">
+													<input
+														{...field}
+														id={controlId("npmplusCustomUpstream", idx)}
+														className={cn("form-check-input", {"bg-lime": server.custom})}
+														type="checkbox"
+														checked={Boolean(server.custom)}
+														onChange={(event) =>handleChange(idx, "custom", event.target.checked)}
+													/>
+												</span>
+											</div>
+										)}
+									</Field>
+								</div>
 							</div>
 							{!customServer && servers.length > 1 ? (
 								<>
@@ -678,6 +674,31 @@ export function ForwardHostFields({ scheme="",idPrefix, loadBalanceMethod, upstr
 														{meta.touched && meta.error ? (
 															<div className="invalid-feedback">{meta.error}</div>
 														) : null}
+													</div>
+												)}
+											</Field>
+										</div>
+										<div className="col-md-3">
+											<Field name={upstreamFieldName(idx, "down")} type="checkbox">
+												{({ field }) => (
+													<div className="mb-3">
+														<label className="form-label" htmlFor={controlId("npmplusUpstreamEnable", idx)}>
+															<T id="enabled" />
+															<InfoPopover messageId="host.upstream.enabled-down-help" />
+														</label>
+														<span className="form-check form-check-single form-switch p-0">
+															<input
+																{...field}
+																id={controlId("npmplusUpstreamEnable", idx)}
+																className={cn("form-check-input", {
+																	"bg-lime": !server.down, // invert it to represent the UI which shows 'enabled'
+																})}
+																type="checkbox"
+																checked={!Boolean(server.down)}
+																disabled={isOnlyEnabledServer(idx)}
+																onChange={(event) =>handleChange(idx, "down", !event.target.checked)}
+															/>
+														</span>
 													</div>
 												)}
 											</Field>

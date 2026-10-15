@@ -39,7 +39,8 @@
 									"incoming_port": 9090,
 									"npmplus_upstream_servers": [{
 										"host": "router.internal",
-										"port": 80
+										"port": 80,
+										"custom": false
 									}],
 									"tcp_forwarding": true,
 									"udp_forwarding": false,

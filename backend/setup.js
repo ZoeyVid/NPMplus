@@ -182,6 +182,7 @@ const setupAio = async () => {
 				{
 					host: "127.0.0.1",
 					port: 11000,
+					custom: false,
 				},
 			],
 			certificate_id: "new",

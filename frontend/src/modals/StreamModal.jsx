@@ -82,6 +82,7 @@ const StreamModal = EasyModal.create(({ id, visible, remove }) => {
 																						port: null,
 																						backup: false,
 																						down: false,
+																						custom: false,
 																					},
 																				],
 						tcpForwarding: data?.tcpForwarding,

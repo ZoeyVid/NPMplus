@@ -15,10 +15,10 @@ const controlApi = new Client("http://localhost", { connect: { socketPath: "/run
 const NETWORK_PROXY_SCHEMES = ["http", "https", "grpc", "grpcs"];
 
 const setForwardUpstreamName = (serverHost, generatedName) => {
-	const firstHost = serverHost.npmplus_upstream_servers?.[0]?.host;
-	const customUpstream = firstHost?.startsWith("cu_") === true;
+	const firstServer = serverHost.npmplus_upstream_servers?.[0];
+	const customUpstream = firstServer?.custom === true;
 
-	serverHost.forward_upstream_name = customUpstream ? firstHost : generatedName;
+	serverHost.forward_upstream_name = customUpstream ? firstServer.host : generatedName;
 	return customUpstream;
 };
 

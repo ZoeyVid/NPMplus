@@ -142,7 +142,8 @@
 					"forward_scheme": "http",
 					"npmplus_upstream_servers": [{
 						"host": "127.0.0.1",
-						"port": 8080
+						"port": 8080,
+						"custom": false
 					}]
 				}
 			}
@@ -165,7 +166,8 @@
 								],
 								"npmplus_upstream_servers": [{
 									"host": "127.0.0.1",
-									"port": 80
+									"port": 80,
+									"custom": false
 								}],
 								"npmplus_load_balance_method": "round_robin",
 								"npmplus_access_list_type": "public",

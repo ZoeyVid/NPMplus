@@ -43,7 +43,8 @@ export function LocationsFields({ initialValues, name = "locations" }) {
 				maxConns: null,
 				failTimeout: null,
 				backup: false,
-				down: false
+				down: false,
+				custom: false,
 			}
 		],
 		npmplusAccessListIds: [],
