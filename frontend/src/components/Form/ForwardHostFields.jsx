@@ -1,5 +1,5 @@
 import cn from "clsx";
-import { IconArrowDown, IconArrowUp, IconChevronDown, IconChevronRight, IconInfoCircle, IconTrash } from "@tabler/icons-react";
+import { IconAlertTriangle, IconArrowDown, IconArrowUp, IconChevronDown, IconChevronRight, IconInfoCircle, IconTrash } from "@tabler/icons-react";
 import { Field, useFormikContext } from "formik";
 import { useState } from "react";
 import OverlayTrigger from "react-bootstrap/OverlayTrigger";
@@ -11,6 +11,7 @@ import { validateNumber } from "src/modules/Validations";
 
 const BACKUP_INCOMPATIBLE_METHODS = ["hash", "hash_consistent", "ip_hash", "random", "random_two_least_connections", "random_two_least_time_connect", "random_two_least_time_header", "random_two_least_time_first_byte", "random_two_least_time_last_byte" ];
 const FORWARD_PATH_SCHEMES = ["http", "https"];
+const TLS_FORWARD_SCHEMES = ["https", "grpcs"];
 
 const NGINX_TIME_SYNTAX_REGEX = "^[1-9]\\d*\\s*(?:ms|s|m|h|d|w|M|y)?$";
 const NUMERIC_PATTERN = "^[0-9]*$";
@@ -30,6 +31,13 @@ function InfoPopover({ messageId }) {
 		</OverlayTrigger>
 	);
 }
+
+const hostHasEmbeddedPort = (host = "") => {
+	const pathIndex = host.indexOf("/");
+	const address = pathIndex === -1 ? host : host.slice(0, pathIndex);
+
+	return /^\[[^\]]+\]:\d+$/.test(address) || /^[^:]+:\d+$/.test(address);
+};
 
 const numberOrNull = (value, currentValue, allowText = false) => {
 	if (value === "" ) { return null; }
@@ -96,6 +104,19 @@ export function ForwardHostFields({ scheme="",idPrefix, loadBalanceMethod, upstr
 	const { setFieldValue } = useFormikContext();
 	const customUpstream = isCustomUpstream(servers);
 	const containsCustomUpstream = hasCustomUpstream(servers);
+
+	const firstPort = servers[0]?.port;
+	const usesImplicitTlsDefaultPort =!streams && !customUpstream && TLS_FORWARD_SCHEMES.includes(scheme) &&
+		servers.some((server, idx) => {
+			if (!server?.host || server.host.startsWith("cu_")) {
+				return false;
+			}
+
+			const effectivePort = server.port ?? (idx > 0 ? firstPort : null);
+
+			return ((effectivePort === null || effectivePort === undefined || effectivePort === "") 
+				&& !hostHasEmbeddedPort(server.host));
+		});
 
 	const fieldName = (name) => namePrefix ? `${namePrefix}.${name}` : name;
 	const upstreamFieldName = (idx, property) => fieldName(`npmplusUpstreamServers[${idx}].${property}`);
@@ -233,12 +254,25 @@ export function ForwardHostFields({ scheme="",idPrefix, loadBalanceMethod, upstr
 	return (
 		<>
 			{customUpstream ? (
-				<div className="row bg-yellow-lt">
-					<T id="host.custom-upstream-used" />
+				<div className="row">
+					<p className="bg-yellow-lt">
+						<IconAlertTriangle size={16} className="me-1" />
+						<T id="host.custom-upstream-used" />
+					</p>
 				</div>
 			) : containsCustomUpstream ? (
-				<div className="row bg-blue-lt">
-					<T id="host.custom-upstream-unused" />
+				<div className="row">
+					<p className="bg-blue-lt">
+						<T id="host.custom-upstream-unused" />
+					</p>
+				</div>
+			) : null}
+			{usesImplicitTlsDefaultPort ? (
+				<div className="row">
+					<p className="text-warning mb-3">
+						<IconAlertTriangle size={16} className="me-1" />
+						<T id="host.upstream.tls-default-port-warning" />
+					</p>
 				</div>
 			) : null}
 			<div className="row">
