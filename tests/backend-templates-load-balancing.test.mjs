@@ -1,7 +1,76 @@
 import assert from "node:assert/strict";
-import { readFile } from "node:fs/promises";
-import test from "node:test";
+import { access, mkdir, readFile, rm, rmdir, writeFile } from "node:fs/promises";
+import test, { after } from "node:test";
 import utils from "../backend/lib/utils.js";
+
+const runtimeDirectories = [
+	"/data",
+	"/data/npmplus",
+	"/data/nginx",
+	"/data/nginx/proxy_host",
+	"/data/nginx/redirection_host",
+	"/data/nginx/dead_host",
+	"/data/nginx/stream",
+	"/data/custom_nginx",
+	"/data/tls",
+	"/data/tls/ech",
+];
+const runtimeFiles = [
+	"/data/tls/ech/nginx.conf",
+	"/data/custom_nginx/root.conf",
+	"/data/custom_nginx/root_top.conf",
+	"/data/custom_nginx/events.conf",
+	"/data/custom_nginx/http_top.conf",
+	"/data/custom_nginx/http.conf",
+	"/data/custom_nginx/stream_top.conf",
+	"/data/custom_nginx/stream.conf",
+];
+const createdDirectories = [];
+const createdFiles = [];
+
+const pathExists = async (path) => {
+	try {
+		await access(path);
+		return true;
+	} catch (error) {
+		if (error.code === "ENOENT") return false;
+		throw error;
+	}
+};
+
+for (const directory of runtimeDirectories) {
+	if (!await pathExists(directory)) {
+		await mkdir(directory);
+		createdDirectories.push(directory);
+	}
+}
+
+for (const file of runtimeFiles) {
+	if (!await pathExists(file)) {
+		await writeFile(file, "");
+		createdFiles.push(file);
+	}
+}
+
+const keysFile = "/data/npmplus/keys-ec.json";
+const keysFileExisted = await pathExists(keysFile);
+const { default: internalNginx } = await import("../backend/internal/nginx.js");
+
+after(async () => {
+	if (!keysFileExisted) {
+		await rm(keysFile, { force: true });
+	}
+	for (const file of createdFiles.reverse()) {
+		await rm(file, { force: true });
+	}
+	for (const directory of createdDirectories.reverse()) {
+		try {
+			await rmdir(directory);
+		} catch (error) {
+			if (error.code !== "ENOENT" && error.code !== "ENOTEMPTY") throw error;
+		}
+	}
+});
 
 const renderTemplate = async (templateName, data) => {
 	const template = await readFile(new URL(`../backend/templates/${templateName}`, import.meta.url), "utf8");
@@ -9,6 +78,17 @@ const renderTemplate = async (templateName, data) => {
 };
 
 const compact = (config) => config.replace(/\s+/g, " ").trim();
+
+const assertAppearsInOrder = (text, values) => {
+	let previousIndex = -1;
+
+	for (const value of values) {
+		const index = text.indexOf(value);
+		assert.notEqual(index, -1, `Expected generated config to contain: ${value}`);
+		assert.ok(index > previousIndex, `Expected generated config to preserve order at: ${value}`);
+		previousIndex = index;
+	}
+};
 
 const upstreamServer = (host, port, overrides = {}) => ({
 	host,
@@ -155,6 +235,50 @@ test("HTTP upstream omits a null port and ignores custom-upstream entries", asyn
 	assert.match(output, /server 192\.168\.1\.2 resolve;/);
 	assert.match(output, /server \[fd19:2168:ab1:1::3\]:8080 resolve;/);
 	assert.doesNotMatch(output, /cu_external_backend/);
+	assertAppearsInOrder(output, [
+		"server 192.168.1.2 resolve;",
+		"server [fd19:2168:ab1:1::3]:8080 resolve;",
+	]);
+});
+
+test("generated stream config preserves upstream order and inherits the first port", async (t) => {
+	const id = 900001;
+	const filename = internalNginx.getConfigName("stream", id);
+	t.after(() => rm(filename, { force: true }));
+
+	await internalNginx.generateConfig("stream", streamData({
+		id,
+		npmplus_load_balance_method: "round_robin",
+		npmplus_upstream_servers: [
+			upstreamServer("192.168.4.1", 8100),
+			upstreamServer("192.168.4.2", null),
+			upstreamServer("192.168.4.3", 8300),
+		],
+	}));
+
+	const output = compact(await readFile(filename, "utf8"));
+	assertAppearsInOrder(output, [
+		"server 192.168.4.1:8100 resolve;",
+		"server 192.168.4.2:8100 resolve;",
+		"server 192.168.4.3:8300 resolve;",
+	]);
+});
+
+test("generated portless stream config is retained and rejected by nginx", async (t) => {
+	const id = 900002;
+	const filename = internalNginx.getConfigName("stream", id);
+	t.after(() => rm(filename, { force: true }));
+
+	await internalNginx.generateConfig("stream", streamData({
+		id,
+		npmplus_upstream_servers: [
+			upstreamServer("192.168.4.4", null),
+		],
+	}));
+
+	const output = compact(await readFile(filename, "utf8"));
+	assert.ok(output.includes("server 192.168.4.4 resolve;"));
+	await assert.rejects(internalNginx.test(), /no port/i);
 });
 
 test("proxy-host config contains its generated upstream and forward path", async () => {
