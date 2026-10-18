@@ -128,6 +128,12 @@ const internalCertificate = {
 		access.can("certificates:manage");
 		data.owner_user_id = access.token.getUserId(1);
 
+		if (!data.npmplus_dns_challenge) {
+			delete data.npmplus_dns_provider;
+			delete data.npmplus_dns_provider_credentials;
+			delete data.npmplus_propagation_seconds;
+		}
+
 		if (data.provider === "letsencrypt") {
 			data.nice_name = getNiceName(data.domain_names);
 		}
