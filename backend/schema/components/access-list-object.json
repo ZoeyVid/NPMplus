@@ -32,10 +32,12 @@
 		},
 		"satisfy_any": {
 			"type": "boolean",
+			"default": false,
 			"example": true
 		},
 		"pass_auth": {
 			"type": "boolean",
+			"default": false,
 			"example": false
 		},
 		"proxy_host_count": {
