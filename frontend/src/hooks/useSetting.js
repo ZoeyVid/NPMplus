@@ -15,18 +15,6 @@ const useSetSetting = () => {
 	const queryClient = useQueryClient();
 	return useMutation({
 		mutationFn: (values) => updateSetting(values),
-		onMutate: (values) => {
-			if (!values.id) {
-				return;
-			}
-			const previousObject = queryClient.getQueryData(["setting", values.id]);
-			queryClient.setQueryData(["setting", values.id], (old) => ({
-				...old,
-				...values,
-			}));
-			return () => queryClient.setQueryData(["setting", values.id], previousObject);
-		},
-		onError: (_, __, rollback) => rollback?.(),
 		onSuccess: async ({ id }) => {
 			await Promise.all([
 				queryClient.invalidateQueries({ queryKey: ["setting", id] }),

@@ -258,6 +258,14 @@ export function AccessFields({
 							</button>
 						</div>
 					))}
+					{values.length === 0 ? (
+						<>
+							<input className="visually-hidden" tabIndex={-1} required defaultValue="" />
+							<div className="invalid-feedback d-block">
+								<T id="error.required" />
+							</div>
+						</>
+					) : null}
 					{options.length > 0 && ( // only show add button if there are more acls that can be added
 						<div className="text-center">
 							<button type="button" className="btn my-3" onClick={handleAdd}>
