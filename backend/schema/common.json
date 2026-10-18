@@ -75,13 +75,13 @@
 			"description": "Domain Names array",
 			"type": "array",
 			"minItems": 1,
-			"maxItems": 99,
+			"maxItems": 100,
 			"uniqueItems": true,
 			"items": {
 				"type": "string",
 				"minLength": 1,
 				"maxLength": 253,
-				"pattern": "^\\S+$"
+				"pattern": "^(~\\S*|(?!.*:[0-9]+$)[^\\s/]+)$"
 			},
 			"example": [
 				"example.com",
