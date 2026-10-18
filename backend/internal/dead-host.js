@@ -18,10 +18,10 @@ const internalDeadHost = {
 
 		if (createCertificate) {
 			delete thisData.certificate_id;
-		} else if (Number(thisData.certificate_id) > 0) {
+		} else if (thisData.certificate_id > 0) {
 			await internalCertificate.get(access, { id: thisData.certificate_id });
 		}
-		if (Number(thisData.npmplus_mtls_certificate_id) > 0) {
+		if (thisData.npmplus_mtls_certificate_id > 0) {
 			await internalCertificate.get(access, { id: thisData.npmplus_mtls_certificate_id });
 		}
 
@@ -82,10 +82,10 @@ const internalDeadHost = {
 
 		if (createCertificate) {
 			delete thisData.certificate_id;
-		} else if (Number(thisData.certificate_id) > 0) {
+		} else if (thisData.certificate_id > 0) {
 			await internalCertificate.get(access, { id: thisData.certificate_id });
 		}
-		if (Number(thisData.npmplus_mtls_certificate_id) > 0) {
+		if (thisData.npmplus_mtls_certificate_id > 0) {
 			await internalCertificate.get(access, { id: thisData.npmplus_mtls_certificate_id });
 		}
 
