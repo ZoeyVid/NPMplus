@@ -184,13 +184,6 @@ const internalUser = {
 			}
 		}
 
-		if (existingUser.id !== data.id) {
-			// Sanity check that something crazy hasn't happened
-			throw new errs.InternalValidationError(
-				`User could not be updated, IDs do not match: ${existingUser.id} !== ${data.id}`,
-			);
-		}
-
 		if (existingUser.avatar?.startsWith("/images/avatar/")) {
 			data.avatar = existingUser.avatar;
 		} else {
@@ -325,12 +318,6 @@ const internalUser = {
 		access.canUser(data.id);
 
 		const user = await internalUser.get(access, { id: data.id });
-		if (user.id !== data.id) {
-			// Sanity check that something crazy hasn't happened
-			throw new errs.InternalValidationError(
-				`User could not be updated, IDs do not match: ${user.id} !== ${data.id}`,
-			);
-		}
 
 		if (user.id === access.token.getUserId(0)) {
 			// they're setting their own password. Make sure their current password is correct
@@ -392,12 +379,6 @@ const internalUser = {
 		access.canAdmin();
 
 		const user = await internalUser.get(access, { id: data.id });
-		if (user.id !== data.id) {
-			// Sanity check that something crazy hasn't happened
-			throw new errs.InternalValidationError(
-				`User could not be updated, IDs do not match: ${user.id} !== ${data.id}`,
-			);
-		}
 
 		let permissions;
 

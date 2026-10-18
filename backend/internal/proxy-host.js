@@ -157,13 +157,6 @@ const internalProxyHost = {
 			}
 		}
 
-		if (existingRow.id !== thisData.id) {
-			// Sanity check that something crazy hasn't happened
-			throw new errs.InternalValidationError(
-				`Proxy Host could not be updated, IDs do not match: ${existingRow.id} !== ${thisData.id}`,
-			);
-		}
-
 		if (createCertificate) {
 			const cert = await internalCertificate.createQuickCertificate(access, {
 				...thisData,
