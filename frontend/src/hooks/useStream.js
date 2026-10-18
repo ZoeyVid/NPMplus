@@ -39,18 +39,6 @@ const useSetStream = () => {
 	const queryClient = useQueryClient();
 	return useMutation({
 		mutationFn: (values) => (values.id ? updateStream(values) : createStream(values)),
-		onMutate: (values) => {
-			if (!values.id) {
-				return;
-			}
-			const previousObject = queryClient.getQueryData(["stream", values.id]);
-			queryClient.setQueryData(["stream", values.id], (old) => ({
-				...old,
-				...values,
-			}));
-			return () => queryClient.setQueryData(["stream", values.id], previousObject);
-		},
-		onError: (_, __, rollback) => rollback?.(),
 		onSuccess: async ({ id }) => {
 			await Promise.all([
 				queryClient.invalidateQueries({ queryKey: ["stream", id] }),

@@ -36,18 +36,6 @@ const useSetDeadHost = () => {
 	const queryClient = useQueryClient();
 	return useMutation({
 		mutationFn: (values) => (values.id ? updateDeadHost(values) : createDeadHost(values)),
-		onMutate: (values) => {
-			if (!values.id) {
-				return;
-			}
-			const previousObject = queryClient.getQueryData(["dead-host", values.id]);
-			queryClient.setQueryData(["dead-host", values.id], (old) => ({
-				...old,
-				...values,
-			}));
-			return () => queryClient.setQueryData(["dead-host", values.id], previousObject);
-		},
-		onError: (_, __, rollback) => rollback?.(),
 		onSuccess: async ({ id }) => {
 			await Promise.all([
 				queryClient.invalidateQueries({ queryKey: ["dead-host", id] }),
