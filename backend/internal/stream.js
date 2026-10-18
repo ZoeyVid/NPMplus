@@ -5,6 +5,30 @@ import internalAuditLog from "./audit-log.js";
 import internalCertificate from "./certificate.js";
 import internalNginx from "./nginx.js";
 
+const cleanStreamData = (data, existingData) => {
+	const combinedData = { ...existingData, ...data };
+
+	if (!combinedData.tcp_forwarding && !combinedData.udp_forwarding) {
+		throw new errs.ValidationError("TCP or UDP forwarding needs to be enabled");
+	}
+
+	if (combinedData.udp_forwarding) {
+		combinedData.npmplus_proxy_tls = false;
+		if (combinedData.npmplus_proxy_protocol_forwarding === 1) combinedData.npmplus_proxy_protocol_forwarding = 0;
+		combinedData.certificate_id = 0;
+	}
+
+	if (combinedData.certificate_id !== "new" && !(combinedData.certificate_id > 0)) {
+		combinedData.npmplus_mtls_certificate_id = 0;
+	}
+
+	if (!(combinedData.npmplus_mtls_certificate_id > 0)) {
+		combinedData.npmplus_mtls_verify_client_optional = false;
+	}
+
+	return combinedData;
+};
+
 const internalStream = {
 	/**
 	 * @param   {Access}  access
@@ -12,26 +36,21 @@ const internalStream = {
 	 * @returns {Promise}
 	 */
 	create: async (access, data) => {
-		const thisData = data;
+		const thisData = cleanStreamData(data);
 		const createCertificate = thisData.certificate_id === "new";
 
 		if (createCertificate) {
 			delete thisData.certificate_id;
-		} else if (Number(thisData.certificate_id) > 0) {
+		} else if (thisData.certificate_id > 0) {
 			await internalCertificate.get(access, { id: thisData.certificate_id });
 		}
-		if (Number(thisData.npmplus_mtls_certificate_id) > 0) {
+		if (thisData.npmplus_mtls_certificate_id > 0) {
 			await internalCertificate.get(access, { id: thisData.npmplus_mtls_certificate_id });
 		}
 
 		access.can("streams:manage");
 
 		thisData.owner_user_id = access.token.getUserId(1);
-
-		if (!createCertificate && !(Number(thisData.certificate_id) > 0)) {
-			thisData.npmplus_mtls_certificate_id = 0;
-			thisData.npmplus_mtls_verify_client_optional = false;
-		}
 
 		if (createCertificate) {
 			thisData.certificate_id = (await internalCertificate.createQuickCertificate(access, thisData)).id;
@@ -70,38 +89,33 @@ const internalStream = {
 	 * @return {Promise}
 	 */
 	update: async (access, data) => {
-		const thisData = data;
+		const existingRow = await internalStream.get(access, { id: data.id });
+		if (existingRow.id !== data.id) {
+			// Sanity check that something crazy hasn't happened
+			throw new errs.InternalValidationError(
+				`Stream could not be updated, IDs do not match: ${existingRow.id} !== ${data.id}`,
+			);
+		}
+
+		const thisData = cleanStreamData(data, existingRow);
 		const createCertificate = thisData.certificate_id === "new";
 
 		if (createCertificate) {
 			delete thisData.certificate_id;
-		} else if (Number(thisData.certificate_id) > 0) {
+		} else if (thisData.certificate_id > 0) {
 			await internalCertificate.get(access, { id: thisData.certificate_id });
 		}
-		if (Number(thisData.npmplus_mtls_certificate_id) > 0) {
+		if (thisData.npmplus_mtls_certificate_id > 0) {
 			await internalCertificate.get(access, { id: thisData.npmplus_mtls_certificate_id });
 		}
 
 		access.can("streams:manage");
-
-		const existingRow = await internalStream.get(access, { id: thisData.id });
-		if (existingRow.id !== thisData.id) {
-			// Sanity check that something crazy hasn't happened
-			throw new errs.InternalValidationError(
-				`Stream could not be updated, IDs do not match: ${existingRow.id} !== ${thisData.id}`,
-			);
-		}
 
 		if (createCertificate) {
 			const cert = await internalCertificate.createQuickCertificate(access, thisData);
 
 			// update host with cert id
 			thisData.certificate_id = cert.id;
-		}
-
-		if (!(Number(thisData.certificate_id ?? existingRow.certificate_id) > 0)) {
-			thisData.npmplus_mtls_certificate_id = 0;
-			thisData.npmplus_mtls_verify_client_optional = false;
 		}
 
 		await streamModel.query().where({ id: thisData.id }).patch(thisData);
