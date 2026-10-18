@@ -15,12 +15,6 @@ const internalSetting = {
 		access.canAdmin();
 
 		const existingRow = await internalSetting.get(access, { id: data.id });
-		if (existingRow.id !== data.id) {
-			// Sanity check that something crazy hasn't happened
-			throw new errs.InternalValidationError(
-				`Setting could not be updated, IDs do not match: ${existingRow.id} !== ${data.id}`,
-			);
-		}
 
 		const merged = { ...existingRow, ...data };
 		if (["html", "redirect"].includes(merged.value) && !merged.meta?.[merged.value]) {
