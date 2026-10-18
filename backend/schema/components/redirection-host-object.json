@@ -51,6 +51,7 @@
 				307,
 				308
 			],
+			"default": 302,
 			"example": 302
 		},
 		"forward_scheme": {
@@ -60,6 +61,7 @@
 				"http",
 				"https"
 			],
+			"default": "$scheme",
 			"example": "http"
 		},
 		"forward_domain_name": {
@@ -73,6 +75,7 @@
 		"preserve_path": {
 			"description": "Should the path be preserved",
 			"type": "boolean",
+			"default": false,
 			"example": true
 		},
 		"certificate_id": {
@@ -92,6 +95,7 @@
 		},
 		"advanced_config": {
 			"type": "string",
+			"default": "",
 			"example": ""
 		},
 		"enabled": {

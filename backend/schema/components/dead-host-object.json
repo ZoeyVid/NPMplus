@@ -54,6 +54,7 @@
 		},
 		"advanced_config": {
 			"type": "string",
+			"default": "",
 			"example": ""
 		},
 		"enabled": {
