@@ -31,7 +31,7 @@ const ProxyHostModal = EasyModal.create(({ id, isClone, visible, remove }) => {
 	const [errorMsg, setErrorMsg] = useState(null);
 	const [isSubmitting, setIsSubmitting] = useState(false);
 	const [advVisible, setAdvVisible] = useState(false);
-	const initialLocations = data?.locations.map(({ accessLists, ...location }) => ({
+	const initialLocations = data?.locations.map(({ id: locationId, proxyHostId, accessLists, ...location }) => ({
 		...location,
 		npmplusAccessListIds: accessLists.map((accessList) => accessList.id),
 	}));
@@ -272,7 +272,7 @@ const ProxyHostModal = EasyModal.create(({ id, isClone, visible, remove }) => {
 																		className="form-control"
 																		placeholder="example.com"
 																		required={form.values.forwardScheme !== "empty"}
-																		pattern="\S{0,255}"
+																		pattern="(?=\S{0,255}$)[^\s\/]{0,253}(\/\S*)?"
 																		{...field}
 																	/>
 																</div>

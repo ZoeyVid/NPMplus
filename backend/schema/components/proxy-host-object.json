@@ -56,7 +56,7 @@
 		"forward_host": {
 			"type": "string",
 			"maxLength": 255,
-			"pattern": "^\\S*$",
+			"pattern": "^[^\\s/]{0,253}(/\\S*)?$",
 			"default": "",
 			"example": "127.0.0.1"
 		},
@@ -232,15 +232,6 @@
 					}
 				],
 				"properties": {
-					"id": {
-						"type": [
-							"integer",
-							"null"
-						]
-					},
-					"proxy_host_id": {
-						"$ref": "../common.json#/properties/id"
-					},
 					"npmplus_enabled": {
 						"$ref": "../common.json#/properties/enabled"
 					},
