@@ -57,12 +57,14 @@
 			"type": "string",
 			"maxLength": 255,
 			"pattern": "^\\S*$",
+			"default": "",
 			"example": "127.0.0.1"
 		},
 		"forward_port": {
 			"type": "integer",
 			"minimum": 0,
 			"maximum": 65535,
+			"default": 0,
 			"example": 8080
 		},
 		"npmplus_access_list_ids":{
@@ -103,6 +105,7 @@
 				"upstream",
 				"none"
 			],
+			"default": "SAMEORIGIN",
 			"example": "DENY"
 		},
 		"npmplus_auth_request": {
@@ -117,20 +120,24 @@
 				"authentik",
 				"authentik-send-basic-auth"
 			],
+			"default": "none",
 			"example": "none"
 		},
 		"npmplus_auth_request_upstream": {
 			"type": "string",
 			"pattern": "^(https?://(([^\\s/:]+|\\[[a-fA-F0-9:]+\\]):[0-9]+|cu_[^\\s/:]+))?$",
 			"maxLength": 255,
+			"default": "",
 			"example": ""
 		},
 		"advanced_config": {
 			"type": "string",
+			"default": "",
 			"example": ""
 		},
 		"npmplus_location_config": {
 			"type": "string",
+			"default": "",
 			"example": ""
 		},
 		"npmplus_nginx_online": {
@@ -164,6 +171,7 @@
 				"grpc",
 				"grpcs"
 			],
+			"default": "http",
 			"example": "http"
 		},
 		"enabled": {
@@ -251,7 +259,8 @@
 							"~ ",
 							"~* ",
 							"^~ "
-						]
+						],
+						"default": ""
 					},
 					"forward_scheme": {
 						"$ref": "#/properties/forward_scheme"
@@ -290,7 +299,8 @@
 						"$ref": "#/properties/npmplus_auth_request_upstream"
 					},
 					"advanced_config": {
-						"type": "string"
+						"type": "string",
+						"default": ""
 					},
 					"npmplus_access_list_ids":{
 						"$ref": "../common.json#/properties/npmplus_access_list_ids"
@@ -300,6 +310,7 @@
 					}
 				}
 			},
+			"default": [],
 			"example": [
 				{
 					"path": "/app",

@@ -32,6 +32,7 @@
 		"is_disabled": {
 			"type": "boolean",
 			"description": "Is user Disabled",
+			"default": false,
 			"example": true
 		},
 		"email": {
@@ -56,6 +57,7 @@
 		},
 		"roles": {
 			"description": "Roles applied",
+			"default": [],
 			"example": [
 				"admin"
 			],
