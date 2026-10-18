@@ -40,7 +40,7 @@ class Stream extends Model {
 	}
 
 	$formatDatabaseJson(json) {
-		const thisJson = convertBoolFieldsToInt(removeCertificateFields(json), boolFields);
+		const { domain_names, ...thisJson } = convertBoolFieldsToInt(removeCertificateFields(json), boolFields);
 		return super.$formatDatabaseJson(thisJson);
 	}
 

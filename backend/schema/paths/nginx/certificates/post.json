@@ -50,7 +50,28 @@
 							"then": {
 								"required": [
 									"npmplus_dns_provider"
-								]
+								],
+								"properties": {
+									"domain_names": {
+										"$ref": "../../../components/certificate-object.json#/properties/domain_names_dns"
+									}
+								}
+							},
+							"else": {
+								"if": {
+									"properties": {
+										"provider": {
+											"const": "letsencrypt"
+										}
+									}
+								},
+								"then": {
+									"properties": {
+										"domain_names": {
+											"$ref": "../../../components/certificate-object.json#/properties/domain_names_http"
+										}
+									}
+								}
 							}
 						}
 					],

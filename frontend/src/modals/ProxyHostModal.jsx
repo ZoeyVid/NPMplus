@@ -199,7 +199,9 @@ const ProxyHostModal = EasyModal.create(({ id, isClone, visible, remove }) => {
 										<div className="tab-content">
 											<div className="tab-pane active show" id="tab-details" role="tabpanel">
 												<DomainNamesField
-													isWildcardPermitted
+													isWildcardPermitted={
+														values.certificateId !== "new" || values.npmplusDnsChallenge
+													}
 													dnsProviderWildcardSupported
 													forCertificate={values.certificateId === "new"}
 												/>
@@ -700,7 +702,7 @@ const ProxyHostModal = EasyModal.create(({ id, isClone, visible, remove }) => {
 													allowNew
 												/>
 
-												<SSLOptionsFields color="bg-lime" forProxy />
+												<SSLOptionsFields color="bg-lime" forProxyHost />
 											</div>
 											<div className="tab-pane" id="tab-advanced" role="tabpanel">
 												<NginxConfigField />
