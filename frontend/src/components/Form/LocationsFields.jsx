@@ -38,7 +38,6 @@ export function LocationsFields({ initialValues, name = "locations" }) {
 		npmplusAuthRequest: "none",
 		npmplusAuthRequestUpstream: "",
 		npmplusAccessListType: "global",
-		id: null,
 		...item,
 		uiKey: nextUiKey.current++,
 	});
@@ -325,7 +324,7 @@ export function LocationsFields({ initialValues, name = "locations" }) {
 										type="text"
 										className="form-control"
 										required={item.forwardScheme !== "empty"}
-										pattern="\S{0,255}"
+										pattern="(?=\S{0,255}$)[^\s\/]{0,253}(\/\S*)?"
 										placeholder="eg: 10.0.0.1/path/"
 										value={item.forwardHost}
 										onChange={(e) => handleChange(idx, "forwardHost", e.target.value)}
