@@ -198,13 +198,6 @@ const internalCertificate = {
 		access.can("certificates:manage");
 		const row = await internalCertificate.get(access, { id: data.id });
 
-		if (row.id !== data.id) {
-			// Sanity check that something crazy hasn't happened
-			throw new error.InternalValidationError(
-				`Certificate could not be updated, IDs do not match: ${row.id} !== ${data.id}`,
-			);
-		}
-
 		const savedRow = await certificateModel.query().patchAndFetchById(row.id, data);
 
 		// Add to audit log
