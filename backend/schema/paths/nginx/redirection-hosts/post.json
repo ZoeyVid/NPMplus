@@ -78,8 +78,6 @@
 					],
 					"required": [
 						"domain_names",
-						"forward_scheme",
-						"forward_http_code",
 						"forward_domain_name"
 					],
 					"properties": {

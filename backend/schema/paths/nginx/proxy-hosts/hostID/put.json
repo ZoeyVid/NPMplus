@@ -87,6 +87,44 @@
 									}
 								}
 							}
+						},
+						{
+							"if": {
+								"properties": {
+									"forward_scheme": {
+										"const": "empty"
+									}
+								},
+								"required": [
+									"forward_scheme"
+								]
+							},
+							"else": {
+								"properties": {
+									"forward_host": {
+										"minLength": 1
+									}
+								}
+							}
+						},
+						{
+							"if": {
+								"properties": {
+									"npmplus_access_list_type": {
+										"const": "custom"
+									}
+								},
+								"required": [
+									"npmplus_access_list_type"
+								]
+							},
+							"then": {
+								"properties": {
+									"npmplus_access_list_ids": {
+										"minItems": 1
+									}
+								}
+							}
 						}
 					],
 					"minProperties": 1,

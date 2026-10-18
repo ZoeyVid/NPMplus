@@ -73,6 +73,31 @@
 									}
 								}
 							}
+						},
+						{
+							"if": {
+								"properties": {
+									"provider": {
+										"enum": [
+											"other",
+											"mtls"
+										]
+									}
+								},
+								"required": [
+									"provider"
+								]
+							},
+							"then": {
+								"required": [
+									"nice_name"
+								],
+								"properties": {
+									"nice_name": {
+										"minLength": 1
+									}
+								}
+							}
 						}
 					],
 					"properties": {

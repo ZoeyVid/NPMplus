@@ -28,6 +28,7 @@
 					},
 					"schema": {
 						"type": "object",
+						"additionalProperties": false,
 						"properties": {
 							"proxy": {
 								"type": "integer",
