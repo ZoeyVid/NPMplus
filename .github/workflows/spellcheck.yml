@@ -20,4 +20,4 @@ jobs:
           check_filenames: true
           check_hidden: true
           skip: pnpm-lock.yaml,./frontend/translations
-          ignore_words_list: afterAll,alog,clen
+          ignore_words_list: afterAll,alog,clen,Nd
