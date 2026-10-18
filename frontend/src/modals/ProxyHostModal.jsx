@@ -700,7 +700,7 @@ const ProxyHostModal = EasyModal.create(({ id, isClone, visible, remove }) => {
 													allowNew
 												/>
 
-												<SSLOptionsFields color="bg-lime" forProxy />
+												<SSLOptionsFields color="bg-lime" forProxyHost />
 											</div>
 											<div className="tab-pane" id="tab-advanced" role="tabpanel">
 												<NginxConfigField />

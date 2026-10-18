@@ -1,9 +1,10 @@
 import cn from "clsx";
 import { Field, useFormikContext } from "formik";
-import { DNSProviderFields } from "src/components";
+import { useEffect } from "react";
+import { DNSProviderFields, DomainNamesField } from "src/components";
 import { T } from "src/locale";
 
-export function SSLOptionsFields({ forProxy, color }) {
+export function SSLOptionsFields({ forHttp = true, forProxyHost, color }) {
 	const { values: v, setFieldValue } = useFormikContext();
 
 	const newCertificate = v?.certificateId === "new";
@@ -23,6 +24,10 @@ export function SSLOptionsFields({ forProxy, color }) {
 	const mtlsBypassAuthRequestPossible =
 		npmplusMtlsVerifyClientOptional &&
 		[v, ...(v.locations ?? [])].some(({ npmplusAuthRequest = "none" }) => npmplusAuthRequest !== "none");
+
+	useEffect(() => {
+		if (!forHttp && newCertificate && !dnsChallenge) void setFieldValue("npmplusDnsChallenge", true);
+	});
 
 	const handleToggleChange = (e, fieldName) => {
 		void setFieldValue(fieldName, e.target.checked);
@@ -150,7 +155,7 @@ export function SSLOptionsFields({ forProxy, color }) {
 						)}
 					</Field>
 				</div>
-				{forProxy ? (
+				{forProxyHost ? (
 					<div className="col-6">
 						<Field name="npmplusMtlsBypassAuthRequest">
 							{({ field }) => (
@@ -176,7 +181,7 @@ export function SSLOptionsFields({ forProxy, color }) {
 					</div>
 				) : null}
 			</div>
-			{getHttpOptions()}
+			{forHttp ? getHttpOptions() : null}
 			{newCertificate ? (
 				<div className="row">
 					<div className="col-6">
@@ -204,8 +209,9 @@ export function SSLOptionsFields({ forProxy, color }) {
 									<input
 										className={dnsChallenge ? toggleEnabled : toggleClasses}
 										type="checkbox"
-										checked={Boolean(dnsChallenge)}
+										checked={!forHttp || Boolean(dnsChallenge)}
 										onChange={(e) => handleToggleChange(e, field.name)}
+										disabled={!forHttp}
 									/>
 
 									<span className="form-check-label">
@@ -215,6 +221,9 @@ export function SSLOptionsFields({ forProxy, color }) {
 							)}
 						</Field>
 					</div>
+					{forHttp ? null : (
+						<DomainNamesField isWildcardPermitted dnsProviderWildcardSupported forCertificate />
+					)}
 					{dnsChallenge ? <DNSProviderFields showBoundaryBox /> : null}
 				</div>
 			) : null}

@@ -2,7 +2,14 @@ import { Field, Form, Formik } from "formik";
 import { useState } from "react";
 import { Alert } from "react-bootstrap";
 import Modal from "react-bootstrap/Modal";
-import { Button, DirectoryField, Loading, NginxConfigField, SSLCertificateField } from "src/components";
+import {
+	Button,
+	DirectoryField,
+	Loading,
+	NginxConfigField,
+	SSLCertificateField,
+	SSLOptionsFields,
+} from "src/components";
 import { useDirectorySuggestions, useSetStream, useStream, useStreams } from "src/hooks";
 import { intl, T } from "src/locale";
 import EasyModal from "src/modules/easyModal";
@@ -29,6 +36,7 @@ const StreamModal = EasyModal.create(({ id, visible, remove }) => {
 		const payload = {
 			id: id === "new" ? undefined : id,
 			...values,
+			domainNames: values.certificateId === "new" ? values.domainNames : undefined,
 		};
 
 		setStream(payload, {
@@ -481,41 +489,11 @@ const StreamModal = EasyModal.create(({ id, visible, remove }) => {
 												<SSLCertificateField
 													name="certificateId"
 													label="ssl-certificate"
-													allowNew={false}
+													allowNew
 													forHttp={false}
 												/>
 
-												<div className="row">
-													<div className="col-12">
-														<Field name="npmplusMtlsVerifyClientOptional">
-															{({ field }) => (
-																<label className="form-check form-switch mt-1">
-																	<input
-																		className="form-check-input"
-																		type="checkbox"
-																		checked={
-																			values?.npmplusMtlsVerifyClientOptional ===
-																			true
-																		}
-																		onChange={(e) => {
-																			setFieldValue(field.name, e.target.checked);
-																		}}
-																		disabled={
-																			!(
-																				values?.certificateId > 0 &&
-																				values?.npmplusMtlsCertificateId > 0
-																			) || values?.udpForwarding
-																		}
-																	/>
-
-																	<span className="form-check-label">
-																		<T id="domains.mtls-verify-client-optional" />
-																	</span>
-																</label>
-															)}
-														</Field>
-													</div>
-												</div>
+												<SSLOptionsFields color="bg-blue" forHttp={false} />
 											</div>
 											<div className="tab-pane" id="tab-advanced" role="tabpanel">
 												<NginxConfigField
