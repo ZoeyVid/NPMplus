@@ -15,7 +15,7 @@ async function appStart() {
 		await setup();
 		await getCompiledSchema();
 
-		if (process.env.TRUST_CLOUDFLARE === "false") {
+		if (process.env.TRUST_CLOUDFLARE !== "true") {
 			logger.info("Cloudflares IPs are NOT trusted");
 			await internalIpRanges.generateConfig([]);
 		} else {

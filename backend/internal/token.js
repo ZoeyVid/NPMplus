@@ -103,7 +103,7 @@ export default {
 
 		// Check if MFA is enabled
 		const hasMfa = await mfa.isAnyEnabled(user.id);
-		if (hasMfa && process.env.OIDC_SKIP_MFA === "false") {
+		if (hasMfa && process.env.OIDC_SKIP_MFA !== "true") {
 			// Return challenge token instead of full token
 			const challengeToken = Token.create({
 				iss: "api",

@@ -36,6 +36,7 @@
 			"type": "string",
 			"description": "Nice Name for the custom certificate",
 			"maxLength": 255,
+			"default": "",
 			"example": "My Custom Cert"
 		},
 		"domain_names": {
@@ -98,23 +99,27 @@
 		"npmplus_reuse_key": {
 			"description": "Reuse the private key on renewal",
 			"type": "boolean",
+			"default": false,
 			"example": false
 		},
 		"npmplus_dns_challenge": {
 			"description": "Use the DNS challenge",
 			"type": "boolean",
+			"default": false,
 			"example": false
 		},
 		"npmplus_dns_provider": {
 			"description": "DNS provider",
 			"type": "string",
 			"maxLength": 255,
+			"default": "",
 			"example": "cloudflare"
 		},
 		"npmplus_dns_provider_credentials": {
 			"description": "DNS provider credentials",
 			"type": "string",
 			"writeOnly": true,
+			"default": "",
 			"example": "dns_cloudflare_api_token=123"
 		},
 		"npmplus_propagation_seconds": {
@@ -122,6 +127,7 @@
 			"type": "integer",
 			"minimum": 0,
 			"maximum": 7200,
+			"default": 0,
 			"example": 0
 		}
 	}

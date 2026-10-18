@@ -69,6 +69,7 @@
 					"example": "new"
 				}
 			],
+			"default": 0,
 			"example": 5
 		},
 		"domain_names": {
@@ -91,21 +92,25 @@
 		"enabled": {
 			"description": "Is Enabled",
 			"type": "boolean",
+			"default": true,
 			"example": false
 		},
 		"ssl_forced": {
 			"description": "Is SSL Forced",
 			"type": "boolean",
+			"default": false,
 			"example": true
 		},
 		"hsts_enabled": {
 			"description": "Is HSTS Enabled",
 			"type": "boolean",
+			"default": false,
 			"example": true
 		},
 		"hsts_subdomains": {
 			"description": "Is HSTS applicable to all subdomains",
 			"type": "boolean",
+			"default": false,
 			"example": true
 		},
 		"ssl_provider": {
@@ -116,6 +121,7 @@
 		"npmplus_http3_support": {
 			"description": "HTTP3 Protocol Support",
 			"type": "boolean",
+			"default": false,
 			"example": true
 		},
 		"npmplus_nginx_online": {
@@ -134,52 +140,62 @@
 			"description": "Directory to group this host in the UI",
 			"type": "string",
 			"maxLength": 255,
+			"default": "",
 			"example": "Production"
 		},
 		"npmplus_mtls_certificate_id": {
 			"description": "mTLS Certificate ID",
 			"type": "integer",
 			"minimum": 0,
+			"default": 0,
 			"example": 0
 		},
 		"npmplus_mtls_verify_client_optional": {
 			"description": "Make the mTLS client verification optional",
 			"type": "boolean",
+			"default": false,
 			"example": false
 		},
 		"npmplus_mtls_bypass_auth_request": {
 			"description": "Skip the auth request if the mTLS client verification succeeded",
 			"type": "boolean",
+			"default": false,
 			"example": false
 		},
 		"npmplus_noindex": {
 			"description": "Send noindex header and block some user agents",
 			"type": "boolean",
+			"default": false,
 			"example": false
 		},
 		"npmplus_crowdsec_appsec": {
 			"description": "Disable Crowdsec Appsec",
 			"type": "boolean",
+			"default": false,
 			"example": false
 		},
 		"npmplus_proxy_request_buffering": {
 			"description": "Disable Request Buffering",
 			"type": "boolean",
+			"default": false,
 			"example": false
 		},
 		"npmplus_proxy_response_buffering": {
 			"description": "Disable Response Buffering",
 			"type": "boolean",
+			"default": false,
 			"example": false
 		},
 		"npmplus_upstream_compression": {
 			"description": "Enable compression by upstream",
 			"type": "boolean",
+			"default": false,
 			"example": false
 		},
 		"npmplus_fancyindex": {
 			"description": "Enable fancyindex",
 			"type": "boolean",
+			"default": false,
 			"example": false
 		},
 		"email": {
@@ -229,6 +245,7 @@
 					"password": "pass"
 				}
 			},
+			"default": [],
 			"example": [
 				{
 					"username": "admin",
@@ -258,6 +275,7 @@
 					"address": "192.168.0.0/24"
 				}
 			},
+			"default": [],
 			"example": [
 				{
 					"directive": "allow",
@@ -272,14 +290,16 @@
 			"items": {
 				"type": "integer",
 				"minimum": 1
-			}
+			},
+			"default": []
 		},
 		"npmplus_host_access_list_type": {
 			"type": "string",
 			"enum": [
 				"public",
 				"custom"
-			]
+			],
+			"default": "public"
 		},
 		"npmplus_location_access_list_type": {
 			"type": "string",
@@ -287,7 +307,8 @@
 				"global",
 				"public",
 				"custom"
-			]
+			],
+			"default": "global"
 		},
 		"certificate_files": {
 			"description": "Certificate Files",
