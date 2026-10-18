@@ -90,12 +90,6 @@ const internalStream = {
 	 */
 	update: async (access, data) => {
 		const existingRow = await internalStream.get(access, { id: data.id });
-		if (existingRow.id !== data.id) {
-			// Sanity check that something crazy hasn't happened
-			throw new errs.InternalValidationError(
-				`Stream could not be updated, IDs do not match: ${existingRow.id} !== ${data.id}`,
-			);
-		}
 
 		const thisData = cleanStreamData(data, existingRow);
 		const createCertificate = thisData.certificate_id === "new";
