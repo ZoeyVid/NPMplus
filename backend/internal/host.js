@@ -33,7 +33,7 @@ const internalHost = {
 	cleanSslHstsData: (newCert, data, existingData) => {
 		const combinedData = { ...existingData, ...data };
 
-		if (!combinedData.certificate_id && !newCert) {
+		if (!(Number(combinedData.certificate_id) > 0) && !newCert) {
 			combinedData.ssl_forced = false;
 			combinedData.npmplus_mtls_certificate_id = 0;
 			combinedData.npmplus_mtls_verify_client_optional = false;

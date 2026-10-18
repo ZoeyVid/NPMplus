@@ -52,6 +52,7 @@ const UserModal = EasyModal.create(({ id, visible, remove }) => {
 		if (data?.id === currentUser?.id) {
 			// Prevent user from locking themselves out
 			delete payload.roles;
+			delete payload.isDisabled;
 		} else if (payload.isAdmin) {
 			payload.roles = ["admin"];
 		}

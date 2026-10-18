@@ -209,6 +209,10 @@
 			"items": {
 				"type": "object",
 				"additionalProperties": false,
+				"required": [
+					"username",
+					"password"
+				],
 				"properties": {
 					"username": {
 						"type": "string",
@@ -237,6 +241,10 @@
 			"items": {
 				"type": "object",
 				"additionalProperties": false,
+				"required": [
+					"address",
+					"directive"
+				],
 				"properties": {
 					"address": {
 						"$ref": "#/properties/address"
@@ -260,6 +268,7 @@
 		"npmplus_access_list_ids": {
 			"writeOnly": true,
 			"type": "array",
+			"uniqueItems": true,
 			"items": {
 				"type": "integer",
 				"minimum": 1

@@ -33,7 +33,7 @@
 				"example": {
 					"visibility": "all",
 					"access_lists": "view",
-					"certificates": "hidden",
+					"certificates": "view",
 					"dead_hosts": "hidden",
 					"proxy_hosts": "manage",
 					"redirection_hosts": "hidden",
