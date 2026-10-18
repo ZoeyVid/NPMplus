@@ -21,12 +21,12 @@
 		"liquidjs": "10.30.0",
 		"multer": "2.4.0",
 		"mysql2": "3.24.6",
-		"objection": "4.1.0",
+		"objection": "4.2.0",
 		"openid-client": "6.8.8",
 		"otplib": "13.5.0",
 		"pg": "8.23.1",
 		"swagger-ui-express": "5.0.1",
-		"undici": "8.12.2"
+		"undici": "8.12.3"
 	},
 	"devDependencies": {
 		"@apidevtools/swagger-parser": "13.1.0",

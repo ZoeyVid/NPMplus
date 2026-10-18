@@ -9,7 +9,7 @@
 		"@ebay/nice-modal-react": "1.2.13",
 		"@tabler/core": "1.6.1",
 		"@tabler/icons-react": "3.49.0",
-		"@tanstack/react-query": "5.104.4",
+		"@tanstack/react-query": "5.104.5",
 		"@tanstack/react-table": "9.3.1",
 		"clsx": "2.1.1",
 		"country-flag-icons": "1.6.20",
@@ -22,7 +22,7 @@
 		"react-bootstrap": "2.10.10",
 		"react-dom": "19.3.1",
 		"react-intl": "12.1.4",
-		"react-router": "8.4.0",
+		"react-router": "8.5.0",
 		"react-select": "5.10.2",
 		"react-toastify": "11.1.0",
 		"rooks": "9.9.0"
