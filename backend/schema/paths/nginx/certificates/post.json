@@ -33,6 +33,11 @@
 								"required": [
 									"domain_names"
 								]
+							},
+							"else": {
+								"properties": {
+									"domain_names": false
+								}
 							}
 						},
 						{
