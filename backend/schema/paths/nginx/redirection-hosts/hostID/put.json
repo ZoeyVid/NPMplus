@@ -61,9 +61,29 @@
 								]
 							},
 							"then": {
-								"properties": {
-									"domain_names": {
-										"$ref": "../../../../components/certificate-object.json#/properties/domain_names"
+								"if": {
+									"properties": {
+										"npmplus_dns_challenge": {
+											"type": "boolean",
+											"const": true
+										}
+									},
+									"required": [
+										"npmplus_dns_challenge"
+									]
+								},
+								"then": {
+									"properties": {
+										"domain_names": {
+											"$ref": "../../../../components/certificate-object.json#/properties/domain_names_dns"
+										}
+									}
+								},
+								"else": {
+									"properties": {
+										"domain_names": {
+											"$ref": "../../../../components/certificate-object.json#/properties/domain_names_http"
+										}
 									}
 								}
 							}

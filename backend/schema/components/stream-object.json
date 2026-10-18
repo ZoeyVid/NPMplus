@@ -77,10 +77,7 @@
 			"$ref": "../common.json#/properties/enabled"
 		},
 		"certificate_id": {
-			"description": "Certificate ID",
-			"type": "integer",
-			"minimum": 0,
-			"example": 5
+			"$ref": "../common.json#/properties/certificate_id"
 		},
 		"npmplus_advanced_config": {
 			"type": "string",

@@ -19,11 +19,22 @@ import proxyHostModel from "../models/proxy_host.js";
 import redirectionHostModel from "../models/redirection_host.js";
 import streamModel from "../models/stream.js";
 import pjson from "../package.json" with { type: "json" };
-import certificateObject from "../schema/components/certificate-object.json" with { type: "json" };
+import { getValidationSchema } from "../schema/index.js";
 import internalAuditLog from "./audit-log.js";
 import internalNginx from "./nginx.js";
 
 const cnPattern = /\bCN=([^\n]+)/i;
+
+const getNiceName = (domainNames) => {
+	const niceName = domainNames.join(", ");
+	if (niceName.length <= 255) return niceName;
+	const shown = [];
+	for (const domain of domainNames) {
+		if ([...shown, domain, "..."].join(", ").length > 255) break;
+		shown.push(domain);
+	}
+	return [...shown, "..."].join(", ");
+};
 
 const internalCertificate = {
 	allowedSslFiles: ["certificate", "certificate_key"],
@@ -89,6 +100,7 @@ const internalCertificate = {
 							.where("id", certificate.id)
 							.andWhere("provider", "letsencrypt")
 							.patch({
+								nice_name: getNiceName(certificate.domain_names),
 								expires_on: dayjs.unix(certInfo.dates.to).format("YYYY-MM-DD HH:mm:ss"),
 							});
 					} catch (err) {
@@ -117,7 +129,7 @@ const internalCertificate = {
 		data.owner_user_id = access.token.getUserId(1);
 
 		if (data.provider === "letsencrypt") {
-			data.nice_name = data.domain_names.join(", ");
+			data.nice_name = getNiceName(data.domain_names);
 		}
 
 		// this command really should clean up and delete the cert if it can't fully succeed
@@ -414,11 +426,14 @@ const internalCertificate = {
 	 * @returns {Promise}
 	 */
 	createQuickCertificate: (access, data) =>
-		internalCertificate.create(access, {
-			provider: "letsencrypt",
-			domain_names: apiValidator(certificateObject.properties.domain_names, data.domain_names),
-			...pickCertificateFields(data),
-		}),
+		internalCertificate.create(
+			access,
+			apiValidator(getValidationSchema("/nginx/certificates", "post"), {
+				provider: "letsencrypt",
+				domain_names: data.domain_names,
+				...pickCertificateFields(data),
+			}),
+		),
 
 	/**
 	 * Validates that the certs provided are good.
@@ -660,6 +675,7 @@ const internalCertificate = {
 			);
 
 			const updatedCertificate = await certificateModel.query().patchAndFetchById(certificate.id, {
+				nice_name: getNiceName(certificate.domain_names),
 				expires_on: dayjs.unix(certInfo.dates.to).format("YYYY-MM-DD HH:mm:ss"),
 			});
 

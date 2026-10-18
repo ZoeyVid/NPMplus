@@ -156,7 +156,9 @@ const RedirectionHostModal = EasyModal.create(({ id, visible, remove }) => {
 										<div className="tab-content">
 											<div className="tab-pane active show" id="tab-details" role="tabpanel">
 												<DomainNamesField
-													isWildcardPermitted
+													isWildcardPermitted={
+														values.certificateId !== "new" || values.npmplusDnsChallenge
+													}
 													dnsProviderWildcardSupported
 													forCertificate={values.certificateId === "new"}
 												/>
