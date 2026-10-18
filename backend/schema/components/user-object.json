@@ -77,6 +77,10 @@
 			"type": "object",
 			"description": "Permissions if expanded in request",
 			"required": [
+				"id",
+				"created_on",
+				"modified_on",
+				"user_id",
 				"visibility",
 				"proxy_hosts",
 				"redirection_hosts",
@@ -85,7 +89,20 @@
 				"access_lists",
 				"certificates"
 			],
+			"additionalProperties": false,
 			"properties": {
+				"id": {
+					"$ref": "../common.json#/properties/id"
+				},
+				"created_on": {
+					"$ref": "../common.json#/properties/created_on"
+				},
+				"modified_on": {
+					"$ref": "../common.json#/properties/modified_on"
+				},
+				"user_id": {
+					"$ref": "../common.json#/properties/user_id"
+				},
 				"visibility": {
 					"type": "string",
 					"description": "Visibility level",

@@ -170,10 +170,9 @@ const internalUser = {
 	 */
 	update: async (access, data) => {
 		access.canUser(data.id);
-		try {
-			access.canAdmin();
-		} catch {
-			delete data.roles;
+		if (data.roles !== undefined) access.canAdmin();
+		if (data.id === access.token.getUserId(0) && (data.roles !== undefined || data.is_disabled !== undefined)) {
+			throw new errs.PermissionError("You cannot change your own roles or disable yourself.");
 		}
 		const existingUser = await internalUser.get(access, { id: data.id });
 		// 2. if email is to be changed, find other users with that email
