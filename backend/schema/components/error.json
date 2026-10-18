@@ -1,6 +1,7 @@
 {
 	"type": "object",
 	"description": "Error",
+	"additionalProperties": false,
 	"properties": {
 		"error": {
 			"$ref": "./error-object.json"

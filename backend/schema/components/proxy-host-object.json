@@ -171,17 +171,58 @@
 		},
 		"locations": {
 			"type": "array",
-			"minItems": 0,
 			"items": {
 				"type": "object",
 				"required": [
-					"forward_scheme",
-					"forward_host",
-					"forward_port",
-					"path",
-					"npmplus_access_list_type"
+					"path"
 				],
 				"additionalProperties": false,
+				"allOf": [
+					{
+						"if": {
+							"properties": {
+								"forward_scheme": {
+									"const": "empty"
+								}
+							},
+							"required": [
+								"forward_scheme"
+							]
+						},
+						"else": {
+							"required": [
+								"forward_host"
+							],
+							"properties": {
+								"forward_host": {
+									"minLength": 1
+								}
+							}
+						}
+					},
+					{
+						"if": {
+							"properties": {
+								"npmplus_access_list_type": {
+									"const": "custom"
+								}
+							},
+							"required": [
+								"npmplus_access_list_type"
+							]
+						},
+						"then": {
+							"required": [
+								"npmplus_access_list_ids"
+							],
+							"properties": {
+								"npmplus_access_list_ids": {
+									"minItems": 1
+								}
+							}
+						}
+					}
+				],
 				"properties": {
 					"id": {
 						"type": [
@@ -256,9 +297,6 @@
 					},
 					"npmplus_access_list_type": {
 						"$ref": "../common.json#/properties/npmplus_location_access_list_type"
-					},
-					"access_lists": {
-						"$ref": "#/properties/access_lists"
 					}
 				}
 			},
@@ -296,7 +334,6 @@
 		},
 		"access_lists": {
 			"type": "array",
-			"minItems": 0,
 			"items": {
 				"$ref": "./access-list-object.json"
 			},

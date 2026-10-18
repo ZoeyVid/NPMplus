@@ -42,8 +42,7 @@
 					},
 					"required": [
 						"incoming_port",
-						"forwarding_host",
-						"forwarding_port"
+						"forwarding_host"
 					],
 					"properties": {
 						"incoming_port": {
