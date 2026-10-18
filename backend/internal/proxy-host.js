@@ -33,6 +33,23 @@ const replaceLocationsAndAccessLists = async (trx, proxyHostId, data) => {
 	}
 };
 
+const cleanForwardOptions = (item) => {
+	const scheme = item.forward_scheme ?? "http";
+	if (scheme !== "empty") {
+		if (!["http", "https"].includes(scheme)) {
+			item.npmplus_proxy_request_buffering = false;
+			item.npmplus_proxy_response_buffering = false;
+		}
+		if (scheme === "path") {
+			item.npmplus_upstream_compression = false;
+		} else {
+			item.npmplus_fancyindex = false;
+		}
+	}
+	if (!item.npmplus_crowdsec_appsec) item.npmplus_proxy_request_buffering = false;
+	if ((item.npmplus_auth_request ?? "none") === "none") item.npmplus_auth_request_upstream = "";
+};
+
 const internalProxyHost = {
 	/**
 	 * @param   {Access}  access
@@ -45,10 +62,10 @@ const internalProxyHost = {
 
 		if (createCertificate) {
 			delete thisData.certificate_id;
-		} else if (Number(thisData.certificate_id) > 0) {
+		} else if (thisData.certificate_id > 0) {
 			await internalCertificate.get(access, { id: thisData.certificate_id });
 		}
-		if (Number(thisData.npmplus_mtls_certificate_id) > 0) {
+		if (thisData.npmplus_mtls_certificate_id > 0) {
 			await internalCertificate.get(access, { id: thisData.npmplus_mtls_certificate_id });
 		}
 
@@ -67,6 +84,7 @@ const internalProxyHost = {
 		thisData.owner_user_id = access.token.getUserId(1);
 		thisData = internalHost.cleanSslHstsData(createCertificate, thisData);
 		thisData = internalProxyHostAccessList.cleanAccessListTypes(thisData);
+		for (const item of [thisData, ...(thisData.locations ?? [])]) cleanForwardOptions(item);
 		await internalProxyHostAccessList.validateAccessLists(access, thisData);
 
 		if (createCertificate) {
@@ -115,10 +133,10 @@ const internalProxyHost = {
 
 		if (createCertificate) {
 			delete thisData.certificate_id;
-		} else if (Number(thisData.certificate_id) > 0) {
+		} else if (thisData.certificate_id > 0) {
 			await internalCertificate.get(access, { id: thisData.certificate_id });
 		}
-		if (Number(thisData.npmplus_mtls_certificate_id) > 0) {
+		if (thisData.npmplus_mtls_certificate_id > 0) {
 			await internalCertificate.get(access, { id: thisData.npmplus_mtls_certificate_id });
 		}
 
@@ -158,6 +176,7 @@ const internalProxyHost = {
 
 		thisData = internalHost.cleanSslHstsData(createCertificate, thisData, existingRow);
 		thisData = internalProxyHostAccessList.cleanAccessListTypes(thisData);
+		for (const item of [thisData, ...(thisData.locations ?? [])]) cleanForwardOptions(item);
 		await internalProxyHostAccessList.validateAccessLists(access, thisData);
 
 		await proxyHostModel.transaction(async (trx) => {
