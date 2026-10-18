@@ -17,6 +17,29 @@
 				"schema": {
 					"type": "object",
 					"additionalProperties": false,
+					"if": {
+						"properties": {
+							"certificate_id": {
+								"const": "new"
+							}
+						},
+						"required": [
+							"certificate_id"
+						]
+					},
+					"then": {
+						"required": [
+							"domain_names",
+							"npmplus_dns_challenge",
+							"npmplus_dns_provider"
+						],
+						"properties": {
+							"npmplus_dns_challenge": {
+								"type": "boolean",
+								"const": true
+							}
+						}
+					},
 					"required": [
 						"incoming_port",
 						"forwarding_host",
@@ -46,6 +69,24 @@
 						},
 						"certificate_id": {
 							"$ref": "../../../components/stream-object.json#/properties/certificate_id"
+						},
+						"domain_names": {
+							"$ref": "../../../components/certificate-object.json#/properties/domain_names_dns"
+						},
+						"npmplus_reuse_key": {
+							"$ref": "../../../components/certificate-object.json#/properties/npmplus_reuse_key"
+						},
+						"npmplus_dns_challenge": {
+							"$ref": "../../../components/certificate-object.json#/properties/npmplus_dns_challenge"
+						},
+						"npmplus_dns_provider": {
+							"$ref": "../../../components/certificate-object.json#/properties/npmplus_dns_provider"
+						},
+						"npmplus_dns_provider_credentials": {
+							"$ref": "../../../components/certificate-object.json#/properties/npmplus_dns_provider_credentials"
+						},
+						"npmplus_propagation_seconds": {
+							"$ref": "../../../components/certificate-object.json#/properties/npmplus_propagation_seconds"
 						},
 						"npmplus_advanced_config": {
 							"$ref": "../../../components/stream-object.json#/properties/npmplus_advanced_config"
