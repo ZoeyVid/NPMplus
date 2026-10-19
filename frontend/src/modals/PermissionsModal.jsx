@@ -10,6 +10,7 @@ import { useUser } from "src/hooks";
 import { T } from "src/locale";
 import EasyModal from "src/modules/easyModal";
 import { isAdmin } from "src/modules/Permissions";
+import { showObjectSuccess } from "src/notifications";
 
 const showPermissionsModal = (id) => {
 	EasyModal.show(PermissionsModal, { id });
@@ -27,6 +28,7 @@ const PermissionsModal = EasyModal.create(({ id, visible, remove }) => {
 		setErrorMsg(null);
 		try {
 			await setPermissions(id, values);
+			showObjectSuccess("user", "updated");
 			remove();
 			await Promise.all([
 				queryClient.invalidateQueries({ queryKey: ["users"] }),
@@ -87,7 +89,7 @@ const PermissionsModal = EasyModal.create(({ id, visible, remove }) => {
 					<input
 						type="radio"
 						className="btn-check"
-						name="btn-radio-basic"
+						name={field.name}
 						id={`${field.name}-manage`}
 						autoComplete="off"
 						value="manage"
@@ -101,7 +103,7 @@ const PermissionsModal = EasyModal.create(({ id, visible, remove }) => {
 					<input
 						type="radio"
 						className="btn-check"
-						name="btn-radio-basic"
+						name={field.name}
 						id={`${field.name}-view`}
 						autoComplete="off"
 						value="view"
@@ -115,7 +117,7 @@ const PermissionsModal = EasyModal.create(({ id, visible, remove }) => {
 					<input
 						type="radio"
 						className="btn-check"
-						name="btn-radio-basic"
+						name={field.name}
 						id={`${field.name}-hidden`}
 						autoComplete="off"
 						value="hidden"
@@ -133,7 +135,7 @@ const PermissionsModal = EasyModal.create(({ id, visible, remove }) => {
 	};
 
 	return (
-		<Modal show={visible} onHide={remove}>
+		<Modal show={visible} onHide={isSubmitting ? undefined : remove}>
 			{error && (
 				<Alert variant="danger" className="m-3">
 					{error?.message}
@@ -155,7 +157,7 @@ const PermissionsModal = EasyModal.create(({ id, visible, remove }) => {
 				>
 					{() => (
 						<Form>
-							<Modal.Header closeButton>
+							<Modal.Header closeButton={!isSubmitting}>
 								<Modal.Title>
 									<T id="user.set-permissions" data={{ name: data?.name }} />
 								</Modal.Title>
@@ -174,7 +176,7 @@ const PermissionsModal = EasyModal.create(({ id, visible, remove }) => {
 												<input
 													type="radio"
 													className="btn-check"
-													name="btn-radio-basic"
+													name={field.name}
 													id={`${field.name}-user`}
 													autoComplete="off"
 													value="user"
@@ -191,7 +193,7 @@ const PermissionsModal = EasyModal.create(({ id, visible, remove }) => {
 												<input
 													type="radio"
 													className="btn-check"
-													name="btn-radio-basic"
+													name={field.name}
 													id={`${field.name}-all`}
 													autoComplete="off"
 													value="all"

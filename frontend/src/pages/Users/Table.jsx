@@ -226,6 +226,7 @@ export default function Table({
 		features,
 		columns: columnHelper.columns(columns),
 		data,
+		getRowId: (row) => `${row.id}`,
 		meta: {
 			isFetching,
 		},

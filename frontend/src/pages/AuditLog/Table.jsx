@@ -73,6 +73,7 @@ export default function Table({ data, isFetching, onSelectItem }) {
 		features,
 		columns: columnHelper.columns(columns),
 		data,
+		getRowId: (row) => `${row.id}`,
 		meta: {
 			isFetching,
 		},

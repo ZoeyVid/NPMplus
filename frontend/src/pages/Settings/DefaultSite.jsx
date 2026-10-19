@@ -263,8 +263,8 @@ export default function DefaultSite() {
 						<div className="btn-list justify-content-end">
 							<Button
 								type="submit"
-								actionType="primary"
-								className="ms-auto bg-teal"
+								color="teal"
+								className="ms-auto"
 								isLoading={isSubmitting}
 								disabled={isSubmitting}
 							>

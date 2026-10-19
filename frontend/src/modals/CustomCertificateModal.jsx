@@ -66,7 +66,7 @@ const CustomCertificateModal = EasyModal.create(({ visible, remove, cert, provid
 	};
 
 	return (
-		<Modal show={visible} onHide={remove}>
+		<Modal show={visible} onHide={isSubmitting ? undefined : remove}>
 			<Formik
 				initialValues={{
 					niceName: cert?.niceName || "",
@@ -78,7 +78,7 @@ const CustomCertificateModal = EasyModal.create(({ visible, remove, cert, provid
 			>
 				{() => (
 					<Form>
-						<Modal.Header closeButton>
+						<Modal.Header closeButton={!isSubmitting}>
 							<Modal.Title>
 								<T
 									id={isEdit ? "object.edit" : "object.add"}
@@ -173,8 +173,8 @@ const CustomCertificateModal = EasyModal.create(({ visible, remove, cert, provid
 							</Button>
 							<Button
 								type="submit"
-								actionType="primary"
-								className="ms-auto bg-pink"
+								color="pink"
+								className="ms-auto"
 								isLoading={isSubmitting}
 								disabled={isSubmitting}
 							>

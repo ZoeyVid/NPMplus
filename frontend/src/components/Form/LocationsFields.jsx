@@ -147,6 +147,7 @@ export function LocationsFields({ initialValues, name = "locations" }) {
 							aria-label={intl.formatMessage({ id: "location.filter" })}
 							value={filter}
 							onChange={(e) => setFilter(e.target.value)}
+							onKeyDown={(e) => e.key === "Enter" && e.preventDefault()}
 						/>
 
 						<button

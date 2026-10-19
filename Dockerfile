@@ -277,6 +277,7 @@ RUN apk upgrade --no-cache -a && \
     echo "316349857e6de63d21bec1eee155819237d67b338be7c35514879ac8b00848fc  /usr/local/bin/nginxbeautifier" | sha256sum -c - && \
     wget -q https://raw.githubusercontent.com/vasilevich/nginxbeautifier/"$NBF_VER"/nginxbeautifier.js -O /usr/local/bin/nginxbeautifier.js && \
     echo "406f715ae944cc46ae31e79a1bc3ea758f91605621113b8a29f5332fe13f0a83  /usr/local/bin/nginxbeautifier.js" | sha256sum -c - && \
+    sed -i "s|code.slice(0, startOfParanthesis - 1)|code.slice(0, startOfParanthesis)|g" /usr/local/bin/nginxbeautifier.js && \
     \
     ln -s /usr/local/nginx/sbin/nginx /usr/local/bin/nginx && \
     ln -s /app/password-reset.js /usr/local/bin/password-reset.js && \

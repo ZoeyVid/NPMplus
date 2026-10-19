@@ -1,6 +1,7 @@
 import { createGuardrails, generateSecret, generateURI, verify } from "otplib";
 import errs from "../lib/error.js";
 import authModel from "../models/auth.js";
+import now from "../models/now_helper.js";
 import userModel from "../models/user.js";
 import internalAuditLog from "./audit-log.js";
 import internalUser from "./user.js";
@@ -70,20 +71,25 @@ const internalTotp = {
 			throw new errs.ValidationError("TOTP is already enabled");
 		}
 
-		const pending = await authModel.query().where("user_id", userId).andWhere("type", "totp_pending").first();
+		const pending = await authModel
+			.query()
+			.select("*", now().as("now"))
+			.where("user_id", userId)
+			.andWhere("type", "totp_pending")
+			.first();
 
 		if (!pending) {
 			throw new errs.ValidationError("No pending TOTP setup found");
 		}
 
 		// a setup which was not confirmed within 10 minutes has to be started again
-		if (Date.now() - new Date(pending.created_on).getTime() > 600000) {
+		if (new Date(pending.now).getTime() - new Date(pending.created_on).getTime() > 600000) {
 			throw new errs.ValidationError("TOTP setup has expired");
 		}
 
 		const result = await verify({ token: code, secret: pending.secret });
 		if (!result.valid) {
-			throw new errs.ValidationError("Invalid verification code");
+			throw new errs.ValidationError("Invalid verification code", "error.invalid-code");
 		}
 
 		await authModel.transaction(async (trx) => {

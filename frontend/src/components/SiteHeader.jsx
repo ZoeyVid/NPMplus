@@ -5,6 +5,7 @@ import { useUser } from "src/hooks";
 import { T } from "src/locale";
 import { showChangePasswordModal, showMfaModal, showUserModal } from "src/modals";
 import { isAdmin } from "src/modules/Permissions";
+import { showError } from "src/notifications";
 
 export function SiteHeader() {
 	const { data: currentUser } = useUser("me");
@@ -125,9 +126,13 @@ export function SiteHeader() {
 								<a
 									href="?"
 									className="dropdown-item"
-									onClick={(e) => {
+									onClick={async (e) => {
 										e.preventDefault();
-										logout();
+										try {
+											await logout();
+										} catch (err) {
+											showError(<T id={err.message} />);
+										}
 									}}
 								>
 									<IconLogout width={18} />
@@ -136,9 +141,13 @@ export function SiteHeader() {
 								<a
 									href="?"
 									className="dropdown-item"
-									onClick={(e) => {
+									onClick={async (e) => {
 										e.preventDefault();
-										logoutEverywhere();
+										try {
+											await logoutEverywhere();
+										} catch (err) {
+											showError(<T id={err.message} />);
+										}
 									}}
 								>
 									<IconDevicesX width={18} />

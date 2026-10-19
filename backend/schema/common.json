@@ -64,8 +64,7 @@
 					"example": 5
 				},
 				{
-					"type": "string",
-					"pattern": "^new$",
+					"const": "new",
 					"example": "new"
 				}
 			],

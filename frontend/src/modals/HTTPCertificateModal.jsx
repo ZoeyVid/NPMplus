@@ -105,7 +105,7 @@ const HTTPCertificateModal = EasyModal.create(({ visible, remove }) => {
 	);
 
 	return (
-		<Modal show={visible} onHide={remove}>
+		<Modal show={visible} onHide={isSubmitting || isTesting ? undefined : remove}>
 			<Formik
 				initialValues={{
 					domainNames: [],
@@ -116,7 +116,7 @@ const HTTPCertificateModal = EasyModal.create(({ visible, remove }) => {
 			>
 				{() => (
 					<Form>
-						<Modal.Header closeButton>
+						<Modal.Header closeButton={!(isSubmitting || isTesting)}>
 							<Modal.Title>
 								<T id="object.add" tData={{ object: "lets-encrypt-via-http" }} />
 							</Modal.Title>
@@ -187,8 +187,7 @@ const HTTPCertificateModal = EasyModal.create(({ visible, remove }) => {
 								</Button>
 								<Button
 									type="submit"
-									actionType="primary"
-									className="bg-pink"
+									color="pink"
 									isLoading={isSubmitting}
 									disabled={isSubmitting || isTesting}
 								>

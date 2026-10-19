@@ -82,7 +82,7 @@ const ProxyHostModal = EasyModal.create(({ id, isClone, visible, remove }) => {
 	};
 
 	return (
-		<Modal show={visible} onHide={remove}>
+		<Modal show={visible} onHide={isSubmitting ? undefined : remove}>
 			{error && (
 				<Alert variant="danger" className="m-3">
 					{error?.message}
@@ -128,7 +128,7 @@ const ProxyHostModal = EasyModal.create(({ id, isClone, visible, remove }) => {
 				>
 					{({ values }) => (
 						<Form onInvalid={showTabOfInvalid}>
-							<Modal.Header closeButton>
+							<Modal.Header closeButton={!isSubmitting}>
 								<Modal.Title>
 									<T
 										id={data?.id && !isClone ? "object.edit" : "object.add"}
@@ -160,7 +160,6 @@ const ProxyHostModal = EasyModal.create(({ id, isClone, visible, remove }) => {
 													className="nav-link"
 													data-bs-toggle="tab"
 													aria-selected="false"
-													tabIndex={-1}
 													role="tab"
 												>
 													{<T id="column.custom-locations" />}
@@ -173,7 +172,6 @@ const ProxyHostModal = EasyModal.create(({ id, isClone, visible, remove }) => {
 													className="nav-link"
 													data-bs-toggle="tab"
 													aria-selected="false"
-													tabIndex={-1}
 													role="tab"
 												>
 													<T id="column.ssl" />
@@ -186,11 +184,10 @@ const ProxyHostModal = EasyModal.create(({ id, isClone, visible, remove }) => {
 													title="Settings"
 													data-bs-toggle="tab"
 													aria-selected="false"
-													tabIndex={-1}
 													role="tab"
 												>
 													<T id="domains.advanced" />
-													{values?.advancedConfig?.trim() ? " *" : ""}
+													{values?.advancedConfig?.trim() ? "*" : ""}
 												</a>
 											</li>
 										</ul>
@@ -633,7 +630,11 @@ const ProxyHostModal = EasyModal.create(({ id, isClone, visible, remove }) => {
 																						id="npmplusAuthRequestUpstream"
 																						type="text"
 																						className={`form-control ${form.errors.npmplusAuthRequestUpstream && form.touched.npmplusAuthRequestUpstream ? "is-invalid" : ""}`}
-																						placeholder="keep empty to reuse env value"
+																						placeholder={intl.formatMessage(
+																							{
+																								id: "host.auth-request-upstream.placeholder",
+																							},
+																						)}
 																						maxLength={255}
 																						pattern="^https?://(([^\s\/:]+|\[[a-fA-F0-9:]+\]):[0-9]+|cu_[^\s\/:]+)$"
 																						{...field}
@@ -727,8 +728,8 @@ const ProxyHostModal = EasyModal.create(({ id, isClone, visible, remove }) => {
 								<HasPermission section={PROXY_HOSTS} permission={MANAGE} hideError>
 									<Button
 										type="submit"
-										actionType="primary"
-										className="ms-auto bg-lime"
+										color="lime"
+										className="ms-auto"
 										isLoading={isSubmitting}
 										disabled={isSubmitting}
 									>

@@ -31,13 +31,13 @@ export default {
 			.first();
 
 		if (!user) {
-			throw new errs.PermissionError(ERROR_MESSAGE_INVALID_AUTH);
+			throw new errs.PermissionError(ERROR_MESSAGE_INVALID_AUTH, ERROR_MESSAGE_INVALID_AUTH_I18N);
 		}
 
 		const auth = await authModel.getPasswordAuth(user.id);
 
 		if (!auth) {
-			throw new errs.PermissionError(ERROR_MESSAGE_INVALID_AUTH);
+			throw new errs.PermissionError(ERROR_MESSAGE_INVALID_AUTH, ERROR_MESSAGE_INVALID_AUTH_I18N);
 		}
 
 		const valid = await auth.verifyPassword(data.secret);

@@ -178,17 +178,17 @@ export default function Table({
 								<IconEdit size={16} />
 								<T id="action.edit" />
 							</button>
-							<button
-								type="button"
-								className="dropdown-item"
-								onClick={() => {
-									onClone?.(info.row.original.id);
-								}}
-							>
-								<IconCopy size={16} />
-								<T id="action.clone" />
-							</button>
 							<HasPermission section={PROXY_HOSTS} permission={MANAGE} hideError>
+								<button
+									type="button"
+									className="dropdown-item"
+									onClick={() => {
+										onClone?.(info.row.original.id);
+									}}
+								>
+									<IconCopy size={16} />
+									<T id="action.clone" />
+								</button>
 								<button
 									type="button"
 									className="dropdown-item"
@@ -226,6 +226,7 @@ export default function Table({
 		features,
 		columns: columnHelper.columns(columns),
 		data,
+		getRowId: (row) => `${row.id}`,
 		meta: {
 			isFetching,
 		},
