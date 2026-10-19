@@ -24,6 +24,7 @@ import internalAuditLog from "./audit-log.js";
 import internalNginx from "./nginx.js";
 
 const cnPattern = /\bCN=([^\n]+)/i;
+const renewalServerPattern = /^server = (.+)$/m;
 
 const getNiceName = (domainNames) => {
 	const niceName = domainNames.join(", ");
@@ -266,7 +267,7 @@ const internalCertificate = {
 		const certFiles = [];
 		for (const fileName of fileNames) {
 			try {
-				certFiles.push(await realpath(path.join(zipDirectory, fileName)));
+				certFiles.push([fileName, await realpath(path.join(zipDirectory, fileName))]);
 			} catch (err) {
 				throw new error.ItemNotFoundError(`Certificate ${certificate.nice_name} is missing ${fileName}`, {
 					cause: err,
@@ -284,7 +285,7 @@ const internalCertificate = {
 	},
 
 	/**
-	 * @param   {String[]}  source
+	 * @param   {Array[]}  source
 	 * @param   {String}  out
 	 * @returns {Promise}
 	 */
@@ -293,7 +294,7 @@ const internalCertificate = {
 		archive.on("warning", (err) => archive.destroy(err));
 		const written = pipeline(archive, (await open(out, "w")).createWriteStream());
 
-		for (const filePath of source) archive.file(filePath, { name: path.basename(filePath) });
+		for (const [name, filePath] of source) archive.file(filePath, { name });
 
 		await Promise.all([written, archive.finalize()]);
 	},
@@ -308,6 +309,10 @@ const internalCertificate = {
 	delete: async (access, data) => {
 		access.can("certificates:manage");
 		const row = await internalCertificate.get(access, { id: data.id });
+
+		if (row.id === Number(process.env.DEFAULT_CERT_ID)) {
+			throw new error.ValidationError("Certificate is still in use by the default host");
+		}
 
 		for (const hostModel of [proxyHostModel, redirectionHostModel, deadHostModel, streamModel]) {
 			if (
@@ -455,6 +460,16 @@ const internalCertificate = {
 					finalData[name] = internalCertificate.getCertificateInfo(content, true);
 				}
 			}
+		}
+
+		if (
+			finalData.certificate &&
+			finalData.certificate_key &&
+			!new X509Certificate(data.files.certificate[0].buffer).checkPrivateKey(
+				createPrivateKey(data.files.certificate_key[0].buffer),
+			)
+		) {
+			throw new error.ValidationError("Certificate Key does not match the Certificate");
 		}
 
 		return finalData;
@@ -710,21 +725,10 @@ const internalCertificate = {
 			`Renewing Certbot certificates ${dnsPlugin ? `via ${dnsPlugin.name} ` : ""}for Cert #${certificate.id}: ${certificate.domain_names.join(", ")}`,
 		);
 
-		try {
-			const revokeResult = await utils.execFile("certbot", [
-				"--config",
-				"/etc/certbot.ini",
-				"revoke",
-				"--cert-name",
-				`npm-${certificate.id}`,
-				"--reason",
-				"superseded",
-				"--no-delete-after-revoke",
-			]);
-			logger.info(revokeResult);
-		} catch {
-			// do nothing
-		}
+		const oldCertPath = await realpath(`${internalCertificate.getLiveCertPath(certificate.id)}/cert.pem`);
+		const oldServer = (await readFile(`/data/tls/certbot/renewal/npm-${certificate.id}.conf`, "utf8")).match(
+			renewalServerPattern,
+		)?.[1];
 
 		const renewResult = await utils.execFile("certbot", [
 			"--config",
@@ -738,6 +742,24 @@ const internalCertificate = {
 			"--force-renewal",
 		]);
 		logger.info(renewResult);
+
+		try {
+			const revokeResult = await utils.execFile("certbot", [
+				"--config",
+				"/etc/certbot.ini",
+				"revoke",
+				"--server",
+				oldServer,
+				"--cert-path",
+				oldCertPath,
+				"--reason",
+				"superseded",
+				"--no-delete-after-revoke",
+			]);
+			logger.info(revokeResult);
+		} catch {
+			// do nothing
+		}
 
 		return renewResult;
 	},
@@ -760,14 +782,28 @@ const internalCertificate = {
 				`npm-${certificate.id}`,
 				"--reason",
 				"unspecified",
-				"--delete-after-revoke",
+				"--no-delete-after-revoke",
 			]);
-			await rm(`/data/tls/certbot/live/npm-${certificate.id}.der`, { force: true });
 			logger.info(result);
-			return result;
 		} catch (err) {
 			logger.error(err.message);
 		}
+
+		try {
+			const result = await utils.execFile("certbot", [
+				"--config",
+				"/etc/certbot.ini",
+				"delete",
+				"--cert-name",
+				`npm-${certificate.id}`,
+			]);
+			logger.info(result);
+		} catch (err) {
+			logger.error(err.message);
+		}
+
+		await rm(`/data/tls/certbot/live/npm-${certificate.id}.der`, { force: true });
+		await rm(`/tmp/certbot-credentials/credentials-${certificate.id}`, { force: true });
 	},
 
 	/**
