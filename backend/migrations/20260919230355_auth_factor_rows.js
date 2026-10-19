@@ -45,7 +45,7 @@ const up = async (knex) => {
 		);
 	}
 
-	if (rows.length > 0) await knex("auth").insert(rows);
+	for (const row of rows) await knex("auth").insert(row);
 
 	await knex("auth").where("type", "password").update({ meta: "{}" });
 

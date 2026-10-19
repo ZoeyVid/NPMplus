@@ -33,7 +33,7 @@ for path in "$@"; do
 	fi
 
 	for key in $(jq -r 'keys[]' "$SRC/ui/en.json"); do
-		if ! jq -e --arg key "$key" 'has($key)' "$path" >/dev/null; then
+		if ! jq -e --arg key "$key" '.[$key] | length > 0' "$path" >/dev/null; then
 			echo "ui/$file: missing key: $key"
 		fi
 	done

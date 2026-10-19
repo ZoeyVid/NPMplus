@@ -77,7 +77,7 @@ const internalMfa = {
 			throw new errs.ValidationError("TOTP is not enabled");
 		}
 		if (!(await internalMfa.verifyForLogin(userId, code))) {
-			throw new errs.ValidationError("Invalid verification code");
+			throw new errs.ValidationError("Invalid verification code", "error.invalid-code");
 		}
 
 		await totp.disable(access, userId, false, async (trx) => {
@@ -156,7 +156,7 @@ const internalMfa = {
 		}
 
 		if (token.length !== 6 || !(await totp.verifyCode(userId, token))) {
-			throw new errs.ValidationError("Invalid verification code");
+			throw new errs.ValidationError("Invalid verification code", "error.invalid-code");
 		}
 
 		const plain = await userModel.transaction(async (trx) => {

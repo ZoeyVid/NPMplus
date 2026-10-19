@@ -86,7 +86,13 @@ function TotpForm() {
 							<Button type="button" fullWidth onClick={cancelTotp} disabled={isSubmitting}>
 								<T id="cancel" />
 							</Button>
-							<Button type="submit" fullWidth color="azure" isLoading={isSubmitting}>
+							<Button
+								type="submit"
+								fullWidth
+								color="azure"
+								isLoading={isSubmitting}
+								disabled={isSubmitting}
+							>
 								<T id="login.totp-verify" />
 							</Button>
 						</div>
@@ -206,7 +212,13 @@ function PasswordForm() {
 								</Field>
 							</div>
 							<div className="form-footer">
-								<Button type="submit" fullWidth color="azure" isLoading={isSubmitting}>
+								<Button
+									type="submit"
+									fullWidth
+									color="azure"
+									isLoading={isSubmitting}
+									disabled={isSubmitting}
+								>
 									<T id="sign-in" />
 								</Button>
 							</div>

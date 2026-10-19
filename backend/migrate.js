@@ -3,7 +3,7 @@ import { isSqlite } from "./lib/config.js";
 import { migrate as logger } from "./logger.js";
 
 const migrateUp = async () => {
-	const version = await db().migrate.currentVersion();
+	const version = await db().migrate.currentVersion({ tableName: "migrations" });
 	logger.info("Current database version:", version);
 	const result = await db().migrate.latest({
 		tableName: "migrations",

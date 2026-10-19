@@ -8,6 +8,7 @@ import { Button } from "src/components";
 import { intl, T } from "src/locale";
 import EasyModal from "src/modules/easyModal";
 import { validateString } from "src/modules/Validations";
+import { showObjectSuccess } from "src/notifications";
 
 const showChangePasswordModal = (id) => {
 	EasyModal.show(ChangePasswordModal, { id });
@@ -33,6 +34,7 @@ const ChangePasswordModal = EasyModal.create(({ id, visible, remove }) => {
 
 		try {
 			await updateAuth(id, values.new, values.current);
+			showObjectSuccess("user", "updated");
 			remove();
 		} catch (err) {
 			setError(<T id={err.message} />);
@@ -42,7 +44,7 @@ const ChangePasswordModal = EasyModal.create(({ id, visible, remove }) => {
 	};
 
 	return (
-		<Modal show={visible} onHide={remove}>
+		<Modal show={visible} onHide={isSubmitting ? undefined : remove}>
 			<Formik
 				initialValues={{
 					current: "",
@@ -53,7 +55,7 @@ const ChangePasswordModal = EasyModal.create(({ id, visible, remove }) => {
 			>
 				{() => (
 					<Form>
-						<Modal.Header closeButton>
+						<Modal.Header closeButton={!isSubmitting}>
 							<Modal.Title>
 								<T id="user.change-password" />
 							</Modal.Title>

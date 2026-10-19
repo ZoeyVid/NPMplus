@@ -509,7 +509,7 @@ const internalCertificate = {
 			createPrivateKey(privateKey);
 			return true;
 		} catch (err) {
-			throw new error.ValidationError(`Certificate Key is not valid (${err.message})`, { cause: err });
+			throw new error.ValidationError(`Certificate Key is not valid (${err.message})`, undefined, { cause: err });
 		}
 	},
 
@@ -562,7 +562,7 @@ const internalCertificate = {
 
 			return certData;
 		} catch (err) {
-			throw new error.ValidationError(`Certificate is not valid (${err.message})`, { cause: err });
+			throw new error.ValidationError(`Certificate is not valid (${err.message})`, undefined, { cause: err });
 		}
 	},
 

@@ -29,13 +29,17 @@ const installPlugin = async (pluginKey) => {
  * @param {array} pluginKeys
  */
 const installPlugins = async (pluginKeys) => {
+	let failed;
 	for (const pluginKey of pluginKeys) {
 		try {
 			await installPlugin(pluginKey);
 		} catch (err) {
 			logger.error(err.message);
-			throw new errs.CommandError("Some plugins failed to install. Please check the logs above", { cause: err });
+			failed ??= err;
 		}
+	}
+	if (failed) {
+		throw new errs.CommandError("Some plugins failed to install. Please check the logs above", { cause: failed });
 	}
 };
 

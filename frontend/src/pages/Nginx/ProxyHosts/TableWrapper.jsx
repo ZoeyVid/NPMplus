@@ -52,8 +52,7 @@ export default function TableWrapper() {
 			const directory = getDirectory(item).toLowerCase();
 			return (
 				item.domainNames.some((domain) => domain.toLowerCase().includes(search)) ||
-				item.forwardHost.toLowerCase().includes(search) ||
-				`${item.forwardPort || ""}`.includes(search) ||
+				forwardSummary(item).toLowerCase().includes(search) ||
 				directory.includes(search)
 			);
 		});
@@ -77,7 +76,7 @@ export default function TableWrapper() {
 					await deleteProxyHost(id);
 					showObjectSuccess("proxy-host", "deleted");
 				},
-				invalidations: [["proxy-hosts"], ["proxy-host", id]],
+				invalidations: [["proxy-hosts"], ["proxy-host", id], ["certificates"], ["access-lists"]],
 				children: <T id="object.delete.content" tData={{ object: "proxy-host" }} />,
 				subject: host?.domainNames.join(", "),
 				details: host && forwardSummary(host),

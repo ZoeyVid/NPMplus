@@ -103,7 +103,12 @@ const setupCertbotPlugins = async () => {
 		}
 	}
 
-	await installPlugins(plugins);
+	try {
+		await installPlugins(plugins);
+	} catch (err) {
+		logger.error(err.message);
+		return;
+	}
 
 	if (plugins.length > 0) {
 		logger.info(`Added Certbot plugins ${plugins.join(", ")}`);

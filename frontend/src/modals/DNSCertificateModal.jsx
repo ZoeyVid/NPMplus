@@ -50,7 +50,7 @@ const DNSCertificateModal = EasyModal.create(({ visible, remove }) => {
 	const toggleEnabled = cn(toggleClasses, "bg-cyan");
 
 	return (
-		<Modal show={visible} onHide={remove}>
+		<Modal show={visible} onHide={isSubmitting ? undefined : remove}>
 			<Formik
 				initialValues={{
 					domainNames: [],
@@ -62,7 +62,7 @@ const DNSCertificateModal = EasyModal.create(({ visible, remove }) => {
 			>
 				{() => (
 					<Form>
-						<Modal.Header closeButton>
+						<Modal.Header closeButton={!isSubmitting}>
 							<Modal.Title>
 								<T id="object.add" tData={{ object: "lets-encrypt-via-dns" }} />
 							</Modal.Title>

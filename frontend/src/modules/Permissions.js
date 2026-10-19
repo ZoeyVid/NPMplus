@@ -11,8 +11,8 @@ export const VIEW = "view";
 const HIDDEN = "hidden";
 
 const hasPermission = (section, perm, userPerms, roles) => {
-	if (!userPerms) return false;
 	if (isAdmin(roles)) return true;
+	if (!userPerms) return false;
 	const acceptable = [MANAGE, perm];
 	// @ts-expect-error 7053
 	const v = typeof userPerms[section] !== "undefined" ? userPerms[section] : HIDDEN;

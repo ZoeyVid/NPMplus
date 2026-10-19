@@ -83,7 +83,7 @@ const internalTotp = {
 
 		const result = await verify({ token: code, secret: pending.secret });
 		if (!result.valid) {
-			throw new errs.ValidationError("Invalid verification code");
+			throw new errs.ValidationError("Invalid verification code", "error.invalid-code");
 		}
 
 		await authModel.transaction(async (trx) => {

@@ -1,5 +1,8 @@
 #!/usr/bin/env sh
 
+# shellcheck source=/dev/null
+. /data/.env
+
 
 export GOA="${GOA:-false}"
 
@@ -9,7 +12,7 @@ export PHP85="${PHP85:-false}"
 
 export NPM_PORT="${NPM_PORT:-81}"
 export NPM_IPV4_BINDING="${NPM_IPV4_BINDING:-0.0.0.0}"
-if [ "$NPM_IPV4_BINDING" = "0.0.0.0" ]; then
+if [ "$NPM_IPV4_BINDING" = "0.0.0.0" ] || [ "$NPM_LISTEN_LOCALHOST" = "true" ]; then
     export NPM_IPV4_BINDING="127.0.0.1"
 fi
 

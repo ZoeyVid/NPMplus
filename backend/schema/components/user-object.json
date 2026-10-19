@@ -70,6 +70,12 @@
 				]
 			}
 		},
+		"npmplus_token_valid_after": {
+			"type": "integer",
+			"description": "Tokens issued at or before this unix time are rejected",
+			"readOnly": true,
+			"example": 0
+		},
 		"goaccess": {
 			"type": "boolean",
 			"description": "Is goaccess enabled, only sent for the requesting user itself",

@@ -74,7 +74,7 @@ export default function TableWrapper() {
 					await deleteRedirectionHost(id);
 					showObjectSuccess("redirection-host", "deleted");
 				},
-				invalidations: [["redirection-hosts"], ["redirection-host", id]],
+				invalidations: [["redirection-hosts"], ["redirection-host", id], ["certificates"]],
 				children: <T id="object.delete.content" tData={{ object: "redirection-host" }} />,
 				subject: host?.domainNames.join(", "),
 				details:

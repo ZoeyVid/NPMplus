@@ -72,7 +72,7 @@ export default function TableWrapper() {
 					await deleteDeadHost(id);
 					showObjectSuccess("dead-host", "deleted");
 				},
-				invalidations: [["dead-hosts"], ["dead-host", id]],
+				invalidations: [["dead-hosts"], ["dead-host", id], ["certificates"]],
 				children: <T id="object.delete.content" tData={{ object: "dead-host" }} />,
 				subject: host?.domainNames.join(", "),
 			});

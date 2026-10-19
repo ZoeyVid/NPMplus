@@ -51,8 +51,7 @@ export default function TableWrapper() {
 			const directory = getDirectory(item).toLowerCase();
 			return (
 				`${item.incomingPort}`.includes(search) ||
-				`${item.forwardingPort}`.includes(search) ||
-				item.forwardingHost.toLowerCase().includes(search) ||
+				`${item.forwardingHost}:${item.forwardingPort}`.toLowerCase().includes(search) ||
 				item.npmplusDescription?.toLowerCase().includes(search) ||
 				directory.includes(search)
 			);
@@ -76,7 +75,7 @@ export default function TableWrapper() {
 					await deleteStream(id);
 					showObjectSuccess("stream", "deleted");
 				},
-				invalidations: [["streams"], ["stream", id]],
+				invalidations: [["streams"], ["stream", id], ["certificates"]],
 				children: <T id="object.delete.content" tData={{ object: "stream" }} />,
 				subject: stream
 					? `${stream.incomingPort} → ${stream.forwardingHost}${stream.forwardingPort ? `:${stream.forwardingPort}` : ""}`
