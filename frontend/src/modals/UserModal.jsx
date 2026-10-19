@@ -74,7 +74,7 @@ const UserModal = EasyModal.create(({ id, visible, remove }) => {
 	};
 
 	return (
-		<Modal show={visible} onHide={remove}>
+		<Modal show={visible} onHide={isSubmitting ? undefined : remove}>
 			{error && (
 				<Alert variant="danger" className="m-3">
 					{error?.message}
@@ -93,7 +93,7 @@ const UserModal = EasyModal.create(({ id, visible, remove }) => {
 				>
 					{() => (
 						<Form>
-							<Modal.Header closeButton>
+							<Modal.Header closeButton={!isSubmitting}>
 								<Modal.Title>
 									<T id={data?.id ? "object.edit" : "object.add"} tData={{ object: "user" }} />
 								</Modal.Title>

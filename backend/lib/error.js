@@ -47,6 +47,11 @@ const errs = {
 		name = this.constructor.name;
 		public = true;
 		status = 400;
+
+		constructor(message, messageI18n, options) {
+			super(message, options);
+			this.message_i18n = messageI18n;
+		}
 	},
 
 	AssertionFailedError: class extends Error {

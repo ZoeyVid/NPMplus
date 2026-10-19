@@ -115,7 +115,7 @@ const internalUser = {
 
 			await writeFile(`/data/npmplus/gravatar/${id}.${ext}`, buffer);
 
-			return `/images/gravatar/${id}.${ext}`;
+			return `/images/gravatar/${id}.${ext}?v=${Date.now()}`;
 		} catch (err) {
 			logger.error(`Error downloading gravatar: ${err.message}`);
 			return "/images/default-avatar.jpg";
@@ -139,7 +139,7 @@ const internalUser = {
 		await userModel
 			.query()
 			.findById(user.id)
-			.patch({ avatar: `/images/avatar/${user.id}.${ext}` });
+			.patch({ avatar: `/images/avatar/${user.id}.${ext}?v=${Date.now()}` });
 		const savedUser = await internalUser.get(access, { id: user.id });
 
 		await internalAuditLog.add(access, {
@@ -193,6 +193,8 @@ const internalUser = {
 				data.name || existingUser.name,
 			);
 		}
+
+		if (data.is_disabled) data.npmplus_token_valid_after = Math.floor(Date.now() / 1000);
 
 		await userModel.query().findById(existingUser.id).patch(data);
 		const user = await internalUser.get(access, { id: data.id });
@@ -299,7 +301,7 @@ const internalUser = {
 		// Query is used for searching
 		if (typeof search_query === "string") {
 			query.where(function () {
-				this.where("name", "like", `%${search_query}%`).orWhere("email", "like", `%${search_query}%`);
+				this.whereILike("name", `%${search_query}%`).orWhereILike("email", `%${search_query}%`);
 			});
 		}
 
@@ -433,6 +435,7 @@ const internalUser = {
 		const user = await userModel
 			.query()
 			.patchAndFetchById(userId, { npmplus_token_valid_after: Math.floor(Date.now() / 1000) });
+		if (!user) throw new errs.ItemNotFoundError(userId);
 
 		await internalAuditLog.add(access, {
 			action: "updated",

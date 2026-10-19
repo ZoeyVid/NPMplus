@@ -5,6 +5,7 @@ import Modal from "react-bootstrap/Modal";
 import {
 	Button,
 	DirectoryField,
+	HasPermission,
 	Loading,
 	NginxConfigField,
 	SSLCertificateField,
@@ -13,6 +14,7 @@ import {
 import { useDirectorySuggestions, useSetStream, useStream, useStreams } from "src/hooks";
 import { intl, T } from "src/locale";
 import EasyModal from "src/modules/easyModal";
+import { MANAGE, STREAMS } from "src/modules/Permissions";
 import { showTabOfInvalid, validateString } from "src/modules/Validations";
 import { showObjectSuccess } from "src/notifications";
 
@@ -65,7 +67,7 @@ const StreamModal = EasyModal.create(({ id, visible, remove }) => {
 	};
 
 	return (
-		<Modal show={visible} onHide={remove}>
+		<Modal show={visible} onHide={isSubmitting ? undefined : remove}>
 			{error && (
 				<Alert variant="danger" className="m-3">
 					{error?.message}
@@ -93,7 +95,7 @@ const StreamModal = EasyModal.create(({ id, visible, remove }) => {
 				>
 					{({ values, setFieldValue }) => (
 						<Form onInvalid={showTabOfInvalid}>
-							<Modal.Header closeButton>
+							<Modal.Header closeButton={!isSubmitting}>
 								<Modal.Title>
 									<T id={data?.id ? "object.edit" : "object.add"} tData={{ object: "stream" }} />
 								</Modal.Title>
@@ -124,7 +126,6 @@ const StreamModal = EasyModal.create(({ id, visible, remove }) => {
 													data-bs-toggle={values.udpForwarding ? undefined : "tab"}
 													aria-selected="false"
 													aria-disabled={values.udpForwarding}
-													tabIndex={-1}
 													role="tab"
 												>
 													<T id="column.ssl" />
@@ -137,7 +138,6 @@ const StreamModal = EasyModal.create(({ id, visible, remove }) => {
 													title="Settings"
 													data-bs-toggle="tab"
 													aria-selected="false"
-													tabIndex={-1}
 													role="tab"
 												>
 													<T id="domains.advanced" />
@@ -519,15 +519,17 @@ const StreamModal = EasyModal.create(({ id, visible, remove }) => {
 								<Button onClick={remove} disabled={isSubmitting}>
 									<T id="cancel" />
 								</Button>
-								<Button
-									type="submit"
-									actionType="primary"
-									className="ms-auto"
-									isLoading={isSubmitting}
-									disabled={isSubmitting}
-								>
-									<T id="save" />
-								</Button>
+								<HasPermission section={STREAMS} permission={MANAGE} hideError>
+									<Button
+										type="submit"
+										actionType="primary"
+										className="ms-auto"
+										isLoading={isSubmitting}
+										disabled={isSubmitting}
+									>
+										<T id="save" />
+									</Button>
+								</HasPermission>
 							</Modal.Footer>
 						</Form>
 					)}

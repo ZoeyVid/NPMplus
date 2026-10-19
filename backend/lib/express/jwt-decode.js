@@ -22,11 +22,13 @@ export default () => async (req, res, next) => {
 			secure: true,
 			sameSite: "Strict",
 		});
-		res.cookie("__Host-npmplus_oidc_no_redirect", "true", {
-			secure: true,
-			sameSite: "Strict",
-			maxAge: 60 * 60 * 1000,
-		});
+		if (token) {
+			res.cookie("__Host-npmplus_oidc_no_redirect", "true", {
+				secure: true,
+				sameSite: "Strict",
+				maxAge: 60 * 60 * 1000,
+			});
+		}
 		return res.status(401).json({
 			error: {
 				message: "Invalid or expired token",

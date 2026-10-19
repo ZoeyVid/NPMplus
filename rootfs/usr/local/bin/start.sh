@@ -138,7 +138,7 @@ mkdir -vp /data/npmplus/avatar \
 
 
 if [ -n "$(ls -A /data/nginx/custom 2> /dev/null)"  ]; then
-    cp -van /data/nginx/custom/* /data/nginx_custom
+    cp -van /data/nginx/custom/* /data/custom_nginx
 fi
 rm -vrf /data/nginx/custom
 
@@ -196,8 +196,7 @@ if [ -d /data/tls/certbot/live ] && [ -d /data/tls/certbot/archive ]; then
   find /data/tls/certbot/live ! -name "$(printf "*\n*")" -type f -name "*.pem" > /tmp/certs.txt
   while IFS= read -r cert
   do
-    rm -vf "$cert"
-    ln -rs "$(find /data/tls/certbot/archive/"$(echo "$cert" | sed "s|/data/tls/certbot/live/\(npm-[0-9]\+/.*\).pem|\1|g")"*.pem | sort -V | tail -n1)" "$cert"
+    ln -rsf "$(find /data/tls/certbot/archive/"$(echo "$cert" | sed "s|/data/tls/certbot/live/\(npm-[0-9]\+/.*\).pem|\1|g")"*.pem | sort -V | tail -n1)" "$cert"
   done < /tmp/certs.txt
   rm /tmp/certs.txt
 fi

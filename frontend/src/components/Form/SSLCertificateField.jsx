@@ -2,8 +2,9 @@ import { IconShield } from "@tabler/icons-react";
 import { Field, useFormikContext } from "formik";
 import Select, { components } from "react-select";
 import { certificateProviderTranslation } from "src/components";
-import { useCertificates } from "src/hooks";
+import { useCertificates, useUser } from "src/hooks";
 import { formatDateTime, intl, T } from "src/locale";
+import { CERTIFICATES, hasPermission, MANAGE } from "src/modules/Permissions";
 import { selectClassNames } from "src/modules/Select";
 
 const Option = (props) => (
@@ -27,6 +28,7 @@ export function SSLCertificateField({
 	mtlsLabel = "mtls-certificate",
 }) {
 	const { isPending, isError, error, data } = useCertificates();
+	const { data: user } = useUser("me");
 	const { values: v, setFieldValue } = useFormikContext();
 
 	const handleChange = (newValue, _actionMeta) => {
@@ -84,7 +86,7 @@ export function SSLCertificateField({
 			})) || [];
 
 	// Prepend the Add New option
-	if (allowNew) {
+	if (allowNew && hasPermission(CERTIFICATES, MANAGE, user?.permissions, user?.roles)) {
 		options?.unshift({
 			value: "new",
 			label: intl.formatMessage({ id: "certificates.request.title" }),

@@ -47,7 +47,9 @@ const internalSetting = {
 				await internalNginx.deleteConfig("default");
 				await internalNginx.test();
 				await internalNginx.reload();
-				throw new errs.ValidationError("Could not reconfigure Nginx. Please check logs.", { cause: err });
+				throw new errs.ValidationError("Could not reconfigure Nginx. Please check logs.", undefined, {
+					cause: err,
+				});
 			}
 		}
 		return row;

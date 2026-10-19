@@ -51,15 +51,15 @@ export default function Table({ data, isFetching, isFiltered, onEdit, onDelete, 
 					<ValueWithDateFormatter value={info.row.original.name} createdOn={info.row.original.createdOn} />
 				),
 			}),
-			columnHelper.accessor((row) => row.items, {
+			columnHelper.accessor((row) => row.items.length, {
 				id: "items",
 				header: intl.formatMessage({ id: "column.authorization" }),
-				cell: (info) => <T id="access-list.auth-count" data={{ count: info.getValue().length }} />,
+				cell: (info) => <T id="access-list.auth-count" data={{ count: info.getValue() }} />,
 			}),
-			columnHelper.accessor((row) => row.clients, {
+			columnHelper.accessor((row) => row.clients.length, {
 				id: "clients",
 				header: intl.formatMessage({ id: "column.access" }),
-				cell: (info) => <T id="access-list.access-count" data={{ count: info.getValue().length }} />,
+				cell: (info) => <T id="access-list.access-count" data={{ count: info.getValue() }} />,
 			}),
 			columnHelper.accessor((row) => row.satisfyAny, {
 				id: "satisfyAny",
@@ -138,6 +138,7 @@ export default function Table({ data, isFetching, isFiltered, onEdit, onDelete, 
 		features,
 		columns,
 		data,
+		getRowId: (row) => `${row.id}`,
 		meta: {
 			isFetching,
 		},

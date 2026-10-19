@@ -21,7 +21,6 @@ app.set("json replacer", jsonReplacer);
 
 app.use(cookieParser(process.env.COOKIE_SECRET || crypto.randomBytes(16).toString("hex")));
 app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
 
 /**
  * General Logging, BEFORE routes
