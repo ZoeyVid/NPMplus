@@ -16,6 +16,7 @@
 			"application/json": {
 				"schema": {
 					"type": "object",
+					"additionalProperties": false,
 					"allOf": [
 						{
 							"$ref": "../../../components/load-balancing.json#/$defs/loadBalanceMethodRequirement"
@@ -25,10 +26,7 @@
 						},
 						{
 							"$ref": "../../../components/load-balancing.json#/$defs/forwardPathSchemeRequirement"
-						}
-					],
-					"additionalProperties": false,
-					"allOf": [
+						},
 						{
 							"$ref": "../../../common.json#/properties/ssl_create_rules"
 						},

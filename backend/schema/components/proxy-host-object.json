@@ -219,14 +219,12 @@
 					},
 					{
 						"$ref": "./load-balancing.json#/$defs/forwardPathSchemeRequirement"
-					}
-				],
-				"additionalProperties": false,
-				"allOf": [
+					},
 					{
 						"$ref": "../common.json#/properties/proxy_create_rules"
 					}
 				],
+				"additionalProperties": false,
 				"properties": {
 					"npmplus_enabled": {
 						"$ref": "../common.json#/properties/enabled"

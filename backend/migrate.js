@@ -98,15 +98,7 @@ const migrateUp = async () => {
 
 	const version = await db().migrate.currentVersion({ tableName: "migrations" });
 	logger.info("Current database version:", version);
-	const result = await db().migrate.latest({
-		tableName: "migrations",
-		directory: "migrations",
-		...migrationConfig
-	});
-
-	const entries = await readdir(backupDirectory, {
-		withFileTypes: true,
-	});
+	const result = await db().migrate.latest(migrationConfig);
 
 	if (isSqlite()) {
 		await db().raw("PRAGMA journal_mode = WAL");
@@ -120,9 +112,7 @@ const migrateUp = async () => {
 		await removeOldMigrationBackups();
 	}
 
-	return entries
-		.filter((entry) => entry.isFile() && backupPattern.test(entry.name))
-		.map((entry) => join(backupDirectory, entry.name));
+	return result;
 };
 
 export { migrateUp };

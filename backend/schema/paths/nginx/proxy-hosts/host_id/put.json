@@ -30,6 +30,7 @@
 			"application/json": {
 				"schema": {
 					"type": "object",
+					"additionalProperties": false,
 					"allOf": [
 						{
 							"$ref": "../../../../components/load-balancing.json#/$defs/partialLoadBalanceMethodRequirement"
@@ -39,10 +40,7 @@
 						},
 						{
 							"$ref": "../../../../components/load-balancing.json#/$defs/partialForwardPathSchemeRequirement"
-						}
-					],
-					"additionalProperties": false,
-					"allOf": [
+						},
 						{
 							"$ref": "../../../../common.json#/properties/ssl_update_rules"
 						},
