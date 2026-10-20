@@ -16,6 +16,7 @@
 			"application/json": {
 				"schema": {
 					"type": "object",
+					"additionalProperties": false,
 					"allOf": [
 						{
 							"$ref": "../../../components/load-balancing.json#/$defs/loadBalanceMethodRequirement"
@@ -25,10 +26,7 @@
 						},
 						{
 							"$ref": "../../../components/load-balancing.json#/$defs/forwardPathSchemeRequirement"
-						}
-					],
-					"additionalProperties": false,
-					"allOf": [
+						},
 						{
 							"if": {
 								"properties": {
@@ -82,25 +80,6 @@
 										"domain_names": {
 											"$ref": "../../../components/certificate-object.json#/properties/domain_names_http"
 										}
-									}
-								}
-							}
-						},
-						{
-							"if": {
-								"properties": {
-									"forward_scheme": {
-										"const": "empty"
-									}
-								},
-								"required": [
-									"forward_scheme"
-								]
-							},
-							"else": {
-								"properties": {
-									"forward_host": {
-										"minLength": 1
 									}
 								}
 							}

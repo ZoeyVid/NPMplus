@@ -219,31 +219,6 @@
 					},
 					{
 						"$ref": "./load-balancing.json#/$defs/forwardPathSchemeRequirement"
-					}
-				],
-				"additionalProperties": false,
-				"allOf": [
-					{
-						"if": {
-							"properties": {
-								"forward_scheme": {
-									"const": "empty"
-								}
-							},
-							"required": [
-								"forward_scheme"
-							]
-						},
-						"else": {
-							"required": [
-								"forward_host"
-							],
-							"properties": {
-								"forward_host": {
-									"minLength": 1
-								}
-							}
-						}
 					},
 					{
 						"if": {
@@ -268,6 +243,7 @@
 						}
 					}
 				],
+				"additionalProperties": false,
 				"properties": {
 					"npmplus_enabled": {
 						"$ref": "../common.json#/properties/enabled"
