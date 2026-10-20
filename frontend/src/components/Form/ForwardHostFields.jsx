@@ -96,7 +96,7 @@ export function CleanUpstreamServers(servers = []) {
 
 		for (const field of ["weight", "maxFails", "maxConns", "failTimeout"]) {
 			if (cleaned[field] === null ||
-				cleaned[field] === undefined || 
+				cleaned[field] === undefined ||
 				cleaned[field] === "") {
 				delete cleaned[field];
 			}
@@ -130,7 +130,7 @@ export function ForwardHostFields({ scheme="",idPrefix, loadBalanceMethod, upstr
 
 			const effectivePort = server.port ?? (idx > 0 ? firstPort : null);
 
-			return ((effectivePort === null || effectivePort === undefined || effectivePort === "") 
+			return ((effectivePort === null || effectivePort === undefined || effectivePort === "")
 				&& !hostHasEmbeddedPort(server.host));
 		});
 	const isOnlyEnabledServer = (idx) => !isCustomUpstreamServer(servers[idx]) && !Boolean(servers[idx]?.down) &&
@@ -203,7 +203,7 @@ export function ForwardHostFields({ scheme="",idPrefix, loadBalanceMethod, upstr
 	};
 
 	const handleMove = (idx, newIdx) => {
-		// Ordering is used to determine the default port since if upstreams have empty ports, 
+		// Ordering is used to determine the default port since if upstreams have empty ports,
 		// then the first port is auto applied. Port is required only on the first upstream
 		if (newIdx < 0 || newIdx >= servers.length) {
 			return;
@@ -462,7 +462,7 @@ export function ForwardHostFields({ scheme="",idPrefix, loadBalanceMethod, upstr
 						>
 							<div className="row m-0">
 								<div className={customServer ? "col-md-9" : "col-md-6"}>
-									<Field 
+									<Field
 										name={upstreamFieldName(idx, "host")}
 										validate={(value) => {
 											if (!value?.trim()) {

@@ -39,8 +39,8 @@ const internalUpstreamServers = {
 
 	/**
 	 *
-	 * @param {*} serverHost 
-	 * @returns 
+	 * @param {*} serverHost
+	 * @returns
 	 */
 	cleanUpstreamServers: (serverHost, isLocation = false) => {
 		if (Array.isArray(serverHost.npmplus_upstream_servers)) {
@@ -105,7 +105,7 @@ const internalUpstreamServers = {
 	},
 
 	/**
-	 * 
+	 *
 	 * @param {*} serverHost
 	 * @param {*} existingServerHost
 	 */

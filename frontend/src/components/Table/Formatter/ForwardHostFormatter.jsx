@@ -66,7 +66,7 @@ export function ForwardHostFormatter({ hostRowId, upstreamServers = [], scheme="
 		</Popover>
 	);
 
-	return upstreamServers.length > 2 || usesCustomUpstream || locationUsesCustomUpstream? 
+	return upstreamServers.length > 2 || usesCustomUpstream || locationUsesCustomUpstream?
 	(
 		<OverlayTrigger trigger={["hover", "focus"]} placement="bottom" overlay={popover}>
 			<div className={cn("font-weight-medium", "d-flex", "flex-column", "align-items-start", "gap-1", usesCustomUpstream && "badge", containsCustomUpstream && !usesCustomUpstream && "bg-blue-lt")}>{...elms}</div>
