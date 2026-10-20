@@ -82,21 +82,18 @@ export default function Table({
 					return value || <span className="text-secondary">—</span>;
 				},
 			}),
-			columnHelper.accessor(
-				(row) => forwardDestinations(row, { streams: true }).join(", "),
-				{
-					id: "forwardHost",
-					header: intl.formatMessage({ id: "column.destination" }),
-					cell: (info) => (
-						<ForwardHostFormatter
-							hostRowId={info.row.original.id}
-							upstreamServers={info.row.original.npmplusUpstreamServers}
-							loadBalanceMethod={info.row.original.npmplusLoadBalanceMethod}
-							streams={true}
-						/>
-					),
-				},
-			),
+			columnHelper.accessor((row) => forwardDestinations(row, { streams: true }).join(", "), {
+				id: "forwardHost",
+				header: intl.formatMessage({ id: "column.destination" }),
+				cell: (info) => (
+					<ForwardHostFormatter
+						hostRowId={info.row.original.id}
+						upstreamServers={info.row.original.npmplusUpstreamServers}
+						loadBalanceMethod={info.row.original.npmplusLoadBalanceMethod}
+						streams={true}
+					/>
+				),
+			}),
 			columnHelper.accessor(
 				(row) => {
 					const protocols = [];

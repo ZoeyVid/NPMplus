@@ -76,22 +76,20 @@ export default function Table({
 					return <DomainsFormatter domains={value.domainNames} createdOn={value.createdOn} />;
 				},
 			}),
-			columnHelper.accessor(
-				(row) => forwardDestinations(row).join(", "),
-				{
-					id: "forwardHost",
-					header: intl.formatMessage({ id: "column.destination" }),
-					cell: (info) => (
-						<ForwardHostFormatter
-							hostRowId={info.row.original.id}
-							forwardPath={info.row.original.npmplusForwardPath}
-							upstreamServers={info.row.original.npmplusUpstreamServers}
-							scheme={info.row.original.forwardScheme}
-							loadBalanceMethod={info.row.original.npmplusLoadBalanceMethod}
-							locations={info.row.original.locations}
-							streams={false}
-						/>
-					),
+			columnHelper.accessor((row) => forwardDestinations(row).join(", "), {
+				id: "forwardHost",
+				header: intl.formatMessage({ id: "column.destination" }),
+				cell: (info) => (
+					<ForwardHostFormatter
+						hostRowId={info.row.original.id}
+						forwardPath={info.row.original.npmplusForwardPath}
+						upstreamServers={info.row.original.npmplusUpstreamServers}
+						scheme={info.row.original.forwardScheme}
+						loadBalanceMethod={info.row.original.npmplusLoadBalanceMethod}
+						locations={info.row.original.locations}
+						streams={false}
+					/>
+				),
 			}),
 			columnHelper.accessor((row) => (row.certificate ? row.certificate.provider : "http-only"), {
 				id: "certificate",

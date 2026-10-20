@@ -11,18 +11,13 @@ import {
 import cn from "clsx";
 import { useFormikContext } from "formik";
 import { useRef, useState } from "react";
-import { flushSync } from "react-dom";
 import OverlayTrigger from "react-bootstrap/OverlayTrigger";
 import Popover from "react-bootstrap/Popover";
+import { flushSync } from "react-dom";
 import { AccessFields } from "src/components";
 import { intl, T } from "src/locale";
+import { forwardDestination, forwardSearchText, forwardSummary, populatedUpstreams } from "src/modules/Forward";
 import { upstreamUrlPattern } from "src/modules/Validations";
-import {
-	forwardDestination,
-	forwardSearchText,
-	forwardSummary,
-	populatedUpstreams,
-} from "src/modules/Forward";
 import { ForwardHostFields } from "./ForwardHostFields";
 
 export function LocationsFields({ initialValues, name = "locations" }) {
@@ -45,7 +40,7 @@ export function LocationsFields({ initialValues, name = "locations" }) {
 				backup: false,
 				down: false,
 				custom: false,
-			}
+			},
 		],
 		npmplusAccessListIds: [],
 		npmplusNoindex: false,
@@ -151,9 +146,7 @@ export function LocationsFields({ initialValues, name = "locations" }) {
 		<Popover id={`location-upstreams-${item.uiKey}`}>
 			<Popover.Body>
 				{populatedUpstreams(item).map((server, index) => (
-					<div key={`${server.host}-${server.port}-${index}`}>
-						{forwardDestination(item, server)}
-					</div>
+					<div key={`${server.host}-${server.port}-${index}`}>{forwardDestination(item, server)}</div>
 				))}
 			</Popover.Body>
 		</Popover>
@@ -233,16 +226,13 @@ export function LocationsFields({ initialValues, name = "locations" }) {
 						>
 							{isOpen(item) ? <IconChevronDown size={16} /> : <IconChevronRight size={16} />}
 							<span className="ms-2 fw-medium text-truncate">{locationLabel(item)}</span>
-							{ populatedUpstreams(item).length > 2 ?
-								(<OverlayTrigger
-									trigger="hover"
-									placement="bottom"
-									overlay={forwardPopover(item)}
-								>
+							{populatedUpstreams(item).length > 2 ? (
+								<OverlayTrigger trigger="hover" placement="bottom" overlay={forwardPopover(item)}>
 									<span className="ms-2 text-secondary text-truncate">{forwardSummary(item)}</span>
-								</OverlayTrigger>)
-								:(<span className="ms-2 text-secondary text-truncate">{forwardSummary(item)}</span>)
-							}
+								</OverlayTrigger>
+							) : (
+								<span className="ms-2 text-secondary text-truncate">{forwardSummary(item)}</span>
+							)}
 							{item.advancedConfig?.trim() && (
 								<span
 									className="ms-2 text-secondary d-flex align-items-center flex-shrink-0"

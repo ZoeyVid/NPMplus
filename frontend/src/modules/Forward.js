@@ -3,22 +3,19 @@ const FORWARD_PATH_SCHEMES = ["http", "https"];
 
 const populatedUpstreams = ({ npmplusUpstreamServers = [] }) => npmplusUpstreamServers.filter((server) => server?.host);
 
-const forwardDestination = ({ forwardScheme, npmplusForwardPath },server,{ streams = false } = {}) => {
+const forwardDestination = ({ forwardScheme, npmplusForwardPath }, server, { streams = false } = {}) => {
 	if (!server?.host) {
 		return "";
 	}
 
-	const port = server.port === null ||
-		server.port === undefined ||
-		server.port === ""
-			? "" : `:${server.port}`;
+	const port = server.port === null || server.port === undefined || server.port === "" ? "" : `:${server.port}`;
 
 	if (streams) {
 		return `${server.host}${port}`;
 	}
 
 	if (NETWORK_FORWARD_SCHEMES.includes(forwardScheme)) {
-		const path = FORWARD_PATH_SCHEMES.includes(forwardScheme) ? npmplusForwardPath ?? "" : "";
+		const path = FORWARD_PATH_SCHEMES.includes(forwardScheme) ? (npmplusForwardPath ?? "") : "";
 		return `${forwardScheme}://${server.host}${port}${path}`;
 	}
 
@@ -41,7 +38,6 @@ const hasCustomUpstream = (upstreamServers = []) => upstreamServers.some(isCusto
 // a custom upstream is only active if its first
 const isCustomUpstream = (upstreamServers = []) => isCustomUpstreamServer(upstreamServers[0]);
 
-
 export {
 	forwardDestination,
 	forwardDestinations,
@@ -50,5 +46,5 @@ export {
 	hasCustomUpstream,
 	isCustomUpstream,
 	isCustomUpstreamServer,
-	populatedUpstreams
+	populatedUpstreams,
 };

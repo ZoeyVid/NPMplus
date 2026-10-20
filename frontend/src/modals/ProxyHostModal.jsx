@@ -22,7 +22,7 @@ import EasyModal from "src/modules/easyModal";
 import { MANAGE, PROXY_HOSTS } from "src/modules/Permissions";
 import { showTabOfInvalid, validateUpstreamUrl } from "src/modules/Validations";
 import { showObjectSuccess } from "src/notifications";
-import { ForwardHostFields, CleanUpstreamServers, CleanLoadBalanceMethod } from "../components/Form/ForwardHostFields";
+import { CleanLoadBalanceMethod, CleanUpstreamServers, ForwardHostFields } from "../components/Form/ForwardHostFields";
 
 const ProxyHostModal = EasyModal.create(({ id, isClone, visible, remove }) => {
 	const { data, isPending, error } = useProxyHost(id);
@@ -52,9 +52,7 @@ const ProxyHostModal = EasyModal.create(({ id, isClone, visible, remove }) => {
 			let newLoc = {
 				...loc,
 				// remove entries that are null or undefined or empty to pass schema validation
-				npmplusUpstreamServers: CleanUpstreamServers(
-					loc.npmplusUpstreamServers,
-				),
+				npmplusUpstreamServers: CleanUpstreamServers(loc.npmplusUpstreamServers),
 			};
 			newLoc = CleanLoadBalanceMethod(newLoc);
 			if (!newLoc.npmplusForwardPath) {
@@ -66,9 +64,7 @@ const ProxyHostModal = EasyModal.create(({ id, isClone, visible, remove }) => {
 		const payload = {
 			id: id === "new" || isClone ? undefined : id,
 			...values,
-			npmplusUpstreamServers: CleanUpstreamServers(
-				values.npmplusUpstreamServers,
-			),
+			npmplusUpstreamServers: CleanUpstreamServers(values.npmplusUpstreamServers),
 			npmplusAccessListIds: globalAclIds,
 			locations,
 		};
@@ -121,17 +117,17 @@ const ProxyHostModal = EasyModal.create(({ id, isClone, visible, remove }) => {
 						domainNames: data?.domainNames,
 						forwardScheme: data?.forwardScheme || "http",
 						npmplusLoadBalanceMethod: data?.npmplusLoadBalanceMethod || "round_robin",
-						npmplusUpstreamServers: data?.npmplusUpstreamServers?.length ?
-														data.npmplusUpstreamServers :
-																				[
-																					{
-																						host: "",
-																						port: null,
-																						backup: false,
-																						down: false,
-																						custom: false,
-																					},
-																				],
+						npmplusUpstreamServers: data?.npmplusUpstreamServers?.length
+							? data.npmplusUpstreamServers
+							: [
+									{
+										host: "",
+										port: null,
+										backup: false,
+										down: false,
+										custom: false,
+									},
+								],
 						npmplusForwardPath: data?.npmplusForwardPath,
 						npmplusAccessListIds: data?.accessLists.map((accessList) => accessList.id),
 						npmplusAccessListType: data?.npmplusAccessListType,
