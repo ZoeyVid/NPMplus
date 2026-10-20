@@ -98,7 +98,7 @@ jobs:
               | tail -1
           )"
           if [ "$VER" = "${{ matrix.bad }}" ]; then VER="${{ matrix.fine }}"; fi
-          SHA="$(git ls-remote https://github.com/${{ matrix.repo }} "$VER" | cut -f1)"
+          SHA="$(git ls-remote https://github.com/${{ matrix.repo }} "$VER" "$VER^{}" | tail -1 | cut -f1)"
           echo "compare=https://github.com/${{ matrix.repo }}/compare/$(sed -n 's|^ARG ${{ matrix.arg }}_VER=\(.*\) #.*|\1|p' Dockerfile)...$SHA" >> $GITHUB_OUTPUT
           sed -i "s|ARG ${{ matrix.arg }}_VER=.*|ARG ${{ matrix.arg }}_VER=$SHA # $VER|" Dockerfile
           echo "version=$VER" >> $GITHUB_OUTPUT
@@ -126,7 +126,7 @@ jobs:
               | sed 's|~||' \
               | tail -1
           )"
-          LCSB_SHA="$(git ls-remote https://github.com/crowdsecurity/lua-cs-bouncer "$LCSB_VER" | cut -f1)"
+          LCSB_SHA="$(git ls-remote https://github.com/crowdsecurity/lua-cs-bouncer "$LCSB_VER" "$LCSB_VER^{}" | tail -1 | cut -f1)"
           echo "compare=https://github.com/crowdsecurity/lua-cs-bouncer/compare/$(sed -n 's|^ARG LCSB_VER=\(.*\) #.*|\1|p' Dockerfile)...$LCSB_SHA" >> $GITHUB_OUTPUT
           sed -i "s|ARG LCSB_VER=.*|ARG LCSB_VER=$LCSB_SHA # $LCSB_VER|" Dockerfile
           sed -i "s|crowdsec-npmplus-bouncer/.*\"|crowdsec-npmplus-bouncer/$LCSB_VER\"|" rootfs/usr/local/nginx/conf/conf.d/crowdsec.conf.disabled
