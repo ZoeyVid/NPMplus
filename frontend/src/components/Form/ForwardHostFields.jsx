@@ -34,6 +34,8 @@ const TLS_FORWARD_SCHEMES = ["https", "grpcs"];
 const NGINX_TIME_SYNTAX_REGEX = "^[1-9]\\d*\\s*(?:ms|s|m|h|d|w|M|y)?$";
 const NUMERIC_PATTERN = "^[0-9]*$";
 const SERVER_PORT_PATTERN = `${NUMERIC_PATTERN}|\\$server_port`;
+const IPV6_WITH_PORT_REGEX = /^\[[^\]]+\]:\d+$/;
+const HOST_WITH_PORT_REGEX = /^[^:]+:\d+$/;
 
 function InfoPopover({ messageId }) {
 	const popover = (
@@ -54,7 +56,7 @@ const hostHasEmbeddedPort = (host = "") => {
 	const pathIndex = host.indexOf("/");
 	const address = pathIndex === -1 ? host : host.slice(0, pathIndex);
 
-	return /^\[[^\]]+\]:\d+$/.test(address) || /^[^:]+:\d+$/.test(address);
+	return IPV6_WITH_PORT_REGEX.test(address) || HOST_WITH_PORT_REGEX.test(address);
 };
 
 const ensureEnabledUpstream = (upstreamServers = []) => {
@@ -351,7 +353,7 @@ export function ForwardHostFields({
 				{streams ? null : (
 					<div className="col-md-3 mb-3">
 						<Field name={fieldName("forwardScheme")}>
-							{({ field, form }) => (
+							{({ field }) => (
 								<>
 									<label className="form-label" htmlFor={controlId("scheme")}>
 										<T id="host.forward-scheme" />
@@ -384,7 +386,7 @@ export function ForwardHostFields({
 				)}
 				{servers.length > 1 ? (
 					<Field name={loadBalanceMethodFieldName}>
-						{({ field, form }) => (
+						{({ field }) => (
 							<div className="col-md-5 mb-3">
 								<label className="form-label" htmlFor={controlId("npmplusLoadBalanceMethod")}>
 									<T id="host.loadbalancer.method" />
@@ -405,17 +407,17 @@ export function ForwardHostFields({
 									</option>
 									{streams ? null : (
 										<option value="ip_hash">
-											<T id={"host.loadbalancer.ip-hash"} />
+											<T id="host.loadbalancer.ip-hash" />
 										</option>
 									)}
 									{streams ? (
 										<option value="hash">
-											<T id={"host.loadbalancer.hash"} />
+											<T id="host.loadbalancer.hash" />
 										</option>
 									) : null}
 									{streams ? (
 										<option value="hash_consistent">
-											<T id={"host.loadbalancer.hash-consistent"} />
+											<T id="host.loadbalancer.hash-consistent" />
 										</option>
 									) : null}
 									{streams ? (
@@ -474,7 +476,7 @@ export function ForwardHostFields({
 							{({ field, meta }) => (
 								<div className="mb-3">
 									<label className="form-label" htmlFor={controlId("npmplusForwardPath")}>
-										<T id={"host.forward-path"} />
+										<T id="host.forward-path" />
 									</label>
 									<input
 										{...field}

@@ -158,7 +158,7 @@ const ProxyHostModal = EasyModal.create(({ id, isClone, visible, remove }) => {
 					}}
 					onSubmit={onSubmit}
 				>
-					{({ values, setFieldValue }) => (
+					{({ values }) => (
 						<Form onInvalid={showTabOfInvalid}>
 							<Modal.Header closeButton={!isSubmitting}>
 								<Modal.Title>

@@ -88,7 +88,7 @@ const internalUpstreamServers = {
 			if (typeof firstServer.host === "string" && !firstServer.host.includes("://")) {
 				const pathIndex = firstServer.host.indexOf("/");
 				if (pathIndex > 0) {
-					if (forwardPath != null && forwardPath !== "") {
+					if (forwardPath !== null && forwardPath !== undefined && forwardPath !== "") {
 						throw new errs.ValidationError(
 							"An upstream host path cannot be used when the forward path field already has a value",
 						);
@@ -119,7 +119,7 @@ const internalUpstreamServers = {
 		const forwardPath = getEffectiveValue(serverHost, existingServerHost, "npmplus_forward_path");
 		const generatedUpstreamServers = upstreamServers.filter((server) => !server.custom);
 
-		if (forwardPath != null && !FORWARD_PATH_SCHEMES.includes(forwardScheme)) {
+		if (forwardPath !== null && forwardPath !== undefined && !FORWARD_PATH_SCHEMES.includes(forwardScheme)) {
 			throw new errs.ValidationError(`A forward path cannot be used with the ${forwardScheme} scheme`);
 		}
 
@@ -157,7 +157,7 @@ const internalUpstreamServers = {
 			);
 		}
 
-		if (upstreamServers.length === 1 && loadBalanceMethod != null) {
+		if (upstreamServers.length === 1 && loadBalanceMethod !== null && loadBalanceMethod !== undefined) {
 			throw new errs.ValidationError("A load balancing method cannot be used with a single upstream server");
 		}
 

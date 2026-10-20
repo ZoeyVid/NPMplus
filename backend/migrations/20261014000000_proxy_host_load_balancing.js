@@ -5,6 +5,7 @@ import { migrate as logger } from "../logger.js";
 
 const FORWARD_PATH_SCHEMES = ["http", "https"];
 const NETWORK_PROXY_SCHEMES = ["http", "https", "grpc", "grpcs"];
+const NUMERIC_PORT_REGEX = /^[0-9]+$/;
 
 const migrationReportDirectory = "/data/npmplus/backups";
 const migrateName = "proxy_host_upstream";
@@ -53,7 +54,7 @@ const normalisePort = (port) => {
 		if (trimmedPort === "") {
 			return null;
 		}
-		if (/^[0-9]+$/.test(trimmedPort)) {
+		if (NUMERIC_PORT_REGEX.test(trimmedPort)) {
 			return Number(trimmedPort);
 		}
 		if (trimmedPort === "$server_port") {
