@@ -13,19 +13,14 @@ import {
 import cn from "clsx";
 import { Field, FieldArray, useFormikContext } from "formik";
 import { useRef, useState } from "react";
-import { flushSync } from "react-dom";
 import OverlayTrigger from "react-bootstrap/OverlayTrigger";
 import Popover from "react-bootstrap/Popover";
+import { flushSync } from "react-dom";
 import { AccessFields } from "src/components";
 import { useUser } from "src/hooks";
 import { intl, T } from "src/locale";
+import { forwardDestination, forwardSearchText, forwardSummary, populatedUpstreams } from "src/modules/Forward";
 import { isAdminTarget, validateUpstreamUrl } from "src/modules/Validations";
-import {
-	forwardDestination,
-	forwardSearchText,
-	forwardSummary,
-	populatedUpstreams,
-} from "src/modules/Forward";
 import { ForwardHostFields } from "./ForwardHostFields";
 
 const authProvider = (authRequest) => authRequest?.replace("-send-basic-auth", "");
@@ -142,9 +137,7 @@ export function LocationsFields({ name = "locations", disabled, isClone }) {
 		<Popover id={`location-upstreams-${item.uiKey}`}>
 			<Popover.Body>
 				{populatedUpstreams(item).map((server, index) => (
-					<div key={`${server.host}-${server.port}-${index}`}>
-						{forwardDestination(item, server)}
-					</div>
+					<div key={`${server.host}-${server.port}-${index}`}>{forwardDestination(item, server)}</div>
 				))}
 			</Popover.Body>
 		</Popover>

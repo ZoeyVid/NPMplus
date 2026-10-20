@@ -1,15 +1,33 @@
+import {
+	IconAlertTriangle,
+	IconArrowDown,
+	IconArrowUp,
+	IconChevronDown,
+	IconChevronRight,
+	IconInfoCircle,
+	IconTrash,
+} from "@tabler/icons-react";
 import cn from "clsx";
-import { IconAlertTriangle, IconArrowDown, IconArrowUp, IconChevronDown, IconChevronRight, IconInfoCircle, IconTrash } from "@tabler/icons-react";
 import { Field, useFormikContext } from "formik";
 import { useState } from "react";
 import OverlayTrigger from "react-bootstrap/OverlayTrigger";
 import Popover from "react-bootstrap/Popover";
 import { flushSync } from "react-dom";
 import { intl, T } from "src/locale";
-import { forwardDestination, isCustomUpstream, isCustomUpstreamServer, hasCustomUpstream } from "src/modules/Forward";
+import { forwardDestination, hasCustomUpstream, isCustomUpstream, isCustomUpstreamServer } from "src/modules/Forward";
 import { validateNumber } from "src/modules/Validations";
 
-const BACKUP_INCOMPATIBLE_METHODS = ["hash", "hash_consistent", "ip_hash", "random", "random_two_least_connections", "random_two_least_time_connect", "random_two_least_time_header", "random_two_least_time_first_byte", "random_two_least_time_last_byte" ];
+const BACKUP_INCOMPATIBLE_METHODS = [
+	"hash",
+	"hash_consistent",
+	"ip_hash",
+	"random",
+	"random_two_least_connections",
+	"random_two_least_time_connect",
+	"random_two_least_time_header",
+	"random_two_least_time_first_byte",
+	"random_two_least_time_last_byte",
+];
 const FORWARD_PATH_SCHEMES = ["http", "https"];
 const TLS_FORWARD_SCHEMES = ["https", "grpcs"];
 
@@ -42,50 +60,59 @@ const hostHasEmbeddedPort = (host = "") => {
 const ensureEnabledUpstream = (upstreamServers = []) => {
 	const firstGeneratedServerIdx = upstreamServers.findIndex((server) => !isCustomUpstreamServer(server));
 
-	if (firstGeneratedServerIdx === -1 ||
-		upstreamServers.some((server) => !isCustomUpstreamServer(server) && !Boolean(server.down))) {
+	if (
+		firstGeneratedServerIdx === -1 ||
+		upstreamServers.some((server) => !isCustomUpstreamServer(server) && !server.down)
+	) {
 		return upstreamServers;
 	}
 
 	return upstreamServers.map((server, idx) =>
-		idx === firstGeneratedServerIdx ? { ...server, down: false } : server
+		idx === firstGeneratedServerIdx ? { ...server, down: false } : server,
 	);
 };
 
 const numberOrNull = (value, currentValue, allowText = false) => {
-	if (value === "" ) { return null; }
+	if (value === "") {
+		return null;
+	}
 	// specifying "$server_port" literal supports only 1 upstream being specified
-	if (new RegExp(NUMERIC_PATTERN).test(value)) { return Number(value); }
+	if (new RegExp(NUMERIC_PATTERN).test(value)) {
+		return Number(value);
+	}
 	return allowText ? value : currentValue;
 };
 
 const nginxTimeOrNull = (value, currentValue) => {
-	if (value === "" ) { return null; }
+	if (value === "") {
+		return null;
+	}
 	// specifying "$server_port" literal supports only 1 upstream being specified
-	if (new RegExp(`${NGINX_TIME_SYNTAX_REGEX}$`).test(value)) { return value; }
+	if (new RegExp(`${NGINX_TIME_SYNTAX_REGEX}$`).test(value)) {
+		return value;
+	}
 	return currentValue;
 };
 
 const validatePort = (streams) => (value) => {
-	if(value === null || value === "" || (streams && value === "$server_port")) {
+	if (value === null || value === "" || (streams && value === "$server_port")) {
 		return;
 	}
 	return validateNumber(1, 65535)(value);
 };
 
 const validateNullNumber = (min, max, allowZero) => (value) => {
-	if (value === null || value === undefined){
-		return;
-	}else {
-		return validateNumber(min,max, allowZero)(value);
+	if (value === null || value === undefined) {
+	} else {
+		return validateNumber(min, max, allowZero)(value);
 	}
-}
+};
 
 const validateTimeout = () => (value) => {
-	if(value && !(new RegExp(`${NGINX_TIME_SYNTAX_REGEX}$`).test(value))){
+	if (value && !new RegExp(`${NGINX_TIME_SYNTAX_REGEX}$`).test(value)) {
 		return intl.formatMessage({ id: "error.nginx-time-format" });
 	}
-}
+};
 
 export function CleanUpstreamServers(servers = []) {
 	return servers.map((server) => {
@@ -95,9 +122,7 @@ export function CleanUpstreamServers(servers = []) {
 		const cleaned = { ...server };
 
 		for (const field of ["weight", "maxFails", "maxConns", "failTimeout"]) {
-			if (cleaned[field] === null ||
-				cleaned[field] === undefined ||
-				cleaned[field] === "") {
+			if (cleaned[field] === null || cleaned[field] === undefined || cleaned[field] === "") {
 				delete cleaned[field];
 			}
 		}
@@ -106,13 +131,23 @@ export function CleanUpstreamServers(servers = []) {
 }
 
 export function CleanLoadBalanceMethod(object) {
-	if (object?.npmplusUpstreamServers?.length === 1){
+	if (object?.npmplusUpstreamServers?.length === 1) {
 		delete object.npmplusLoadBalanceMethod;
 	}
 	return object;
 }
 
-export function ForwardHostFields({ scheme="",idPrefix, loadBalanceMethod, upstreamServers, initialForwardPath, onChange, loadBalanceMethodFieldName, namePrefix = "", streams = false }) {
+export function ForwardHostFields({
+	scheme = "",
+	idPrefix,
+	loadBalanceMethod,
+	upstreamServers,
+	initialForwardPath,
+	onChange,
+	loadBalanceMethodFieldName,
+	namePrefix = "",
+	streams = false,
+}) {
 	const [servers, setServers] = useState(upstreamServers);
 	const [method, setMethod] = useState(loadBalanceMethod);
 	const [forwardPath, setForwardPath] = useState(initialForwardPath);
@@ -122,7 +157,10 @@ export function ForwardHostFields({ scheme="",idPrefix, loadBalanceMethod, upstr
 	const containsCustomUpstream = hasCustomUpstream(servers);
 
 	const firstPort = servers[0]?.port;
-	const usesImplicitTlsDefaultPort =!streams && !customUpstream && TLS_FORWARD_SCHEMES.includes(scheme) &&
+	const usesImplicitTlsDefaultPort =
+		!streams &&
+		!customUpstream &&
+		TLS_FORWARD_SCHEMES.includes(scheme) &&
 		servers.some((server, idx) => {
 			if (!server?.host || server.custom) {
 				return false;
@@ -130,15 +168,19 @@ export function ForwardHostFields({ scheme="",idPrefix, loadBalanceMethod, upstr
 
 			const effectivePort = server.port ?? (idx > 0 ? firstPort : null);
 
-			return ((effectivePort === null || effectivePort === undefined || effectivePort === "")
-				&& !hostHasEmbeddedPort(server.host));
+			return (
+				(effectivePort === null || effectivePort === undefined || effectivePort === "") &&
+				!hostHasEmbeddedPort(server.host)
+			);
 		});
-	const isOnlyEnabledServer = (idx) => !isCustomUpstreamServer(servers[idx]) && !Boolean(servers[idx]?.down) &&
-		servers.every((server, serverIdx) =>
-			serverIdx === idx || isCustomUpstreamServer(server) || Boolean(server.down)
+	const isOnlyEnabledServer = (idx) =>
+		!isCustomUpstreamServer(servers[idx]) &&
+		!servers[idx]?.down &&
+		servers.every(
+			(server, serverIdx) => serverIdx === idx || isCustomUpstreamServer(server) || Boolean(server.down),
 		);
 
-	const fieldName = (name) => namePrefix ? `${namePrefix}.${name}` : name;
+	const fieldName = (name) => (namePrefix ? `${namePrefix}.${name}` : name);
 	const upstreamFieldName = (idx, property) => fieldName(`npmplusUpstreamServers[${idx}].${property}`);
 	const controlId = (name, idx) => `${idPrefix}-${name}${idx === undefined ? "" : `-${idx}`}`;
 	const blankServer = {
@@ -165,7 +207,7 @@ export function ForwardHostFields({ scheme="",idPrefix, loadBalanceMethod, upstr
 		applyChanges({
 			npmplusUpstreamServers: newServers,
 			npmplusLoadBalanceMethod: newMethod,
-			npmplusForwardPath: newForwardPath
+			npmplusForwardPath: newForwardPath,
 		});
 	};
 
@@ -186,7 +228,7 @@ export function ForwardHostFields({ scheme="",idPrefix, loadBalanceMethod, upstr
 
 			updated[firstGeneratedServerIdx] = {
 				...updated[firstGeneratedServerIdx],
-				down: false
+				down: false,
 			};
 		}
 		setServers(updated);
@@ -197,7 +239,7 @@ export function ForwardHostFields({ scheme="",idPrefix, loadBalanceMethod, upstr
 
 			return current
 				.filter((expandedIdx) => expandedIdx !== idx)
-				.map((expandedIdx) => expandedIdx > idx ? expandedIdx - 1 : expandedIdx);
+				.map((expandedIdx) => (expandedIdx > idx ? expandedIdx - 1 : expandedIdx));
 		});
 		syncField(updated, method, forwardPath);
 	};
@@ -215,8 +257,12 @@ export function ForwardHostFields({ scheme="",idPrefix, loadBalanceMethod, upstr
 		setServers(updated);
 		setExpanded((current) =>
 			current.map((expandedIdx) => {
-				if (expandedIdx === idx) { return newIdx; }
-				if (expandedIdx === newIdx) { return idx; }
+				if (expandedIdx === idx) {
+					return newIdx;
+				}
+				if (expandedIdx === newIdx) {
+					return idx;
+				}
 				return expandedIdx;
 			}),
 		);
@@ -225,7 +271,7 @@ export function ForwardHostFields({ scheme="",idPrefix, loadBalanceMethod, upstr
 
 	const handleChange = (idx, field, value) => {
 		const updated = ensureEnabledUpstream(
-			servers.map((server, serverIdx) => serverIdx === idx ? { ...server, [field]: value } : server)
+			servers.map((server, serverIdx) => (serverIdx === idx ? { ...server, [field]: value } : server)),
 		);
 		setServers(updated);
 		syncField(updated, method, forwardPath);
@@ -242,7 +288,7 @@ export function ForwardHostFields({ scheme="",idPrefix, loadBalanceMethod, upstr
 	};
 
 	const handleSchemeChange = (newScheme) => {
-		const changes = {forwardScheme: newScheme};
+		const changes = { forwardScheme: newScheme };
 		if (!FORWARD_PATH_SCHEMES.includes(newScheme)) {
 			setForwardPath(null);
 			changes.npmplusForwardPath = null;
@@ -273,8 +319,7 @@ export function ForwardHostFields({ scheme="",idPrefix, loadBalanceMethod, upstr
 
 	const toggleExpanded = (idx) => {
 		setExpanded((current) =>
-			current.includes(idx)
-				? current.filter((expandedIdx) => expandedIdx !== idx) : [...current, idx],
+			current.includes(idx) ? current.filter((expandedIdx) => expandedIdx !== idx) : [...current, idx],
 		);
 	};
 
@@ -308,10 +353,7 @@ export function ForwardHostFields({ scheme="",idPrefix, loadBalanceMethod, upstr
 						<Field name={fieldName("forwardScheme")}>
 							{({ field, form }) => (
 								<>
-									<label
-										className="form-label"
-										htmlFor={controlId("scheme")}
-									>
+									<label className="form-label" htmlFor={controlId("scheme")}>
 										<T id="host.forward-scheme" />
 									</label>
 									<select
@@ -320,12 +362,18 @@ export function ForwardHostFields({ scheme="",idPrefix, loadBalanceMethod, upstr
 										required
 										{...field}
 										value={scheme}
-										onChange={(e) => {handleSchemeChange(e.target.value)}}
+										onChange={(e) => {
+											handleSchemeChange(e.target.value);
+										}}
 									>
 										<option value="http">http://</option>
 										<option value="https">https://</option>
-										<option value="path" disabled={servers.length > 1}>path: </option>
-										<option value="empty" disabled={servers.length > 1}>empty</option>
+										<option value="path" disabled={servers.length > 1}>
+											path:{" "}
+										</option>
+										<option value="empty" disabled={servers.length > 1}>
+											empty
+										</option>
 										<option value="grpc">grpc://</option>
 										<option value="grpcs">grpcs://</option>
 									</select>
@@ -349,22 +397,72 @@ export function ForwardHostFields({ scheme="",idPrefix, loadBalanceMethod, upstr
 									value={method}
 									onChange={(e) => handleMethodChange(e.target.value)}
 								>
-									<option value="round_robin"><T id="host.loadbalancer.round-robin" /></option>
-									<option value="least_conn"><T id="host.loadbalancer.least-connections" /></option>
-									{streams ? null : (<option value="ip_hash"><T id={"host.loadbalancer.ip-hash"} /></option>)}
-									{streams ? (<option value="hash"><T id={"host.loadbalancer.hash"} /></option>):null}
-									{streams ? (<option value="hash_consistent"><T id={"host.loadbalancer.hash-consistent"} /></option>):null}
-									{streams ? (<option value="least_time_connect"><T id="host.loadbalancer.least-time-connect"/></option>) : null}
-									{streams ? (<option value="least_time_first_byte"><T id="host.loadbalancer.least-time-first-byte"/></option>) : null}
-									{streams ? null : (<option value="least_time_header"><T id="host.loadbalancer.least-time-header"/></option>)}
-									<option value="least_time_last_byte"><T id="host.loadbalancer.least-time-last-byte" /></option>
-									<option value="least_time_last_byte_inflight"><T id="host.loadbalancer.least-time-last-byte-inflight" /></option>
-									<option value="random"><T id="host.loadbalancer.random" /></option>
-									<option value="random_two_least_connections"><T id="host.loadbalancer.random-two-least-connections" /></option>
-									{streams ? (<option value="random_two_least_time_connect"><T id="host.loadbalancer.random-two-least-time-connect"/></option>) : null}
-									{streams ? (<option value="random_two_least_time_first_byte"><T id="host.loadbalancer.random-two-least-time-first-byte"/></option>) : null}
-									{streams ? null : (<option value="random_two_least_time_header"><T id="host.loadbalancer.random-two-least-time-header"/></option>) }
-									<option value="random_two_least_time_last_byte"><T id="host.loadbalancer.random-two-least-time-last-byte" /></option>
+									<option value="round_robin">
+										<T id="host.loadbalancer.round-robin" />
+									</option>
+									<option value="least_conn">
+										<T id="host.loadbalancer.least-connections" />
+									</option>
+									{streams ? null : (
+										<option value="ip_hash">
+											<T id={"host.loadbalancer.ip-hash"} />
+										</option>
+									)}
+									{streams ? (
+										<option value="hash">
+											<T id={"host.loadbalancer.hash"} />
+										</option>
+									) : null}
+									{streams ? (
+										<option value="hash_consistent">
+											<T id={"host.loadbalancer.hash-consistent"} />
+										</option>
+									) : null}
+									{streams ? (
+										<option value="least_time_connect">
+											<T id="host.loadbalancer.least-time-connect" />
+										</option>
+									) : null}
+									{streams ? (
+										<option value="least_time_first_byte">
+											<T id="host.loadbalancer.least-time-first-byte" />
+										</option>
+									) : null}
+									{streams ? null : (
+										<option value="least_time_header">
+											<T id="host.loadbalancer.least-time-header" />
+										</option>
+									)}
+									<option value="least_time_last_byte">
+										<T id="host.loadbalancer.least-time-last-byte" />
+									</option>
+									<option value="least_time_last_byte_inflight">
+										<T id="host.loadbalancer.least-time-last-byte-inflight" />
+									</option>
+									<option value="random">
+										<T id="host.loadbalancer.random" />
+									</option>
+									<option value="random_two_least_connections">
+										<T id="host.loadbalancer.random-two-least-connections" />
+									</option>
+									{streams ? (
+										<option value="random_two_least_time_connect">
+											<T id="host.loadbalancer.random-two-least-time-connect" />
+										</option>
+									) : null}
+									{streams ? (
+										<option value="random_two_least_time_first_byte">
+											<T id="host.loadbalancer.random-two-least-time-first-byte" />
+										</option>
+									) : null}
+									{streams ? null : (
+										<option value="random_two_least_time_header">
+											<T id="host.loadbalancer.random-two-least-time-header" />
+										</option>
+									)}
+									<option value="random_two_least_time_last_byte">
+										<T id="host.loadbalancer.random-two-least-time-last-byte" />
+									</option>
 								</select>
 							</div>
 						)}
@@ -372,7 +470,7 @@ export function ForwardHostFields({ scheme="",idPrefix, loadBalanceMethod, upstr
 				) : null}
 				{streams || !FORWARD_PATH_SCHEMES.includes(scheme) ? null : (
 					<div className="col-md-4">
-						<Field name={fieldName("npmplusForwardPath")} >
+						<Field name={fieldName("npmplusForwardPath")}>
 							{({ field, meta }) => (
 								<div className="mb-3">
 									<label className="form-label" htmlFor={controlId("npmplusForwardPath")}>
@@ -414,7 +512,11 @@ export function ForwardHostFields({ scheme="",idPrefix, loadBalanceMethod, upstr
 								>
 									{isExpanded(idx) ? <IconChevronDown size={16} /> : <IconChevronRight size={16} />}
 									<span className="ms-2 fw-medium text-nowrap">
-										{forwardDestination({forwardScheme: scheme, npmplusForwardPath: forwardPath}, server, { streams })}
+										{forwardDestination(
+											{ forwardScheme: scheme, npmplusForwardPath: forwardPath },
+											server,
+											{ streams },
+										)}
 									</span>
 								</button>
 								{idx > 0 ? (
@@ -454,9 +556,7 @@ export function ForwardHostFields({ scheme="",idPrefix, loadBalanceMethod, upstr
 							id={controlId("upstream-body", idx)}
 							onInvalid={() =>
 								flushSync(() => {
-									setExpanded((current) =>
-										current.includes(idx) ? current: [...current, idx],
-									);
+									setExpanded((current) => (current.includes(idx) ? current : [...current, idx]));
 								})
 							}
 						>
@@ -473,7 +573,13 @@ export function ForwardHostFields({ scheme="",idPrefix, loadBalanceMethod, upstr
 										{({ field, meta }) => (
 											<div className="mb-3">
 												<label className="form-label" htmlFor={controlId("host", idx)}>
-													<T id={streams ? "stream.forward-host": "proxy-host.forward-host-path"} />
+													<T
+														id={
+															streams
+																? "stream.forward-host"
+																: "proxy-host.forward-host-path"
+														}
+													/>
 												</label>
 												<input
 													{...field}
@@ -481,9 +587,13 @@ export function ForwardHostFields({ scheme="",idPrefix, loadBalanceMethod, upstr
 													type="text"
 													required
 													className={`form-control ${meta.touched && meta.error ? "is-invalid" : ""}`}
-													placeholder={streams ? intl.formatMessage({
-																				id: "stream.forward-host.placeholder",
-																			}) : "example.com"}
+													placeholder={
+														streams
+															? intl.formatMessage({
+																	id: "stream.forward-host.placeholder",
+																})
+															: "example.com"
+													}
 													value={server.host ?? ""}
 													onChange={(event) => handleChange(idx, "host", event.target.value)}
 												/>
@@ -496,7 +606,10 @@ export function ForwardHostFields({ scheme="",idPrefix, loadBalanceMethod, upstr
 								</div>
 								{customServer ? null : (
 									<div className="col-md-3">
-										<Field name={upstreamFieldName(idx, "port")} validate={validatePort(streamValidation)}>
+										<Field
+											name={upstreamFieldName(idx, "port")}
+											validate={validatePort(streamValidation)}
+										>
 											{({ field, meta }) => (
 												<div className="mb-3">
 													<label className="form-label" htmlFor={controlId("port", idx)}>
@@ -507,11 +620,23 @@ export function ForwardHostFields({ scheme="",idPrefix, loadBalanceMethod, upstr
 														id={controlId("port", idx)}
 														type="text"
 														inputMode={streamValidation ? "text" : "numeric"}
-														pattern={streamValidation ? SERVER_PORT_PATTERN : NUMERIC_PATTERN}
+														pattern={
+															streamValidation ? SERVER_PORT_PATTERN : NUMERIC_PATTERN
+														}
 														className={`form-control ${meta.touched && meta.error ? "is-invalid" : ""}`}
 														placeholder="eg: 8081"
-														value={server.port?? ""}
-														onChange={(event) => handleChange(idx, "port", numberOrNull(event.target.value, server.port, streamValidation))}
+														value={server.port ?? ""}
+														onChange={(event) =>
+															handleChange(
+																idx,
+																"port",
+																numberOrNull(
+																	event.target.value,
+																	server.port,
+																	streamValidation,
+																),
+															)
+														}
 													/>
 
 													{meta.touched && meta.error ? (
@@ -526,7 +651,10 @@ export function ForwardHostFields({ scheme="",idPrefix, loadBalanceMethod, upstr
 									<Field name={upstreamFieldName(idx, "custom")} type="checkbox">
 										{({ field }) => (
 											<div className="mb-3">
-												<label className="form-label" htmlFor={controlId("npmplusCustomUpstream", idx)}>
+												<label
+													className="form-label"
+													htmlFor={controlId("npmplusCustomUpstream", idx)}
+												>
 													<T id="host.custom-upstream" />
 													<InfoPopover messageId="host.custom-upstream-help" />
 												</label>
@@ -534,10 +662,12 @@ export function ForwardHostFields({ scheme="",idPrefix, loadBalanceMethod, upstr
 													<input
 														{...field}
 														id={controlId("npmplusCustomUpstream", idx)}
-														className={cn("form-check-input", {"bg-lime": server.custom})}
+														className={cn("form-check-input", { "bg-lime": server.custom })}
 														type="checkbox"
 														checked={Boolean(server.custom)}
-														onChange={(event) =>handleChange(idx, "custom", event.target.checked)}
+														onChange={(event) =>
+															handleChange(idx, "custom", event.target.checked)
+														}
 													/>
 												</span>
 											</div>
@@ -549,10 +679,16 @@ export function ForwardHostFields({ scheme="",idPrefix, loadBalanceMethod, upstr
 								<>
 									<div className="row m-0">
 										<div className="col-md-3">
-											<Field name={upstreamFieldName(idx, "weight")} validate={validateNullNumber(1, 100)}>
+											<Field
+												name={upstreamFieldName(idx, "weight")}
+												validate={validateNullNumber(1, 100)}
+											>
 												{({ field, meta }) => (
 													<div className="mb-3">
-														<label className="form-label" htmlFor={controlId("npmplusUpstreamWeight", idx)}>
+														<label
+															className="form-label"
+															htmlFor={controlId("npmplusUpstreamWeight", idx)}
+														>
 															<T id="host.upstream.weight" />
 														</label>
 														<input
@@ -564,7 +700,13 @@ export function ForwardHostFields({ scheme="",idPrefix, loadBalanceMethod, upstr
 															className={`form-control ${meta.touched && meta.error ? "is-invalid" : ""}`}
 															placeholder="eg: 1"
 															value={server.weight ?? ""}
-															onChange={(event) => handleChange(idx, "weight", numberOrNull(event.target.value, server.weight))}
+															onChange={(event) =>
+																handleChange(
+																	idx,
+																	"weight",
+																	numberOrNull(event.target.value, server.weight),
+																)
+															}
 														/>
 
 														{meta.touched && meta.error ? (
@@ -575,10 +717,16 @@ export function ForwardHostFields({ scheme="",idPrefix, loadBalanceMethod, upstr
 											</Field>
 										</div>
 										<div className="col-md-3">
-											<Field name={upstreamFieldName(idx, "maxFails")} validate={validateNullNumber(0, -1, true)}>
+											<Field
+												name={upstreamFieldName(idx, "maxFails")}
+												validate={validateNullNumber(0, -1, true)}
+											>
 												{({ field, meta }) => (
 													<div className="mb-3">
-														<label className="form-label" htmlFor={controlId("npmplusUpstreamMaxFails", idx)}>
+														<label
+															className="form-label"
+															htmlFor={controlId("npmplusUpstreamMaxFails", idx)}
+														>
 															<T id="host.upstream.max-fails" />
 														</label>
 														<input
@@ -590,7 +738,13 @@ export function ForwardHostFields({ scheme="",idPrefix, loadBalanceMethod, upstr
 															className={`form-control ${meta.touched && meta.error ? "is-invalid" : ""}`}
 															placeholder="eg: 1"
 															value={server.maxFails ?? ""}
-															onChange={(event) => handleChange(idx, "maxFails", numberOrNull(event.target.value, server.maxFails))}
+															onChange={(event) =>
+																handleChange(
+																	idx,
+																	"maxFails",
+																	numberOrNull(event.target.value, server.maxFails),
+																)
+															}
 														/>
 
 														{meta.touched && meta.error ? (
@@ -601,10 +755,16 @@ export function ForwardHostFields({ scheme="",idPrefix, loadBalanceMethod, upstr
 											</Field>
 										</div>
 										<div className="col-md-3">
-											<Field name={upstreamFieldName(idx, "failTimeout")} validate={validateTimeout()}>
+											<Field
+												name={upstreamFieldName(idx, "failTimeout")}
+												validate={validateTimeout()}
+											>
 												{({ field, meta }) => (
 													<div className="mb-3">
-														<label className="form-label" htmlFor={controlId("npmplusUpstreamTimeout", idx)}>
+														<label
+															className="form-label"
+															htmlFor={controlId("npmplusUpstreamTimeout", idx)}
+														>
 															<T id="host.upstream.timeout" />
 															<InfoPopover messageId="host.upstream.timeout-help" />
 														</label>
@@ -617,7 +777,16 @@ export function ForwardHostFields({ scheme="",idPrefix, loadBalanceMethod, upstr
 															className={`form-control ${meta.touched && meta.error ? "is-invalid" : ""}`}
 															placeholder="default: 30s"
 															value={server.failTimeout ?? ""}
-															onChange={(event) => handleChange(idx, "failTimeout", nginxTimeOrNull(event.target.value, server.failTimeout))}
+															onChange={(event) =>
+																handleChange(
+																	idx,
+																	"failTimeout",
+																	nginxTimeOrNull(
+																		event.target.value,
+																		server.failTimeout,
+																	),
+																)
+															}
 														/>
 
 														{meta.touched && meta.error ? (
@@ -631,7 +800,10 @@ export function ForwardHostFields({ scheme="",idPrefix, loadBalanceMethod, upstr
 											<Field name={upstreamFieldName(idx, "backup")} type="checkbox">
 												{({ field }) => (
 													<div className="mb-3">
-														<label className="form-label" htmlFor={controlId("npmplusUpstreamBackup", idx)}>
+														<label
+															className="form-label"
+															htmlFor={controlId("npmplusUpstreamBackup", idx)}
+														>
 															<T id="host.upstream.backup" />
 														</label>
 														<span className="form-check form-check-single form-switch p-0">
@@ -644,7 +816,9 @@ export function ForwardHostFields({ scheme="",idPrefix, loadBalanceMethod, upstr
 																type="checkbox"
 																checked={Boolean(server.backup)}
 																disabled={backupDisabled}
-																onChange={(event) => handleChange(idx, "backup", event.target.checked)}
+																onChange={(event) =>
+																	handleChange(idx, "backup", event.target.checked)
+																}
 															/>
 														</span>
 													</div>
@@ -654,10 +828,16 @@ export function ForwardHostFields({ scheme="",idPrefix, loadBalanceMethod, upstr
 									</div>
 									<div className="row m-0">
 										<div className="col-md-4">
-											<Field name={upstreamFieldName(idx, "maxConns")} validate={validateNullNumber(0, -1, true)}>
+											<Field
+												name={upstreamFieldName(idx, "maxConns")}
+												validate={validateNullNumber(0, -1, true)}
+											>
 												{({ field, meta }) => (
 													<div className="mb-3">
-														<label className="form-label" htmlFor={controlId("npmplusUpstreamMaxConns", idx)}>
+														<label
+															className="form-label"
+															htmlFor={controlId("npmplusUpstreamMaxConns", idx)}
+														>
 															<T id="host.upstream.max-connections" />
 														</label>
 														<input
@@ -669,7 +849,13 @@ export function ForwardHostFields({ scheme="",idPrefix, loadBalanceMethod, upstr
 															className={`form-control ${meta.touched && meta.error ? "is-invalid" : ""}`}
 															placeholder="eg: 1"
 															value={server.maxConns ?? ""}
-															onChange={(event) => handleChange(idx, "maxConns", numberOrNull(event.target.value, server.maxConns))}
+															onChange={(event) =>
+																handleChange(
+																	idx,
+																	"maxConns",
+																	numberOrNull(event.target.value, server.maxConns),
+																)
+															}
 														/>
 														{meta.touched && meta.error ? (
 															<div className="invalid-feedback">{meta.error}</div>
@@ -682,7 +868,10 @@ export function ForwardHostFields({ scheme="",idPrefix, loadBalanceMethod, upstr
 											<Field name={upstreamFieldName(idx, "down")} type="checkbox">
 												{({ field }) => (
 													<div className="mb-3">
-														<label className="form-label" htmlFor={controlId("npmplusUpstreamEnable", idx)}>
+														<label
+															className="form-label"
+															htmlFor={controlId("npmplusUpstreamEnable", idx)}
+														>
 															<T id="enabled" />
 															<InfoPopover messageId="host.upstream.enabled-down-help" />
 														</label>
@@ -694,9 +883,11 @@ export function ForwardHostFields({ scheme="",idPrefix, loadBalanceMethod, upstr
 																	"bg-lime": !server.down, // invert it to represent the UI which shows 'enabled'
 																})}
 																type="checkbox"
-																checked={!Boolean(server.down)}
+																checked={!server.down}
 																disabled={isOnlyEnabledServer(idx)}
-																onChange={(event) =>handleChange(idx, "down", !event.target.checked)}
+																onChange={(event) =>
+																	handleChange(idx, "down", !event.target.checked)
+																}
 															/>
 														</span>
 													</div>

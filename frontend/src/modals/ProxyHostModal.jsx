@@ -23,7 +23,7 @@ import EasyModal from "src/modules/easyModal";
 import { hasPermission, MANAGE, PROXY_HOSTS } from "src/modules/Permissions";
 import { showTabOfInvalid, validateUpstreamUrl } from "src/modules/Validations";
 import { showObjectSuccess } from "src/notifications";
-import { ForwardHostFields, CleanUpstreamServers, CleanLoadBalanceMethod } from "../components/Form/ForwardHostFields";
+import { CleanLoadBalanceMethod, CleanUpstreamServers, ForwardHostFields } from "../components/Form/ForwardHostFields";
 
 const requestBufferingTitle = ({ npmplusDisableCrowdsecAppsec, forwardScheme }) => {
 	if (!npmplusDisableCrowdsecAppsec && ["http", "https"].includes(forwardScheme)) {
@@ -113,9 +113,7 @@ const ProxyHostModal = EasyModal.create(({ id, isClone, visible, remove, close, 
 			const newLoc = { 
 				...loc, 
 				// remove entries that are null or undefined or empty to pass schema validation
-				npmplusUpstreamServers: CleanUpstreamServers(
-					loc.npmplusUpstreamServers,
-				),
+				npmplusUpstreamServers: CleanUpstreamServers(loc.npmplusUpstreamServers),
 				npmplusAccessListIds:
 					location.npmplusAccessListType === "custom" ? location.npmplusAccessListIds : [],
 			};
@@ -129,9 +127,7 @@ const ProxyHostModal = EasyModal.create(({ id, isClone, visible, remove, close, 
 		const payload = {
 			id: id === "new" || isClone ? undefined : id,
 			...values,
-			npmplusUpstreamServers: CleanUpstreamServers(
-				values.npmplusUpstreamServers,
-			),
+			npmplusUpstreamServers: CleanUpstreamServers(values.npmplusUpstreamServers),
 			npmplusAccessListIds: globalAclIds,
 			locations,
 		};

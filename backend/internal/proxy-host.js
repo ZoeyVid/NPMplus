@@ -493,7 +493,6 @@ const internalProxyHost = {
 
 		return query.resultSize();
 	},
-
 };
 
 export default internalProxyHost;

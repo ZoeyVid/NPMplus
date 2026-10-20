@@ -43,7 +43,7 @@ const createMigrationBackup = async () => {
 
 	currentBackup = join(backupDirectory, `database-migrations-${date}.sqlite`);
 
-	const sqlite = new Database(databaseFile, {	fileMustExist: true });
+	const sqlite = new Database(databaseFile, { fileMustExist: true });
 
 	try {
 		await sqlite.backup(currentBackup);
@@ -70,7 +70,6 @@ const removeOldMigrationBackups = async () => {
 	currentBackup = null;
 };
 
-
 const migrateUp = async () => {
 	if (await db().schema.hasTable("migrations")) {
 		await db()
@@ -87,10 +86,7 @@ const migrateUp = async () => {
 	const [completedMigrations, pendingMigrations] =
 	await db().migrate.list(migrationConfig);
 
-	const shouldBackup =
-		isSqlite() &&
-		completedMigrations.length > 0 &&
-		pendingMigrations.length > 0;
+	const shouldBackup = isSqlite() && completedMigrations.length > 0 && pendingMigrations.length > 0;
 
 	if (shouldBackup) {
 		await createMigrationBackup();

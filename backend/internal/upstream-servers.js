@@ -36,7 +36,6 @@ const normaliseHost = (host) => {
 };
 
 const internalUpstreamServers = {
-
 	/**
 	 *
 	 * @param {*} serverHost
@@ -52,8 +51,7 @@ const internalUpstreamServers = {
 		// always remove the load balance method if there is only 1 item in the array
 		// however if it is not a location and it is changing from more than 1 to 1 host,
 		// then set it to null so objection will update the field
-		if (Array.isArray(serverHost.npmplus_upstream_servers) &&
-			serverHost.npmplus_upstream_servers.length === 1) {
+		if (Array.isArray(serverHost.npmplus_upstream_servers) && serverHost.npmplus_upstream_servers.length === 1) {
 			if (isLocation) {
 				delete serverHost.npmplus_load_balance_method;
 			} else {
@@ -78,9 +76,11 @@ const internalUpstreamServers = {
 		const forwardScheme = getEffectiveValue(serverHost, existingServerHost, "forward_scheme");
 		const forwardPath = getEffectiveValue(serverHost, existingServerHost, "npmplus_forward_path");
 
-		if (FORWARD_PATH_SCHEMES.includes(forwardScheme) &&
+		if (
+			FORWARD_PATH_SCHEMES.includes(forwardScheme) &&
 			Array.isArray(serverHost.npmplus_upstream_servers) &&
-			serverHost.npmplus_upstream_servers.length > 0) {
+			serverHost.npmplus_upstream_servers.length > 0
+		) {
 			// apply only to the first server. If subsequent servers have a path, they will cause a validation
 			// failure. If they dont have a path, it will apply this path to them.
 
@@ -89,7 +89,9 @@ const internalUpstreamServers = {
 				const pathIndex = firstServer.host.indexOf("/");
 				if (pathIndex > 0) {
 					if (forwardPath != null && forwardPath !== "") {
-						throw new errs.ValidationError("An upstream host path cannot be used when the forward path field already has a value");
+						throw new errs.ValidationError(
+							"An upstream host path cannot be used when the forward path field already has a value",
+						);
 					}
 					serverHost.npmplus_forward_path = firstServer.host.slice(pathIndex);
 					firstServer.host = firstServer.host.slice(0, pathIndex);
@@ -126,12 +128,23 @@ const internalUpstreamServers = {
 		}
 
 		const usesServerPort = upstreamServers.some((server) => server.port === "$server_port");
-		if (usesServerPort && (!streams || upstreamServers.length !== 1 || upstreamServers[0].port !== "$server_port")) {
-			throw new errs.ValidationError("$server_port can only be used by a stream with exactly one upstream server");
+		if (
+			usesServerPort &&
+			(!streams || upstreamServers.length !== 1 || upstreamServers[0].port !== "$server_port")
+		) {
+			throw new errs.ValidationError(
+				"$server_port can only be used by a stream with exactly one upstream server",
+			);
 		}
 
-		if (!streams && NETWORK_PROXY_SCHEMES.includes(forwardScheme) && upstreamServers.some((server) => server.host.includes("/"))) {
-			throw new errs.ValidationError("Network upstream hosts cannot contain a path; use the forward path field instead");
+		if (
+			!streams &&
+			NETWORK_PROXY_SCHEMES.includes(forwardScheme) &&
+			upstreamServers.some((server) => server.host.includes("/"))
+		) {
+			throw new errs.ValidationError(
+				"Network upstream hosts cannot contain a path; use the forward path field instead",
+			);
 		}
 
 		if (generatedUpstreamServers.length > 0 && generatedUpstreamServers.every((server) => server.down === true)) {
@@ -139,16 +152,22 @@ const internalUpstreamServers = {
 		}
 
 		if (upstreamServers.length > 1 && !loadBalanceMethod) {
-			throw new errs.ValidationError("A load balancing method is required when multiple upstream servers are configured");
+			throw new errs.ValidationError(
+				"A load balancing method is required when multiple upstream servers are configured",
+			);
 		}
 
 		if (upstreamServers.length === 1 && loadBalanceMethod != null) {
 			throw new errs.ValidationError("A load balancing method cannot be used with a single upstream server");
 		}
 
-		if (BACKUP_INCOMPATIBLE_METHODS.includes(loadBalanceMethod) &&
-			upstreamServers.some((server) => server.backup)) {
-			throw new errs.ValidationError(`The backup parameter cannot be used with the ${loadBalanceMethod} load balancing method`);
+		if (
+			BACKUP_INCOMPATIBLE_METHODS.includes(loadBalanceMethod) &&
+			upstreamServers.some((server) => server.backup)
+		) {
+			throw new errs.ValidationError(
+				`The backup parameter cannot be used with the ${loadBalanceMethod} load balancing method`,
+			);
 		}
 
 		// streams do not have locations and some hosts may not have them either so do a check before trying to iterate

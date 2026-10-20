@@ -17,7 +17,7 @@ import EasyModal from "src/modules/easyModal";
 import { hasPermission, MANAGE, STREAMS } from "src/modules/Permissions";
 import { showTabOfInvalid, validateAdminTarget, validateString } from "src/modules/Validations";
 import { showObjectSuccess } from "src/notifications";
-import { ForwardHostFields, CleanUpstreamServers, CleanLoadBalanceMethod } from "../components/Form/ForwardHostFields";
+import { CleanLoadBalanceMethod, CleanUpstreamServers, ForwardHostFields } from "../components/Form/ForwardHostFields";
 
 const showStreamModal = (id, isClone) => {
 	EasyModal.show(StreamModal, { id, isClone });
@@ -96,17 +96,17 @@ const StreamModal = EasyModal.create(({ id, isClone, visible, remove, close, for
 					initialValues={{
 						incomingPort: data?.incomingPort,
 						npmplusLoadBalanceMethod: data?.npmplusLoadBalanceMethod || "round_robin",
-						npmplusUpstreamServers: data?.npmplusUpstreamServers?.length ?
-														data.npmplusUpstreamServers :
-																				[
-																					{
-																						host: "",
-																						port: null,
-																						backup: false,
-																						down: false,
-																						custom: false,
-																					},
-																				],
+						npmplusUpstreamServers: data?.npmplusUpstreamServers?.length
+							? data.npmplusUpstreamServers
+							: [
+									{
+										host: "",
+										port: null,
+										backup: false,
+										down: false,
+										custom: false,
+									},
+								],
 						tcpForwarding: data?.tcpForwarding,
 						udpForwarding: data?.udpForwarding,
 						npmplusProxyProtocolForwarding: data?.npmplusProxyProtocolForwarding,

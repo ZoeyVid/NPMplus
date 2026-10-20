@@ -1,7 +1,7 @@
-import { isIPv6 } from "node:net";
-import { migrate as logger } from "../logger.js";
 import { mkdir, writeFile } from "node:fs/promises";
+import { isIPv6 } from "node:net";
 import { join } from "node:path";
+import { migrate as logger } from "../logger.js";
 
 const FORWARD_PATH_SCHEMES = ["http", "https"];
 const NETWORK_PROXY_SCHEMES = ["http", "https", "grpc", "grpcs"];
@@ -20,18 +20,19 @@ const writeDiscardedPathReport = async (discardedPaths) => {
 	});
 
 	const date = new Date().toISOString().replace(/[:.]/g, "-");
-	const reportPath = join(
-		migrationReportDirectory,
-		`proxy-host-load-balancing-discarded-paths-${date}.json`,
-	);
+	const reportPath = join(migrationReportDirectory, `proxy-host-load-balancing-discarded-paths-${date}.json`);
 
 	await writeFile(
 		reportPath,
-		`${JSON.stringify({
-			migration: migrateName,
-			generated_at: new Date().toISOString(),
-			affected: discardedPaths,
-		}, null, 2)}\n`,
+		`${JSON.stringify(
+			{
+				migration: migrateName,
+				generated_at: new Date().toISOString(),
+				affected: discardedPaths,
+			},
+			null,
+			2,
+		)}\n`,
 		{
 			encoding: "utf8",
 			mode: 0o600,
@@ -79,7 +80,7 @@ const splitForwardHost = (host, splitPath = false) => {
 	if (!splitPath || typeof host !== "string") {
 		return {
 			upstreamHost: host,
-			forwardPath: undefined
+			forwardPath: undefined,
 		};
 	}
 
@@ -87,7 +88,7 @@ const splitForwardHost = (host, splitPath = false) => {
 	if (pathIndex === -1) {
 		return {
 			upstreamHost: host,
-			forwardPath: undefined
+			forwardPath: undefined,
 		};
 	}
 
@@ -108,8 +109,7 @@ const createUpstreamServer = (host, port) => {
 	return {
 		host: normaliseHost(host),
 		custom,
-		...(custom || normalisedPort === null || normalisedPort === undefined
-			? {} : { port: normalisedPort }),
+		...(custom || normalisedPort === null || normalisedPort === undefined ? {} : { port: normalisedPort }),
 	};
 };
 
@@ -145,7 +145,7 @@ const up = async (knex) => {
 		"path",
 		"forward_scheme",
 		"forward_host",
-		"forward_port"
+		"forward_port",
 	);
 
 	for (const location of locations) {
@@ -168,12 +168,12 @@ const up = async (knex) => {
 				discarded_forward_path: forwardPath,
 			});
 		}
-		await knex("npmplus_location").where({ id: location.id }).update({
-			npmplus_forward_path: supportsForwardPath ? forwardPath ?? null : null,
-			npmplus_upstream_servers: JSON.stringify([
-				createUpstreamServer(upstreamHost, location.forward_port),
-			]),
-		});
+		await knex("npmplus_location")
+			.where({ id: location.id })
+			.update({
+				npmplus_forward_path: supportsForwardPath ? (forwardPath ?? null) : null,
+				npmplus_upstream_servers: JSON.stringify([createUpstreamServer(upstreamHost, location.forward_port)]),
+			});
 	}
 
 	const proxyHosts = await knex("proxy_host").select("id", "forward_scheme", "forward_host", "forward_port");
@@ -205,10 +205,8 @@ const up = async (knex) => {
 		await knex("proxy_host")
 			.where({ id: proxyHost.id })
 			.update({
-				npmplus_forward_path: supportsForwardPath ? forwardPath ?? null : null,
-				npmplus_upstream_servers: JSON.stringify([
-					createUpstreamServer(upstreamHost, proxyHost.forward_port)
-				])
+				npmplus_forward_path: supportsForwardPath ? (forwardPath ?? null) : null,
+				npmplus_upstream_servers: JSON.stringify([createUpstreamServer(upstreamHost, proxyHost.forward_port)]),
 			});
 	}
 
@@ -229,7 +227,7 @@ const up = async (knex) => {
 	if (reportPath !== null) {
 		logger.warn(
 			`[${migrateName}] Discarded unsupported gRPC/gRPCS forward paths from ` +
-			`${discardedPaths.length} configuration(s). Details written to ${reportPath}`,
+				`${discardedPaths.length} configuration(s). Details written to ${reportPath}`,
 		);
 	}
 
