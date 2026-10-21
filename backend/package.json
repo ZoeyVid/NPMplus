@@ -19,7 +19,7 @@
 		"jsonwebtoken": "9.0.3",
 		"knex": "3.3.0",
 		"liquidjs": "10.30.0",
-		"multer": "2.4.0",
+		"multer": "2.5.0",
 		"mysql2": "3.24.6",
 		"objection": "4.2.0",
 		"openid-client": "6.8.8",
