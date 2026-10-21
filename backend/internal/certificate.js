@@ -23,8 +23,8 @@ import { getValidationSchema } from "../schema/index.js";
 import internalAuditLog from "./audit-log.js";
 import internalNginx from "./nginx.js";
 
-const cnPattern = /\bCN=([^\n]+)/i;
-const renewalServerPattern = /^server = (.+)$/m;
+const cnPattern = /\bCN=(?<cn>[^\n]+)/iu;
+const renewalServerPattern = /^server = (?<server>.+)$/mu;
 
 const getNiceName = (domainNames) => {
 	const niceName = domainNames.join(", ");
@@ -421,7 +421,7 @@ const internalCertificate = {
 		await mkdir(dir, { recursive: true });
 		await writeFile(`${dir}/fullchain.pem`, certificate.certificate);
 		await writeFile(`${dir}/privkey.pem`, certificate.certificate_key);
-		const certs = certificate.certificate.match(/-----BEGIN CERTIFICATE-----.+?-----END CERTIFICATE-----\s*/gs);
+		const certs = certificate.certificate.match(/-----BEGIN CERTIFICATE-----.+?-----END CERTIFICATE-----\s*/gsu);
 		await writeFile(`${dir}/cert.pem`, certs[0]);
 		await writeFile(`${dir}/chain.pem`, certs.slice(1).join(""));
 	},
@@ -550,8 +550,8 @@ const internalCertificate = {
 					.map((entry) => entry.slice(entry.indexOf(":") + 1).trim());
 			} else {
 				const cnMatch = cnPattern.exec(cert.subject);
-				if (cnMatch?.[1]) {
-					certData.cn = [cnMatch[1].trim()];
+				if (cnMatch?.groups.cn) {
+					certData.cn = [cnMatch.groups.cn.trim()];
 				} else {
 					certData.cn = [];
 				}
@@ -606,7 +606,7 @@ const internalCertificate = {
 			`Requesting Certbot certificates for Cert #${certificate.id}: ${certificate.domain_names.join(", ")}`,
 		);
 
-		certificate.domain_names = certificate.domain_names.map((v) => v.replace(/^\[|\]$/g, ""));
+		certificate.domain_names = certificate.domain_names.map((v) => v.replace(/^\[|\]$/gu, ""));
 		const { ips = [], domains = [] } = Object.groupBy(certificate.domain_names, (entry) =>
 			net.isIP(entry) === 0 ? "domains" : "ips",
 		);
@@ -731,7 +731,7 @@ const internalCertificate = {
 		const oldCertPath = await realpath(`${internalCertificate.getLiveCertPath(certificate.id)}/cert.pem`);
 		const oldServer = (await readFile(`/data/tls/certbot/renewal/npm-${certificate.id}.conf`, "utf8")).match(
 			renewalServerPattern,
-		)?.[1];
+		)?.groups.server;
 
 		const renewResult = await utils.execFile("certbot", [
 			"--config",
