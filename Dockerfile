@@ -9,7 +9,7 @@ ARG AWSLC_VER=cd481c207e38f06aeb5766f4a1cdfce10a4c0af8 # v5.12.0
 
 ARG NGINX_VER=140aa942711868a8daeb95810bc9a81f272ada72 # release-1.31.8
 ARG DTR_VER=1.29.2
-ARG ORP_VER=1.31.7
+ARG ORP_VER=1.31.8
 ARG ZNP_VER=1.30.0
 
 ARG NB_VER=df036cc80cd4f5b0bf67b25b0a10d0ee86ba5bdb # master
@@ -19,7 +19,7 @@ ARG NHUZFM_VER=f743b0250c93ae5fa721bed6bebc4c66c5139aee # 1.0.0
 ARG NF_VER=70311f239ec1e88ff79c669d126d08532ddb8554 # v0.6.0
 ARG HMNM_VER=0bf283ff92017acd616814b0e5153e0ccf93e2c9 # v0.40
 ARG NDK_VER=bd44d16302273052d6005d7bdb55f74e23813de3 # v0.3.4
-ARG LNM_VER=e1226f86bd609c9e8c14a0cb51ee50d94737c109 # v0.10.32rc6
+ARG LNM_VER=e672520a9480524f40ee8f999ef1f182959750a9 # v0.10.32rc7
 
 ARG NJS_VER=72e6a980b9bf2a28ae2d568bbc3b6830a5d7c39e # 1.0.2
 ARG NAL_VER=241200eac8e4acae74d353291bd27f79e5ca3dc4 # master
@@ -69,7 +69,7 @@ RUN git-clone-commit.sh https://github.com/nginx/nginx "$NGINX_VER" /src/nginx &
     echo "0aa9c73e7515dbbd48ecc798f7894412c1a50e96e98aee25847e823059faf821  /src/nginx/3.patch" | sha256sum -c - && \
     git apply /src/nginx/3.patch && \
     wget -q https://raw.githubusercontent.com/openresty/openresty/master/patches/nginx/"$ORP_VER"/nginx-"$ORP_VER"-resolver_conf_parsing.patch -O /src/nginx/4.patch && \
-    echo "4fd457ee6aa7629bc10e24595a992f47babdc4bb78b353527c5136cd9ae0e47c  /src/nginx/4.patch" | sha256sum -c - && \
+    echo "24d6a51349551e65c16709122307a12ce84274cbbaa224adfa5853aa367608b8  /src/nginx/4.patch" | sha256sum -c - && \
     git apply /src/nginx/4.patch && \
     wget -q https://raw.githubusercontent.com/zlib-ng/patches/master/nginx/"$ZNP_VER"-zlib-ng.patch -O /src/nginx/5.patch && \
     echo "bcd0f2fb9723fc1f251f94cead8d5160e767f7d4a04365331396a72a9ba54c6b  /src/nginx/5.patch" | sha256sum -c - && \
@@ -215,7 +215,7 @@ FROM alpine:3.24.3@sha256:be2656061b536c1883c4034790e21d0a09c5aaaf51968b89368a3c
 SHELL ["/bin/ash", "-eo", "pipefail", "-c"]
 ENV NODE_ENV=production
 ENV NODE_OPTIONS=--use-openssl-ca
-ARG LRC_VER=be42297c57dc2393cdbb09d4597d9d4840a7c769 # v0.1.35rc1
+ARG LRC_VER=873d072635fd408d81a0abd4187392f3f128ceb9 # v0.1.35rc2
 ARG LRL_VER=3ff6300e68b73ba20e909c7d16bd839aef2e5a4b # v0.15
 ARG LCSB_VER=92a8617ede3b781c33cd39e73734505597e318fd # main
 ARG COF_VER=da93e0cec7fdb1a80f4972f75b3638763d012c0e # main
