@@ -7,8 +7,8 @@ import internalNginx from "./nginx.js";
 const CLOUDFLARE_V4_URL = "https://www.cloudflare.com/ips-v4";
 const CLOUDFLARE_V6_URL = "https://www.cloudflare.com/ips-v6";
 
-const regIpV4 = /^(?:[0-9]{1,3}\.){3}[0-9]{1,3}\/[0-9]{1,2}$/;
-const regIpV6 = /^([0-9a-fA-F:]+)\/[0-9]{1,3}$/;
+const regIpV4 = /^(?:[0-9]{1,3}\.){3}[0-9]{1,3}\/[0-9]{1,2}$/u;
+const regIpV6 = /^[0-9a-fA-F:]+\/[0-9]{1,3}$/u;
 
 const internalIpRanges = {
 	interval_timeout: 1000 * 60 * 60,

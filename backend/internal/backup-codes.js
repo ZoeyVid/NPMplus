@@ -70,7 +70,7 @@ const internalBackupCodes = {
 	 * @returns {Promise<boolean>}
 	 */
 	verify: async (userId, code) => {
-		const normalizedCode = code.toUpperCase().replaceAll("O", "0").replace(/[IL]/g, "1");
+		const normalizedCode = code.toUpperCase().replaceAll("O", "0").replace(/[IL]/gu, "1");
 
 		for (const row of await codesOf(userId)) {
 			const match = row.secret.startsWith("$2")

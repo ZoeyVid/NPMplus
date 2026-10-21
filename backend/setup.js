@@ -6,7 +6,6 @@ import internalProxyHost from "./internal/proxy-host.js";
 import internalUser from "./internal/user.js";
 import Access from "./lib/access.js";
 import { installPlugins } from "./lib/certbot.js";
-import utils from "./lib/utils.js";
 import { setup as logger } from "./logger.js";
 import certificateModel from "./models/certificate.js";
 import deadModel from "./models/dead_host.js";
@@ -145,7 +144,7 @@ const regenerateAllHosts = async () => {
 			await internalNginx.configure(streamModel, "stream", host, { skipReload: true });
 		}
 
-		await utils.writeHash();
+		await writeFile("/data/npmplus/env.sha512sum", process.env.ENV_SHA512SUM);
 		await internalNginx.reload();
 	}
 };

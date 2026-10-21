@@ -6,7 +6,7 @@ const keysFile = "/data/npmplus/keys-ec.json";
 const sqliteEngine = "better-sqlite3";
 const mysqlEngine = "mysql2";
 const postgresEngine = "pg";
-const truthyPattern = /^(1|true|yes|on)$/i;
+const truthyPattern = /^(?:1|true|yes|on)$/iu;
 
 let instance = null;
 

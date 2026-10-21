@@ -83,9 +83,7 @@ export function BasicAuthFields({ initialValues, name = "items" }) {
 								}
 								value={item.password}
 								placeholder={
-									initialValues.filter((iv) => iv.username === item.username).length > 0
-										? "••••••••"
-										: ""
+									initialValues.some((iv) => iv.username === item.username) ? "••••••••" : ""
 								}
 								onChange={(e) => handleChange(idx, "password", e.target.value)}
 							/>
