@@ -1,5 +1,5 @@
-const separatorPattern = /[-_\s]+(.)?/g;
-const upperBoundaryPattern = /(?=[A-Z])/;
+const separatorPattern = /[-_\s]+(?<char>.)?/gu;
+const upperBoundaryPattern = /(?=[A-Z])/u;
 
 const mapKeys = (fn) => {
 	const walk = (o) => {
