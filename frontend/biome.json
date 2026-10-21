@@ -7,7 +7,7 @@
 	},
 	"files": {
 		"ignoreUnknown": false,
-		"includes": ["**", "!**/*.svg"]
+		"includes": ["**", "!**/*.svg", "!**/*.yaml", "!**/*.md"]
 	},
 	"formatter": {
 		"enabled": true,
@@ -28,6 +28,7 @@
 				"useSimplifiedLogicExpression": "off"
 			},
 			"correctness": {
+				"noReactNativeRawText": "off",
 				"noSolidDestructuredProps": "off",
 				"noUndeclaredDependencies": "off",
 				"noUnresolvedImports": "off",
@@ -57,10 +58,12 @@
 				"noHexColors": "off",
 				"noImplicitBoolean": "off",
 				"noIncrementDecrement": "off",
+				"noInlineStyles": "off",
 				"noJsxLiterals": "off",
 				"noMagicNumbers": "off",
 				"noNegationElse": "off",
 				"noNestedTernary": "off",
+				"noReactNativeLiteralColors": "off",
 				"noTernary": "off",
 				"useAtIndex": "off",
 				"useBlockStatements": "off",
