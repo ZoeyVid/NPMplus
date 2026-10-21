@@ -192,6 +192,7 @@ RUN find /usr/local/nginx/modules -name "*.so" -exec llvm-strip -s {} \; && \
 FROM --platform="$BUILDPLATFORM" alpine:3.24.1@sha256:28bd5fe8b56d1bd048e5babf5b10710ebe0bae67db86916198a6eec434943f8b AS frontend
 SHELL ["/bin/ash", "-eo", "pipefail", "-c"]
 ARG NODE_ENV=production
+ARG NODE_OPTIONS=--use-openssl-ca
 WORKDIR /app
 COPY frontend/package.json frontend/pnpm-lock.yaml frontend/pnpm-workspace.yaml /app/
 RUN apk upgrade --no-cache -a && \
@@ -209,6 +210,7 @@ RUN pnpm formatjs compile-folder src/locale/src src/locale/lang && \
 FROM alpine:3.24.1@sha256:28bd5fe8b56d1bd048e5babf5b10710ebe0bae67db86916198a6eec434943f8b AS backend
 SHELL ["/bin/ash", "-eo", "pipefail", "-c"]
 ARG NODE_ENV=production
+ARG NODE_OPTIONS=--use-openssl-ca
 WORKDIR /app
 COPY backend/package.json backend/pnpm-lock.yaml backend/pnpm-workspace.yaml /app/
 RUN apk upgrade --no-cache -a && \
@@ -225,6 +227,7 @@ COPY backend /app
 FROM alpine:3.24.1@sha256:28bd5fe8b56d1bd048e5babf5b10710ebe0bae67db86916198a6eec434943f8b
 SHELL ["/bin/ash", "-eo", "pipefail", "-c"]
 ENV NODE_ENV=production
+ENV NODE_OPTIONS=--use-openssl-ca
 ARG LRC_VER=6fec23e2149c88b33b39fec8a5ebdd67a3e0dd88 # v0.1.34rc3
 ARG LRL_VER=3ff6300e68b73ba20e909c7d16bd839aef2e5a4b # v0.15
 ARG LCSB_VER=3e82dd61508ed9683b5007f823c69b112c59ac6f # v1.0.14
