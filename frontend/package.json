@@ -17,7 +17,7 @@
 		"formik": "2.4.9",
 		"markdown-to-jsx": "9.10.3",
 		"qrcode.react": "4.2.0",
-		"query-string": "9.5.1",
+		"query-string": "10.0.0",
 		"react": "19.3.1",
 		"react-bootstrap": "2.10.10",
 		"react-dom": "19.3.1",
@@ -30,6 +30,6 @@
 	"devDependencies": {
 		"@biomejs/biome": "2.6.2",
 		"@vitejs/plugin-react": "6.1.2",
-		"vite": "8.3.4"
+		"vite": "8.3.5"
 	}
 }
