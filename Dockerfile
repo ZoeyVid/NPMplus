@@ -211,6 +211,13 @@ RUN apk upgrade --no-cache -a && \
 COPY backend /app
 
 
+FROM node:26.12.1-alpine3.24@sha256:40cd011b55415bc894e45b02fdd5a5dfde056921b7d23a64c74f80497af48797 AS node
+RUN apk upgrade --no-cache -a && \
+    apk add --no-cache llvm file && \
+    llvm-strip -s /usr/local/bin/node && \
+    file /usr/local/bin/node
+
+
 FROM alpine:3.24.3@sha256:be2656061b536c1883c4034790e21d0a09c5aaaf51968b89368a3c0371ea2c9a
 SHELL ["/bin/ash", "-eo", "pipefail", "-c"]
 ENV NODE_ENV=production
@@ -221,12 +228,13 @@ ARG LCSB_VER=92a8617ede3b781c33cd39e73734505597e318fd # main
 ARG COF_VER=da93e0cec7fdb1a80f4972f75b3638763d012c0e # main
 ARG NBF_VER=5cee8db2a505f2a253e24691399c828c043071fc # master
 
-COPY --from=nginx /usr/local/nginx                                                                         /usr/local/nginx
-COPY --from=nginx /usr/local/bin/bssl                                                                      /usr/local/bin/bssl
-COPY --from=nginx /usr/local/lib/libssl.so                                                                 /usr/local/lib/libssl.so
-COPY --from=nginx /usr/local/lib/libcrypto.so                                                              /usr/local/lib/libcrypto.so
+COPY --from=nginx /usr/local/nginx            /usr/local/nginx
+COPY --from=nginx /usr/local/bin/bssl         /usr/local/bin/bssl
+COPY --from=nginx /usr/local/lib/libssl.so    /usr/local/lib/libssl.so
+COPY --from=nginx /usr/local/lib/libcrypto.so /usr/local/lib/libcrypto.so
 
-COPY --from=backend  /app      /app
+COPY --from=backend  /app                /app
+COPY --from=node     /usr/local/bin/node /usr/local/bin/node
 
 COPY rootfs  /
 COPY MIT.LICENSE /MIT.LICENSE
@@ -240,7 +248,8 @@ RUN apk upgrade --no-cache -a && \
                        bash bash-completion nano \
                        logrotate goaccess fcgi \
                        luarocks5.1 git make \
-                       nodejs python3 && \
+                       libatomic libstdc++ \
+                       python3 && \
     \
     luarocks-5.1 install lua-resty-http && \
     luarocks-5.1 install lua-resty-string && \
