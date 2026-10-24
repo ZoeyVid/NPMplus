@@ -166,12 +166,17 @@ const setupAio = async () => {
 		await internalProxyHost.create(access, {
 			domain_names: [domain],
 			forward_scheme: "http",
-			forward_host: "127.0.0.1",
-			forward_port: 11000,
 			npmplus_crowdsec_appsec: true,
 			npmplus_proxy_request_buffering: true,
 			npmplus_proxy_response_buffering: true,
 			npmplus_upstream_compression: true,
+			npmplus_upstream_servers: [
+				{
+					host: "127.0.0.1",
+					port: 11000,
+					custom: false,
+				},
+			],
 			certificate_id: "new",
 			ssl_forced: true,
 			hsts_enabled: true,

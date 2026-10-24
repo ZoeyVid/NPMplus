@@ -7,8 +7,7 @@
 		"modified_on",
 		"owner_user_id",
 		"incoming_port",
-		"forwarding_host",
-		"forwarding_port",
+		"npmplus_upstream_servers",
 		"tcp_forwarding",
 		"udp_forwarding",
 		"npmplus_proxy_protocol_forwarding",
@@ -22,6 +21,11 @@
 		"npmplus_directory",
 		"npmplus_mtls_certificate_id",
 		"npmplus_mtls_verify_client_optional"
+	],
+	"allOf": [
+		{
+			"$ref": "./load-balancing.json#/$defs/loadBalanceMethodRequirement"
+		}
 	],
 	"additionalProperties": false,
 	"properties": {
@@ -43,19 +47,51 @@
 			"maxLength": 11,
 			"example": 9090
 		},
-		"forwarding_host": {
+		"npmplus_load_balance_method": {
 			"type": "string",
-			"minLength": 1,
-			"maxLength": 253,
-			"pattern": "^\\S+$",
-			"example": "127.0.0.1"
+			"enum": [
+				"round_robin",
+				"least_conn",
+				"hash",
+				"hash_consistent",
+				"least_time_connect",
+				"least_time_first_byte",
+				"least_time_last_byte",
+				"least_time_last_byte_inflight",
+				"random",
+				"random_two_least_connections",
+				"random_two_least_time_connect",
+				"random_two_least_time_first_byte",
+				"random_two_least_time_last_byte"
+			],
+			"default": "round_robin",
+			"example": "round_robin"
 		},
-		"forwarding_port": {
-			"type": "string",
-			"pattern": "^([0-9]{0,5}|\\$server_port)$",
-			"maxLength": 12,
-			"default": "",
-			"example": 80
+		"npmplus_upstream_servers": {
+			"allOf": [
+				{
+					"$ref": "./load-balancing.json#/$defs/upstreamServers"
+				},
+				{
+					"if": {
+						"prefixItems": [
+							{
+								"required": [
+									"port"
+								],
+								"properties": {
+									"port": {
+										"const": "$server_port"
+									}
+								}
+							}
+						]
+					},
+					"then": {
+						"maxItems": 1
+					}
+				}
+			]
 		},
 		"tcp_forwarding": {
 			"type": "boolean",

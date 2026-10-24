@@ -13,6 +13,7 @@ import { useMemo } from "react";
 import {
 	CertificateFormatter,
 	EmptyData,
+	ForwardHostFormatter,
 	GravatarFormatter,
 	HasPermission,
 	StatusFormatter,
@@ -20,6 +21,7 @@ import {
 } from "src/components";
 import { TableLayout } from "src/components/Table/TableLayout";
 import { intl, T } from "src/locale";
+import { forwardDestinations } from "src/modules/Forward";
 import { MANAGE, STREAMS } from "src/modules/Permissions";
 
 const features = tableFeatures({
@@ -80,14 +82,18 @@ export default function Table({
 					return value || <span className="text-secondary">—</span>;
 				},
 			}),
-			columnHelper.accessor(
-				(row) => `${row.forwardingHost}${row.forwardingPort ? `:${row.forwardingPort}` : ""}`,
-				{
-					id: "destination",
-					header: intl.formatMessage({ id: "column.destination" }),
-					cell: (info) => info.getValue(),
-				},
-			),
+			columnHelper.accessor((row) => forwardDestinations(row, { streams: true }).join(", "), {
+				id: "forwardHost",
+				header: intl.formatMessage({ id: "column.destination" }),
+				cell: (info) => (
+					<ForwardHostFormatter
+						hostRowId={info.row.original.id}
+						upstreamServers={info.row.original.npmplusUpstreamServers}
+						loadBalanceMethod={info.row.original.npmplusLoadBalanceMethod}
+						streams={true}
+					/>
+				),
+			}),
 			columnHelper.accessor(
 				(row) => {
 					const protocols = [];

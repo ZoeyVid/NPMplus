@@ -7,8 +7,6 @@
 		"modified_on",
 		"owner_user_id",
 		"domain_names",
-		"forward_host",
-		"forward_port",
 		"npmplus_access_list_type",
 		"certificate_id",
 		"ssl_forced",
@@ -34,7 +32,19 @@
 		"npmplus_fancyindex",
 		"npmplus_x_frame_options",
 		"npmplus_auth_request",
-		"npmplus_auth_request_upstream"
+		"npmplus_auth_request_upstream",
+		"npmplus_upstream_servers"
+	],
+	"allOf": [
+		{
+			"$ref": "./load-balancing.json#/$defs/loadBalanceMethodRequirement"
+		},
+		{
+			"$ref": "./load-balancing.json#/$defs/proxySchemeUpstreamRequirement"
+		},
+		{
+			"$ref": "./load-balancing.json#/$defs/forwardPathSchemeRequirement"
+		}
 	],
 	"additionalProperties": false,
 	"properties": {
@@ -53,19 +63,32 @@
 		"domain_names": {
 			"$ref": "../common.json#/properties/domain_names"
 		},
-		"forward_host": {
+		"npmplus_load_balance_method": {
 			"type": "string",
-			"maxLength": 255,
-			"pattern": "^[^\\s/]{0,253}(/\\S*)?$",
-			"default": "",
-			"example": "127.0.0.1"
+			"enum": [
+				"round_robin",
+				"least_conn",
+				"ip_hash",
+				"least_time_header",
+				"least_time_last_byte",
+				"least_time_last_byte_inflight",
+				"random",
+				"random_two_least_connections",
+				"random_two_least_time_header",
+				"random_two_least_time_last_byte"
+			],
+			"default": "round_robin",
+			"example": "round_robin"
 		},
-		"forward_port": {
-			"type": "integer",
-			"minimum": 0,
-			"maximum": 65535,
-			"default": 0,
-			"example": 8080
+		"npmplus_upstream_servers": {
+			"$ref": "./load-balancing.json#/$defs/proxyUpstreamServers"
+		},
+		"npmplus_forward_path": {
+			"type": "string",
+			"minLength": 1,
+			"maxLength": 255,
+			"example": "/myexample/path",
+			"pattern": "^\\/\\S*$"
 		},
 		"npmplus_access_list_ids":{
 			"$ref": "../common.json#/properties/npmplus_access_list_ids"
@@ -182,31 +205,20 @@
 			"items": {
 				"type": "object",
 				"required": [
-					"path"
+					"forward_scheme",
+					"npmplus_upstream_servers",
+					"path",
+					"npmplus_access_list_type"
 				],
-				"additionalProperties": false,
 				"allOf": [
 					{
-						"if": {
-							"properties": {
-								"forward_scheme": {
-									"const": "empty"
-								}
-							},
-							"required": [
-								"forward_scheme"
-							]
-						},
-						"else": {
-							"required": [
-								"forward_host"
-							],
-							"properties": {
-								"forward_host": {
-									"minLength": 1
-								}
-							}
-						}
+						"$ref": "./load-balancing.json#/$defs/loadBalanceMethodRequirement"
+					},
+					{
+						"$ref": "./load-balancing.json#/$defs/proxySchemeUpstreamRequirement"
+					},
+					{
+						"$ref": "./load-balancing.json#/$defs/forwardPathSchemeRequirement"
 					},
 					{
 						"if": {
@@ -231,6 +243,7 @@
 						}
 					}
 				],
+				"additionalProperties": false,
 				"properties": {
 					"npmplus_enabled": {
 						"$ref": "../common.json#/properties/enabled"
@@ -256,11 +269,14 @@
 					"forward_scheme": {
 						"$ref": "#/properties/forward_scheme"
 					},
-					"forward_host": {
-						"$ref": "#/properties/forward_host"
+					"npmplus_load_balance_method": {
+						"$ref": "#/properties/npmplus_load_balance_method"
 					},
-					"forward_port": {
-						"$ref": "#/properties/forward_port"
+					"npmplus_upstream_servers": {
+						"$ref": "#/properties/npmplus_upstream_servers"
+					},
+					"npmplus_forward_path": {
+						"$ref": "#/properties/npmplus_forward_path"
 					},
 					"npmplus_noindex": {
 						"$ref": "#/properties/npmplus_noindex"
@@ -306,8 +322,18 @@
 				{
 					"path": "/app",
 					"forward_scheme": "http",
-					"forward_host": "example.com",
-					"forward_port": 80,
+					"npmplus_upstream_servers": [
+						{
+							"host": "example.com",
+							"port": 80,
+							"max_conns": 1,
+							"weight": 2,
+							"backup": true,
+							"down": false,
+							"fail_timeout": "60s",
+							"custom": false
+						}
+					],
 					"npmplus_access_list_ids": [1, 2],
 					"npmplus_access_list_type": "custom"
 				}

@@ -1,10 +1,50 @@
-const forwardSummary = ({ forwardScheme, forwardHost, forwardPort }) => {
-	if (!forwardHost || forwardScheme === "empty") return "";
-	if (forwardScheme !== "path") {
-		const [host, ...path] = forwardHost.split("/");
-		return [`${forwardScheme}://${host}${forwardPort ? `:${forwardPort}` : ""}`, ...path].join("/");
+const NETWORK_FORWARD_SCHEMES = ["http", "https", "grpc", "grpcs"];
+const FORWARD_PATH_SCHEMES = ["http", "https"];
+
+const populatedUpstreams = ({ npmplusUpstreamServers = [] }) => npmplusUpstreamServers.filter((server) => server?.host);
+
+const forwardDestination = ({ forwardScheme, npmplusForwardPath }, server, { streams = false } = {}) => {
+	if (!server?.host) {
+		return "";
 	}
-	return forwardHost;
+
+	const port = server.port === null || server.port === undefined || server.port === "" ? "" : `:${server.port}`;
+
+	if (streams) {
+		return `${server.host}${port}`;
+	}
+
+	if (NETWORK_FORWARD_SCHEMES.includes(forwardScheme)) {
+		const path = FORWARD_PATH_SCHEMES.includes(forwardScheme) ? (npmplusForwardPath ?? "") : "";
+		return `${forwardScheme}://${server.host}${port}${path}`;
+	}
+
+	return server.host;
 };
 
-export { forwardSummary };
+const forwardDestinations = (item, options) =>
+	populatedUpstreams(item).map((server) => forwardDestination(item, server, options));
+
+const forwardSummary = (item, { limit = 2, ...options } = {}) =>
+	forwardDestinations(item, options).slice(0, limit).join(", ");
+
+const forwardSearchText = (item, options) => forwardDestinations(item, options).join(" ");
+
+const isCustomUpstreamServer = (server) => server?.custom === true;
+
+// has custom upstreams if its not first
+const hasCustomUpstream = (upstreamServers = []) => upstreamServers.some(isCustomUpstreamServer);
+
+// a custom upstream is only active if its first
+const isCustomUpstream = (upstreamServers = []) => isCustomUpstreamServer(upstreamServers[0]);
+
+export {
+	forwardDestination,
+	forwardDestinations,
+	forwardSearchText,
+	forwardSummary,
+	hasCustomUpstream,
+	isCustomUpstream,
+	isCustomUpstreamServer,
+	populatedUpstreams,
+};

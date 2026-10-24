@@ -15,13 +15,14 @@ import {
 	CertificateFormatter,
 	DomainsFormatter,
 	EmptyData,
+	ForwardHostFormatter,
 	GravatarFormatter,
 	HasPermission,
 	StatusFormatter,
 } from "src/components";
 import { TableLayout } from "src/components/Table/TableLayout";
 import { intl, T } from "src/locale";
-import { forwardSummary } from "src/modules/Forward";
+import { forwardDestinations } from "src/modules/Forward";
 import { MANAGE, PROXY_HOSTS } from "src/modules/Permissions";
 
 const features = tableFeatures({
@@ -75,19 +76,20 @@ export default function Table({
 					return <DomainsFormatter domains={value.domainNames} createdOn={value.createdOn} />;
 				},
 			}),
-			columnHelper.accessor(forwardSummary, {
+			columnHelper.accessor((row) => forwardDestinations(row).join(", "), {
 				id: "forwardHost",
 				header: intl.formatMessage({ id: "column.destination" }),
-				cell: (info) => {
-					if (info.row.original.forwardScheme === "path" || !info.getValue()) {
-						return info.getValue();
-					}
-					return (
-						<a href={info.getValue()} target="_blank" rel="noopener">
-							{info.getValue()}
-						</a>
-					);
-				},
+				cell: (info) => (
+					<ForwardHostFormatter
+						hostRowId={info.row.original.id}
+						forwardPath={info.row.original.npmplusForwardPath}
+						upstreamServers={info.row.original.npmplusUpstreamServers}
+						scheme={info.row.original.forwardScheme}
+						loadBalanceMethod={info.row.original.npmplusLoadBalanceMethod}
+						locations={info.row.original.locations}
+						streams={false}
+					/>
+				),
 			}),
 			columnHelper.accessor((row) => (row.certificate ? row.certificate.provider : "http-only"), {
 				id: "certificate",

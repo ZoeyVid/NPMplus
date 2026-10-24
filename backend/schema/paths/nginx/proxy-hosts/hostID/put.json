@@ -32,6 +32,15 @@
 					"additionalProperties": false,
 					"allOf": [
 						{
+							"$ref": "../../../../components/load-balancing.json#/$defs/partialLoadBalanceMethodRequirement"
+						},
+						{
+							"$ref": "../../../../components/load-balancing.json#/$defs/proxySchemeUpstreamRequirement"
+						},
+						{
+							"$ref": "../../../../components/load-balancing.json#/$defs/partialForwardPathSchemeRequirement"
+						},
+						{
 							"if": {
 								"properties": {
 									"npmplus_dns_challenge": {
@@ -91,25 +100,6 @@
 						{
 							"if": {
 								"properties": {
-									"forward_scheme": {
-										"const": "empty"
-									}
-								},
-								"required": [
-									"forward_scheme"
-								]
-							},
-							"else": {
-								"properties": {
-									"forward_host": {
-										"minLength": 1
-									}
-								}
-							}
-						},
-						{
-							"if": {
-								"properties": {
 									"npmplus_access_list_type": {
 										"const": "custom"
 									}
@@ -161,11 +151,21 @@
 						"forward_scheme": {
 							"$ref": "../../../../components/proxy-host-object.json#/properties/forward_scheme"
 						},
-						"forward_host": {
-							"$ref": "../../../../components/proxy-host-object.json#/properties/forward_host"
+						"npmplus_load_balance_method": {
+							"$ref": "../../../../components/proxy-host-object.json#/properties/npmplus_load_balance_method"
 						},
-						"forward_port": {
-							"$ref": "../../../../components/proxy-host-object.json#/properties/forward_port"
+						"npmplus_upstream_servers": {
+							"$ref": "../../../../components/proxy-host-object.json#/properties/npmplus_upstream_servers"
+						},
+						"npmplus_forward_path": {
+							"oneOf": [
+								{
+									"$ref": "../../../../components/proxy-host-object.json#/properties/npmplus_forward_path"
+								},
+								{
+									"type": "null"
+								}
+							]
 						},
 						"certificate_id": {
 							"$ref": "../../../../components/proxy-host-object.json#/properties/certificate_id"
@@ -271,8 +271,12 @@
 								"domain_names": [
 									"test.example.com"
 								],
-								"forward_host": "127.0.0.1",
-								"forward_port": 8080,
+								"npmplus_upstream_servers": [{
+									"host": "127.0.0.1",
+									"port": 80,
+									"custom": false
+								}],
+								"npmplus_load_balance_method": "round_robin",
 								"npmplus_access_list_type": "public",
 								"certificate_id": 0,
 								"ssl_forced": false,

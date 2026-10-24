@@ -64,6 +64,12 @@ class ProxyHost extends Model {
 			locations,
 			...thisJson
 		} = super.$parseDatabaseJson(json);
+		if (thisJson.npmplus_load_balance_method === null) {
+			delete thisJson.npmplus_load_balance_method;
+		}
+		if (thisJson.npmplus_forward_path === null) {
+			delete thisJson.npmplus_forward_path;
+		}
 		return convertIntFieldsToBool(thisJson, boolFields);
 	}
 
@@ -77,7 +83,7 @@ class ProxyHost extends Model {
 
 	static tableName = "proxy_host";
 
-	static jsonAttributes = ["domain_names", "meta"];
+	static jsonAttributes = ["domain_names", "meta", "npmplus_upstream_servers"];
 
 	static get relationMappings() {
 		return {

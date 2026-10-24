@@ -7,7 +7,7 @@ import { Button, HasPermission, LoadingPage } from "src/components";
 import { getDirectory, useProxyHosts } from "src/hooks";
 import { T } from "src/locale";
 import { showDeleteConfirmModal, showHelpModal, showProxyHostModal } from "src/modals";
-import { forwardSummary } from "src/modules/Forward";
+import { forwardDestinations, forwardSearchText } from "src/modules/Forward";
 import { MANAGE, PROXY_HOSTS } from "src/modules/Permissions";
 import { showError, showObjectSuccess } from "src/notifications";
 import Table from "./Table";
@@ -50,9 +50,10 @@ export default function TableWrapper() {
 	if (search) {
 		filtered = data?.filter((item) => {
 			const directory = getDirectory(item).toLowerCase();
+			// search all upstreams for each host
 			return (
 				item.domainNames.some((domain) => domain.toLowerCase().includes(search)) ||
-				forwardSummary(item).toLowerCase().includes(search) ||
+				forwardSearchText(item).toLowerCase().includes(search) ||
 				directory.includes(search)
 			);
 		});
@@ -70,6 +71,8 @@ export default function TableWrapper() {
 		onClone: (id) => showProxyHostModal(id, true),
 		onDelete: (id) => {
 			const host = data?.find((item) => item.id === id);
+			const upstreamDetails = host ? forwardDestinations(host) : [];
+
 			showDeleteConfirmModal({
 				title: <T id="object.delete" tData={{ object: "proxy-host" }} />,
 				onConfirm: async () => {
@@ -79,7 +82,7 @@ export default function TableWrapper() {
 				invalidations: [["proxy-hosts"], ["proxy-host", id], ["certificates"], ["access-lists"]],
 				children: <T id="object.delete.content" tData={{ object: "proxy-host" }} />,
 				subject: host?.domainNames.join(", "),
-				details: host && forwardSummary(host),
+				details: upstreamDetails.length ? upstreamDetails.join(", ") : null,
 			});
 		},
 		onDisableToggle: handleDisableToggle,
