@@ -9,7 +9,7 @@ NPMplus is a fork of [Nginx Proxy Manager](https://github.com/NginxProxyManager/
 | UI strings | `frontend/src/locale/src/<code>.json` | `frontend/translations/ui/<code>.json` |
 | Format | `"key": { "defaultMessage": "text" }` | `"key": "text"`, tabs, keys sorted with `sort-locale.sh` |
 | Help docs | `frontend/src/locale/src/HelpDoc/<code>/*.md` and `index.ts` | `frontend/translations/help/<code>/*.md`, no `index.ts` |
-| Language list | `"locale-<code>-<REGION>": { "defaultMessage": "<name>" }` | `"<code>": { "flag": "<REGION>", "name": "<native name>" }` |
+| Language list | `"locale-<code>-<REGION>": { "defaultMessage": "<name>" }` | `"<code>": { "flag": "<region>", "name": "<native name>" }` |
 | Right to left | `rtlLocales` in `IntlProvider.tsx` | `"rtl": true` in `lang-list.json`, these languages are hidden in the language picker for now |
 | Registration | imports in `IntlProvider.tsx`, `HelpDoc/index.ts` and `HelpDoc/<code>/index.ts` | automatic |
 
@@ -75,7 +75,7 @@ The script handles a new upstream language like an update with an empty old vers
 
 - creates `ui/<code>.json` from the upstream file, without the keys NPMplus rewords (they are printed)
 - creates `help/<code>/` from the upstream help docs
-- adds `<code>` to `lang-list.json`: `flag` is the region of the upstream key `locale-<code>-<REGION>`, `name` is its `defaultMessage` and `rtl` is set if upstream lists the language in `rtlLocales`
+- adds `<code>` to `lang-list.json`: `flag` is the region of the upstream key `locale-<code>-<REGION>` in lowercase, `name` is its `defaultMessage` and `rtl` is set if upstream lists the language in `rtlLocales`
 
 Check by hand:
 

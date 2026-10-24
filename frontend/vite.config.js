@@ -12,4 +12,7 @@ export default defineConfig({
 			translations: "/translations",
 		},
 	},
+	build: {
+		assetsInlineLimit: 0,
+	},
 });

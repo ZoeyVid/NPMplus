@@ -12,8 +12,8 @@ importers:
         specifier: 1.2.13
         version: 1.2.13(react-dom@19.3.1(react@19.3.1))(react@19.3.1)
       '@tabler/core':
-        specifier: 1.6.1
-        version: 1.6.1
+        specifier: 1.7.1
+        version: 1.7.1
       '@tabler/icons-react':
         specifier: 3.49.0
         version: 3.49.0(react@19.3.1)
@@ -26,9 +26,6 @@ importers:
       clsx:
         specifier: 2.1.1
         version: 2.1.1
-      country-flag-icons:
-        specifier: 1.6.20
-        version: 1.6.20
       date-fns:
         specifier: 4.4.0
         version: 4.4.0
@@ -428,8 +425,8 @@ packages:
   '@swc/helpers@0.5.23':
     resolution: {integrity: sha512-5lSsMOTXURePglDfvuAQUqkGek9Hg2kksOYay2m0+XR++b2NWYL/4sWyuvVBIs8oKnJaxkdi9whaL/sqN13afw==}
 
-  '@tabler/core@1.6.1':
-    resolution: {integrity: sha512-lgmR9gcxRp5JlLxcmRi9Rz85JrEvH6Bz71KnlcPVSa97wtwQNjgSs3g3fxwbAlulHyRMghhIV04QUuW3pqDsIg==}
+  '@tabler/core@1.7.1':
+    resolution: {integrity: sha512-sC42sr/uslr7kIZwyBPESWJKRm1E4hYAMMZyLDoyG0ZlEOlglRW0L5c1gf8x6i+QApT+AtHm10fDP1j2WgQJpg==}
     engines: {node: '>=20'}
     peerDependencies:
       vanilla-calendar-pro: ^3.3.2
@@ -542,9 +539,6 @@ packages:
   cosmiconfig@7.1.0:
     resolution: {integrity: sha512-AdmX6xUzdNASswsFtmwSt7Vj8po9IuqXm0UXz7QKPuEUmPB4XyjGfaAr2PSuELMwkRMVH1EpIkX5bTZGRB3eCA==}
     engines: {node: '>=10'}
-
-  country-flag-icons@1.6.20:
-    resolution: {integrity: sha512-py8JiEKzjhYw6HPJ0L7SxLgCYim36UPRTZX43/kqGueUCZLSvnrqAiwW8HtQibur7mdkFQUkjOgdK+o/9FBtaw==}
 
   csstype@3.2.3:
     resolution: {integrity: sha512-z1HGKcYy2xA8AGQfwrn0PAy+PB7X/GSj3UVJW9qKyn43xWa+gl5nXmU4qqLMRzWVLFC8KusUX8T/0kCiOYpAIQ==}
@@ -1353,7 +1347,7 @@ snapshots:
     dependencies:
       tslib: 2.8.1
 
-  '@tabler/core@1.6.1':
+  '@tabler/core@1.7.1':
     dependencies:
       '@popperjs/core': 2.11.8
 
@@ -1445,8 +1439,6 @@ snapshots:
       parse-json: 5.2.0
       path-type: 4.0.0
       yaml: 1.10.3
-
-  country-flag-icons@1.6.20: {}
 
   csstype@3.2.3: {}
 

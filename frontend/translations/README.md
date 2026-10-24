@@ -25,6 +25,6 @@ Run `./check-locale.sh [code]`.
 
 ## Adding a whole new language
 
-- `lang-list.json`: add `<code>` with the native language name and the flag code shown in the picker
+- `lang-list.json`: add `<code>` with the native language name and the lowercase flag code shown in the picker
 - `ui/<code>.json`: copy `ui/en.json` and translate it
 - `help/<code>/*.md`: copy `help/en` and translate it, missing files fall back to `en`

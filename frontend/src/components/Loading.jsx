@@ -8,7 +8,7 @@ export function Loading({ label, noLogo }) {
 					<img src="/images/logo-no-text.svg" style={{ maxHeight: 100 }} alt="" />
 				</div>
 			)}
-			<div className="text-secondary mb-3">{label || <T id="loading" />}</div>
+			<div className="text-secondary text-shimmer mb-3">{label || <T id="loading" />}</div>
 			<div className="progress progress-sm">
 				<div className="progress-bar progress-bar-indeterminate" />
 			</div>
