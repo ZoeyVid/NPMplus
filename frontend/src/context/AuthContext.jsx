@@ -1,13 +1,12 @@
 import { useQueryClient } from "@tanstack/react-query";
-import { createContext, useContext, useEffect, useState } from "react";
-import { useIntervalWhen } from "rooks";
+import { createContext, useContext, useEffect, useEffectEvent, useState } from "react";
 import { deleteToken, getToken, refreshToken, revokeSessions, verifyTotp } from "src/api/backend";
 import AuthStore from "src/modules/AuthStore";
 import { getCookie } from "src/modules/Cookies";
 
 const AuthContext = createContext(null);
 
-function AuthProvider({ children, tokenRefreshInterval = 5 * 60 * 1000 }) {
+function AuthProvider({ children, tokenRefreshInterval = 15 * 60 * 1000 }) {
 	const queryClient = useQueryClient();
 	const [authenticated, setAuthenticated] = useState(AuthStore.hasActiveToken());
 	const [totpChallenge, setTotpChallenge] = useState(() => getCookie("__Host-npmplus_oidc_totp_required") === "true");
@@ -72,15 +71,14 @@ function AuthProvider({ children, tokenRefreshInterval = 5 * 60 * 1000 }) {
 		}
 	});
 
-	useIntervalWhen(
-		() => {
-			if (authenticated) {
-				void refresh();
-			}
-		},
-		tokenRefreshInterval,
-		true,
-	);
+	const onRefreshInterval = useEffectEvent(() => {
+		if (authenticated) void refresh();
+	});
+
+	useEffect(() => {
+		const interval = setInterval(() => onRefreshInterval(), tokenRefreshInterval);
+		return () => clearInterval(interval);
+	}, [tokenRefreshInterval]);
 
 	const value = {
 		authenticated,

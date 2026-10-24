@@ -1,19 +1,13 @@
 import { QueryClient } from "@tanstack/react-query";
-import queryString from "query-string";
 import AuthStore from "src/modules/AuthStore";
 import { camelizeKeys, decamelizeKeys } from "./caseConvert";
 
 export const queryClient = new QueryClient();
 const contentTypeHeader = "Content-Type";
 
-function buildUrl({ url, params }) {
-	const endpoint = url.slice(1);
-	const baseUrl = `/api/${endpoint}`;
-	const apiUrl = queryString.stringifyUrl({
-		url: baseUrl,
-		query: params,
-	});
-	return apiUrl;
+function buildUrl({ url, params = {} }) {
+	const query = new URLSearchParams(Object.entries(params).filter(([, value]) => value !== undefined)).toString();
+	return `/api/${url.slice(1)}${query ? `?${query}` : ""}`;
 }
 
 function buildBody(data) {
