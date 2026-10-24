@@ -4,7 +4,7 @@
 
 import { existsSync } from "node:fs";
 import { createInterface } from "node:readline";
-import { DatabaseSync } from "node:sqlite";
+import { Database } from "node:sqlite";
 import { Writable } from "node:stream";
 import { parseArgs } from "node:util";
 import { hash } from "./lib/argon2.js";
@@ -68,7 +68,8 @@ if (PASSWORD && (PASSWORD.length < 8 || PASSWORD.length > 255)) {
 }
 
 try {
-	using db = new DatabaseSync("/data/npmplus/database.sqlite");
+	using db = new Database("/data/npmplus/database.sqlite", { timeout: 3000 });
+	db.exec("PRAGMA secure_delete = FAST");
 
 	const user = db.prepare("SELECT id FROM user WHERE email = ?").get(EMAIL);
 

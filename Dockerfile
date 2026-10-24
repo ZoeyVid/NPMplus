@@ -180,36 +180,22 @@ WORKDIR /app
 COPY frontend/package.json frontend/pnpm-lock.yaml frontend/pnpm-workspace.yaml /app/
 RUN apk upgrade --no-cache -a && \
     apk add --no-cache --virtual nodejs && \
-    apk add --no-cache pnpm llvm file brotli && \
-    pnpm install --frozen-lockfile && \
-    find /app/node_modules -name "*.map" -delete && \
-    find /app/node_modules -name "*.node" -type f -exec llvm-strip -s {} \; && \
-    find /app/node_modules -name "*.node" -type f -exec file {} \;
+    apk add --no-cache pnpm brotli && \
+    pnpm install --frozen-lockfile
 COPY frontend /app
 RUN pnpm vite build && \
     find /app/dist -type f ! -name "*.jpg" ! -name "*.png" -print0 | xargs -r0 -P "$(nproc)" -n 1 brotli -q 11 -sf
 
 FROM --platform=$BUILDPLATFORM node:26.12.1-alpine3.24@sha256:40cd011b55415bc894e45b02fdd5a5dfde056921b7d23a64c74f80497af48797 AS backend
-SHELL ["/bin/ash", "-eo", "pipefail", "-c"]
 ARG NODE_ENV=production
 ARG NODE_OPTIONS=--use-openssl-ca
-ARG TARGETARCH
 WORKDIR /app
 COPY backend/package.json backend/pnpm-lock.yaml backend/pnpm-workspace.yaml /app/
 RUN apk upgrade --no-cache -a && \
     apk add --no-cache --virtual nodejs && \
-    apk add --no-cache pnpm llvm file && \
+    apk add --no-cache pnpm && \
     pnpm install --frozen-lockfile --prod && \
-    find /app/node_modules -name "*.map" -delete && \
-    rm -vr /app/node_modules/better-sqlite3/deps/sqlite3 && \
-    case "$TARGETARCH" in \
-      amd64) keep="linuxmusl-x64.node" ;; \
-      arm64) keep="linuxmusl-arm64.node" ;; \
-      *) keep="linuxmusl-*.node" ;; \
-    esac && \
-    find /app/node_modules/better-sqlite3/prebuilds -name '*.node' ! -name "$keep" -delete && \
-    find /app/node_modules -name "*.node" -type f -exec llvm-strip -s {} \; && \
-    find /app/node_modules -name "*.node" -type f -exec file {} \;
+    find /app/node_modules -name "*.map" -delete
 COPY backend /app
 
 

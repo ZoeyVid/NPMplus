@@ -14,6 +14,7 @@ const migrateUp = async () => {
 		await db().raw("PRAGMA journal_mode = WAL");
 		await db().raw("PRAGMA auto_vacuum = 1");
 		await db().raw("VACUUM");
+		await db().raw("PRAGMA wal_checkpoint = TRUNCATE");
 		await db().raw("PRAGMA optimize");
 		logger.info("Sqlite database vacuumed");
 	}

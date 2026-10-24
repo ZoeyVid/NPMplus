@@ -178,9 +178,6 @@ importers:
       bcryptjs:
         specifier: 3.0.3
         version: 3.0.3
-      better-sqlite3:
-        specifier: 13.0.3
-        version: 13.0.3
       cookie-parser:
         specifier: 1.4.7
         version: 1.4.7
@@ -198,7 +195,7 @@ importers:
         version: 9.0.3
       knex:
         specifier: 3.3.0
-        version: 3.3.0(better-sqlite3@13.0.3)(mysql2@3.24.6(@types/node@26.6.5))(pg@8.23.1)
+        version: 3.3.0(mysql2@3.24.6(@types/node@26.6.5))(pg@8.23.1)
       liquidjs:
         specifier: 10.30.0
         version: 10.30.0
@@ -210,7 +207,7 @@ importers:
         version: 3.24.6(@types/node@26.6.5)
       objection:
         specifier: 4.2.0
-        version: 4.2.0(knex@3.3.0(better-sqlite3@13.0.3)(mysql2@3.24.6(@types/node@26.6.5))(pg@8.23.1))
+        version: 4.2.0(knex@3.3.0(mysql2@3.24.6(@types/node@26.6.5))(pg@8.23.1))
       openid-client:
         specifier: 6.8.8
         version: 6.8.8
@@ -457,10 +454,6 @@ packages:
   bcryptjs@3.0.3:
     resolution: {integrity: sha512-GlF5wPWnSa/X5LKM1o0wz0suXIINz1iHRLvTS+sLyi7XPbe5ycmYI3DlZqVGZZtDgl4DmasFg7gOB3JYbphV5g==}
     hasBin: true
-
-  better-sqlite3@13.0.3:
-    resolution: {integrity: sha512-RbOBxmLBG8uvFUc15X9+9SFemKcQ0WBuISBVkpuiaUB2qblC8UWlHEjdWVoZ8AdhSwmoEgsiXKfopX0CQxaACQ==}
-    engines: {node: '>=22'}
 
   body-parser@2.4.0:
     resolution: {integrity: sha512-Ifk1KcLrxaGt1occQagQNFNNOqRt1LFuehEnHHzB8Z6cRgIxRU1TBaiIsUiCdA+gy5PL7Y1IX31DNKkRmxtXjQ==}
@@ -882,10 +875,6 @@ packages:
   negotiator@1.1.0:
     resolution: {integrity: sha512-NMPBRMJgiQHjbd8phG3Vebdx4kZ1H121rbl5IkMqeOsahptB9BKo/d7oJ3zTXqTgagn2bWlNSXkh0QUGM31RYg==}
     engines: {node: '>=18'}
-
-  node-addon-api@8.9.2:
-    resolution: {integrity: sha512-VijLXbi3UACN69I0JVXJsX4tjACjNoQDgv2gTF6sx2wWEi8tkSg2eX8p5gSIFi8z2+DL3oHmY6OyKce38SDolg==}
-    engines: {node: ^18 || ^20 || >= 21}
 
   normalize-path@3.0.0:
     resolution: {integrity: sha512-6eZs5Ls3WtCisHWp9S2GUy8dqkpGi4BVSz3GaqiE6ezub0512ESztXUwUB6C6IKbQkY2Pnb/mD4WYojCRwcwLA==}
@@ -1368,10 +1357,6 @@ snapshots:
 
   bcryptjs@3.0.3: {}
 
-  better-sqlite3@13.0.3:
-    dependencies:
-      node-addon-api: 8.9.2
-
   body-parser@2.4.0:
     dependencies:
       bytes: 3.1.2
@@ -1669,7 +1654,7 @@ snapshots:
       jwa: 2.0.1
       safe-buffer: 5.2.1
 
-  knex@3.3.0(better-sqlite3@13.0.3)(mysql2@3.24.6(@types/node@26.6.5))(pg@8.23.1):
+  knex@3.3.0(mysql2@3.24.6(@types/node@26.6.5))(pg@8.23.1):
     dependencies:
       colorette: 2.0.19
       commander: 10.0.1
@@ -1686,7 +1671,6 @@ snapshots:
       tarn: 3.1.2
       tildify: 2.0.0
     optionalDependencies:
-      better-sqlite3: 13.0.3
       mysql2: 3.24.6(@types/node@26.6.5)
       pg: 8.23.1
     transitivePeerDependencies:
@@ -1773,19 +1757,17 @@ snapshots:
     dependencies:
       content-type: 2.1.0
 
-  node-addon-api@8.9.2: {}
-
   normalize-path@3.0.0: {}
 
   oauth4webapi@3.8.8: {}
 
   object-inspect@1.13.4: {}
 
-  objection@4.2.0(knex@3.3.0(better-sqlite3@13.0.3)(mysql2@3.24.6(@types/node@26.6.5))(pg@8.23.1)):
+  objection@4.2.0(knex@3.3.0(mysql2@3.24.6(@types/node@26.6.5))(pg@8.23.1)):
     dependencies:
       ajv: 8.20.0
       ajv-formats: 3.0.1(ajv@8.20.0)
-      knex: 3.3.0(better-sqlite3@13.0.3)(mysql2@3.24.6(@types/node@26.6.5))(pg@8.23.1)
+      knex: 3.3.0(mysql2@3.24.6(@types/node@26.6.5))(pg@8.23.1)
 
   on-finished@2.4.2:
     dependencies:

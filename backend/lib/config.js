@@ -1,9 +1,9 @@
 import crypto from "node:crypto";
 import { existsSync, readFileSync, writeFileSync } from "node:fs";
 import { global as logger } from "../logger.js";
+import sqliteEngine from "./knex-node-sqlite.js";
 
 const keysFile = "/data/npmplus/keys-ec.json";
-const sqliteEngine = "better-sqlite3";
 const mysqlEngine = "mysql2";
 const postgresEngine = "pg";
 const truthyPattern = /^(?:1|true|yes|on)$/iu;
@@ -79,13 +79,15 @@ const configure = () => {
 				client: sqliteEngine,
 				connection: {
 					filename: envSqliteFile,
+					options: { timeout: 1000 },
 				},
 				useNullAsDefault: true,
 				pool: {
 					afterCreate: (conn, done) => {
-						conn.pragma("synchronous = NORMAL");
-						conn.pragma("temp_store = MEMORY");
-						conn.pragma("optimize = 0x10002");
+						conn.exec("PRAGMA synchronous = NORMAL");
+						conn.exec("PRAGMA temp_store = MEMORY");
+						conn.exec("PRAGMA secure_delete = FAST");
+						conn.exec("PRAGMA optimize = 0x10002");
 						done(null, conn);
 					},
 				},
