@@ -172,14 +172,15 @@ RUN find /usr/local/nginx/modules -name "*.so" -exec llvm-strip -s {} \; && \
     /usr/local/nginx/sbin/nginx -V
 
 
-FROM --platform="$BUILDPLATFORM" alpine:3.24.3@sha256:be2656061b536c1883c4034790e21d0a09c5aaaf51968b89368a3c0371ea2c9a AS frontend
+FROM --platform="$BUILDPLATFORM" node:26.12.1-alpine3.24@sha256:40cd011b55415bc894e45b02fdd5a5dfde056921b7d23a64c74f80497af48797 AS frontend
 SHELL ["/bin/ash", "-eo", "pipefail", "-c"]
 ARG NODE_ENV=production
 ARG NODE_OPTIONS=--use-openssl-ca
 WORKDIR /app
 COPY frontend/package.json frontend/pnpm-lock.yaml frontend/pnpm-workspace.yaml /app/
 RUN apk upgrade --no-cache -a && \
-    apk add --no-cache nodejs pnpm llvm file brotli && \
+    apk add --no-cache --virtual nodejs && \
+    apk add --no-cache pnpm llvm file brotli && \
     pnpm install --frozen-lockfile && \
     find /app/node_modules -name "*.map" -delete && \
     find /app/node_modules -name "*.node" -type f -exec llvm-strip -s {} \; && \
@@ -188,7 +189,7 @@ COPY frontend /app
 RUN pnpm vite build && \
     find /app/dist -type f ! -name "*.jpg" ! -name "*.png" -print0 | xargs -r0 -P "$(nproc)" -n 1 brotli -q 11 -sf
 
-FROM --platform=$BUILDPLATFORM alpine:3.24.3@sha256:be2656061b536c1883c4034790e21d0a09c5aaaf51968b89368a3c0371ea2c9a AS backend
+FROM --platform=$BUILDPLATFORM node:26.12.1-alpine3.24@sha256:40cd011b55415bc894e45b02fdd5a5dfde056921b7d23a64c74f80497af48797 AS backend
 SHELL ["/bin/ash", "-eo", "pipefail", "-c"]
 ARG NODE_ENV=production
 ARG NODE_OPTIONS=--use-openssl-ca
@@ -196,7 +197,8 @@ ARG TARGETARCH
 WORKDIR /app
 COPY backend/package.json backend/pnpm-lock.yaml backend/pnpm-workspace.yaml /app/
 RUN apk upgrade --no-cache -a && \
-    apk add --no-cache nodejs pnpm llvm file && \
+    apk add --no-cache --virtual nodejs && \
+    apk add --no-cache pnpm llvm file && \
     pnpm install --frozen-lockfile --prod && \
     find /app/node_modules -name "*.map" -delete && \
     rm -vr /app/node_modules/better-sqlite3/deps/sqlite3 && \
@@ -211,6 +213,13 @@ RUN apk upgrade --no-cache -a && \
 COPY backend /app
 
 
+FROM node:26.12.1-alpine3.24@sha256:40cd011b55415bc894e45b02fdd5a5dfde056921b7d23a64c74f80497af48797 AS node
+RUN apk upgrade --no-cache -a && \
+    apk add --no-cache binutils file && \
+    strip -s /usr/local/bin/node && \
+    file /usr/local/bin/node
+
+
 FROM alpine:3.24.3@sha256:be2656061b536c1883c4034790e21d0a09c5aaaf51968b89368a3c0371ea2c9a
 SHELL ["/bin/ash", "-eo", "pipefail", "-c"]
 ENV NODE_ENV=production
@@ -221,12 +230,13 @@ ARG LCSB_VER=92a8617ede3b781c33cd39e73734505597e318fd # main
 ARG COF_VER=da93e0cec7fdb1a80f4972f75b3638763d012c0e # main
 ARG NBF_VER=5cee8db2a505f2a253e24691399c828c043071fc # master
 
-COPY --from=nginx /usr/local/nginx                                                                         /usr/local/nginx
-COPY --from=nginx /usr/local/bin/bssl                                                                      /usr/local/bin/bssl
-COPY --from=nginx /usr/local/lib/libssl.so                                                                 /usr/local/lib/libssl.so
-COPY --from=nginx /usr/local/lib/libcrypto.so                                                              /usr/local/lib/libcrypto.so
+COPY --from=nginx /usr/local/nginx            /usr/local/nginx
+COPY --from=nginx /usr/local/bin/bssl         /usr/local/bin/bssl
+COPY --from=nginx /usr/local/lib/libssl.so    /usr/local/lib/libssl.so
+COPY --from=nginx /usr/local/lib/libcrypto.so /usr/local/lib/libcrypto.so
 
-COPY --from=backend  /app      /app
+COPY --from=backend  /app                /app
+COPY --from=node     /usr/local/bin/node /usr/local/bin/node
 
 COPY rootfs  /
 COPY MIT.LICENSE /MIT.LICENSE
@@ -240,7 +250,8 @@ RUN apk upgrade --no-cache -a && \
                        bash bash-completion nano \
                        logrotate goaccess fcgi \
                        luarocks5.1 git make \
-                       nodejs python3 && \
+                       libatomic libstdc++ \
+                       python3 && \
     \
     luarocks-5.1 install lua-resty-http && \
     luarocks-5.1 install lua-resty-string && \

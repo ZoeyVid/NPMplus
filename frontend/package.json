@@ -5,6 +5,12 @@
 	"author": "Jamie Curnow <jc@jc21.com> and ZoeyVid <zoeyvid@zvcdn.de>",
 	"license": "AGPL-3.0 (and MIT)",
 	"type": "module",
+	"devEngines": {
+		"packageManager": {
+			"name": "pnpm",
+			"version": "12.15.0"
+		}
+	},
 	"dependencies": {
 		"@ebay/nice-modal-react": "1.2.13",
 		"@tabler/core": "1.7.1",

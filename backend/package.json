@@ -6,6 +6,12 @@
 	"license": "AGPL-3.0 (and MIT)",
 	"main": "index.js",
 	"type": "module",
+	"devEngines": {
+		"packageManager": {
+			"name": "pnpm",
+			"version": "12.15.0"
+		}
+	},
 	"dependencies": {
 		"@apidevtools/json-schema-ref-parser": "16.0.5",
 		"ajv": "8.20.0",
