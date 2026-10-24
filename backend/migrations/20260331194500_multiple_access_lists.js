@@ -25,62 +25,33 @@ const up = async (knex) => {
 		table.foreign("access_list_id").references("access_list.id").onDelete("CASCADE");
 	});
 
-	const rows = await knex("proxy_host").select("id", "access_list_id", "locations");
+	const acl_host_rows = [];
 
-	for (const row of rows) {
-		let npmplus_access_list_ids = [];
-		let npmplus_access_list_type = "public";
-		const acl_hosts = {};
-
+	for (const row of await knex("proxy_host").select("id", "access_list_id", "locations")) {
 		// 0 was used for public but now its no longer used for that
 		// so ignore 0
-		if (row.access_list_id && row.access_list_id !== 0) {
-			npmplus_access_list_ids = [row.access_list_id];
-			npmplus_access_list_type = "custom";
-			acl_hosts[`${row.id}_${row.access_list_id}`] = {
-				proxy_host_id: row.id,
-				access_list_id: row.access_list_id,
-			};
-		}
+		if (row.access_list_id) acl_host_rows.push({ proxy_host_id: row.id, access_list_id: row.access_list_id });
 
-		let locations;
-		try {
-			locations = Array.isArray(row.locations) ? row.locations : JSON.parse(row.locations || "[]");
-		} catch {
-			locations = [];
-		}
+		await knex("proxy_host")
+			.where({ id: row.id })
+			.update({
+				npmplus_access_list_ids: JSON.stringify(row.access_list_id ? [row.access_list_id] : []),
+				npmplus_access_list_type: row.access_list_id ? "custom" : "public",
+				locations: JSON.stringify(
+					(Array.isArray(row.locations) ? row.locations : JSON.parse(row.locations || "[]")).map(
+						(location, id) => ({
+							...location,
+							npmplus_access_list_ids: [],
+							npmplus_access_list_type: "global",
+							id,
+						}),
+					),
+				),
+			});
+	}
 
-		const updateData = {
-			npmplus_access_list_ids: JSON.stringify(npmplus_access_list_ids),
-			npmplus_access_list_type,
-		};
-
-		if (Array.isArray(locations) && locations.length > 0) {
-			const migratedLocations = locations.map((loc) => ({
-				...loc,
-				npmplus_access_list_ids: Array.isArray(loc.npmplus_access_list_ids) ? loc.npmplus_access_list_ids : [],
-				npmplus_access_list_type: loc.npmplus_access_list_type ?? "global",
-			}));
-			let count = 0;
-			for (const location of migratedLocations) {
-				location.id = count++;
-				if (Array.isArray(location.npmplus_access_list_ids)) {
-					for (const aclId of location.npmplus_access_list_ids) {
-						acl_hosts[`${row.id}_${aclId}`] = {
-							proxy_host_id: row.id,
-							access_list_id: aclId,
-						};
-					}
-				}
-			}
-			updateData.locations = JSON.stringify(migratedLocations);
-		}
-
-		await knex("proxy_host").where({ id: row.id }).update(updateData);
-		const acl_host_rows = Object.values(acl_hosts);
-		if (acl_host_rows.length > 0) {
-			await knex("npmplus_proxy_host_access_list").insert(acl_host_rows);
-		}
+	for (let i = 0; i < acl_host_rows.length; i += 500) {
+		await knex("npmplus_proxy_host_access_list").insert(acl_host_rows.slice(i, i + 500));
 	}
 
 	logger.info(`[${migrateName}] proxy_host Table altered`);
