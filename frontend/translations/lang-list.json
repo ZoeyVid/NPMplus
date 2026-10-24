@@ -1,103 +1,103 @@
 {
 	"az": {
-		"flag": "AZ",
+		"flag": "az",
 		"name": "Azərbaycanca"
 	},
 	"bg": {
-		"flag": "BG",
+		"flag": "bg",
 		"name": "Български"
 	},
 	"cs": {
-		"flag": "CZ",
+		"flag": "cz",
 		"name": "Čeština"
 	},
 	"de": {
-		"flag": "DE",
+		"flag": "de",
 		"name": "Deutsch"
 	},
 	"en": {
-		"flag": "EN",
+		"flag": "en",
 		"name": "English"
 	},
 	"es": {
-		"flag": "ES",
+		"flag": "es",
 		"name": "Español"
 	},
 	"et": {
-		"flag": "EE",
+		"flag": "ee",
 		"name": "Eesti"
 	},
 	"fa": {
-		"flag": "IR",
+		"flag": "ir",
 		"name": "فارسی",
 		"rtl": true
 	},
 	"fr": {
-		"flag": "FR",
+		"flag": "fr",
 		"name": "Français"
 	},
 	"ga": {
-		"flag": "IE",
+		"flag": "ie",
 		"name": "Gaeilge"
 	},
 	"hu": {
-		"flag": "HU",
+		"flag": "hu",
 		"name": "Magyar"
 	},
 	"id": {
-		"flag": "ID",
+		"flag": "id",
 		"name": "Bahasa Indonesia"
 	},
 	"it": {
-		"flag": "IT",
+		"flag": "it",
 		"name": "Italiano"
 	},
 	"ja": {
-		"flag": "JP",
+		"flag": "jp",
 		"name": "日本語"
 	},
 	"ko": {
-		"flag": "KR",
+		"flag": "kr",
 		"name": "한국어"
 	},
 	"nl": {
-		"flag": "NL",
+		"flag": "nl",
 		"name": "Nederlands"
 	},
 	"no": {
-		"flag": "NO",
+		"flag": "no",
 		"name": "Norsk"
 	},
 	"pl": {
-		"flag": "PL",
+		"flag": "pl",
 		"name": "Polski"
 	},
 	"pt": {
-		"flag": "PT",
+		"flag": "pt",
 		"name": "Português (Europeu)"
 	},
 	"ru": {
-		"flag": "RU",
+		"flag": "ru",
 		"name": "Русский"
 	},
 	"sk": {
-		"flag": "SK",
+		"flag": "sk",
 		"name": "Slovenčina"
 	},
 	"tr": {
-		"flag": "TR",
+		"flag": "tr",
 		"name": "Türkçe"
 	},
 	"uk": {
-		"flag": "UA",
+		"flag": "ua",
 		"name": "Українська"
 	},
 	"vi": {
-		"flag": "VN",
+		"flag": "vn",
 		"name": "Tiếng Việt"
 	},
 	"zh": {
-		"flag": "CN",
+		"flag": "cn",
 		"name": "中文"
 	}
 }

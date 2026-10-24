@@ -30,7 +30,7 @@ for code in en $(git ls-tree --full-tree --name-only "$NEW:$UP" | sed -n 's/\.js
 		git show "$NEW:$UP/lang-list.json" > "$TMP/list.json"
 		jq --tab --sort-keys --arg code "$code" --slurpfile up "$TMP/list.json" \
 			--argjson rtl "$(git show "$NEW:frontend/src/locale/IntlProvider.tsx" | grep -q "rtlLocales = .*\"$code\"" && echo true || echo false)" \
-			'.[$code] = {flag: ($code | ascii_upcase), name: $code} + (first($up[0] | to_entries[] | select(.key | startswith("locale-\($code)-")) | {flag: (.key | split("-")[2]), name: .value.defaultMessage}) // {}) + if $rtl then {rtl: true} else {} end' \
+			'.[$code] = {flag: $code, name: $code} + (first($up[0] | to_entries[] | select(.key | startswith("locale-\($code)-")) | {flag: (.key | split("-")[2] | ascii_downcase), name: .value.defaultMessage}) // {}) + if $rtl then {rtl: true} else {} end' \
 			"$SRC/lang-list.json" > "$TMP/out.json" && mv "$TMP/out.json" "$SRC/lang-list.json"
 	fi
 
