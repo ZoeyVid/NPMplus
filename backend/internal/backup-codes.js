@@ -39,10 +39,10 @@ const internalBackupCodes = {
 	 * @param   {number} userId
 	 * @returns {Promise<string[]>}
 	 */
-	create: async (userId, outerTrx) => {
+	create: async (userId) => {
 		const { plain, hashed } = await generate();
 
-		await authModel.transaction(outerTrx, async (trx) => {
+		await authModel.transaction(async (trx) => {
 			await codesOf(userId, trx).delete();
 			for (const secret of hashed) {
 				await authModel.query(trx).insert({ user_id: userId, type: "backup_code", secret, meta: {} });

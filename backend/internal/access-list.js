@@ -31,6 +31,13 @@ const internalAccessList = {
 			throw new errs.ValidationError("Access list needs at least one user or one rule that is not all");
 		}
 
+		const items = await Promise.all(
+			(data.items ?? []).map(async (item) => ({
+				username: item.username,
+				password: await bcrypt.hash(item.password, 5),
+			})),
+		);
+
 		const row = await accessListModel.transaction(async (trx) => {
 			const insertedRow = await accessListModel.query(trx).insertAndFetch({
 				name: data.name,
@@ -41,13 +48,7 @@ const internalAccessList = {
 
 			// Items
 			await Promise.all(
-				(data.items ?? []).map(async (item) =>
-					accessListAuthModel.query(trx).insert({
-						access_list_id: insertedRow.id,
-						username: item.username,
-						password: await bcrypt.hash(item.password, 5),
-					}),
-				),
+				items.map((item) => accessListAuthModel.query(trx).insert({ access_list_id: insertedRow.id, ...item })),
 			);
 
 			// Clients
@@ -110,6 +111,12 @@ const internalAccessList = {
 			throw new errs.ValidationError("Access list needs at least one user or one rule that is not all");
 		}
 
+		const items = await Promise.all(
+			(data.items ?? [])
+				.filter((item) => item.password)
+				.map(async (item) => ({ username: item.username, password: await bcrypt.hash(item.password, 5) })),
+		);
+
 		await accessListModel.transaction(async (trx) => {
 			// patch name if specified
 			if (data.name !== undefined || data.satisfy_any !== undefined || data.pass_auth !== undefined) {
@@ -133,15 +140,7 @@ const internalAccessList = {
 					);
 				// Add new items
 				await Promise.all(
-					data.items
-						.filter((item) => item.password)
-						.map(async (item) =>
-							accessListAuthModel.query(trx).insert({
-								access_list_id: data.id,
-								username: item.username,
-								password: await bcrypt.hash(item.password, 5),
-							}),
-						),
+					items.map((item) => accessListAuthModel.query(trx).insert({ access_list_id: data.id, ...item })),
 				);
 			}
 
