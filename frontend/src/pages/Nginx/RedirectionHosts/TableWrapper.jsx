@@ -1,5 +1,4 @@
 import { IconHelp, IconSearch } from "@tabler/icons-react";
-import { useQueryClient } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
 import Alert from "react-bootstrap/Alert";
 import { deleteRedirectionHost, toggleRedirectionHost } from "src/api/backend";
@@ -12,7 +11,6 @@ import { showError, showObjectSuccess } from "src/notifications";
 import Table from "./Table";
 
 export default function TableWrapper() {
-	const queryClient = useQueryClient();
 	const [search, setSearch] = useState("");
 	const [sorting, setSorting] = useState([{ id: "enabled", desc: false }]);
 	const { isFetching, isPending, isError, error, data } = useRedirectionHosts(["owner", "certificate"]);
@@ -35,10 +33,6 @@ export default function TableWrapper() {
 	const handleDisableToggle = async (id, enabled) => {
 		try {
 			await toggleRedirectionHost(id, enabled);
-			await Promise.all([
-				queryClient.invalidateQueries({ queryKey: ["redirection-hosts"] }),
-				queryClient.invalidateQueries({ queryKey: ["redirection-host", id] }),
-			]);
 			showObjectSuccess("redirection-host", enabled ? "enabled" : "disabled");
 		} catch (err) {
 			showError(<T id={err.message} />);
@@ -74,7 +68,6 @@ export default function TableWrapper() {
 					await deleteRedirectionHost(id);
 					showObjectSuccess("redirection-host", "deleted");
 				},
-				invalidations: [["redirection-hosts"], ["redirection-host", id], ["certificates"]],
 				children: <T id="object.delete.content" tData={{ object: "redirection-host" }} />,
 				subject: host?.domainNames.join(", "),
 				details:

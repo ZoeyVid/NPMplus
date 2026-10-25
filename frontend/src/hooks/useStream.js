@@ -1,4 +1,4 @@
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import { createStream, getStream, updateStream } from "src/api/backend";
 
 const fetchStream = (id) => {
@@ -35,20 +35,9 @@ const useStream = (id) => {
 	});
 };
 
-const useSetStream = () => {
-	const queryClient = useQueryClient();
-	return useMutation({
+const useSetStream = () =>
+	useMutation({
 		mutationFn: (values) => (values.id ? updateStream(values) : createStream(values)),
-		onSuccess: async ({ id }) => {
-			await Promise.all([
-				queryClient.invalidateQueries({ queryKey: ["stream", id] }),
-				queryClient.invalidateQueries({ queryKey: ["streams"] }),
-				queryClient.invalidateQueries({ queryKey: ["audit-logs"] }),
-				queryClient.invalidateQueries({ queryKey: ["host-report"] }),
-				queryClient.invalidateQueries({ queryKey: ["certificates"] }),
-			]);
-		},
 	});
-};
 
 export { useSetStream, useStream };
