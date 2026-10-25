@@ -1,5 +1,4 @@
 import { IconSearch } from "@tabler/icons-react";
-import { useQueryClient } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
 import Alert from "react-bootstrap/Alert";
 import { adminDisableMfa, deleteUser, revokeSessions, toggleUser } from "src/api/backend";
@@ -11,7 +10,6 @@ import { showError, showObjectSuccess } from "src/notifications";
 import Table from "./Table";
 
 export default function TableWrapper() {
-	const queryClient = useQueryClient();
 	const [search, setSearch] = useState("");
 	const { isFetching, isPending, isError, error, data } = useUsers();
 
@@ -34,10 +32,6 @@ export default function TableWrapper() {
 	const handleDisableToggle = async (id, enabled) => {
 		try {
 			await toggleUser(id, enabled);
-			await Promise.all([
-				queryClient.invalidateQueries({ queryKey: ["users"] }),
-				queryClient.invalidateQueries({ queryKey: ["user", id] }),
-			]);
 			showObjectSuccess("user", enabled ? "enabled" : "disabled");
 		} catch (err) {
 			showError(<T id={err.message} />);
@@ -102,7 +96,6 @@ export default function TableWrapper() {
 								await adminDisableMfa(id);
 								showObjectSuccess("user", "updated");
 							},
-							invalidations: [["users"], ["user", id]],
 						});
 					}}
 					onRevokeSessions={(id) => {
@@ -116,7 +109,6 @@ export default function TableWrapper() {
 								await revokeSessions(id);
 								showObjectSuccess("user", "updated");
 							},
-							invalidations: [["users"], ["user", id]],
 						});
 					}}
 					onDeleteUser={(id) => {
@@ -127,7 +119,6 @@ export default function TableWrapper() {
 								await deleteUser(id);
 								showObjectSuccess("user", "deleted");
 							},
-							invalidations: [["users"], ["user", id]],
 							children: <T id="object.delete.content" tData={{ object: "user" }} />,
 							subject: user?.name,
 							details: user?.email,

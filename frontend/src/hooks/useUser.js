@@ -1,4 +1,4 @@
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import { createUser, getUser, updateUser } from "src/api/backend";
 
 const fetchUser = (id) => {
@@ -25,18 +25,9 @@ const useUser = (id) => {
 	});
 };
 
-const useSetUser = () => {
-	const queryClient = useQueryClient();
-	return useMutation({
+const useSetUser = () =>
+	useMutation({
 		mutationFn: (values) => (values.id ? updateUser(values) : createUser(values)),
-		onSuccess: async () => {
-			await Promise.all([
-				queryClient.invalidateQueries({ queryKey: ["user"] }),
-				queryClient.invalidateQueries({ queryKey: ["users"] }),
-				queryClient.invalidateQueries({ queryKey: ["audit-logs"] }),
-			]);
-		},
 	});
-};
 
 export { useSetUser, useUser };

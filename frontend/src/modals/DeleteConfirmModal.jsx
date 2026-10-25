@@ -1,4 +1,3 @@
-import { useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
 import { Alert } from "react-bootstrap";
 import Modal from "react-bootstrap/Modal";
@@ -11,8 +10,7 @@ const showDeleteConfirmModal = (props) => {
 };
 
 const DeleteConfirmModal = EasyModal.create(
-	({ title, tTitle, children, subject, details, onConfirm, invalidations, visible, remove }) => {
-		const queryClient = useQueryClient();
+	({ title, tTitle, children, subject, details, onConfirm, visible, remove }) => {
 		const [error, setError] = useState(null);
 		const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -23,8 +21,6 @@ const DeleteConfirmModal = EasyModal.create(
 			try {
 				await onConfirm();
 				remove();
-				// invalidate caches as requested
-				await Promise.all(invalidations.map((inv) => queryClient.invalidateQueries({ queryKey: inv })));
 			} catch (err) {
 				setError(<T id={err.message} />);
 			}
