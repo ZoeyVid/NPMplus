@@ -30,6 +30,40 @@
 				"schema": {
 					"type": "object",
 					"additionalProperties": false,
+					"allOf": [
+						{
+							"if": {
+								"required": [
+									"items",
+									"clients"
+								]
+							},
+							"then": {
+								"anyOf": [
+									{
+										"properties": {
+											"items": {
+												"minItems": 1
+											}
+										}
+									},
+									{
+										"properties": {
+											"clients": {
+												"contains": {
+													"properties": {
+														"address": {
+															"pattern": "^(?![aA][lL][lL]$)\\S+$"
+														}
+													}
+												}
+											}
+										}
+									}
+								]
+							}
+						}
+					],
 					"minProperties": 1,
 					"properties": {
 						"name": {

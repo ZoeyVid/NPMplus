@@ -55,37 +55,10 @@
 			]
 		},
 		"domain_names_http": {
-			"description": "Domain Names and IPs for the HTTP challenge, wildcards are not allowed",
-			"type": "array",
-			"minItems": 1,
-			"maxItems": 25,
-			"uniqueItems": true,
-			"items": {
-				"type": "string",
-				"maxLength": 253,
-				"pattern": "^(([\\p{L}\\p{Mn}\\p{Mc}\\p{Nd}\\-]+\\.)+[\\p{L}\\p{Mn}\\p{Mc}\\p{Nd}\\-]+|\\[[0-9a-fA-F:]+\\])$"
-			},
-			"example": [
-				"example.com",
-				"192.0.2.1",
-				"[2001:db8::1]"
-			]
+			"$ref": "../common.json#/properties/domain_names_http"
 		},
 		"domain_names_dns": {
-			"description": "Domain Names for the DNS challenge, wildcards are allowed, IPs are not allowed",
-			"type": "array",
-			"minItems": 1,
-			"maxItems": 25,
-			"uniqueItems": true,
-			"items": {
-				"type": "string",
-				"maxLength": 253,
-				"pattern": "^(?![0-9.]+$)(\\*\\.)?([\\p{L}\\p{Mn}\\p{Mc}\\p{Nd}\\-]+\\.)+[\\p{L}\\p{Mn}\\p{Mc}\\p{Nd}\\-]+$"
-			},
-			"example": [
-				"example.com",
-				"*.example.com"
-			]
+			"$ref": "../common.json#/properties/domain_names_dns"
 		},
 		"expires_on": {
 			"description": "Date and time of expiration",
