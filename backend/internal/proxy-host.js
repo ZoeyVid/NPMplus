@@ -36,6 +36,7 @@ const replaceLocationsAndAccessLists = async (trx, proxyHostId, data) => {
 const cleanForwardOptions = (item) => {
 	const scheme = item.forward_scheme ?? "http";
 	if (scheme !== "empty") {
+		if (!item.forward_host) throw new errs.ValidationError(`Forward host is required for the ${scheme} scheme`);
 		if (!["http", "https"].includes(scheme)) {
 			item.npmplus_proxy_request_buffering = false;
 			item.npmplus_proxy_response_buffering = false;
@@ -63,10 +64,10 @@ const internalProxyHost = {
 		if (createCertificate) {
 			delete thisData.certificate_id;
 		} else if (thisData.certificate_id > 0) {
-			await internalCertificate.get(access, { id: thisData.certificate_id });
+			await internalCertificate.get(access, { id: thisData.certificate_id, mtls: false });
 		}
 		if (thisData.npmplus_mtls_certificate_id > 0) {
-			await internalCertificate.get(access, { id: thisData.npmplus_mtls_certificate_id });
+			await internalCertificate.get(access, { id: thisData.npmplus_mtls_certificate_id, mtls: true });
 		}
 
 		access.can("proxy_hosts:manage");
@@ -85,6 +86,9 @@ const internalProxyHost = {
 		thisData = internalHost.cleanSslHstsData(createCertificate, thisData);
 		thisData = internalProxyHostAccessList.cleanAccessListTypes(thisData);
 		for (const item of [thisData, ...(thisData.locations ?? [])]) cleanForwardOptions(item);
+		if (thisData.locations?.some(({ path }) => !path)) {
+			throw new errs.ValidationError("Location paths can not be empty");
+		}
 		await internalProxyHostAccessList.validateAccessLists(access, thisData);
 
 		if (createCertificate) {
@@ -134,10 +138,10 @@ const internalProxyHost = {
 		if (createCertificate) {
 			delete thisData.certificate_id;
 		} else if (thisData.certificate_id > 0) {
-			await internalCertificate.get(access, { id: thisData.certificate_id });
+			await internalCertificate.get(access, { id: thisData.certificate_id, mtls: false });
 		}
 		if (thisData.npmplus_mtls_certificate_id > 0) {
-			await internalCertificate.get(access, { id: thisData.npmplus_mtls_certificate_id });
+			await internalCertificate.get(access, { id: thisData.npmplus_mtls_certificate_id, mtls: true });
 		}
 
 		access.can("proxy_hosts:manage");
@@ -157,6 +161,14 @@ const internalProxyHost = {
 			}
 		}
 
+		thisData = internalHost.cleanSslHstsData(createCertificate, thisData, existingRow);
+		thisData = internalProxyHostAccessList.cleanAccessListTypes(thisData);
+		for (const item of [thisData, ...(thisData.locations ?? [])]) cleanForwardOptions(item);
+		if (thisData.locations?.some(({ path }) => !path)) {
+			throw new errs.ValidationError("Location paths can not be empty");
+		}
+		await internalProxyHostAccessList.validateAccessLists(access, thisData);
+
 		if (createCertificate) {
 			const cert = await internalCertificate.createQuickCertificate(access, {
 				...thisData,
@@ -166,11 +178,6 @@ const internalProxyHost = {
 			// update host with cert id
 			thisData.certificate_id = cert.id;
 		}
-
-		thisData = internalHost.cleanSslHstsData(createCertificate, thisData, existingRow);
-		thisData = internalProxyHostAccessList.cleanAccessListTypes(thisData);
-		for (const item of [thisData, ...(thisData.locations ?? [])]) cleanForwardOptions(item);
-		await internalProxyHostAccessList.validateAccessLists(access, thisData);
 
 		await proxyHostModel.transaction(async (trx) => {
 			await proxyHostModel.query(trx).where({ id: thisData.id }).patch(thisData);

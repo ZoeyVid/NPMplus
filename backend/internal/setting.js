@@ -20,6 +20,10 @@ const internalSetting = {
 		if (["html", "redirect"].includes(merged.value) && !merged.meta?.[merged.value]) {
 			throw new errs.ValidationError(`meta.${merged.value} is required for ${merged.value}`);
 		}
+		const status = merged.meta?.status;
+		if (status !== undefined && (!Number.isInteger(status) || status < 400 || status > 599)) {
+			throw new errs.ValidationError("meta.status needs to be between 400 and 599");
+		}
 
 		await settingModel.query().where({ id: data.id }).patch(data);
 
