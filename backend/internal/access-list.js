@@ -13,6 +13,14 @@ import internalNginx from "./nginx.js";
 const hasNoRules = (items = [], clients = []) =>
 	items.length === 0 && clients.every(({ address = "" }) => ["", "all"].includes(address.trim().toLowerCase()));
 
+const hasDuplicateUsernames = (items = []) => new Set(items.map(({ username }) => username)).size !== items.length;
+
+const hasAllRuleBeforeEnd = (clients = []) =>
+	clients
+		.filter(({ address }) => address)
+		.slice(0, -1)
+		.some(({ address }) => address.toLowerCase() === "all");
+
 const internalAccessList = {
 	/**
 	 * @param   {Access}  access
@@ -27,8 +35,14 @@ const internalAccessList = {
 		if (data.items?.some((item) => item.password && bcrypt.truncates(item.password))) {
 			throw new errs.ValidationError("Access list passwords can not be longer than 72 bytes");
 		}
+		if (hasDuplicateUsernames(data.items)) {
+			throw new errs.ValidationError("Access list usernames need to be unique");
+		}
 		if (hasNoRules(data.items, data.clients)) {
 			throw new errs.ValidationError("Access list needs at least one user or one rule that is not all");
+		}
+		if (hasAllRuleBeforeEnd(data.clients)) {
+			throw new errs.ValidationError("The all rule needs to be the last access list rule");
 		}
 
 		const items = await Promise.all(
@@ -53,13 +67,15 @@ const internalAccessList = {
 
 			// Clients
 			await Promise.all(
-				(data.clients ?? []).map((client) =>
-					accessListClientModel.query(trx).insert({
-						access_list_id: insertedRow.id,
-						address: client.address,
-						directive: client.directive,
-					}),
-				),
+				(data.clients ?? [])
+					.filter((client) => client.address)
+					.map((client) =>
+						accessListClientModel.query(trx).insert({
+							access_list_id: insertedRow.id,
+							address: client.address,
+							directive: client.directive,
+						}),
+					),
 			);
 
 			return insertedRow;
@@ -107,8 +123,14 @@ const internalAccessList = {
 		if (data.items?.some((item) => item.password && bcrypt.truncates(item.password))) {
 			throw new errs.ValidationError("Access list passwords can not be longer than 72 bytes");
 		}
+		if (hasDuplicateUsernames(data.items)) {
+			throw new errs.ValidationError("Access list usernames need to be unique");
+		}
 		if (hasNoRules(data.items ?? row.items, data.clients ?? row.clients)) {
 			throw new errs.ValidationError("Access list needs at least one user or one rule that is not all");
+		}
+		if (hasAllRuleBeforeEnd(data.clients)) {
+			throw new errs.ValidationError("The all rule needs to be the last access list rule");
 		}
 
 		const items = await Promise.all(

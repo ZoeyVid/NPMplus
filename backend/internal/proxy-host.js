@@ -36,6 +36,7 @@ const replaceLocationsAndAccessLists = async (trx, proxyHostId, data) => {
 const cleanForwardOptions = (item) => {
 	const scheme = item.forward_scheme ?? "http";
 	if (scheme !== "empty") {
+		if (!item.forward_host) throw new errs.ValidationError(`Forward host is required for the ${scheme} scheme`);
 		if (!["http", "https"].includes(scheme)) {
 			item.npmplus_proxy_request_buffering = false;
 			item.npmplus_proxy_response_buffering = false;
@@ -63,10 +64,10 @@ const internalProxyHost = {
 		if (createCertificate) {
 			delete thisData.certificate_id;
 		} else if (thisData.certificate_id > 0) {
-			await internalCertificate.get(access, { id: thisData.certificate_id });
+			await internalCertificate.get(access, { id: thisData.certificate_id, mtls: false });
 		}
 		if (thisData.npmplus_mtls_certificate_id > 0) {
-			await internalCertificate.get(access, { id: thisData.npmplus_mtls_certificate_id });
+			await internalCertificate.get(access, { id: thisData.npmplus_mtls_certificate_id, mtls: true });
 		}
 
 		access.can("proxy_hosts:manage");
@@ -134,10 +135,10 @@ const internalProxyHost = {
 		if (createCertificate) {
 			delete thisData.certificate_id;
 		} else if (thisData.certificate_id > 0) {
-			await internalCertificate.get(access, { id: thisData.certificate_id });
+			await internalCertificate.get(access, { id: thisData.certificate_id, mtls: false });
 		}
 		if (thisData.npmplus_mtls_certificate_id > 0) {
-			await internalCertificate.get(access, { id: thisData.npmplus_mtls_certificate_id });
+			await internalCertificate.get(access, { id: thisData.npmplus_mtls_certificate_id, mtls: true });
 		}
 
 		access.can("proxy_hosts:manage");

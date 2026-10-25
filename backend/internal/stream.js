@@ -42,10 +42,10 @@ const internalStream = {
 		if (createCertificate) {
 			delete thisData.certificate_id;
 		} else if (thisData.certificate_id > 0) {
-			await internalCertificate.get(access, { id: thisData.certificate_id });
+			await internalCertificate.get(access, { id: thisData.certificate_id, mtls: false });
 		}
 		if (thisData.npmplus_mtls_certificate_id > 0) {
-			await internalCertificate.get(access, { id: thisData.npmplus_mtls_certificate_id });
+			await internalCertificate.get(access, { id: thisData.npmplus_mtls_certificate_id, mtls: true });
 		}
 
 		access.can("streams:manage");
@@ -97,10 +97,10 @@ const internalStream = {
 		if (createCertificate) {
 			delete thisData.certificate_id;
 		} else if (thisData.certificate_id > 0) {
-			await internalCertificate.get(access, { id: thisData.certificate_id });
+			await internalCertificate.get(access, { id: thisData.certificate_id, mtls: false });
 		}
 		if (thisData.npmplus_mtls_certificate_id > 0) {
-			await internalCertificate.get(access, { id: thisData.npmplus_mtls_certificate_id });
+			await internalCertificate.get(access, { id: thisData.npmplus_mtls_certificate_id, mtls: true });
 		}
 
 		access.can("streams:manage");
