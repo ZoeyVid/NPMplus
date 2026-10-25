@@ -156,6 +156,7 @@
 	"host.flags.cache-assets": "缓存资源",
 	"host.flags.disable-crowdsec-appsec": "禁用 Crowdsec Appsec",
 	"host.flags.disable-request-buffering": "禁用请求缓冲",
+	"host.flags.disable-request-buffering.requires-appsec": "需要先禁用 Crowdsec Appsec",
 	"host.flags.disable-response-buffering": "禁用响应缓冲",
 	"host.flags.fancyindex": "启用 fancyindex",
 	"host.flags.hsts-enabled": "启用 HSTS（2 年）",
