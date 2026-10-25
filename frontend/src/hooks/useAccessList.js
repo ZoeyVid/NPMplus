@@ -1,4 +1,4 @@
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import { createAccessList, getAccessList, updateAccessList } from "src/api/backend";
 
 const fetchAccessList = (id) => {
@@ -26,19 +26,9 @@ const useAccessList = (id) => {
 	});
 };
 
-const useSetAccessList = () => {
-	const queryClient = useQueryClient();
-	return useMutation({
+const useSetAccessList = () =>
+	useMutation({
 		mutationFn: (values) => (values.id ? updateAccessList(values) : createAccessList(values)),
-		onSuccess: async ({ id }) => {
-			await Promise.all([
-				queryClient.invalidateQueries({ queryKey: ["access-list", id] }),
-				queryClient.invalidateQueries({ queryKey: ["access-lists"] }),
-				queryClient.invalidateQueries({ queryKey: ["audit-logs"] }),
-				queryClient.invalidateQueries({ queryKey: ["proxy-hosts"] }),
-			]);
-		},
 	});
-};
 
 export { useAccessList, useSetAccessList };

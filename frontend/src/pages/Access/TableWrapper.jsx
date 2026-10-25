@@ -92,7 +92,6 @@ export default function TableWrapper() {
 								await deleteAccessList(id);
 								showObjectSuccess("access-list", "deleted");
 							},
-							invalidations: [["access-lists"], ["access-list", id], ["proxy-hosts"], ["proxy-host"]],
 							children: <T id="object.delete.content" tData={{ object: "access-list" }} />,
 							subject: accessList?.name,
 							details: accessList?.proxyHostCount ? (
