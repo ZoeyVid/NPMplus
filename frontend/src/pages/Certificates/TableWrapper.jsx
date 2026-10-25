@@ -1,15 +1,14 @@
-import { IconHelp, IconSearch } from "@tabler/icons-react";
+import { IconSearch } from "@tabler/icons-react";
 import { useEffect, useState } from "react";
 import Alert from "react-bootstrap/Alert";
 import { deleteCertificate, downloadCertificate } from "src/api/backend";
-import { Button, certificateProviderTranslation, HasPermission, LoadingPage } from "src/components";
+import { certificateProviderTranslation, HasPermission, LoadingPage } from "src/components";
 import { useCertificates } from "src/hooks";
 import { formatDateTime, T } from "src/locale";
 import {
 	showCustomCertificateModal,
 	showDeleteConfirmModal,
 	showDNSCertificateModal,
-	showHelpModal,
 	showHTTPCertificateModal,
 	showReachabilityModal,
 	showRenewCertificateModal,
@@ -90,9 +89,6 @@ export default function TableWrapper() {
 										/>
 									</div>
 								) : null}
-								<Button size="sm" onClick={() => showHelpModal("Certificates")}>
-									<IconHelp size={20} />
-								</Button>
 								<HasPermission section={CERTIFICATES} permission={MANAGE} hideError>
 									{data?.length ? (
 										<div className="dropdown">

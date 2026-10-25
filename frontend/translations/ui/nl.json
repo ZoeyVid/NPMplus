@@ -149,7 +149,6 @@
 	"expires.on": "Verloopt: {date}",
 	"footer.github": "Repository op Github",
 	"footer.github-fork": "Maak een Fork op Github",
-	"help": "Hulp",
 	"host.auth-request": "Auth-verzoeken",
 	"host.auth-request-upstream": "Upstream Auth-verzoeken",
 	"host.auth-request-upstream.placeholder": "leeg laten voor env-waarde",

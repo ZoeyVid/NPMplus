@@ -1,11 +1,11 @@
-import { IconHelp, IconSearch } from "@tabler/icons-react";
+import { IconSearch } from "@tabler/icons-react";
 import { useEffect, useState } from "react";
 import Alert from "react-bootstrap/Alert";
 import { deleteRedirectionHost, toggleRedirectionHost } from "src/api/backend";
 import { Button, HasPermission, LoadingPage } from "src/components";
 import { getDirectory, useRedirectionHosts } from "src/hooks";
 import { T } from "src/locale";
-import { showDeleteConfirmModal, showHelpModal, showRedirectionHostModal } from "src/modals";
+import { showDeleteConfirmModal, showRedirectionHostModal } from "src/modals";
 import { MANAGE, REDIRECTION_HOSTS } from "src/modules/Permissions";
 import { showError, showObjectSuccess } from "src/notifications";
 import Table from "./Table";
@@ -107,9 +107,6 @@ export default function TableWrapper() {
 										/>
 									</div>
 								) : null}
-								<Button size="sm" onClick={() => showHelpModal("RedirectionHosts")}>
-									<IconHelp size={20} />
-								</Button>
 								<HasPermission section={REDIRECTION_HOSTS} permission={MANAGE} hideError>
 									{data?.length ? (
 										<Button
