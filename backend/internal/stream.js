@@ -14,8 +14,12 @@ const cleanStreamData = (data, existingData) => {
 
 	if (combinedData.udp_forwarding) {
 		combinedData.npmplus_proxy_tls = false;
-		if (combinedData.npmplus_proxy_protocol_forwarding === 1) combinedData.npmplus_proxy_protocol_forwarding = 0;
+		if (combinedData.npmplus_proxy_protocol_forwarding === 1) combinedData.npmplus_proxy_protocol_forwarding = 2;
 		combinedData.certificate_id = 0;
+	}
+
+	if (combinedData.certificate_id === "new" && !combinedData.npmplus_dns_challenge) {
+		throw new errs.ValidationError("New certificates for streams require the DNS challenge");
 	}
 
 	if (combinedData.certificate_id !== "new" && !(combinedData.certificate_id > 0)) {
@@ -42,10 +46,10 @@ const internalStream = {
 		if (createCertificate) {
 			delete thisData.certificate_id;
 		} else if (thisData.certificate_id > 0) {
-			await internalCertificate.get(access, { id: thisData.certificate_id });
+			await internalCertificate.get(access, { id: thisData.certificate_id, mtls: false });
 		}
 		if (thisData.npmplus_mtls_certificate_id > 0) {
-			await internalCertificate.get(access, { id: thisData.npmplus_mtls_certificate_id });
+			await internalCertificate.get(access, { id: thisData.npmplus_mtls_certificate_id, mtls: true });
 		}
 
 		access.can("streams:manage");
@@ -97,10 +101,10 @@ const internalStream = {
 		if (createCertificate) {
 			delete thisData.certificate_id;
 		} else if (thisData.certificate_id > 0) {
-			await internalCertificate.get(access, { id: thisData.certificate_id });
+			await internalCertificate.get(access, { id: thisData.certificate_id, mtls: false });
 		}
 		if (thisData.npmplus_mtls_certificate_id > 0) {
-			await internalCertificate.get(access, { id: thisData.npmplus_mtls_certificate_id });
+			await internalCertificate.get(access, { id: thisData.npmplus_mtls_certificate_id, mtls: true });
 		}
 
 		access.can("streams:manage");

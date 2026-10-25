@@ -34,7 +34,7 @@ export function SSLCertificateField({
 	const handleChange = (newValue, _actionMeta) => {
 		void setFieldValue(name, newValue?.value);
 
-		if (!(newValue?.value > 0)) {
+		if (!newValue?.value) {
 			void setFieldValue(mtlsName, 0);
 			void setFieldValue("npmplusMtlsVerifyClientOptional", false);
 		}
@@ -185,7 +185,7 @@ export function SSLCertificateField({
 										void setFieldValue("npmplusMtlsVerifyClientOptional", false);
 									}
 								}}
-								isDisabled={v?.udpForwarding || !(v?.certificateId > 0)}
+								isDisabled={v?.udpForwarding || !v?.certificateId}
 							/>
 						) : null}
 					</div>

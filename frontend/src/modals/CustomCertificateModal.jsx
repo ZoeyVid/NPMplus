@@ -3,7 +3,7 @@ import { Field, Form, Formik } from "formik";
 import { useState } from "react";
 import { Alert } from "react-bootstrap";
 import Modal from "react-bootstrap/Modal";
-import { createCertificate, uploadCertificate, validateCertificate } from "src/api/backend";
+import { createCertificate, deleteCertificate, uploadCertificate, validateCertificate } from "src/api/backend";
 import { Button } from "src/components";
 import { T } from "src/locale";
 import EasyModal from "src/modules/easyModal";
@@ -48,7 +48,12 @@ const CustomCertificateModal = EasyModal.create(({ visible, remove, cert, provid
 				});
 
 				// Upload the certificates to the created certificate
-				await uploadCertificate(newCert.id, formData);
+				try {
+					await uploadCertificate(newCert.id, formData);
+				} catch (err) {
+					await deleteCertificate(newCert.id);
+					throw err;
+				}
 			}
 
 			// Success
