@@ -152,6 +152,7 @@
 	"help": "Hilfe",
 	"host.auth-request": "Auth Request",
 	"host.auth-request-upstream": "Auth Request Upstream",
+	"host.auth-request-upstream.placeholder": "leer lassen für env-Wert",
 	"host.flags.block-exploits": "Gängige Exploits blockieren",
 	"host.flags.cache-assets": "Cache Assets",
 	"host.flags.disable-crowdsec-appsec": "Crowdsec Appsec deaktivieren",
