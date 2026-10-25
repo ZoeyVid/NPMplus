@@ -53,7 +53,11 @@ const ProxyHostModal = EasyModal.create(({ id, isClone, visible, remove }) => {
 			...values,
 			npmplusAccessListIds: globalAclIds,
 			forwardPort: values.forwardPort || 0,
-			locations: values.locations.map((location) => ({ ...location, forwardPort: location.forwardPort || 0 })),
+			locations: values.locations.map((location) => ({
+				...location,
+				forwardPort: location.forwardPort || 0,
+				npmplusAccessListIds: location.npmplusAccessListType === "custom" ? location.npmplusAccessListIds : [],
+			})),
 		};
 
 		setProxyHost(payload, {
@@ -399,7 +403,19 @@ const ProxyHostModal = EasyModal.create(({ id, isClone, visible, remove }) => {
 																		type="checkbox"
 																	>
 																		{({ field, form }) => (
-																			<span className="form-check form-check-single form-switch">
+																			<span
+																				className="form-check form-check-single form-switch"
+																				title={
+																					form.values.npmplusCrowdsecAppsec ||
+																					!["http", "https"].includes(
+																						form.values.forwardScheme,
+																					)
+																						? undefined
+																						: intl.formatMessage({
+																								id: "host.flags.disable-request-buffering.requires-appsec",
+																							})
+																				}
+																			>
 																				<input
 																					{...field}
 																					id="npmplusProxyRequestBuffering"
@@ -407,20 +423,12 @@ const ProxyHostModal = EasyModal.create(({ id, isClone, visible, remove }) => {
 																						"bg-lime": field.checked,
 																					})}
 																					type="checkbox"
-																					onChange={(e) => {
-																						field.onChange(e);
-																						if (e.target.checked) {
-																							form.setFieldValue(
-																								"npmplusCrowdsecAppsec",
-																								true,
-																							);
-																						}
-																					}}
 																					disabled={
-																						form.values.forwardScheme !==
-																							"http" &&
-																						form.values.forwardScheme !==
-																							"https"
+																						!form.values
+																							.npmplusCrowdsecAppsec ||
+																						!["http", "https"].includes(
+																							form.values.forwardScheme,
+																						)
 																					}
 																				/>
 																			</span>

@@ -202,6 +202,9 @@ const internalProxyHostAccessList = {
 		if (!proxyHost) {
 			return;
 		}
+		if (proxyHost.npmplus_access_list_type === "global") {
+			throw new errs.ValidationError("The global access list type is only allowed for locations");
+		}
 		const aclIds = new Set(); // make sure no ACLs are being submitted that have been deleted
 		const validateCustomSelection = (accessListType, accessListIds) => {
 			if (accessListType === "custom") {

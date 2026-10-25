@@ -1,4 +1,5 @@
 import { createPrivateKey, X509Certificate } from "node:crypto";
+import { existsSync } from "node:fs";
 import { mkdir, open, readFile, realpath, rm, stat, writeFile } from "node:fs/promises";
 import net from "node:net";
 import path from "node:path";
@@ -130,14 +131,28 @@ const internalCertificate = {
 		access.can("certificates:manage");
 		data.owner_user_id = access.token.getUserId(1);
 
+		if (data.provider !== "letsencrypt" && Object.keys(pickCertificateFields(data)).length > 0) {
+			throw new error.ValidationError("DNS challenge and reuse key require a Let's Encrypt certificate");
+		}
+
 		if (!data.npmplus_dns_challenge) {
 			delete data.npmplus_dns_provider;
 			delete data.npmplus_dns_provider_credentials;
 			delete data.npmplus_propagation_seconds;
 		}
 
+		const propagationSeconds = data.npmplus_propagation_seconds ?? 0;
+		if (!Number.isInteger(propagationSeconds) || propagationSeconds < 0 || propagationSeconds > 7200) {
+			throw new error.ValidationError("DNS propagation seconds need to be between 0 and 7200");
+		}
+
 		if (data.provider === "letsencrypt") {
+			if (!data.domain_names?.length) {
+				throw new error.ValidationError("Let's Encrypt certificates need domain names");
+			}
 			data.nice_name = getNiceName(data.domain_names);
+		} else if (!data.nice_name || data.domain_names !== undefined) {
+			throw new error.ValidationError("Custom and mTLS certificates need a name and no domain names");
 		}
 
 		// this command really should clean up and delete the cert if it can't fully succeed
@@ -231,6 +246,14 @@ const internalCertificate = {
 		if (!row?.id) {
 			throw new error.ItemNotFoundError(data.id);
 		}
+		if (data.mtls !== undefined && (row.provider === "mtls") !== data.mtls) {
+			throw new error.ValidationError(
+				`Certificate #${row.id} ${data.mtls ? "is not an mTLS certificate" : "is an mTLS certificate"}`,
+			);
+		}
+		if (data.mtls !== undefined && !existsSync(internalCertificate.getCertFile(row))) {
+			throw new error.ValidationError(`Certificate #${row.id} has no certificate files`);
+		}
 
 		return row;
 	},
@@ -251,7 +274,7 @@ const internalCertificate = {
 			zipDirectory = internalCertificate.getLiveCertPath(data.id);
 			fileNames = ["fullchain.pem", "privkey.pem"];
 		} else if (certificate.provider === "mtls") {
-			const mtlsFile = internalCertificate.getMtlsCertFile(data.id);
+			const mtlsFile = internalCertificate.getCertFile(certificate);
 			zipDirectory = path.dirname(mtlsFile);
 			fileNames = [path.basename(mtlsFile)];
 		} else {
@@ -341,7 +364,7 @@ const internalCertificate = {
 			// Revoke the cert
 			await internalCertificate.revokeCertbot(row);
 		} else if (row.provider === "mtls") {
-			await rm(internalCertificate.getMtlsCertFile(row.id), { force: true });
+			await rm(internalCertificate.getCertFile(row), { force: true });
 		} else {
 			await rm(`/data/tls/custom/npm-${row.id}`, { force: true, recursive: true });
 			await rm(`/data/tls/custom/npm-${row.id}.der`, { force: true });
@@ -413,7 +436,7 @@ const internalCertificate = {
 		logger.info("Writing Custom Certificate:", certificate.id);
 
 		if (certificate.provider === "mtls") {
-			await writeFile(internalCertificate.getMtlsCertFile(certificate.id), certificate.certificate);
+			await writeFile(internalCertificate.getCertFile(certificate), certificate.certificate);
 			return;
 		}
 
@@ -916,7 +939,11 @@ const internalCertificate = {
 
 	getCustomCertPath: (certificateId) => `/data/tls/custom/npm-${certificateId}`,
 
-	getMtlsCertFile: (certificateId) => `/data/tls/mtls/npm-${certificateId}.pem`,
+	getCertFile: ({ id, provider }) => {
+		if (provider === "letsencrypt") return `${internalCertificate.getLiveCertPath(id)}/fullchain.pem`;
+		if (provider === "mtls") return `/data/tls/mtls/npm-${id}.pem`;
+		return `${internalCertificate.getCustomCertPath(id)}/fullchain.pem`;
+	},
 };
 
 export default internalCertificate;

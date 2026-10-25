@@ -92,14 +92,16 @@
 							"if": {
 								"properties": {
 									"forward_scheme": {
-										"const": "empty"
+										"not": {
+											"const": "empty"
+										}
 									}
 								},
 								"required": [
 									"forward_scheme"
 								]
 							},
-							"else": {
+							"then": {
 								"properties": {
 									"forward_host": {
 										"minLength": 1

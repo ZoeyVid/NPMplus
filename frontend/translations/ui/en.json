@@ -156,6 +156,7 @@
 	"host.flags.cache-assets": "Cache Assets",
 	"host.flags.disable-crowdsec-appsec": "Disable Crowdsec Appsec",
 	"host.flags.disable-request-buffering": "Disable Request Buffering",
+	"host.flags.disable-request-buffering.requires-appsec": "Requires Crowdsec Appsec to be disabled",
 	"host.flags.disable-response-buffering": "Disable Response Buffering",
 	"host.flags.fancyindex": "Enable fancyindex",
 	"host.flags.hsts-enabled": "HSTS Enabled (2 Years)",

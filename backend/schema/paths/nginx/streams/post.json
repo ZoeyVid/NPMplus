@@ -17,29 +17,63 @@
 				"schema": {
 					"type": "object",
 					"additionalProperties": false,
-					"if": {
-						"properties": {
-							"certificate_id": {
-								"const": "new"
+					"allOf": [
+						{
+							"if": {
+								"properties": {
+									"certificate_id": {
+										"const": "new"
+									}
+								},
+								"required": [
+									"certificate_id"
+								]
+							},
+							"then": {
+								"required": [
+									"domain_names",
+									"npmplus_dns_challenge",
+									"npmplus_dns_provider"
+								],
+								"properties": {
+									"npmplus_dns_challenge": {
+										"type": "boolean",
+										"const": true
+									}
+								}
 							}
 						},
-						"required": [
-							"certificate_id"
-						]
-					},
-					"then": {
-						"required": [
-							"domain_names",
-							"npmplus_dns_challenge",
-							"npmplus_dns_provider"
-						],
-						"properties": {
-							"npmplus_dns_challenge": {
-								"type": "boolean",
-								"const": true
+						{
+							"if": {
+								"properties": {
+									"udp_forwarding": {
+										"type": "boolean",
+										"const": true
+									}
+								},
+								"required": [
+									"udp_forwarding"
+								]
+							},
+							"then": {
+								"properties": {
+									"npmplus_proxy_tls": {
+										"type": "boolean",
+										"const": false
+									},
+									"npmplus_proxy_protocol_forwarding": {
+										"enum": [0, 2]
+									},
+									"certificate_id": {
+										"const": 0
+									},
+									"npmplus_mtls_certificate_id": {
+										"const": 0
+									}
+								}
 							}
 						}
-					},
+					],
 					"required": [
 						"incoming_port",
 						"forwarding_host"

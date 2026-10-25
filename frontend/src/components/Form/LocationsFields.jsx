@@ -75,9 +75,6 @@ export function LocationsFields({ initialValues, name = "locations" }) {
 			if (field === "npmplusCrowdsecAppsec" && fieldValue === false) {
 				updatedLocation.npmplusProxyRequestBuffering = false;
 			}
-			if (field === "npmplusProxyRequestBuffering" && fieldValue === true) {
-				updatedLocation.npmplusCrowdsecAppsec = true;
-			}
 			if (field === "npmplusAuthRequest" && fieldValue === "none") {
 				updatedLocation.npmplusAuthRequestUpstream = "";
 			}
@@ -411,7 +408,17 @@ export function LocationsFields({ initialValues, name = "locations" }) {
 												<T id="host.flags.disable-request-buffering" />
 											</span>
 											<span className="col-auto">
-												<span className="form-check form-check-single form-switch">
+												<span
+													className="form-check form-check-single form-switch"
+													title={
+														item.npmplusCrowdsecAppsec ||
+														!["http", "https"].includes(item.forwardScheme)
+															? undefined
+															: intl.formatMessage({
+																	id: "host.flags.disable-request-buffering.requires-appsec",
+																})
+													}
+												>
 													<input
 														id={`npmplusProxyRequestBuffering-${item.uiKey}`}
 														className={cn("form-check-input", {
@@ -426,7 +433,10 @@ export function LocationsFields({ initialValues, name = "locations" }) {
 																e.target.checked,
 															)
 														}
-														disabled={!["http", "https"].includes(item.forwardScheme)}
+														disabled={
+															!item.npmplusCrowdsecAppsec ||
+															!["http", "https"].includes(item.forwardScheme)
+														}
 													/>
 												</span>
 											</span>
