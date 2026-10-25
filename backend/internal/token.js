@@ -55,12 +55,9 @@ export default {
 				}
 			} else {
 				// Return challenge token instead of full token
-				const challengeToken = Token.create({
-					iss: "api",
-					attrs: {
-						id: user.id,
-					},
-					scope: ["mfa-challenge"],
+				const challengeToken = await Token.create({
+					uid: user.id,
+					scope: "mfa-challenge",
 					expiresIn: "3m",
 				});
 
@@ -72,12 +69,9 @@ export default {
 			}
 		}
 
-		const signed = Token.create({
-			iss: "api",
-			attrs: {
-				id: user.id,
-			},
-			scope: ["user"],
+		const signed = await Token.create({
+			uid: user.id,
+			scope: "user",
 			expiresIn: "1h",
 		});
 
@@ -105,12 +99,9 @@ export default {
 		const hasMfa = await mfa.isAnyEnabled(user.id);
 		if (hasMfa && process.env.OIDC_SKIP_MFA !== "true") {
 			// Return challenge token instead of full token
-			const challengeToken = Token.create({
-				iss: "api",
-				attrs: {
-					id: user.id,
-				},
-				scope: ["mfa-challenge"],
+			const challengeToken = await Token.create({
+				uid: user.id,
+				scope: "mfa-challenge",
 				expiresIn: "3m",
 			});
 
@@ -121,12 +112,9 @@ export default {
 			};
 		}
 
-		const signed = Token.create({
-			iss: "api",
-			attrs: {
-				id: user.id,
-			},
-			scope: ["user"],
+		const signed = await Token.create({
+			uid: user.id,
+			scope: "user",
 			expiresIn: "1h",
 		});
 
@@ -138,18 +126,15 @@ export default {
 
 	/**
 	 * @param {Access} access
-	 * @returns {Object}
+	 * @returns {Promise}
 	 */
-	getFreshToken: (access, afterRevoke) => {
+	getFreshToken: async (access, afterRevoke) => {
 		const Token = TokenModel();
 
 		if (access?.token.getUserId(0) && access.token.hasScope("user")) {
-			const signed = Token.create({
-				iss: "api",
-				scope: ["user"],
-				attrs: {
-					id: access.token.getUserId(0),
-				},
+			const signed = await Token.create({
+				uid: access.token.getUserId(0),
+				scope: "user",
 				expiresIn: "1h",
 				iat: Math.floor(Date.now() / 1000) + (afterRevoke ? 1 : 0),
 			});
@@ -174,17 +159,17 @@ export default {
 		// Verify challenge token
 		let tokenData;
 		try {
-			tokenData = Token.load(challengeToken);
+			tokenData = await Token.load(challengeToken);
 		} catch (err) {
 			throw new errs.AuthError("Invalid or expired challenge token", undefined, { cause: err });
 		}
 
 		// Check scope
-		if (tokenData.scope?.[0] !== "mfa-challenge") {
+		if (tokenData.scope !== "mfa-challenge") {
 			throw new errs.AuthError("Invalid challenge token");
 		}
 
-		const userId = tokenData.attrs?.id;
+		const userId = tokenData.uid;
 		if (!userId) {
 			throw new errs.AuthError("Invalid challenge token");
 		}
@@ -209,12 +194,9 @@ export default {
 			throw new errs.PermissionError(ERROR_MESSAGE_INVALID_CODE, ERROR_MESSAGE_INVALID_CODE_I18N);
 		}
 
-		const signed = Token.create({
-			iss: "api",
-			attrs: {
-				id: userId,
-			},
-			scope: ["user"],
+		const signed = await Token.create({
+			uid: userId,
+			scope: "user",
 			expiresIn: "1h",
 		});
 

@@ -28,17 +28,17 @@ export default function (tokenString) {
 			throw new errs.PermissionError();
 		}
 
-		const tokenData = Token.load(tokenString);
+		const tokenData = await Token.load(tokenString);
 
 		// At this point we need to load the user from the DB and make sure they:
 		// - exist (and not soft deleted)
 		// - still have the appropriate scopes for this token
 		// This is only required when the User ID is supplied or if the token scope has `user`
-		if (tokenData.attrs.id || tokenData.scope?.includes("user")) {
+		if (tokenData.uid || tokenData.scope === "user") {
 			// Has token user id or token user scope
 			const user = await userModel
 				.query()
-				.where("id", tokenData.attrs.id)
+				.where("id", tokenData.uid)
 				.andWhere("is_disabled", 0)
 				.allowGraph("[permissions]")
 				.withGraphFetched("[permissions]")
@@ -53,7 +53,7 @@ export default function (tokenString) {
 				// The `user` role is not added against the user row, so we have to just add it here to get past this check.
 				user.roles.push("user");
 
-				if (!(tokenData.scope ?? []).every((scopeItem) => user.roles.includes(scopeItem))) {
+				if (!user.roles.includes(tokenData.scope)) {
 					throw new errs.PermissionError("Invalid token scope for User");
 				}
 				isAdmin = user.roles.includes("admin");

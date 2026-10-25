@@ -4,12 +4,14 @@
  */
 
 import crypto from "node:crypto";
-import jwt from "jsonwebtoken";
+import { jwtVerify, SignJWT } from "jose";
 import { getPrivateKey, getPublicKey } from "../lib/config.js";
 import errs from "../lib/error.js";
 import { global as logger } from "../logger.js";
 
-const ALGO = "ES512";
+const ALGO = "Ed25519";
+let privateKey;
+let publicKey;
 
 export default () => {
 	let tokenData = {};
@@ -17,36 +19,45 @@ export default () => {
 	return {
 		/**
 		 * @param {Object}  payload
-		 * @returns {Object}
+		 * @returns {Promise}
 		 */
-		create: (payload) => {
+		create: async ({ expiresIn, ...payload }) => {
 			if (!getPrivateKey()) {
 				logger.error("Private key is empty!");
 			}
-			// sign with ECDSA P-521 SHA-512
-			const options = {
-				algorithm: ALGO,
-				expiresIn: payload.expiresIn || "1d",
-			};
 
 			payload.jti = crypto.randomBytes(12).toString("base64url");
+			privateKey ??= crypto.createPrivateKey(getPrivateKey());
 
-			return { token: jwt.sign(payload, getPrivateKey(), options), payload };
+			// sign with Ed25519
+			return {
+				token: await new SignJWT(payload)
+					.setProtectedHeader({ alg: ALGO })
+					.setIssuedAt(payload.iat)
+					.setExpirationTime(expiresIn)
+					.sign(privateKey),
+				payload,
+			};
 		},
 
 		/**
 		 * @param {String} token
-		 * @returns {Object}
+		 * @returns {Promise}
 		 */
-		load: (token) => {
+		load: async (token) => {
 			if (!getPublicKey()) {
 				logger.error("Public key is empty!");
 			}
 
+			publicKey ??= crypto.createPublicKey(getPublicKey());
+
 			try {
-				tokenData = jwt.verify(token, getPublicKey(), { algorithms: [ALGO] });
+				({ payload: tokenData } = await jwtVerify(token, publicKey, {
+					algorithms: [ALGO],
+					requiredClaims: ["uid", "scope", "jti", "iat", "exp"],
+				}));
 			} catch (err) {
-				if (err.name === "TokenExpiredError") {
+				if (err.code === "ERR_JWT_EXPIRED") {
 					throw new errs.PermissionError("Token has expired", undefined, { cause: err });
 				}
 				throw err;
@@ -61,12 +72,12 @@ export default () => {
 		 * @param   {String}  scope
 		 * @returns {Boolean}
 		 */
-		hasScope: (scope) => tokenData.scope?.includes(scope) ?? false,
+		hasScope: (scope) => tokenData.scope === scope,
 
 		/**
 		 * @param   [defaultValue]
 		 * @returns {Integer}
 		 */
-		getUserId: (defaultValue) => tokenData.attrs?.id || defaultValue || 0,
+		getUserId: (defaultValue) => tokenData.uid || defaultValue || 0,
 	};
 };

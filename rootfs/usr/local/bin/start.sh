@@ -237,7 +237,8 @@ rm -vrf /data/letsencrypt-acme-challenge \
         /data/nginx/temp \
         /data/logs \
         /data/keys.json \
-        /data/npmplus/keys.json
+        /data/npmplus/keys.json \
+        /data/npmplus/keys-ec.json
 
 touch /data/tls/ech/nginx.conf \
       /data/tls/ech/cron.sh \
