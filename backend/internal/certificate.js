@@ -6,7 +6,6 @@ import path from "node:path";
 import { pipeline } from "node:stream/promises";
 import { domainToASCII } from "node:url";
 import { ZipArchive } from "archiver";
-import dayjs from "dayjs";
 import dnsPlugins from "../certbot/dns-plugins.json" with { type: "json" };
 import { installPlugin } from "../lib/certbot.js";
 import error from "../lib/error.js";
@@ -37,6 +36,8 @@ const getNiceName = (domainNames) => {
 	}
 	return [...shown, "..."].join(", ");
 };
+
+const getExpiresOn = ({ dates }) => new Date(dates.to * 1000).toISOString().slice(0, 19).replace("T", " ");
 
 const internalCertificate = {
 	allowedSslFiles: ["certificate", "certificate_key"],
@@ -103,7 +104,7 @@ const internalCertificate = {
 							.andWhere("provider", "letsencrypt")
 							.patch({
 								nice_name: getNiceName(certificate.domain_names),
-								expires_on: dayjs.unix(certInfo.dates.to).format("YYYY-MM-DD HH:mm:ss"),
+								expires_on: getExpiresOn(certInfo),
 							});
 					} catch (err) {
 						// Don't want to stop the train here, just log the error
@@ -158,7 +159,7 @@ const internalCertificate = {
 					`${internalCertificate.getLiveCertPath(certificate.id)}/fullchain.pem`,
 				);
 				const savedRow = await certificateModel.query().patchAndFetchById(certificate.id, {
-					expires_on: dayjs.unix(certInfo.dates.to).format("YYYY-MM-DD HH:mm:ss"),
+					expires_on: getExpiresOn(certInfo),
 				});
 
 				await internalCertificate.addCreatedAuditLog(access, certificate.id, savedRow);
@@ -516,7 +517,7 @@ const internalCertificate = {
 
 		const certificate = await internalCertificate.update(access, {
 			id: data.id,
-			expires_on: dayjs.unix(validations.certificate.dates.to).format("YYYY-MM-DD HH:mm:ss"),
+			expires_on: getExpiresOn(validations.certificate),
 			domain_names: validations.certificate.cn,
 		});
 
@@ -702,7 +703,7 @@ const internalCertificate = {
 
 			const updatedCertificate = await certificateModel.query().patchAndFetchById(certificate.id, {
 				nice_name: getNiceName(certificate.domain_names),
-				expires_on: dayjs.unix(certInfo.dates.to).format("YYYY-MM-DD HH:mm:ss"),
+				expires_on: getExpiresOn(certInfo),
 			});
 
 			try {
