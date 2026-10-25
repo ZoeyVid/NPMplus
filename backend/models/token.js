@@ -4,7 +4,7 @@
  */
 
 import crypto from "node:crypto";
-import { jwtVerify, SignJWT } from "jose";
+import { decodeJwt, jwtVerify, SignJWT } from "jose";
 import { getPrivateKey, getPublicKey } from "../lib/config.js";
 import errs from "../lib/error.js";
 import { global as logger } from "../logger.js";
@@ -30,14 +30,12 @@ export default () => {
 			privateKey ??= crypto.createPrivateKey(getPrivateKey());
 
 			// sign with Ed25519
-			return {
-				token: await new SignJWT(payload)
-					.setProtectedHeader({ alg: ALGO })
-					.setIssuedAt(payload.iat)
-					.setExpirationTime(expiresIn)
-					.sign(privateKey),
-				payload,
-			};
+			const token = await new SignJWT(payload)
+				.setProtectedHeader({ alg: ALGO })
+				.setIssuedAt(payload.iat)
+				.setExpirationTime(expiresIn)
+				.sign(privateKey);
+			return { token, expires: new Date(decodeJwt(token).exp * 1000).toISOString() };
 		},
 
 		/**
