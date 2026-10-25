@@ -33,9 +33,6 @@ const listSchema = {
 				],
 			},
 		},
-		query: {
-			$ref: "common#/properties/query",
-		},
 	},
 };
 
@@ -85,9 +82,8 @@ router
 	.get(async (req, res) => {
 		const data = validator(listSchema, {
 			expand: typeof req.query.expand === "string" ? req.query.expand.split(",") : null,
-			query: typeof req.query.query === "string" ? req.query.query : null,
 		});
-		const rows = await internalCertificate.getAll(res.locals.access, data.expand, data.query);
+		const rows = await internalCertificate.getAll(res.locals.access, data.expand);
 		res.status(200).send(rows);
 	})
 
