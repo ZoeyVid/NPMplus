@@ -8,10 +8,10 @@ NPMplus is a fork of [Nginx Proxy Manager](https://github.com/NginxProxyManager/
 |---|---|---|
 | UI strings | `frontend/src/locale/src/<code>.json` | `frontend/translations/ui/<code>.json` |
 | Format | `"key": { "defaultMessage": "text" }` | `"key": "text"`, tabs, keys sorted with `sort-locale.sh` |
-| Help docs | `frontend/src/locale/src/HelpDoc/<code>/*.md` and `index.ts` | `frontend/translations/help/<code>/*.md`, no `index.ts` |
+| Help docs | `frontend/src/locale/src/HelpDoc/<code>/*.md` and `index.ts` | not used |
 | Language list | `"locale-<code>-<REGION>": { "defaultMessage": "<name>" }` | `"<code>": { "flag": "<region>", "name": "<native name>" }` |
 | Right to left | `rtlLocales` in `IntlProvider.tsx` | `"rtl": true` in `lang-list.json`, these languages are hidden in the language picker for now |
-| Registration | imports in `IntlProvider.tsx`, `HelpDoc/index.ts` and `HelpDoc/<code>/index.ts` | automatic |
+| Registration | imports in `IntlProvider.tsx` | automatic |
 
 Renamed keys:
 
@@ -45,10 +45,7 @@ LLMs/merge-upstream.sh [old-ref] [new-ref]
 
 The script needs a remote with upstream, for example `git remote add upstream https://github.com/NginxProxyManager/nginx-proxy-manager.git`.
 
-It only looks at what upstream changed between `old-ref` and `new-ref`, for every language:
-
-- UI keys are converted (key, text) and compared with the old upstream value. A key is taken over if NPMplus has no value, still has the old upstream value or already has the new one. For other languages than `en` the English text in `ui/en.json` must also match the converted upstream English text, so `en` is processed first.
-- Help docs are converted and merged with `git merge-file`, the same way git merges files.
+It only looks at what upstream changed between `old-ref` and `new-ref`, for every language. UI keys are converted (key, text) and compared with the old upstream value. A key is taken over if NPMplus has no value, still has the old upstream value or already has the new one. For other languages than `en` the English text in `ui/en.json` must also match the converted upstream English text, so `en` is processed first.
 
 Everything else is printed:
 
@@ -57,7 +54,6 @@ Everything else is printed:
 | `missing in or reworded by en.json, translate manually: <text>` | The key is missing in `ui/en.json` or NPMplus uses another English text | Translate the text from `ui/en.json`, the upstream text helps as a reference |
 | `changed by NPMplus and upstream, merge manually: <text>` | NPMplus changed the text and upstream too, the NPMplus text was kept | Compare both and keep the better one |
 | `removed upstream` | Upstream deleted the key | Delete it if NPMplus does not use it anymore |
-| `help/<code>/<doc>: conflicts, merge manually` | The file contains conflict markers | Resolve the conflict markers |
 | `New language: <code>` | Upstream has a language NPMplus does not have | See [New upstream languages](#new-upstream-languages) |
 
 ## Updated upstream translations
@@ -74,7 +70,6 @@ Everything else is printed:
 The script handles a new upstream language like an update with an empty old version. It:
 
 - creates `ui/<code>.json` from the upstream file, without the keys NPMplus rewords (they are printed)
-- creates `help/<code>/` from the upstream help docs
 - adds `<code>` to `lang-list.json`: `flag` is the region of the upstream key `locale-<code>-<REGION>` in lowercase, `name` is its `defaultMessage` and `rtl` is set if upstream lists the language in `rtlLocales`
 
 Check by hand:
@@ -88,5 +83,4 @@ Check by hand:
 ## Limits
 
 - Only the patterns listed above are replaced.
-- Help docs deleted upstream are not deleted or reported.
 - Keys that NPMplus adds itself are never touched.

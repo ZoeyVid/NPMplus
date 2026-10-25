@@ -26,7 +26,6 @@ for code in en $(git ls-tree --full-tree --name-only "$NEW:$UP" | sed -n 's/\.js
 	if [ ! -s "$ui" ]; then
 		echo "New language: $code"
 		echo '{}' > "$ui"
-		mkdir -p "$SRC/help/$code"
 		git show "$NEW:$UP/lang-list.json" > "$TMP/list.json"
 		jq --tab --sort-keys --arg code "$code" --slurpfile up "$TMP/list.json" \
 			--argjson rtl "$(git show "$NEW:frontend/src/locale/IntlProvider.tsx" | grep -q "rtlLocales = .*\"$code\"" && echo true || echo false)" \
@@ -46,16 +45,5 @@ for code in en $(git ls-tree --full-tree --name-only "$NEW:$UP" | sed -n 's/\.js
 	' "$ui" > "$TMP/out.json" || exit 1
 	jq --tab --sort-keys .file "$TMP/out.json" > "$ui"
 	jq -r --arg file "ui/$code.json" '.notes[] | "\($file): \(.)"' "$TMP/out.json"
-
-	for doc in $(git ls-tree --full-tree --name-only "$NEW:$UP/HelpDoc/$code" 2>/dev/null | grep '\.md$'); do
-		git show "$OLD:$UP/HelpDoc/$code/$doc" 2>/dev/null | jq -Rjs "$RULES ntext(\"\")" > "$TMP/base.md"
-		git show "$NEW:$UP/HelpDoc/$code/$doc" | jq -Rjs "$RULES ntext(\"\")" > "$TMP/theirs.md"
-		cmp -s "$TMP/base.md" "$TMP/theirs.md" && continue
-		if [ ! -e "$SRC/help/$code/$doc" ]; then
-			cp "$TMP/theirs.md" "$SRC/help/$code/$doc"
-		elif ! git merge-file -L NPMplus -L "$OLD" -L "$NEW" "$SRC/help/$code/$doc" "$TMP/base.md" "$TMP/theirs.md"; then
-			echo "help/$code/$doc: conflicts, merge manually"
-		fi
-	done
 done
 echo "Done"

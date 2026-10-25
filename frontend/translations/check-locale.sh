@@ -43,10 +43,4 @@ for path in "$@"; do
 			echo "ui/$file: unknown key: $key"
 		fi
 	done
-
-	for doc in "$SRC"/help/en/*.md; do
-		if [ ! -s "$SRC/help/$code/${doc##*/}" ]; then
-			echo "help/$code: missing doc: ${doc##*/}"
-		fi
-	done
 done
