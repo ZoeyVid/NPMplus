@@ -1,7 +1,9 @@
 import { IconDotsVertical, IconDownload, IconEdit, IconFlask, IconRefresh, IconTrash } from "@tabler/icons-react";
 import {
 	createColumnHelper,
+	createPaginatedRowModel,
 	createSortedRowModel,
+	rowPaginationFeature,
 	rowSortingFeature,
 	sortFn_alphanumeric,
 	sortFn_datetime,
@@ -27,6 +29,8 @@ import { CERTIFICATES, MANAGE } from "src/modules/Permissions";
 const features = tableFeatures({
 	rowSortingFeature,
 	sortedRowModel: createSortedRowModel(),
+	rowPaginationFeature,
+	paginatedRowModel: createPaginatedRowModel(),
 	sortFns: {
 		alphanumeric: sortFn_alphanumeric,
 		datetime: sortFn_datetime,
@@ -243,6 +247,8 @@ export default function Table({ data, isFetching, onDelete, onRenew, onDownload,
 			isFetching,
 		},
 		enableSortingRemoval: false,
+		autoResetPageIndex: false,
+		initialState: { pagination: { pageSize: 25 } },
 	});
 
 	const customAddBtn = (
