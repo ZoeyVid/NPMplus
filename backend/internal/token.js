@@ -1,5 +1,4 @@
 import errs from "../lib/error.js";
-import { parseDatePeriod } from "../lib/helpers.js";
 import authModel from "../models/auth.js";
 import TokenModel from "../models/token.js";
 import userModel from "../models/user.js";
@@ -64,7 +63,7 @@ export default {
 				return {
 					requiresTotp: await totp.isEnabled(user.id),
 					token: challengeToken.token,
-					expires: parseDatePeriod("3m").toISOString(),
+					expires: challengeToken.expires,
 				};
 			}
 		}
@@ -77,7 +76,7 @@ export default {
 
 		return {
 			token: signed.token,
-			expires: parseDatePeriod("1h").toISOString(),
+			expires: signed.expires,
 		};
 	},
 
@@ -108,7 +107,7 @@ export default {
 			return {
 				requiresTotp: await totp.isEnabled(user.id),
 				token: challengeToken.token,
-				expires: parseDatePeriod("3m").toISOString(),
+				expires: challengeToken.expires,
 			};
 		}
 
@@ -120,7 +119,7 @@ export default {
 
 		return {
 			token: signed.token,
-			expires: parseDatePeriod("1h").toISOString(),
+			expires: signed.expires,
 		};
 	},
 
@@ -141,7 +140,7 @@ export default {
 
 			return {
 				token: signed.token,
-				expires: parseDatePeriod("1h").toISOString(),
+				expires: signed.expires,
 			};
 		}
 		throw new errs.AssertionFailedError("Existing token contained invalid user data");
@@ -202,7 +201,7 @@ export default {
 
 		return {
 			token: signed.token,
-			expires: parseDatePeriod("1h").toISOString(),
+			expires: signed.expires,
 		};
 	},
 };

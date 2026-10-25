@@ -1,5 +1,5 @@
 import knex from "knex";
-import { configGet } from "./lib/config.js";
+import { configGet, isMysql } from "./lib/config.js";
 
 let instance = null;
 
@@ -19,6 +19,7 @@ const generateDbConfig = () => {
 			database: cfg.name,
 			port: cfg.port,
 			...(cfg.ssl ? { ssl: cfg.ssl } : {}),
+			...(isMysql() ? { timezone: "Z" } : { options: "-c timezone=UTC" }),
 		},
 		migrations: {
 			tableName: "migrations",
