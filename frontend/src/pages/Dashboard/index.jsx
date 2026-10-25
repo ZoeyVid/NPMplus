@@ -38,7 +38,7 @@ const Dashboard = () => {
 									<div className="card-body">
 										<div className="row align-items-center">
 											<div className="col-auto">
-												<span className="bg-green text-white avatar avatar-square">
+												<span className="bg-lime text-white avatar avatar-square">
 													<IconBolt />
 												</span>
 											</div>
@@ -130,31 +130,6 @@ const Dashboard = () => {
 								</a>
 							</div>
 						</HasPermission>
-						<HasPermission section={CERTIFICATES} permission={VIEW} hideError>
-							<div className="col-sm-6 col-lg-4">
-								<a
-									href="/certificates"
-									className="card card-sm card-link card-link-pop"
-									onClick={(e) => {
-										e.preventDefault();
-										void navigate("/certificates");
-									}}
-								>
-									<div className="card-body">
-										<div className="row align-items-center">
-											<div className="col-auto">
-												<span className="bg-teal text-white avatar avatar-square">
-													<IconShield />
-												</span>
-											</div>
-											<div className="col">
-												<T id="certificates.count" data={{ count: hostReport?.certificate }} />
-											</div>
-										</div>
-									</div>
-								</a>
-							</div>
-						</HasPermission>
 						<HasPermission section={ACCESS_LISTS} permission={VIEW} hideError>
 							<div className="col-sm-6 col-lg-4">
 								<a
@@ -168,12 +143,37 @@ const Dashboard = () => {
 									<div className="card-body">
 										<div className="row align-items-center">
 											<div className="col-auto">
-												<span className="bg-purple text-white avatar avatar-square">
+												<span className="bg-cyan text-white avatar avatar-square">
 													<IconLock />
 												</span>
 											</div>
 											<div className="col">
 												<T id="access-lists.count" data={{ count: hostReport?.accessList }} />
+											</div>
+										</div>
+									</div>
+								</a>
+							</div>
+						</HasPermission>
+						<HasPermission section={CERTIFICATES} permission={VIEW} hideError>
+							<div className="col-sm-6 col-lg-4">
+								<a
+									href="/certificates"
+									className="card card-sm card-link card-link-pop"
+									onClick={(e) => {
+										e.preventDefault();
+										void navigate("/certificates");
+									}}
+								>
+									<div className="card-body">
+										<div className="row align-items-center">
+											<div className="col-auto">
+												<span className="bg-pink text-white avatar avatar-square">
+													<IconShield />
+												</span>
+											</div>
+											<div className="col">
+												<T id="certificates.count" data={{ count: hostReport?.certificate }} />
 											</div>
 										</div>
 									</div>
