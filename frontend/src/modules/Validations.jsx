@@ -59,26 +59,24 @@ const validateDomain = (allowWildcards, forCertificate) => (input) => {
 	);
 };
 
-const validateDomains = (allowWildcards, forCertificate) => {
+const validateDomains = (value, allowWildcards, forCertificate) => {
 	const vDom = validateDomain(allowWildcards, forCertificate);
 	const maxDomains = forCertificate ? 25 : 100;
 
-	return (value) => {
-		if (!value?.length) {
-			return intl.formatMessage({ id: "error.required" });
-		}
+	if (!value?.length) {
+		return intl.formatMessage({ id: "error.required" });
+	}
 
-		if (value.length > maxDomains) {
-			return intl.formatMessage({ id: "error.max-domains" }, { max: maxDomains });
-		}
+	if (value.length > maxDomains) {
+		return intl.formatMessage({ id: "error.max-domains" }, { max: maxDomains });
+	}
 
-		// validate each domain
-		for (const domain of value) {
-			if (!vDom(domain)) {
-				return intl.formatMessage({ id: "error.invalid-domain" }, { domain });
-			}
+	// validate each domain
+	for (const domain of value) {
+		if (!vDom(domain)) {
+			return intl.formatMessage({ id: "error.invalid-domain" }, { domain });
 		}
-	};
+	}
 };
 
 const showTabOfInvalid = ({ currentTarget }) => {
