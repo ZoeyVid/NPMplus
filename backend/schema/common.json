@@ -88,6 +88,39 @@
 				"www.example.com"
 			]
 		},
+		"domain_names_http": {
+			"description": "Domain Names and IPs for the HTTP challenge, wildcards are not allowed",
+			"type": "array",
+			"minItems": 1,
+			"maxItems": 25,
+			"uniqueItems": true,
+			"items": {
+				"type": "string",
+				"maxLength": 253,
+				"pattern": "^(([\\p{L}\\p{Mn}\\p{Mc}\\p{Nd}\\-]+\\.)+[\\p{L}\\p{Mn}\\p{Mc}\\p{Nd}\\-]+|\\[[0-9a-fA-F:]+\\])$"
+			},
+			"example": [
+				"example.com",
+				"192.0.2.1",
+				"[2001:db8::1]"
+			]
+		},
+		"domain_names_dns": {
+			"description": "Domain Names for the DNS challenge, wildcards are allowed, IPs are not allowed",
+			"type": "array",
+			"minItems": 1,
+			"maxItems": 25,
+			"uniqueItems": true,
+			"items": {
+				"type": "string",
+				"maxLength": 253,
+				"pattern": "^(?![0-9.]+$)(\\*\\.)?([\\p{L}\\p{Mn}\\p{Mc}\\p{Nd}\\-]+\\.)+[\\p{L}\\p{Mn}\\p{Mc}\\p{Nd}\\-]+$"
+			},
+			"example": [
+				"example.com",
+				"*.example.com"
+			]
+		},
 		"enabled": {
 			"description": "Is Enabled",
 			"type": "boolean",
@@ -337,6 +370,1057 @@
 					}
 				}
 			}
+		},
+		"mtls_create_rules": {
+			"allOf": [
+				{
+					"if": {
+						"properties": {
+							"certificate_id": {
+								"type": "integer",
+								"const": 0
+							}
+						}
+					},
+					"then": {
+						"properties": {
+							"npmplus_mtls_certificate_id": {
+								"type": "integer",
+								"const": 0
+							}
+						}
+					}
+				},
+				{
+					"if": {
+						"properties": {
+							"npmplus_mtls_certificate_id": {
+								"type": "integer",
+								"const": 0
+							}
+						}
+					},
+					"then": {
+						"properties": {
+							"npmplus_mtls_verify_client_optional": {
+								"type": "boolean",
+								"const": false
+							}
+						}
+					}
+				}
+			]
+		},
+		"mtls_update_rules": {
+			"allOf": [
+				{
+					"if": {
+						"properties": {
+							"certificate_id": {
+								"type": "integer",
+								"const": 0
+							}
+						},
+						"required": [
+							"certificate_id"
+						]
+					},
+					"then": {
+						"properties": {
+							"npmplus_mtls_certificate_id": {
+								"type": "integer",
+								"const": 0
+							}
+						}
+					}
+				},
+				{
+					"if": {
+						"properties": {
+							"npmplus_mtls_certificate_id": {
+								"type": "integer",
+								"const": 0
+							}
+						},
+						"required": [
+							"npmplus_mtls_certificate_id"
+						]
+					},
+					"then": {
+						"properties": {
+							"npmplus_mtls_verify_client_optional": {
+								"type": "boolean",
+								"const": false
+							}
+						}
+					}
+				}
+			]
+		},
+		"ssl_create_rules": {
+			"allOf": [
+				{
+					"if": {
+						"properties": {
+							"npmplus_dns_challenge": {
+								"type": "boolean",
+								"const": true
+							}
+						},
+						"required": [
+							"npmplus_dns_challenge"
+						]
+					},
+					"then": {
+						"required": [
+							"npmplus_dns_provider"
+						]
+					}
+				},
+				{
+					"if": {
+						"properties": {
+							"certificate_id": {
+								"const": "new"
+							}
+						},
+						"required": [
+							"certificate_id"
+						]
+					},
+					"then": {
+						"if": {
+							"properties": {
+								"npmplus_dns_challenge": {
+									"type": "boolean",
+									"const": true
+								}
+							},
+							"required": [
+								"npmplus_dns_challenge"
+							]
+						},
+						"then": {
+							"properties": {
+								"domain_names": {
+									"$ref": "#/properties/domain_names_dns"
+								}
+							}
+						},
+						"else": {
+							"properties": {
+								"domain_names": {
+									"$ref": "#/properties/domain_names_http"
+								}
+							}
+						}
+					}
+				},
+				{
+					"if": {
+						"properties": {
+							"npmplus_mtls_certificate_id": {
+								"type": "integer",
+								"minimum": 1
+							},
+							"npmplus_mtls_verify_client_optional": {
+								"type": "boolean",
+								"const": false
+							}
+						},
+						"required": [
+							"npmplus_mtls_certificate_id"
+						]
+					},
+					"then": {
+						"required": [
+							"ssl_forced"
+						],
+						"properties": {
+							"ssl_forced": {
+								"type": "boolean",
+								"const": true
+							}
+						}
+					}
+				},
+				{
+					"if": {
+						"properties": {
+							"npmplus_mtls_bypass_auth_request": {
+								"type": "boolean",
+								"const": true
+							}
+						},
+						"required": [
+							"npmplus_mtls_bypass_auth_request"
+						]
+					},
+					"then": {
+						"required": [
+							"npmplus_mtls_certificate_id",
+							"npmplus_mtls_verify_client_optional"
+						],
+						"properties": {
+							"npmplus_mtls_certificate_id": {
+								"type": "integer",
+								"minimum": 1
+							},
+							"npmplus_mtls_verify_client_optional": {
+								"type": "boolean",
+								"const": true
+							}
+						},
+						"anyOf": [
+							{
+								"required": [
+									"npmplus_auth_request"
+								],
+								"properties": {
+									"npmplus_auth_request": {
+										"not": {
+											"const": "none"
+										}
+									}
+								}
+							},
+							{
+								"required": [
+									"locations"
+								],
+								"properties": {
+									"locations": {
+										"contains": {
+											"required": [
+												"npmplus_auth_request"
+											],
+											"properties": {
+												"npmplus_auth_request": {
+													"not": {
+														"const": "none"
+													}
+												}
+											}
+										}
+									}
+								}
+							}
+						]
+					}
+				},
+				{
+					"$ref": "#/properties/mtls_create_rules"
+				},
+				{
+					"if": {
+						"properties": {
+							"certificate_id": {
+								"type": "integer",
+								"const": 0
+							}
+						}
+					},
+					"then": {
+						"properties": {
+							"ssl_forced": {
+								"type": "boolean",
+								"const": false
+							},
+							"npmplus_http3_support": {
+								"type": "boolean",
+								"const": false
+							}
+						}
+					}
+				},
+				{
+					"if": {
+						"properties": {
+							"ssl_forced": {
+								"type": "boolean",
+								"const": false
+							}
+						}
+					},
+					"then": {
+						"properties": {
+							"hsts_enabled": {
+								"type": "boolean",
+								"const": false
+							}
+						}
+					}
+				},
+				{
+					"if": {
+						"properties": {
+							"hsts_enabled": {
+								"type": "boolean",
+								"const": false
+							}
+						}
+					},
+					"then": {
+						"properties": {
+							"hsts_subdomains": {
+								"type": "boolean",
+								"const": false
+							}
+						}
+					}
+				}
+			]
+		},
+		"ssl_update_rules": {
+			"allOf": [
+				{
+					"if": {
+						"properties": {
+							"npmplus_dns_challenge": {
+								"type": "boolean",
+								"const": true
+							}
+						},
+						"required": [
+							"npmplus_dns_challenge"
+						]
+					},
+					"then": {
+						"required": [
+							"npmplus_dns_provider"
+						]
+					}
+				},
+				{
+					"if": {
+						"properties": {
+							"certificate_id": {
+								"const": "new"
+							}
+						},
+						"required": [
+							"certificate_id"
+						]
+					},
+					"then": {
+						"if": {
+							"properties": {
+								"npmplus_dns_challenge": {
+									"type": "boolean",
+									"const": true
+								}
+							},
+							"required": [
+								"npmplus_dns_challenge"
+							]
+						},
+						"then": {
+							"properties": {
+								"domain_names": {
+									"$ref": "#/properties/domain_names_dns"
+								}
+							}
+						},
+						"else": {
+							"properties": {
+								"domain_names": {
+									"$ref": "#/properties/domain_names_http"
+								}
+							}
+						}
+					}
+				},
+				{
+					"if": {
+						"properties": {
+							"npmplus_mtls_certificate_id": {
+								"type": "integer",
+								"minimum": 1
+							},
+							"npmplus_mtls_verify_client_optional": {
+								"type": "boolean",
+								"const": false
+							}
+						},
+						"required": [
+							"npmplus_mtls_certificate_id",
+							"npmplus_mtls_verify_client_optional"
+						]
+					},
+					"then": {
+						"properties": {
+							"ssl_forced": {
+								"type": "boolean",
+								"const": true
+							}
+						}
+					}
+				},
+				{
+					"if": {
+						"properties": {
+							"npmplus_mtls_bypass_auth_request": {
+								"type": "boolean",
+								"const": true
+							}
+						},
+						"required": [
+							"npmplus_mtls_bypass_auth_request"
+						]
+					},
+					"then": {
+						"properties": {
+							"npmplus_mtls_certificate_id": {
+								"type": "integer",
+								"minimum": 1
+							},
+							"npmplus_mtls_verify_client_optional": {
+								"type": "boolean",
+								"const": true
+							}
+						},
+						"if": {
+							"required": [
+								"npmplus_auth_request",
+								"locations"
+							]
+						},
+						"then": {
+							"anyOf": [
+								{
+									"properties": {
+										"npmplus_auth_request": {
+											"not": {
+												"const": "none"
+											}
+										}
+									}
+								},
+								{
+									"properties": {
+										"locations": {
+											"contains": {
+												"required": [
+													"npmplus_auth_request"
+												],
+												"properties": {
+													"npmplus_auth_request": {
+														"not": {
+															"const": "none"
+														}
+													}
+												}
+											}
+										}
+									}
+								}
+							]
+						}
+					}
+				},
+				{
+					"$ref": "#/properties/mtls_update_rules"
+				},
+				{
+					"if": {
+						"properties": {
+							"certificate_id": {
+								"type": "integer",
+								"const": 0
+							}
+						},
+						"required": [
+							"certificate_id"
+						]
+					},
+					"then": {
+						"properties": {
+							"ssl_forced": {
+								"type": "boolean",
+								"const": false
+							},
+							"npmplus_http3_support": {
+								"type": "boolean",
+								"const": false
+							}
+						}
+					}
+				},
+				{
+					"if": {
+						"properties": {
+							"ssl_forced": {
+								"type": "boolean",
+								"const": false
+							}
+						},
+						"required": [
+							"ssl_forced"
+						]
+					},
+					"then": {
+						"properties": {
+							"hsts_enabled": {
+								"type": "boolean",
+								"const": false
+							}
+						}
+					}
+				},
+				{
+					"if": {
+						"properties": {
+							"hsts_enabled": {
+								"type": "boolean",
+								"const": false
+							}
+						},
+						"required": [
+							"hsts_enabled"
+						]
+					},
+					"then": {
+						"properties": {
+							"hsts_subdomains": {
+								"type": "boolean",
+								"const": false
+							}
+						}
+					}
+				}
+			]
+		},
+		"proxy_create_rules": {
+			"allOf": [
+				{
+					"if": {
+						"properties": {
+							"forward_scheme": {
+								"const": "empty"
+							}
+						},
+						"required": [
+							"forward_scheme"
+						]
+					},
+					"else": {
+						"required": [
+							"forward_host"
+						],
+						"properties": {
+							"forward_host": {
+								"minLength": 1
+							}
+						}
+					}
+				},
+				{
+					"if": {
+						"properties": {
+							"forward_scheme": {
+								"enum": [
+									"grpc",
+									"grpcs",
+									"path"
+								]
+							}
+						},
+						"required": [
+							"forward_scheme"
+						]
+					},
+					"then": {
+						"properties": {
+							"npmplus_proxy_request_buffering": {
+								"type": "boolean",
+								"const": false
+							},
+							"npmplus_proxy_response_buffering": {
+								"type": "boolean",
+								"const": false
+							}
+						}
+					}
+				},
+				{
+					"if": {
+						"properties": {
+							"forward_scheme": {
+								"const": "path"
+							}
+						},
+						"required": [
+							"forward_scheme"
+						]
+					},
+					"then": {
+						"properties": {
+							"npmplus_upstream_compression": {
+								"type": "boolean",
+								"const": false
+							}
+						}
+					}
+				},
+				{
+					"if": {
+						"properties": {
+							"forward_scheme": {
+								"enum": [
+									"http",
+									"https",
+									"grpc",
+									"grpcs"
+								]
+							}
+						}
+					},
+					"then": {
+						"properties": {
+							"npmplus_fancyindex": {
+								"type": "boolean",
+								"const": false
+							}
+						}
+					}
+				},
+				{
+					"if": {
+						"properties": {
+							"npmplus_proxy_request_buffering": {
+								"type": "boolean",
+								"const": true
+							}
+						},
+						"required": [
+							"npmplus_proxy_request_buffering"
+						]
+					},
+					"then": {
+						"required": [
+							"npmplus_crowdsec_appsec"
+						],
+						"properties": {
+							"npmplus_crowdsec_appsec": {
+								"type": "boolean",
+								"const": true
+							}
+						}
+					}
+				},
+				{
+					"if": {
+						"properties": {
+							"npmplus_auth_request": {
+								"const": "none"
+							}
+						}
+					},
+					"then": {
+						"properties": {
+							"npmplus_auth_request_upstream": {
+								"const": ""
+							}
+						}
+					}
+				},
+				{
+					"if": {
+						"properties": {
+							"npmplus_access_list_type": {
+								"const": "custom"
+							}
+						},
+						"required": [
+							"npmplus_access_list_type"
+						]
+					},
+					"then": {
+						"required": [
+							"npmplus_access_list_ids"
+						],
+						"properties": {
+							"npmplus_access_list_ids": {
+								"minItems": 1
+							}
+						}
+					}
+				},
+				{
+					"if": {
+						"properties": {
+							"npmplus_access_list_type": {
+								"not": {
+									"const": "custom"
+								}
+							}
+						}
+					},
+					"then": {
+						"properties": {
+							"npmplus_access_list_ids": {
+								"maxItems": 0
+							}
+						}
+					}
+				}
+			]
+		},
+		"proxy_update_rules": {
+			"allOf": [
+				{
+					"if": {
+						"properties": {
+							"forward_scheme": {
+								"not": {
+									"const": "empty"
+								}
+							}
+						},
+						"required": [
+							"forward_scheme"
+						]
+					},
+					"then": {
+						"properties": {
+							"forward_host": {
+								"minLength": 1
+							}
+						}
+					}
+				},
+				{
+					"if": {
+						"properties": {
+							"forward_scheme": {
+								"enum": [
+									"grpc",
+									"grpcs",
+									"path"
+								]
+							}
+						},
+						"required": [
+							"forward_scheme"
+						]
+					},
+					"then": {
+						"properties": {
+							"npmplus_proxy_request_buffering": {
+								"type": "boolean",
+								"const": false
+							},
+							"npmplus_proxy_response_buffering": {
+								"type": "boolean",
+								"const": false
+							}
+						}
+					}
+				},
+				{
+					"if": {
+						"properties": {
+							"forward_scheme": {
+								"const": "path"
+							}
+						},
+						"required": [
+							"forward_scheme"
+						]
+					},
+					"then": {
+						"properties": {
+							"npmplus_upstream_compression": {
+								"type": "boolean",
+								"const": false
+							}
+						}
+					}
+				},
+				{
+					"if": {
+						"properties": {
+							"forward_scheme": {
+								"enum": [
+									"http",
+									"https",
+									"grpc",
+									"grpcs"
+								]
+							}
+						},
+						"required": [
+							"forward_scheme"
+						]
+					},
+					"then": {
+						"properties": {
+							"npmplus_fancyindex": {
+								"type": "boolean",
+								"const": false
+							}
+						}
+					}
+				},
+				{
+					"if": {
+						"properties": {
+							"npmplus_proxy_request_buffering": {
+								"type": "boolean",
+								"const": true
+							}
+						},
+						"required": [
+							"npmplus_proxy_request_buffering"
+						]
+					},
+					"then": {
+						"properties": {
+							"npmplus_crowdsec_appsec": {
+								"type": "boolean",
+								"const": true
+							}
+						}
+					}
+				},
+				{
+					"if": {
+						"properties": {
+							"npmplus_auth_request": {
+								"const": "none"
+							}
+						},
+						"required": [
+							"npmplus_auth_request"
+						]
+					},
+					"then": {
+						"properties": {
+							"npmplus_auth_request_upstream": {
+								"const": ""
+							}
+						}
+					}
+				},
+				{
+					"if": {
+						"properties": {
+							"npmplus_access_list_type": {
+								"const": "custom"
+							}
+						},
+						"required": [
+							"npmplus_access_list_type"
+						]
+					},
+					"then": {
+						"properties": {
+							"npmplus_access_list_ids": {
+								"minItems": 1
+							}
+						}
+					}
+				},
+				{
+					"if": {
+						"properties": {
+							"npmplus_access_list_type": {
+								"not": {
+									"const": "custom"
+								}
+							}
+						},
+						"required": [
+							"npmplus_access_list_type"
+						]
+					},
+					"then": {
+						"properties": {
+							"npmplus_access_list_ids": {
+								"maxItems": 0
+							}
+						}
+					}
+				}
+			]
+		},
+		"stream_create_rules": {
+			"allOf": [
+				{
+					"if": {
+						"properties": {
+							"certificate_id": {
+								"const": "new"
+							}
+						},
+						"required": [
+							"certificate_id"
+						]
+					},
+					"then": {
+						"required": [
+							"domain_names",
+							"npmplus_dns_challenge",
+							"npmplus_dns_provider"
+						],
+						"properties": {
+							"npmplus_dns_challenge": {
+								"type": "boolean",
+								"const": true
+							}
+						}
+					}
+				},
+				{
+					"if": {
+						"properties": {
+							"udp_forwarding": {
+								"type": "boolean",
+								"const": true
+							}
+						},
+						"required": [
+							"udp_forwarding"
+						]
+					},
+					"then": {
+						"properties": {
+							"npmplus_proxy_tls": {
+								"type": "boolean",
+								"const": false
+							},
+							"npmplus_proxy_protocol_forwarding": {
+								"type": "integer",
+								"enum": [
+									0,
+									2
+								]
+							},
+							"certificate_id": {
+								"type": "integer",
+								"const": 0
+							},
+							"npmplus_mtls_certificate_id": {
+								"type": "integer",
+								"const": 0
+							}
+						}
+					}
+				},
+				{
+					"if": {
+						"properties": {
+							"tcp_forwarding": {
+								"type": "boolean",
+								"const": false
+							}
+						}
+					},
+					"then": {
+						"required": [
+							"udp_forwarding"
+						],
+						"properties": {
+							"udp_forwarding": {
+								"type": "boolean",
+								"const": true
+							}
+						}
+					}
+				},
+				{
+					"$ref": "#/properties/mtls_create_rules"
+				}
+			]
+		},
+		"stream_update_rules": {
+			"allOf": [
+				{
+					"if": {
+						"properties": {
+							"certificate_id": {
+								"const": "new"
+							}
+						},
+						"required": [
+							"certificate_id"
+						]
+					},
+					"then": {
+						"required": [
+							"domain_names",
+							"npmplus_dns_challenge",
+							"npmplus_dns_provider"
+						],
+						"properties": {
+							"npmplus_dns_challenge": {
+								"type": "boolean",
+								"const": true
+							}
+						}
+					}
+				},
+				{
+					"if": {
+						"properties": {
+							"udp_forwarding": {
+								"type": "boolean",
+								"const": true
+							}
+						},
+						"required": [
+							"udp_forwarding"
+						]
+					},
+					"then": {
+						"properties": {
+							"npmplus_proxy_tls": {
+								"type": "boolean",
+								"const": false
+							},
+							"npmplus_proxy_protocol_forwarding": {
+								"type": "integer",
+								"enum": [
+									0,
+									2
+								]
+							},
+							"certificate_id": {
+								"type": "integer",
+								"const": 0
+							},
+							"npmplus_mtls_certificate_id": {
+								"type": "integer",
+								"const": 0
+							}
+						}
+					}
+				},
+				{
+					"if": {
+						"properties": {
+							"tcp_forwarding": {
+								"type": "boolean",
+								"const": false
+							}
+						},
+						"required": [
+							"tcp_forwarding"
+						]
+					},
+					"then": {
+						"properties": {
+							"udp_forwarding": {
+								"type": "boolean",
+								"const": true
+							}
+						}
+					}
+				},
+				{
+					"$ref": "#/properties/mtls_update_rules"
+				}
+			]
 		}
 	}
 }

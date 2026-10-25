@@ -17,6 +17,51 @@
 				"schema": {
 					"type": "object",
 					"additionalProperties": false,
+					"allOf": [
+						{
+							"anyOf": [
+								{
+									"properties": {
+										"items": {
+											"minItems": 1
+										}
+									},
+									"required": [
+										"items"
+									]
+								},
+								{
+									"properties": {
+										"clients": {
+											"contains": {
+												"properties": {
+													"address": {
+														"pattern": "^(?![aA][lL][lL]$)\\S+$"
+													}
+												}
+											}
+										}
+									},
+									"required": [
+										"clients"
+									]
+								}
+							]
+						},
+						{
+							"properties": {
+								"items": {
+									"items": {
+										"properties": {
+											"password": {
+												"minLength": 1
+											}
+										}
+									}
+								}
+							}
+						}
+					],
 					"required": [
 						"name"
 					],
