@@ -1,4 +1,6 @@
+import { raw } from "objection";
 import errs from "../lib/error.js";
+import { castJsonIfNeed } from "../lib/helpers.js";
 import auditLogModel from "../models/audit-log.js";
 
 const internalAuditLog = {
@@ -6,20 +8,34 @@ const internalAuditLog = {
 	 * All logs
 	 *
 	 * @param   {Access}  access
-	 * @param   {Array}   [expand]
+	 * @param   {Object}  data
+	 * @param   {Array}   [data.expand]
+	 * @param   {String}  [data.query]
+	 * @param   {Number}  data.page
+	 * @param   {Number}  data.page_size
 	 * @returns {Promise}
 	 */
-	getAll: (access, expand) => {
+	getAll: (access, data) => {
 		access.canAdmin();
 
 		const query = auditLogModel
 			.query()
 			.orderBy("created_on", "DESC")
 			.orderBy("id", "DESC")
-			.limit(100)
+			.page(data.page, data.page_size)
 			.allowGraph("[user]");
 
-		if (expand) query.withGraphFetched(`[${expand.join(", ")}]`);
+		if (data.query) {
+			const like = `%${data.query.toLowerCase()}%`;
+			query.where((builder) =>
+				builder
+					.whereILike("object_type", like)
+					.orWhereILike("action", like)
+					.orWhereILike(raw("lower(??)", castJsonIfNeed("meta")), like),
+			);
+		}
+
+		if (data.expand) query.withGraphFetched(`[${data.expand.join(", ")}]`);
 
 		return query;
 	},
