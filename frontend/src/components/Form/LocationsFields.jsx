@@ -596,7 +596,9 @@ export function LocationsFields({ initialValues, name = "locations" }) {
 														id={`npmplusAuthRequestUpstream-${item.uiKey}`}
 														type="text"
 														className={`form-control ${item.npmplusAuthRequestUpstream && !upstreamUrlPattern.test(item.npmplusAuthRequestUpstream) ? "is-invalid" : ""}`}
-														placeholder="keep empty to reuse env value"
+														placeholder={intl.formatMessage({
+															id: "host.auth-request-upstream.placeholder",
+														})}
 														maxLength={255}
 														pattern="^https?://(([^\s\/:]+|\[[a-fA-F0-9:]+\]):[0-9]+|cu_[^\s\/:]+)$"
 														value={item.npmplusAuthRequestUpstream}
