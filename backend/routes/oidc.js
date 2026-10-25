@@ -85,7 +85,10 @@ router
 
 			res.redirect(buildAuthorizationUrl(config, parameters).toString());
 		} catch (err) {
-			logger.error(`Init error: ${err.message}`);
+			logger.error(
+				`Init error: ${err.message}`,
+				err.cause?.message ?? err.cause?.status ?? JSON.stringify(err.cause) ?? "",
+			);
 			res.cookie("__Host-npmplus_oidc_no_redirect", "true", {
 				secure: true,
 				sameSite: "Strict",
@@ -197,7 +200,10 @@ router
 			}
 			res.redirect("/");
 		} catch (err) {
-			logger.error(`Callback error: ${err.message}`);
+			logger.error(
+				`Callback error: ${err.message}`,
+				err.cause?.message ?? err.cause?.status ?? JSON.stringify(err.cause) ?? "",
+			);
 			res.cookie("__Host-npmplus_oidc_no_redirect", "true", {
 				secure: true,
 				sameSite: "Strict",

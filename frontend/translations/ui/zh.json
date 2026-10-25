@@ -152,6 +152,7 @@
 	"help": "帮助",
 	"host.auth-request": "认证请求",
 	"host.auth-request-upstream": "认证请求上游",
+	"host.auth-request-upstream.placeholder": "留空以使用环境变量中的值",
 	"host.flags.block-exploits": "阻止常见攻击",
 	"host.flags.cache-assets": "缓存资源",
 	"host.flags.disable-crowdsec-appsec": "禁用 Crowdsec Appsec",
