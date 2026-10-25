@@ -1,5 +1,4 @@
 import { IconHelp, IconSearch } from "@tabler/icons-react";
-import { useQueryClient } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
 import Alert from "react-bootstrap/Alert";
 import { deleteProxyHost, toggleProxyHost } from "src/api/backend";
@@ -13,7 +12,6 @@ import { showError, showObjectSuccess } from "src/notifications";
 import Table from "./Table";
 
 export default function TableWrapper() {
-	const queryClient = useQueryClient();
 	const [search, setSearch] = useState("");
 	const [sorting, setSorting] = useState([{ id: "enabled", desc: false }]);
 	const { isFetching, isPending, isError, error, data } = useProxyHosts(["owner", "access_lists", "certificate"]);
@@ -36,10 +34,6 @@ export default function TableWrapper() {
 	const handleDisableToggle = async (id, enabled) => {
 		try {
 			await toggleProxyHost(id, enabled);
-			await Promise.all([
-				queryClient.invalidateQueries({ queryKey: ["proxy-hosts"] }),
-				queryClient.invalidateQueries({ queryKey: ["proxy-host", id] }),
-			]);
 			showObjectSuccess("proxy-host", enabled ? "enabled" : "disabled");
 		} catch (err) {
 			showError(<T id={err.message} />);
@@ -76,7 +70,6 @@ export default function TableWrapper() {
 					await deleteProxyHost(id);
 					showObjectSuccess("proxy-host", "deleted");
 				},
-				invalidations: [["proxy-hosts"], ["proxy-host", id], ["certificates"], ["access-lists"]],
 				children: <T id="object.delete.content" tData={{ object: "proxy-host" }} />,
 				subject: host?.domainNames.join(", "),
 				details: host && forwardSummary(host),

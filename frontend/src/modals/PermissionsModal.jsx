@@ -1,4 +1,3 @@
-import { useQueryClient } from "@tanstack/react-query";
 import cn from "clsx";
 import { Field, Form, Formik } from "formik";
 import { useState } from "react";
@@ -17,7 +16,6 @@ const showPermissionsModal = (id) => {
 };
 
 const PermissionsModal = EasyModal.create(({ id, visible, remove }) => {
-	const queryClient = useQueryClient();
 	const [errorMsg, setErrorMsg] = useState(null);
 	const { data, isPending, error } = useUser(id);
 	const [isSubmitting, setIsSubmitting] = useState(false);
@@ -30,10 +28,6 @@ const PermissionsModal = EasyModal.create(({ id, visible, remove }) => {
 			await setPermissions(id, values);
 			showObjectSuccess("user", "updated");
 			remove();
-			await Promise.all([
-				queryClient.invalidateQueries({ queryKey: ["users"] }),
-				queryClient.invalidateQueries({ queryKey: ["user"] }),
-			]);
 		} catch (err) {
 			setErrorMsg(<T id={err.message} />);
 		}
