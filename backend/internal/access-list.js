@@ -197,7 +197,9 @@ const internalAccessList = {
 
 		try {
 			await internalAccessList.build(freshRow);
-			for (const host of freshRow.proxy_hosts) await internalNginx.configure(proxyHostModel, "proxy_host", host);
+			for (const host of freshRow.proxy_hosts) {
+				await internalNginx.configure(proxyHostModel, "proxy_host", host, { skipReload: true });
+			}
 			await internalNginx.reload();
 		} finally {
 			// Add to audit log
@@ -328,7 +330,9 @@ const internalAccessList = {
 		try {
 			// 3. Write the changes to the config
 			// Regenerate configs and htpasswd files
-			for (const host of affectedHosts) await internalNginx.configure(proxyHostModel, "proxy_host", host);
+			for (const host of affectedHosts) {
+				await internalNginx.configure(proxyHostModel, "proxy_host", host, { skipReload: true });
+			}
 
 			await internalNginx.reload();
 
