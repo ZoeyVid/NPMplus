@@ -2,6 +2,61 @@
 	"type": "object",
 	"minProperties": 1,
 	"additionalProperties": false,
+	"allOf": [
+		{
+			"if": {
+				"properties": {
+					"proxy_hosts": {
+						"enum": [
+							"view",
+							"manage"
+						]
+					}
+				},
+				"required": [
+					"proxy_hosts"
+				]
+			},
+			"then": {
+				"properties": {
+					"access_lists": {
+						"enum": [
+							"view",
+							"manage"
+						]
+					}
+				}
+			}
+		},
+		{
+			"if": {
+				"properties": {
+					"certificates": {
+						"const": "hidden"
+					}
+				},
+				"required": [
+					"certificates"
+				]
+			},
+			"then": {
+				"properties": {
+					"proxy_hosts": {
+						"const": "hidden"
+					},
+					"redirection_hosts": {
+						"const": "hidden"
+					},
+					"dead_hosts": {
+						"const": "hidden"
+					},
+					"streams": {
+						"const": "hidden"
+					}
+				}
+			}
+		}
+	],
 	"properties": {
 		"visibility": {
 			"type": "string",
