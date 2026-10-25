@@ -25,18 +25,6 @@
 				}
 			]
 		},
-		"query": {
-			"anyOf": [
-				{
-					"type": "null"
-				},
-				{
-					"type": "string",
-					"minLength": 1,
-					"maxLength": 255
-				}
-			]
-		},
 		"created_on": {
 			"description": "Date and time of creation",
 			"readOnly": true,

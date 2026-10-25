@@ -294,21 +294,11 @@ const internalUser = {
 	 * All users
 	 *
 	 * @param   {Access}  access
-	 * @param   {String}  [search_query]
 	 * @returns {Promise}
 	 */
-	getAll: (access, search_query) => {
+	getAll: (access) => {
 		access.canAdmin();
-		const query = userModel.query().groupBy("id").orderBy("name", "ASC");
-
-		// Query is used for searching
-		if (typeof search_query === "string") {
-			query.where(function () {
-				this.whereILike("name", `%${search_query}%`).orWhereILike("email", `%${search_query}%`);
-			});
-		}
-
-		return query;
+		return userModel.query().groupBy("id").orderBy("name", "ASC");
 	},
 
 	/**

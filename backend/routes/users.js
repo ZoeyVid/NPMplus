@@ -15,16 +15,6 @@ import { express as logger } from "../logger.js";
 import { getValidationSchema } from "../schema/index.js";
 import { isSetup } from "../setup.js";
 
-const listSchema = {
-	type: "object",
-	additionalProperties: false,
-	properties: {
-		query: {
-			$ref: "common#/properties/query",
-		},
-	},
-};
-
 const userSchema = {
 	type: "object",
 	required: ["user_id"],
@@ -72,11 +62,8 @@ router
 	 *
 	 * Retrieve all users
 	 */
-	.get(async (req, res) => {
-		const data = validator(listSchema, {
-			query: typeof req.query.query === "string" ? req.query.query : null,
-		});
-		const users = await internalUser.getAll(res.locals.access, data.query);
+	.get(async (_, res) => {
+		const users = await internalUser.getAll(res.locals.access);
 		res.status(200).send(users);
 	})
 

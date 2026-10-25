@@ -355,10 +355,9 @@ const internalAccessList = {
 	 *
 	 * @param   {Access}  access
 	 * @param   {Array}   [expand]
-	 * @param   {String}  [searchQuery]
 	 * @returns {Promise}
 	 */
-	getAll: (access, expand, searchQuery) => {
+	getAll: (access, expand) => {
 		access.can("access_lists:view");
 
 		const query = accessListModel
@@ -376,13 +375,6 @@ const internalAccessList = {
 
 		if (access.visibility !== "all") {
 			query.andWhere("access_list.owner_user_id", access.token.getUserId(1));
-		}
-
-		// Query is used for searching
-		if (typeof searchQuery === "string") {
-			query.where(function () {
-				this.where("name", "like", `%${searchQuery}%`);
-			});
 		}
 
 		if (expand) query.withGraphFetched(`[${expand.join(", ")}]`);

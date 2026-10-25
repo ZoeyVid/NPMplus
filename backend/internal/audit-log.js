@@ -1,5 +1,4 @@
 import errs from "../lib/error.js";
-import { castJsonIfNeed } from "../lib/helpers.js";
 import auditLogModel from "../models/audit-log.js";
 
 const internalAuditLog = {
@@ -8,10 +7,9 @@ const internalAuditLog = {
 	 *
 	 * @param   {Access}  access
 	 * @param   {Array}   [expand]
-	 * @param   {String}  [searchQuery]
 	 * @returns {Promise}
 	 */
-	getAll: (access, expand, searchQuery) => {
+	getAll: (access, expand) => {
 		access.canAdmin();
 
 		const query = auditLogModel
@@ -20,13 +18,6 @@ const internalAuditLog = {
 			.orderBy("id", "DESC")
 			.limit(100)
 			.allowGraph("[user]");
-
-		// Query is used for searching
-		if (typeof searchQuery === "string" && searchQuery.length > 0) {
-			query.where(function () {
-				this.where(castJsonIfNeed("meta"), "like", `%${searchQuery}%`);
-			});
-		}
 
 		if (expand) query.withGraphFetched(`[${expand.join(", ")}]`);
 

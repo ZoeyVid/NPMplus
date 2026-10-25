@@ -11,9 +11,6 @@ const listSchema = {
 			$ref: "common#/properties/expand",
 			items: { enum: ["user"] },
 		},
-		query: {
-			$ref: "common#/properties/query",
-		},
 	},
 };
 
@@ -53,9 +50,8 @@ router
 	.get(async (req, res) => {
 		const data = validator(listSchema, {
 			expand: typeof req.query.expand === "string" ? req.query.expand.split(",") : null,
-			query: typeof req.query.query === "string" ? req.query.query : null,
 		});
-		const rows = await internalAuditLog.getAll(res.locals.access, data.expand, data.query);
+		const rows = await internalAuditLog.getAll(res.locals.access, data.expand);
 		res.status(200).send(rows);
 	});
 

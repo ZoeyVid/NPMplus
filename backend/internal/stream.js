@@ -1,5 +1,4 @@
 import errs from "../lib/error.js";
-import { castJsonIfNeed } from "../lib/helpers.js";
 import streamModel from "../models/stream.js";
 import internalAuditLog from "./audit-log.js";
 import internalCertificate from "./certificate.js";
@@ -286,10 +285,9 @@ const internalStream = {
 	 *
 	 * @param   {Access}  access
 	 * @param   {Array}   [expand]
-	 * @param   {String}  [searchQuery]
 	 * @returns {Promise}
 	 */
-	getAll: (access, expand, searchQuery) => {
+	getAll: (access, expand) => {
 		access.can("streams:view");
 
 		const query = streamModel
@@ -300,16 +298,6 @@ const internalStream = {
 
 		if (access.visibility !== "all") {
 			query.andWhere("owner_user_id", access.token.getUserId(1));
-		}
-
-		// Query is used for searching
-		if (typeof searchQuery === "string" && searchQuery.length > 0) {
-			query.where(function () {
-				this.where(castJsonIfNeed("incoming_port"), "like", `%${searchQuery}%`)
-					.orWhere(castJsonIfNeed("forwarding_port"), "like", `%${searchQuery}%`)
-					.orWhere("forwarding_host", "like", `%${searchQuery}%`)
-					.orWhere("npmplus_description", "like", `%${searchQuery}%`);
-			});
 		}
 
 		if (expand) query.withGraphFetched(`[${expand.join(", ")}]`);
