@@ -29,16 +29,22 @@ export function DomainNamesField({
 	}
 
 	return (
-		<Field
-			name={name}
-			validate={validateDomains(isWildcardPermitted && dnsProviderWildcardSupported, forCertificate)}
-		>
-			{({ field, form }) => (
+		<Field name={name}>
+			{({ field }) => (
 				<div className="mb-3">
 					<label className="form-label" htmlFor={id}>
 						<T id={label} />
 					</label>
 					<CreatableSelect
+						ref={(select) =>
+							select?.inputRef.setCustomValidity(
+								validateDomains(
+									field.value,
+									isWildcardPermitted && dnsProviderWildcardSupported,
+									forCertificate,
+								) ?? "",
+							)
+						}
 						unstyled
 						classNames={selectClassNames}
 						name={field.name}
@@ -56,15 +62,11 @@ export function DomainNamesField({
 						value={field.value?.map((d) => ({ label: d, value: d }))}
 					/>
 
-					{form.errors[field.name] && form.touched[field.name] ? (
-						<small className="text-danger">{form.errors[field.name]}</small>
-					) : helperTexts.length ? (
-						helperTexts.map((i, idx) => (
-							<small key={idx} className="text-info">
-								{i}
-							</small>
-						))
-					) : null}
+					{helperTexts.map((i, idx) => (
+						<small key={idx} className="text-info">
+							{i}
+						</small>
+					))}
 				</div>
 			)}
 		</Field>
