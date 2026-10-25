@@ -34,6 +34,60 @@
 					"type": "object",
 					"additionalProperties": false,
 					"minProperties": 1,
+					"allOf": [
+						{
+							"if": {
+								"properties": {
+									"value": {
+										"const": "redirect"
+									}
+								},
+								"required": [
+									"value"
+								]
+							},
+							"then": {
+								"properties": {
+									"meta": {
+										"required": [
+											"redirect"
+										],
+										"properties": {
+											"redirect": {
+												"minLength": 1
+											}
+										}
+									}
+								}
+							}
+						},
+						{
+							"if": {
+								"properties": {
+									"value": {
+										"const": "html"
+									}
+								},
+								"required": [
+									"value"
+								]
+							},
+							"then": {
+								"properties": {
+									"meta": {
+										"required": [
+											"html"
+										],
+										"properties": {
+											"html": {
+												"minLength": 1
+											}
+										}
+									}
+								}
+							}
+						}
+					],
 					"properties": {
 						"value": {
 							"type": "string",

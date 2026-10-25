@@ -187,48 +187,7 @@
 				"additionalProperties": false,
 				"allOf": [
 					{
-						"if": {
-							"properties": {
-								"forward_scheme": {
-									"const": "empty"
-								}
-							},
-							"required": [
-								"forward_scheme"
-							]
-						},
-						"else": {
-							"required": [
-								"forward_host"
-							],
-							"properties": {
-								"forward_host": {
-									"minLength": 1
-								}
-							}
-						}
-					},
-					{
-						"if": {
-							"properties": {
-								"npmplus_access_list_type": {
-									"const": "custom"
-								}
-							},
-							"required": [
-								"npmplus_access_list_type"
-							]
-						},
-						"then": {
-							"required": [
-								"npmplus_access_list_ids"
-							],
-							"properties": {
-								"npmplus_access_list_ids": {
-									"minItems": 1
-								}
-							}
-						}
+						"$ref": "../common.json#/properties/proxy_create_rules"
 					}
 				],
 				"properties": {

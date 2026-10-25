@@ -36,7 +36,12 @@
 							},
 							"else": {
 								"properties": {
-									"domain_names": false
+									"domain_names": false,
+									"npmplus_reuse_key": false,
+									"npmplus_dns_challenge": false,
+									"npmplus_dns_provider": false,
+									"npmplus_dns_provider_credentials": false,
+									"npmplus_propagation_seconds": false
 								}
 							}
 						},
