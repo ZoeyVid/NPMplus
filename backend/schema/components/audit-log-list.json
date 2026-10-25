@@ -1,7 +1,18 @@
 {
-	"type": "array",
+	"type": "object",
 	"description": "Audit Log list",
-	"items": {
-		"$ref": "./audit-log-object.json"
+	"required": ["results", "total"],
+	"properties": {
+		"results": {
+			"type": "array",
+			"items": {
+				"$ref": "./audit-log-object.json"
+			}
+		},
+		"total": {
+			"type": "integer",
+			"description": "Number of all matching entries",
+			"minimum": 0
+		}
 	}
 }
