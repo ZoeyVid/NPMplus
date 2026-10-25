@@ -1,11 +1,11 @@
-import { IconHelp, IconSearch } from "@tabler/icons-react";
+import { IconSearch } from "@tabler/icons-react";
 import { useEffect, useState } from "react";
 import Alert from "react-bootstrap/Alert";
 import { deleteProxyHost, toggleProxyHost } from "src/api/backend";
 import { Button, HasPermission, LoadingPage } from "src/components";
 import { getDirectory, useProxyHosts } from "src/hooks";
 import { T } from "src/locale";
-import { showDeleteConfirmModal, showHelpModal, showProxyHostModal } from "src/modals";
+import { showDeleteConfirmModal, showProxyHostModal } from "src/modals";
 import { forwardSummary } from "src/modules/Forward";
 import { MANAGE, PROXY_HOSTS } from "src/modules/Permissions";
 import { showError, showObjectSuccess } from "src/notifications";
@@ -105,9 +105,6 @@ export default function TableWrapper() {
 										/>
 									</div>
 								) : null}
-								<Button size="sm" onClick={() => showHelpModal("ProxyHosts")}>
-									<IconHelp size={20} />
-								</Button>
 								<HasPermission section={PROXY_HOSTS} permission={MANAGE} hideError>
 									{data?.length ? (
 										<Button

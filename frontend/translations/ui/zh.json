@@ -149,7 +149,6 @@
 	"expires.on": "过期时间: {date}",
 	"footer.github": "在 Github 上查看代码仓库",
 	"footer.github-fork": "在 Github 上复刻 (Fork) 本项目",
-	"help": "帮助",
 	"host.auth-request": "认证请求",
 	"host.auth-request-upstream": "认证请求上游",
 	"host.auth-request-upstream.placeholder": "留空以使用环境变量中的值",
