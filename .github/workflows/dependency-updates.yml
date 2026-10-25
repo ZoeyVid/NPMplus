@@ -271,6 +271,26 @@ jobs:
           title: update zlib-ng-patch version to ${{ steps.update.outputs.version }}
           body: update zlib-ng-patch version to ${{ steps.update.outputs.version }}
 
+  certbot-update:
+    runs-on: ubuntu-slim
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - name: update certbot version
+        id: update
+        run: |
+          CERTBOT_VER="$(curl -sSfL https://pypi.org/pypi/certbot/json | jq -r .info.version)"
+          echo "compare=https://github.com/certbot/certbot/compare/v$(sed -n 's|^ARG CERTBOT_VER=||p' Dockerfile)...v$CERTBOT_VER" >> $GITHUB_OUTPUT
+          sed -i "s|ARG CERTBOT_VER=.*|ARG CERTBOT_VER=$CERTBOT_VER|" Dockerfile
+          echo "version=$CERTBOT_VER" >> $GITHUB_OUTPUT
+      - uses: peter-evans/create-pull-request@5f6978faf089d4d20b00c7766989d076bb2fc7f1 # v8.1.1
+        with:
+          signoff: true
+          delete-branch: true
+          commit-message: update certbot version to ${{ steps.update.outputs.version }}
+          branch: update-certbot-version
+          title: update certbot version to ${{ steps.update.outputs.version }}
+          body: ${{ steps.update.outputs.compare }}
+
   certbot-ocsp-fetcher-update:
     runs-on: ubuntu-slim
     steps:
