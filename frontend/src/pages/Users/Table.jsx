@@ -10,7 +10,9 @@ import {
 } from "@tabler/icons-react";
 import {
 	createColumnHelper,
+	createPaginatedRowModel,
 	createSortedRowModel,
+	rowPaginationFeature,
 	rowSortingFeature,
 	sortFn_alphanumeric,
 	sortFn_datetime,
@@ -33,6 +35,8 @@ import { intl, T } from "src/locale";
 const features = tableFeatures({
 	rowSortingFeature,
 	sortedRowModel: createSortedRowModel(),
+	rowPaginationFeature,
+	paginatedRowModel: createPaginatedRowModel(),
 	sortFns: {
 		alphanumeric: sortFn_alphanumeric,
 		datetime: sortFn_datetime,
@@ -231,6 +235,8 @@ export default function Table({
 			isFetching,
 		},
 		enableSortingRemoval: false,
+		autoResetPageIndex: false,
+		initialState: { pagination: { pageSize: 25 } },
 	});
 
 	return (

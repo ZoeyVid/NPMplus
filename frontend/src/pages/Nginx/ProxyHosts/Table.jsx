@@ -1,7 +1,9 @@
 import { IconCopy, IconDotsVertical, IconEdit, IconPower, IconTrash } from "@tabler/icons-react";
 import {
 	createColumnHelper,
+	createPaginatedRowModel,
 	createSortedRowModel,
+	rowPaginationFeature,
 	rowSortingFeature,
 	sortFn_alphanumeric,
 	sortFn_datetime,
@@ -27,6 +29,8 @@ import { MANAGE, PROXY_HOSTS } from "src/modules/Permissions";
 const features = tableFeatures({
 	rowSortingFeature,
 	sortedRowModel: createSortedRowModel(),
+	rowPaginationFeature,
+	paginatedRowModel: createPaginatedRowModel(),
 	sortFns: {
 		alphanumeric: sortFn_alphanumeric,
 		datetime: sortFn_datetime,
@@ -231,6 +235,8 @@ export default function Table({
 			isFetching,
 		},
 		enableSortingRemoval: false,
+		autoResetPageIndex: false,
+		initialState: { pagination: { pageSize: 25 } },
 		state: { sorting },
 		onSortingChange,
 	});
