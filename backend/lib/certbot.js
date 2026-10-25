@@ -19,7 +19,7 @@ const installPlugin = async (pluginKey) => {
 	const plugin = dnsPlugins[pluginKey];
 	logger.start(`Installing ${pluginKey}...`);
 
-	const result = await utils.execFile("pip", ["install", "--upgrade", "--no-cache-dir", plugin.package_name]);
+	const result = await utils.execFile("uv", ["pip", "install", "--upgrade", "--no-cache", plugin.package_name]);
 
 	logger.complete(`Installed ${pluginKey}`);
 	return result;

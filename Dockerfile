@@ -215,6 +215,7 @@ ARG LRL_VER=3ff6300e68b73ba20e909c7d16bd839aef2e5a4b # v0.15
 ARG LCSB_VER=92a8617ede3b781c33cd39e73734505597e318fd # main
 ARG COF_VER=da93e0cec7fdb1a80f4972f75b3638763d012c0e # main
 ARG NBF_VER=5cee8db2a505f2a253e24691399c828c043071fc # master
+ARG CERTBOT_VER=5.8.0
 
 COPY --from=nginx /usr/local/nginx            /usr/local/nginx
 COPY --from=nginx /usr/local/bin/bssl         /usr/local/bin/bssl
@@ -237,7 +238,7 @@ RUN apk upgrade --no-cache -a && \
                        logrotate goaccess fcgi \
                        luarocks5.1 git make \
                        libatomic libstdc++ \
-                       python3 && \
+                       python3 uv && \
     \
     luarocks-5.1 install lua-resty-http && \
     luarocks-5.1 install lua-resty-string && \
@@ -264,8 +265,10 @@ RUN apk upgrade --no-cache -a && \
     rm -vr /src /tmp/luarocks_local_cache-* && \
     apk del --no-cache luarocks5.1 git make && \
     \
-    python3 -m venv /usr/local && \
-    pip install --no-cache-dir --upgrade pip certbot && \
+    uv venv --allow-existing /usr/local && \
+    uv pip install --no-cache certbot=="$CERTBOT_VER" && \
+    uv pip freeze | tee /etc/pip-constraints.txt && \
+    echo "certbot==$CERTBOT_VER" | tee /etc/pip-overrides.txt && \
     \
     wget -q https://raw.githubusercontent.com/tomwassenberg/certbot-ocsp-fetcher/"$COF_VER"/certbot-ocsp-fetcher -O /usr/local/bin/certbot-ocsp-fetcher.sh && \
     echo "60148ed2ffef2f1354427d3e080400d008132f8e5fb014f721f5986f438dd621  /usr/local/bin/certbot-ocsp-fetcher.sh" | sha256sum -c - && \
@@ -282,6 +285,9 @@ RUN apk upgrade --no-cache -a && \
     ln -s /app/index.js /usr/local/bin/index.js && \
     \
     chmod +x /usr/local/bin/*
+
+ENV UV_CONSTRAINT=/etc/pip-constraints.txt
+ENV UV_OVERRIDE=/etc/pip-overrides.txt
 
 COPY --from=frontend /app/dist /app/frontend
 
