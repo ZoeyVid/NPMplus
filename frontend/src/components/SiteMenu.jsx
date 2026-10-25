@@ -62,17 +62,17 @@ const menuGroups = [
 	],
 	[
 		{
-			to: "/certificates",
-			icon: IconShield,
-			label: "certificates",
-			permissionSection: CERTIFICATES,
-			permission: VIEW,
-		},
-		{
 			to: "/access",
 			icon: IconLock,
 			label: "access-lists",
 			permissionSection: ACCESS_LISTS,
+			permission: VIEW,
+		},
+		{
+			to: "/certificates",
+			icon: IconShield,
+			label: "certificates",
+			permissionSection: CERTIFICATES,
 			permission: VIEW,
 		},
 	],
