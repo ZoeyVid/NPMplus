@@ -149,7 +149,6 @@
 	"expires.on": "Ablauf am: {date}",
 	"footer.github": "Repository auf Github",
 	"footer.github-fork": "Fork me on Github",
-	"help": "Hilfe",
 	"host.auth-request": "Auth Request",
 	"host.auth-request-upstream": "Auth Request Upstream",
 	"host.auth-request-upstream.placeholder": "leer lassen für env-Wert",
