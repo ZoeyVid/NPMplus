@@ -1,4 +1,4 @@
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import { createProxyHost, getProxyHost, updateProxyHost } from "src/api/backend";
 
 const fetchProxyHost = (id) => {
@@ -49,21 +49,9 @@ const useProxyHost = (id) => {
 	});
 };
 
-const useSetProxyHost = () => {
-	const queryClient = useQueryClient();
-	return useMutation({
+const useSetProxyHost = () =>
+	useMutation({
 		mutationFn: (values) => (values.id ? updateProxyHost(values) : createProxyHost(values)),
-		onSuccess: async ({ id }) => {
-			await Promise.all([
-				queryClient.invalidateQueries({ queryKey: ["proxy-host", id] }),
-				queryClient.invalidateQueries({ queryKey: ["proxy-hosts"] }),
-				queryClient.invalidateQueries({ queryKey: ["audit-logs"] }),
-				queryClient.invalidateQueries({ queryKey: ["host-report"] }),
-				queryClient.invalidateQueries({ queryKey: ["certificates"] }),
-				queryClient.invalidateQueries({ queryKey: ["access-lists"] }),
-			]);
-		},
 	});
-};
 
 export { useProxyHost, useSetProxyHost };

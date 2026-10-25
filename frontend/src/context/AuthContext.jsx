@@ -42,14 +42,16 @@ function AuthProvider({ children, tokenRefreshInterval = 15 * 60 * 1000 }) {
 		await deleteToken();
 		AuthStore.clear();
 		setAuthenticated(false);
-		queryClient.clear();
+		queryClient.removeQueries({ predicate: ({ queryKey }) => queryKey[0] !== "health" });
+		queryClient.getMutationCache().clear();
 	};
 
 	const logoutEverywhere = async () => {
 		await revokeSessions("me");
 		AuthStore.clear();
 		setAuthenticated(false);
-		queryClient.clear();
+		queryClient.removeQueries({ predicate: ({ queryKey }) => queryKey[0] !== "health" });
+		queryClient.getMutationCache().clear();
 	};
 
 	const refresh = async (reload = true) => {

@@ -14,6 +14,13 @@ function buildBody(data) {
 	return JSON.stringify(decamelizeKeys(data));
 }
 
+async function processWrite(url, response) {
+	if (!url.startsWith("/tokens") && !["/users/setup", "/users/me/sessions"].includes(url)) {
+		await queryClient.invalidateQueries();
+	}
+	return processResponse(response);
+}
+
 async function processResponse(response, reload = true) {
 	let payload = {};
 	try {
@@ -25,7 +32,6 @@ async function processResponse(response, reload = true) {
 		if (response.status === 401) {
 			// Force logout user and reload the page if Unauthorized
 			AuthStore.clear();
-			queryClient.clear();
 			if (reload) {
 				window.location.reload();
 			}
@@ -79,7 +85,7 @@ export async function post({ url, params, data }, abortController) {
 
 	const signal = abortController?.signal;
 	const response = await fetch(apiUrl, { method, headers, body, signal });
-	return processResponse(response);
+	return processWrite(url, response);
 }
 
 export async function put({ url, params, data }, abortController) {
@@ -91,7 +97,7 @@ export async function put({ url, params, data }, abortController) {
 	const signal = abortController?.signal;
 	const body = buildBody(data);
 	const response = await fetch(apiUrl, { method, headers, body, signal });
-	return processResponse(response);
+	return processWrite(url, response);
 }
 
 export async function del({ url, params }, abortController) {
@@ -99,5 +105,5 @@ export async function del({ url, params }, abortController) {
 	const method = "DELETE";
 	const signal = abortController?.signal;
 	const response = await fetch(apiUrl, { method, signal });
-	return processResponse(response);
+	return processWrite(url, response);
 }

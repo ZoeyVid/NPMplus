@@ -1,4 +1,4 @@
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import { createDeadHost, getDeadHost, updateDeadHost } from "src/api/backend";
 
 const fetchDeadHost = (id) => {
@@ -32,20 +32,9 @@ const useDeadHost = (id) => {
 	});
 };
 
-const useSetDeadHost = () => {
-	const queryClient = useQueryClient();
-	return useMutation({
+const useSetDeadHost = () =>
+	useMutation({
 		mutationFn: (values) => (values.id ? updateDeadHost(values) : createDeadHost(values)),
-		onSuccess: async ({ id }) => {
-			await Promise.all([
-				queryClient.invalidateQueries({ queryKey: ["dead-host", id] }),
-				queryClient.invalidateQueries({ queryKey: ["dead-hosts"] }),
-				queryClient.invalidateQueries({ queryKey: ["audit-logs"] }),
-				queryClient.invalidateQueries({ queryKey: ["host-report"] }),
-				queryClient.invalidateQueries({ queryKey: ["certificates"] }),
-			]);
-		},
 	});
-};
 
 export { useDeadHost, useSetDeadHost };

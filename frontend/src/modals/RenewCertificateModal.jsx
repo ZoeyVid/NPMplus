@@ -1,4 +1,3 @@
-import { useQueryClient } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
 import { Alert } from "react-bootstrap";
 import Modal from "react-bootstrap/Modal";
@@ -14,7 +13,6 @@ const showRenewCertificateModal = (id) => {
 };
 
 const RenewCertificateModal = EasyModal.create(({ id, visible, remove }) => {
-	const queryClient = useQueryClient();
 	const { data, isPending, error } = useCertificate(id);
 	const [errorMsg, setErrorMsg] = useState(null);
 	const [isFresh, setIsFresh] = useState(true);
@@ -29,7 +27,6 @@ const RenewCertificateModal = EasyModal.create(({ id, visible, remove }) => {
 			try {
 				await renewCertificate(id);
 				showObjectSuccess("certificate", "renewed");
-				await queryClient.invalidateQueries({ queryKey: ["certificates"] });
 				remove();
 			} catch (err) {
 				if (err.payload?.error?.output) {
@@ -47,7 +44,7 @@ const RenewCertificateModal = EasyModal.create(({ id, visible, remove }) => {
 				setIsSubmitting(false);
 			}
 		})();
-	}, [id, data, isFresh, remove, queryClient]);
+	}, [id, data, isFresh, remove]);
 
 	return (
 		<Modal show={visible} onHide={isSubmitting ? undefined : remove}>

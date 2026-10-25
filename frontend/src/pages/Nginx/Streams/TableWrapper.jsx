@@ -1,5 +1,4 @@
 import { IconHelp, IconSearch } from "@tabler/icons-react";
-import { useQueryClient } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
 import Alert from "react-bootstrap/Alert";
 import { deleteStream, toggleStream } from "src/api/backend";
@@ -12,7 +11,6 @@ import { showError, showObjectSuccess } from "src/notifications";
 import Table from "./Table";
 
 export default function TableWrapper() {
-	const queryClient = useQueryClient();
 	const [search, setSearch] = useState("");
 	const [sorting, setSorting] = useState([{ id: "enabled", desc: false }]);
 	const { isFetching, isPending, isError, error, data } = useStreams(["owner", "certificate"]);
@@ -35,10 +33,6 @@ export default function TableWrapper() {
 	const handleDisableToggle = async (id, enabled) => {
 		try {
 			await toggleStream(id, enabled);
-			await Promise.all([
-				queryClient.invalidateQueries({ queryKey: ["streams"] }),
-				queryClient.invalidateQueries({ queryKey: ["stream", id] }),
-			]);
 			showObjectSuccess("stream", enabled ? "enabled" : "disabled");
 		} catch (err) {
 			showError(<T id={err.message} />);
@@ -75,7 +69,6 @@ export default function TableWrapper() {
 					await deleteStream(id);
 					showObjectSuccess("stream", "deleted");
 				},
-				invalidations: [["streams"], ["stream", id], ["certificates"]],
 				children: <T id="object.delete.content" tData={{ object: "stream" }} />,
 				subject: stream
 					? `${stream.incomingPort} → ${stream.forwardingHost}${stream.forwardingPort ? `:${stream.forwardingPort}` : ""}`

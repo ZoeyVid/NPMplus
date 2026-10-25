@@ -167,7 +167,6 @@ export default function TableWrapper() {
 								await deleteCertificate(id);
 								showObjectSuccess("certificate", "deleted");
 							},
-							invalidations: [["certificates"], ["certificate", id]],
 							children: <T id="object.delete.content" tData={{ object: "certificate" }} />,
 							subject: domainNames || certificate?.niceName,
 							details: certificate ? (

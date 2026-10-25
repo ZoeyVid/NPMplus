@@ -1,4 +1,3 @@
-import { useQueryClient } from "@tanstack/react-query";
 import cn from "clsx";
 import { Field, Form, Formik } from "formik";
 import { useState } from "react";
@@ -15,7 +14,6 @@ const showDNSCertificateModal = () => {
 };
 
 const DNSCertificateModal = EasyModal.create(({ visible, remove }) => {
-	const queryClient = useQueryClient();
 	const [errorMsg, setErrorMsg] = useState(null);
 	const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -41,7 +39,6 @@ const DNSCertificateModal = EasyModal.create(({ visible, remove }) => {
 				setErrorMsg(<T id={err.message} />);
 			}
 		}
-		await queryClient.invalidateQueries({ queryKey: ["certificates"] });
 		setIsSubmitting(false);
 		setSubmitting(false);
 	};
