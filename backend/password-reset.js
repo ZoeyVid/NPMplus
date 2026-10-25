@@ -78,12 +78,12 @@ try {
 			const secret = await hash(PASSWORD);
 			const { changes } = db
 				.prepare(
-					"UPDATE auth SET secret = ?, modified_on = datetime('now','localtime') WHERE user_id = ? AND type = 'password'",
+					"UPDATE auth SET secret = ?, modified_on = CURRENT_TIMESTAMP WHERE user_id = ? AND type = 'password'",
 				)
 				.run(secret, user.id);
 			if (!changes) {
 				db.prepare(
-					"INSERT INTO auth (created_on, modified_on, user_id, type, secret, meta) VALUES (datetime('now','localtime'), datetime('now','localtime'), ?, 'password', ?, '{}')",
+					"INSERT INTO auth (created_on, modified_on, user_id, type, secret, meta) VALUES (CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, ?, 'password', ?, '{}')",
 				).run(user.id, secret);
 			}
 			db.prepare("UPDATE user SET npmplus_token_valid_after = ? WHERE id = ?").run(
