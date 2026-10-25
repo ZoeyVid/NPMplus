@@ -22,8 +22,8 @@ export function SiteFooter() {
 									className="link-secondary"
 									rel="noopener"
 								>
-									<T id="footer.github" />
 									<IconBrandGithub className="icon icon-inline me-1" />
+									<T id="footer.github" />
 								</a>
 							</li>
 						</ul>

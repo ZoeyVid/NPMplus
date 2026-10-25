@@ -20,6 +20,35 @@
 					"user"
 				]
 			}
+		},
+		{
+			"in": "query",
+			"name": "query",
+			"description": "Search in object type, action and meta",
+			"schema": {
+				"type": "string",
+				"maxLength": 255
+			}
+		},
+		{
+			"in": "query",
+			"name": "page",
+			"description": "Page number starting at 0",
+			"schema": {
+				"type": "integer",
+				"minimum": 0
+			}
+		},
+		{
+			"in": "query",
+			"name": "page_size",
+			"description": "Number of entries per page",
+			"schema": {
+				"type": "integer",
+				"minimum": 1,
+				"maximum": 1000,
+				"default": 25
+			}
 		}
 	],
 	"responses": {
@@ -29,33 +58,36 @@
 				"application/json": {
 					"examples": {
 						"default": {
-							"value": [
-								{
-									"id": 7,
-									"created_on": "2024-10-08T13:09:54.000Z",
-									"modified_on": "2024-10-08T13:09:54.000Z",
-									"user_id": 1,
-									"object_type": "user",
-									"object_id": 3,
-									"action": "updated",
-									"meta": {
-										"name": "John Doe",
-										"permissions": {
-											"user_id": 3,
-											"visibility": "all",
-											"access_lists": "manage",
-											"dead_hosts": "hidden",
-											"proxy_hosts": "manage",
-											"redirection_hosts": "view",
-											"streams": "hidden",
-											"certificates": "manage",
-											"id": 3,
-											"modified_on": "2024-10-08T13:09:54.000Z",
-											"created_on": "2024-10-08T13:09:51.000Z"
+							"value": {
+								"results": [
+									{
+										"id": 7,
+										"created_on": "2024-10-08T13:09:54.000Z",
+										"modified_on": "2024-10-08T13:09:54.000Z",
+										"user_id": 1,
+										"object_type": "user",
+										"object_id": 3,
+										"action": "updated",
+										"meta": {
+											"name": "John Doe",
+											"permissions": {
+												"user_id": 3,
+												"visibility": "all",
+												"access_lists": "manage",
+												"dead_hosts": "hidden",
+												"proxy_hosts": "manage",
+												"redirection_hosts": "view",
+												"streams": "hidden",
+												"certificates": "manage",
+												"id": 3,
+												"modified_on": "2024-10-08T13:09:54.000Z",
+												"created_on": "2024-10-08T13:09:51.000Z"
+											}
 										}
 									}
-								}
-							]
+								],
+								"total": 1
+							}
 						}
 					},
 					"schema": {
