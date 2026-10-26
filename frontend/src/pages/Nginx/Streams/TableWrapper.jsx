@@ -42,14 +42,13 @@ export default function TableWrapper() {
 
 	let filtered = null;
 	if (search) {
-		filtered = data?.filter((item) => {
-			return (
+		filtered = data?.filter(
+			(item) =>
 				`${item.incomingPort}`.includes(search) ||
 				forwardSearchText(item, { streams: true }).toLowerCase().includes(search) ||
 				item.npmplusDescription?.toLowerCase().includes(search.toLowerCase()) ||
-				getDirectory(item).toLowerCase().includes(search)
-			);
-		});
+				getDirectory(item).toLowerCase().includes(search),
+		);
 	}
 
 	const displayedStreams = filtered ?? data ?? [];

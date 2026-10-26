@@ -24,9 +24,12 @@ const prepareUpstreamServers = (serverHost) => {
 
 	if (Array.isArray(upstreamServers) && upstreamServers.length > 0) {
 		const firstPort = upstreamServers[0].port;
+		const firstPortIsSet = firstPort !== null && firstPort !== undefined;
 
 		for (const [index, server] of upstreamServers.entries()) {
-			if (index > 0 && server.port == null && firstPort != null) {
+			const serverPortIsUnset = server.port === null || server.port === undefined;
+
+			if (index > 0 && serverPortIsUnset && firstPortIsSet) {
 				server.port = firstPort;
 			}
 		}

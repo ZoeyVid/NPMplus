@@ -5,7 +5,7 @@ import { migrate as logger } from "../logger.js";
 
 const FORWARD_PATH_SCHEMES = ["http", "https"];
 const NETWORK_PROXY_SCHEMES = ["http", "https", "grpc", "grpcs"];
-const NUMERIC_PORT_REGEX = /^[0-9]+$/;
+const NUMERIC_PORT_REGEX = /^[0-9]+$/u;
 
 const migrationReportDirectory = "/data/npmplus/backups";
 const migrateName = "proxy_host_upstream";
@@ -20,7 +20,7 @@ const writeDiscardedPathReport = async (discardedPaths) => {
 		mode: 0o700,
 	});
 
-	const date = new Date().toISOString().replace(/[:.]/g, "-");
+	const date = new Date().toISOString().replace(/[:.]/gu, "-");
 	const reportPath = join(migrationReportDirectory, `proxy-host-load-balancing-discarded-paths-${date}.json`);
 
 	await writeFile(
