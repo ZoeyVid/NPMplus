@@ -50,7 +50,7 @@ const validateEmail = () => (value) => {
 	}
 };
 
-const validateDomain = (allowWildcards, forCertificate) => (input) => {
+const validateDomain = (input, allowWildcards, forCertificate) => {
 	const domain = input.trim();
 	if (!forCertificate) return domainPattern.test(domain);
 	return (
@@ -60,7 +60,6 @@ const validateDomain = (allowWildcards, forCertificate) => (input) => {
 };
 
 const validateDomains = (value, allowWildcards, forCertificate) => {
-	const vDom = validateDomain(allowWildcards, forCertificate);
 	const maxDomains = forCertificate ? 25 : 100;
 
 	if (!value?.length) {
@@ -73,7 +72,7 @@ const validateDomains = (value, allowWildcards, forCertificate) => {
 
 	// validate each domain
 	for (const domain of value) {
-		if (!vDom(domain)) {
+		if (!validateDomain(domain, allowWildcards, forCertificate)) {
 			return intl.formatMessage({ id: "error.invalid-domain" }, { domain });
 		}
 	}
