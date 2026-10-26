@@ -48,13 +48,16 @@ export function DomainNamesField({
 						unstyled
 						classNames={selectClassNames}
 						name={field.name}
-						id={id}
+						inputId={id}
 						closeMenuOnSelect={true}
 						isClearable={false}
-						isValidNewOption={validateDomain(
-							isWildcardPermitted && dnsProviderWildcardSupported,
-							forCertificate,
-						)}
+						isValidNewOption={(input, selected) =>
+							validateDomain(
+								input,
+								isWildcardPermitted && dnsProviderWildcardSupported,
+								forCertificate,
+							) && !selected.some(({ value }) => value.toLowerCase() === input.trim().toLowerCase())
+						}
 						isMulti
 						required
 						placeholder={intl.formatMessage({ id: "domain-names.placeholder" })}
