@@ -16,7 +16,13 @@ import Popover from "react-bootstrap/Popover";
 import { flushSync } from "react-dom";
 import { AccessFields } from "src/components";
 import { intl, T } from "src/locale";
-import { forwardDestination, forwardSearchText, forwardSummary, populatedUpstreams } from "src/modules/Forward";
+import {
+	forwardDestination,
+	forwardSearchText,
+	forwardSummary,
+	isHttpForwardScheme,
+	populatedUpstreams,
+} from "src/modules/Forward";
 import { upstreamUrlPattern } from "src/modules/Validations";
 import { ForwardHostFields } from "./ForwardHostFields";
 
@@ -406,7 +412,7 @@ export function LocationsFields({ initialValues, name = "locations" }) {
 													className="form-check form-check-single form-switch"
 													title={
 														item.npmplusCrowdsecAppsec ||
-														!["http", "https"].includes(item.forwardScheme)
+														!isHttpForwardScheme(item.forwardScheme)
 															? undefined
 															: intl.formatMessage({
 																	id: "host.flags.disable-request-buffering.requires-appsec",
@@ -429,7 +435,7 @@ export function LocationsFields({ initialValues, name = "locations" }) {
 														}
 														disabled={
 															!item.npmplusCrowdsecAppsec ||
-															!["http", "https"].includes(item.forwardScheme)
+															!isHttpForwardScheme(item.forwardScheme)
 														}
 													/>
 												</span>
@@ -460,7 +466,7 @@ export function LocationsFields({ initialValues, name = "locations" }) {
 																e.target.checked,
 															)
 														}
-														disabled={!["http", "https"].includes(item.forwardScheme)}
+														disabled={!isHttpForwardScheme(item.forwardScheme)}
 													/>
 												</span>
 											</span>

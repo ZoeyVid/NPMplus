@@ -2,12 +2,11 @@ import cn from "clsx";
 import OverlayTrigger from "react-bootstrap/OverlayTrigger";
 import Popover from "react-bootstrap/Popover";
 import { T } from "src/locale";
-import { forwardDestination, hasCustomUpstream, isCustomUpstream } from "src/modules/Forward";
+import { forwardDestination, hasCustomUpstream, isCustomUpstream, isNetworkForwardScheme } from "src/modules/Forward";
 
 const ForwardHostLink = ({ item, server, streams }) => {
 	const destination = forwardDestination(item, server, { streams });
-	const isNetworkDestination =
-		!streams && ["http", "https", "grpc", "grpcs"].includes(item.forwardScheme);
+	const isNetworkDestination = !streams && isNetworkForwardScheme(item.forwardScheme);
 
 	return isNetworkDestination ? (
 		<a href={destination} target="_blank" rel="noopener" className={cn("badge")}>

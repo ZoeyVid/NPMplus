@@ -19,6 +19,7 @@ import {
 import { useDirectorySuggestions, useProxyHost, useProxyHosts, useSetProxyHost } from "src/hooks";
 import { intl, T } from "src/locale";
 import EasyModal from "src/modules/easyModal";
+import { isHttpForwardScheme } from "src/modules/Forward";
 import { MANAGE, PROXY_HOSTS } from "src/modules/Permissions";
 import { showTabOfInvalid, validateUpstreamUrl } from "src/modules/Validations";
 import { showObjectSuccess } from "src/notifications";
@@ -345,7 +346,7 @@ const ProxyHostModal = EasyModal.create(({ id, isClone, visible, remove }) => {
 																				className="form-check form-check-single form-switch"
 																				title={
 																					form.values.npmplusCrowdsecAppsec ||
-																					!["http", "https"].includes(
+																					!isHttpForwardScheme(
 																						form.values.forwardScheme,
 																					)
 																						? undefined
@@ -364,7 +365,7 @@ const ProxyHostModal = EasyModal.create(({ id, isClone, visible, remove }) => {
 																					disabled={
 																						!form.values
 																							.npmplusCrowdsecAppsec ||
-																						!["http", "https"].includes(
+																						!isHttpForwardScheme(
 																							form.values.forwardScheme,
 																						)
 																					}
