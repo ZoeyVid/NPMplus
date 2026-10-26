@@ -1,6 +1,6 @@
 import { chmod, mkdir, readdir, unlink } from "node:fs/promises";
 import { join } from "node:path";
-import { backup, DatabaseSync } from "node:sqlite";
+import { backup as backupDatabase, DatabaseSync } from "node:sqlite";
 import db from "./db.js";
 import { isSqlite } from "./lib/config.js";
 import { migrate as logger } from "./logger.js";
@@ -46,7 +46,7 @@ const createMigrationBackup = async () => {
 	const sqlite = new DatabaseSync(databaseFile, { readOnly: true });
 
 	try {
-		await backup(sqlite, currentBackup);
+		await backupDatabase(sqlite, currentBackup);
 		await chmod(currentBackup, 0o600);
 		logger.info(`Created pre-migration database backup: ${currentBackup}`);
 	} catch (err) {

@@ -31,10 +31,10 @@
 					"type": "object",
 					"allOf": [
 						{
-							"$ref": "../../../components/load-balancing.json#/$defs/partialLoadBalanceMethodRequirement"
+							"$ref": "../../../../components/load-balancing.json#/$defs/partialLoadBalanceMethodRequirement"
 						},
 						{
-							"$ref": "../../../common.json#/properties/stream_update_rules"
+							"$ref": "../../../../common.json#/properties/stream_update_rules"
 						}
 					],
 					"additionalProperties": false,
