@@ -6,13 +6,15 @@ import { forwardDestination, hasCustomUpstream, isCustomUpstream } from "src/mod
 
 const ForwardHostLink = ({ item, server, streams }) => {
 	const destination = forwardDestination(item, server, { streams });
+	const isNetworkDestination =
+		!streams && ["http", "https", "grpc", "grpcs"].includes(item.forwardScheme);
 
-	return streams ? (
-		<span>{destination}</span>
-	) : (
+	return isNetworkDestination ? (
 		<a href={destination} target="_blank" rel="noopener" className={cn("badge")}>
 			{destination}
 		</a>
+	) : (
+		<span>{destination}</span>
 	);
 };
 
