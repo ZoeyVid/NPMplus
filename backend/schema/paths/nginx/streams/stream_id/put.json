@@ -33,14 +33,12 @@
 					"allOf": [
 						{
 							"$ref": "../../../../components/load-balancing.json#/$defs/partialLoadBalanceMethodRequirement"
-						}
-					],
-					"additionalProperties": false,
-					"allOf": [
+						},
 						{
 							"$ref": "../../../../common.json#/properties/stream_update_rules"
 						}
 					],
+					"additionalProperties": false,
 					"minProperties": 1,
 					"properties": {
 						"incoming_port": {
