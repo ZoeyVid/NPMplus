@@ -3,6 +3,7 @@ import streamModel from "../models/stream.js";
 import internalAuditLog from "./audit-log.js";
 import internalCertificate from "./certificate.js";
 import internalNginx from "./nginx.js";
+import internalUpstreamServers from "./upstream-servers.js";
 
 const cleanStreamData = (data, existingData) => {
 	const combinedData = { ...existingData, ...data };
@@ -54,6 +55,8 @@ const internalStream = {
 		access.can("streams:manage");
 
 		thisData.owner_user_id = access.token.getUserId(1);
+		internalUpstreamServers.cleanUpstreamServers(thisData);
+		internalUpstreamServers.validateLoadBalancing(thisData, {}, true);
 
 		if (createCertificate) {
 			thisData.certificate_id = (await internalCertificate.createQuickCertificate(access, thisData)).id;
@@ -114,6 +117,8 @@ const internalStream = {
 			// update host with cert id
 			thisData.certificate_id = cert.id;
 		}
+		internalUpstreamServers.cleanUpstreamServers(thisData);
+		internalUpstreamServers.validateLoadBalancing(thisData, existingRow, true);
 
 		await streamModel.query().where({ id: thisData.id }).patch(thisData);
 

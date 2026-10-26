@@ -7,6 +7,7 @@ import internalCertificate from "./certificate.js";
 import internalHost from "./host.js";
 import internalNginx from "./nginx.js";
 import internalProxyHostAccessList from "./proxy-host-access-list.js";
+import internalUpstreamServers from "./upstream-servers.js";
 
 const replaceLocationsAndAccessLists = async (trx, proxyHostId, data) => {
 	const insertAccessLists = async (locationId, accessListIds) => {
@@ -36,7 +37,6 @@ const replaceLocationsAndAccessLists = async (trx, proxyHostId, data) => {
 const cleanForwardOptions = (item) => {
 	const scheme = item.forward_scheme ?? "http";
 	if (scheme !== "empty") {
-		if (!item.forward_host) throw new errs.ValidationError(`Forward host is required for the ${scheme} scheme`);
 		if (!["http", "https"].includes(scheme)) {
 			item.npmplus_proxy_request_buffering = false;
 			item.npmplus_proxy_response_buffering = false;
@@ -90,6 +90,13 @@ const internalProxyHost = {
 			throw new errs.ValidationError("Location paths can not be empty");
 		}
 		await internalProxyHostAccessList.validateAccessLists(access, thisData);
+		// for UX if the user put a host as host/path and left forward_path blank, then split
+		// split it automatically, but only for the first item. Validation later will catch
+		// invalid data.
+		// E.g. host="10.0.0.1/some/path", forward_path="" -> host="10.0.0.1",forward_path="/some/path"
+		thisData = internalUpstreamServers.splitHostAndPath(thisData);
+		thisData = internalUpstreamServers.cleanUpstreamServers(thisData);
+		internalUpstreamServers.validateLoadBalancing(thisData);
 
 		if (createCertificate) {
 			thisData.certificate_id = (await internalCertificate.createQuickCertificate(access, thisData)).id;
@@ -168,6 +175,14 @@ const internalProxyHost = {
 			throw new errs.ValidationError("Location paths can not be empty");
 		}
 		await internalProxyHostAccessList.validateAccessLists(access, thisData);
+		// for UX if the user put a host as host/path and left forward_path blank, then split
+		// split it automatically, but only for the first item. Validation later will catch
+		// invalid data.
+		// E.g. host="10.0.0.1/some/path", forward_path="" -> host="10.0.0.1",forward_path="/some/path"
+		thisData = internalUpstreamServers.splitHostAndPath(thisData, existingRow);
+		// always remove the load balance method if there is only 1 item in the array
+		thisData = internalUpstreamServers.cleanUpstreamServers(thisData);
+		internalUpstreamServers.validateLoadBalancing(thisData, existingRow);
 
 		if (createCertificate) {
 			const cert = await internalCertificate.createQuickCertificate(access, {

@@ -884,28 +884,6 @@
 					"if": {
 						"properties": {
 							"forward_scheme": {
-								"const": "empty"
-							}
-						},
-						"required": [
-							"forward_scheme"
-						]
-					},
-					"else": {
-						"required": [
-							"forward_host"
-						],
-						"properties": {
-							"forward_host": {
-								"minLength": 1
-							}
-						}
-					}
-				},
-				{
-					"if": {
-						"properties": {
-							"forward_scheme": {
 								"enum": [
 									"grpc",
 									"grpcs",
@@ -1056,27 +1034,6 @@
 		},
 		"proxy_update_rules": {
 			"allOf": [
-				{
-					"if": {
-						"properties": {
-							"forward_scheme": {
-								"not": {
-									"const": "empty"
-								}
-							}
-						},
-						"required": [
-							"forward_scheme"
-						]
-					},
-					"then": {
-						"properties": {
-							"forward_host": {
-								"minLength": 1
-							}
-						}
-					}
-				},
 				{
 					"if": {
 						"properties": {

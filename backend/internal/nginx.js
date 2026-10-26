@@ -9,6 +9,37 @@ import internalProxyHostAccessList from "./proxy-host-access-list.js";
 const controlApi = new Client("http://localhost", { connect: { socketPath: "/run/nginx-control.sock" } });
 const authRequestProviders = ["anubis", "tinyauth", "oauth2proxy", "voidauth", "authelia", "authentik"];
 
+const NETWORK_PROXY_SCHEMES = ["http", "https", "grpc", "grpcs"];
+
+const setForwardUpstreamName = (serverHost, generatedName) => {
+	const firstServer = serverHost.npmplus_upstream_servers?.[0];
+	const customUpstream = firstServer?.custom === true;
+
+	serverHost.forward_upstream_name = customUpstream ? firstServer.host : generatedName;
+	return customUpstream;
+};
+
+const prepareUpstreamServers = (serverHost) => {
+	const upstreamServers = serverHost.npmplus_upstream_servers;
+
+	if (Array.isArray(upstreamServers) && upstreamServers.length > 0) {
+		const firstPort = upstreamServers[0].port;
+		const firstPortIsSet = firstPort !== null && firstPort !== undefined;
+
+		for (const [index, server] of upstreamServers.entries()) {
+			const serverPortIsUnset = server.port === null || server.port === undefined;
+
+			if (index > 0 && serverPortIsUnset && firstPortIsSet) {
+				server.port = firstPort;
+			}
+		}
+	}
+
+	for (const location of serverHost.locations || []) {
+		prepareUpstreamServers(location);
+	}
+};
+
 const internalNginx = {
 	/**
 	 * This will:
@@ -127,22 +158,7 @@ const internalNginx = {
 				continue;
 			}
 
-			if (
-				location.forward_host?.includes("/") &&
-				!location.forward_host.startsWith("/") &&
-				!location.forward_host.startsWith("unix")
-			) {
-				const split = location.forward_host.split("/");
-
-				location.forward_host = split.shift();
-				location.forward_path = `/${split.join("/")}`;
-			}
-
-			if (location.forward_host?.startsWith("cu_")) {
-				location.forward_upstream_name = location.forward_host;
-			} else {
-				location.forward_upstream_name = `upstream_${host.id}_location_${idx}`;
-			}
+			setForwardUpstreamName(location, `upstream_${host.id}_location_${idx}`);
 			if (["~ ", "~* "].includes(location.location_type)) {
 				location.path = `"${location.path.replaceAll('"', '\\"')}"`;
 			}
@@ -165,21 +181,9 @@ const internalNginx = {
 		const renderEngine = utils.getRenderEngine();
 		let renderedUpstreams = "";
 
-		if (["http", "https", "grpc", "grpcs"].includes(host.forward_scheme)) {
-			if (
-				host.forward_host?.includes("/") &&
-				!host.forward_host.startsWith("/") &&
-				!host.forward_host.startsWith("unix")
-			) {
-				const split = host.forward_host.split("/");
-				host.forward_host = split.shift();
-				host.forward_path = `/${split.join("/")}`;
-			}
-
-			if (host.forward_host?.startsWith("cu_")) {
-				host.forward_upstream_name = host.forward_host;
-			} else {
-				host.forward_upstream_name = `upstream_${host.id}`;
+		if (NETWORK_PROXY_SCHEMES.includes(host.forward_scheme)) {
+			const customUpstream = setForwardUpstreamName(host, `upstream_${host.id}`);
+			if (!customUpstream) {
 				renderedUpstreams += await renderEngine.parseAndRender(template, host);
 			}
 		}
@@ -189,24 +193,11 @@ const internalNginx = {
 				continue;
 			}
 
-			if (!["http", "https", "grpc", "grpcs"].includes(location.forward_scheme)) {
+			if (!NETWORK_PROXY_SCHEMES.includes(location.forward_scheme)) {
 				continue;
 			}
-
-			if (
-				location.forward_host?.includes("/") &&
-				!location.forward_host.startsWith("/") &&
-				!location.forward_host.startsWith("unix")
-			) {
-				const split = location.forward_host.split("/");
-				location.forward_host = split.shift();
-				location.forward_path = `/${split.join("/")}`;
-			}
-
-			if (location.forward_host?.startsWith("cu_")) {
-				location.forward_upstream_name = location.forward_host;
-			} else {
-				location.forward_upstream_name = `upstream_${host.id}_location_${idx}`;
+			const customUpstream = setForwardUpstreamName(location, `upstream_${host.id}_location_${idx}`);
+			if (!customUpstream) {
 				renderedUpstreams += await renderEngine.parseAndRender(template, location);
 			}
 		}
@@ -229,15 +220,7 @@ const internalNginx = {
 
 		host.env = process.env;
 
-		if (
-			host.forward_host?.includes("/") &&
-			!host.forward_host.startsWith("/") &&
-			!host.forward_host.startsWith("unix")
-		) {
-			const split = host.forward_host.split("/");
-			host.forward_host = split.shift();
-			host.forward_path = `/${split.join("/")}`;
-		}
+		prepareUpstreamServers(host);
 
 		if (host.domain_names) {
 			host.server_names = host.domain_names.map((domain_name) => domainToASCII(domain_name) || domain_name);

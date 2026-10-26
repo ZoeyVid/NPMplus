@@ -11,11 +11,20 @@ import {
 import cn from "clsx";
 import { useFormikContext } from "formik";
 import { useRef, useState } from "react";
+import OverlayTrigger from "react-bootstrap/OverlayTrigger";
+import Popover from "react-bootstrap/Popover";
 import { flushSync } from "react-dom";
 import { AccessFields } from "src/components";
 import { intl, T } from "src/locale";
-import { forwardSummary } from "src/modules/Forward";
+import {
+	forwardDestination,
+	forwardSearchText,
+	forwardSummary,
+	isHttpForwardScheme,
+	populatedUpstreams,
+} from "src/modules/Forward";
 import { upstreamUrlPattern } from "src/modules/Validations";
+import { ForwardHostFields } from "./ForwardHostFields";
 
 export function LocationsFields({ initialValues, name = "locations" }) {
 	const nextUiKey = useRef(0);
@@ -25,8 +34,20 @@ export function LocationsFields({ initialValues, name = "locations" }) {
 		locationType: "",
 		advancedConfig: "",
 		forwardScheme: "http",
-		forwardHost: "",
-		forwardPort: "",
+		npmplusLoadBalanceMethod: "round_robin",
+		npmplusUpstreamServers: [
+			{
+				host: "",
+				port: null,
+				weight: null,
+				maxFails: null,
+				maxConns: null,
+				failTimeout: null,
+				backup: false,
+				down: false,
+				custom: false,
+			},
+		],
 		npmplusAccessListIds: [],
 		npmplusNoindex: false,
 		npmplusCrowdsecAppsec: false,
@@ -38,6 +59,7 @@ export function LocationsFields({ initialValues, name = "locations" }) {
 		npmplusAuthRequest: "none",
 		npmplusAuthRequestUpstream: "",
 		npmplusAccessListType: "global",
+		id: null,
 		...item,
 		uiKey: nextUiKey.current++,
 	});
@@ -54,6 +76,7 @@ export function LocationsFields({ initialValues, name = "locations" }) {
 	const handleAdd = () => {
 		const item = createUiLocation();
 		const newValues = [...values, item];
+		setFormField(newValues);
 		setValues(newValues);
 		setExpanded([...expanded, item.uiKey]);
 		setFilter("");
@@ -78,17 +101,6 @@ export function LocationsFields({ initialValues, name = "locations" }) {
 			if (field === "npmplusAuthRequest" && fieldValue === "none") {
 				updatedLocation.npmplusAuthRequestUpstream = "";
 			}
-			if (field === "forwardScheme" && fieldValue !== "empty") {
-				if (!["http", "https"].includes(fieldValue)) {
-					updatedLocation.npmplusProxyRequestBuffering = false;
-					updatedLocation.npmplusProxyResponseBuffering = false;
-				}
-				if (fieldValue === "path") {
-					updatedLocation.npmplusUpstreamCompression = false;
-				} else {
-					updatedLocation.npmplusFancyindex = false;
-				}
-			}
 			return updatedLocation;
 		});
 		setValues(newValues);
@@ -107,16 +119,41 @@ export function LocationsFields({ initialValues, name = "locations" }) {
 	};
 
 	const setFormField = (newValues) => {
-		const filtered = newValues.filter((v) => v?.path?.trim() !== "").map(({ uiKey, ...rest }) => rest);
+		const filtered = newValues.map(({ uiKey, ...rest }) => rest);
 		void setFieldValue(name, filtered);
 	};
 
 	const isOpen = (item) => expanded.includes(item.uiKey);
 
-	const locationLabel = (item) => `${item.locationType}${item.path}`;
+	const locationLabel = (item) => `${item.locationType ?? ""}${item.path ?? ""}`;
 
 	const matchesFilter = (item) =>
-		`${locationLabel(item)} ${forwardSummary(item)}`.toLowerCase().includes(filter.trim().toLowerCase());
+		`${locationLabel(item)} ${forwardSearchText(item)}`.toLowerCase().includes(filter.trim().toLowerCase());
+
+	const handleForwardFieldsChange = (idx, changes) => {
+		const newValues = values.map((location, locationIdx) => {
+			if (locationIdx !== idx) {
+				return location;
+			}
+			return {
+				...location,
+				...changes,
+			};
+		});
+
+		setValues(newValues);
+		setFormField(newValues);
+	};
+
+	const forwardPopover = (item) => (
+		<Popover id={`location-upstreams-${item.uiKey}`}>
+			<Popover.Body>
+				{populatedUpstreams(item).map((server, index) => (
+					<div key={`${server.host}-${server.port}-${index}`}>{forwardDestination(item, server)}</div>
+				))}
+			</Popover.Body>
+		</Popover>
+	);
 
 	if (values.length === 0) {
 		return (
@@ -192,7 +229,13 @@ export function LocationsFields({ initialValues, name = "locations" }) {
 						>
 							{isOpen(item) ? <IconChevronDown size={16} /> : <IconChevronRight size={16} />}
 							<span className="ms-2 fw-medium text-truncate">{locationLabel(item)}</span>
-							<span className="ms-2 text-secondary text-truncate">{forwardSummary(item)}</span>
+							{populatedUpstreams(item).length > 2 ? (
+								<OverlayTrigger trigger="hover" placement="bottom" overlay={forwardPopover(item)}>
+									<span className="ms-2 text-secondary text-truncate">{forwardSummary(item)}</span>
+								</OverlayTrigger>
+							) : (
+								<span className="ms-2 text-secondary text-truncate">{forwardSummary(item)}</span>
+							)}
 							{item.advancedConfig?.trim() && (
 								<span
 									className="ms-2 text-secondary d-flex align-items-center flex-shrink-0"
@@ -266,9 +309,9 @@ export function LocationsFields({ initialValues, name = "locations" }) {
 										className="form-control"
 										placeholder="/path"
 										autoComplete="off"
-										required
 										pattern="\S{1,255}"
 										value={item.path}
+										required
 										onChange={(e) => handleChange(idx, "path", e.target.value)}
 									/>
 								</div>
@@ -292,60 +335,17 @@ export function LocationsFields({ initialValues, name = "locations" }) {
 							</p>
 						)}
 						<div className="row">
-							<div className="col-md-3">
-								<div className="mb-3">
-									<label className="form-label" htmlFor={`forwardScheme-${item.uiKey}`}>
-										<T id="host.forward-scheme" />
-									</label>
-									<select
-										id={`forwardScheme-${item.uiKey}`}
-										className="form-control"
-										value={item.forwardScheme}
-										onChange={(e) => handleChange(idx, "forwardScheme", e.target.value)}
-									>
-										<option value="http">http://</option>
-										<option value="https">https://</option>
-										<option value="path">path: </option>
-										<option value="empty">empty</option>
-										<option value="grpc">grpc://</option>
-										<option value="grpcs">grpcs://</option>
-									</select>
-								</div>
-							</div>
-							<div className="col-md-6">
-								<div className="mb-3">
-									<label className="form-label" htmlFor={`forwardHost-${item.uiKey}`}>
-										<T id="proxy-host.forward-host-path" />
-									</label>
-									<input
-										id={`forwardHost-${item.uiKey}`}
-										type="text"
-										className="form-control"
-										required={item.forwardScheme !== "empty"}
-										pattern="(?=\S{0,255}$)[^\s\/]{0,253}(\/\S*)?"
-										placeholder="eg: 10.0.0.1/path/"
-										value={item.forwardHost}
-										onChange={(e) => handleChange(idx, "forwardHost", e.target.value)}
-									/>
-								</div>
-							</div>
-							<div className="col-md-3">
-								<div className="mb-3">
-									<label className="form-label" htmlFor={`forwardPort-${item.uiKey}`}>
-										<T id="host.forward-port" />
-									</label>
-									<input
-										id={`forwardPort-${item.uiKey}`}
-										type="number"
-										min={1}
-										max={65535}
-										className="form-control"
-										placeholder="eg: 8081"
-										value={item.forwardPort || ""}
-										onChange={(e) => handleChange(idx, "forwardPort", e.target.value)}
-									/>
-								</div>
-							</div>
+							<ForwardHostFields
+								idPrefix={`location-${item.uiKey}`}
+								namePrefix={`${name}[${idx}]`}
+								scheme={item.forwardScheme}
+								initialForwardPath={item.npmplusForwardPath}
+								loadBalanceMethod={item.npmplusLoadBalanceMethod}
+								loadBalanceMethodFieldName={`${name}[${idx}].npmplusLoadBalanceMethod`}
+								upstreamServers={item.npmplusUpstreamServers}
+								onChange={(next) => handleForwardFieldsChange(idx, next)}
+								streams={false}
+							/>
 
 							<div className="my-3">
 								<h4 className="py-2">
@@ -412,7 +412,7 @@ export function LocationsFields({ initialValues, name = "locations" }) {
 													className="form-check form-check-single form-switch"
 													title={
 														item.npmplusCrowdsecAppsec ||
-														!["http", "https"].includes(item.forwardScheme)
+														!isHttpForwardScheme(item.forwardScheme)
 															? undefined
 															: intl.formatMessage({
 																	id: "host.flags.disable-request-buffering.requires-appsec",
@@ -435,7 +435,7 @@ export function LocationsFields({ initialValues, name = "locations" }) {
 														}
 														disabled={
 															!item.npmplusCrowdsecAppsec ||
-															!["http", "https"].includes(item.forwardScheme)
+															!isHttpForwardScheme(item.forwardScheme)
 														}
 													/>
 												</span>
@@ -466,7 +466,7 @@ export function LocationsFields({ initialValues, name = "locations" }) {
 																e.target.checked,
 															)
 														}
-														disabled={!["http", "https"].includes(item.forwardScheme)}
+														disabled={!isHttpForwardScheme(item.forwardScheme)}
 													/>
 												</span>
 											</span>
