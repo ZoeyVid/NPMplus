@@ -19,7 +19,13 @@ import { flushSync } from "react-dom";
 import { AccessFields } from "src/components";
 import { useUser } from "src/hooks";
 import { intl, T } from "src/locale";
-import { forwardDestination, forwardSearchText, forwardSummary, populatedUpstreams } from "src/modules/Forward";
+import {
+	forwardDestination,
+	forwardSearchText,
+	forwardSummary,
+	isHttpForwardScheme,
+	populatedUpstreams,
+} from "src/modules/Forward";
 import { isAdminTarget, validateUpstreamUrl } from "src/modules/Validations";
 import { ForwardHostFields } from "./ForwardHostFields";
 
@@ -63,7 +69,7 @@ export const createUiLocation = (item) => ({
 });
 
 const requestBufferingTitle = ({ npmplusDisableCrowdsecAppsec, forwardScheme }) => {
-	if (!npmplusDisableCrowdsecAppsec && ["http", "https"].includes(forwardScheme)) {
+	if (!npmplusDisableCrowdsecAppsec && isHttpForwardScheme(forwardScheme)) {
 		return intl.formatMessage({ id: "host.flags.disable-request-buffering.requires-appsec" });
 	}
 	return null;
@@ -485,9 +491,7 @@ export function LocationsFields({ name = "locations", disabled, isClone }) {
 																			{...field}
 																			disabled={
 																				!item.npmplusDisableCrowdsecAppsec ||
-																				!["http", "https"].includes(
-																					item.forwardScheme,
-																				)
+																				!isHttpForwardScheme(item.forwardScheme)
 																			}
 																		/>
 																	)}
@@ -514,11 +518,7 @@ export function LocationsFields({ name = "locations", disabled, isClone }) {
 																		className="form-select"
 																		required
 																		{...field}
-																		disabled={
-																			!["http", "https"].includes(
-																				item.forwardScheme,
-																			)
-																		}
+																		disabled={!isHttpForwardScheme(item.forwardScheme)}
 																	>
 																		<option value="on_auto">
 																			<T id="host.flags.response-buffering.on-auto" />

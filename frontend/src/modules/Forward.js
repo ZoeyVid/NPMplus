@@ -1,5 +1,12 @@
-const NETWORK_FORWARD_SCHEMES = ["http", "https", "grpc", "grpcs"];
-const FORWARD_PATH_SCHEMES = ["http", "https"];
+
+const HTTP_FORWARD_SCHEMES = ["http", "https"];
+const GRPC_FORWARD_SCHEMES = ["grpc", "grpcs"];
+const TLS_FORWARD_SCHEMES = ["https", "grpcs"];
+const NETWORK_FORWARD_SCHEMES = [...HTTP_FORWARD_SCHEMES, ...GRPC_FORWARD_SCHEMES];
+
+const isNetworkForwardScheme = (scheme) => NETWORK_FORWARD_SCHEMES.includes(scheme);
+const isHttpForwardScheme = (scheme) => HTTP_FORWARD_SCHEMES.includes(scheme);
+const isTlsForwardScheme = (scheme) => TLS_FORWARD_SCHEMES.includes(scheme);
 
 const populatedUpstreams = ({ npmplusUpstreamServers = [] }) => npmplusUpstreamServers.filter((server) => server?.host);
 
@@ -14,8 +21,8 @@ const forwardDestination = ({ forwardScheme, npmplusForwardPath }, server, { str
 		return `${server.host}${port}`;
 	}
 
-	if (NETWORK_FORWARD_SCHEMES.includes(forwardScheme)) {
-		const path = FORWARD_PATH_SCHEMES.includes(forwardScheme) ? (npmplusForwardPath ?? "") : "";
+	if (isNetworkForwardScheme(forwardScheme)) {
+		const path = isHttpForwardScheme(forwardScheme) ? (npmplusForwardPath ?? "") : "";
 		return `${forwardScheme}://${server.host}${port}${path}`;
 	}
 
@@ -46,5 +53,8 @@ export {
 	hasCustomUpstream,
 	isCustomUpstream,
 	isCustomUpstreamServer,
+	isHttpForwardScheme,
+	isNetworkForwardScheme,
+	isTlsForwardScheme,
 	populatedUpstreams,
 };

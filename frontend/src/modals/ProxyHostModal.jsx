@@ -20,13 +20,14 @@ import {
 import { useDirectorySuggestions, useProxyHost, useProxyHosts, useSetProxyHost, useUser } from "src/hooks";
 import { intl, T } from "src/locale";
 import EasyModal from "src/modules/easyModal";
+import { isHttpForwardScheme } from "src/modules/Forward";
 import { hasPermission, MANAGE, PROXY_HOSTS } from "src/modules/Permissions";
 import { showTabOfInvalid, validateUpstreamUrl } from "src/modules/Validations";
 import { showObjectSuccess } from "src/notifications";
 import { CleanLoadBalanceMethod, CleanUpstreamServers, ForwardHostFields } from "../components/Form/ForwardHostFields";
 
 const requestBufferingTitle = ({ npmplusDisableCrowdsecAppsec, forwardScheme }) => {
-	if (!npmplusDisableCrowdsecAppsec && ["http", "https"].includes(forwardScheme)) {
+	if (!npmplusDisableCrowdsecAppsec && isHttpForwardScheme(forwardScheme)) {
 		return intl.formatMessage({ id: "host.flags.disable-request-buffering.requires-appsec" });
 	}
 	return null;
@@ -343,7 +344,7 @@ const ProxyHostModal = EasyModal.create(({ id, isClone, visible, remove, close, 
 																					disabled={
 																						!form.values
 																							.npmplusDisableCrowdsecAppsec ||
-																						!["http", "https"].includes(
+																						!isHttpForwardScheme(
 																							form.values.forwardScheme,
 																						)
 																					}

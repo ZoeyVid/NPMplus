@@ -14,7 +14,14 @@ import OverlayTrigger from "react-bootstrap/OverlayTrigger";
 import Popover from "react-bootstrap/Popover";
 import { flushSync } from "react-dom";
 import { intl, T } from "src/locale";
-import { forwardDestination, hasCustomUpstream, isCustomUpstream, isCustomUpstreamServer } from "src/modules/Forward";
+import {
+	forwardDestination,
+	hasCustomUpstream,
+	isCustomUpstream,
+	isCustomUpstreamServer,
+	isHttpForwardScheme,
+	isTlsForwardScheme,
+} from "src/modules/Forward";
 import { validateNumber } from "src/modules/Validations";
 
 const BACKUP_INCOMPATIBLE_METHODS = [
@@ -28,8 +35,6 @@ const BACKUP_INCOMPATIBLE_METHODS = [
 	"random_two_least_time_first_byte",
 	"random_two_least_time_last_byte",
 ];
-const FORWARD_PATH_SCHEMES = ["http", "https"];
-const TLS_FORWARD_SCHEMES = ["https", "grpcs"];
 
 const NGINX_TIME_SYNTAX_REGEX = "^[1-9]\\d*\\s*(?:ms|s|m|h|d|w|M|y)?$";
 const NUMERIC_PATTERN = "^[0-9]*$";
@@ -162,7 +167,7 @@ export function ForwardHostFields({
 	const usesImplicitTlsDefaultPort =
 		!streams &&
 		!customUpstream &&
-		TLS_FORWARD_SCHEMES.includes(scheme) &&
+		isTlsForwardScheme(scheme) &&
 		servers.some((server, idx) => {
 			if (!server?.host || server.custom) {
 				return false;
@@ -291,12 +296,12 @@ export function ForwardHostFields({
 
 	const handleSchemeChange = (newScheme) => {
 		const changes = { forwardScheme: newScheme };
-		if (!FORWARD_PATH_SCHEMES.includes(newScheme)) {
+		if (!isHttpForwardScheme(newScheme)) {
 			setForwardPath(null);
 			changes.npmplusForwardPath = null;
 		}
 		if (newScheme !== "empty") {
-			if (!["http", "https"].includes(newScheme)) {
+			if (!isHttpForwardScheme(newScheme)) {
 				changes.npmplusProxyRequestBuffering = false;
 				changes.npmplusProxyResponseBuffering = false;
 			}
@@ -470,7 +475,7 @@ export function ForwardHostFields({
 						)}
 					</Field>
 				) : null}
-				{streams || !FORWARD_PATH_SCHEMES.includes(scheme) ? null : (
+				{streams || !isHttpForwardScheme(scheme) ? null : (
 					<div className="col-md-4">
 						<Field name={fieldName("npmplusForwardPath")}>
 							{({ field, meta }) => (
