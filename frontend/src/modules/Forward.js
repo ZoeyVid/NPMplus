@@ -1,4 +1,3 @@
-
 const HTTP_FORWARD_SCHEMES = ["http", "https"];
 const GRPC_FORWARD_SCHEMES = ["grpc", "grpcs"];
 const TLS_FORWARD_SCHEMES = ["https", "grpcs"];

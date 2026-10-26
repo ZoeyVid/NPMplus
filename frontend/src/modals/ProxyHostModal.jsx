@@ -115,8 +115,7 @@ const ProxyHostModal = EasyModal.create(({ id, isClone, visible, remove, close, 
 				...loc, 
 				// remove entries that are null or undefined or empty to pass schema validation
 				npmplusUpstreamServers: CleanUpstreamServers(loc.npmplusUpstreamServers),
-				npmplusAccessListIds:
-					location.npmplusAccessListType === "custom" ? location.npmplusAccessListIds : [],
+				npmplusAccessListIds: loc.npmplusAccessListType === "custom" ? (loc.npmplusAccessListIds ?? []) : [],
 			};
 			newLoc = CleanLoadBalanceMethod(newLoc);
 			if (!newLoc.npmplusForwardPath) {

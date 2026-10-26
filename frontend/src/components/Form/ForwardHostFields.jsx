@@ -39,8 +39,8 @@ const BACKUP_INCOMPATIBLE_METHODS = [
 const NGINX_TIME_SYNTAX_REGEX = "^[1-9]\\d*\\s*(?:ms|s|m|h|d|w|M|y)?$";
 const NUMERIC_PATTERN = "^[0-9]*$";
 const SERVER_PORT_PATTERN = `${NUMERIC_PATTERN}|\\$server_port`;
-const IPV6_WITH_PORT_REGEX = /^\[[^\]]+\]:\d+$/;
-const HOST_WITH_PORT_REGEX = /^[^:]+:\d+$/;
+const IPV6_WITH_PORT_REGEX = /^\[[^\]]+\]:\d+$/u;
+const HOST_WITH_PORT_REGEX = /^[^:]+:\d+$/u;
 
 function InfoPopover({ messageId }) {
 	const popover = (
@@ -84,7 +84,7 @@ const numberOrNull = (value, currentValue, allowText = false) => {
 		return null;
 	}
 	// specifying "$server_port" literal supports only 1 upstream being specified
-	if (new RegExp(NUMERIC_PATTERN).test(value)) {
+	if (new RegExp(NUMERIC_PATTERN, "u").test(value)) {
 		return Number(value);
 	}
 	return allowText ? value : currentValue;
@@ -95,7 +95,7 @@ const nginxTimeOrNull = (value, currentValue) => {
 		return null;
 	}
 	// specifying "$server_port" literal supports only 1 upstream being specified
-	if (new RegExp(`${NGINX_TIME_SYNTAX_REGEX}$`).test(value)) {
+	if (new RegExp(`${NGINX_TIME_SYNTAX_REGEX}$`, "u").test(value)) {
 		return value;
 	}
 	return currentValue;
@@ -116,7 +116,7 @@ const validateNullNumber = (min, max, allowZero) => (value) => {
 };
 
 const validateTimeout = () => (value) => {
-	if (value && !new RegExp(`${NGINX_TIME_SYNTAX_REGEX}$`).test(value)) {
+	if (value && !new RegExp(`${NGINX_TIME_SYNTAX_REGEX}$`, "u").test(value)) {
 		return intl.formatMessage({ id: "error.nginx-time-format" });
 	}
 };
@@ -487,7 +487,7 @@ export function ForwardHostFields({
 										{...field}
 										id={controlId("npmplusForwardPath")}
 										type="text"
-										pattern={"^\\/\\S*"}
+										pattern="^\\/\\S*"
 										maxLength={255}
 										className={`form-control ${meta.touched && meta.error ? "is-invalid" : ""}`}
 										placeholder="/example/path"

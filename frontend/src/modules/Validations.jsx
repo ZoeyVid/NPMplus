@@ -21,8 +21,9 @@ const validateString = (value, minLength = 0, maxLength = 0, trim = true) => {
 	}
 };
 
-const validateNumber = (min = -1, max = -1, allowZero = false) => {
-	return (value) => {
+const validateNumber =
+	(min = -1, max = -1, allowZero = false) =>
+	(value) => {
 		const int = Number(value);
 		if (min > -1 && !int && !(allowZero && int === 0)) {
 			return intl.formatMessage({ id: "error.required" });
@@ -34,7 +35,6 @@ const validateNumber = (min = -1, max = -1, allowZero = false) => {
 			return intl.formatMessage({ id: "error.maximum" }, { max });
 		}
 	};
-};
 
 const validateEmail = (value) => {
 	if (value.length === 0) {

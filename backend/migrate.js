@@ -1,13 +1,13 @@
 import { chmod, mkdir, readdir, unlink } from "node:fs/promises";
 import { join } from "node:path";
-import Database from "better-sqlite3";
+import { backup, DatabaseSync } from "node:sqlite";
 import db from "./db.js";
 import { isSqlite } from "./lib/config.js";
 import { migrate as logger } from "./logger.js";
 
 const databaseFile = "/data/npmplus/database.sqlite";
 const backupDirectory = "/data/npmplus/backups";
-const backupPattern = /^database-migrations-.+\.sqlite$/;
+const backupPattern = /^database-migrations-.+\.sqlite$/u;
 
 const migrationConfig = {
 	tableName: "migrations",
@@ -39,14 +39,14 @@ const createMigrationBackup = async () => {
 	}
 	oldBackups = await getMigrationBackups();
 
-	const date = new Date().toISOString().replace(/[:.]/g, "-");
+	const date = new Date().toISOString().replace(/[:.]/gu, "-");
 
 	currentBackup = join(backupDirectory, `database-migrations-${date}.sqlite`);
 
-	const sqlite = new Database(databaseFile, { fileMustExist: true });
+	const sqlite = new DatabaseSync(databaseFile, { readOnly: true });
 
 	try {
-		await sqlite.backup(currentBackup);
+		await backup(sqlite, currentBackup);
 		await chmod(currentBackup, 0o600);
 		logger.info(`Created pre-migration database backup: ${currentBackup}`);
 	} catch (err) {
