@@ -1,12 +1,12 @@
 import crypto from "node:crypto";
 import { existsSync, readFileSync, writeFileSync } from "node:fs";
 import { global as logger } from "../logger.js";
+import sqliteEngine from "./knex-node-sqlite.js";
 
-const keysFile = "/data/npmplus/keys-ec.json";
-const sqliteEngine = "better-sqlite3";
+const keysFile = "/data/npmplus/keys-ed25519.json";
 const mysqlEngine = "mysql2";
 const postgresEngine = "pg";
-const truthyPattern = /^(1|true|yes|on)$/i;
+const truthyPattern = /^(?:1|true|yes|on)$/iu;
 
 let instance = null;
 
@@ -79,13 +79,15 @@ const configure = () => {
 				client: sqliteEngine,
 				connection: {
 					filename: envSqliteFile,
+					options: { timeout: 1000 },
 				},
 				useNullAsDefault: true,
 				pool: {
 					afterCreate: (conn, done) => {
-						conn.pragma("synchronous = NORMAL");
-						conn.pragma("temp_store = MEMORY");
-						conn.pragma("optimize = 0x10002");
+						conn.exec("PRAGMA synchronous = NORMAL");
+						conn.exec("PRAGMA temp_store = MEMORY");
+						conn.exec("PRAGMA secure_delete = FAST");
+						conn.exec("PRAGMA optimize = 0x10002");
 						done(null, conn);
 					},
 				},
@@ -117,8 +119,7 @@ const generateKeys = () => {
 	logger.info("Creating a new JWT key pair...");
 
 	// Now create the keys and save them in the config.
-	const { privateKey, publicKey } = crypto.generateKeyPairSync("ec", {
-		namedCurve: "P-521",
+	const { privateKey, publicKey } = crypto.generateKeyPairSync("ed25519", {
 		publicKeyEncoding: {
 			type: "spki",
 			format: "pem",

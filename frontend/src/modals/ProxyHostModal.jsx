@@ -53,6 +53,8 @@ const ProxyHostModal = EasyModal.create(({ id, isClone, visible, remove }) => {
 				...loc,
 				// remove entries that are null or undefined or empty to pass schema validation
 				npmplusUpstreamServers: CleanUpstreamServers(loc.npmplusUpstreamServers),
+				npmplusAccessListIds:
+					loc.npmplusAccessListType === "custom" ? (loc.npmplusAccessListIds ?? []) : [],
 			};
 			newLoc = CleanLoadBalanceMethod(newLoc);
 			if (!newLoc.npmplusForwardPath) {
@@ -339,7 +341,19 @@ const ProxyHostModal = EasyModal.create(({ id, isClone, visible, remove }) => {
 																		type="checkbox"
 																	>
 																		{({ field, form }) => (
-																			<span className="form-check form-check-single form-switch">
+																			<span
+																				className="form-check form-check-single form-switch"
+																				title={
+																					form.values.npmplusCrowdsecAppsec ||
+																					!["http", "https"].includes(
+																						form.values.forwardScheme,
+																					)
+																						? undefined
+																						: intl.formatMessage({
+																								id: "host.flags.disable-request-buffering.requires-appsec",
+																							})
+																				}
+																			>
 																				<input
 																					{...field}
 																					id="npmplusProxyRequestBuffering"
@@ -347,20 +361,12 @@ const ProxyHostModal = EasyModal.create(({ id, isClone, visible, remove }) => {
 																						"bg-lime": field.checked,
 																					})}
 																					type="checkbox"
-																					onChange={(e) => {
-																						field.onChange(e);
-																						if (e.target.checked) {
-																							form.setFieldValue(
-																								"npmplusCrowdsecAppsec",
-																								true,
-																							);
-																						}
-																					}}
 																					disabled={
-																						form.values.forwardScheme !==
-																							"http" &&
-																						form.values.forwardScheme !==
-																							"https"
+																						!form.values
+																							.npmplusCrowdsecAppsec ||
+																						!["http", "https"].includes(
+																							form.values.forwardScheme,
+																						)
 																					}
 																				/>
 																			</span>

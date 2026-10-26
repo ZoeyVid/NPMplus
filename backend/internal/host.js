@@ -46,6 +46,10 @@ const internalHost = {
 			combinedData.npmplus_mtls_verify_client_optional = false;
 		}
 
+		if (combinedData.npmplus_mtls_certificate_id > 0 && !combinedData.npmplus_mtls_verify_client_optional) {
+			combinedData.ssl_forced = true;
+		}
+
 		if (!combinedData.ssl_forced) {
 			combinedData.hsts_enabled = false;
 		}

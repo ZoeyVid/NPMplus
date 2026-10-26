@@ -1,23 +1,24 @@
 import { QueryClient } from "@tanstack/react-query";
-import queryString from "query-string";
 import AuthStore from "src/modules/AuthStore";
 import { camelizeKeys, decamelizeKeys } from "./caseConvert";
 
 export const queryClient = new QueryClient();
 const contentTypeHeader = "Content-Type";
 
-function buildUrl({ url, params }) {
-	const endpoint = url.slice(1);
-	const baseUrl = `/api/${endpoint}`;
-	const apiUrl = queryString.stringifyUrl({
-		url: baseUrl,
-		query: params,
-	});
-	return apiUrl;
+function buildUrl({ url, params = {} }) {
+	const query = new URLSearchParams(Object.entries(params).filter(([, value]) => value !== undefined)).toString();
+	return `/api/${url.slice(1)}${query ? `?${query}` : ""}`;
 }
 
 function buildBody(data) {
 	return JSON.stringify(decamelizeKeys(data));
+}
+
+async function processWrite(url, response) {
+	if (!url.startsWith("/tokens") && !["/users/setup", "/users/me/sessions"].includes(url)) {
+		await queryClient.invalidateQueries();
+	}
+	return processResponse(response);
 }
 
 async function processResponse(response, reload = true) {
@@ -31,7 +32,6 @@ async function processResponse(response, reload = true) {
 		if (response.status === 401) {
 			// Force logout user and reload the page if Unauthorized
 			AuthStore.clear();
-			queryClient.clear();
 			if (reload) {
 				window.location.reload();
 			}
@@ -85,7 +85,7 @@ export async function post({ url, params, data }, abortController) {
 
 	const signal = abortController?.signal;
 	const response = await fetch(apiUrl, { method, headers, body, signal });
-	return processResponse(response);
+	return processWrite(url, response);
 }
 
 export async function put({ url, params, data }, abortController) {
@@ -97,7 +97,7 @@ export async function put({ url, params, data }, abortController) {
 	const signal = abortController?.signal;
 	const body = buildBody(data);
 	const response = await fetch(apiUrl, { method, headers, body, signal });
-	return processResponse(response);
+	return processWrite(url, response);
 }
 
 export async function del({ url, params }, abortController) {
@@ -105,5 +105,5 @@ export async function del({ url, params }, abortController) {
 	const method = "DELETE";
 	const signal = abortController?.signal;
 	const response = await fetch(apiUrl, { method, signal });
-	return processResponse(response);
+	return processWrite(url, response);
 }

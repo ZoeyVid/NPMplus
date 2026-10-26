@@ -1,7 +1,7 @@
 import { IconSearch } from "@tabler/icons-react";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import Alert from "react-bootstrap/Alert";
-import { LoadingPage } from "src/components";
+import { LoadingPage, Pagination } from "src/components";
 import { useAuditLogs } from "src/hooks";
 import { T } from "src/locale";
 import { showEventDetailsModal } from "src/modals";
@@ -9,14 +9,9 @@ import Table from "./Table";
 
 export default function TableWrapper() {
 	const [search, setSearch] = useState("");
-	const { isFetching, isPending, isError, error, data } = useAuditLogs(["user"]);
-
-	useEffect(() => {
-		// this can happen if someone deletes the last item while searching
-		if (search !== "" && !data?.length) {
-			setSearch("");
-		}
-	});
+	const [page, setPage] = useState(0);
+	const [pageSize, setPageSize] = useState(25);
+	const { isFetching, isPending, isError, error, data } = useAuditLogs(["user"], page, pageSize, search);
 
 	if (isPending) {
 		return <LoadingPage />;
@@ -26,15 +21,15 @@ export default function TableWrapper() {
 		return <Alert variant="danger">{error?.message}</Alert>;
 	}
 
-	let filtered = null;
-	if (search) {
-		filtered = data.filter((item) => {
-			const metaText = JSON.stringify(item.meta).toLowerCase();
-			const value = [item.objectType, item.action, metaText].join(" ");
-
-			return value.includes(search);
-		});
-	}
+	const paginationProps = {
+		total: data.total,
+		page,
+		pageSize,
+		onChange: (index, size) => {
+			setPage(index);
+			setPageSize(size);
+		},
+	};
 
 	return (
 		<div className="card mt-4">
@@ -47,7 +42,7 @@ export default function TableWrapper() {
 								<T id="auditlogs" />
 							</h2>
 						</div>
-						{data?.length ? (
+						{data.results.length || search ? (
 							<div className="col-md-auto col-sm-12">
 								<div className="ms-auto d-flex flex-wrap btn-list">
 									<div className="input-group input-group-flat w-auto">
@@ -58,7 +53,10 @@ export default function TableWrapper() {
 											type="text"
 											className="form-control form-control-sm"
 											autoComplete="off"
-											onChange={(e) => setSearch(e.target.value.toLowerCase().trim())}
+											onChange={(e) => {
+												setSearch(e.target.value.trim());
+												setPage(0);
+											}}
 										/>
 									</div>
 								</div>
@@ -66,7 +64,9 @@ export default function TableWrapper() {
 						) : null}
 					</div>
 				</div>
-				<Table data={filtered ?? data ?? []} isFetching={isFetching} onSelectItem={showEventDetailsModal} />
+				<Pagination top {...paginationProps} />
+				<Table data={data.results} isFetching={isFetching} onSelectItem={showEventDetailsModal} />
+				<Pagination {...paginationProps} />
 			</div>
 		</div>
 	);

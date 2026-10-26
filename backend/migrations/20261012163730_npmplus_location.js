@@ -54,25 +54,24 @@ const up = async (knex) => {
 		})),
 	);
 
-	await knex.batchInsert(
-		"npmplus_location",
-		locations.map((location) => ({
-			proxy_host_id: location.proxy_host_id,
-			npmplus_enabled: location.npmplus_enabled === false ? 0 : 1,
-			path: location.path ?? "",
-			location_type: location.location_type ?? "",
-			forward_scheme: location.forward_scheme ?? "http",
-			forward_host: location.forward_host ?? "",
-			forward_port: Number.parseInt(location.forward_port, 10) || 0,
-			...Object.fromEntries(boolFields.map((field) => [field, location[field] ? 1 : 0])),
-			npmplus_x_frame_options: location.npmplus_x_frame_options ?? "SAMEORIGIN",
-			npmplus_auth_request: location.npmplus_auth_request ?? "none",
-			npmplus_auth_request_upstream: location.npmplus_auth_request_upstream ?? "",
-			advanced_config: location.advanced_config ?? "",
-			npmplus_access_list_type: location.npmplus_access_list_type ?? "global",
-		})),
-		100,
-	);
+	const locationRows = locations.map((location) => ({
+		proxy_host_id: location.proxy_host_id,
+		npmplus_enabled: location.npmplus_enabled === false ? 0 : 1,
+		path: location.path ?? "",
+		location_type: location.location_type ?? "",
+		forward_scheme: location.forward_scheme ?? "http",
+		forward_host: location.forward_host ?? "",
+		forward_port: Number.parseInt(location.forward_port, 10) || 0,
+		...Object.fromEntries(boolFields.map((field) => [field, location[field] ? 1 : 0])),
+		npmplus_x_frame_options: location.npmplus_x_frame_options ?? "SAMEORIGIN",
+		npmplus_auth_request: location.npmplus_auth_request ?? "none",
+		npmplus_auth_request_upstream: location.npmplus_auth_request_upstream ?? "",
+		advanced_config: location.advanced_config ?? "",
+		npmplus_access_list_type: location.npmplus_access_list_type ?? "global",
+	}));
+	for (let i = 0; i < locationRows.length; i += 500) {
+		await knex("npmplus_location").insert(locationRows.slice(i, i + 500));
+	}
 
 	logger.info(`[${migrateName}] ${locations.length} locations moved to npmplus_location`);
 
@@ -104,7 +103,9 @@ const up = async (knex) => {
 		...locations.flatMap((location, index) => toRelations(location.proxy_host_id, locationIds[index], location)),
 	];
 
-	await knex.batchInsert("npmplus_proxy_host_access_list", relations, 100);
+	for (let i = 0; i < relations.length; i += 500) {
+		await knex("npmplus_proxy_host_access_list").insert(relations.slice(i, i + 500));
+	}
 
 	logger.info(`[${migrateName}] ${relations.length} access list relations written to npmplus_proxy_host_access_list`);
 

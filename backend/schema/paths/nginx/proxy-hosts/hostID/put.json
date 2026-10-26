@@ -41,80 +41,10 @@
 							"$ref": "../../../../components/load-balancing.json#/$defs/partialForwardPathSchemeRequirement"
 						},
 						{
-							"if": {
-								"properties": {
-									"npmplus_dns_challenge": {
-										"type": "boolean",
-										"const": true
-									}
-								},
-								"required": [
-									"npmplus_dns_challenge"
-								]
-							},
-							"then": {
-								"required": [
-									"npmplus_dns_provider"
-								]
-							}
+							"$ref": "../../../../common.json#/properties/ssl_update_rules"
 						},
 						{
-							"if": {
-								"properties": {
-									"certificate_id": {
-										"const": "new"
-									}
-								},
-								"required": [
-									"certificate_id"
-								]
-							},
-							"then": {
-								"if": {
-									"properties": {
-										"npmplus_dns_challenge": {
-											"type": "boolean",
-											"const": true
-										}
-									},
-									"required": [
-										"npmplus_dns_challenge"
-									]
-								},
-								"then": {
-									"properties": {
-										"domain_names": {
-											"$ref": "../../../../components/certificate-object.json#/properties/domain_names_dns"
-										}
-									}
-								},
-								"else": {
-									"properties": {
-										"domain_names": {
-											"$ref": "../../../../components/certificate-object.json#/properties/domain_names_http"
-										}
-									}
-								}
-							}
-						},
-						{
-							"if": {
-								"properties": {
-									"npmplus_access_list_type": {
-										"const": "custom"
-									}
-								},
-								"required": [
-									"npmplus_access_list_type"
-								]
-							},
-							"then": {
-								"properties": {
-									"npmplus_access_list_ids": {
-										"minItems": 1
-									}
-								}
-							}
+							"$ref": "../../../../common.json#/properties/proxy_update_rules"
 						}
 					],
 					"minProperties": 1,

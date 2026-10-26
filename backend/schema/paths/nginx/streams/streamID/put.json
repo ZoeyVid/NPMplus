@@ -31,33 +31,13 @@
 					"type": "object",
 					"allOf": [
 						{
-							"$ref": "../../../../components/load-balancing.json#/$defs/partialLoadBalanceMethodRequirement"
+							"$ref": "../../../components/load-balancing.json#/$defs/partialLoadBalanceMethodRequirement"
+						},
+						{
+							"$ref": "../../../common.json#/properties/stream_update_rules"
 						}
 					],
 					"additionalProperties": false,
-					"if": {
-						"properties": {
-							"certificate_id": {
-								"const": "new"
-							}
-						},
-						"required": [
-							"certificate_id"
-						]
-					},
-					"then": {
-						"required": [
-							"domain_names",
-							"npmplus_dns_challenge",
-							"npmplus_dns_provider"
-						],
-						"properties": {
-							"npmplus_dns_challenge": {
-								"type": "boolean",
-								"const": true
-							}
-						}
-					},
 					"minProperties": 1,
 					"properties": {
 						"incoming_port": {

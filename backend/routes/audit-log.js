@@ -12,7 +12,17 @@ const listSchema = {
 			items: { enum: ["user"] },
 		},
 		query: {
-			$ref: "common#/properties/query",
+			type: "string",
+			maxLength: 255,
+		},
+		page: {
+			type: "integer",
+			minimum: 0,
+		},
+		page_size: {
+			type: "integer",
+			minimum: 1,
+			maximum: 1000,
 		},
 	},
 };
@@ -53,9 +63,11 @@ router
 	.get(async (req, res) => {
 		const data = validator(listSchema, {
 			expand: typeof req.query.expand === "string" ? req.query.expand.split(",") : null,
-			query: typeof req.query.query === "string" ? req.query.query : null,
+			query: req.query.query,
+			page: req.query.page ?? 0,
+			page_size: req.query.page_size ?? 25,
 		});
-		const rows = await internalAuditLog.getAll(res.locals.access, data.expand, data.query);
+		const rows = await internalAuditLog.getAll(res.locals.access, data);
 		res.status(200).send(rows);
 	});
 

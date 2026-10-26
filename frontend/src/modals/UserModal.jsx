@@ -1,4 +1,3 @@
-import { useQueryClient } from "@tanstack/react-query";
 import { Field, Form, Formik } from "formik";
 import { useRef, useState } from "react";
 import { Alert } from "react-bootstrap";
@@ -22,17 +21,12 @@ const UserModal = EasyModal.create(({ id, visible, remove }) => {
 	const { mutate: setUser } = useSetUser();
 	const [errorMsg, setErrorMsg] = useState(null);
 	const [isSubmitting, setIsSubmitting] = useState(false);
-	const queryClient = useQueryClient();
 	const fileInput = useRef(null);
 
 	const changeAvatar = async (fn) => {
 		setErrorMsg(null);
 		try {
 			await fn();
-			await Promise.all([
-				queryClient.invalidateQueries({ queryKey: ["user"] }),
-				queryClient.invalidateQueries({ queryKey: ["users"] }),
-			]);
 		} catch (err) {
 			setErrorMsg(<T id={err.message} />);
 		}

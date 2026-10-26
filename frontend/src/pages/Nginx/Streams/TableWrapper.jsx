@@ -1,19 +1,17 @@
-import { IconHelp, IconSearch } from "@tabler/icons-react";
-import { useQueryClient } from "@tanstack/react-query";
+import { IconSearch } from "@tabler/icons-react";
 import { useEffect, useState } from "react";
 import Alert from "react-bootstrap/Alert";
 import { deleteStream, toggleStream } from "src/api/backend";
 import { Button, HasPermission, LoadingPage } from "src/components";
 import { getDirectory, useStreams } from "src/hooks";
 import { T } from "src/locale";
-import { showDeleteConfirmModal, showHelpModal, showStreamModal } from "src/modals";
+import { showDeleteConfirmModal, showStreamModal } from "src/modals";
 import { forwardDestinations, forwardSearchText } from "src/modules/Forward";
 import { MANAGE, STREAMS } from "src/modules/Permissions";
 import { showError, showObjectSuccess } from "src/notifications";
 import Table from "./Table";
 
 export default function TableWrapper() {
-	const queryClient = useQueryClient();
 	const [search, setSearch] = useState("");
 	const [sorting, setSorting] = useState([{ id: "enabled", desc: false }]);
 	const { isFetching, isPending, isError, error, data } = useStreams(["owner", "certificate"]);
@@ -36,10 +34,6 @@ export default function TableWrapper() {
 	const handleDisableToggle = async (id, enabled) => {
 		try {
 			await toggleStream(id, enabled);
-			await Promise.all([
-				queryClient.invalidateQueries({ queryKey: ["streams"] }),
-				queryClient.invalidateQueries({ queryKey: ["stream", id] }),
-			]);
 			showObjectSuccess("stream", enabled ? "enabled" : "disabled");
 		} catch (err) {
 			showError(<T id={err.message} />);
@@ -76,7 +70,6 @@ export default function TableWrapper() {
 					await deleteStream(id);
 					showObjectSuccess("stream", "deleted");
 				},
-				invalidations: [["streams"], ["stream", id], ["certificates"]],
 				children: <T id="object.delete.content" tData={{ object: "stream" }} />,
 				subject: stream ? `${stream.incomingPort} → ${upstreamDetails}` : null,
 				details: stream?.npmplusDescription,
@@ -112,9 +105,6 @@ export default function TableWrapper() {
 										/>
 									</div>
 								) : null}
-								<Button size="sm" onClick={() => showHelpModal("Streams")}>
-									<IconHelp size={20} />
-								</Button>
 								<HasPermission section={STREAMS} permission={MANAGE} hideError>
 									{data?.length ? (
 										<Button size="sm" className="btn-blue" onClick={() => showStreamModal("new")}>

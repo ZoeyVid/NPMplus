@@ -1,15 +1,10 @@
-import { intlFormat, parseISO } from "date-fns";
 import { currentLocale } from "./IntlProvider.jsx";
 
 const formatDateTime = (value) =>
-	intlFormat(
-		parseISO(value),
-		{
-			dateStyle: "medium",
-			timeStyle: "medium",
-			hourCycle: "h23",
-		},
-		{ locale: currentLocale },
-	);
+	new Intl.DateTimeFormat(currentLocale, {
+		dateStyle: "medium",
+		timeStyle: "medium",
+		hourCycle: new Intl.DateTimeFormat(undefined, { timeStyle: "short" }).resolvedOptions().hourCycle,
+	}).format(new Date(value));
 
 export { formatDateTime };

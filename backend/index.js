@@ -2,6 +2,7 @@
 
 import { rm } from "node:fs/promises";
 import app from "./app.js";
+import db from "./db.js";
 import internalCertificate from "./internal/certificate.js";
 import internalIpRanges from "./internal/ip_ranges.js";
 import internalNginx from "./internal/nginx.js";
@@ -34,8 +35,9 @@ async function appStart() {
 
 			process.on("SIGTERM", () => {
 				logger.info(`PID ${process.pid} received SIGTERM`);
-				server.close(() => {
+				server.close(async () => {
 					logger.info("Stopping.");
+					await db().destroy();
 					process.exit(0);
 				});
 			});

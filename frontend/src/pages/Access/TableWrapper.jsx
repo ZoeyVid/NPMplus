@@ -1,11 +1,11 @@
-import { IconHelp, IconSearch } from "@tabler/icons-react";
+import { IconSearch } from "@tabler/icons-react";
 import { useEffect, useState } from "react";
 import Alert from "react-bootstrap/Alert";
 import { deleteAccessList } from "src/api/backend";
 import { Button, HasPermission, LoadingPage } from "src/components";
 import { useAccessLists } from "src/hooks";
 import { T } from "src/locale";
-import { showAccessListModal, showDeleteConfirmModal, showHelpModal } from "src/modals";
+import { showAccessListModal, showDeleteConfirmModal } from "src/modals";
 import { ACCESS_LISTS, MANAGE } from "src/modules/Permissions";
 import { showObjectSuccess } from "src/notifications";
 import Table from "./Table";
@@ -61,9 +61,6 @@ export default function TableWrapper() {
 										/>
 									</div>
 								) : null}
-								<Button size="sm" onClick={() => showHelpModal("AccessLists")}>
-									<IconHelp size={20} />
-								</Button>
 								<HasPermission section={ACCESS_LISTS} permission={MANAGE} hideError>
 									{data?.length ? (
 										<Button
@@ -92,7 +89,6 @@ export default function TableWrapper() {
 								await deleteAccessList(id);
 								showObjectSuccess("access-list", "deleted");
 							},
-							invalidations: [["access-lists"], ["access-list", id], ["proxy-hosts"], ["proxy-host"]],
 							children: <T id="object.delete.content" tData={{ object: "access-list" }} />,
 							subject: accessList?.name,
 							details: accessList?.proxyHostCount ? (

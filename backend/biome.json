@@ -7,7 +7,7 @@
 	},
 	"files": {
 		"ignoreUnknown": false,
-		"includes": ["**", "!**/*.json"]
+		"includes": ["**", "!**/*.json", "!**/*.yaml"]
 	},
 	"formatter": {
 		"enabled": true,
@@ -23,6 +23,7 @@
 			"complexity": {
 				"noExcessiveCognitiveComplexity": "off",
 				"noExcessiveLinesPerFunction": "off",
+				"noPlaywrightUselessAwait": "off",
 				"noVoid": "off",
 				"useSimplifiedLogicExpression": "off"
 			},

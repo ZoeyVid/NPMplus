@@ -64,10 +64,10 @@ const internalProxyHost = {
 		if (createCertificate) {
 			delete thisData.certificate_id;
 		} else if (thisData.certificate_id > 0) {
-			await internalCertificate.get(access, { id: thisData.certificate_id });
+			await internalCertificate.get(access, { id: thisData.certificate_id, mtls: false });
 		}
 		if (thisData.npmplus_mtls_certificate_id > 0) {
-			await internalCertificate.get(access, { id: thisData.npmplus_mtls_certificate_id });
+			await internalCertificate.get(access, { id: thisData.npmplus_mtls_certificate_id, mtls: true });
 		}
 
 		access.can("proxy_hosts:manage");
@@ -86,6 +86,9 @@ const internalProxyHost = {
 		thisData = internalHost.cleanSslHstsData(createCertificate, thisData);
 		thisData = internalProxyHostAccessList.cleanAccessListTypes(thisData);
 		for (const item of [thisData, ...(thisData.locations ?? [])]) cleanForwardOptions(item);
+		if (thisData.locations?.some(({ path }) => !path)) {
+			throw new errs.ValidationError("Location paths can not be empty");
+		}
 		await internalProxyHostAccessList.validateAccessLists(access, thisData);
 		// for UX if the user put a host as host/path and left forward_path blank, then split
 		// split it automatically, but only for the first item. Validation later will catch
@@ -142,10 +145,10 @@ const internalProxyHost = {
 		if (createCertificate) {
 			delete thisData.certificate_id;
 		} else if (thisData.certificate_id > 0) {
-			await internalCertificate.get(access, { id: thisData.certificate_id });
+			await internalCertificate.get(access, { id: thisData.certificate_id, mtls: false });
 		}
 		if (thisData.npmplus_mtls_certificate_id > 0) {
-			await internalCertificate.get(access, { id: thisData.npmplus_mtls_certificate_id });
+			await internalCertificate.get(access, { id: thisData.npmplus_mtls_certificate_id, mtls: true });
 		}
 
 		access.can("proxy_hosts:manage");
@@ -165,6 +168,22 @@ const internalProxyHost = {
 			}
 		}
 
+		thisData = internalHost.cleanSslHstsData(createCertificate, thisData, existingRow);
+		thisData = internalProxyHostAccessList.cleanAccessListTypes(thisData);
+		for (const item of [thisData, ...(thisData.locations ?? [])]) cleanForwardOptions(item);
+		if (thisData.locations?.some(({ path }) => !path)) {
+			throw new errs.ValidationError("Location paths can not be empty");
+		}
+		await internalProxyHostAccessList.validateAccessLists(access, thisData);
+		// for UX if the user put a host as host/path and left forward_path blank, then split
+		// split it automatically, but only for the first item. Validation later will catch
+		// invalid data.
+		// E.g. host="10.0.0.1/some/path", forward_path="" -> host="10.0.0.1",forward_path="/some/path"
+		thisData = internalUpstreamServers.splitHostAndPath(thisData, existingRow);
+		// always remove the load balance method if there is only 1 item in the array
+		thisData = internalUpstreamServers.cleanUpstreamServers(thisData);
+		internalUpstreamServers.validateLoadBalancing(thisData, existingRow);
+
 		if (createCertificate) {
 			const cert = await internalCertificate.createQuickCertificate(access, {
 				...thisData,
@@ -174,20 +193,6 @@ const internalProxyHost = {
 			// update host with cert id
 			thisData.certificate_id = cert.id;
 		}
-
-		thisData = internalHost.cleanSslHstsData(createCertificate, thisData, existingRow);
-		thisData = internalProxyHostAccessList.cleanAccessListTypes(thisData);
-		for (const item of [thisData, ...(thisData.locations ?? [])]) cleanForwardOptions(item);
-		await internalProxyHostAccessList.validateAccessLists(access, thisData);
-
-		// for UX if the user put a host as host/path and left forward_path blank, then split
-		// split it automatically, but only for the first item. Validation later will catch
-		// invalid data.
-		// E.g. host="10.0.0.1/some/path", forward_path="" -> host="10.0.0.1",forward_path="/some/path"
-		thisData = internalUpstreamServers.splitHostAndPath(thisData, existingRow);
-		// always remove the load balance method if there is only 1 item in the array
-		thisData = internalUpstreamServers.cleanUpstreamServers(thisData);
-		internalUpstreamServers.validateLoadBalancing(thisData, existingRow);
 
 		await proxyHostModel.transaction(async (trx) => {
 			await proxyHostModel.query(trx).where({ id: thisData.id }).patch(thisData);
@@ -381,10 +386,9 @@ const internalProxyHost = {
 	 *
 	 * @param   {Access}  access
 	 * @param   {Array}   [expand]
-	 * @param   {String}  [searchQuery]
 	 * @returns {Promise}
 	 */
-	getAll: (access, expand, searchQuery) => {
+	getAll: (access, expand) => {
 		access.can("proxy_hosts:view");
 
 		const query = proxyHostModel
@@ -396,13 +400,6 @@ const internalProxyHost = {
 
 		if (access.visibility !== "all") {
 			query.andWhere("owner_user_id", access.token.getUserId(1));
-		}
-
-		// Query is used for searching
-		if (typeof searchQuery === "string" && searchQuery.length > 0) {
-			query.where(function () {
-				this.where(castJsonIfNeed("domain_names"), "like", `%${searchQuery}%`);
-			});
 		}
 
 		if (expand) query.withGraphFetched(`[${expand.join(", ")}]`);

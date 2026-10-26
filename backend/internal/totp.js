@@ -61,7 +61,7 @@ const internalTotp = {
 	 * @param   {string}  code
 	 * @returns {Promise<void>}
 	 */
-	enable: async (access, userId, code, onEnable) => {
+	enable: async (access, userId, code) => {
 		if (Number(userId) !== access.token.getUserId(0)) {
 			throw new errs.PermissionError("TOTP can only be managed for your own account");
 		}
@@ -107,8 +107,6 @@ const internalTotp = {
 				.query(trx)
 				.where("id", userId)
 				.patch({ npmplus_token_valid_after: Math.floor(Date.now() / 1000) });
-
-			await onEnable?.(trx);
 		});
 		usedSteps.set(pending.id, result.timeStep);
 

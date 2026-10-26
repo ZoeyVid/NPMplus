@@ -1,5 +1,6 @@
 import crypto from "node:crypto";
 import { rm, writeFile } from "node:fs/promises";
+import { hash } from "../lib/argon2.js";
 import errs from "../lib/error.js";
 import { gravatar as logger } from "../logger.js";
 import authModel from "../models/auth.js";
@@ -45,6 +46,8 @@ const internalUser = {
 		if (!(await internalUser.isEmailAvailable(data.email))) {
 			throw new errs.ValidationError(`Email address already in use - ${data.email}`);
 		}
+
+		if (auth) auth.secret = await hash(auth.secret);
 
 		let user = await userModel.transaction(async (trx) => {
 			const insertedUser = await userModel.query(trx).insertAndFetch(data);
@@ -291,21 +294,11 @@ const internalUser = {
 	 * All users
 	 *
 	 * @param   {Access}  access
-	 * @param   {String}  [search_query]
 	 * @returns {Promise}
 	 */
-	getAll: (access, search_query) => {
+	getAll: (access) => {
 		access.canAdmin();
-		const query = userModel.query().groupBy("id").orderBy("name", "ASC");
-
-		// Query is used for searching
-		if (typeof search_query === "string") {
-			query.where(function () {
-				this.whereILike("name", `%${search_query}%`).orWhereILike("email", `%${search_query}%`);
-			});
-		}
-
-		return query;
+		return userModel.query().groupBy("id").orderBy("name", "ASC");
 	},
 
 	/**
@@ -331,6 +324,8 @@ const internalUser = {
 			});
 		}
 
+		const secret = await hash(data.secret);
+
 		await userModel.transaction(async (trx) => {
 			const existing_auth = await authModel
 				.query(trx)
@@ -339,15 +334,12 @@ const internalUser = {
 				.first();
 
 			if (existing_auth) {
-				await authModel.query(trx).where("user_id", user.id).andWhere("type", data.type).patch({
-					type: data.type, // This is required for the model to encrypt on save
-					secret: data.secret,
-				});
+				await authModel.query(trx).where("user_id", user.id).andWhere("type", data.type).patch({ secret });
 			} else {
 				await authModel.query(trx).insert({
 					user_id: user.id,
 					type: data.type,
-					secret: data.secret,
+					secret,
 					meta: {},
 				});
 			}

@@ -1,5 +1,4 @@
 import errs from "../lib/error.js";
-import { castJsonIfNeed } from "../lib/helpers.js";
 import streamModel from "../models/stream.js";
 import internalAuditLog from "./audit-log.js";
 import internalCertificate from "./certificate.js";
@@ -15,8 +14,12 @@ const cleanStreamData = (data, existingData) => {
 
 	if (combinedData.udp_forwarding) {
 		combinedData.npmplus_proxy_tls = false;
-		if (combinedData.npmplus_proxy_protocol_forwarding === 1) combinedData.npmplus_proxy_protocol_forwarding = 0;
+		if (combinedData.npmplus_proxy_protocol_forwarding === 1) combinedData.npmplus_proxy_protocol_forwarding = 2;
 		combinedData.certificate_id = 0;
+	}
+
+	if (combinedData.certificate_id === "new" && !combinedData.npmplus_dns_challenge) {
+		throw new errs.ValidationError("New certificates for streams require the DNS challenge");
 	}
 
 	if (combinedData.certificate_id !== "new" && !(combinedData.certificate_id > 0)) {
@@ -43,10 +46,10 @@ const internalStream = {
 		if (createCertificate) {
 			delete thisData.certificate_id;
 		} else if (thisData.certificate_id > 0) {
-			await internalCertificate.get(access, { id: thisData.certificate_id });
+			await internalCertificate.get(access, { id: thisData.certificate_id, mtls: false });
 		}
 		if (thisData.npmplus_mtls_certificate_id > 0) {
-			await internalCertificate.get(access, { id: thisData.npmplus_mtls_certificate_id });
+			await internalCertificate.get(access, { id: thisData.npmplus_mtls_certificate_id, mtls: true });
 		}
 
 		access.can("streams:manage");
@@ -100,10 +103,10 @@ const internalStream = {
 		if (createCertificate) {
 			delete thisData.certificate_id;
 		} else if (thisData.certificate_id > 0) {
-			await internalCertificate.get(access, { id: thisData.certificate_id });
+			await internalCertificate.get(access, { id: thisData.certificate_id, mtls: false });
 		}
 		if (thisData.npmplus_mtls_certificate_id > 0) {
-			await internalCertificate.get(access, { id: thisData.npmplus_mtls_certificate_id });
+			await internalCertificate.get(access, { id: thisData.npmplus_mtls_certificate_id, mtls: true });
 		}
 
 		access.can("streams:manage");
@@ -287,10 +290,9 @@ const internalStream = {
 	 *
 	 * @param   {Access}  access
 	 * @param   {Array}   [expand]
-	 * @param   {String}  [searchQuery]
 	 * @returns {Promise}
 	 */
-	getAll: (access, expand, searchQuery) => {
+	getAll: (access, expand) => {
 		access.can("streams:view");
 
 		const query = streamModel
@@ -301,15 +303,6 @@ const internalStream = {
 
 		if (access.visibility !== "all") {
 			query.andWhere("owner_user_id", access.token.getUserId(1));
-		}
-
-		// Query is used for searching
-		if (typeof searchQuery === "string" && searchQuery.length > 0) {
-			query.where(function () {
-				this.where(castJsonIfNeed("incoming_port"), "like", `%${searchQuery}%`)
-					.orWhere(castJsonIfNeed("npmplus_upstream_servers"), "like", `%${searchQuery}%`)
-					.orWhere("npmplus_description", "like", `%${searchQuery}%`);
-			});
 		}
 
 		if (expand) query.withGraphFetched(`[${expand.join(", ")}]`);

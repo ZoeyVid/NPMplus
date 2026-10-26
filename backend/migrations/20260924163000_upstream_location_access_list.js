@@ -14,16 +14,12 @@ const up = async (knex) => {
 	logger.info(`[${migrateName}] Migrating Up...`);
 
 	const validIds = new Set(await knex("access_list").where("is_deleted", 0).pluck("id"));
+	const relations = [];
 	for (const row of await knex("proxy_host").where("is_deleted", 0).select("id", "locations")) {
 		const locations = Array.isArray(row.locations) ? row.locations : JSON.parse(row.locations || "[]");
 		if (!locations.some((location) => location.access_list_id !== undefined)) continue;
 		for (const { access_list_id: id } of locations)
-			if (validIds.has(id)) {
-				await knex("npmplus_proxy_host_access_list")
-					.insert({ proxy_host_id: row.id, access_list_id: id })
-					.onConflict()
-					.ignore();
-			}
+			if (validIds.has(id)) relations.push({ proxy_host_id: row.id, access_list_id: id });
 		await knex("proxy_host")
 			.where("id", row.id)
 			.update({
@@ -36,6 +32,12 @@ const up = async (knex) => {
 					}),
 				),
 			});
+	}
+	for (let i = 0; i < relations.length; i += 500) {
+		await knex("npmplus_proxy_host_access_list")
+			.insert(relations.slice(i, i + 500))
+			.onConflict()
+			.ignore();
 	}
 
 	logger.info(`[${migrateName}] proxy_host Table altered`);

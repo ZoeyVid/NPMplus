@@ -24,9 +24,14 @@ export function SSLOptionsFields({ forHttp = true, forProxyHost, color }) {
 	const mtlsBypassAuthRequestPossible =
 		npmplusMtlsVerifyClientOptional &&
 		[v, ...(v.locations ?? [])].some(({ npmplusAuthRequest = "none" }) => npmplusAuthRequest !== "none");
+	const mtlsRequired = npmplusMtlsCertificateId > 0 && !npmplusMtlsVerifyClientOptional;
 
 	useEffect(() => {
 		if (!forHttp && newCertificate && !dnsChallenge) void setFieldValue("npmplusDnsChallenge", true);
+		if (forHttp && mtlsRequired && !sslForced) void setFieldValue("sslForced", true);
+		if (npmplusMtlsBypassAuthRequest && !mtlsBypassAuthRequestPossible) {
+			void setFieldValue("npmplusMtlsBypassAuthRequest", false);
+		}
 	});
 
 	const handleToggleChange = (e, fieldName) => {
@@ -60,7 +65,7 @@ export function SSLOptionsFields({ forHttp = true, forProxyHost, color }) {
 									type="checkbox"
 									checked={sslForced}
 									onChange={(e) => handleToggleChange(e, field.name)}
-									disabled={!hasCertificate}
+									disabled={!hasCertificate || mtlsRequired}
 								/>
 
 								<span className="form-check-label">
@@ -145,7 +150,7 @@ export function SSLOptionsFields({ forHttp = true, forProxyHost, color }) {
 									type="checkbox"
 									checked={npmplusMtlsVerifyClientOptional}
 									onChange={(e) => handleToggleChange(e, field.name)}
-									disabled={!(v?.certificateId > 0 && npmplusMtlsCertificateId > 0)}
+									disabled={!(hasCertificate && npmplusMtlsCertificateId > 0)}
 								/>
 
 								<span className="form-check-label">

@@ -37,12 +37,12 @@ const internalMfa = {
 	 * @param   {number} userId
 	 * @returns {Promise<{backup_codes: string[]} | null>}
 	 */
-	ensureBackupCodes: async (userId, trx) => {
-		if (await backupCodes.count(userId, trx)) {
+	ensureBackupCodes: async (userId) => {
+		if (await backupCodes.count(userId)) {
 			return null;
 		}
 
-		return { backup_codes: await backupCodes.create(userId, trx) };
+		return { backup_codes: await backupCodes.create(userId) };
 	},
 
 	/**
@@ -54,11 +54,8 @@ const internalMfa = {
 	 * @returns {Promise<{backup_codes: string[] | null}>}
 	 */
 	enableTotp: async (access, userId, code) => {
-		let codes = null;
-		await totp.enable(access, userId, code, async (trx) => {
-			codes = await internalMfa.ensureBackupCodes(userId, trx);
-		});
-		return codes ?? { backup_codes: null };
+		await totp.enable(access, userId, code);
+		return (await internalMfa.ensureBackupCodes(userId)) ?? { backup_codes: null };
 	},
 
 	/**
@@ -159,13 +156,11 @@ const internalMfa = {
 			throw new errs.ValidationError("Invalid verification code", "error.invalid-code");
 		}
 
-		const plain = await userModel.transaction(async (trx) => {
-			await userModel
-				.query(trx)
-				.where("id", userId)
-				.patch({ npmplus_token_valid_after: Math.floor(Date.now() / 1000) });
-			return backupCodes.create(userId, trx);
-		});
+		await userModel
+			.query()
+			.where("id", userId)
+			.patch({ npmplus_token_valid_after: Math.floor(Date.now() / 1000) });
+		const plain = await backupCodes.create(userId);
 
 		await internalAuditLog.add(access, {
 			action: "updated",

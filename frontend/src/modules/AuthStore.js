@@ -1,20 +1,15 @@
-import { getUnixTime, parseISO } from "date-fns";
-
 const TOKEN_KEY = "auth";
 
-class AuthStore {
+export default {
 	hasActiveToken() {
-		const expires = localStorage.getItem(TOKEN_KEY);
-		return expires !== null && getUnixTime(parseISO(expires)) - 60 > Math.round(Date.now() / 1000);
-	}
+		return Date.parse(localStorage.getItem(TOKEN_KEY)) - 60000 > Date.now();
+	},
 
 	set({ expires }) {
 		localStorage.setItem(TOKEN_KEY, expires);
-	}
+	},
 
 	clear() {
 		localStorage.removeItem(TOKEN_KEY);
-	}
-}
-
-export default new AuthStore();
+	},
+};

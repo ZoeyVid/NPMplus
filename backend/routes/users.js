@@ -15,16 +15,6 @@ import { express as logger } from "../logger.js";
 import { getValidationSchema } from "../schema/index.js";
 import { isSetup } from "../setup.js";
 
-const listSchema = {
-	type: "object",
-	additionalProperties: false,
-	properties: {
-		query: {
-			$ref: "common#/properties/query",
-		},
-	},
-};
-
 const userSchema = {
 	type: "object",
 	required: ["user_id"],
@@ -72,11 +62,8 @@ router
 	 *
 	 * Retrieve all users
 	 */
-	.get(async (req, res) => {
-		const data = validator(listSchema, {
-			query: typeof req.query.query === "string" ? req.query.query : null,
-		});
-		const users = await internalUser.getAll(res.locals.access, data.query);
+	.get(async (_, res) => {
+		const users = await internalUser.getAll(res.locals.access);
 		res.status(200).send(users);
 	})
 
@@ -199,7 +186,7 @@ router
 		payload.id = req.params.user_id;
 		const result = await internalUser.setPassword(res.locals.access, payload);
 		if (Number(req.params.user_id) === res.locals.access.token.getUserId(0)) {
-			const data = internalToken.getFreshToken(res.locals.access, true);
+			const data = await internalToken.getFreshToken(res.locals.access, true);
 			res.cookie("__Host-Http-token", data.token, {
 				signed: true,
 				httpOnly: true,
@@ -301,7 +288,7 @@ router
 	.post(async (req, res) => {
 		const { code } = apiValidator(getValidationSchema("/users/{userID}/mfa/totp/enable", "post"), req.body);
 		const result = await internalMfa.enableTotp(res.locals.access, req.params.user_id, code);
-		const data = internalToken.getFreshToken(res.locals.access, true);
+		const data = await internalToken.getFreshToken(res.locals.access, true);
 		res.cookie("__Host-Http-token", data.token, {
 			signed: true,
 			httpOnly: true,
@@ -346,7 +333,7 @@ router
 	.post(async (req, res) => {
 		const { code } = apiValidator(getValidationSchema("/users/{userID}/mfa/backup-codes", "post"), req.body);
 		const result = await internalMfa.regenerateBackupCodes(res.locals.access, req.params.user_id, code);
-		const data = internalToken.getFreshToken(res.locals.access, true);
+		const data = await internalToken.getFreshToken(res.locals.access, true);
 		res.cookie("__Host-Http-token", data.token, {
 			signed: true,
 			httpOnly: true,

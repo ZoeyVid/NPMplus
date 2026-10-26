@@ -22,29 +22,11 @@
 						}
 					],
 					"additionalProperties": false,
-					"if": {
-						"properties": {
-							"certificate_id": {
-								"const": "new"
-							}
-						},
-						"required": [
-							"certificate_id"
-						]
-					},
-					"then": {
-						"required": [
-							"domain_names",
-							"npmplus_dns_challenge",
-							"npmplus_dns_provider"
-						],
-						"properties": {
-							"npmplus_dns_challenge": {
-								"type": "boolean",
-								"const": true
-							}
+					"allOf": [
+						{
+							"$ref": "../../../common.json#/properties/stream_create_rules"
 						}
-					},
+					],
 					"required": [
 						"incoming_port",
 						"npmplus_upstream_servers"

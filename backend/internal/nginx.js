@@ -156,6 +156,9 @@ const internalNginx = {
 			}
 
 			setForwardUpstreamName(location, `upstream_${host.id}_location_${idx}`);
+			if (["~ ", "~* "].includes(location.location_type)) {
+				location.path = `"${location.path.replaceAll('"', '\\"')}"`;
+			}
 			renderedLocations += await renderEngine.parseAndRender(template, location);
 		}
 

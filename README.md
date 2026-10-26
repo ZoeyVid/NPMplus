@@ -145,7 +145,7 @@ location ~* [^/]\.php(?:$|/) {
 
 ## Comments on some buttons
 - Forward Hostname / IP / Path: if the scheme is set to path you can just put here a path in and nginx works as a file server, otherwise you need to input ip/domain, you can also append a path to the ip/domain like `127.0.0.1/path` to proxy to a subpath.
-  - For custom locations with a set path, dns will be only refreshed on nginx reloads and the path of the location will be stripped. So a request `GET /cdf/abc` to a custom location `/cdf` which proxies to `127.0.0.1/abc` will proxy to `127.0.0.1/abc/abc`, a custom location `/cdf/` which proxies to `127.0.0.1/` will proxy to `127.0.0.1/abc`  and a custom location `/cdf` which proxies to `127.0.0.1` will proxy to `127.0.0.1/cdf/abc`
+  - For custom locations with a set path, the path of the location will be stripped. So a request `GET /cdf/abc` to a custom location `/cdf` which proxies to `127.0.0.1/abc` will proxy to `127.0.0.1/abc/abc`, a custom location `/cdf/` which proxies to `127.0.0.1/` will proxy to `127.0.0.1/abc`  and a custom location `/cdf` which proxies to `127.0.0.1` will proxy to `127.0.0.1/cdf/abc`
   - If the scheme is set to `path`, a path ending with a `/` will be searched relative to the custom location (is uses nginx alias) and a path ending without a `/` will be searched relative to the main `/` location (it uses nginx root)
 - Forward Port (optional): port of upstream or php version if scheme is `path`
 - Send noindex header and block some user agents: This does what is says, it appends a header to all responses which says that the site should not be indexed while blocking requests of crawlers based on the user agent sent with the request
@@ -407,15 +407,18 @@ If you need to run scripts before NPMplus launches put them under: `/opt/npmplus
 ## What connections can be expected from the NPMplus container?
 - to your clients
 - to your upstreams
+- to your dns server for name resolution
 - to your acme/ocsp server
-- to github for a daily update check
+- to github for an hourly update check
 - if not disabled gravatar for profile pictures
 - if used to your OIDC
 - if used to pypi to download certbot plugins
 - if used to your dns provider for acme dns challenges
 - if used to www.site24x7.com for the reachability check
+- if enabled to the alpine package repositories to install the inbuilt php-fpm and its extensions
 - if enabled to cloudflare to download their IPs
 - if enabled to the crowdsec (container) lapi
+- if enabled to your captcha provider for the crowdsec captcha remediation
 - if you see more/others please report them
 
 ## Access Lists

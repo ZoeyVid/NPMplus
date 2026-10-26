@@ -1,4 +1,4 @@
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import { createRedirectionHost, getRedirectionHost, updateRedirectionHost } from "src/api/backend";
 
 const fetchRedirectionHost = (id) => {
@@ -36,20 +36,9 @@ const useRedirectionHost = (id) => {
 	});
 };
 
-const useSetRedirectionHost = () => {
-	const queryClient = useQueryClient();
-	return useMutation({
+const useSetRedirectionHost = () =>
+	useMutation({
 		mutationFn: (values) => (values.id ? updateRedirectionHost(values) : createRedirectionHost(values)),
-		onSuccess: async ({ id }) => {
-			await Promise.all([
-				queryClient.invalidateQueries({ queryKey: ["redirection-host", id] }),
-				queryClient.invalidateQueries({ queryKey: ["redirection-hosts"] }),
-				queryClient.invalidateQueries({ queryKey: ["audit-logs"] }),
-				queryClient.invalidateQueries({ queryKey: ["host-report"] }),
-				queryClient.invalidateQueries({ queryKey: ["certificates"] }),
-			]);
-		},
 	});
-};
 
 export { useRedirectionHost, useSetRedirectionHost };

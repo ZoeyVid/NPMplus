@@ -179,6 +179,13 @@ if [ -n "$(ls -A /data/custom_ssl 2> /dev/null)" ]; then
 fi
 rm -vrf /data/custom_ssl
 
+for dir in /data/tls/custom/npm-*; do
+    if [ -s "$dir/fullchain.pem" ] && { [ ! -s "$dir/cert.pem" ] || [ ! -s "$dir/chain.pem" ]; } then
+        awk '/-----BEGIN CERTIFICATE-----/ { n++ } n == 1' "$dir/fullchain.pem" > "$dir/cert.pem"
+        awk '/-----BEGIN CERTIFICATE-----/ { n++ } n > 1' "$dir/fullchain.pem" > "$dir/chain.pem"
+    fi
+done
+
 
 if mountpoint -q /etc/letsencrypt; then
   if [ -n "$(ls -A /etc/letsencrypt 2> /dev/null)" ]; then
@@ -230,7 +237,8 @@ rm -vrf /data/letsencrypt-acme-challenge \
         /data/nginx/temp \
         /data/logs \
         /data/keys.json \
-        /data/npmplus/keys.json
+        /data/npmplus/keys.json \
+        /data/npmplus/keys-ec.json
 
 touch /data/tls/ech/nginx.conf \
       /data/tls/ech/cron.sh \

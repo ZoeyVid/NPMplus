@@ -12,7 +12,6 @@ const untrimmedPaths = new Set([
 	"/secret",
 	"/current",
 	"/auth/secret",
-	"/items/username",
 	"/items/password",
 	"/npmplus_dns_provider_credentials",
 	"/advanced_config",

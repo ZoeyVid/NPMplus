@@ -1,36 +1,7 @@
-import dayjs from "dayjs";
 import { ref } from "objection";
 import { isPostgres } from "./config.js";
 
-const datePeriodPattern = /^([0-9]+)(y|Q|M|w|d|h|m|s|ms)$/m;
-const localDateTimePattern = /^[0-9]{4}-[0-9]{2}-[0-9]{2} [0-9]{2}:[0-9]{2}:[0-9]{2}$/;
-
-/**
- * Takes an expression such as 30d and returns a dayjs object of that date in future
- *
- * Key      Shorthand
- * ==================
- * years         y
- * quarters      Q
- * months        M
- * weeks         w
- * days          d
- * hours         h
- * minutes       m
- * seconds       s
- * milliseconds  ms
- *
- * @param {String}  expression
- * @returns {Object}
- */
-const parseDatePeriod = (expression) => {
-	const matches = expression.match(datePeriodPattern);
-	if (matches) {
-		return dayjs().add(matches[1], matches[2]);
-	}
-
-	return null;
-};
+const localDateTimePattern = /^[0-9]{4}-[0-9]{2}-[0-9]{2} [0-9]{2}:[0-9]{2}:[0-9]{2}$/u;
 
 const convertIntFieldsToBool = (obj, fields) => {
 	for (const field of fields) {
@@ -75,7 +46,7 @@ const jsonReplacer = (key, value) => {
 		return;
 	}
 	if (["created_on", "modified_on", "expires_on"].includes(key) && localDateTimePattern.test(value)) {
-		return new Date(value.replace(" ", "T")).toISOString();
+		return new Date(`${value.replace(" ", "T")}Z`).toISOString();
 	}
 	return value;
 };
@@ -93,7 +64,6 @@ export {
 	convertBoolFieldsToInt,
 	convertIntFieldsToBool,
 	jsonReplacer,
-	parseDatePeriod,
 	pickCertificateFields,
 	removeCertificateFields,
 };

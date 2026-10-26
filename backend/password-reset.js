@@ -4,7 +4,7 @@
 
 import { existsSync } from "node:fs";
 import { createInterface } from "node:readline";
-import { DatabaseSync } from "node:sqlite";
+import { Database } from "node:sqlite";
 import { Writable } from "node:stream";
 import { parseArgs } from "node:util";
 import { hash } from "./lib/argon2.js";
@@ -68,7 +68,8 @@ if (PASSWORD && (PASSWORD.length < 8 || PASSWORD.length > 255)) {
 }
 
 try {
-	using db = new DatabaseSync("/data/npmplus/database.sqlite");
+	using db = new Database("/data/npmplus/database.sqlite", { timeout: 3000 });
+	db.exec("PRAGMA secure_delete = FAST");
 
 	const user = db.prepare("SELECT id FROM user WHERE email = ?").get(EMAIL);
 
@@ -77,12 +78,12 @@ try {
 			const secret = await hash(PASSWORD);
 			const { changes } = db
 				.prepare(
-					"UPDATE auth SET secret = ?, modified_on = datetime('now','localtime') WHERE user_id = ? AND type = 'password'",
+					"UPDATE auth SET secret = ?, modified_on = CURRENT_TIMESTAMP WHERE user_id = ? AND type = 'password'",
 				)
 				.run(secret, user.id);
 			if (!changes) {
 				db.prepare(
-					"INSERT INTO auth (created_on, modified_on, user_id, type, secret, meta) VALUES (datetime('now','localtime'), datetime('now','localtime'), ?, 'password', ?, '{}')",
+					"INSERT INTO auth (created_on, modified_on, user_id, type, secret, meta) VALUES (CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, ?, 'password', ?, '{}')",
 				).run(user.id, secret);
 			}
 			db.prepare("UPDATE user SET npmplus_token_valid_after = ? WHERE id = ?").run(

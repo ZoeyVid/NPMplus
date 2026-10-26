@@ -1,15 +1,15 @@
 # syntax=docker/dockerfile:1.28.0@sha256:bb22d9815c728170f72750f4e5b0d672e06176142e1d602c7e66c050100b7e5b
-FROM alpine:3.24.2@sha256:294b683cb724975bec92580e1e685676bd4b50bda910ddb8c51d4cabeaec77e6 AS nginx
+FROM alpine:3.24.3@sha256:be2656061b536c1883c4034790e21d0a09c5aaaf51968b89368a3c0371ea2c9a AS nginx
 SHELL ["/bin/ash", "-eo", "pipefail", "-c"]
 
 ARG LUAJIT_INC=/usr/include/luajit-2.1
 ARG LUAJIT_LIB=/usr/lib
 
-ARG AWSLC_VER=fa9bc8d6f7cfb2cf849b247fb06bbbfc41ecc9d6 # v5.11.0
+ARG AWSLC_VER=cd481c207e38f06aeb5766f4a1cdfce10a4c0af8 # v5.12.0
 
-ARG NGINX_VER=28c4fc458a90c1defcfb9753ae9295740a651c40 # release-1.31.7
+ARG NGINX_VER=140aa942711868a8daeb95810bc9a81f272ada72 # release-1.31.8
 ARG DTR_VER=1.29.2
-ARG ORP_VER=1.31.7
+ARG ORP_VER=1.31.8
 ARG ZNP_VER=1.30.0
 
 ARG NB_VER=df036cc80cd4f5b0bf67b25b0a10d0ee86ba5bdb # master
@@ -17,9 +17,9 @@ ARG NUB_VER=bce69c4295e43ae62e95a9ddff7902baf5b0cbd7 # 1.0.0
 ARG ZNM_VER=1c0d3f96708c86afeebd7d9778504f77c7893227 # 0.1.2
 ARG NHUZFM_VER=f743b0250c93ae5fa721bed6bebc4c66c5139aee # 1.0.0
 ARG NF_VER=70311f239ec1e88ff79c669d126d08532ddb8554 # v0.6.0
-ARG HMNM_VER=0bf283ff92017acd616814b0e5153e0ccf93e2c9 # v0.40
+ARG HMNM_VER=21066f7eed72e4de4f6ec47b93e8d5f36c38b84a # v0.41
 ARG NDK_VER=bd44d16302273052d6005d7bdb55f74e23813de3 # v0.3.4
-ARG LNM_VER=e1226f86bd609c9e8c14a0cb51ee50d94737c109 # v0.10.32rc6
+ARG LNM_VER=e672520a9480524f40ee8f999ef1f182959750a9 # v0.10.32rc7
 
 ARG NJS_VER=72e6a980b9bf2a28ae2d568bbc3b6830a5d7c39e # 1.0.2
 ARG NAL_VER=241200eac8e4acae74d353291bd27f79e5ca3dc4 # master
@@ -69,7 +69,7 @@ RUN git-clone-commit.sh https://github.com/nginx/nginx "$NGINX_VER" /src/nginx &
     echo "0aa9c73e7515dbbd48ecc798f7894412c1a50e96e98aee25847e823059faf821  /src/nginx/3.patch" | sha256sum -c - && \
     git apply /src/nginx/3.patch && \
     wget -q https://raw.githubusercontent.com/openresty/openresty/master/patches/nginx/"$ORP_VER"/nginx-"$ORP_VER"-resolver_conf_parsing.patch -O /src/nginx/4.patch && \
-    echo "4fd457ee6aa7629bc10e24595a992f47babdc4bb78b353527c5136cd9ae0e47c  /src/nginx/4.patch" | sha256sum -c - && \
+    echo "24d6a51349551e65c16709122307a12ce84274cbbaa224adfa5853aa367608b8  /src/nginx/4.patch" | sha256sum -c - && \
     git apply /src/nginx/4.patch && \
     wget -q https://raw.githubusercontent.com/zlib-ng/patches/master/nginx/"$ZNP_VER"-zlib-ng.patch -O /src/nginx/5.patch && \
     echo "bcd0f2fb9723fc1f251f94cead8d5160e767f7d4a04365331396a72a9ba54c6b  /src/nginx/5.patch" | sha256sum -c - && \
@@ -172,58 +172,58 @@ RUN find /usr/local/nginx/modules -name "*.so" -exec llvm-strip -s {} \; && \
     /usr/local/nginx/sbin/nginx -V
 
 
-FROM --platform="$BUILDPLATFORM" alpine:3.24.2@sha256:294b683cb724975bec92580e1e685676bd4b50bda910ddb8c51d4cabeaec77e6 AS frontend
+FROM --platform="$BUILDPLATFORM" node:26.12.1-alpine3.24@sha256:40cd011b55415bc894e45b02fdd5a5dfde056921b7d23a64c74f80497af48797 AS frontend
 SHELL ["/bin/ash", "-eo", "pipefail", "-c"]
 ARG NODE_ENV=production
+ARG NODE_OPTIONS=--use-openssl-ca
 WORKDIR /app
 COPY frontend/package.json frontend/pnpm-lock.yaml frontend/pnpm-workspace.yaml /app/
 RUN apk upgrade --no-cache -a && \
-    apk add --no-cache nodejs pnpm llvm file brotli && \
-    pnpm install --frozen-lockfile && \
-    find /app/node_modules -name "*.map" -delete && \
-    find /app/node_modules -name "*.node" -type f -exec llvm-strip -s {} \; && \
-    find /app/node_modules -name "*.node" -type f -exec file {} \;
+    apk add --no-cache --virtual nodejs && \
+    apk add --no-cache pnpm brotli && \
+    pnpm install --frozen-lockfile
 COPY frontend /app
 RUN pnpm vite build && \
     find /app/dist -type f ! -name "*.jpg" ! -name "*.png" -print0 | xargs -r0 -P "$(nproc)" -n 1 brotli -q 11 -sf
 
-FROM --platform=$BUILDPLATFORM alpine:3.24.2@sha256:294b683cb724975bec92580e1e685676bd4b50bda910ddb8c51d4cabeaec77e6 AS backend
-SHELL ["/bin/ash", "-eo", "pipefail", "-c"]
+FROM --platform=$BUILDPLATFORM node:26.12.1-alpine3.24@sha256:40cd011b55415bc894e45b02fdd5a5dfde056921b7d23a64c74f80497af48797 AS backend
 ARG NODE_ENV=production
-ARG TARGETARCH
+ARG NODE_OPTIONS=--use-openssl-ca
 WORKDIR /app
 COPY backend/package.json backend/pnpm-lock.yaml backend/pnpm-workspace.yaml /app/
 RUN apk upgrade --no-cache -a && \
-    apk add --no-cache nodejs pnpm llvm file && \
+    apk add --no-cache --virtual nodejs && \
+    apk add --no-cache pnpm && \
     pnpm install --frozen-lockfile --prod && \
-    find /app/node_modules -name "*.map" -delete && \
-    rm -vr /app/node_modules/better-sqlite3/deps/sqlite3 && \
-    case "$TARGETARCH" in \
-      amd64) keep="linuxmusl-x64.node" ;; \
-      arm64) keep="linuxmusl-arm64.node" ;; \
-      *) keep="linuxmusl-*.node" ;; \
-    esac && \
-    find /app/node_modules/better-sqlite3/prebuilds -name '*.node' ! -name "$keep" -delete && \
-    find /app/node_modules -name "*.node" -type f -exec llvm-strip -s {} \; && \
-    find /app/node_modules -name "*.node" -type f -exec file {} \;
+    find /app/node_modules -name "*.map" -delete
 COPY backend /app
 
 
-FROM alpine:3.24.2@sha256:294b683cb724975bec92580e1e685676bd4b50bda910ddb8c51d4cabeaec77e6
+FROM node:26.12.1-alpine3.24@sha256:40cd011b55415bc894e45b02fdd5a5dfde056921b7d23a64c74f80497af48797 AS node
+RUN apk upgrade --no-cache -a && \
+    apk add --no-cache binutils file && \
+    strip -s /usr/local/bin/node && \
+    file /usr/local/bin/node
+
+
+FROM alpine:3.24.3@sha256:be2656061b536c1883c4034790e21d0a09c5aaaf51968b89368a3c0371ea2c9a
 SHELL ["/bin/ash", "-eo", "pipefail", "-c"]
 ENV NODE_ENV=production
-ARG LRC_VER=be42297c57dc2393cdbb09d4597d9d4840a7c769 # v0.1.35rc1
+ENV NODE_OPTIONS=--use-openssl-ca
+ARG LRC_VER=873d072635fd408d81a0abd4187392f3f128ceb9 # v0.1.35rc2
 ARG LRL_VER=3ff6300e68b73ba20e909c7d16bd839aef2e5a4b # v0.15
 ARG LCSB_VER=92a8617ede3b781c33cd39e73734505597e318fd # main
 ARG COF_VER=da93e0cec7fdb1a80f4972f75b3638763d012c0e # main
 ARG NBF_VER=5cee8db2a505f2a253e24691399c828c043071fc # master
+ARG CERTBOT_VER=5.8.0
 
-COPY --from=nginx /usr/local/nginx                                                                         /usr/local/nginx
-COPY --from=nginx /usr/local/bin/bssl                                                                      /usr/local/bin/bssl
-COPY --from=nginx /usr/local/lib/libssl.so                                                                 /usr/local/lib/libssl.so
-COPY --from=nginx /usr/local/lib/libcrypto.so                                                              /usr/local/lib/libcrypto.so
+COPY --from=nginx /usr/local/nginx            /usr/local/nginx
+COPY --from=nginx /usr/local/bin/bssl         /usr/local/bin/bssl
+COPY --from=nginx /usr/local/lib/libssl.so    /usr/local/lib/libssl.so
+COPY --from=nginx /usr/local/lib/libcrypto.so /usr/local/lib/libcrypto.so
 
-COPY --from=backend  /app      /app
+COPY --from=backend  /app                /app
+COPY --from=node     /usr/local/bin/node /usr/local/bin/node
 
 COPY rootfs  /
 COPY MIT.LICENSE /MIT.LICENSE
@@ -237,7 +237,8 @@ RUN apk upgrade --no-cache -a && \
                        bash bash-completion nano \
                        logrotate goaccess fcgi \
                        luarocks5.1 git make \
-                       nodejs python3 && \
+                       libatomic libstdc++ \
+                       python3 uv && \
     \
     luarocks-5.1 install lua-resty-http && \
     luarocks-5.1 install lua-resty-string && \
@@ -264,8 +265,9 @@ RUN apk upgrade --no-cache -a && \
     rm -vr /src /tmp/luarocks_local_cache-* && \
     apk del --no-cache luarocks5.1 git make && \
     \
-    python3 -m venv /usr/local && \
-    pip install --no-cache-dir --upgrade pip certbot && \
+    uv venv --allow-existing /usr/local && \
+    uv pip install --no-cache certbot=="$CERTBOT_VER" && \
+    uv pip freeze | tee /etc/pip-constraints.txt && \
     \
     wget -q https://raw.githubusercontent.com/tomwassenberg/certbot-ocsp-fetcher/"$COF_VER"/certbot-ocsp-fetcher -O /usr/local/bin/certbot-ocsp-fetcher.sh && \
     echo "60148ed2ffef2f1354427d3e080400d008132f8e5fb014f721f5986f438dd621  /usr/local/bin/certbot-ocsp-fetcher.sh" | sha256sum -c - && \
@@ -282,6 +284,8 @@ RUN apk upgrade --no-cache -a && \
     ln -s /app/index.js /usr/local/bin/index.js && \
     \
     chmod +x /usr/local/bin/*
+
+ENV UV_CONSTRAINT=/etc/pip-constraints.txt
 
 COPY --from=frontend /app/dist /app/frontend
 

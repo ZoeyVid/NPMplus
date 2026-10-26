@@ -1,18 +1,16 @@
-import { IconHelp, IconSearch } from "@tabler/icons-react";
-import { useQueryClient } from "@tanstack/react-query";
+import { IconSearch } from "@tabler/icons-react";
 import { useEffect, useState } from "react";
 import Alert from "react-bootstrap/Alert";
 import { deleteDeadHost, toggleDeadHost } from "src/api/backend";
 import { Button, HasPermission, LoadingPage } from "src/components";
 import { getDirectory, useDeadHosts } from "src/hooks";
 import { T } from "src/locale";
-import { showDeadHostModal, showDeleteConfirmModal, showHelpModal } from "src/modals";
+import { showDeadHostModal, showDeleteConfirmModal } from "src/modals";
 import { DEAD_HOSTS, MANAGE } from "src/modules/Permissions";
 import { showError, showObjectSuccess } from "src/notifications";
 import Table from "./Table";
 
 export default function TableWrapper() {
-	const queryClient = useQueryClient();
 	const [search, setSearch] = useState("");
 	const [sorting, setSorting] = useState([{ id: "enabled", desc: false }]);
 	const { isFetching, isPending, isError, error, data } = useDeadHosts(["owner", "certificate"]);
@@ -35,10 +33,6 @@ export default function TableWrapper() {
 	const handleDisableToggle = async (id, enabled) => {
 		try {
 			await toggleDeadHost(id, enabled);
-			await Promise.all([
-				queryClient.invalidateQueries({ queryKey: ["dead-hosts"] }),
-				queryClient.invalidateQueries({ queryKey: ["dead-host", id] }),
-			]);
 			showObjectSuccess("dead-host", enabled ? "enabled" : "disabled");
 		} catch (err) {
 			showError(<T id={err.message} />);
@@ -72,7 +66,6 @@ export default function TableWrapper() {
 					await deleteDeadHost(id);
 					showObjectSuccess("dead-host", "deleted");
 				},
-				invalidations: [["dead-hosts"], ["dead-host", id], ["certificates"]],
 				children: <T id="object.delete.content" tData={{ object: "dead-host" }} />,
 				subject: host?.domainNames.join(", "),
 			});
@@ -108,9 +101,6 @@ export default function TableWrapper() {
 										/>
 									</div>
 								) : null}
-								<Button size="sm" onClick={() => showHelpModal("DeadHosts")}>
-									<IconHelp size={20} />
-								</Button>
 								<HasPermission section={DEAD_HOSTS} permission={MANAGE} hideError>
 									{data?.length ? (
 										<Button size="sm" className="btn-red" onClick={() => showDeadHostModal("new")}>

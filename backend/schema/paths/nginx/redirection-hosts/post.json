@@ -19,61 +19,7 @@
 					"additionalProperties": false,
 					"allOf": [
 						{
-							"if": {
-								"properties": {
-									"npmplus_dns_challenge": {
-										"type": "boolean",
-										"const": true
-									}
-								},
-								"required": [
-									"npmplus_dns_challenge"
-								]
-							},
-							"then": {
-								"required": [
-									"npmplus_dns_provider"
-								]
-							}
-						},
-						{
-							"if": {
-								"properties": {
-									"certificate_id": {
-										"const": "new"
-									}
-								},
-								"required": [
-									"certificate_id"
-								]
-							},
-							"then": {
-								"if": {
-									"properties": {
-										"npmplus_dns_challenge": {
-											"type": "boolean",
-											"const": true
-										}
-									},
-									"required": [
-										"npmplus_dns_challenge"
-									]
-								},
-								"then": {
-									"properties": {
-										"domain_names": {
-											"$ref": "../../../components/certificate-object.json#/properties/domain_names_dns"
-										}
-									}
-								},
-								"else": {
-									"properties": {
-										"domain_names": {
-											"$ref": "../../../components/certificate-object.json#/properties/domain_names_http"
-										}
-									}
-								}
-							}
+							"$ref": "../../../common.json#/properties/ssl_create_rules"
 						}
 					],
 					"required": [

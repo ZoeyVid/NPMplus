@@ -1,10 +1,9 @@
 import { IconAlertTriangle } from "@tabler/icons-react";
-import { useQueryClient } from "@tanstack/react-query";
 import { Field, Form, Formik } from "formik";
 import { useState } from "react";
 import { Alert } from "react-bootstrap";
 import Modal from "react-bootstrap/Modal";
-import { createCertificate, uploadCertificate, validateCertificate } from "src/api/backend";
+import { createCertificate, deleteCertificate, uploadCertificate, validateCertificate } from "src/api/backend";
 import { Button } from "src/components";
 import { T } from "src/locale";
 import EasyModal from "src/modules/easyModal";
@@ -16,7 +15,6 @@ const showCustomCertificateModal = (cert, provider) => {
 };
 
 const CustomCertificateModal = EasyModal.create(({ visible, remove, cert, provider = "other" }) => {
-	const queryClient = useQueryClient();
 	const [errorMsg, setErrorMsg] = useState(null);
 	const [isSubmitting, setIsSubmitting] = useState(false);
 	const isEdit = Boolean(cert);
@@ -50,7 +48,12 @@ const CustomCertificateModal = EasyModal.create(({ visible, remove, cert, provid
 				});
 
 				// Upload the certificates to the created certificate
-				await uploadCertificate(newCert.id, formData);
+				try {
+					await uploadCertificate(newCert.id, formData);
+				} catch (err) {
+					await deleteCertificate(newCert.id);
+					throw err;
+				}
 			}
 
 			// Success
@@ -60,7 +63,6 @@ const CustomCertificateModal = EasyModal.create(({ visible, remove, cert, provid
 			setErrorMsg(<T id={err.message} />);
 		}
 
-		await queryClient.invalidateQueries({ queryKey: ["certificates"] });
 		setIsSubmitting(false);
 		setSubmitting(false);
 	};

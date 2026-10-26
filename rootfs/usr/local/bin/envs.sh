@@ -382,7 +382,7 @@ if [ "$ACME_PROFILE" != "none" ] && [ "$(curl -sSL "$ACME_SERVER" | jq --arg p "
     if [ "$(curl -sSL "$ACME_SERVER" | jq -r ".newNonce")" != "null" ]; then
         echo "The ACME_PROFILE seems to be not supported by the ACME_SERVER."
         sleep inf
-	else
+    else
         echo "Cannot check if the ACME_PROFILE is supported by the ACME_SERVER since the ACME_SERVER is down."
     fi
 fi
@@ -826,8 +826,10 @@ if [ "$GOA" = "true" ] && [ "$LOGROTATE" = "false" ]; then
 fi
 
 
-export TV="20"
-if [ ! -s /data/npmplus/env.sha512sum ] || [ "$(cat /data/npmplus/env.sha512sum)" != "$( (grep "env\.[A-Z0-9_]\+" -roh /app/templates | sed "s|env.||g" | sort | uniq | xargs printenv; echo "$TV") | tr -d "\n" | sha512sum | cut -d" " -f1)" ]; then
+TV="20"
+ENV_SHA512SUM="$( (grep "env\.[A-Z0-9_]\+" -roh /app/templates | sed "s|env.||g" | sort | uniq | xargs printenv; echo "$TV") | tr -d "\n" | sha512sum | cut -d" " -f1)"
+export ENV_SHA512SUM
+if [ ! -s /data/npmplus/env.sha512sum ] || [ "$(cat /data/npmplus/env.sha512sum)" != "$ENV_SHA512SUM" ]; then
     echo "At least one env or the template version changed, all hosts will be regenerated. Please make sure to read the changelog."
     export REGENERATE_ALL="true"
 fi
