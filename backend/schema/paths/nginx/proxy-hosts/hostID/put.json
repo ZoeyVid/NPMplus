@@ -180,7 +180,6 @@
 									"port": 80,
 									"custom": false
 								}],
-								"npmplus_load_balance_method": "round_robin",
 								"npmplus_access_list_type": "public",
 								"certificate_id": 0,
 								"ssl_forced": false,
