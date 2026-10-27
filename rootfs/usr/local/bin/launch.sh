@@ -9,7 +9,8 @@ Group ID: $(id -g)
 -------------------------------------
 "
 
-if [ -z "$(find -L /data/tls/certbot/accounts/"$(echo "$ACME_SERVER" | sed "s|^https\?://\([^/]\+\).*$|\1|g")" -type f 2> /dev/null)" ]; then
+ACME_ACCOUNTS_DIR="/data/tls/certbot/accounts/$(echo "$ACME_SERVER" | sed "s|^https\?://||g")"
+if [ -z "$(find -L "$ACME_ACCOUNTS_DIR" -type f 2> /dev/null)" ]; then
     if [ "$(echo "$ACME_SERVER" | sed "s|^https\?://\([^/]\+\).*$|\1|g")" = "acme.zerossl.com" ] && [ -z "$ACME_EAB_KID" ] && [ -z "$ACME_EAB_HMAC_KEY" ]; then
         if [ -z "$ACME_EMAIL" ]; then
             echo "ACME_EMAIL is required to use zerossl. Either set it or use a different acme server like letsencrypt (ACME_SERVER: https://acme-v02.api.letsencrypt.org/directory)"
@@ -38,6 +39,9 @@ if [ -z "$(find -L /data/tls/certbot/accounts/"$(echo "$ACME_SERVER" | sed "s|^h
     fi
     echo
 fi
+
+ACME_THUMBPRINT="$(jq -Scj '{e, kty, n}' "$(find -L "$ACME_ACCOUNTS_DIR" -name private_key.json)" | openssl dgst -sha256 -binary | basenc --base64url | tr -d =)"
+export ACME_THUMBPRINT
 
 if [ "$ACME_OCSP_STAPLING" = "true" ]; then
     certbot-ocsp-fetcher.sh -c /data/tls/certbot/live -o /data/tls/certbot/live --no-reload-webserver --force-update || true

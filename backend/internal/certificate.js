@@ -639,7 +639,9 @@ const internalCertificate = {
 			...ips.flatMap((ip) => ["--ip-address", ip]),
 			...(certificate.npmplus_reuse_key ? ["--reuse-key"] : ["--no-reuse-key"]),
 			"--authenticator",
-			"webroot",
+			"manual",
+			"--manual-auth-hook",
+			"true",
 		]);
 		logger.success(result);
 		return result;
@@ -834,11 +836,6 @@ const internalCertificate = {
 	testHttpsChallenge: async (access, payload) => {
 		access.can("certificates:view");
 
-		// Create a test challenge file
-		await writeFile("/data/tls/certbot/acme-challenge/.well-known/acme-challenge/test-challenge", "Success", {
-			encoding: "utf8",
-		});
-
 		const results = [];
 
 		for (const domain of payload.domains) {
@@ -897,7 +894,10 @@ const internalCertificate = {
 			);
 			return `other:${result.error.msg}`;
 		}
-		if (`${result.responsecode}` === "200" && result.htmlresponse === "Success") {
+		if (
+			`${result.responsecode}` === "200" &&
+			result.htmlresponse === `test-challenge.${process.env.ACME_THUMBPRINT}`
+		) {
 			// Server exists and has responded with the correct data
 			return "ok";
 		}

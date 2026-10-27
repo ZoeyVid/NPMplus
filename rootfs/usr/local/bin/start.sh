@@ -121,7 +121,6 @@ mkdir -p /tmp/npmhome \
 mkdir -vp /data/npmplus/avatar \
           /data/npmplus/gravatar \
           /data/tls/certbot/renewal \
-          /data/tls/certbot/acme-challenge/.well-known/acme-challenge \
           /data/tls/custom \
           /data/tls/mtls \
           /data/tls/ech \
@@ -198,6 +197,9 @@ fi
 #tmp move to mointpoint if block
 find /data/tls/certbot/renewal -type f -name '*.conf' -exec sed -i "s|/etc/letsencrypt|/data/tls/certbot|g" {} \;
 find /data/tls/certbot/renewal -type f -name '*.conf' -exec sed -i "s|/data/tls/certbot/credentials|/tmp/certbot-credentials|g" {} \;
+find /data/tls/certbot/renewal -type f -name '*.conf' -exec sed -i "s|^authenticator = webroot$|authenticator = manual\nmanual_auth_hook = true|g" {} \;
+find /data/tls/certbot/renewal -type f -name '*.conf' -exec sed -i "/^webroot_path = /d" {} \;
+find /data/tls/certbot/renewal -type f -name '*.conf' -exec sed -i "/^\[\[webroot_map\]\]$/,\$d" {} \;
 
 if [ -d /data/tls/certbot/live ] && [ -d /data/tls/certbot/archive ]; then
   find /data/tls/certbot/live ! -name "$(printf "*\n*")" -type f -name "*.pem" > /tmp/certs.txt
@@ -233,6 +235,7 @@ fi
 #done
 
 rm -vrf /data/letsencrypt-acme-challenge \
+        /data/tls/certbot/acme-challenge \
         /data/nginx/default_host \
         /data/nginx/temp \
         /data/logs \
@@ -260,6 +263,9 @@ touch /data/tls/ech/nginx.conf \
       /data/custom_nginx/server_stream.conf \
       /data/custom_nginx/server_stream_tcp.conf \
       /data/custom_nginx/server_stream_udp.conf
+: > /data/nginx/ip_ranges.conf
+: > /data/nginx/default.conf
+: > /data/nginx/acme_challenge.conf
 
 
 if [ ! -s /data/crowdsec/ban.html ]; then
@@ -436,7 +442,7 @@ if [ "$NGINX_LOAD_VHOST_TRAFFIC_STATUS_MODULE" = "true" ]; then
 fi
 
 if [ "$REGENERATE_ALL" = "true" ]; then
-    find /data/nginx -name "*.conf" -delete
+    find /data/nginx -mindepth 2 -name "*.conf" -delete
 fi
 
 if [ "$LOGROTATE" = "true" ]; then

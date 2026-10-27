@@ -104,7 +104,7 @@ const internalNginx = {
 	 */
 	getConfigName: (host_type, host_id) => {
 		if (host_type === "default") {
-			return "/usr/local/nginx/conf/conf.d/default.conf";
+			return "/data/nginx/default.conf";
 		}
 		return `/data/nginx/${host_type}/${host_id}.conf`;
 	},
