@@ -36,7 +36,7 @@ const ProxyHostModal = EasyModal.create(({ id, isClone, visible, remove }) => {
 		npmplusAccessListIds: accessLists.map((accessList) => accessList.id),
 	}));
 
-	const onSubmit = (values, { setSubmitting }) => {
+	const onSubmit = (values, { setSubmitting, setFieldValue }) => {
 		if (isSubmitting) return;
 		setIsSubmitting(true);
 		setErrorMsg(null);
@@ -62,6 +62,9 @@ const ProxyHostModal = EasyModal.create(({ id, isClone, visible, remove }) => {
 
 		setProxyHost(payload, {
 			onError: (err) => {
+				if (err.payload?.error?.certificate_id) {
+					void setFieldValue("certificateId", err.payload.error.certificate_id);
+				}
 				if (err.payload?.error?.output) {
 					setErrorMsg(
 						<div className="w-100">

@@ -22,6 +22,11 @@
 		"output": {
 			"type": "string",
 			"example": "Some challenges have failed."
+		},
+		"certificate_id": {
+			"type": "integer",
+			"minimum": 1,
+			"example": 11
 		}
 	}
 }

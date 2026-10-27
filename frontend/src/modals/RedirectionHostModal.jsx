@@ -32,7 +32,7 @@ const RedirectionHostModal = EasyModal.create(({ id, visible, remove }) => {
 	const [errorMsg, setErrorMsg] = useState(null);
 	const [isSubmitting, setIsSubmitting] = useState(false);
 
-	const onSubmit = (values, { setSubmitting }) => {
+	const onSubmit = (values, { setSubmitting, setFieldValue }) => {
 		if (isSubmitting) return;
 		setIsSubmitting(true);
 		setErrorMsg(null);
@@ -44,6 +44,9 @@ const RedirectionHostModal = EasyModal.create(({ id, visible, remove }) => {
 
 		setRedirectionHost(payload, {
 			onError: (err) => {
+				if (err.payload?.error?.certificate_id) {
+					void setFieldValue("certificateId", err.payload.error.certificate_id);
+				}
 				if (err.payload?.error?.output) {
 					setErrorMsg(
 						<div className="w-100">

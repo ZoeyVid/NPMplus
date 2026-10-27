@@ -95,32 +95,45 @@ const internalProxyHost = {
 			thisData.certificate_id = (await internalCertificate.createQuickCertificate(access, thisData)).id;
 		}
 
-		const createdRow = await proxyHostModel.transaction(async (trx) => {
-			const insertedRow = await proxyHostModel.query(trx).insertAndFetch(thisData);
-			await replaceLocationsAndAccessLists(trx, insertedRow.id, thisData);
-			return insertedRow;
-		});
-
-		let savedRow;
+		let row;
 		try {
-			const row = await internalProxyHost.get(access, {
-				id: createdRow.id,
-				expand: ["certificate", "access_lists.[clients,items]", "locations.access_lists.[clients,items]"],
-			});
+			await proxyHostModel.transaction(async (trx) => {
+				const insertedRow = await proxyHostModel.query(trx).insertAndFetch(thisData);
+				await replaceLocationsAndAccessLists(trx, insertedRow.id, thisData);
+				row = await internalProxyHost.get(
+					access,
+					{
+						id: insertedRow.id,
+						expand: [
+							"certificate",
+							"access_lists.[clients,items]",
+							"locations.access_lists.[clients,items]",
+						],
+					},
+					trx,
+				);
 
-			// Configure nginx
-			await internalNginx.configure(proxyHostModel, "proxy_host", row);
-		} finally {
-			savedRow = await internalProxyHost.get(access, { id: createdRow.id });
-
-			// Add to audit log
-			await internalAuditLog.add(access, {
-				action: "created",
-				object_type: "proxy-host",
-				object_id: savedRow.id,
-				meta: savedRow,
+				// Configure nginx
+				await internalNginx.configure(proxyHostModel, "proxy_host", row, { trx });
 			});
+		} catch (err) {
+			if (createCertificate) err.certificate_id = thisData.certificate_id;
+			if (row) {
+				await internalProxyHostAccessList.delete(row);
+				await internalNginx.deleteConfig("proxy_host", row);
+			}
+			throw err;
 		}
+
+		const savedRow = await internalProxyHost.get(access, { id: row.id });
+
+		// Add to audit log
+		await internalAuditLog.add(access, {
+			action: "created",
+			object_type: "proxy-host",
+			object_id: savedRow.id,
+			meta: savedRow,
+		});
 
 		return savedRow;
 	},
@@ -179,31 +192,52 @@ const internalProxyHost = {
 			thisData.certificate_id = cert.id;
 		}
 
-		await proxyHostModel.transaction(async (trx) => {
-			await proxyHostModel.query(trx).where({ id: thisData.id }).patch(thisData);
-			await replaceLocationsAndAccessLists(trx, thisData.id, thisData);
-		});
-
-		let savedRow;
 		try {
-			const row = await internalProxyHost.get(access, {
-				id: thisData.id,
-				expand: ["certificate", "access_lists.[clients,items]", "locations.access_lists.[clients,items]"],
-			});
+			await proxyHostModel.transaction(async (trx) => {
+				await proxyHostModel.query(trx).where({ id: thisData.id }).patch(thisData);
+				await replaceLocationsAndAccessLists(trx, thisData.id, thisData);
 
-			// Configure nginx
-			await internalNginx.configure(proxyHostModel, "proxy_host", row);
-		} finally {
-			savedRow = await internalProxyHost.get(access, { id: thisData.id });
-
-			// Add to audit log
-			await internalAuditLog.add(access, {
-				action: "updated",
-				object_type: "proxy-host",
-				object_id: savedRow.id,
-				meta: savedRow,
+				// Configure nginx
+				await internalNginx.configure(
+					proxyHostModel,
+					"proxy_host",
+					await internalProxyHost.get(
+						access,
+						{
+							id: thisData.id,
+							expand: [
+								"certificate",
+								"access_lists.[clients,items]",
+								"locations.access_lists.[clients,items]",
+							],
+						},
+						trx,
+					),
+					{ trx },
+				);
 			});
+		} catch (err) {
+			if (createCertificate) err.certificate_id = thisData.certificate_id;
+			await internalNginx.configure(
+				proxyHostModel,
+				"proxy_host",
+				await internalProxyHost.get(access, {
+					id: thisData.id,
+					expand: ["certificate", "access_lists.[clients,items]", "locations.access_lists.[clients,items]"],
+				}),
+			);
+			throw err;
 		}
+
+		const savedRow = await internalProxyHost.get(access, { id: thisData.id });
+
+		// Add to audit log
+		await internalAuditLog.add(access, {
+			action: "updated",
+			object_type: "proxy-host",
+			object_id: savedRow.id,
+			meta: savedRow,
+		});
 
 		return savedRow;
 	},
@@ -215,11 +249,11 @@ const internalProxyHost = {
 	 * @param  {Array}    [data.expand]
 	 * @return {Promise}
 	 */
-	get: async (access, data) => {
+	get: async (access, data, trx) => {
 		access.can("proxy_hosts:view");
 
 		const query = proxyHostModel
-			.query()
+			.query(trx)
 			.where("id", data.id)
 			.allowGraph("[access_lists.[clients,items],certificate,locations.access_lists.[clients,items]]")
 			.withGraphFetched("[access_lists, locations.access_lists]")
