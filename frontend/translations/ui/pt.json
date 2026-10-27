@@ -191,7 +191,7 @@
 	"settings.default-site": "Site Predefinido",
 	"settings.default-site.404": "Página 404",
 	"settings.default-site.444": "Sem Resposta (444)",
-	"settings.default-site.congratulations": "Página de Boas-vindas",
+	"settings.default-site.congratulations": "Página de Parabéns",
 	"settings.default-site.description": "O que apresentar quando o Nginx recebe um Host desconhecido",
 	"settings.default-site.html": "HTML Personalizado",
 	"settings.default-site.html.placeholder": "<!-- Insira aqui o seu conteúdo HTML personalizado -->",
