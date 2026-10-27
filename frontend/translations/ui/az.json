@@ -173,7 +173,7 @@
 	"object.event.disabled": "{object} deaktiv edildi",
 	"object.event.enabled": "{object} aktivləşdirildi",
 	"object.event.renewed": "{object} yeniləndi",
-	"object.event.updated": "{object} yeniləndi",
+	"object.event.updated": "{object} dəyişdirildi",
 	"offline": "Oflayn",
 	"online": "Onlayn",
 	"options": "Seçimlər",
