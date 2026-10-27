@@ -71,7 +71,7 @@
 	"column.email": "Email",
 	"column.event": "Událost",
 	"column.expires": "Platnost do",
-	"column.http-code": "Přístup",
+	"column.http-code": "HTTP kód",
 	"column.incoming-port": "Vstupní port",
 	"column.name": "Název",
 	"column.protocol": "Protokol",
