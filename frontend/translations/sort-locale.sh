@@ -1,6 +1,6 @@
 #!/usr/bin/env sh
 
-if ! command -v jq > /dev/null 2>&1; then
+if ! command -v jq > /dev/null; then
 	jq || exit 1
 fi
 
