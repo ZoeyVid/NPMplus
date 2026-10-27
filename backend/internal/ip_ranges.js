@@ -80,7 +80,7 @@ const internalIpRanges = {
 			const renderEngine = utils.getRenderEngine();
 			const template = await readFile(`${import.meta.dirname}/../templates/ip_ranges.conf`, { encoding: "utf8" });
 			const newConfig = await renderEngine.parseAndRender(template, { ip_ranges, env: process.env });
-			const filePath = "/usr/local/nginx/conf/conf.d/ip_ranges.conf";
+			const filePath = "/data/nginx/ip_ranges.conf";
 
 			try {
 				const oldConfig = await readFile(filePath, {
