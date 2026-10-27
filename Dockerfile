@@ -17,7 +17,7 @@ ARG NUB_VER=bce69c4295e43ae62e95a9ddff7902baf5b0cbd7 # 1.0.0
 ARG ZNM_VER=1c0d3f96708c86afeebd7d9778504f77c7893227 # 0.1.2
 ARG NHUZFM_VER=f743b0250c93ae5fa721bed6bebc4c66c5139aee # 1.0.0
 ARG NF_VER=70311f239ec1e88ff79c669d126d08532ddb8554 # v0.6.0
-ARG HMNM_VER=0bf283ff92017acd616814b0e5153e0ccf93e2c9 # v0.40
+ARG HMNM_VER=21066f7eed72e4de4f6ec47b93e8d5f36c38b84a # v0.41
 ARG NDK_VER=bd44d16302273052d6005d7bdb55f74e23813de3 # v0.3.4
 ARG LNM_VER=e672520a9480524f40ee8f999ef1f182959750a9 # v0.10.32rc7
 
@@ -172,7 +172,7 @@ RUN find /usr/local/nginx/modules -name "*.so" -exec llvm-strip -s {} \; && \
     /usr/local/nginx/sbin/nginx -V
 
 
-FROM --platform="$BUILDPLATFORM" node:26.12.1-alpine3.24@sha256:40cd011b55415bc894e45b02fdd5a5dfde056921b7d23a64c74f80497af48797 AS frontend
+FROM --platform="$BUILDPLATFORM" node:26.13.0-alpine3.24@sha256:c6ad9e9c1d80f6eb607c26b4b0a132ff7a2344fad1c78ea3baa2a7d4c8de6d94 AS frontend
 SHELL ["/bin/ash", "-eo", "pipefail", "-c"]
 ARG NODE_ENV=production
 ARG NODE_OPTIONS=--use-openssl-ca
@@ -186,7 +186,7 @@ COPY frontend /app
 RUN pnpm vite build && \
     find /app/dist -type f ! -name "*.jpg" ! -name "*.png" -print0 | xargs -r0 -P "$(nproc)" -n 1 brotli -q 11 -sf
 
-FROM --platform=$BUILDPLATFORM node:26.12.1-alpine3.24@sha256:40cd011b55415bc894e45b02fdd5a5dfde056921b7d23a64c74f80497af48797 AS backend
+FROM --platform=$BUILDPLATFORM node:26.13.0-alpine3.24@sha256:c6ad9e9c1d80f6eb607c26b4b0a132ff7a2344fad1c78ea3baa2a7d4c8de6d94 AS backend
 ARG NODE_ENV=production
 ARG NODE_OPTIONS=--use-openssl-ca
 WORKDIR /app
@@ -199,7 +199,7 @@ RUN apk upgrade --no-cache -a && \
 COPY backend /app
 
 
-FROM node:26.12.1-alpine3.24@sha256:40cd011b55415bc894e45b02fdd5a5dfde056921b7d23a64c74f80497af48797 AS node
+FROM node:26.13.0-alpine3.24@sha256:c6ad9e9c1d80f6eb607c26b4b0a132ff7a2344fad1c78ea3baa2a7d4c8de6d94 AS node
 RUN apk upgrade --no-cache -a && \
     apk add --no-cache binutils file && \
     strip -s /usr/local/bin/node && \
@@ -215,7 +215,7 @@ ARG LRL_VER=3ff6300e68b73ba20e909c7d16bd839aef2e5a4b # v0.15
 ARG LCSB_VER=92a8617ede3b781c33cd39e73734505597e318fd # main
 ARG COF_VER=da93e0cec7fdb1a80f4972f75b3638763d012c0e # main
 ARG NBF_VER=5cee8db2a505f2a253e24691399c828c043071fc # master
-ARG CERTBOT_VER=5.8.0
+ARG CERTBOT_VER=5.9.0
 
 COPY --from=nginx /usr/local/nginx            /usr/local/nginx
 COPY --from=nginx /usr/local/bin/bssl         /usr/local/bin/bssl
