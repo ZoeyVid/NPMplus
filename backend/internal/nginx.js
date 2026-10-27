@@ -24,7 +24,7 @@ const internalNginx = {
 	 * @param   {Object}         host
 	 * @returns {Promise}
 	 */
-	configure: async (model, host_type, host, { skipReload = false } = {}) => {
+	configure: async (model, host_type, host, { skipReload = false, trx } = {}) => {
 		let status = {};
 
 		// skip disabled hosts
@@ -38,8 +38,9 @@ const internalNginx = {
 			await (skipReload ? internalNginx.test() : internalNginx.reload());
 			status = { npmplus_nginx_online: true, npmplus_nginx_err: "" };
 
-			await model.query().where("id", host.id).patch(status);
+			await model.query(trx).where("id", host.id).patch(status);
 		} catch (err) {
+			if (trx) throw err;
 			logger.error(err.message);
 
 			// config is bad, update status and rename config
