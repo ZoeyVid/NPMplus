@@ -183,7 +183,7 @@
 	"permissions.view": "Только просмотр",
 	"permissions.visibility.all": "Все элементы",
 	"permissions.visibility.title": "Видимость элементов",
-	"permissions.visibility.user": "Созданные элементы",
+	"permissions.visibility.user": "Только созданные элементы",
 	"proxy-host": "Прокси-хост",
 	"proxy-host.forward-host": "Целевой хост",
 	"proxy-hosts": "Прокси-хосты",
