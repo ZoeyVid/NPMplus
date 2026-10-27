@@ -25,6 +25,24 @@ const internalSetting = {
 			throw new errs.ValidationError("meta.status needs to be between 400 and 599");
 		}
 
+		if (merged.id === "default-site") {
+			try {
+				await internalNginx.generateConfig("default", merged);
+				await internalNginx.reload();
+			} catch (err) {
+				await internalNginx.generateConfig("default", existingRow);
+				await internalNginx.reload();
+				throw new errs.ValidationError("Could not reconfigure Nginx. Please check logs.", undefined, {
+					cause: err,
+				});
+			}
+
+			// write the html if we need to
+			if (merged.value === "html") {
+				await writeFile("/data/html/index.html", merged.meta.html, { encoding: "utf8" });
+			}
+		}
+
 		await settingModel.query().where({ id: data.id }).patch(data);
 
 		const row = await internalSetting.get(access, {
@@ -36,26 +54,6 @@ const internalSetting = {
 			object_type: "setting",
 			meta: row,
 		});
-		if (row.id === "default-site") {
-			// write the html if we need to
-			if (row.value === "html") {
-				await writeFile("/data/html/index.html", row.meta.html, { encoding: "utf8" });
-			}
-
-			try {
-				await internalNginx.deleteConfig("default");
-				await internalNginx.generateConfig("default", row);
-				await internalNginx.test();
-				await internalNginx.reload();
-			} catch (err) {
-				await internalNginx.deleteConfig("default");
-				await internalNginx.test();
-				await internalNginx.reload();
-				throw new errs.ValidationError("Could not reconfigure Nginx. Please check logs.", undefined, {
-					cause: err,
-				});
-			}
-		}
 		return row;
 	},
 

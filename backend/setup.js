@@ -1,4 +1,4 @@
-import { writeFile } from "node:fs/promises";
+import { readFile, writeFile } from "node:fs/promises";
 import dnsPlugins from "./certbot/dns-plugins.json" with { type: "json" };
 import internalHost from "./internal/host.js";
 import internalNginx from "./internal/nginx.js";
@@ -6,6 +6,7 @@ import internalProxyHost from "./internal/proxy-host.js";
 import internalUser from "./internal/user.js";
 import Access from "./lib/access.js";
 import { installPlugins } from "./lib/certbot.js";
+import utils from "./lib/utils.js";
 import { setup as logger } from "./logger.js";
 import certificateModel from "./models/certificate.js";
 import deadModel from "./models/dead_host.js";
@@ -74,6 +75,18 @@ const setupDefaultSettings = async () => {
 	await settingModel.query().deleteById("oidc-config");
 
 	await internalNginx.generateConfig("default", await settingModel.query().where({ id: "default-site" }).first());
+};
+
+const setupAcmeChallenge = async () => {
+	await writeFile(
+		"/data/nginx/acme_challenge.conf",
+		await utils
+			.getRenderEngine()
+			.parseAndRender(
+				await readFile(`${import.meta.dirname}/templates/acme_challenge.conf`, { encoding: "utf8" }),
+				{ env: process.env },
+			),
+	);
 };
 
 /**
@@ -191,6 +204,7 @@ export const isSetup = async () => {
 
 export default async () => {
 	await setupDefaultUser();
+	await setupAcmeChallenge();
 	await setupDefaultSettings();
 	await setupCertbotPlugins();
 	await regenerateAllHosts();
