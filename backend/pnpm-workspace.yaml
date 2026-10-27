@@ -1,3 +1,5 @@
 minimumReleaseAge: 0
 allowBuilds:
   '@scarf/scarf': false
+skills:
+  dirs: []
