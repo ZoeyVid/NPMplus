@@ -1,3 +1,5 @@
 minimumReleaseAge: 0
 allowBuilds:
   '@parcel/watcher': false
+skills:
+  dirs: []
