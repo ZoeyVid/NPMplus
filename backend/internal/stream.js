@@ -59,28 +59,33 @@ const internalStream = {
 			thisData.certificate_id = (await internalCertificate.createQuickCertificate(access, thisData)).id;
 		}
 
-		const createdRow = await streamModel.query().insertAndFetch(thisData);
-
-		let savedRow;
+		let row;
 		try {
-			const row = await internalStream.get(access, {
-				id: createdRow.id,
-				expand: ["certificate"],
-			});
+			await streamModel.transaction(async (trx) => {
+				row = await internalStream.get(
+					access,
+					{ id: (await streamModel.query(trx).insertAndFetch(thisData)).id, expand: ["certificate"] },
+					trx,
+				);
 
-			// Configure nginx
-			await internalNginx.configure(streamModel, "stream", row);
-		} finally {
-			savedRow = await internalStream.get(access, { id: createdRow.id });
-
-			// Add to audit log
-			await internalAuditLog.add(access, {
-				action: "created",
-				object_type: "stream",
-				object_id: savedRow.id,
-				meta: savedRow,
+				// Configure nginx
+				await internalNginx.configure(streamModel, "stream", row, { trx });
 			});
+		} catch (err) {
+			if (createCertificate) err.certificate_id = thisData.certificate_id;
+			if (row) await internalNginx.deleteConfig("stream", row);
+			throw err;
 		}
+
+		const savedRow = await internalStream.get(access, { id: row.id });
+
+		// Add to audit log
+		await internalAuditLog.add(access, {
+			action: "created",
+			object_type: "stream",
+			object_id: savedRow.id,
+			meta: savedRow,
+		});
 
 		return savedRow;
 	},
@@ -115,28 +120,37 @@ const internalStream = {
 			thisData.certificate_id = cert.id;
 		}
 
-		await streamModel.query().where({ id: thisData.id }).patch(thisData);
-
-		let savedRow;
 		try {
-			const row = await internalStream.get(access, {
-				id: thisData.id,
-				expand: ["certificate"],
-			});
+			await streamModel.transaction(async (trx) => {
+				await streamModel.query(trx).where({ id: thisData.id }).patch(thisData);
 
-			// Configure nginx
-			await internalNginx.configure(streamModel, "stream", row);
-		} finally {
-			savedRow = await internalStream.get(access, { id: thisData.id });
-
-			// Add to audit log
-			await internalAuditLog.add(access, {
-				action: "updated",
-				object_type: "stream",
-				object_id: savedRow.id,
-				meta: savedRow,
+				// Configure nginx
+				await internalNginx.configure(
+					streamModel,
+					"stream",
+					await internalStream.get(access, { id: thisData.id, expand: ["certificate"] }, trx),
+					{ trx },
+				);
 			});
+		} catch (err) {
+			if (createCertificate) err.certificate_id = thisData.certificate_id;
+			await internalNginx.configure(
+				streamModel,
+				"stream",
+				await internalStream.get(access, { id: thisData.id, expand: ["certificate"] }),
+			);
+			throw err;
 		}
+
+		const savedRow = await internalStream.get(access, { id: thisData.id });
+
+		// Add to audit log
+		await internalAuditLog.add(access, {
+			action: "updated",
+			object_type: "stream",
+			object_id: savedRow.id,
+			meta: savedRow,
+		});
 
 		return savedRow;
 	},
@@ -148,10 +162,10 @@ const internalStream = {
 	 * @param  {Array}    [data.expand]
 	 * @return {Promise}
 	 */
-	get: async (access, data) => {
+	get: async (access, data, trx) => {
 		access.can("streams:view");
 
-		const query = streamModel.query().where("id", data.id).allowGraph("[certificate]").first();
+		const query = streamModel.query(trx).where("id", data.id).allowGraph("[certificate]").first();
 
 		if (access.visibility !== "all") {
 			query.andWhere("owner_user_id", access.token.getUserId(1));
