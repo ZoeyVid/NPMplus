@@ -15,44 +15,38 @@ const EventDetailsModal = EasyModal.create(({ id, visible, remove }) => {
 
 	return (
 		<Modal show={visible} backdrop="static" onHide={remove}>
-			{error && (
-				<Alert variant="danger" className="m-3">
-					{error?.message}
-				</Alert>
-			)}
-			{isPending && <Loading noLogo />}
-			{data && (
-				<>
-					<Modal.Header closeButton>
-						<Modal.Title>
-							<T id="action.view-details" />
-						</Modal.Title>
-					</Modal.Header>
-					<Modal.Body>
-						<div className="row">
-							<div className="col-md-2">
-								<GravatarFormatter url={data.user?.avatar} />
-							</div>
-							<div className="col-md-10">
-								<EventFormatter row={data} />
-							</div>
-							<hr className="mt-4 mb-3" />
-							<textarea
-								className="form-control font-monospace"
-								spellCheck={false}
-								rows={9}
-								readOnly
-								value={JSON.stringify(decamelizeKeys(data.meta), null, 2)}
-							/>
+			<Modal.Header closeButton>
+				<Modal.Title>
+					<T id="action.view-details" />
+				</Modal.Title>
+			</Modal.Header>
+			<Modal.Body>
+				{error && <Alert variant="danger">{error?.message}</Alert>}
+				{isPending && <Loading noLogo />}
+				{data && (
+					<div className="row">
+						<div className="col-md-2">
+							<GravatarFormatter url={data.user?.avatar} />
 						</div>
-					</Modal.Body>
-					<Modal.Footer>
-						<Button onClick={remove}>
-							<T id="action.close" />
-						</Button>
-					</Modal.Footer>
-				</>
-			)}
+						<div className="col-md-10">
+							<EventFormatter row={data} />
+						</div>
+						<hr className="mt-4 mb-3" />
+						<textarea
+							className="form-control font-monospace"
+							spellCheck={false}
+							rows={9}
+							readOnly
+							value={JSON.stringify(decamelizeKeys(data.meta), null, 2)}
+						/>
+					</div>
+				)}
+			</Modal.Body>
+			<Modal.Footer>
+				<Button onClick={remove}>
+					<T id="action.close" />
+				</Button>
+			</Modal.Footer>
 		</Modal>
 	);
 });
