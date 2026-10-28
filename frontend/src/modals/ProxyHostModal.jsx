@@ -9,17 +9,16 @@ import {
 	Button,
 	DirectoryField,
 	DomainNamesField,
-	HasPermission,
 	Loading,
 	LocationsFields,
 	NginxConfigField,
 	SSLCertificateField,
 	SSLOptionsFields,
 } from "src/components";
-import { useDirectorySuggestions, useProxyHost, useProxyHosts, useSetProxyHost } from "src/hooks";
+import { useDirectorySuggestions, useProxyHost, useProxyHosts, useSetProxyHost, useUser } from "src/hooks";
 import { intl, T } from "src/locale";
 import EasyModal from "src/modules/easyModal";
-import { MANAGE, PROXY_HOSTS } from "src/modules/Permissions";
+import { hasPermission, MANAGE, PROXY_HOSTS } from "src/modules/Permissions";
 import { showTabOfInvalid, validateNumber, validateUpstreamUrl } from "src/modules/Validations";
 import { showObjectSuccess } from "src/notifications";
 
@@ -28,6 +27,8 @@ const ProxyHostModal = EasyModal.create(({ id, isClone, visible, remove }) => {
 	const { data: allProxyHosts } = useProxyHosts();
 	const suggestions = useDirectorySuggestions(allProxyHosts);
 	const { mutate: setProxyHost } = useSetProxyHost();
+	const { data: currentUser } = useUser("me");
+	const canManage = hasPermission(PROXY_HOSTS, MANAGE, currentUser?.permissions, currentUser?.roles);
 	const [errorMsg, setErrorMsg] = useState(null);
 	const [isSubmitting, setIsSubmitting] = useState(false);
 	const [advVisible, setAdvVisible] = useState(false);
@@ -734,9 +735,9 @@ const ProxyHostModal = EasyModal.create(({ id, isClone, visible, remove }) => {
 							</Modal.Body>
 							<Modal.Footer>
 								<Button onClick={remove} disabled={isSubmitting}>
-									<T id="cancel" />
+									<T id={canManage ? "cancel" : "action.close"} />
 								</Button>
-								<HasPermission section={PROXY_HOSTS} permission={MANAGE} hideError>
+								{canManage && (
 									<Button
 										type="submit"
 										color="lime"
@@ -746,7 +747,7 @@ const ProxyHostModal = EasyModal.create(({ id, isClone, visible, remove }) => {
 									>
 										<T id="save" />
 									</Button>
-								</HasPermission>
+								)}
 							</Modal.Footer>
 						</Form>
 					)}

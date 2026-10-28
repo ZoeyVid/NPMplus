@@ -425,8 +425,8 @@ const MfaModal = EasyModal.create(({ id, visible, remove }) => {
 	};
 
 	return (
-		<Modal show={visible} backdrop="static" onHide={isSubmitting ? undefined : remove}>
-			<Modal.Header closeButton={!isSubmitting}>
+		<Modal show={visible} backdrop="static" onHide={isSubmitting || step === "backup" ? undefined : remove}>
+			<Modal.Header closeButton={!isSubmitting && step !== "backup"}>
 				<Modal.Title>
 					<T id="mfa.title" />
 				</Modal.Title>
@@ -437,6 +437,13 @@ const MfaModal = EasyModal.create(({ id, visible, remove }) => {
 				</Alert>
 				{renderContent()}
 			</Modal.Body>
+			{["loading", "error", "status"].includes(step) && (
+				<Modal.Footer>
+					<Button onClick={remove} disabled={isSubmitting}>
+						<T id="action.close" />
+					</Button>
+				</Modal.Footer>
+			)}
 		</Modal>
 	);
 });
