@@ -26,7 +26,7 @@
 		"react-intl": "12.1.6",
 		"react-router": "8.5.1",
 		"react-select": "5.10.2",
-		"react-toastify": "11.1.0"
+		"react-toastify": "11.2.0"
 	},
 	"devDependencies": {
 		"@biomejs/biome": "2.6.3",
