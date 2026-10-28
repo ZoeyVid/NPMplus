@@ -6,16 +6,15 @@ import {
 	Button,
 	DirectoryField,
 	DomainNamesField,
-	HasPermission,
 	Loading,
 	NginxConfigField,
 	SSLCertificateField,
 	SSLOptionsFields,
 } from "src/components";
-import { useDeadHost, useDeadHosts, useDirectorySuggestions, useSetDeadHost } from "src/hooks";
+import { useDeadHost, useDeadHosts, useDirectorySuggestions, useSetDeadHost, useUser } from "src/hooks";
 import { T } from "src/locale";
 import EasyModal from "src/modules/easyModal";
-import { DEAD_HOSTS, MANAGE } from "src/modules/Permissions";
+import { DEAD_HOSTS, hasPermission, MANAGE } from "src/modules/Permissions";
 import { showTabOfInvalid } from "src/modules/Validations";
 import { showObjectSuccess } from "src/notifications";
 
@@ -28,6 +27,8 @@ const DeadHostModal = EasyModal.create(({ id, visible, remove }) => {
 	const { mutate: setDeadHost } = useSetDeadHost();
 	const { data: allDeadHosts } = useDeadHosts();
 	const suggestions = useDirectorySuggestions(allDeadHosts);
+	const { data: currentUser } = useUser("me");
+	const canManage = hasPermission(DEAD_HOSTS, MANAGE, currentUser?.permissions, currentUser?.roles);
 	const [errorMsg, setErrorMsg] = useState(null);
 	const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -182,9 +183,9 @@ const DeadHostModal = EasyModal.create(({ id, visible, remove }) => {
 							</Modal.Body>
 							<Modal.Footer>
 								<Button onClick={remove} disabled={isSubmitting}>
-									<T id="cancel" />
+									<T id={canManage ? "cancel" : "action.close"} />
 								</Button>
-								<HasPermission section={DEAD_HOSTS} permission={MANAGE} hideError>
+								{canManage && (
 									<Button
 										type="submit"
 										color="red"
@@ -194,7 +195,7 @@ const DeadHostModal = EasyModal.create(({ id, visible, remove }) => {
 									>
 										<T id="save" />
 									</Button>
-								</HasPermission>
+								)}
 							</Modal.Footer>
 						</Form>
 					)}
