@@ -826,7 +826,7 @@ if [ "$GOA" = "true" ] && [ "$LOGROTATE" = "false" ]; then
 fi
 
 
-TV="21"
+TV="22"
 ENV_SHA512SUM="$( (grep "env\.[A-Z0-9_]\+" -roh /app/templates | sed "s|env.||g" | sort | uniq | xargs printenv; echo "$TV") | tr -d "\n" | sha512sum | cut -d" " -f1)"
 export ENV_SHA512SUM
 if [ ! -s /data/npmplus/env.sha512sum ] || [ "$(cat /data/npmplus/env.sha512sum)" != "$ENV_SHA512SUM" ]; then
