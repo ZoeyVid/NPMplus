@@ -3,11 +3,11 @@ import { Field, Form, Formik } from "formik";
 import { useState } from "react";
 import { Alert } from "react-bootstrap";
 import Modal from "react-bootstrap/Modal";
-import { AccessClientFields, BasicAuthFields, Button, HasPermission, Loading } from "src/components";
-import { useAccessList, useSetAccessList } from "src/hooks";
+import { AccessClientFields, BasicAuthFields, Button, Loading } from "src/components";
+import { useAccessList, useSetAccessList, useUser } from "src/hooks";
 import { intl, T } from "src/locale";
 import EasyModal from "src/modules/easyModal";
-import { ACCESS_LISTS, MANAGE } from "src/modules/Permissions";
+import { ACCESS_LISTS, hasPermission, MANAGE } from "src/modules/Permissions";
 import { showTabOfInvalid, validateString } from "src/modules/Validations";
 import { showObjectSuccess } from "src/notifications";
 
@@ -18,6 +18,8 @@ const showAccessListModal = (id) => {
 const AccessListModal = EasyModal.create(({ id, visible, remove }) => {
 	const { data, isPending, error } = useAccessList(id);
 	const { mutate: setAccessList } = useSetAccessList();
+	const { data: currentUser } = useUser("me");
+	const canManage = hasPermission(ACCESS_LISTS, MANAGE, currentUser?.permissions, currentUser?.roles);
 	const [errorMsg, setErrorMsg] = useState(null);
 	const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -260,9 +262,9 @@ const AccessListModal = EasyModal.create(({ id, visible, remove }) => {
 							</Modal.Body>
 							<Modal.Footer>
 								<Button onClick={remove} disabled={isSubmitting}>
-									<T id="cancel" />
+									<T id={canManage ? "cancel" : "action.close"} />
 								</Button>
-								<HasPermission section={ACCESS_LISTS} permission={MANAGE} hideError>
+								{canManage && (
 									<Button
 										type="submit"
 										color="cyan"
@@ -272,7 +274,7 @@ const AccessListModal = EasyModal.create(({ id, visible, remove }) => {
 									>
 										<T id="save" />
 									</Button>
-								</HasPermission>
+								)}
 							</Modal.Footer>
 						</Form>
 					)}
