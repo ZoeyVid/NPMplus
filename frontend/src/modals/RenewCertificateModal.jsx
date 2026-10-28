@@ -47,7 +47,7 @@ const RenewCertificateModal = EasyModal.create(({ id, visible, remove }) => {
 	}, [id, data, isFresh, remove]);
 
 	return (
-		<Modal show={visible} onHide={isSubmitting ? undefined : remove}>
+		<Modal show={visible} backdrop="static" onHide={isSubmitting ? undefined : remove}>
 			<Modal.Header closeButton={!isSubmitting}>
 				<Modal.Title>
 					<T id="certificate.renew" />
