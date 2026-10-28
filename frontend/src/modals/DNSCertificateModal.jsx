@@ -47,7 +47,7 @@ const DNSCertificateModal = EasyModal.create(({ visible, remove }) => {
 	const toggleEnabled = cn(toggleClasses, "bg-cyan");
 
 	return (
-		<Modal show={visible} onHide={isSubmitting ? undefined : remove}>
+		<Modal show={visible} backdrop="static" onHide={isSubmitting ? undefined : remove}>
 			<Formik
 				initialValues={{
 					domainNames: [],
