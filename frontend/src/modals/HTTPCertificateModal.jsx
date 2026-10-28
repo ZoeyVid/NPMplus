@@ -102,7 +102,7 @@ const HTTPCertificateModal = EasyModal.create(({ visible, remove }) => {
 	);
 
 	return (
-		<Modal show={visible} onHide={isSubmitting || isTesting ? undefined : remove}>
+		<Modal show={visible} backdrop="static" onHide={isSubmitting || isTesting ? undefined : remove}>
 			<Formik
 				initialValues={{
 					domainNames: [],
