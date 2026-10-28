@@ -5,16 +5,15 @@ import Modal from "react-bootstrap/Modal";
 import {
 	Button,
 	DirectoryField,
-	HasPermission,
 	Loading,
 	NginxConfigField,
 	SSLCertificateField,
 	SSLOptionsFields,
 } from "src/components";
-import { useDirectorySuggestions, useSetStream, useStream, useStreams } from "src/hooks";
+import { useDirectorySuggestions, useSetStream, useStream, useStreams, useUser } from "src/hooks";
 import { intl, T } from "src/locale";
 import EasyModal from "src/modules/easyModal";
-import { MANAGE, STREAMS } from "src/modules/Permissions";
+import { hasPermission, MANAGE, STREAMS } from "src/modules/Permissions";
 import { showTabOfInvalid, validateString } from "src/modules/Validations";
 import { showObjectSuccess } from "src/notifications";
 
@@ -27,6 +26,8 @@ const StreamModal = EasyModal.create(({ id, visible, remove }) => {
 	const { data: allStreams } = useStreams();
 	const suggestions = useDirectorySuggestions(allStreams);
 	const { mutate: setStream } = useSetStream();
+	const { data: currentUser } = useUser("me");
+	const canManage = hasPermission(STREAMS, MANAGE, currentUser?.permissions, currentUser?.roles);
 	const [errorMsg, setErrorMsg] = useState(null);
 	const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -520,9 +521,9 @@ const StreamModal = EasyModal.create(({ id, visible, remove }) => {
 							</Modal.Body>
 							<Modal.Footer>
 								<Button onClick={remove} disabled={isSubmitting}>
-									<T id="cancel" />
+									<T id={canManage ? "cancel" : "action.close"} />
 								</Button>
-								<HasPermission section={STREAMS} permission={MANAGE} hideError>
+								{canManage && (
 									<Button
 										type="submit"
 										actionType="primary"
@@ -532,7 +533,7 @@ const StreamModal = EasyModal.create(({ id, visible, remove }) => {
 									>
 										<T id="save" />
 									</Button>
-								</HasPermission>
+								)}
 							</Modal.Footer>
 						</Form>
 					)}
