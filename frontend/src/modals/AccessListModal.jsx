@@ -83,7 +83,7 @@ const AccessListModal = EasyModal.create(({ id, visible, remove }) => {
 	const toggleEnabled = cn(toggleClasses, "bg-cyan");
 
 	return (
-		<Modal show={visible} onHide={isSubmitting ? undefined : remove}>
+		<Modal show={visible} backdrop="static" onHide={isSubmitting ? undefined : remove}>
 			{error && (
 				<Alert variant="danger" className="m-3">
 					{error?.message}
