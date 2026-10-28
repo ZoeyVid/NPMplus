@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { Alert, Spinner } from "react-bootstrap";
 import Modal from "react-bootstrap/Modal";
 import { testHttpCertificate } from "src/api/backend";
+import { Button } from "src/components";
 import { T } from "src/locale";
 import EasyModal from "src/modules/easyModal";
 
@@ -89,6 +90,11 @@ const ReachabilityModal = EasyModal.create(({ visible, remove, domains }) => {
 					)}
 				</div>
 			</Modal.Body>
+			<Modal.Footer>
+				<Button onClick={remove}>
+					<T id="action.close" />
+				</Button>
+			</Modal.Footer>
 		</Modal>
 	);
 });
