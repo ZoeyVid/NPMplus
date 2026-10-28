@@ -7,16 +7,21 @@ import {
 	Button,
 	DirectoryField,
 	DomainNamesField,
-	HasPermission,
 	Loading,
 	NginxConfigField,
 	SSLCertificateField,
 	SSLOptionsFields,
 } from "src/components";
-import { useDirectorySuggestions, useRedirectionHost, useRedirectionHosts, useSetRedirectionHost } from "src/hooks";
+import {
+	useDirectorySuggestions,
+	useRedirectionHost,
+	useRedirectionHosts,
+	useSetRedirectionHost,
+	useUser,
+} from "src/hooks";
 import { T } from "src/locale";
 import EasyModal from "src/modules/easyModal";
-import { MANAGE, REDIRECTION_HOSTS } from "src/modules/Permissions";
+import { hasPermission, MANAGE, REDIRECTION_HOSTS } from "src/modules/Permissions";
 import { showTabOfInvalid, validateString } from "src/modules/Validations";
 import { showObjectSuccess } from "src/notifications";
 
@@ -29,6 +34,8 @@ const RedirectionHostModal = EasyModal.create(({ id, visible, remove }) => {
 	const { mutate: setRedirectionHost } = useSetRedirectionHost();
 	const { data: allRedirectionHosts } = useRedirectionHosts();
 	const suggestions = useDirectorySuggestions(allRedirectionHosts);
+	const { data: currentUser } = useUser("me");
+	const canManage = hasPermission(REDIRECTION_HOSTS, MANAGE, currentUser?.permissions, currentUser?.roles);
 	const [errorMsg, setErrorMsg] = useState(null);
 	const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -317,9 +324,9 @@ const RedirectionHostModal = EasyModal.create(({ id, visible, remove }) => {
 							</Modal.Body>
 							<Modal.Footer>
 								<Button onClick={remove} disabled={isSubmitting}>
-									<T id="cancel" />
+									<T id={canManage ? "cancel" : "action.close"} />
 								</Button>
-								<HasPermission section={REDIRECTION_HOSTS} permission={MANAGE} hideError>
+								{canManage && (
 									<Button
 										type="submit"
 										color="yellow"
@@ -329,7 +336,7 @@ const RedirectionHostModal = EasyModal.create(({ id, visible, remove }) => {
 									>
 										<T id="save" />
 									</Button>
-								</HasPermission>
+								)}
 							</Modal.Footer>
 						</Form>
 					)}
