@@ -14,7 +14,7 @@ const EventDetailsModal = EasyModal.create(({ id, visible, remove }) => {
 	const { data, isPending, error } = useAuditLog(id);
 
 	return (
-		<Modal show={visible} onHide={remove}>
+		<Modal show={visible} backdrop="static" onHide={remove}>
 			{error && (
 				<Alert variant="danger" className="m-3">
 					{error?.message}
