@@ -6,6 +6,7 @@ import internalProxyHost from "./internal/proxy-host.js";
 import internalUser from "./internal/user.js";
 import Access from "./lib/access.js";
 import { installPlugins } from "./lib/certbot.js";
+import { readSecret } from "./lib/helpers.js";
 import { setup as logger } from "./logger.js";
 import certificateModel from "./models/certificate.js";
 import deadModel from "./models/dead_host.js";
@@ -21,8 +22,8 @@ import userModel from "./models/user.js";
  * @returns {Promise}
  */
 const setupDefaultUser = async () => {
-	const initialAdminEmail = process.env.INITIAL_ADMIN_EMAIL?.trim();
-	const initialAdminPassword = process.env.INITIAL_ADMIN_PASSWORD;
+	const initialAdminEmail = await readSecret("INITIAL_ADMIN_EMAIL");
+	const initialAdminPassword = await readSecret("INITIAL_ADMIN_PASSWORD");
 
 	// This will only create a new user when there are no active users in the database
 	// and the INITIAL_ADMIN_EMAIL and INITIAL_ADMIN_PASSWORD environment variables are set.
