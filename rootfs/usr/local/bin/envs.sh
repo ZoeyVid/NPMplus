@@ -338,8 +338,13 @@ if [ -n "$ACME_EMAIL" ] && ! echo "$ACME_EMAIL" | grep -q "@"; then
     sleep inf
 fi
 
-if { [ -n "$ACME_EAB_KID" ] || [ -n "$ACME_EAB_HMAC_KEY" ]; } && { [ -z "$ACME_EAB_KID" ] || [ -z "$ACME_EAB_HMAC_KEY" ] || [ -z "$ACME_EMAIL" ]; }; then
-    echo "You need to set ACME_EAB_KID, ACME_EAB_HMAC_KEY and ACME_EMAIL (all are needed) or none of them or only ACME_EMAIL."
+if [ -n "$ACME_EAB_HMAC_KEY_FILE" ] && { [ -n "$ACME_EAB_HMAC_KEY" ] || [ ! -s "$ACME_EAB_HMAC_KEY_FILE" ]; }; then
+    echo "ACME_EAB_HMAC_KEY_FILE needs to point to a non-empty file and can't be used together with ACME_EAB_HMAC_KEY."
+    sleep inf
+fi
+
+if { [ -n "$ACME_EAB_KID" ] || [ -n "$ACME_EAB_HMAC_KEY$ACME_EAB_HMAC_KEY_FILE" ]; } && { [ -z "$ACME_EAB_KID" ] || [ -z "$ACME_EAB_HMAC_KEY$ACME_EAB_HMAC_KEY_FILE" ] || [ -z "$ACME_EMAIL" ]; }; then
+    echo "You need to set ACME_EAB_KID, ACME_EAB_HMAC_KEY/ACME_EAB_HMAC_KEY_FILE and ACME_EMAIL (all are needed) or none of them or only ACME_EMAIL."
     sleep inf
 fi
 
@@ -691,6 +696,11 @@ if ! echo "$DISABLE_GRAVATAR" | grep -q "^true$\|^false$"; then
     sleep inf
 fi
 
+if [ -n "$COOKIE_SECRET_FILE" ] && { [ -n "$COOKIE_SECRET" ] || [ ! -s "$COOKIE_SECRET_FILE" ]; }; then
+    echo "COOKIE_SECRET_FILE needs to point to a non-empty file and can't be used together with COOKIE_SECRET."
+    sleep inf
+fi
+
 
 if ! echo "$NGINX_LOAD_NJS_MODULE" | grep -q "^true$\|^false$"; then
     echo "NGINX_LOAD_NJS_MODULE needs to be true or false."
@@ -738,8 +748,13 @@ if ! echo "$OIDC_SKIP_MFA" | grep -q "^true$\|^false$"; then
     sleep inf
 fi
 
-if { [ -n "$OIDC_REDIRECT_DOMAIN" ] || [ -n "$OIDC_ISSUER_URL" ] || [ -n "$OIDC_CLIENT_ID" ] || [ -n "$OIDC_CLIENT_SECRET" ]; } && { [ -z "$OIDC_REDIRECT_DOMAIN" ] || [ -z "$OIDC_ISSUER_URL" ] || [ -z "$OIDC_CLIENT_ID" ] || [ -z "$OIDC_CLIENT_SECRET" ]; }; then
-    echo "You need to set OIDC_REDIRECT_DOMAIN, OIDC_ISSUER_URL, OIDC_CLIENT_ID and OIDC_CLIENT_SECRET (all are needed) or none of them."
+if [ -n "$OIDC_CLIENT_SECRET_FILE" ] && { [ -n "$OIDC_CLIENT_SECRET" ] || [ ! -s "$OIDC_CLIENT_SECRET_FILE" ]; }; then
+    echo "OIDC_CLIENT_SECRET_FILE needs to point to a non-empty file and can't be used together with OIDC_CLIENT_SECRET."
+    sleep inf
+fi
+
+if { [ -n "$OIDC_REDIRECT_DOMAIN" ] || [ -n "$OIDC_ISSUER_URL" ] || [ -n "$OIDC_CLIENT_ID" ] || [ -n "$OIDC_CLIENT_SECRET$OIDC_CLIENT_SECRET_FILE" ]; } && { [ -z "$OIDC_REDIRECT_DOMAIN" ] || [ -z "$OIDC_ISSUER_URL" ] || [ -z "$OIDC_CLIENT_ID" ] || [ -z "$OIDC_CLIENT_SECRET$OIDC_CLIENT_SECRET_FILE" ]; }; then
+    echo "You need to set OIDC_REDIRECT_DOMAIN, OIDC_ISSUER_URL, OIDC_CLIENT_ID and OIDC_CLIENT_SECRET/OIDC_CLIENT_SECRET_FILE (all are needed) or none of them."
     sleep inf
 elif [ "$OIDC_DISABLE_PASSWORD" = "true" ] && [ -z "$OIDC_REDIRECT_DOMAIN" ] && [ -z "$OIDC_ISSUER_URL" ] && [ -z "$OIDC_CLIENT_ID" ] && [ -z "$OIDC_CLIENT_SECRET" ]; then
     echo "You need to configure OIDC to enable OIDC_DISABLE_PASSWORD."

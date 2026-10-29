@@ -12,6 +12,7 @@ import {
 } from "openid-client";
 import internalToken from "../internal/token.js";
 import errs from "../lib/error.js";
+import { readSecret } from "../lib/helpers.js";
 import { oidc as logger } from "../logger.js";
 
 const router = express.Router({
@@ -43,7 +44,7 @@ router
 			const config = await discovery(
 				new URL(process.env.OIDC_ISSUER_URL),
 				process.env.OIDC_CLIENT_ID,
-				process.env.OIDC_CLIENT_SECRET,
+				await readSecret("OIDC_CLIENT_SECRET"),
 			);
 
 			const code_verifier = randomPKCECodeVerifier();
@@ -126,7 +127,7 @@ router
 			const config = await discovery(
 				new URL(process.env.OIDC_ISSUER_URL),
 				process.env.OIDC_CLIENT_ID,
-				process.env.OIDC_CLIENT_SECRET,
+				await readSecret("OIDC_CLIENT_SECRET"),
 			);
 
 			const tokens = await authorizationCodeGrant(
