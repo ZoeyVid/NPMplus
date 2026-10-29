@@ -10,29 +10,29 @@ Group ID: $(id -g)
 "
 
 if [ -z "$(find -L /data/tls/certbot/accounts/"$(echo "$ACME_SERVER" | sed "s|^https\?://||g")" -type f 2> /dev/null)" ]; then
-    if [ "$(echo "$ACME_SERVER" | sed "s|^https\?://\([^/]\+\).*$|\1|g")" = "acme.zerossl.com" ] && [ -z "$ACME_EAB_KID" ] && [ -z "$ACME_EAB_HMAC_KEY" ]; then
-        if [ -z "$ACME_EMAIL" ]; then
+    if [ "$(echo "$ACME_SERVER" | sed "s|^https\?://\([^/]\+\).*$|\1|g")" = "acme.zerossl.com" ] && [ -z "$ACME_EAB_KID$ACME_EAB_KID_FILE" ] && [ -z "$ACME_EAB_HMAC_KEY$ACME_EAB_HMAC_KEY_FILE" ]; then
+        if [ -z "$ACME_EMAIL$ACME_EMAIL_FILE" ]; then
             echo "ACME_EMAIL is required to use zerossl. Either set it or use a different acme server like letsencrypt (ACME_SERVER: https://acme-v02.api.letsencrypt.org/directory)"
             sleep inf
         fi
 
-        ZS_EAB="$(curl -sSL https://api.zerossl.com/acme/eab-credentials-email --data-urlencode "email=$ACME_EMAIL")"
+        ZS_EAB="$(curl -sSL https://api.zerossl.com/acme/eab-credentials-email --data-urlencode "email=${ACME_EMAIL:-$(cat "$ACME_EMAIL_FILE")}")"
         export ZS_EAB
         ACME_EAB_KID="$(echo "$ZS_EAB" | jq -r .eab_kid)"
         export ACME_EAB_KID
         ACME_EAB_HMAC_KEY="$(echo "$ZS_EAB" | jq -r .eab_hmac_key)"
         export ACME_EAB_HMAC_KEY
     fi
-    if [ -z "$ACME_EMAIL" ]; then
+    if [ -z "$ACME_EMAIL$ACME_EMAIL_FILE" ]; then
         if ! certbot --config /etc/certbot.ini register --server "$ACME_SERVER" --register-unsafely-without-email; then
             sleep inf
         fi
-    elif [ -n "$ACME_EMAIL" ] && [ -z "$ACME_EAB_KID" ] && [ -z "$ACME_EAB_HMAC_KEY" ]; then
-        if ! certbot --config /etc/certbot.ini register --server "$ACME_SERVER" --email "$ACME_EMAIL"; then
+    elif [ -n "$ACME_EMAIL$ACME_EMAIL_FILE" ] && [ -z "$ACME_EAB_KID$ACME_EAB_KID_FILE" ] && [ -z "$ACME_EAB_HMAC_KEY$ACME_EAB_HMAC_KEY_FILE" ]; then
+        if ! certbot --config /etc/certbot.ini register --server "$ACME_SERVER" --email "${ACME_EMAIL:-$(cat "$ACME_EMAIL_FILE")}"; then
             sleep inf
         fi
-    elif [ -n "$ACME_EMAIL" ] && [ -n "$ACME_EAB_KID" ] && [ -n "$ACME_EAB_HMAC_KEY" ]; then
-        if ! certbot --config /etc/certbot.ini register --server "$ACME_SERVER" --eab-kid "$ACME_EAB_KID" --eab-hmac-key "$ACME_EAB_HMAC_KEY" --email "$ACME_EMAIL"; then
+    elif [ -n "$ACME_EMAIL$ACME_EMAIL_FILE" ] && [ -n "$ACME_EAB_KID$ACME_EAB_KID_FILE" ] && [ -n "$ACME_EAB_HMAC_KEY$ACME_EAB_HMAC_KEY_FILE" ]; then
+        if ! certbot --config /etc/certbot.ini register --server "$ACME_SERVER" --eab-kid "${ACME_EAB_KID:-$(cat "$ACME_EAB_KID_FILE")}" --eab-hmac-key "${ACME_EAB_HMAC_KEY:-$(cat "$ACME_EAB_HMAC_KEY_FILE")}" --email "${ACME_EMAIL:-$(cat "$ACME_EMAIL_FILE")}"; then
             sleep inf
         fi
     fi
