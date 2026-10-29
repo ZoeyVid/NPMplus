@@ -1,6 +1,7 @@
 import express from "express";
 import errs from "../lib/error.js";
 import requireLogin from "../lib/express/require-login.js";
+import { readSecret } from "../lib/helpers.js";
 import { isSetup } from "../setup.js";
 import auditLogRoutes from "./audit-log.js";
 import docsRoutes from "./docs.js";
@@ -28,7 +29,7 @@ const isOIDCenabled = Boolean(
 	process.env.OIDC_REDIRECT_DOMAIN &&
 		process.env.OIDC_ISSUER_URL &&
 		process.env.OIDC_CLIENT_ID &&
-		process.env.OIDC_CLIENT_SECRET,
+		(await readSecret("OIDC_CLIENT_SECRET")),
 );
 
 /**

@@ -39,6 +39,7 @@ services:
 #      - "ACME_SERVER=https://dv.acme-v02.api.pki.goog/directory (google public ca) / https://acme.zerossl.com/v2/DV90 (zerossl)" # acme server used when requesting/renewing certs using certbot, default: https://acme-v02.api.letsencrypt.org/directory (letsencrypt)
 #      - "ACME_EAB_KID=123456789abcdef" # Key Identifier for External Account Binding for the acme server, not supported by letsencrypt, optional for zerossl (Login on their site => Developer), but required for google public ca: https://cloud.google.com/certificate-manager/docs/public-ca-tutorial?hl=de#request-key-hmac
 #      - "ACME_EAB_HMAC_KEY=123456789abcdef" # HMAC key for External Account Binding for the acme server, not supported by letsencrypt, optional for zerossl (Login on their site => Developer), but required for google public ca: https://cloud.google.com/certificate-manager/docs/public-ca-tutorial?hl=de#request-key-hmac
+#      - "ACME_EAB_HMAC_KEY_FILE=/run/secrets/acme_eab_hmac_key" # alternative to ACME_EAB_HMAC_KEY, path to a file (like a docker secret) containing the HMAC key, needs to be readable by PUID/PGID
 #      - "ACME_PROFILE=shortlived" # sets the profile to be used from the acme server, when using letsencrypt shortlived is used by default else it defaults to "none" (the default ca profile), supported by letsencrypt (https://letsencrypt.org/docs/profiles) - clients incorrectly requiring a Certificate Common Name in a cert break when using certs from the shortlived/tlsserver profile
 #      - "ACME_MUST_STAPLE=true" # enables must-staple, default false (default is true when using zerossl), I recommend enabling this if your CA supports it, supported by zerossl, google public ca ignores this, unsupported by letsencrypt (will fail), overrides ACME_OCSP_STAPLING to true
 #      - "ACME_OCSP_STAPLING=true" # enables ocsp stapling, default false (default is true when using google public ca or zerossl), I recommend enabling this if your CA supports it, supported by zerossl and google public ca, this will disable tls certificate compression
@@ -92,7 +93,8 @@ services:
 #      - "INITIAL_ADMIN_PASSWORD=<initial-password>" # password of the initial admin user, only used together with INITIAL_ADMIN_EMAIL on the initial NPMplus start, without both the setup wizard creates the user
 #      - "INITIAL_DEFAULT_PAGE=444" # default page to set on initial start of NPMplus, default "congratulations", can be one of: 404, 444, redirect, congratulations or html
 #      - "DISABLE_GRAVATAR=true" # disables usage of gravatar images, users need to update theier profile for this to apply, default false
-#      - "COOKIE_SECRET=some-random-string" # by default a new secret to encrypt/decrypt cookies is used after each restart, to keep cookies valid after restarts you can set a static secret here
+#      - "COOKIE_SECRET=some-random-string" # by default a new secret to sign cookies is used after each restart, to keep cookies valid after restarts you can set a static secret here
+#      - "COOKIE_SECRET_FILE=/run/secrets/cookie_secret" # alternative to COOKIE_SECRET, path to a file (like a docker secret) containing the secret, needs to be readable by PUID/PGID
 #      - "ENABLE_PRERUN=true" # see readme, default off
 #      - "NGINX_LOAD_NJS_MODULE=true" # loads the njs module, requires manual configuration, default false
 #      - "NGINX_LOAD_LDAP_MODULE=true" # loads the ldap module, requires manual configuration, default false
@@ -103,6 +105,7 @@ services:
 #      - "NODE_TLS_REJECT_UNAUTHORIZED=0" # if your issuer uses a self signed cert you may need to set this, but please note that this will disable cert verification for all requests done by the backend (not nginx), like to github for version checks, gravatar, reachability checks or cloudflare for IP updates
 #      - "OIDC_CLIENT_ID=..." # client id for oidc
 #      - "OIDC_CLIENT_SECRET=..." # client secret for oidc
+#      - "OIDC_CLIENT_SECRET_FILE=/run/secrets/oidc_client_secret" # alternative to OIDC_CLIENT_SECRET, path to a file (like a docker secret) containing the client secret, needs to be readable by PUID/PGID
 #      - "OIDC_REQUIRE_VERIFIED_EMAIL=false" # requires the email sent by the OIDC Provider to be marked as verified, default true
 #      - "OIDC_DISABLE_PASSWORD=true" # disables plain email/password login, default false
 #      - "OIDC_SKIP_MFA=true" # skips the second factor after a successful OIDC login, default false
@@ -112,6 +115,10 @@ services:
 #      - "AUTH_REQUEST_VOIDAUTH_UPSTREAM=http://127.0.0.1:3000" # scheme + ip/hostname/domain (+ port) to internal voidauth, without path, this is unrelated to OIDC
 #      - "AUTH_REQUEST_AUTHELIA_UPSTREAM=http://127.0.0.1:9091" # scheme + ip/hostname/domain (+ port) to internal authelia, without path, this is unrelated to OIDC
 #      - "AUTH_REQUEST_AUTHENTIK_UPSTREAM=https://127.0.0.1:9443" # scheme + ip/hostname/domain (+ port) to internal authentik, without path, currently only works with embedded outpost, this is unrelated to OIDC
+#    secrets: # optional, mounts the secrets defined at the end of this file to /run/secrets/<name>, requires the matching *_FILE env to be set
+#      - acme_eab_hmac_key
+#      - cookie_secret
+#      - oidc_client_secret
 
 # This can be used to enable crowdsec, see README for a guide
 #  crowdsec:
@@ -160,9 +167,12 @@ services:
 #      - "GEOIPUPDATE_EDITION_IDS=GeoLite2-Country GeoLite2-City GeoLite2-ASN"
 #      - "GEOIPUPDATE_ACCOUNT_ID=<your-account-id>" # needs to be changed
 #      - "GEOIPUPDATE_LICENSE_KEY=<your-license-key>" # needs to be changed
+#      - "GEOIPUPDATE_LICENSE_KEY_FILE=/run/secrets/geoipupdate_license_key" # alternative to GEOIPUPDATE_LICENSE_KEY, path to a file (like a docker secret) containing the license key
 #      - "GEOIPUPDATE_FREQUENCY=24"
 #    volumes:
 #      - "/opt/npmplus/goaccess/geoip:/usr/share/GeoIP"
+#    secrets: # optional, mounts the secret defined at the end of this file to /run/secrets/<name>, requires GEOIPUPDATE_LICENSE_KEY_FILE to be set
+#      - geoipupdate_license_key
 
 # This can be used with DISABLE_HTTP=true, to force HTTPS redirects for every host
 #  npmplus-caddy:
@@ -175,3 +185,14 @@ services:
 #      - "80:80"
 #    environment:
 #      - "TZ=your-timezone"
+
+# This can be used together with the secrets of the npmplus and geoipupdate services and the matching *_FILE envs, make sure the npmplus secrets are readable by your set PUID/PGID, do not put them inside /opt/npmplus
+#secrets:
+#  acme_eab_hmac_key:
+#    file: "/opt/secrets/npmplus/acme_eab_hmac_key"
+#  cookie_secret:
+#    file: "/opt/secrets/npmplus/cookie_secret"
+#  oidc_client_secret:
+#    file: "/opt/secrets/npmplus/oidc_client_secret"
+#  geoipupdate_license_key:
+#    file: "/opt/secrets/geoipupdate/license_key"
