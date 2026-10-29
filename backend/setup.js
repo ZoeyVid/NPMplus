@@ -22,37 +22,43 @@ import userModel from "./models/user.js";
  * @returns {Promise}
  */
 const setupDefaultUser = async () => {
+	if (await isSetup()) {
+		if (
+			process.env.INITIAL_ADMIN_EMAIL ||
+			process.env.INITIAL_ADMIN_EMAIL_FILE ||
+			process.env.INITIAL_ADMIN_PASSWORD ||
+			process.env.INITIAL_ADMIN_PASSWORD_FILE
+		) {
+			logger.warn(
+				"INITIAL_ADMIN_EMAIL(_FILE) and INITIAL_ADMIN_PASSWORD(_FILE) are only used on the first start, since a user already exists you can remove them.",
+			);
+		}
+		return;
+	}
+
 	const initialAdminEmail = await readSecret("INITIAL_ADMIN_EMAIL");
 	const initialAdminPassword = await readSecret("INITIAL_ADMIN_PASSWORD");
-
-	// This will only create a new user when there are no active users in the database
-	// and the INITIAL_ADMIN_EMAIL and INITIAL_ADMIN_PASSWORD environment variables are set.
-	// Otherwise, users should be shown the setup wizard in the frontend.
-	// I'm keeping this legacy behavior in case some people are automating deployments.
 
 	if (!initialAdminEmail || !initialAdminPassword) {
 		return;
 	}
 
-	const userIsetup = await isSetup();
-	if (!userIsetup) {
-		// Create a new user and set password
-		logger.info(`Creating initial user: ${initialAdminEmail}`);
+	// Create a new user and set password
+	logger.info(`Creating initial user: ${initialAdminEmail}`);
 
-		const access = new Access(null);
-		await access.load(true);
+	const access = new Access(null);
+	await access.load(true);
 
-		await internalUser.create(access, {
-			email: initialAdminEmail,
-			name: "Administrator",
-			roles: ["admin"],
-			auth: {
-				type: "password",
-				secret: initialAdminPassword,
-			},
-		});
-		logger.info(`Initial admin user creation completed: ${initialAdminEmail}`);
-	}
+	await internalUser.create(access, {
+		email: initialAdminEmail,
+		name: "Administrator",
+		roles: ["admin"],
+		auth: {
+			type: "password",
+			secret: initialAdminPassword,
+		},
+	});
+	logger.info(`Initial admin user creation completed: ${initialAdminEmail}`);
 };
 
 /**
@@ -70,6 +76,10 @@ const setupDefaultSettings = async () => {
 			meta: {},
 		});
 		logger.info("Default settings added");
+	} else if (process.env.INITIAL_DEFAULT_PAGE) {
+		logger.warn(
+			"INITIAL_DEFAULT_PAGE is only used on the first start, since the default site already exists you can remove it.",
+		);
 	}
 
 	await settingModel.query().deleteById("oidc-config");

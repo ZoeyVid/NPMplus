@@ -37,6 +37,8 @@ if [ -z "$(find -L /data/tls/certbot/accounts/"$(echo "$ACME_SERVER" | sed "s|^h
         fi
     fi
     echo
+elif [ -n "$ACME_EMAIL$ACME_EMAIL_FILE$ACME_EAB_KID$ACME_EAB_KID_FILE$ACME_EAB_HMAC_KEY$ACME_EAB_HMAC_KEY_FILE" ]; then
+    echo "ACME_EMAIL, ACME_EAB_KID and ACME_EAB_HMAC_KEY (and their _FILE variants) are only used once to register an acme account, since one already exists for $ACME_SERVER you can safely remove them."
 fi
 
 if [ "$ACME_OCSP_STAPLING" = "true" ]; then
