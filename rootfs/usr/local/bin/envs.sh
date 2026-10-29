@@ -709,11 +709,6 @@ if { [ -n "$INITIAL_ADMIN_EMAIL$INITIAL_ADMIN_EMAIL_FILE" ] || [ -n "$INITIAL_AD
     sleep inf
 fi
 
-if [ -n "$INITIAL_ADMIN_EMAIL$INITIAL_ADMIN_EMAIL_FILE" ] || [ -n "$INITIAL_ADMIN_PASSWORD$INITIAL_ADMIN_PASSWORD_FILE" ] || [ -n "$INITIAL_DEFAULT_PAGE" ]; then
-    echo "Remember to remove INITIAL_ envs after the first start."
-    sleep 3
-fi
-
 
 if ! echo "$DISABLE_GRAVATAR" | grep -q "^true$\|^false$"; then
     echo "DISABLE_GRAVATAR needs to be true or false."
