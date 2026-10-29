@@ -3,7 +3,7 @@ import cookieParser from "cookie-parser";
 import express from "express";
 import multer from "multer";
 import errs from "./lib/error.js";
-import { jsonReplacer } from "./lib/helpers.js";
+import { jsonReplacer, readSecret } from "./lib/helpers.js";
 import { express as logger } from "./logger.js";
 import mainRoutes from "./routes/main.js";
 
@@ -19,7 +19,7 @@ app.disable("x-powered-by");
 app.set("json spaces", 2);
 app.set("json replacer", jsonReplacer);
 
-app.use(cookieParser(process.env.COOKIE_SECRET || crypto.randomBytes(16).toString("hex")));
+app.use(cookieParser((await readSecret("COOKIE_SECRET")) ?? crypto.randomBytes(16).toString("hex")));
 app.use(express.json());
 
 /**
