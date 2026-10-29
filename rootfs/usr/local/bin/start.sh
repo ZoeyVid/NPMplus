@@ -188,15 +188,18 @@ done
 
 
 if mountpoint -q /etc/letsencrypt; then
-  if [ -n "$(ls -A /etc/letsencrypt)" ]; then
-    cp -van /etc/letsencrypt/* /data/tls/certbot
+  if [ -n "$(ls -A /data/tls/certbot/renewal)" ] || [ -d /data/tls/certbot/accounts ]; then
+    echo "/data/tls/certbot already contains certs or accounts, so nothing was copied, please remove the /etc/letsencrypt mountpoint and redeploy!"
+  else
+    if [ -n "$(ls -A /etc/letsencrypt)" ]; then
+      cp -van /etc/letsencrypt/* /data/tls/certbot
+    fi
+    echo "All certbot certs have been copied, please remove the /etc/letsencrypt mountpoint and redeploy to continue the migration!"
   fi
-  echo "All certbot certs have been copied, please remove the /etc/letsencrypt mountpoint and redeploy to continue the migration!"
+  find /data/tls/certbot/renewal -type f -name '*.conf' -exec sed -i "s|/etc/letsencrypt|/data/tls/certbot|g" {} \;
   sleep inf
 fi
 
-#tmp move to mointpoint if block
-find /data/tls/certbot/renewal -type f -name '*.conf' -exec sed -i "s|/etc/letsencrypt|/data/tls/certbot|g" {} \;
 find /data/tls/certbot/renewal -type f -name '*.conf' -exec sed -i "s|/data/tls/certbot/credentials|/tmp/certbot-credentials|g" {} \;
 find /data/tls/certbot/renewal -type f -name '*.conf' -exec sed -i "/^manual_auth_hook = true$/d" {} \;
 find /data/tls/certbot/renewal -type f -name '*.conf' -exec sed -i "s|^authenticator = manual$|authenticator = webroot|g" {} \;
