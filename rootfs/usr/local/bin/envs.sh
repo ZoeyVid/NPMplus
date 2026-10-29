@@ -327,19 +327,48 @@ if [ -z "$TZ" ] || [ ! -s /usr/share/zoneinfo/"$TZ" ]; then
     sleep inf
 fi
 
+for secret in ACME_EMAIL ACME_EAB_KID ACME_EAB_HMAC_KEY INITIAL_ADMIN_EMAIL INITIAL_ADMIN_PASSWORD COOKIE_SECRET OIDC_CLIENT_ID OIDC_CLIENT_SECRET; do
+    if [ -n "$(printenv "${secret}_FILE")" ] && { [ -n "$(printenv "$secret")" ] || [ ! -s "$(printenv "${secret}_FILE")" ]; }; then
+        echo "${secret}_FILE needs to point to a non-empty file and can't be used together with $secret."
+        sleep inf
+    fi
+done
+
+for env in ACME_SERVER ACME_EMAIL ACME_EAB_KID ACME_EAB_HMAC_KEY INITIAL_ADMIN_EMAIL COOKIE_SECRET NC_DOMAIN OIDC_REDIRECT_DOMAIN OIDC_ISSUER_URL OIDC_CLIENT_ID OIDC_CLIENT_SECRET AUTH_REQUEST_ANUBIS_UPSTREAM AUTH_REQUEST_TINYAUTH_UPSTREAM AUTH_REQUEST_OAUTH2PROXY_UPSTREAM AUTH_REQUEST_VOIDAUTH_UPSTREAM AUTH_REQUEST_AUTHELIA_UPSTREAM AUTH_REQUEST_AUTHENTIK_UPSTREAM; do
+    if printenv "$env" | grep -q "[[:space:]]"; then
+        echo "$env must not contain whitespace."
+        sleep inf
+    fi
+    if [ -n "$(printenv "${env}_FILE")" ] && grep -q "[[:space:]]" "$(printenv "${env}_FILE")"; then
+        echo "${env}_FILE must point to a file without whitespace."
+        sleep inf
+    fi
+done
+
+for env in TRUST_IP GOACLA PHP83_APKS PHP84_APKS PHP85_APKS PHP_APKS INITIAL_ADMIN_PASSWORD; do
+    if printenv "$env" | grep -q "^[[:space:]]\|[[:space:]]$"; then
+        echo "$env must not start or end with whitespace."
+        sleep inf
+    fi
+    if [ -n "$(printenv "${env}_FILE")" ] && grep -q "^[[:space:]]\|[[:space:]]$" "$(printenv "${env}_FILE")"; then
+        echo "${env}_FILE must point to a file which does not start or end with whitespace."
+        sleep inf
+    fi
+done
+
 
 if ! echo "$ACME_SERVER" | grep -q "^https\?://"; then
     echo "ACME_SERVER needs to start with http:// or https://"
     sleep inf
 fi
 
-if [ -n "$ACME_EMAIL" ] && ! echo "$ACME_EMAIL" | grep -q "@"; then
-    echo "ACME_EMAIL needs to contains @."
+if { [ -n "$ACME_EMAIL" ] && ! echo "$ACME_EMAIL" | grep -q "@"; } || { [ -n "$ACME_EMAIL_FILE" ] && ! grep -q "@" "$ACME_EMAIL_FILE"; }; then
+    echo "ACME_EMAIL/ACME_EMAIL_FILE needs to contains @."
     sleep inf
 fi
 
-if { [ -n "$ACME_EAB_KID" ] || [ -n "$ACME_EAB_HMAC_KEY" ]; } && { [ -z "$ACME_EAB_KID" ] || [ -z "$ACME_EAB_HMAC_KEY" ] || [ -z "$ACME_EMAIL" ]; }; then
-    echo "You need to set ACME_EAB_KID, ACME_EAB_HMAC_KEY and ACME_EMAIL (all are needed) or none of them or only ACME_EMAIL."
+if { [ -n "$ACME_EAB_KID$ACME_EAB_KID_FILE" ] || [ -n "$ACME_EAB_HMAC_KEY$ACME_EAB_HMAC_KEY_FILE" ]; } && { [ -z "$ACME_EAB_KID$ACME_EAB_KID_FILE" ] || [ -z "$ACME_EAB_HMAC_KEY$ACME_EAB_HMAC_KEY_FILE" ] || [ -z "$ACME_EMAIL$ACME_EMAIL_FILE" ]; }; then
+    echo "You need to set ACME_EAB_KID/ACME_EAB_KID_FILE, ACME_EAB_HMAC_KEY/ACME_EAB_HMAC_KEY_FILE and ACME_EMAIL/ACME_EMAIL_FILE (all are needed) or none of them or only ACME_EMAIL/ACME_EMAIL_FILE."
     sleep inf
 fi
 
@@ -660,13 +689,13 @@ if [ -n "$PHP_APKS" ] && [ "$PHP83" = "false" ] && [ "$PHP84" = "false" ] && [ "
 fi
 
 
-if [ -n "$INITIAL_ADMIN_EMAIL" ] && ! echo "$INITIAL_ADMIN_EMAIL" | grep -q "@.*\."; then
-    echo "INITIAL_ADMIN_EMAIL needs to contains a @ and one dot."
+if { [ -n "$INITIAL_ADMIN_EMAIL" ] && ! echo "$INITIAL_ADMIN_EMAIL" | grep -q "@.*\."; } || { [ -n "$INITIAL_ADMIN_EMAIL_FILE" ] && ! grep -q "@.*\." "$INITIAL_ADMIN_EMAIL_FILE"; }; then
+    echo "INITIAL_ADMIN_EMAIL/INITIAL_ADMIN_EMAIL_FILE needs to contains a @ and one dot."
     sleep inf
 fi
 
-if [ -n "$INITIAL_ADMIN_PASSWORD" ] && { [ "${#INITIAL_ADMIN_PASSWORD}" -lt 8 ] || [ "${#INITIAL_ADMIN_PASSWORD}" -gt 255 ]; }; then
-    echo "INITIAL_ADMIN_PASSWORD needs to be between 8 and 255 characters long."
+if { [ -n "$INITIAL_ADMIN_PASSWORD" ] && { [ "${#INITIAL_ADMIN_PASSWORD}" -lt 8 ] || [ "${#INITIAL_ADMIN_PASSWORD}" -gt 255 ]; }; } || { [ -n "$INITIAL_ADMIN_PASSWORD_FILE" ] && ! grep -qxE ".{8,255}" "$INITIAL_ADMIN_PASSWORD_FILE"; }; then
+    echo "INITIAL_ADMIN_PASSWORD/INITIAL_ADMIN_PASSWORD_FILE needs to be between 8 and 255 characters long."
     sleep inf
 fi
 
@@ -675,12 +704,12 @@ if [ -n "$INITIAL_DEFAULT_PAGE" ] && ! echo "$INITIAL_DEFAULT_PAGE" | grep -q "^
     sleep inf
 fi
 
-if { [ -n "$INITIAL_ADMIN_EMAIL" ] || [ -n "$INITIAL_ADMIN_PASSWORD" ]; } && { [ -z "$INITIAL_ADMIN_EMAIL" ] || [ -z "$INITIAL_ADMIN_PASSWORD" ]; }; then
-    echo "You need to set INITIAL_ADMIN_EMAIL and INITIAL_ADMIN_PASSWORD (both are needed) or none of them."
+if { [ -n "$INITIAL_ADMIN_EMAIL$INITIAL_ADMIN_EMAIL_FILE" ] || [ -n "$INITIAL_ADMIN_PASSWORD$INITIAL_ADMIN_PASSWORD_FILE" ]; } && { [ -z "$INITIAL_ADMIN_EMAIL$INITIAL_ADMIN_EMAIL_FILE" ] || [ -z "$INITIAL_ADMIN_PASSWORD$INITIAL_ADMIN_PASSWORD_FILE" ]; }; then
+    echo "You need to set INITIAL_ADMIN_EMAIL/INITIAL_ADMIN_EMAIL_FILE and INITIAL_ADMIN_PASSWORD/INITIAL_ADMIN_PASSWORD_FILE (both are needed) or none of them."
     sleep inf
 fi
 
-if [ -n "$INITIAL_ADMIN_EMAIL" ] || [ -n "$INITIAL_ADMIN_PASSWORD" ] || [ -n "$INITIAL_DEFAULT_PAGE" ]; then
+if [ -n "$INITIAL_ADMIN_EMAIL$INITIAL_ADMIN_EMAIL_FILE" ] || [ -n "$INITIAL_ADMIN_PASSWORD$INITIAL_ADMIN_PASSWORD_FILE" ] || [ -n "$INITIAL_DEFAULT_PAGE" ]; then
     echo "Remember to remove INITIAL_ envs after the first start."
     sleep 3
 fi
@@ -738,8 +767,8 @@ if ! echo "$OIDC_SKIP_MFA" | grep -q "^true$\|^false$"; then
     sleep inf
 fi
 
-if { [ -n "$OIDC_REDIRECT_DOMAIN" ] || [ -n "$OIDC_ISSUER_URL" ] || [ -n "$OIDC_CLIENT_ID" ] || [ -n "$OIDC_CLIENT_SECRET" ]; } && { [ -z "$OIDC_REDIRECT_DOMAIN" ] || [ -z "$OIDC_ISSUER_URL" ] || [ -z "$OIDC_CLIENT_ID" ] || [ -z "$OIDC_CLIENT_SECRET" ]; }; then
-    echo "You need to set OIDC_REDIRECT_DOMAIN, OIDC_ISSUER_URL, OIDC_CLIENT_ID and OIDC_CLIENT_SECRET (all are needed) or none of them."
+if { [ -n "$OIDC_REDIRECT_DOMAIN" ] || [ -n "$OIDC_ISSUER_URL" ] || [ -n "$OIDC_CLIENT_ID$OIDC_CLIENT_ID_FILE" ] || [ -n "$OIDC_CLIENT_SECRET$OIDC_CLIENT_SECRET_FILE" ]; } && { [ -z "$OIDC_REDIRECT_DOMAIN" ] || [ -z "$OIDC_ISSUER_URL" ] || [ -z "$OIDC_CLIENT_ID$OIDC_CLIENT_ID_FILE" ] || [ -z "$OIDC_CLIENT_SECRET$OIDC_CLIENT_SECRET_FILE" ]; }; then
+    echo "You need to set OIDC_REDIRECT_DOMAIN, OIDC_ISSUER_URL, OIDC_CLIENT_ID/OIDC_CLIENT_ID_FILE and OIDC_CLIENT_SECRET/OIDC_CLIENT_SECRET_FILE (all are needed) or none of them."
     sleep inf
 elif [ "$OIDC_DISABLE_PASSWORD" = "true" ] && [ -z "$OIDC_REDIRECT_DOMAIN" ] && [ -z "$OIDC_ISSUER_URL" ] && [ -z "$OIDC_CLIENT_ID" ] && [ -z "$OIDC_CLIENT_SECRET" ]; then
     echo "You need to configure OIDC to enable OIDC_DISABLE_PASSWORD."

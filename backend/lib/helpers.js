@@ -1,3 +1,4 @@
+import { readFile } from "node:fs/promises";
 import { ref } from "objection";
 import { isPostgres } from "./config.js";
 
@@ -59,11 +60,17 @@ const jsonReplacer = (key, value) => {
  */
 const castJsonIfNeed = (colName) => (isPostgres() ? ref(colName).castText() : colName);
 
+const readSecret = async (name) => {
+	if (process.env[name]) return process.env[name];
+	if (process.env[`${name}_FILE`]) return (await readFile(process.env[`${name}_FILE`], "utf8")).trim();
+};
+
 export {
 	castJsonIfNeed,
 	convertBoolFieldsToInt,
 	convertIntFieldsToBool,
 	jsonReplacer,
 	pickCertificateFields,
+	readSecret,
 	removeCertificateFields,
 };
