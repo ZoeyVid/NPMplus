@@ -1,7 +1,9 @@
+import { decodeJwt } from "jose";
 import errs from "../lib/error.js";
 import authModel from "../models/auth.js";
 import TokenModel from "../models/token.js";
 import userModel from "../models/user.js";
+import internalAuditLog from "./audit-log.js";
 import mfa from "./mfa.js";
 import totp from "./totp.js";
 
@@ -68,11 +70,25 @@ export default {
 			}
 		}
 
+		const expiresIn = `${Math.min(data.expires_in ?? 1, process.env.TOKEN_MAX_EXPIRY)}h`;
 		const signed = await Token.create({
 			uid: user.id,
 			scope: "user",
-			expiresIn: "1h",
+			expiresIn,
 		});
+
+		if (data.expires_in) {
+			await internalAuditLog.add(null, {
+				user_id: user.id,
+				action: "updated",
+				object_type: "user",
+				object_id: user.id,
+				meta: {
+					name: user.name,
+					token_created: { ...decodeJwt(signed.token), expires: signed.expires, expires_in: expiresIn },
+				},
+			});
+		}
 
 		return {
 			token: signed.token,
@@ -127,16 +143,29 @@ export default {
 	 * @param {Access} access
 	 * @returns {Promise}
 	 */
-	getFreshToken: async (access, afterRevoke) => {
+	getFreshToken: async (access, afterRevoke, data = {}) => {
 		const Token = TokenModel();
 
 		if (access?.token.getUserId(0) && access.token.hasScope("user")) {
+			const expiresIn = `${Math.min(data.expires_in ?? 1, process.env.TOKEN_MAX_EXPIRY)}h`;
 			const signed = await Token.create({
 				uid: access.token.getUserId(0),
 				scope: "user",
-				expiresIn: "1h",
+				expiresIn,
 				iat: Math.floor(Date.now() / 1000) + (afterRevoke ? 1 : 0),
 			});
+
+			if (data.expires_in) {
+				await internalAuditLog.add(access, {
+					action: "updated",
+					object_type: "user",
+					object_id: access.token.getUserId(0),
+					meta: {
+						name: (await userModel.query().findById(access.token.getUserId(0))).name,
+						token_renewed: { ...decodeJwt(signed.token), expires: signed.expires, expires_in: expiresIn },
+					},
+				});
+			}
 
 			return {
 				token: signed.token,

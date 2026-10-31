@@ -4,7 +4,10 @@ import internalToken from "../internal/token.js";
 import errs from "../lib/error.js";
 import jwtdecode from "../lib/express/jwt-decode.js";
 import apiValidator from "../lib/validator/api.js";
+import validator from "../lib/validator/index.js";
 import { getValidationSchema } from "../schema/index.js";
+
+const refreshSchema = { properties: { expires_in: { type: "integer", minimum: 1 } } };
 
 const router = express.Router({
 	caseSensitive: true,
@@ -32,8 +35,12 @@ router
 	 * We also piggy back on to this method, allowing admins to get tokens
 	 * for services like Job board and Worker.
 	 */
-	.get(jwtdecode(), async (_, res) => {
-		const data = await internalToken.getFreshToken(res.locals.access);
+	.get(jwtdecode(), async (req, res) => {
+		const data = await internalToken.getFreshToken(
+			res.locals.access,
+			false,
+			validator(refreshSchema, { expires_in: req.query.expires_in }),
+		);
 
 		res.cookie("__Host-Http-token", data.token, {
 			signed: true,
