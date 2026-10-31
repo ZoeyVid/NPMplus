@@ -27,6 +27,13 @@
 							"maxLength": 8,
 							"type": "string",
 							"example": "123456"
+						},
+						"expires_in": {
+							"description": "Lifetime of the new token in hours, capped by the TOKEN_MAX_EXPIRY env (in hours, default 1)",
+							"type": "integer",
+							"minimum": 1,
+							"default": 1,
+							"example": 720
 						}
 					},
 					"required": [
