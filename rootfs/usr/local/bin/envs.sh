@@ -129,6 +129,7 @@ export LOGROTATE="${LOGROTATE:-false}"
 export LOGROTATIONS="${LOGROTATIONS:-3}"
 export CERTBOT_RUN_INTERVAL="${CERTBOT_RUN_INTERVAL:-3}"
 export ECH_ROTATION_INTERVAL="${ECH_ROTATION_INTERVAL:-1}"
+export TOKEN_MAX_EXPIRY="${TOKEN_MAX_EXPIRY:-1}"
 export GOA="${GOA:-false}"
 export GOACLA="${GOACLA:-"--agent-list --real-os --double-decode --anonymize-ip --anonymize-level=1 --keep-last=30 --with-output-resolver --no-query-string"}"
 export PHP83="${PHP83:-false}"
@@ -604,6 +605,11 @@ fi
 
 if ! echo "$ECH_ROTATION_INTERVAL" | grep -q "^[0-9]\+$" || [ "$ECH_ROTATION_INTERVAL" -lt 1 ] || [ "$ECH_ROTATION_INTERVAL" -gt 24 ]; then
     echo "ECH_ROTATION_INTERVAL must be a number between 1 and 24."
+    sleep inf
+fi
+
+if ! echo "$TOKEN_MAX_EXPIRY" | grep -q "^[0-9]\+$" || [ "$TOKEN_MAX_EXPIRY" -lt 1 ]; then
+    echo "TOKEN_MAX_EXPIRY must be a number of at least 1."
     sleep inf
 fi
 
