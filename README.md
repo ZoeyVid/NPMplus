@@ -272,7 +272,7 @@ if ($geoip2_country_rule = no) {
 #if ($is_private_ip = yes) { 
 #  set $geoip2_country_rule yes; 
 #}
-if ($request_uri ~* "^/\.well-known/acme-challenge/") {
+if ($uri ~ "^/\.well-known/acme-challenge/") {
     set $geoip2_country_rule yes;
 }
 if ($geoip2_country_rule = no) { 
@@ -285,7 +285,7 @@ if ($geoip2_country_rule = no) {
 #if ($is_private_ip = yes) { 
 #  set $geoip2_country_rule yes; 
 #}
-if ($request_uri ~* "^/\.well-known/acme-challenge/") {
+if ($uri ~ "^/\.well-known/acme-challenge/") {
     set $geoip2_country_rule yes;
 }
 if ($geoip2_country_rule = no) { 
@@ -298,7 +298,7 @@ if ($geoip2_country_rule = no) {
 #if ($is_private_ip = yes) { 
 #  set $geoip2_country_rule yes; 
 #}
-if ($request_uri ~* "^/\.well-known/acme-challenge/") {
+if ($uri ~ "^/\.well-known/acme-challenge/") {
     set $geoip2_country_rule yes;
 }
 if ($geoip2_country_rule = no) { 
