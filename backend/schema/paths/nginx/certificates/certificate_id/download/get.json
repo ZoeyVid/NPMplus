@@ -1,0 +1,39 @@
+{
+	"operationId": "downloadCertificate",
+	"summary": "Downloads a Certificate",
+	"tags": [
+		"certificates"
+	],
+	"security": [
+		{
+			"cookieAuth": []
+		}
+	],
+	"parameters": [
+		{
+			"in": "path",
+			"name": "certificate_id",
+			"description": "Certificate ID",
+			"schema": {
+				"type": "integer",
+				"minimum": 1,
+				"maximum": 2147483647
+			},
+			"required": true,
+			"example": 1
+		}
+	],
+	"responses": {
+		"200": {
+			"description": "200 response",
+			"content": {
+				"application/zip": {
+					"schema": {
+						"type": "string",
+						"format": "binary"
+					}
+				}
+			}
+		}
+	}
+}
