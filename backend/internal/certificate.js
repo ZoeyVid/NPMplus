@@ -9,7 +9,7 @@ import { ZipArchive } from "archiver";
 import dnsPlugins from "../certbot/dns-plugins.json" with { type: "json" };
 import { installPlugin } from "../lib/certbot.js";
 import error from "../lib/error.js";
-import { pickCertificateFields } from "../lib/helpers.js";
+import { hasDuplicateDomains, pickCertificateFields } from "../lib/helpers.js";
 import utils from "../lib/utils.js";
 import apiValidator from "../lib/validator/api.js";
 import { ssl as logger } from "../logger.js";
@@ -150,6 +150,9 @@ const internalCertificate = {
 		if (data.provider === "letsencrypt") {
 			if (!data.domain_names?.length) {
 				throw new error.ValidationError("Let's Encrypt certificates need domain names");
+			}
+			if (hasDuplicateDomains(data.domain_names)) {
+				throw new error.ValidationError("Domain names need to be unique");
 			}
 			data.nice_name = getNiceName(data.domain_names);
 		} else if (!data.nice_name || data.domain_names !== undefined) {
