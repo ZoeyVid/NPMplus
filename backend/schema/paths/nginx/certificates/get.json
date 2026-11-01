@@ -14,19 +14,25 @@
 			"in": "query",
 			"name": "expand",
 			"description": "Expansions",
+			"style": "form",
+			"explode": false,
 			"schema": {
-				"type": "string",
-				"enum": [
-					"owner",
-					"proxy_hosts",
-					"redirection_hosts",
-					"dead_hosts",
-					"streams",
-					"mtls_proxy_hosts",
-					"mtls_redirection_hosts",
-					"mtls_dead_hosts",
-					"mtls_streams"
-				]
+				"type": "array",
+				"uniqueItems": true,
+				"items": {
+					"type": "string",
+					"enum": [
+						"owner",
+						"proxy_hosts",
+						"redirection_hosts",
+						"dead_hosts",
+						"streams",
+						"mtls_proxy_hosts",
+						"mtls_redirection_hosts",
+						"mtls_dead_hosts",
+						"mtls_streams"
+					]
+				}
 			}
 		}
 	],

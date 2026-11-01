@@ -25,6 +25,7 @@ import internalNginx from "./nginx.js";
 
 const cnPattern = /\bCN=(?<cn>[^\n]+)/iu;
 const renewalServerPattern = /^server = (?<server>.+)$/mu;
+const certificatePattern = /-----BEGIN CERTIFICATE-----[A-Za-z0-9+/=\s]+-----END CERTIFICATE-----\s*/gu;
 
 const getNiceName = (domainNames) => {
 	const niceName = domainNames.join(", ");
@@ -437,7 +438,7 @@ const internalCertificate = {
 		await mkdir(dir, { recursive: true });
 		await writeFile(`${dir}/fullchain.pem`, certificate.certificate);
 		await writeFile(`${dir}/privkey.pem`, certificate.certificate_key);
-		const certs = certificate.certificate.match(/-----BEGIN CERTIFICATE-----.+?-----END CERTIFICATE-----\s*/gsu);
+		const certs = certificate.certificate.match(certificatePattern);
 		await writeFile(`${dir}/cert.pem`, certs[0]);
 		await writeFile(`${dir}/chain.pem`, certs.slice(1).join(""));
 	},
@@ -476,6 +477,12 @@ const internalCertificate = {
 				if (name === "certificate_key") {
 					finalData[name] = internalCertificate.checkPrivateKey(content);
 				} else {
+					if (
+						content.split("-----BEGIN CERTIFICATE-----").length - 1 !==
+						(content.match(certificatePattern)?.length ?? 0)
+					) {
+						throw new error.ValidationError("Certificate file contains an incomplete certificate");
+					}
 					finalData[name] = internalCertificate.getCertificateInfo(content, true);
 				}
 			}

@@ -1,46 +1,8 @@
 import express from "express";
 import internalAuditLog from "../internal/audit-log.js";
+import idParam from "../lib/express/id-param.js";
 import jwtdecode from "../lib/express/jwt-decode.js";
-import validator from "../lib/validator/index.js";
-
-const listSchema = {
-	type: "object",
-	additionalProperties: false,
-	properties: {
-		expand: {
-			$ref: "common#/properties/expand",
-			items: { enum: ["user"] },
-		},
-		query: {
-			type: "string",
-			maxLength: 255,
-		},
-		page: {
-			type: "integer",
-			minimum: 0,
-		},
-		page_size: {
-			type: "integer",
-			minimum: 1,
-			maximum: 1000,
-		},
-	},
-};
-
-const eventSchema = {
-	type: "object",
-	required: ["event_id"],
-	additionalProperties: false,
-	properties: {
-		event_id: {
-			$ref: "common#/properties/id",
-		},
-		expand: {
-			$ref: "common#/properties/expand",
-			items: { enum: ["user"] },
-		},
-	},
-};
+import validate from "../lib/express/validate.js";
 
 const router = express.Router({
 	caseSensitive: true,
@@ -48,26 +10,21 @@ const router = express.Router({
 	mergeParams: true,
 });
 
+router.param("event_id", idParam);
+
 /**
  * /api/audit-log
  */
 router
 	.route("/")
-	.all(jwtdecode())
 
 	/**
 	 * GET /api/audit-log
 	 *
 	 * Retrieve all logs
 	 */
-	.get(async (req, res) => {
-		const data = validator(listSchema, {
-			expand: typeof req.query.expand === "string" ? req.query.expand.split(",") : null,
-			query: req.query.query,
-			page: req.query.page ?? 0,
-			page_size: req.query.page_size ?? 25,
-		});
-		const rows = await internalAuditLog.getAll(res.locals.access, data);
+	.get(jwtdecode(), validate, async (_, res) => {
+		const rows = await internalAuditLog.getAll(res.locals.access, res.locals.query);
 		res.status(200).send(rows);
 	});
 
@@ -78,22 +35,16 @@ router
  */
 router
 	.route("/:event_id")
-	.all(jwtdecode())
 
 	/**
 	 * GET /api/audit-log/123
 	 *
 	 * Retrieve a specific entry
 	 */
-	.get(async (req, res) => {
-		const data = validator(eventSchema, {
-			event_id: req.params.event_id,
-			expand: typeof req.query.expand === "string" ? req.query.expand.split(",") : null,
-		});
-
+	.get(jwtdecode(), validate, async (_, res) => {
 		const item = await internalAuditLog.get(res.locals.access, {
-			id: data.event_id,
-			expand: data.expand,
+			id: Number(res.locals.params.event_id),
+			expand: res.locals.query.expand,
 		});
 		res.status(200).send(item);
 	});

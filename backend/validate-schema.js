@@ -1,10 +1,10 @@
 #!/usr/bin/env node
 
 import SwaggerParser from "@apidevtools/swagger-parser";
-import { getCompiledSchema } from "./schema/index.js";
+import { compiledSchema } from "./schema/index.js";
 
 try {
-	const api = await SwaggerParser.validate(await getCompiledSchema());
+	const api = await SwaggerParser.validate(compiledSchema);
 	console.log("API name: %s, Version: %s", api.info.title, api.info.version);
 	console.log("❯ Schema is valid");
 } catch (e) {
