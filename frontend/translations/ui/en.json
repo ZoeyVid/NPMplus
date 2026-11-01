@@ -144,6 +144,7 @@
 	"error.maximum": "Maximum is {max}",
 	"error.min-character-length": "Minimum length is {min} character{min, plural, one {} other {s}}",
 	"error.minimum": "Minimum is {min}",
+	"error.network": "Could not connect to the server",
 	"error.passwords-must-match": "Passwords must match",
 	"error.required": "This is required",
 	"expires.on": "Expires: {date}",
