@@ -14,13 +14,19 @@
 			"in": "query",
 			"name": "expand",
 			"description": "Expansions",
+			"style": "form",
+			"explode": false,
 			"schema": {
-				"type": "string",
-				"enum": [
-					"owner",
-					"items",
-					"clients"
-				]
+				"type": "array",
+				"uniqueItems": true,
+				"items": {
+					"type": "string",
+					"enum": [
+						"owner",
+						"items",
+						"clients"
+					]
+				}
 			}
 		}
 	],

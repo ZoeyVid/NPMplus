@@ -35,9 +35,10 @@ const trimStrings = (value, path = "", depth = 0) => {
 /**
  * @param {Object} schema
  * @param {Object} payload
+ * @param {string} [dataVar]
  * @returns {Promise}
  */
-const apiValidator = (schema, payload /*, description*/) => {
+const apiValidator = (schema, payload, dataVar /*, description*/) => {
 	if (!schema) {
 		throw new errs.ValidationError("Schema is undefined");
 	}
@@ -51,7 +52,7 @@ const apiValidator = (schema, payload /*, description*/) => {
 
 	if (validate(data)) return data;
 
-	const message = ajv.errorsText(validate.errors);
+	const message = ajv.errorsText(validate.errors, { dataVar });
 	const err = new errs.ValidationError(message);
 	err.debug = { validationErrors: validate.errors, payload };
 	throw err;
