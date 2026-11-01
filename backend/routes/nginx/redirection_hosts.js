@@ -1,31 +1,8 @@
 import express from "express";
 import internalRedirectionHost from "../../internal/redirection-host.js";
+import idParam from "../../lib/express/id-param.js";
 import jwtdecode from "../../lib/express/jwt-decode.js";
-import apiValidator from "../../lib/validator/api.js";
-import validator from "../../lib/validator/index.js";
-import { getValidationSchema } from "../../schema/index.js";
-
-const listSchema = {
-	type: "object",
-	additionalProperties: false,
-	properties: {
-		expand: {
-			$ref: "common#/properties/expand",
-			items: { enum: ["owner", "certificate"] },
-		},
-	},
-};
-
-const hostSchema = {
-	type: "object",
-	required: ["host_id"],
-	additionalProperties: false,
-	properties: {
-		host_id: {
-			$ref: "common#/properties/id",
-		},
-	},
-};
+import validate from "../../lib/express/validate.js";
 
 const router = express.Router({
 	caseSensitive: true,
@@ -33,23 +10,21 @@ const router = express.Router({
 	mergeParams: true,
 });
 
+router.param("host_id", idParam);
+
 /**
  * /api/nginx/redirection-hosts
  */
 router
 	.route("/")
-	.all(jwtdecode())
 
 	/**
 	 * GET /api/nginx/redirection-hosts
 	 *
 	 * Retrieve all redirection-hosts
 	 */
-	.get(async (req, res) => {
-		const data = validator(listSchema, {
-			expand: typeof req.query.expand === "string" ? req.query.expand.split(",") : null,
-		});
-		const rows = await internalRedirectionHost.getAll(res.locals.access, data.expand);
+	.get(jwtdecode(), validate, async (_, res) => {
+		const rows = await internalRedirectionHost.getAll(res.locals.access, res.locals.query.expand);
 		res.status(200).send(rows);
 	})
 
@@ -58,9 +33,8 @@ router
 	 *
 	 * Create a new redirection-host
 	 */
-	.post(async (req, res) => {
-		const payload = apiValidator(getValidationSchema("/nginx/redirection-hosts", "post"), req.body);
-		const result = await internalRedirectionHost.create(res.locals.access, payload);
+	.post(jwtdecode(), validate, async (_, res) => {
+		const result = await internalRedirectionHost.create(res.locals.access, res.locals.body);
 		res.status(201).send(result);
 	});
 
@@ -71,19 +45,15 @@ router
  */
 router
 	.route("/:host_id")
-	.all(jwtdecode())
 
 	/**
 	 * GET /api/nginx/redirection-hosts/123
 	 *
 	 * Retrieve a specific redirection-host
 	 */
-	.get(async (req, res) => {
-		const data = validator(hostSchema, {
-			host_id: req.params.host_id,
-		});
+	.get(jwtdecode(), validate, async (_, res) => {
 		const row = await internalRedirectionHost.get(res.locals.access, {
-			id: Number.parseInt(data.host_id, 10),
+			id: Number(res.locals.params.host_id),
 		});
 		res.status(200).send(row);
 	})
@@ -93,10 +63,11 @@ router
 	 *
 	 * Update an existing redirection-host
 	 */
-	.put(async (req, res) => {
-		const payload = apiValidator(getValidationSchema("/nginx/redirection-hosts/{hostID}", "put"), req.body);
-		payload.id = Number.parseInt(req.params.host_id, 10);
-		const result = await internalRedirectionHost.update(res.locals.access, payload);
+	.put(jwtdecode(), validate, async (_, res) => {
+		const result = await internalRedirectionHost.update(res.locals.access, {
+			...res.locals.body,
+			id: Number(res.locals.params.host_id),
+		});
 		res.status(200).send(result);
 	})
 
@@ -105,9 +76,9 @@ router
 	 *
 	 * Delete a redirection-host
 	 */
-	.delete(async (req, res) => {
+	.delete(jwtdecode(), validate, async (_, res) => {
 		const result = await internalRedirectionHost.delete(res.locals.access, {
-			id: Number.parseInt(req.params.host_id, 10),
+			id: Number(res.locals.params.host_id),
 		});
 		res.status(200).send(result);
 	});
@@ -119,14 +90,13 @@ router
  */
 router
 	.route("/:host_id/enable")
-	.all(jwtdecode())
 
 	/**
 	 * POST /api/nginx/redirection-hosts/123/enable
 	 */
-	.post(async (req, res) => {
+	.post(jwtdecode(), validate, async (_, res) => {
 		const result = await internalRedirectionHost.enable(res.locals.access, {
-			id: Number.parseInt(req.params.host_id, 10),
+			id: Number(res.locals.params.host_id),
 		});
 		res.status(200).send(result);
 	});
@@ -138,14 +108,13 @@ router
  */
 router
 	.route("/:host_id/disable")
-	.all(jwtdecode())
 
 	/**
 	 * POST /api/nginx/redirection-hosts/123/disable
 	 */
-	.post(async (req, res) => {
+	.post(jwtdecode(), validate, async (_, res) => {
 		const result = await internalRedirectionHost.disable(res.locals.access, {
-			id: Number.parseInt(req.params.host_id, 10),
+			id: Number(res.locals.params.host_id),
 		});
 		res.status(200).send(result);
 	});
