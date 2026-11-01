@@ -65,9 +65,7 @@
 			"uniqueItems": true,
 			"items": {
 				"type": "string",
-				"enum": [
-					"admin"
-				]
+				"const": "admin"
 			}
 		},
 		"npmplus_token_valid_after": {
