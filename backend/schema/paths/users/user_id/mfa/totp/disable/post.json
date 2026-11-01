@@ -1,0 +1,65 @@
+{
+	"operationId": "disableUserTotp",
+	"summary": "Disable totp for user",
+	"tags": ["users"],
+	"security": [
+		{
+			"cookieAuth": []
+		}
+	],
+	"parameters": [
+		{
+			"in": "path",
+			"name": "user_id",
+			"schema": {
+				"type": "integer",
+				"minimum": 1,
+				"maximum": 2147483647
+			},
+			"required": true,
+			"description": "User ID or 'me' for yourself",
+			"example": 2
+		}
+	],
+	"requestBody": {
+		"description": "Verification Payload",
+		"required": true,
+		"content": {
+			"application/json": {
+				"schema": {
+					"additionalProperties": false,
+					"properties": {
+						"code": {
+							"minLength": 6,
+							"maxLength": 8,
+							"type": "string",
+							"example": "123456"
+						}
+					},
+					"required": ["code"],
+					"type": "object"
+				},
+				"example": {
+					"code": "123456"
+				}
+			}
+		}
+	},
+	"responses": {
+		"200": {
+			"content": {
+				"application/json": {
+					"examples": {
+						"default": {
+							"value": true
+						}
+					},
+					"schema": {
+						"type": "boolean"
+					}
+				}
+			},
+			"description": "200 response"
+		}
+	}
+}

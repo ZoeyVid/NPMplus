@@ -1,31 +1,8 @@
 import express from "express";
 import internalDeadHost from "../../internal/dead-host.js";
+import idParam from "../../lib/express/id-param.js";
 import jwtdecode from "../../lib/express/jwt-decode.js";
-import apiValidator from "../../lib/validator/api.js";
-import validator from "../../lib/validator/index.js";
-import { getValidationSchema } from "../../schema/index.js";
-
-const listSchema = {
-	type: "object",
-	additionalProperties: false,
-	properties: {
-		expand: {
-			$ref: "common#/properties/expand",
-			items: { enum: ["owner", "certificate"] },
-		},
-	},
-};
-
-const hostSchema = {
-	type: "object",
-	required: ["host_id"],
-	additionalProperties: false,
-	properties: {
-		host_id: {
-			$ref: "common#/properties/id",
-		},
-	},
-};
+import validate from "../../lib/express/validate.js";
 
 const router = express.Router({
 	caseSensitive: true,
@@ -33,23 +10,21 @@ const router = express.Router({
 	mergeParams: true,
 });
 
+router.param("host_id", idParam);
+
 /**
  * /api/nginx/dead-hosts
  */
 router
 	.route("/")
-	.all(jwtdecode())
 
 	/**
 	 * GET /api/nginx/dead-hosts
 	 *
 	 * Retrieve all dead-hosts
 	 */
-	.get(async (req, res) => {
-		const data = validator(listSchema, {
-			expand: typeof req.query.expand === "string" ? req.query.expand.split(",") : null,
-		});
-		const rows = await internalDeadHost.getAll(res.locals.access, data.expand);
+	.get(jwtdecode(), validate, async (_, res) => {
+		const rows = await internalDeadHost.getAll(res.locals.access, res.locals.query.expand);
 		res.status(200).send(rows);
 	})
 
@@ -58,9 +33,8 @@ router
 	 *
 	 * Create a new dead-host
 	 */
-	.post(async (req, res) => {
-		const payload = apiValidator(getValidationSchema("/nginx/dead-hosts", "post"), req.body);
-		const result = await internalDeadHost.create(res.locals.access, payload);
+	.post(jwtdecode(), validate, async (_, res) => {
+		const result = await internalDeadHost.create(res.locals.access, res.locals.body);
 		res.status(201).send(result);
 	});
 
@@ -71,19 +45,15 @@ router
  */
 router
 	.route("/:host_id")
-	.all(jwtdecode())
 
 	/**
 	 * GET /api/nginx/dead-hosts/123
 	 *
 	 * Retrieve a specific dead-host
 	 */
-	.get(async (req, res) => {
-		const data = validator(hostSchema, {
-			host_id: req.params.host_id,
-		});
+	.get(jwtdecode(), validate, async (_, res) => {
 		const row = await internalDeadHost.get(res.locals.access, {
-			id: Number.parseInt(data.host_id, 10),
+			id: Number(res.locals.params.host_id),
 		});
 		res.status(200).send(row);
 	})
@@ -93,10 +63,11 @@ router
 	 *
 	 * Update an existing dead-host
 	 */
-	.put(async (req, res) => {
-		const payload = apiValidator(getValidationSchema("/nginx/dead-hosts/{hostID}", "put"), req.body);
-		payload.id = Number.parseInt(req.params.host_id, 10);
-		const result = await internalDeadHost.update(res.locals.access, payload);
+	.put(jwtdecode(), validate, async (_, res) => {
+		const result = await internalDeadHost.update(res.locals.access, {
+			...res.locals.body,
+			id: Number(res.locals.params.host_id),
+		});
 		res.status(200).send(result);
 	})
 
@@ -105,9 +76,9 @@ router
 	 *
 	 * Delete a dead-host
 	 */
-	.delete(async (req, res) => {
+	.delete(jwtdecode(), validate, async (_, res) => {
 		const result = await internalDeadHost.delete(res.locals.access, {
-			id: Number.parseInt(req.params.host_id, 10),
+			id: Number(res.locals.params.host_id),
 		});
 		res.status(200).send(result);
 	});
@@ -119,14 +90,13 @@ router
  */
 router
 	.route("/:host_id/enable")
-	.all(jwtdecode())
 
 	/**
 	 * POST /api/nginx/dead-hosts/123/enable
 	 */
-	.post(async (req, res) => {
+	.post(jwtdecode(), validate, async (_, res) => {
 		const result = await internalDeadHost.enable(res.locals.access, {
-			id: Number.parseInt(req.params.host_id, 10),
+			id: Number(res.locals.params.host_id),
 		});
 		res.status(200).send(result);
 	});
@@ -138,14 +108,13 @@ router
  */
 router
 	.route("/:host_id/disable")
-	.all(jwtdecode())
 
 	/**
 	 * POST /api/nginx/dead-hosts/123/disable
 	 */
-	.post(async (req, res) => {
+	.post(jwtdecode(), validate, async (_, res) => {
 		const result = await internalDeadHost.disable(res.locals.access, {
-			id: Number.parseInt(req.params.host_id, 10),
+			id: Number(res.locals.params.host_id),
 		});
 		res.status(200).send(result);
 	});

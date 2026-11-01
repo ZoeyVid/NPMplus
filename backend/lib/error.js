@@ -60,6 +60,12 @@ const errs = {
 		status = 400;
 	},
 
+	InternalError: class extends Error {
+		name = this.constructor.name;
+		public = false;
+		status = 500;
+	},
+
 	CommandError: class extends Error {
 		name = this.constructor.name;
 		public = false;
