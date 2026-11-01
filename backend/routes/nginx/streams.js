@@ -1,31 +1,8 @@
 import express from "express";
 import internalStream from "../../internal/stream.js";
+import idParam from "../../lib/express/id-param.js";
 import jwtdecode from "../../lib/express/jwt-decode.js";
-import apiValidator from "../../lib/validator/api.js";
-import validator from "../../lib/validator/index.js";
-import { getValidationSchema } from "../../schema/index.js";
-
-const listSchema = {
-	type: "object",
-	additionalProperties: false,
-	properties: {
-		expand: {
-			$ref: "common#/properties/expand",
-			items: { enum: ["owner", "certificate"] },
-		},
-	},
-};
-
-const streamSchema = {
-	type: "object",
-	required: ["stream_id"],
-	additionalProperties: false,
-	properties: {
-		stream_id: {
-			$ref: "common#/properties/id",
-		},
-	},
-};
+import validate from "../../lib/express/validate.js";
 
 const router = express.Router({
 	caseSensitive: true,
@@ -33,23 +10,21 @@ const router = express.Router({
 	mergeParams: true,
 });
 
+router.param("stream_id", idParam);
+
 /**
  * /api/nginx/streams
  */
 router
-	.route("/")
-	.all(jwtdecode()) // preferred so it doesn't apply to nonexistent routes
+	.route("/") // preferred so it doesn't apply to nonexistent routes
 
 	/**
 	 * GET /api/nginx/streams
 	 *
 	 * Retrieve all streams
 	 */
-	.get(async (req, res) => {
-		const data = validator(listSchema, {
-			expand: typeof req.query.expand === "string" ? req.query.expand.split(",") : null,
-		});
-		const rows = await internalStream.getAll(res.locals.access, data.expand);
+	.get(jwtdecode(), validate, async (_, res) => {
+		const rows = await internalStream.getAll(res.locals.access, res.locals.query.expand);
 		res.status(200).send(rows);
 	})
 
@@ -58,9 +33,8 @@ router
 	 *
 	 * Create a new stream
 	 */
-	.post(async (req, res) => {
-		const payload = apiValidator(getValidationSchema("/nginx/streams", "post"), req.body);
-		const result = await internalStream.create(res.locals.access, payload);
+	.post(jwtdecode(), validate, async (_, res) => {
+		const result = await internalStream.create(res.locals.access, res.locals.body);
 		res.status(201).send(result);
 	});
 
@@ -70,20 +44,16 @@ router
  * /api/nginx/streams/123
  */
 router
-	.route("/:stream_id")
-	.all(jwtdecode()) // preferred so it doesn't apply to nonexistent routes
+	.route("/:stream_id") // preferred so it doesn't apply to nonexistent routes
 
 	/**
 	 * GET /api/nginx/streams/123
 	 *
 	 * Retrieve a specific stream
 	 */
-	.get(async (req, res) => {
-		const data = validator(streamSchema, {
-			stream_id: req.params.stream_id,
-		});
+	.get(jwtdecode(), validate, async (_, res) => {
 		const row = await internalStream.get(res.locals.access, {
-			id: Number.parseInt(data.stream_id, 10),
+			id: Number(res.locals.params.stream_id),
 		});
 		res.status(200).send(row);
 	})
@@ -93,10 +63,11 @@ router
 	 *
 	 * Update an existing stream
 	 */
-	.put(async (req, res) => {
-		const payload = apiValidator(getValidationSchema("/nginx/streams/{streamID}", "put"), req.body);
-		payload.id = Number.parseInt(req.params.stream_id, 10);
-		const result = await internalStream.update(res.locals.access, payload);
+	.put(jwtdecode(), validate, async (_, res) => {
+		const result = await internalStream.update(res.locals.access, {
+			...res.locals.body,
+			id: Number(res.locals.params.stream_id),
+		});
 		res.status(200).send(result);
 	})
 
@@ -105,9 +76,9 @@ router
 	 *
 	 * Delete a stream
 	 */
-	.delete(async (req, res) => {
+	.delete(jwtdecode(), validate, async (_, res) => {
 		const result = await internalStream.delete(res.locals.access, {
-			id: Number.parseInt(req.params.stream_id, 10),
+			id: Number(res.locals.params.stream_id),
 		});
 		res.status(200).send(result);
 	});
@@ -119,14 +90,13 @@ router
  */
 router
 	.route("/:stream_id/enable")
-	.all(jwtdecode())
 
 	/**
 	 * POST /api/nginx/streams/123/enable
 	 */
-	.post(async (req, res) => {
+	.post(jwtdecode(), validate, async (_, res) => {
 		const result = await internalStream.enable(res.locals.access, {
-			id: Number.parseInt(req.params.stream_id, 10),
+			id: Number(res.locals.params.stream_id),
 		});
 		res.status(200).send(result);
 	});
@@ -138,14 +108,13 @@ router
  */
 router
 	.route("/:stream_id/disable")
-	.all(jwtdecode())
 
 	/**
 	 * POST /api/nginx/streams/123/disable
 	 */
-	.post(async (req, res) => {
+	.post(jwtdecode(), validate, async (_, res) => {
 		const result = await internalStream.disable(res.locals.access, {
-			id: Number.parseInt(req.params.stream_id, 10),
+			id: Number(res.locals.params.stream_id),
 		});
 		res.status(200).send(result);
 	});

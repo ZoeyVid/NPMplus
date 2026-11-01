@@ -1,6 +1,7 @@
 import express from "express";
 import internalReport from "../internal/report.js";
 import requireLogin from "../lib/express/require-login.js";
+import validate from "../lib/express/validate.js";
 
 const router = express.Router({
 	caseSensitive: true,
@@ -10,12 +11,11 @@ const router = express.Router({
 
 router
 	.route("/hosts")
-	.all(requireLogin())
 
 	/**
 	 * GET /reports/hosts
 	 */
-	.get(async (_, res) => {
+	.get(requireLogin(), validate, async (_, res) => {
 		const data = await internalReport.getHostsReport(res.locals.access);
 		res.status(200).send(data);
 	});

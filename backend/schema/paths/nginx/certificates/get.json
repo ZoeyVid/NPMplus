@@ -11,22 +11,42 @@
 	],
 	"parameters": [
 		{
-			"in": "query",
-			"name": "expand",
-			"description": "Expansions",
-			"schema": {
-				"type": "string",
-				"enum": [
-					"owner",
-					"proxy_hosts",
-					"redirection_hosts",
-					"dead_hosts",
-					"streams",
-					"mtls_proxy_hosts",
-					"mtls_redirection_hosts",
-					"mtls_dead_hosts",
-					"mtls_streams"
-				]
+			"in": "querystring",
+			"name": "querystring",
+			"content": {
+				"application/x-www-form-urlencoded": {
+					"schema": {
+						"type": "object",
+						"additionalProperties": false,
+						"properties": {
+							"expand": {
+								"description": "Expansions",
+								"type": "array",
+								"uniqueItems": true,
+								"items": {
+									"type": "string",
+									"enum": [
+										"owner",
+										"proxy_hosts",
+										"redirection_hosts",
+										"dead_hosts",
+										"streams",
+										"mtls_proxy_hosts",
+										"mtls_redirection_hosts",
+										"mtls_dead_hosts",
+										"mtls_streams"
+									]
+								}
+							}
+						}
+					},
+					"encoding": {
+						"expand": {
+							"style": "form",
+							"explode": false
+						}
+					}
+				}
 			}
 		}
 	],

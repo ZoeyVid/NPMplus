@@ -33,7 +33,7 @@
 		"undici": "8.12.3"
 	},
 	"devDependencies": {
-		"@apidevtools/swagger-parser": "13.1.0",
-		"@biomejs/biome": "2.6.4"
+		"@biomejs/biome": "2.6.4",
+		"@seriousme/openapi-schema-validator": "2.11.0"
 	}
 }

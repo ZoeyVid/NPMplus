@@ -11,16 +11,36 @@
 	],
 	"parameters": [
 		{
-			"in": "query",
-			"name": "expand",
-			"description": "Expansions",
-			"schema": {
-				"type": "string",
-				"enum": [
-					"access_lists",
-					"owner",
-					"certificate"
-				]
+			"in": "querystring",
+			"name": "querystring",
+			"content": {
+				"application/x-www-form-urlencoded": {
+					"schema": {
+						"type": "object",
+						"additionalProperties": false,
+						"properties": {
+							"expand": {
+								"description": "Expansions",
+								"type": "array",
+								"uniqueItems": true,
+								"items": {
+									"type": "string",
+									"enum": [
+										"access_lists",
+										"owner",
+										"certificate"
+									]
+								}
+							}
+						}
+					},
+					"encoding": {
+						"expand": {
+							"style": "form",
+							"explode": false
+						}
+					}
+				}
 			}
 		}
 	],

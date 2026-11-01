@@ -10,21 +10,6 @@
 			"minimum": 1,
 			"example": 11
 		},
-		"expand": {
-			"anyOf": [
-				{
-					"type": "null"
-				},
-				{
-					"type": "array",
-					"minItems": 1,
-					"uniqueItems": true,
-					"items": {
-						"type": "string"
-					}
-				}
-			]
-		},
 		"created_on": {
 			"description": "Date and time of creation",
 			"readOnly": true,

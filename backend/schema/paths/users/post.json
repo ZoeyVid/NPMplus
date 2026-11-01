@@ -42,7 +42,7 @@
 							"properties": {
 								"type": {
 									"type": "string",
-									"enum": ["password"]
+									"const": "password"
 								},
 								"secret": {
 									"type": "string",
