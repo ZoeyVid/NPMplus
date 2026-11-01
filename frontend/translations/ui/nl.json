@@ -144,6 +144,7 @@
 	"error.maximum": "Maximum is {max}",
 	"error.min-character-length": "Minimale lengte is {min} teken{min, plural, one {} other {s}}",
 	"error.minimum": "Minimum is {min}",
+	"error.network": "Kan geen verbinding maken met de server",
 	"error.passwords-must-match": "Wachtwoorden moeten overeenkomen",
 	"error.required": "Dit is verplicht",
 	"expires.on": "Verloopt: {date}",
