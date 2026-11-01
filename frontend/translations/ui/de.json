@@ -144,6 +144,7 @@
 	"error.maximum": "Maximum ist {max}",
 	"error.min-character-length": "Die minimale Länge beträgt {min} Zeichen",
 	"error.minimum": "Minimum ist {min}",
+	"error.network": "Verbindung zum Server fehlgeschlagen",
 	"error.passwords-must-match": "Passwörter müssen übereinstimmen",
 	"error.required": "Dies ist erforderlich.",
 	"expires.on": "Ablauf am: {date}",
