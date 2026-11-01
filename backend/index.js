@@ -8,14 +8,12 @@ import internalIpRanges from "./internal/ip_ranges.js";
 import internalNginx from "./internal/nginx.js";
 import { global as logger } from "./logger.js";
 import { migrateUp } from "./migrate.js";
-import { getCompiledSchema } from "./schema/index.js";
 import setup from "./setup.js";
 
 async function appStart() {
 	try {
 		await migrateUp();
 		await setup();
-		await getCompiledSchema();
 
 		await internalIpRanges.generateConfig([]);
 		if (process.env.TRUST_CLOUDFLARE !== "true") {

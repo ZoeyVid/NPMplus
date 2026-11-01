@@ -18,7 +18,11 @@ const internalAuditLog = {
 	getAll: (access, data) => {
 		access.canAdmin();
 
-		const query = auditLogModel.query().orderBy("id", "DESC").page(data.page, data.page_size).allowGraph("[user]");
+		const query = auditLogModel
+			.query()
+			.orderBy("id", "DESC")
+			.page(data.page ?? 0, data.page_size ?? 25)
+			.allowGraph("[user]");
 
 		if (data.query) {
 			const like = `%${data.query.toLowerCase()}%`;

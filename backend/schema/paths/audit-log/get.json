@@ -14,11 +14,15 @@
 			"in": "query",
 			"name": "expand",
 			"description": "Expansions",
+			"style": "form",
+			"explode": false,
 			"schema": {
-				"type": "string",
-				"enum": [
-					"user"
-				]
+				"type": "array",
+				"uniqueItems": true,
+				"items": {
+					"type": "string",
+					"const": "user"
+				}
 			}
 		},
 		{
@@ -36,7 +40,9 @@
 			"description": "Page number starting at 0",
 			"schema": {
 				"type": "integer",
-				"minimum": 0
+				"minimum": 0,
+				"maximum": 2147483647,
+				"default": 0
 			}
 		},
 		{
