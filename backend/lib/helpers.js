@@ -1,4 +1,5 @@
 import { readFile } from "node:fs/promises";
+import { domainToASCII } from "node:url";
 import { ref } from "objection";
 import { isPostgres } from "./config.js";
 
@@ -65,12 +66,19 @@ const readSecret = async (name) => {
 	if (process.env[`${name}_FILE`]) return (await readFile(process.env[`${name}_FILE`], "utf8")).trim();
 };
 
+const toAsciiDomain = (domain) => (domain.startsWith("~") ? domain : domainToASCII(domain) || domain);
+
+const hasDuplicateDomains = (domains) =>
+	new Set(domains.map((domain) => toAsciiDomain(domain).toLowerCase())).size !== domains.length;
+
 export {
 	castJsonIfNeed,
 	convertBoolFieldsToInt,
 	convertIntFieldsToBool,
+	hasDuplicateDomains,
 	jsonReplacer,
 	pickCertificateFields,
 	readSecret,
 	removeCertificateFields,
+	toAsciiDomain,
 };

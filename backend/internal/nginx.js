@@ -1,7 +1,7 @@
 import { readFile, rename, rm, writeFile } from "node:fs/promises";
-import { domainToASCII } from "node:url";
 import { Client, fetch } from "undici";
 import errs from "../lib/error.js";
+import { toAsciiDomain } from "../lib/helpers.js";
 import utils from "../lib/utils.js";
 import { nginx as logger } from "../logger.js";
 import internalProxyHostAccessList from "./proxy-host-access-list.js";
@@ -241,7 +241,7 @@ const internalNginx = {
 		}
 
 		if (host.domain_names) {
-			host.server_names = host.domain_names.map((domain_name) => domainToASCII(domain_name) || domain_name);
+			host.server_names = host.domain_names.map(toAsciiDomain);
 		}
 		if (host.npmplus_access_list_type === "custom") {
 			// note that there is access_lists -> an array in the correct order
