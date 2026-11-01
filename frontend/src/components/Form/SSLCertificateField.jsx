@@ -18,6 +18,13 @@ const Option = (props) => (
 	</components.Option>
 );
 
+const toOption = (cert) => ({
+	value: cert.id,
+	label: cert.niceName,
+	subLabel: `${intl.formatMessage({ id: certificateProviderTranslation(cert.provider) })} — ${intl.formatMessage({ id: "expires.on" }, { date: formatDateTime(cert.expiresOn) })}`,
+	icon: <IconShield size={14} className="text-pink" />,
+});
+
 export function SSLCertificateField({
 	name,
 	label,
@@ -65,25 +72,9 @@ export function SSLCertificateField({
 		}
 	};
 
-	const options =
-		data
-			?.filter((cert) => cert.provider !== "mtls")
-			.map((cert) => ({
-				value: cert.id,
-				label: cert.niceName,
-				subLabel: `${intl.formatMessage({ id: certificateProviderTranslation(cert.provider) })} — ${intl.formatMessage({ id: "expires.on" }, { date: formatDateTime(cert.expiresOn) })}`,
-				icon: <IconShield size={14} className="text-pink" />,
-			})) || [];
-
-	const mtlsOptions =
-		data
-			?.filter((cert) => cert.provider === "mtls")
-			.map((cert) => ({
-				value: cert.id,
-				label: cert.niceName,
-				subLabel: `${intl.formatMessage({ id: certificateProviderTranslation(cert.provider) })} — ${intl.formatMessage({ id: "expires.on" }, { date: formatDateTime(cert.expiresOn) })}`,
-				icon: <IconShield size={14} className="text-pink" />,
-			})) || [];
+	const certs = Object.groupBy(data ?? [], (cert) => (cert.provider === "mtls" ? "mtls" : "server"));
+	const options = certs.server?.map(toOption) ?? [];
+	const mtlsOptions = certs.mtls?.map(toOption) ?? [];
 
 	// Prepend the Add New option
 	if (allowNew && hasPermission(CERTIFICATES, MANAGE, user?.permissions, user?.roles)) {
