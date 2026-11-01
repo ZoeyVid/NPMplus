@@ -144,6 +144,7 @@
 	"error.maximum": "最大值为 {max}",
 	"error.min-character-length": "最小长度为 {min} 个字符",
 	"error.minimum": "最小值为 {min}",
+	"error.network": "无法连接到服务器",
 	"error.passwords-must-match": "密码必须匹配",
 	"error.required": "此项为必填项",
 	"expires.on": "过期时间: {date}",
