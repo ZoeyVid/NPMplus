@@ -1,5 +1,5 @@
 import errs from "../lib/error.js";
-import { castJsonIfNeed } from "../lib/helpers.js";
+import { castJsonIfNeed, hasDuplicateDomains } from "../lib/helpers.js";
 import deadHostModel from "../models/dead_host.js";
 import internalAuditLog from "./audit-log.js";
 import internalCertificate from "./certificate.js";
@@ -26,6 +26,10 @@ const internalDeadHost = {
 		}
 
 		access.can("dead_hosts:manage");
+
+		if (hasDuplicateDomains(thisData.domain_names)) {
+			throw new errs.ValidationError("Domain names need to be unique");
+		}
 
 		// Get a list of the domain names and check each of them against existing records
 		const checkResults = await Promise.all(
@@ -100,6 +104,9 @@ const internalDeadHost = {
 
 		// Get a list of the domain names and check each of them against existing records
 		if (thisData.domain_names !== undefined) {
+			if (hasDuplicateDomains(thisData.domain_names)) {
+				throw new errs.ValidationError("Domain names need to be unique");
+			}
 			const checkResults = await Promise.all(
 				thisData.domain_names.map((domainName) =>
 					internalHost.isHostnameTaken(domainName, "dead", thisData.id),

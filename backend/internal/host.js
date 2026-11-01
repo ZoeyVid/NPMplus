@@ -1,5 +1,4 @@
-import { domainToASCII, domainToUnicode } from "node:url";
-import { castJsonIfNeed } from "../lib/helpers.js";
+import { toAsciiDomain } from "../lib/helpers.js";
 import deadHostModel from "../models/dead_host.js";
 import proxyHostModel from "../models/proxy_host.js";
 import redirectionHostModel from "../models/redirection_host.js";
@@ -17,8 +16,7 @@ const checkHostnameRecordsTaken = (hostname, existingRows, ignoreId) =>
 			// Does this domain match?
 			existingRow.domain_names.some(
 				(existingHostname) =>
-					(domainToASCII(existingHostname) || existingHostname).toLowerCase() ===
-					(domainToASCII(hostname) || hostname).toLowerCase(),
+					toAsciiDomain(existingHostname).toLowerCase() === toAsciiDomain(hostname).toLowerCase(),
 			),
 	);
 
@@ -84,20 +82,7 @@ const internalHost = {
 					async ([type, model]) =>
 						checkHostnameRecordsTaken(
 							hostname,
-							await model
-								.query()
-								.where("enabled", 1)
-								.andWhere((query) =>
-									query
-										.whereILike(
-											castJsonIfNeed("domain_names"),
-											`%${domainToASCII(hostname) || hostname}%`,
-										)
-										.orWhereILike(
-											castJsonIfNeed("domain_names"),
-											`%${domainToUnicode(hostname) || hostname}%`,
-										),
-								),
+							await model.query().where("enabled", 1),
 							ignore_type === type && ignore_id ? ignore_id : 0,
 						),
 				),

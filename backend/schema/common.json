@@ -54,7 +54,7 @@
 				"type": "string",
 				"minLength": 1,
 				"maxLength": 253,
-				"pattern": "^(~\\S*|(?!.*:[0-9]+$)[^\\s/]+)$"
+				"pattern": "^(~\\S*|(?!.*:[0-9]+$)[^\\s/\\\\?#%]+)$"
 			},
 			"example": [
 				"example.com",
