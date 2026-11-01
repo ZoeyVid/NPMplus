@@ -56,7 +56,7 @@ app.use("/", mainRoutes);
 // no stacktraces leaked to user
 app.use((err, req, res, _) => {
 	const status = err.status || 500;
-	const exposed = err.public || err.expose;
+	const exposed = err.public || err.expose || err instanceof URIError;
 	const payload = {
 		error: {
 			code: status,
