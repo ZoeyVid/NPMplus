@@ -1,8 +1,11 @@
 import { QueryClient } from "@tanstack/react-query";
+import { intl } from "src/locale";
 import AuthStore from "src/modules/AuthStore";
 import { camelizeKeys, decamelizeKeys } from "./caseConvert";
 
-export const queryClient = new QueryClient();
+export const queryClient = new QueryClient({
+	defaultOptions: { queries: { retry: (failureCount, error) => !error.payload?.error && failureCount < 3 } },
+});
 const contentTypeHeader = "Content-Type";
 
 function buildUrl({ url, params = {} }) {
@@ -47,12 +50,22 @@ export async function get({ url, params, reload }, abortController) {
 	const apiUrl = buildUrl({ url, params });
 	const method = "GET";
 	const signal = abortController?.signal;
-	const response = await fetch(apiUrl, { method, signal });
+	let response;
+	try {
+		response = await fetch(apiUrl, { method, signal });
+	} catch (err) {
+		throw new Error(intl.formatMessage({ id: "error.network" }), { cause: err });
+	}
 	return processResponse(response, reload);
 }
 
 export async function download({ url, params }, filename) {
-	const res = await fetch(buildUrl({ url, params }));
+	let res;
+	try {
+		res = await fetch(buildUrl({ url, params }));
+	} catch (err) {
+		throw new Error(intl.formatMessage({ id: "error.network" }), { cause: err });
+	}
 	if (!res.ok) await processResponse(res);
 	const bl = await res.blob();
 	const u = window.URL.createObjectURL(bl);
@@ -84,7 +97,12 @@ export async function post({ url, params, data }, abortController) {
 	}
 
 	const signal = abortController?.signal;
-	const response = await fetch(apiUrl, { method, headers, body, signal });
+	let response;
+	try {
+		response = await fetch(apiUrl, { method, headers, body, signal });
+	} catch (err) {
+		throw new Error(intl.formatMessage({ id: "error.network" }), { cause: err });
+	}
 	return processWrite(url, response);
 }
 
@@ -96,7 +114,12 @@ export async function put({ url, params, data }, abortController) {
 	};
 	const signal = abortController?.signal;
 	const body = buildBody(data);
-	const response = await fetch(apiUrl, { method, headers, body, signal });
+	let response;
+	try {
+		response = await fetch(apiUrl, { method, headers, body, signal });
+	} catch (err) {
+		throw new Error(intl.formatMessage({ id: "error.network" }), { cause: err });
+	}
 	return processWrite(url, response);
 }
 
@@ -104,6 +127,11 @@ export async function del({ url, params }, abortController) {
 	const apiUrl = buildUrl({ url, params });
 	const method = "DELETE";
 	const signal = abortController?.signal;
-	const response = await fetch(apiUrl, { method, signal });
+	let response;
+	try {
+		response = await fetch(apiUrl, { method, signal });
+	} catch (err) {
+		throw new Error(intl.formatMessage({ id: "error.network" }), { cause: err });
+	}
 	return processWrite(url, response);
 }
