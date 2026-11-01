@@ -4,6 +4,11 @@ import { intl, T } from "src/locale";
 import { selectClassNames } from "src/modules/Select";
 import { validateDomain, validateDomains } from "src/modules/Validations";
 
+const normalizeDomain = (domain) => {
+	if (domain.startsWith("~") || !URL.canParse(`http://${domain}`)) return domain.toLowerCase();
+	return new URL(`http://${domain}`).hostname;
+};
+
 export function DomainNamesField({
 	name = "domainNames",
 	label = "domain-names",
@@ -56,7 +61,7 @@ export function DomainNamesField({
 								input,
 								isWildcardPermitted && dnsProviderWildcardSupported,
 								forCertificate,
-							) && !selected.some(({ value }) => value.toLowerCase() === input.trim().toLowerCase())
+							) && !selected.some(({ value }) => normalizeDomain(value) === normalizeDomain(input.trim()))
 						}
 						isMulti
 						required
