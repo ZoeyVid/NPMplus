@@ -12,6 +12,7 @@ import {
 } from "openid-client";
 import internalToken from "../internal/token.js";
 import errs from "../lib/error.js";
+import validate from "../lib/express/validate.js";
 import { readSecret } from "../lib/helpers.js";
 import { oidc as logger } from "../logger.js";
 
@@ -39,7 +40,7 @@ router
 	 *
 	 * OAuth Authorization Code flow initialisation
 	 */
-	.get(async (_, res) => {
+	.get(validate, async (_, res) => {
 		try {
 			const config = await discovery(
 				new URL(process.env.OIDC_ISSUER_URL),

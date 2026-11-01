@@ -7,7 +7,7 @@ const contentTypeHeader = "Content-Type";
 
 function buildUrl({ url, params = {} }) {
 	const query = new URLSearchParams(Object.entries(params).filter(([, value]) => value !== undefined)).toString();
-	return `/api/${url.slice(1)}${query ? `?${query}` : ""}`;
+	return `/api${url}${query ? `?${query}` : ""}`;
 }
 
 function buildBody(data) {
