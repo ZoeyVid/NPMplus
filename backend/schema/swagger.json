@@ -1,5 +1,5 @@
 {
-	"openapi": "3.1.0",
+	"openapi": "3.2.1",
 	"info": {
 		"title": "NPMplus API",
 		"version": "2.x.x",
@@ -113,9 +113,9 @@
 				"$ref": "./paths/audit-log/get.json"
 			}
 		},
-		"/audit-log/{id}": {
+		"/audit-log/{event_id}": {
 			"get": {
-				"$ref": "./paths/audit-log/id/get.json"
+				"$ref": "./paths/audit-log/event_id/get.json"
 			}
 		},
 		"/nginx/access-lists": {
@@ -126,15 +126,15 @@
 				"$ref": "./paths/nginx/access-lists/post.json"
 			}
 		},
-		"/nginx/access-lists/{listID}": {
+		"/nginx/access-lists/{list_id}": {
 			"get": {
-				"$ref": "./paths/nginx/access-lists/listID/get.json"
+				"$ref": "./paths/nginx/access-lists/list_id/get.json"
 			},
 			"put": {
-				"$ref": "./paths/nginx/access-lists/listID/put.json"
+				"$ref": "./paths/nginx/access-lists/list_id/put.json"
 			},
 			"delete": {
-				"$ref": "./paths/nginx/access-lists/listID/delete.json"
+				"$ref": "./paths/nginx/access-lists/list_id/delete.json"
 			}
 		},
 		"/nginx/certificates": {
@@ -160,27 +160,27 @@
 				"$ref": "./paths/nginx/certificates/test-http/post.json"
 			}
 		},
-		"/nginx/certificates/{certID}": {
+		"/nginx/certificates/{certificate_id}": {
 			"get": {
-				"$ref": "./paths/nginx/certificates/certID/get.json"
+				"$ref": "./paths/nginx/certificates/certificate_id/get.json"
 			},
 			"delete": {
-				"$ref": "./paths/nginx/certificates/certID/delete.json"
+				"$ref": "./paths/nginx/certificates/certificate_id/delete.json"
 			}
 		},
-		"/nginx/certificates/{certID}/download": {
+		"/nginx/certificates/{certificate_id}/download": {
 			"get": {
-				"$ref": "./paths/nginx/certificates/certID/download/get.json"
+				"$ref": "./paths/nginx/certificates/certificate_id/download/get.json"
 			}
 		},
-		"/nginx/certificates/{certID}/renew": {
+		"/nginx/certificates/{certificate_id}/renew": {
 			"post": {
-				"$ref": "./paths/nginx/certificates/certID/renew/post.json"
+				"$ref": "./paths/nginx/certificates/certificate_id/renew/post.json"
 			}
 		},
-		"/nginx/certificates/{certID}/upload": {
+		"/nginx/certificates/{certificate_id}/upload": {
 			"post": {
-				"$ref": "./paths/nginx/certificates/certID/upload/post.json"
+				"$ref": "./paths/nginx/certificates/certificate_id/upload/post.json"
 			}
 		},
 		"/nginx/proxy-hosts": {
@@ -191,25 +191,25 @@
 				"$ref": "./paths/nginx/proxy-hosts/post.json"
 			}
 		},
-		"/nginx/proxy-hosts/{hostID}": {
+		"/nginx/proxy-hosts/{host_id}": {
 			"get": {
-				"$ref": "./paths/nginx/proxy-hosts/hostID/get.json"
+				"$ref": "./paths/nginx/proxy-hosts/host_id/get.json"
 			},
 			"put": {
-				"$ref": "./paths/nginx/proxy-hosts/hostID/put.json"
+				"$ref": "./paths/nginx/proxy-hosts/host_id/put.json"
 			},
 			"delete": {
-				"$ref": "./paths/nginx/proxy-hosts/hostID/delete.json"
+				"$ref": "./paths/nginx/proxy-hosts/host_id/delete.json"
 			}
 		},
-		"/nginx/proxy-hosts/{hostID}/enable": {
+		"/nginx/proxy-hosts/{host_id}/enable": {
 			"post": {
-				"$ref": "./paths/nginx/proxy-hosts/hostID/enable/post.json"
+				"$ref": "./paths/nginx/proxy-hosts/host_id/enable/post.json"
 			}
 		},
-		"/nginx/proxy-hosts/{hostID}/disable": {
+		"/nginx/proxy-hosts/{host_id}/disable": {
 			"post": {
-				"$ref": "./paths/nginx/proxy-hosts/hostID/disable/post.json"
+				"$ref": "./paths/nginx/proxy-hosts/host_id/disable/post.json"
 			}
 		},
 		"/nginx/redirection-hosts": {
@@ -220,25 +220,25 @@
 				"$ref": "./paths/nginx/redirection-hosts/post.json"
 			}
 		},
-		"/nginx/redirection-hosts/{hostID}": {
+		"/nginx/redirection-hosts/{host_id}": {
 			"get": {
-				"$ref": "./paths/nginx/redirection-hosts/hostID/get.json"
+				"$ref": "./paths/nginx/redirection-hosts/host_id/get.json"
 			},
 			"put": {
-				"$ref": "./paths/nginx/redirection-hosts/hostID/put.json"
+				"$ref": "./paths/nginx/redirection-hosts/host_id/put.json"
 			},
 			"delete": {
-				"$ref": "./paths/nginx/redirection-hosts/hostID/delete.json"
+				"$ref": "./paths/nginx/redirection-hosts/host_id/delete.json"
 			}
 		},
-		"/nginx/redirection-hosts/{hostID}/enable": {
+		"/nginx/redirection-hosts/{host_id}/enable": {
 			"post": {
-				"$ref": "./paths/nginx/redirection-hosts/hostID/enable/post.json"
+				"$ref": "./paths/nginx/redirection-hosts/host_id/enable/post.json"
 			}
 		},
-		"/nginx/redirection-hosts/{hostID}/disable": {
+		"/nginx/redirection-hosts/{host_id}/disable": {
 			"post": {
-				"$ref": "./paths/nginx/redirection-hosts/hostID/disable/post.json"
+				"$ref": "./paths/nginx/redirection-hosts/host_id/disable/post.json"
 			}
 		},
 		"/nginx/dead-hosts": {
@@ -249,25 +249,25 @@
 				"$ref": "./paths/nginx/dead-hosts/post.json"
 			}
 		},
-		"/nginx/dead-hosts/{hostID}": {
+		"/nginx/dead-hosts/{host_id}": {
 			"get": {
-				"$ref": "./paths/nginx/dead-hosts/hostID/get.json"
+				"$ref": "./paths/nginx/dead-hosts/host_id/get.json"
 			},
 			"put": {
-				"$ref": "./paths/nginx/dead-hosts/hostID/put.json"
+				"$ref": "./paths/nginx/dead-hosts/host_id/put.json"
 			},
 			"delete": {
-				"$ref": "./paths/nginx/dead-hosts/hostID/delete.json"
+				"$ref": "./paths/nginx/dead-hosts/host_id/delete.json"
 			}
 		},
-		"/nginx/dead-hosts/{hostID}/enable": {
+		"/nginx/dead-hosts/{host_id}/enable": {
 			"post": {
-				"$ref": "./paths/nginx/dead-hosts/hostID/enable/post.json"
+				"$ref": "./paths/nginx/dead-hosts/host_id/enable/post.json"
 			}
 		},
-		"/nginx/dead-hosts/{hostID}/disable": {
+		"/nginx/dead-hosts/{host_id}/disable": {
 			"post": {
-				"$ref": "./paths/nginx/dead-hosts/hostID/disable/post.json"
+				"$ref": "./paths/nginx/dead-hosts/host_id/disable/post.json"
 			}
 		},
 		"/nginx/streams": {
@@ -278,25 +278,25 @@
 				"$ref": "./paths/nginx/streams/post.json"
 			}
 		},
-		"/nginx/streams/{streamID}": {
+		"/nginx/streams/{stream_id}": {
 			"get": {
-				"$ref": "./paths/nginx/streams/streamID/get.json"
+				"$ref": "./paths/nginx/streams/stream_id/get.json"
 			},
 			"put": {
-				"$ref": "./paths/nginx/streams/streamID/put.json"
+				"$ref": "./paths/nginx/streams/stream_id/put.json"
 			},
 			"delete": {
-				"$ref": "./paths/nginx/streams/streamID/delete.json"
+				"$ref": "./paths/nginx/streams/stream_id/delete.json"
 			}
 		},
-		"/nginx/streams/{streamID}/enable": {
+		"/nginx/streams/{stream_id}/enable": {
 			"post": {
-				"$ref": "./paths/nginx/streams/streamID/enable/post.json"
+				"$ref": "./paths/nginx/streams/stream_id/enable/post.json"
 			}
 		},
-		"/nginx/streams/{streamID}/disable": {
+		"/nginx/streams/{stream_id}/disable": {
 			"post": {
-				"$ref": "./paths/nginx/streams/streamID/disable/post.json"
+				"$ref": "./paths/nginx/streams/stream_id/disable/post.json"
 			}
 		},
 		"/reports/hosts": {
@@ -314,12 +314,12 @@
 				"$ref": "./paths/settings/get.json"
 			}
 		},
-		"/settings/{settingID}": {
+		"/settings/{setting_id}": {
 			"get": {
-				"$ref": "./paths/settings/settingID/get.json"
+				"$ref": "./paths/settings/setting_id/get.json"
 			},
 			"put": {
-				"$ref": "./paths/settings/settingID/put.json"
+				"$ref": "./paths/settings/setting_id/put.json"
 			}
 		},
 		"/tokens": {
@@ -356,66 +356,66 @@
 				"$ref": "./paths/users/setup/post.json"
 			}
 		},
-		"/users/{userID}": {
+		"/users/{user_id}": {
 			"get": {
-				"$ref": "./paths/users/userID/get.json"
+				"$ref": "./paths/users/user_id/get.json"
 			},
 			"put": {
-				"$ref": "./paths/users/userID/put.json"
+				"$ref": "./paths/users/user_id/put.json"
 			},
 			"delete": {
-				"$ref": "./paths/users/userID/delete.json"
+				"$ref": "./paths/users/user_id/delete.json"
 			}
 		},
-		"/users/{userID}/avatar": {
+		"/users/{user_id}/avatar": {
 			"post": {
-				"$ref": "./paths/users/userID/avatar/post.json"
+				"$ref": "./paths/users/user_id/avatar/post.json"
 			},
 			"delete": {
-				"$ref": "./paths/users/userID/avatar/delete.json"
+				"$ref": "./paths/users/user_id/avatar/delete.json"
 			}
 		},
-		"/users/{userID}/mfa": {
+		"/users/{user_id}/mfa": {
 			"get": {
-				"$ref": "./paths/users/userID/mfa/get.json"
+				"$ref": "./paths/users/user_id/mfa/get.json"
 			},
 			"delete": {
-				"$ref": "./paths/users/userID/mfa/delete.json"
+				"$ref": "./paths/users/user_id/mfa/delete.json"
 			}
 		},
-		"/users/{userID}/mfa/totp": {
+		"/users/{user_id}/mfa/totp": {
 			"post": {
-				"$ref": "./paths/users/userID/mfa/totp/post.json"
+				"$ref": "./paths/users/user_id/mfa/totp/post.json"
 			}
 		},
-		"/users/{userID}/mfa/totp/enable": {
+		"/users/{user_id}/mfa/totp/enable": {
 			"post": {
-				"$ref": "./paths/users/userID/mfa/totp/enable/post.json"
+				"$ref": "./paths/users/user_id/mfa/totp/enable/post.json"
 			}
 		},
-		"/users/{userID}/mfa/totp/disable": {
+		"/users/{user_id}/mfa/totp/disable": {
 			"post": {
-				"$ref": "./paths/users/userID/mfa/totp/disable/post.json"
+				"$ref": "./paths/users/user_id/mfa/totp/disable/post.json"
 			}
 		},
-		"/users/{userID}/mfa/backup-codes": {
+		"/users/{user_id}/mfa/backup-codes": {
 			"post": {
-				"$ref": "./paths/users/userID/mfa/backup-codes/post.json"
+				"$ref": "./paths/users/user_id/mfa/backup-codes/post.json"
 			}
 		},
-		"/users/{userID}/sessions": {
+		"/users/{user_id}/sessions": {
 			"delete": {
-				"$ref": "./paths/users/userID/sessions/delete.json"
+				"$ref": "./paths/users/user_id/sessions/delete.json"
 			}
 		},
-		"/users/{userID}/auth": {
+		"/users/{user_id}/auth": {
 			"put": {
-				"$ref": "./paths/users/userID/auth/put.json"
+				"$ref": "./paths/users/user_id/auth/put.json"
 			}
 		},
-		"/users/{userID}/permissions": {
+		"/users/{user_id}/permissions": {
 			"put": {
-				"$ref": "./paths/users/userID/permissions/put.json"
+				"$ref": "./paths/users/user_id/permissions/put.json"
 			}
 		}
 	}

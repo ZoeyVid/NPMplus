@@ -1,21 +1,7 @@
 import express from "express";
 import internalSetting from "../internal/setting.js";
 import jwtdecode from "../lib/express/jwt-decode.js";
-import apiValidator from "../lib/validator/api.js";
-import validator from "../lib/validator/index.js";
-import { getValidationSchema } from "../schema/index.js";
-
-const settingSchema = {
-	type: "object",
-	required: ["setting_id"],
-	additionalProperties: false,
-	properties: {
-		setting_id: {
-			type: "string",
-			minLength: 1,
-		},
-	},
-};
+import validate from "../lib/express/validate.js";
 
 const router = express.Router({
 	caseSensitive: true,
@@ -28,14 +14,13 @@ const router = express.Router({
  */
 router
 	.route("/")
-	.all(jwtdecode())
 
 	/**
 	 * GET /api/settings
 	 *
 	 * Retrieve all settings
 	 */
-	.get(async (_, res) => {
+	.get(jwtdecode(), validate, async (_, res) => {
 		const rows = await internalSetting.getAll(res.locals.access);
 		res.status(200).send(rows);
 	});
@@ -47,19 +32,15 @@ router
  */
 router
 	.route("/:setting_id")
-	.all(jwtdecode())
 
 	/**
 	 * GET /settings/something
 	 *
 	 * Retrieve a specific setting
 	 */
-	.get(async (req, res) => {
-		const data = validator(settingSchema, {
-			setting_id: req.params.setting_id,
-		});
+	.get(jwtdecode(), validate, async (_, res) => {
 		const row = await internalSetting.get(res.locals.access, {
-			id: data.setting_id,
+			id: res.locals.params.setting_id,
 		});
 		res.status(200).send(row);
 	})
@@ -69,10 +50,11 @@ router
 	 *
 	 * Update and existing setting
 	 */
-	.put(async (req, res) => {
-		const payload = apiValidator(getValidationSchema("/settings/{settingID}", "put"), req.body);
-		payload.id = req.params.setting_id;
-		const result = await internalSetting.update(res.locals.access, payload);
+	.put(jwtdecode(), validate, async (_, res) => {
+		const result = await internalSetting.update(res.locals.access, {
+			...res.locals.body,
+			id: res.locals.params.setting_id,
+		});
 		res.status(200).send(result);
 	});
 

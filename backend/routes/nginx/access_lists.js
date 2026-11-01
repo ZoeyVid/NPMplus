@@ -1,35 +1,8 @@
 import express from "express";
 import internalAccessList from "../../internal/access-list.js";
+import idParam from "../../lib/express/id-param.js";
 import jwtdecode from "../../lib/express/jwt-decode.js";
-import apiValidator from "../../lib/validator/api.js";
-import validator from "../../lib/validator/index.js";
-import { getValidationSchema } from "../../schema/index.js";
-
-const listSchema = {
-	type: "object",
-	additionalProperties: false,
-	properties: {
-		expand: {
-			$ref: "common#/properties/expand",
-			items: { enum: ["owner", "items", "clients"] },
-		},
-	},
-};
-
-const accessListSchema = {
-	type: "object",
-	required: ["list_id"],
-	additionalProperties: false,
-	properties: {
-		list_id: {
-			$ref: "common#/properties/id",
-		},
-		expand: {
-			$ref: "common#/properties/expand",
-			items: { enum: ["items", "clients"] },
-		},
-	},
-};
+import validate from "../../lib/express/validate.js";
 
 const router = express.Router({
 	caseSensitive: true,
@@ -37,23 +10,21 @@ const router = express.Router({
 	mergeParams: true,
 });
 
+router.param("list_id", idParam);
+
 /**
  * /api/nginx/access-lists
  */
 router
 	.route("/")
-	.all(jwtdecode())
 
 	/**
 	 * GET /api/nginx/access-lists
 	 *
 	 * Retrieve all access-lists
 	 */
-	.get(async (req, res) => {
-		const data = validator(listSchema, {
-			expand: typeof req.query.expand === "string" ? req.query.expand.split(",") : null,
-		});
-		const rows = await internalAccessList.getAll(res.locals.access, data.expand);
+	.get(jwtdecode(), validate, async (_, res) => {
+		const rows = await internalAccessList.getAll(res.locals.access, res.locals.query.expand);
 		res.status(200).send(rows);
 	})
 
@@ -62,9 +33,8 @@ router
 	 *
 	 * Create a new access-list
 	 */
-	.post(async (req, res) => {
-		const payload = apiValidator(getValidationSchema("/nginx/access-lists", "post"), req.body);
-		const result = await internalAccessList.create(res.locals.access, payload);
+	.post(jwtdecode(), validate, async (_, res) => {
+		const result = await internalAccessList.create(res.locals.access, res.locals.body);
 		res.status(201).send(result);
 	});
 
@@ -75,21 +45,16 @@ router
  */
 router
 	.route("/:list_id")
-	.all(jwtdecode())
 
 	/**
 	 * GET /api/nginx/access-lists/123
 	 *
 	 * Retrieve a specific access-list
 	 */
-	.get(async (req, res) => {
-		const data = validator(accessListSchema, {
-			list_id: req.params.list_id,
-			expand: typeof req.query.expand === "string" ? req.query.expand.split(",") : null,
-		});
+	.get(jwtdecode(), validate, async (_, res) => {
 		const row = await internalAccessList.get(res.locals.access, {
-			id: Number.parseInt(data.list_id, 10),
-			expand: data.expand,
+			id: Number(res.locals.params.list_id),
+			expand: res.locals.query.expand,
 		});
 		res.status(200).send(row);
 	})
@@ -99,10 +64,11 @@ router
 	 *
 	 * Update and existing access-list
 	 */
-	.put(async (req, res) => {
-		const payload = apiValidator(getValidationSchema("/nginx/access-lists/{listID}", "put"), req.body);
-		payload.id = Number.parseInt(req.params.list_id, 10);
-		const result = await internalAccessList.update(res.locals.access, payload);
+	.put(jwtdecode(), validate, async (_, res) => {
+		const result = await internalAccessList.update(res.locals.access, {
+			...res.locals.body,
+			id: Number(res.locals.params.list_id),
+		});
 		res.status(200).send(result);
 	})
 
@@ -111,9 +77,9 @@ router
 	 *
 	 * Delete and existing access-list
 	 */
-	.delete(async (req, res) => {
+	.delete(jwtdecode(), validate, async (_, res) => {
 		const result = await internalAccessList.delete(res.locals.access, {
-			id: Number.parseInt(req.params.list_id, 10),
+			id: Number(res.locals.params.list_id),
 		});
 		res.status(200).send(result);
 	});

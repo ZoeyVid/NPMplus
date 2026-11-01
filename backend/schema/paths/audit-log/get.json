@@ -11,43 +11,50 @@
 	],
 	"parameters": [
 		{
-			"in": "query",
-			"name": "expand",
-			"description": "Expansions",
-			"schema": {
-				"type": "string",
-				"enum": [
-					"user"
-				]
-			}
-		},
-		{
-			"in": "query",
-			"name": "query",
-			"description": "Search in object type, action and meta",
-			"schema": {
-				"type": "string",
-				"maxLength": 255
-			}
-		},
-		{
-			"in": "query",
-			"name": "page",
-			"description": "Page number starting at 0",
-			"schema": {
-				"type": "integer",
-				"minimum": 0
-			}
-		},
-		{
-			"in": "query",
-			"name": "page_size",
-			"description": "Number of entries per page",
-			"schema": {
-				"type": "integer",
-				"minimum": 1,
-				"maximum": 1000,
-				"default": 25
+			"in": "querystring",
+			"name": "querystring",
+			"content": {
+				"application/x-www-form-urlencoded": {
+					"schema": {
+						"type": "object",
+						"additionalProperties": false,
+						"properties": {
+							"expand": {
+								"description": "Expansions",
+								"type": "array",
+								"uniqueItems": true,
+								"items": {
+									"type": "string",
+									"const": "user"
+								}
+							},
+							"query": {
+								"description": "Search in object type, action and meta",
+								"type": "string",
+								"maxLength": 255
+							},
+							"page": {
+								"description": "Page number starting at 0",
+								"type": "integer",
+								"minimum": 0,
+								"default": 0
+							},
+							"page_size": {
+								"description": "Number of entries per page",
+								"type": "integer",
+								"minimum": 1,
+								"maximum": 1000,
+								"default": 25
+							}
+						}
+					},
+					"encoding": {
+						"expand": {
+							"style": "form",
+							"explode": false
+						}
+					}
+				}
 			}
 		}
 	],

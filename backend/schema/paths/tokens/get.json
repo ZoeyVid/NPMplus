@@ -11,14 +11,24 @@
 	],
 	"parameters": [
 		{
-			"in": "query",
-			"name": "expires_in",
-			"description": "Lifetime of the new token in hours, capped by the TOKEN_MAX_EXPIRY env (in hours, default 1)",
-			"schema": {
-				"type": "integer",
-				"minimum": 1,
-				"default": 1,
-				"example": 720
+			"in": "querystring",
+			"name": "querystring",
+			"content": {
+				"application/x-www-form-urlencoded": {
+					"schema": {
+						"type": "object",
+						"additionalProperties": false,
+						"properties": {
+							"expires_in": {
+								"description": "Lifetime of the new token in hours, capped by the TOKEN_MAX_EXPIRY env (in hours, default 1)",
+								"type": "integer",
+								"minimum": 1,
+								"default": 1,
+								"example": 720
+							}
+						}
+					}
+				}
 			}
 		}
 	],

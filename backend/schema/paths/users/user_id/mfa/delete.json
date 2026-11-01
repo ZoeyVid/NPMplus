@@ -1,0 +1,40 @@
+{
+	"operationId": "adminDisableUserMfa",
+	"summary": "Reset MFA for a user (disables all second factors and backup codes)",
+	"tags": ["users"],
+	"security": [
+		{
+			"cookieAuth": []
+		}
+	],
+	"parameters": [
+		{
+			"in": "path",
+			"name": "user_id",
+			"schema": {
+				"type": "integer",
+				"minimum": 1
+			},
+			"required": true,
+			"description": "User ID or 'me' for yourself",
+			"example": 2
+		}
+	],
+	"responses": {
+		"200": {
+			"content": {
+				"application/json": {
+					"examples": {
+						"default": {
+							"value": true
+						}
+					},
+					"schema": {
+						"type": "boolean"
+					}
+				}
+			},
+			"description": "200 response"
+		}
+	}
+}

@@ -1,8 +1,9 @@
 import express from "express";
 import swaggerUi from "swagger-ui-express";
 import requireLogin from "../lib/express/require-login.js";
+import validate from "../lib/express/validate.js";
 import PACKAGE from "../package.json" with { type: "json" };
-import { getCompiledSchema } from "../schema/index.js";
+import { compiledSchema } from "../schema/index.js";
 
 const router = express.Router({
 	caseSensitive: true,
@@ -18,11 +19,12 @@ router
 	/**
 	 * GET / (Now serves the Swagger UI interface)
 	 */
-	.get(async (req, res) => {
-		const swaggerJSON = await getCompiledSchema();
-		swaggerJSON.info.version = PACKAGE.version;
-		swaggerJSON.servers[0].url = `${req.protocol}://${req.host}/api`;
-		res.status(200).send(swaggerUi.generateHTML(swaggerJSON));
+	.get(validate, (req, res) => {
+		compiledSchema.info.version = PACKAGE.version;
+		compiledSchema.servers[0].url = `${req.protocol}://${req.host}/api`;
+		res.status(200).send(
+			swaggerUi.generateHTML(compiledSchema, { swaggerOptions: { supportedSubmitMethods: [] } }),
+		);
 	});
 
 export default router;
