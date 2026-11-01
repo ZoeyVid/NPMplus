@@ -1,6 +1,7 @@
 import express from "express";
 import errs from "../lib/error.js";
 import requireLogin from "../lib/express/require-login.js";
+import validate from "../lib/express/validate.js";
 import { readSecret } from "../lib/helpers.js";
 import { isSetup } from "../setup.js";
 import auditLogRoutes from "./audit-log.js";
@@ -36,7 +37,7 @@ const isOIDCenabled = Boolean(
  * Health Check
  * GET /api
  */
-router.get(["/api", "/api/"], async (_, res /*, next*/) => {
+router.get("/api", validate, async (_, res /*, next*/) => {
 	res.status(200).send({
 		status: "OK",
 		setup: await isSetup(),
@@ -49,7 +50,7 @@ router.get(["/api", "/api/"], async (_, res /*, next*/) => {
  * Auth Check, used by the nginx auth_request directive
  * GET /api/auth
  */
-router.get("/api/auth", requireLogin(), (_, res) => {
+router.get("/api/auth", requireLogin(), validate, (_, res) => {
 	res.sendStatus(200);
 });
 
@@ -57,10 +58,12 @@ router.get("/api/auth", requireLogin(), (_, res) => {
  * Admin Auth Check, used by the nginx auth_request directive
  * GET /api/auth/admin
  */
-router.get("/api/auth/admin", requireLogin(), (_, res) => {
+router.get("/api/auth/admin", requireLogin(), validate, (_, res) => {
 	res.locals.access.canAdmin();
 	res.sendStatus(200);
 });
+
+router.options(/(?<path>.+)/u, (req, _, next) => next(new errs.ItemNotFoundError(req.params.path)));
 
 router.use("/api/docs", docsRoutes);
 router.use("/api/schema", schemaRoutes);

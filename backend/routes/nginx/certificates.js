@@ -7,51 +7,18 @@ import multer from "multer";
 import dnsPlugins from "../../certbot/dns-plugins.json" with { type: "json" };
 import internalCertificate from "../../internal/certificate.js";
 import errs from "../../lib/error.js";
+import idParam from "../../lib/express/id-param.js";
 import jwtdecode from "../../lib/express/jwt-decode.js";
 import requireLogin from "../../lib/express/require-login.js";
-import apiValidator from "../../lib/validator/api.js";
-import validator from "../../lib/validator/index.js";
-import { getValidationSchema } from "../../schema/index.js";
-
-const listSchema = {
-	type: "object",
-	additionalProperties: false,
-	properties: {
-		expand: {
-			$ref: "common#/properties/expand",
-			items: {
-				enum: [
-					"owner",
-					"proxy_hosts",
-					"redirection_hosts",
-					"dead_hosts",
-					"streams",
-					"mtls_proxy_hosts",
-					"mtls_redirection_hosts",
-					"mtls_dead_hosts",
-					"mtls_streams",
-				],
-			},
-		},
-	},
-};
-
-const certificateSchema = {
-	type: "object",
-	required: ["certificate_id"],
-	additionalProperties: false,
-	properties: {
-		certificate_id: {
-			$ref: "common#/properties/id",
-		},
-	},
-};
+import validate from "../../lib/express/validate.js";
 
 const router = express.Router({
 	caseSensitive: true,
 	strict: true,
 	mergeParams: true,
 });
+
+router.param("certificate_id", idParam);
 
 const downloadLimiter = rateLimit({
 	windowMs: 10 * 60 * 1000,
@@ -72,18 +39,14 @@ const uploadCerts = multer({ storage: multer.memoryStorage(), limits: { fileSize
  */
 router
 	.route("/")
-	.all(jwtdecode())
 
 	/**
 	 * GET /api/nginx/certificates
 	 *
 	 * Retrieve all certificates
 	 */
-	.get(async (req, res) => {
-		const data = validator(listSchema, {
-			expand: typeof req.query.expand === "string" ? req.query.expand.split(",") : null,
-		});
-		const rows = await internalCertificate.getAll(res.locals.access, data.expand);
+	.get(jwtdecode(), validate, async (_, res) => {
+		const rows = await internalCertificate.getAll(res.locals.access, res.locals.query.expand);
 		res.status(200).send(rows);
 	})
 
@@ -92,10 +55,9 @@ router
 	 *
 	 * Create a new certificate
 	 */
-	.post(async (req, res) => {
-		const payload = apiValidator(getValidationSchema("/nginx/certificates", "post"), req.body);
+	.post(jwtdecode(), validate, async (req, res) => {
 		req.setTimeout(900000); // 15 minutes timeout
-		const result = await internalCertificate.create(res.locals.access, payload);
+		const result = await internalCertificate.create(res.locals.access, res.locals.body);
 		res.status(201).send(result);
 	});
 
@@ -104,14 +66,13 @@ router
  */
 router
 	.route("/dns-providers")
-	.all(requireLogin())
 
 	/**
 	 * GET /api/nginx/certificates/dns-providers
 	 *
 	 * Get list of all supported DNS providers
 	 */
-	.get((_, res) => {
+	.get(requireLogin(), validate, (_, res) => {
 		res.status(200).send(
 			Object.entries(dnsPlugins)
 				.map(([id, { name, credentials }]) => ({ id, name, credentials }))
@@ -126,18 +87,16 @@ router
  */
 router
 	.route("/test-http")
-	.all(jwtdecode())
 
 	/**
 	 * POST /api/nginx/certificates/test-http
 	 *
 	 * Test HTTP challenge for domains
 	 */
-	.post(async (req, res) => {
-		const payload = apiValidator(getValidationSchema("/nginx/certificates/test-http", "post"), req.body);
+	.post(jwtdecode(), validate, async (req, res) => {
 		req.setTimeout(60000); // 1 minute timeout
 
-		const result = await internalCertificate.testHttpsChallenge(res.locals.access, payload);
+		const result = await internalCertificate.testHttpsChallenge(res.locals.access, res.locals.body);
 		res.status(200).send(result);
 	});
 
@@ -148,14 +107,13 @@ router
  */
 router
 	.route("/validate")
-	.all(jwtdecode())
 
 	/**
 	 * POST /api/nginx/certificates/validate
 	 *
 	 * Validate certificates
 	 */
-	.post(uploadCerts, (req, res) => {
+	.post(jwtdecode(), validate, uploadCerts, (req, res) => {
 		if (!req.files?.certificate) throw new errs.ValidationError("certificate file is required");
 
 		const result = internalCertificate.validate(res.locals.access, {
@@ -171,19 +129,15 @@ router
  */
 router
 	.route("/:certificate_id")
-	.all(jwtdecode())
 
 	/**
 	 * GET /api/nginx/certificates/123
 	 *
 	 * Retrieve a specific certificate
 	 */
-	.get(async (req, res) => {
-		const data = validator(certificateSchema, {
-			certificate_id: req.params.certificate_id,
-		});
+	.get(jwtdecode(), validate, async (_, res) => {
 		const row = await internalCertificate.get(res.locals.access, {
-			id: Number.parseInt(data.certificate_id, 10),
+			id: Number(res.locals.params.certificate_id),
 		});
 		res.status(200).send(row);
 	})
@@ -193,9 +147,9 @@ router
 	 *
 	 * Update and existing certificate
 	 */
-	.delete(async (req, res) => {
+	.delete(jwtdecode(), validate, async (_, res) => {
 		const result = await internalCertificate.delete(res.locals.access, {
-			id: Number.parseInt(req.params.certificate_id, 10),
+			id: Number(res.locals.params.certificate_id),
 		});
 		res.status(200).send(result);
 	});
@@ -207,18 +161,17 @@ router
  */
 router
 	.route("/:certificate_id/upload")
-	.all(jwtdecode())
 
 	/**
 	 * POST /api/nginx/certificates/123/upload
 	 *
 	 * Upload certificates
 	 */
-	.post(uploadCerts, async (req, res) => {
+	.post(jwtdecode(), validate, uploadCerts, async (req, res) => {
 		if (!req.files?.certificate) throw new errs.ValidationError("certificate file is required");
 
 		const result = await internalCertificate.upload(res.locals.access, {
-			id: Number.parseInt(req.params.certificate_id, 10),
+			id: Number(res.locals.params.certificate_id),
 			files: req.files,
 		});
 		res.status(200).send(result);
@@ -231,17 +184,16 @@ router
  */
 router
 	.route("/:certificate_id/renew")
-	.all(jwtdecode())
 
 	/**
 	 * POST /api/nginx/certificates/123/renew
 	 *
 	 * Renew certificate
 	 */
-	.post(async (req, res) => {
+	.post(jwtdecode(), validate, async (req, res) => {
 		req.setTimeout(900000); // 15 minutes timeout
 		const result = await internalCertificate.renew(res.locals.access, {
-			id: Number.parseInt(req.params.certificate_id, 10),
+			id: Number(res.locals.params.certificate_id),
 		});
 		res.status(200).send(result);
 	});
@@ -253,18 +205,17 @@ router
  */
 router
 	.route("/:certificate_id/download")
-	.all(jwtdecode())
 
 	/**
 	 * GET /api/nginx/certificates/123/download
 	 *
 	 * Download certificate
 	 */
-	.get(downloadLimiter, async (req, res) => {
+	.get(jwtdecode(), validate, downloadLimiter, async (_, res) => {
 		await using dir = await mkdtempDisposable(path.join(tmpdir(), "npm-"));
 		const result = await internalCertificate.download(
 			res.locals.access,
-			{ id: Number.parseInt(req.params.certificate_id, 10) },
+			{ id: Number(res.locals.params.certificate_id) },
 			dir.path,
 		);
 		await new Promise((resolve, reject) =>

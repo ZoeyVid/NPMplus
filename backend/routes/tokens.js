@@ -3,11 +3,7 @@ import { rateLimit } from "express-rate-limit";
 import internalToken from "../internal/token.js";
 import errs from "../lib/error.js";
 import jwtdecode from "../lib/express/jwt-decode.js";
-import apiValidator from "../lib/validator/api.js";
-import validator from "../lib/validator/index.js";
-import { getValidationSchema } from "../schema/index.js";
-
-const refreshSchema = { properties: { expires_in: { type: "integer", minimum: 1 } } };
+import validate from "../lib/express/validate.js";
 
 const router = express.Router({
 	caseSensitive: true,
@@ -35,12 +31,8 @@ router
 	 * We also piggy back on to this method, allowing admins to get tokens
 	 * for services like Job board and Worker.
 	 */
-	.get(jwtdecode(), async (req, res) => {
-		const data = await internalToken.getFreshToken(
-			res.locals.access,
-			false,
-			validator(refreshSchema, { expires_in: req.query.expires_in }),
-		);
+	.get(validate, jwtdecode(), async (_, res) => {
+		const data = await internalToken.getFreshToken(res.locals.access, false, res.locals.query);
 
 		res.cookie("__Host-Http-token", data.token, {
 			signed: true,
@@ -58,13 +50,12 @@ router
 	 *
 	 * Create a new Token
 	 */
-	.post(limiter, async (req, res) => {
+	.post(limiter, validate, async (_, res) => {
 		if (process.env.OIDC_DISABLE_PASSWORD === "true") {
 			throw new errs.PermissionError("Non OIDC login is disabled");
 		}
 
-		const data = apiValidator(getValidationSchema("/tokens", "post"), req.body);
-		const result = await internalToken.getTokenFromEmail(data);
+		const result = await internalToken.getTokenFromEmail(res.locals.body);
 		const { token, ...responseBody } = result;
 
 		if (result.requiresTotp) {
@@ -93,7 +84,7 @@ router
 	 *
 	 * Delete the Token
 	 */
-	.delete((_, res) => {
+	.delete(validate, (_, res) => {
 		res.clearCookie("__Host-Http-token", {
 			httpOnly: true,
 			secure: true,
@@ -115,9 +106,11 @@ router
 	 *
 	 * Verify TOTP code and get full token
 	 */
-	.post(limiter, async (req, res) => {
-		const { code } = apiValidator(getValidationSchema("/tokens/totp", "post"), req.body);
-		const result = await internalToken.verifyTotp(req.signedCookies?.["__Host-Http-challenge_token"], code);
+	.post(limiter, validate, async (req, res) => {
+		const result = await internalToken.verifyTotp(
+			req.signedCookies?.["__Host-Http-challenge_token"],
+			res.locals.body.code,
+		);
 		const { token, ...responseBody } = result;
 
 		res.cookie("__Host-Http-token", token, {
