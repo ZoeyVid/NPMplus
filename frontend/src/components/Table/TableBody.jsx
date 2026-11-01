@@ -31,13 +31,7 @@ function TableBody(props) {
 		return <tbody className="table-tbody">{rows.map(renderRow)}</tbody>;
 	}
 
-	const groups = new Map();
-	for (const row of rows) {
-		const key = groupBy(row.original);
-		const bucket = groups.get(key);
-		if (bucket) bucket.push(row);
-		else groups.set(key, [row]);
-	}
+	const groups = Map.groupBy(rows, (row) => groupBy(row.original));
 	const orderedKeys = [...groups.keys()].sort((a, b) => (a === "" ? 1 : b === "" ? -1 : a.localeCompare(b)));
 	const colSpan = tableInstance.getAllLeafColumns().length;
 
