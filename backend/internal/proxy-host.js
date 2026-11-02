@@ -8,6 +8,25 @@ import internalHost from "./host.js";
 import internalNginx from "./nginx.js";
 import internalProxyHostAccessList from "./proxy-host-access-list.js";
 
+const authProvider = (authRequest) => authRequest?.replace("-send-basic-auth", "");
+
+const hasAuthRequestUpstreamConflict = (host) => {
+	const locations = (host.locations ?? []).filter(
+		({ npmplus_enabled, npmplus_auth_request = "none" }) =>
+			npmplus_enabled !== false && npmplus_auth_request !== "none",
+	);
+	return locations.some((location) => {
+		if (authProvider(host.npmplus_auth_request) === authProvider(location.npmplus_auth_request)) {
+			return Boolean(location.npmplus_auth_request_upstream);
+		}
+		return locations.some(
+			(other) =>
+				authProvider(other.npmplus_auth_request) === authProvider(location.npmplus_auth_request) &&
+				(other.npmplus_auth_request_upstream || "") !== (location.npmplus_auth_request_upstream || ""),
+		);
+	});
+};
+
 const replaceLocationsAndAccessLists = async (trx, proxyHostId, data) => {
 	const insertAccessLists = async (locationId, accessListIds) => {
 		if (accessListIds.length > 0) {
@@ -92,6 +111,9 @@ const internalProxyHost = {
 		for (const item of [thisData, ...(thisData.locations ?? [])]) cleanForwardOptions(item);
 		if (thisData.locations?.some(({ path }) => !path)) {
 			throw new errs.ValidationError("Location paths can not be empty");
+		}
+		if (hasAuthRequestUpstreamConflict(thisData)) {
+			throw new errs.ValidationError("Each auth request provider can only have one upstream");
 		}
 		await internalProxyHostAccessList.validateAccessLists(access, thisData);
 
@@ -186,6 +208,9 @@ const internalProxyHost = {
 		for (const item of [thisData, ...(thisData.locations ?? [])]) cleanForwardOptions(item);
 		if (thisData.locations?.some(({ path }) => !path)) {
 			throw new errs.ValidationError("Location paths can not be empty");
+		}
+		if (hasAuthRequestUpstreamConflict(thisData)) {
+			throw new errs.ValidationError("Each auth request provider can only have one upstream");
 		}
 		await internalProxyHostAccessList.validateAccessLists(access, thisData);
 
