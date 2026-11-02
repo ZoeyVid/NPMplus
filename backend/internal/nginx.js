@@ -286,9 +286,8 @@ const internalNginx = {
 				let effectiveUpstream = "";
 
 				if (
-					(host.npmplus_auth_request === provider ||
-						(provider === "authentik" && host.npmplus_auth_request === "authentik-send-basic-auth")) &&
-					host.npmplus_auth_request_upstream
+					host.npmplus_auth_request === provider ||
+					(provider === "authentik" && host.npmplus_auth_request === "authentik-send-basic-auth")
 				) {
 					effectiveUpstream = host.npmplus_auth_request_upstream;
 				} else {
