@@ -17,6 +17,8 @@ import { intl, T } from "src/locale";
 import { forwardSummary } from "src/modules/Forward";
 import { upstreamUrlPattern } from "src/modules/Validations";
 
+const authProvider = (authRequest) => authRequest?.replace("-send-basic-auth", "");
+
 export function LocationsFields({ initialValues, name = "locations" }) {
 	const nextUiKey = useRef(0);
 	const createUiLocation = (item) => ({
@@ -43,11 +45,30 @@ export function LocationsFields({ initialValues, name = "locations" }) {
 	});
 
 	const [values, setValues] = useState(initialValues.map(createUiLocation));
-	const { setFieldValue } = useFormikContext();
+	const { values: hostValues, setFieldValue } = useFormikContext();
 	const [advVisible, setAdvVisible] = useState([]);
 	const [expanded, setExpanded] = useState([]);
 	const [filter, setFilter] = useState("");
 	const scrollToKey = useRef(null);
+
+	const authRequestUpstreamError = (item) => {
+		const provider = authProvider(item.npmplusAuthRequest);
+		if (!item.npmplusEnabled) return "";
+		if (authProvider(hostValues.npmplusAuthRequest) === provider) {
+			if (!item.npmplusAuthRequestUpstream) return "";
+		} else if (
+			new Set(
+				values
+					.filter(
+						(location) => location.npmplusEnabled && authProvider(location.npmplusAuthRequest) === provider,
+					)
+					.map((location) => location.npmplusAuthRequestUpstream),
+			).size < 2
+		) {
+			return "";
+		}
+		return intl.formatMessage({ id: "proxy-host.location-auth-request-upstream-error" });
+	};
 
 	const toggle = (key, list, set) => set(list.includes(key) ? list.filter((i) => i !== key) : [...list, key]);
 
@@ -602,6 +623,9 @@ export function LocationsFields({ initialValues, name = "locations" }) {
 														maxLength={255}
 														pattern="^https?://(([^\s\/:]+|\[[a-fA-F0-9:]+\]):[0-9]+|cu_[^\s\/:]+)$"
 														value={item.npmplusAuthRequestUpstream}
+														ref={(input) =>
+															input?.setCustomValidity(authRequestUpstreamError(item))
+														}
 														onChange={(e) =>
 															handleChange(
 																idx,
@@ -617,6 +641,11 @@ export function LocationsFields({ initialValues, name = "locations" }) {
 															<T id="error.invalid-upstream-url" />
 														</div>
 													) : null}
+													{authRequestUpstreamError(item) && (
+														<div className="invalid-feedback d-block">
+															{authRequestUpstreamError(item)}
+														</div>
+													)}
 												</span>
 											</label>
 										</div>
