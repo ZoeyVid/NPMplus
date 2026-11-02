@@ -253,6 +253,7 @@
 	"proxy-host.forward-host": "Hostname / IP Doorsturen",
 	"proxy-host.forward-host-path": "Hostname / IP / Path Doorsturen",
 	"proxy-host.global-access-lists": "Globale toegangslijst",
+	"proxy-host.location-auth-request-upstream-error": "Per auth-request-provider is maar één upstream mogelijk: als de host de provider gebruikt, mogen de locaties geen eigen upstream hebben, anders hebben alle actieve locaties met deze provider dezelfde upstream nodig.",
 	"proxy-host.location-no-trailing-slash-warning": "Een locatie zonder afsluitende schuine streep wordt gekoppeld als een bytevoorvoegsel en niet als een padsegment, wat kan leiden tot overmatching en/of pad-traversal. Voeg een afsluitende schuine streep toe, tenzij u voorvoegselmatching wenst.",
 	"proxy-host.no-directory": "Geen groep",
 	"proxy-hosts": "Proxy Hosts",
