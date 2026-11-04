@@ -10,10 +10,9 @@ function LocalePicker({ menuAlign }) {
 				<Flag countryCode={getFlagCodeForLocale()} />
 			</button>
 			<div
-				className={cn("dropdown-menu scroll-y", {
+				className={cn("dropdown-menu dropdown-menu-scrollable scroll-y", {
 					"dropdown-menu-end": menuAlign === "end",
 				})}
-				style={{ maxHeight: "50vh" }}
 			>
 				{localeOptions.map((item) => (
 					<button type="button" className="dropdown-item" key={item} onClick={() => changeLocale(item)}>
