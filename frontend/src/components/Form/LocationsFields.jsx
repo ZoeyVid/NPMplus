@@ -200,10 +200,9 @@ export function LocationsFields({ initialValues, name = "locations" }) {
 							node.scrollIntoView({ block: "nearest" });
 						}
 					}}
-					className={cn("card", "card-active", "mb-2", !matchesFilter(item) && "d-none")}
-					style={{ "--tblr-card-border-color": "var(--tblr-border-color)" }}
+					className={cn("card card-active border-light-subtle mb-2", !matchesFilter(item) && "d-none")}
 				>
-					<div className={cn("card-header", "p-2", !isOpen(item) && "border-bottom-0")}>
+					<div className={cn("card-header p-2 border-light-subtle", !isOpen(item) && "border-bottom-0")}>
 						<button
 							type="button"
 							className="d-flex flex-fill align-self-stretch align-items-center overflow-hidden p-0 text-start text-body bg-transparent border-0"
