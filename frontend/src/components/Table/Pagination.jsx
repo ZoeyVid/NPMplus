@@ -50,7 +50,6 @@ function Pagination({ top, total, page, pageSize, onChange }) {
 						name="page"
 						type="number"
 						className="form-control form-control-sm text-center"
-						style={{ width: "5rem" }}
 						min={1}
 						max={pages}
 						required

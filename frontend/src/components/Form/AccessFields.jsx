@@ -179,12 +179,6 @@ export function AccessFields({
 							defaultValue={createOption(initialAccessListType)}
 							options={typeOptions()}
 							components={{ Option: TypeOption }}
-							styles={{
-								option: (base) => ({
-									...base,
-									height: "100%",
-								}),
-							}}
 							onChange={(e) => {
 								const value = e.type;
 								setAclValue(value);
@@ -211,12 +205,6 @@ export function AccessFields({
 								}
 								options={options}
 								components={{ Option }}
-								styles={{
-									option: (base) => ({
-										...base,
-										height: "100%",
-									}),
-								}}
 								onChange={(e) => {
 									onAccessListChange(e.meta, idx);
 								}}

@@ -128,12 +128,6 @@ export function SSLCertificateField({
 								}
 								options={options}
 								components={{ Option }}
-								styles={{
-									option: (base) => ({
-										...base,
-										height: "100%",
-									}),
-								}}
 								onChange={handleChange}
 								isDisabled={v?.udpForwarding}
 							/>
@@ -164,12 +158,6 @@ export function SSLCertificateField({
 								}
 								options={mtlsOptions}
 								components={{ Option }}
-								styles={{
-									option: (base) => ({
-										...base,
-										height: "100%",
-									}),
-								}}
 								onChange={(newValue) => {
 									void setFieldValue(mtlsName, newValue?.value);
 									if (!(newValue?.value > 0)) {
