@@ -23,11 +23,7 @@ export function StatusFormatter({ enabled, nginxOnline, nginxErr }) {
 
 	if (enabled && !nginxOnline) {
 		return (
-			<button
-				type="button"
-				className="p-0 border-0 bg-transparent"
-				onClick={() => showNginxErrorModal(nginxErr)}
-			>
+			<button type="button" className="p-0 border-0 bg-transparent" onClick={() => showNginxErrorModal(nginxErr)}>
 				{status}
 			</button>
 		);
