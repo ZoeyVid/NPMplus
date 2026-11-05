@@ -3,7 +3,10 @@
 	"description": "Health object",
 	"additionalProperties": false,
 	"required": [
-		"status"
+		"status",
+		"setup",
+		"password",
+		"oidc"
 	],
 	"properties": {
 		"status": {

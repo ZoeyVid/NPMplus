@@ -4,6 +4,7 @@
 	"tags": [
 		"tokens"
 	],
+	"security": [],
 	"requestBody": {
 		"description": "Credentials Payload",
 		"required": true,

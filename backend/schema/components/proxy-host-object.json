@@ -67,7 +67,7 @@
 			"default": 0,
 			"example": 8080
 		},
-		"npmplus_access_list_ids":{
+		"npmplus_access_list_ids": {
 			"$ref": "../common.json#/properties/npmplus_access_list_ids"
 		},
 		"npmplus_access_list_type": {
@@ -252,7 +252,7 @@
 						"type": "string",
 						"default": ""
 					},
-					"npmplus_access_list_ids":{
+					"npmplus_access_list_ids": {
 						"$ref": "../common.json#/properties/npmplus_access_list_ids"
 					},
 					"npmplus_access_list_type": {
