@@ -5,7 +5,7 @@ import { useState } from "react";
 import { Alert } from "react-bootstrap";
 import Modal from "react-bootstrap/Modal";
 import { createCertificate, testHttpCertificate } from "src/api/backend";
-import { Button, DomainNamesField } from "src/components";
+import { Button, CommandOutput, DomainNamesField } from "src/components";
 import { T } from "src/locale";
 import EasyModal from "src/modules/easyModal";
 import { showObjectSuccess } from "src/notifications";
@@ -32,13 +32,7 @@ const HTTPCertificateModal = EasyModal.create(({ visible, remove }) => {
 			remove();
 		} catch (err) {
 			if (err.payload?.error?.output) {
-				setErrorMsg(
-					<div className="w-100">
-						<pre>
-							<code>{err.payload.error.output}</code>
-						</pre>
-					</div>,
-				);
+				setErrorMsg(<CommandOutput output={err.payload.error.output} />);
 			} else {
 				setErrorMsg(<T id={err.message} />);
 			}

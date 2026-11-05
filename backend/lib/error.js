@@ -69,6 +69,7 @@ const errs = {
 	CommandError: class extends Error {
 		name = this.constructor.name;
 		public = false;
+		status = 400;
 	},
 };
 

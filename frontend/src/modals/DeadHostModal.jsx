@@ -4,6 +4,7 @@ import { Alert } from "react-bootstrap";
 import Modal from "react-bootstrap/Modal";
 import {
 	Button,
+	CommandOutput,
 	DirectoryField,
 	DomainNamesField,
 	Loading,
@@ -48,13 +49,7 @@ const DeadHostModal = EasyModal.create(({ id, visible, remove }) => {
 					void setFieldValue("certificateId", err.payload.error.certificate_id);
 				}
 				if (err.payload?.error?.output) {
-					setErrorMsg(
-						<div className="w-100">
-							<pre>
-								<code>{err.payload.error.output}</code>
-							</pre>
-						</div>,
-					);
+					setErrorMsg(<CommandOutput output={err.payload.error.output} />);
 				} else {
 					setErrorMsg(<T id={err.message} />);
 				}
