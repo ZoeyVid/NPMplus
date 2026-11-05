@@ -12,6 +12,7 @@ function Button({
 	fullWidth,
 	isLoading,
 	disabled,
+	autoFocus,
 }) {
 	const cns = cn(
 		"btn",
@@ -25,7 +26,14 @@ function Button({
 	);
 
 	return (
-		<button type={type || "button"} className={cns} onClick={() => !isLoading && onClick?.()} disabled={disabled}>
+		<button
+			type={type || "button"}
+			className={cns}
+			onClick={() => !isLoading && onClick?.()}
+			disabled={disabled}
+			// biome-ignore lint/a11y/noAutofocus: only used for the initial focus inside modals
+			autoFocus={autoFocus}
+		>
 			{children}
 		</button>
 	);
