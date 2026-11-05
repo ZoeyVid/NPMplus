@@ -74,21 +74,24 @@ const internalHost = {
 	 * @param   {Integer}  [ignore_id]     Must be supplied if type was also supplied
 	 * @returns {Promise}
 	 */
-	isHostnameTaken: async (hostname, ignore_type, ignore_id) => ({
-		hostname,
-		is_taken: (
-			await Promise.all(
-				Object.entries({ proxy: proxyHostModel, redirection: redirectionHostModel, dead: deadHostModel }).map(
-					async ([type, model]) =>
-						checkHostnameRecordsTaken(
-							hostname,
-							await model.query().where("enabled", 1),
-							ignore_type === type && ignore_id ? ignore_id : 0,
-						),
-				),
-			)
-		).includes(true),
-	}),
+	isHostnameTaken: async (hostname, ignore_type, ignore_id) => {
+		for (const [type, model] of Object.entries({
+			proxy: proxyHostModel,
+			redirection: redirectionHostModel,
+			dead: deadHostModel,
+		})) {
+			if (
+				checkHostnameRecordsTaken(
+					hostname,
+					await model.query().where("enabled", 1),
+					ignore_type === type && ignore_id ? ignore_id : 0,
+				)
+			) {
+				return { hostname, is_taken: true };
+			}
+		}
+		return { hostname, is_taken: false };
+	},
 };
 
 export default internalHost;

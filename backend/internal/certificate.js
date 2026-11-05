@@ -93,7 +93,7 @@ const internalCertificate = {
 			const certificates = await certificateModel.query().where("provider", "letsencrypt");
 
 			if (certificates && certificates.length > 0) {
-				const updatePromises = certificates.map(async (certificate) => {
+				for (const certificate of certificates) {
 					try {
 						const certInfo = await internalCertificate.getCertificateInfoFromFile(
 							`${internalCertificate.getLiveCertPath(certificate.id)}/fullchain.pem`,
@@ -111,9 +111,8 @@ const internalCertificate = {
 						// Don't want to stop the train here, just log the error
 						logger.error(err);
 					}
-				});
+				}
 
-				await Promise.all(updatePromises);
 				logger.info("Renew Complete");
 			}
 		} catch (err) {
@@ -848,16 +847,12 @@ const internalCertificate = {
 			encoding: "utf8",
 		});
 
-		const results = [];
-
-		for (const domain of payload.domains) {
-			results.push({
+		return Promise.all(
+			payload.domains.map(async (domain) => ({
 				domain,
 				status: await internalCertificate.performTestForDomain(domain),
-			});
-		}
-
-		return results;
+			})),
+		);
 	},
 
 	performTestForDomain: async (domain) => {

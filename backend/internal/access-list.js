@@ -44,12 +44,10 @@ const internalAccessList = {
 			throw new errs.ValidationError("Access list rules need to end with exactly one all rule");
 		}
 
-		const items = await Promise.all(
-			(data.items ?? []).map(async (item) => ({
-				username: item.username,
-				password: await bcrypt.hash(item.password, 5),
-			})),
-		);
+		const items = [];
+		for (const item of data.items ?? []) {
+			items.push({ username: item.username, password: await bcrypt.hash(item.password, 5) });
+		}
 
 		const row = await accessListModel.transaction(async (trx) => {
 			const insertedRow = await accessListModel.query(trx).insertAndFetch({
@@ -60,22 +58,14 @@ const internalAccessList = {
 			});
 
 			// Items
-			await Promise.all(
-				items.map((item) => accessListAuthModel.query(trx).insert({ access_list_id: insertedRow.id, ...item })),
-			);
+			for (const item of items) {
+				await accessListAuthModel.query(trx).insert({ access_list_id: insertedRow.id, ...item });
+			}
 
 			// Clients
-			await Promise.all(
-				(data.clients ?? [])
-					.filter((client) => client.address)
-					.map((client) =>
-						accessListClientModel.query(trx).insert({
-							access_list_id: insertedRow.id,
-							address: client.address,
-							directive: client.directive,
-						}),
-					),
-			);
+			for (const { address, directive } of (data.clients ?? []).filter((client) => client.address)) {
+				await accessListClientModel.query(trx).insert({ access_list_id: insertedRow.id, address, directive });
+			}
 
 			return insertedRow;
 		});
@@ -132,11 +122,10 @@ const internalAccessList = {
 			throw new errs.ValidationError("Access list rules need to end with exactly one all rule");
 		}
 
-		const items = await Promise.all(
-			(data.items ?? [])
-				.filter((item) => item.password)
-				.map(async (item) => ({ username: item.username, password: await bcrypt.hash(item.password, 5) })),
-		);
+		const items = [];
+		for (const item of data.items ?? []) {
+			if (item.password) items.push({ username: item.username, password: await bcrypt.hash(item.password, 5) });
+		}
 
 		await accessListModel.transaction(async (trx) => {
 			// patch name if specified
@@ -160,26 +149,18 @@ const internalAccessList = {
 						data.items.filter((item) => !item.password).map((item) => item.username),
 					);
 				// Add new items
-				await Promise.all(
-					items.map((item) => accessListAuthModel.query(trx).insert({ access_list_id: data.id, ...item })),
-				);
+				for (const item of items) {
+					await accessListAuthModel.query(trx).insert({ access_list_id: data.id, ...item });
+				}
 			}
 
 			// Check for clients and add/update/remove them
 			if (data.clients) {
 				await accessListClientModel.query(trx).delete().where("access_list_id", data.id);
 
-				await Promise.all(
-					data.clients
-						.filter((client) => client.address)
-						.map((client) =>
-							accessListClientModel.query(trx).insert({
-								access_list_id: data.id,
-								address: client.address,
-								directive: client.directive,
-							}),
-						),
-				);
+				for (const { address, directive } of data.clients.filter((client) => client.address)) {
+					await accessListClientModel.query(trx).insert({ access_list_id: data.id, address, directive });
+				}
 			}
 		});
 
