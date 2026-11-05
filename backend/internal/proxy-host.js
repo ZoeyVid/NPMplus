@@ -96,12 +96,10 @@ const internalProxyHost = {
 		}
 
 		// Get a list of the domain names and check each of them against existing records
-		const checkResults = await Promise.all(
-			thisData.domain_names.map((domainName) => internalHost.isHostnameTaken(domainName)),
-		);
-		const taken = checkResults.find((result) => result.is_taken);
-		if (taken) {
-			throw new errs.ValidationError(`${taken.hostname} is already in use`);
+		for (const domainName of thisData.domain_names) {
+			if ((await internalHost.isHostnameTaken(domainName)).is_taken) {
+				throw new errs.ValidationError(`${domainName} is already in use`);
+			}
 		}
 
 		// At this point the domains should have been checked
@@ -192,14 +190,10 @@ const internalProxyHost = {
 			if (hasDuplicateDomains(thisData.domain_names)) {
 				throw new errs.ValidationError("Domain names need to be unique");
 			}
-			const checkResults = await Promise.all(
-				thisData.domain_names.map((domainName) =>
-					internalHost.isHostnameTaken(domainName, "proxy", thisData.id),
-				),
-			);
-			const taken = checkResults.find((result) => result.is_taken);
-			if (taken) {
-				throw new errs.ValidationError(`${taken.hostname} is already in use`);
+			for (const domainName of thisData.domain_names) {
+				if ((await internalHost.isHostnameTaken(domainName, "proxy", thisData.id)).is_taken) {
+					throw new errs.ValidationError(`${domainName} is already in use`);
+				}
 			}
 		}
 
@@ -360,12 +354,10 @@ const internalProxyHost = {
 			throw new errs.ValidationError("Host is already enabled");
 		}
 
-		const checkResults = await Promise.all(
-			row.domain_names.map((domainName) => internalHost.isHostnameTaken(domainName)),
-		);
-		const taken = checkResults.find((result) => result.is_taken);
-		if (taken) {
-			throw new errs.ValidationError(`${taken.hostname} is already in use by an active host`);
+		for (const domainName of row.domain_names) {
+			if ((await internalHost.isHostnameTaken(domainName)).is_taken) {
+				throw new errs.ValidationError(`${domainName} is already in use by an active host`);
+			}
 		}
 
 		row.enabled = 1;

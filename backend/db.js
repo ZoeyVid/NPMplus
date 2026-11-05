@@ -1,5 +1,8 @@
 import knex from "knex";
+import { Model } from "objection";
 import { configGet, isMysql } from "./lib/config.js";
+
+Model.concurrency = 1;
 
 let instance = null;
 
