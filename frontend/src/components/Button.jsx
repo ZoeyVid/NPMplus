@@ -29,8 +29,9 @@ function Button({
 		<button
 			type={type || "button"}
 			className={cns}
-			onClick={() => !isLoading && onClick?.()}
-			disabled={disabled}
+			onClick={(e) => (isLoading ? e.preventDefault() : onClick?.())}
+			disabled={disabled && !isLoading}
+			aria-disabled={isLoading}
 			// biome-ignore lint/a11y/noAutofocus: only used for the initial focus inside modals
 			autoFocus={autoFocus}
 		>
