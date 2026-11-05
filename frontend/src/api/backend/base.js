@@ -18,7 +18,15 @@ function buildBody(data) {
 }
 
 async function processWrite(url, response) {
-	if (!url.startsWith("/tokens") && !["/users/setup", "/users/me/sessions"].includes(url)) {
+	if (
+		!url.startsWith("/tokens") &&
+		![
+			"/users/setup",
+			"/users/me/sessions",
+			"/nginx/certificates/validate",
+			"/nginx/certificates/test-http",
+		].includes(url)
+	) {
 		await queryClient.invalidateQueries();
 	}
 	return processResponse(response);

@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { Alert } from "react-bootstrap";
 import Modal from "react-bootstrap/Modal";
 import { renewCertificate } from "src/api/backend";
-import { Button, Loading } from "src/components";
+import { Button, CommandOutput, Loading } from "src/components";
 import { useCertificate } from "src/hooks";
 import { T } from "src/locale";
 import EasyModal from "src/modules/easyModal";
@@ -30,13 +30,7 @@ const RenewCertificateModal = EasyModal.create(({ id, visible, remove }) => {
 				remove();
 			} catch (err) {
 				if (err.payload?.error?.output) {
-					setErrorMsg(
-						<div className="w-100">
-							<pre>
-								<code>{err.payload.error.output}</code>
-							</pre>
-						</div>,
-					);
+					setErrorMsg(<CommandOutput output={err.payload.error.output} />);
 				} else {
 					setErrorMsg(<T id={err.message} />);
 				}
