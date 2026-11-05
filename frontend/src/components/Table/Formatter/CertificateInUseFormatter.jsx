@@ -61,7 +61,7 @@ export function CertificateInUseFormatter({ proxyHosts, redirectionHosts, deadHo
 	);
 
 	return (
-		<OverlayTrigger trigger={["hover", "focus"]} placement="bottom" overlay={popover}>
+		<OverlayTrigger placement="bottom" overlay={popover}>
 			<button type="button" className="p-0 border-0 bg-transparent">
 				<TrueFalseFormatter value trueLabel="certificate.in-use" />
 			</button>

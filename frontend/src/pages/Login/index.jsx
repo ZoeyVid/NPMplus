@@ -1,6 +1,6 @@
 import { IconEye, IconEyeOff } from "@tabler/icons-react";
 import { ErrorMessage, Field, Form, Formik } from "formik";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import Alert from "react-bootstrap/Alert";
 import { Button, LocalePicker, Page, ThemeSwitcher } from "src/components";
 import { useAuthState } from "src/context";
@@ -14,7 +14,6 @@ const redirectToOIDC = () => {
 };
 
 function TotpForm({ formErr, setFormErr }) {
-	const codeRef = useRef(null);
 	const [showCode, setShowCode] = useState(false);
 	const { submitTotp, cancelTotp } = useAuthState();
 
@@ -28,10 +27,6 @@ function TotpForm({ formErr, setFormErr }) {
 			if (err.message === "error.invalid-challenge") cancelTotp();
 		}
 	};
-
-	useEffect(() => {
-		codeRef.current?.focus();
-	});
 
 	return (
 		<>
@@ -53,7 +48,7 @@ function TotpForm({ formErr, setFormErr }) {
 										<div className="input-group input-group-flat">
 											<input
 												{...field}
-												ref={codeRef}
+												autoFocus
 												type={showCode || !field.value ? "text" : "password"}
 												autoComplete="one-time-code"
 												required
@@ -117,7 +112,6 @@ function TotpForm({ formErr, setFormErr }) {
 }
 
 function PasswordForm({ formErr, setFormErr }) {
-	const emailRef = useRef(null);
 	const [showPassword, setShowPassword] = useState(false);
 	const { login } = useAuthState();
 	const health = useHealth();
@@ -132,12 +126,8 @@ function PasswordForm({ formErr, setFormErr }) {
 	};
 
 	useEffect(() => {
-		if (health.data?.password === false) {
-			if (getCookie("__Host-npmplus_oidc_no_redirect") !== "true") {
-				redirectToOIDC();
-			}
-		} else {
-			emailRef.current?.focus();
+		if (health.data?.password === false && getCookie("__Host-npmplus_oidc_no_redirect") !== "true") {
+			redirectToOIDC();
 		}
 		window.cookieStore.delete("__Host-npmplus_oidc_no_redirect");
 	}, [health.data?.password]);
@@ -165,7 +155,7 @@ function PasswordForm({ formErr, setFormErr }) {
 											<T id="email-address" />
 											<input
 												{...field}
-												ref={emailRef}
+												autoFocus
 												type="email"
 												autoComplete="username"
 												required

@@ -20,6 +20,9 @@
 		"enabled": true,
 		"rules": {
 			"preset": "all",
+			"a11y": {
+				"noAutofocus": "off"
+			},
 			"complexity": {
 				"noExcessiveCognitiveComplexity": "off",
 				"noExcessiveLinesPerFunction": "off",

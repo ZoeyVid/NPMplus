@@ -4,25 +4,18 @@ import { useThemeState } from "src/context";
 import { intl } from "src/locale";
 
 function ThemeSwitcher({ className }) {
-	const { setTheme } = useThemeState();
+	const { theme, setTheme } = useThemeState();
+	const dark = theme === "dark";
 
 	return (
 		<div className={cn("d-print-none", "d-inline-block", className)}>
 			<button
 				type="button"
-				className="btn btn-sm btn-ghost hide-theme-dark"
-				title={intl.formatMessage({ id: "user.switch-dark" })}
-				onClick={() => setTheme("dark")}
+				className="btn btn-sm btn-ghost"
+				title={intl.formatMessage({ id: dark ? "user.switch-light" : "user.switch-dark" })}
+				onClick={() => setTheme(dark ? "light" : "dark")}
 			>
-				<IconMoon width={24} />
-			</button>
-			<button
-				type="button"
-				className="btn btn-sm btn-ghost hide-theme-light"
-				title={intl.formatMessage({ id: "user.switch-light" })}
-				onClick={() => setTheme("light")}
-			>
-				<IconSun width={24} />
+				{dark ? <IconSun width={24} /> : <IconMoon width={24} />}
 			</button>
 		</div>
 	);

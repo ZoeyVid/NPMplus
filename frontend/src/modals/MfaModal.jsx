@@ -189,6 +189,7 @@ const MfaModal = EasyModal.create(({ id, visible, close, formRef }) => {
 											<div className="input-group input-group-flat">
 												<input
 													{...field}
+													autoFocus
 													type={showCode || !field.value ? "text" : "password"}
 													inputMode="numeric"
 													autoComplete="one-time-code"
@@ -287,6 +288,7 @@ const MfaModal = EasyModal.create(({ id, visible, close, formRef }) => {
 											<div className="input-group input-group-flat">
 												<input
 													{...field}
+													autoFocus
 													type={showCode || !field.value ? "text" : "password"}
 													autoComplete="one-time-code"
 													required
@@ -364,6 +366,7 @@ const MfaModal = EasyModal.create(({ id, visible, close, formRef }) => {
 											<div className="input-group input-group-flat">
 												<input
 													{...field}
+													autoFocus
 													type={showCode || !field.value ? "text" : "password"}
 													autoComplete="one-time-code"
 													required
