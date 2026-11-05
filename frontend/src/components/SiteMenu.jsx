@@ -161,14 +161,11 @@ export function SiteMenu() {
 	const { data: user } = useUser("me");
 	const { pathname } = useLocation();
 
-	const closeMenu = () =>
-		setTimeout(() => {
-			const navbarToggler = document.querySelector(".navbar-toggler");
-			const navbarMenu = document.querySelector("#navbar-menu");
-			if (navbarToggler && navbarMenu?.classList.contains("show")) {
-				navbarToggler.click();
-			}
-		}, 300);
+	const closeMenu = () => {
+		const navbarToggler = document.querySelector(".navbar-toggler");
+		const navbarMenu = document.querySelector("#navbar-menu");
+		if (navbarToggler && navbarMenu?.classList.contains("show")) navbarToggler.click();
+	};
 
 	return (
 		<nav className="navbar-expand-lg">

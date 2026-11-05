@@ -47,7 +47,7 @@ const DeleteConfirmModal = EasyModal.create(
 					</div>
 				</Modal.Body>
 				<Modal.Footer>
-					<Button onClick={remove} disabled={isSubmitting}>
+					<Button onClick={remove} disabled={isSubmitting} autoFocus>
 						<T id="cancel" />
 					</Button>
 					<Button

@@ -7,6 +7,7 @@ import "@tabler/core";
 import "@tabler/core/dist/css/tabler.min.css";
 import "@tabler/core/dist/css/tabler-themes.min.css";
 import "@tabler/core/dist/css/tabler-flags.min.css";
+import "src/main.css";
 
 const root = ReactDOM.createRoot(document.querySelector("#root"), {
 	onUncaughtError: (error) =>

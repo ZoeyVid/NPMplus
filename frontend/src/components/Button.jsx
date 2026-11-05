@@ -12,6 +12,7 @@ function Button({
 	fullWidth,
 	isLoading,
 	disabled,
+	autoFocus,
 }) {
 	const cns = cn(
 		"btn",
@@ -25,7 +26,13 @@ function Button({
 	);
 
 	return (
-		<button type={type || "button"} className={cns} onClick={() => !isLoading && onClick?.()} disabled={disabled}>
+		<button
+			type={type || "button"}
+			className={cns}
+			onClick={() => !isLoading && onClick?.()}
+			disabled={disabled}
+			autoFocus={autoFocus}
+		>
 			{children}
 		</button>
 	);

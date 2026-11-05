@@ -1,6 +1,7 @@
-import { flexRender } from "@tanstack/react-table";
 import { Fragment } from "react";
 import { EmptyRow } from "./EmptyRow";
+
+const Cell = ({ cell }) => cell.column.columnDef.cell(cell.getContext());
 
 function TableBody(props) {
 	const { tableInstance, extraStyles, emptyState, groupBy, renderGroupLabel } = props;
@@ -20,7 +21,7 @@ function TableBody(props) {
 				const { className } = cell.column.columnDef.meta ?? {};
 				return (
 					<td key={cell.id} className={className}>
-						{flexRender(cell.column.columnDef.cell, cell.getContext())}
+						<Cell cell={cell} />
 					</td>
 				);
 			})}
