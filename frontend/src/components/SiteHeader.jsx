@@ -29,10 +29,11 @@ export function SiteHeader() {
 				<div className="navbar-brand navbar-brand-autodark pe-0 pe-md-3">
 					<NavLink to="/">
 						<img
-							src="/images/logo-no-text.svg"
+							src="/icon.svg"
 							width={40}
 							height={40}
-							className="navbar-brand-image me-3"
+							className="navbar-brand-image object-fit-cover me-3"
+							style={{ aspectRatio: "520 / 600" }}
 							alt="Logo"
 						/>
 						NPMplus

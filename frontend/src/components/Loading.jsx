@@ -5,7 +5,7 @@ export function Loading({ label, noLogo }) {
 		<div className="empty text-center">
 			{noLogo ? null : (
 				<div className="mb-3">
-					<img src="/images/logo-no-text.svg" width={90} alt="" />
+					<img src="/icon.svg" width={100} alt="" />
 				</div>
 			)}
 			<div className="text-secondary text-shimmer mb-3">{label || <T id="loading" />}</div>
