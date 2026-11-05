@@ -207,6 +207,9 @@ const PermissionsModal = EasyModal.create(({ id, visible, remove }) => {
 								</div>
 								{!isAdmin(data?.roles) && (
 									<>
+										<Alert variant="warning">
+											<T id="permissions.manage-warning" />
+										</Alert>
 										<div className="mb-3">
 											<div className="form-label">
 												<T id="proxy-hosts" />
