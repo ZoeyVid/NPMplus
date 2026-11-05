@@ -2,6 +2,7 @@
 	"operationId": "loginWithTotp",
 	"summary": "Verify TOTP code and get full token",
 	"tags": ["tokens"],
+	"security": [],
 	"requestBody": {
 		"description": "totp Challenge Payload",
 		"required": true,

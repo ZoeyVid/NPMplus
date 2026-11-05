@@ -4,6 +4,7 @@
 	"tags": [
 		"public"
 	],
+	"security": [],
 	"responses": {
 		"302": {
 			"description": "Redirect to the OIDC provider"
