@@ -243,6 +243,7 @@
 	"password.show": "Passwort anzeigen",
 	"permissions.hidden": "Versteckt",
 	"permissions.manage": "Verwalten",
+	"permissions.manage-warning": "Wer Hosts oder Streams verwalten darf, kann unabhängig von den übrigen Berechtigungen beliebige Befehle im Container ausführen, alle Daten samt Datenbank und privaten Schlüsseln auslesen, sich Admin-Rechte verschaffen, Domains anderer Hosts übernehmen und NPMplus lahmlegen. Vergib das nur an Personen, denen du vertraust.",
 	"permissions.view": "Nur anzeigen",
 	"permissions.visibility.all": "Alle Elemente",
 	"permissions.visibility.title": "Objektsichtbarkeit",

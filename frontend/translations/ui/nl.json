@@ -243,6 +243,7 @@
 	"password.show": "Wachtwoord weergeven",
 	"permissions.hidden": "Verborgen",
 	"permissions.manage": "Beheren",
+	"permissions.manage-warning": "Wie hosts of streams mag beheren, kan ongeacht de overige rechten willekeurige opdrachten in de container uitvoeren, alle gegevens inclusief de database en privésleutels uitlezen, zich beheerdersrechten verschaffen, domeinen van andere hosts overnemen en NPMplus onbruikbaar maken. Geef dit alleen aan personen die je vertrouwt.",
 	"permissions.view": "Alleen weergeven",
 	"permissions.visibility.all": "Alle items",
 	"permissions.visibility.title": "Zichtbaarheid",
