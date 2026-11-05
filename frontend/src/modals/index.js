@@ -7,6 +7,7 @@ export * from "./DNSCertificateModal";
 export * from "./EventDetailsModal";
 export * from "./HTTPCertificateModal";
 export * from "./MfaModal";
+export * from "./NginxErrorModal";
 export * from "./PermissionsModal";
 export * from "./ProxyHostModal";
 export * from "./ReachabilityModal";

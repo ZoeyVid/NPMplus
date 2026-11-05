@@ -7,6 +7,7 @@ import Modal from "react-bootstrap/Modal";
 import {
 	AccessFields,
 	Button,
+	CommandOutput,
 	DirectoryField,
 	DomainNamesField,
 	Loading,
@@ -67,13 +68,7 @@ const ProxyHostModal = EasyModal.create(({ id, isClone, visible, remove }) => {
 					void setFieldValue("certificateId", err.payload.error.certificate_id);
 				}
 				if (err.payload?.error?.output) {
-					setErrorMsg(
-						<div className="w-100">
-							<pre>
-								<code>{err.payload.error.output}</code>
-							</pre>
-						</div>,
-					);
+					setErrorMsg(<CommandOutput output={err.payload.error.output} />);
 				} else {
 					setErrorMsg(<T id={err.message} />);
 				}

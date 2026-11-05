@@ -1,11 +1,11 @@
-import { IconCopy, IconEye, IconEyeOff } from "@tabler/icons-react";
+import { IconEye, IconEyeOff } from "@tabler/icons-react";
 import { ErrorMessage, Field, Form, Formik } from "formik";
 import { QRCodeSVG } from "qrcode.react";
 import { useCallback, useEffect, useState } from "react";
 import { Alert } from "react-bootstrap";
 import Modal from "react-bootstrap/Modal";
 import { disableTotp, enableTotp, getMfaStatus, regenerateBackupCodes, startTotpSetup } from "src/api/backend";
-import { Button } from "src/components";
+import { Button, CopyButton } from "src/components";
 import { T } from "src/locale";
 import EasyModal from "src/modules/easyModal";
 import { validateString } from "src/modules/Validations";
@@ -174,14 +174,7 @@ const MfaModal = EasyModal.create(({ id, visible, remove }) => {
 								onClick={(e) => e.target.select()}
 							/>
 							<span className="input-group-text">
-								<button
-									type="button"
-									aria-label="copy"
-									className="p-0 border-0 bg-transparent text-secondary d-flex align-items-center cursor-pointer"
-									onClick={() => navigator.clipboard.writeText(setupData.secret)}
-								>
-									<IconCopy size={18} />
-								</button>
+								<CopyButton text={setupData.secret} />
 							</span>
 						</div>
 					</label>
@@ -258,14 +251,15 @@ const MfaModal = EasyModal.create(({ id, visible, remove }) => {
 					<Alert variant="warning">
 						<T id="mfa.backup-warning" />
 					</Alert>
-					<div className="mb-3">
-						<div className="row g-2">
+					<div className="mb-3 d-flex gap-2 align-items-start">
+						<div className="row g-2 flex-grow-1">
 							{backupCodes.map((code, index) => (
 								<div key={index} className="col-6">
 									<code className="d-block p-2 text-center">{code}</code>
 								</div>
 							))}
 						</div>
+						<CopyButton text={backupCodes.join("\n")} />
 					</div>
 					<Button fullWidth color="azure" onClick={handleBackupDone}>
 						<T id="totp.done" />
