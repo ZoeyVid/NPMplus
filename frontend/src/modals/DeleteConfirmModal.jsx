@@ -1,16 +1,23 @@
 import { useState } from "react";
 import { Alert } from "react-bootstrap";
 import Modal from "react-bootstrap/Modal";
+import { flushSync } from "react-dom";
 import { Button } from "src/components";
 import { T } from "src/locale";
 import EasyModal from "src/modules/easyModal";
+import { focusRowMenu } from "src/modules/Focus";
 
 const showDeleteConfirmModal = (props) => {
-	EasyModal.show(DeleteConfirmModal, props);
+	const row = document.activeElement?.closest("tr");
+	EasyModal.show(DeleteConfirmModal, {
+		...props,
+		row,
+		neighbours: [row?.nextElementSibling, row?.previousElementSibling],
+	});
 };
 
 const DeleteConfirmModal = EasyModal.create(
-	({ title, tTitle, children, subject, details, onConfirm, visible, remove }) => {
+	({ title, tTitle, children, subject, details, onConfirm, row, neighbours, visible, remove }) => {
 		const [error, setError] = useState(null);
 		const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -20,7 +27,8 @@ const DeleteConfirmModal = EasyModal.create(
 			setError(null);
 			try {
 				await onConfirm();
-				remove();
+				flushSync(remove);
+				if (row?.isConnected === false) focusRowMenu(neighbours);
 			} catch (err) {
 				setError(<T id={err.message} />);
 			}

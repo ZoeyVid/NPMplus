@@ -1,6 +1,12 @@
-import { flexRender } from "@tanstack/react-table";
 import { Fragment } from "react";
+import { focusRowMenu } from "src/modules/Focus";
 import { EmptyRow } from "./EmptyRow";
+
+const Cell = ({ cell }) => cell.column.columnDef.cell(cell.getContext());
+
+const focusNeighbourOnRemove = (row) => () => {
+	if (row.contains(document.activeElement)) focusRowMenu([row.nextElementSibling, row.previousElementSibling]);
+};
 
 function TableBody(props) {
 	const { tableInstance, extraStyles, emptyState, groupBy, renderGroupLabel } = props;
@@ -15,12 +21,12 @@ function TableBody(props) {
 	}
 
 	const renderRow = (row) => (
-		<tr key={row.id} {...extraStyles?.row(row.original)}>
+		<tr key={row.id} ref={focusNeighbourOnRemove} {...extraStyles?.row(row.original)}>
 			{row.getAllCells().map((cell) => {
 				const { className } = cell.column.columnDef.meta ?? {};
 				return (
 					<td key={cell.id} className={className}>
-						{flexRender(cell.column.columnDef.cell, cell.getContext())}
+						<Cell cell={cell} />
 					</td>
 				);
 			})}
