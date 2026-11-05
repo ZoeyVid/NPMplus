@@ -12,7 +12,9 @@
 	],
 	"components": {
 		"securitySchemes": {
-			"$ref": "./components/security-schemes.json"
+			"cookieAuth": {
+				"$ref": "./components/security-schemes.json#/cookieAuth"
+			}
 		}
 	},
 	"tags": [

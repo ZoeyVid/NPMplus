@@ -41,7 +41,7 @@
 			"type": "string",
 			"pattern": "^([0-9]{1,5}$|[0-9]{1,5}-[0-9]{1,5}$)",
 			"maxLength": 11,
-			"example": 9090
+			"example": "9090"
 		},
 		"forwarding_host": {
 			"type": "string",
@@ -55,7 +55,7 @@
 			"pattern": "^([0-9]{0,5}|\\$server_port)$",
 			"maxLength": 12,
 			"default": "",
-			"example": 80
+			"example": "80"
 		},
 		"tcp_forwarding": {
 			"type": "boolean",

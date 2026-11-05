@@ -4,6 +4,7 @@
 	"tags": [
 		"public"
 	],
+	"security": [],
 	"requestBody": {
 		"description": "User Payload",
 		"required": true,
