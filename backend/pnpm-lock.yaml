@@ -203,8 +203,8 @@ importers:
         specifier: 3.24.6
         version: 3.24.6(@types/node@26.6.6)
       objection:
-        specifier: 4.4.2
-        version: 4.4.2(knex@3.3.0(mysql2@3.24.6(@types/node@26.6.6))(pg@8.23.1))
+        specifier: 4.4.3
+        version: 4.4.3(knex@3.3.0(mysql2@3.24.6(@types/node@26.6.6))(pg@8.23.1))
       openid-client:
         specifier: 6.8.9
         version: 6.8.9
@@ -848,8 +848,8 @@ packages:
     resolution: {integrity: sha512-W67iLl4J2EXEGTbfeHCffrjDfitvLANg0UlX3wFUUSTx92KXRFegMHUVgSqE+wvhAbi4WqjGg9czysTV2Epbew==}
     engines: {node: '>= 0.4'}
 
-  objection@4.4.2:
-    resolution: {integrity: sha512-Iavk3Gdl0RJI25MjjMwB2MG87x2pcB+QQjXqxHvaAWZIm/xJ+dLnyFk+/B+H0fEJOYypv0Y6vaeWJbMp+XZTnw==}
+  objection@4.4.3:
+    resolution: {integrity: sha512-Ie1jBkoQvzCT7SBuh1nNl/c2gC6lACOy6vY7dygWyZr70bP1Um660XbxCLhXAQ9Uqwok4LWLjzsnKgNd7JpV6w==}
     engines: {node: ^20.19.0 || >=22.12.0}
     peerDependencies:
       knex: ^3.3.0
@@ -1679,7 +1679,7 @@ snapshots:
 
   object-inspect@1.13.4: {}
 
-  objection@4.4.2(knex@3.3.0(mysql2@3.24.6(@types/node@26.6.6))(pg@8.23.1)):
+  objection@4.4.3(knex@3.3.0(mysql2@3.24.6(@types/node@26.6.6))(pg@8.23.1)):
     dependencies:
       ajv: 8.20.0
       ajv-formats: 3.0.1(ajv@8.20.0)

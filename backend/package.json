@@ -25,7 +25,7 @@
 		"liquidjs": "10.30.1",
 		"multer": "2.5.0",
 		"mysql2": "3.24.6",
-		"objection": "4.4.2",
+		"objection": "4.4.3",
 		"openid-client": "6.8.9",
 		"otplib": "13.6.0",
 		"pg": "8.23.1",
