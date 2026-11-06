@@ -60,7 +60,7 @@ const internalHost = {
 			combinedData.npmplus_mtls_certificate_id > 0 &&
 			combinedData.npmplus_mtls_verify_client_optional === true &&
 			[combinedData, ...(combinedData.locations ?? [])].some(
-				({ npmplus_auth_request = "none" }) => npmplus_auth_request !== "none",
+				({ npmplus_auth_request = "none" }) => !["none", "global"].includes(npmplus_auth_request),
 			);
 
 		return combinedData;
