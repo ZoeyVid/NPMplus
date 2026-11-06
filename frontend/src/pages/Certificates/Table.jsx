@@ -140,39 +140,39 @@ export default function Table({ data, isFetching, onDelete, onRenew, onDownload,
 					const inUse = isInUse(row);
 
 					return (
-						<span className="dropdown">
-							<button
-								type="button"
-								className="btn dropdown-toggle btn-action btn-sm px-1"
-								data-bs-boundary="viewport"
-								data-bs-toggle="dropdown"
-								data-bs-popper-config='{"strategy":"fixed"}'
-							>
-								<IconDotsVertical />
-							</button>
-							<div className="dropdown-menu dropdown-menu-end">
-								<span className="dropdown-header">
-									<T
-										id="object.actions-title"
-										tData={{ object: "certificate" }}
-										data={{ id: row.id }}
-									/>
-								</span>
+						<HasPermission section={CERTIFICATES} permission={MANAGE} hideError>
+							<span className="dropdown">
+								<button
+									type="button"
+									className="btn dropdown-toggle btn-action btn-sm px-1"
+									data-bs-boundary="viewport"
+									data-bs-toggle="dropdown"
+									data-bs-popper-config='{"strategy":"fixed"}'
+								>
+									<IconDotsVertical />
+								</button>
+								<div className="dropdown-menu dropdown-menu-end">
+									<span className="dropdown-header">
+										<T
+											id="object.actions-title"
+											tData={{ object: "certificate" }}
+											data={{ id: row.id }}
+										/>
+									</span>
 
-								{row.provider === "letsencrypt" && !row.npmplusDnsProvider && (
-									<button
-										type="button"
-										className="dropdown-item"
-										onClick={() => {
-											onTest?.(row.domainNames);
-										}}
-									>
-										<IconFlask size={16} />
-										<T id="test" />
-									</button>
-								)}
+									{row.provider === "letsencrypt" && !row.npmplusDnsProvider && (
+										<button
+											type="button"
+											className="dropdown-item"
+											onClick={() => {
+												onTest?.(row.domainNames);
+											}}
+										>
+											<IconFlask size={16} />
+											<T id="test" />
+										</button>
+									)}
 
-								<HasPermission section={CERTIFICATES} permission={MANAGE} hideError>
 									{(row.provider === "other" || row.provider === "mtls") && (
 										<button
 											type="button"
@@ -225,9 +225,9 @@ export default function Table({ data, isFetching, onDelete, onRenew, onDownload,
 											</button>
 										</>
 									)}
-								</HasPermission>
-							</div>
-						</span>
+								</div>
+							</span>
+						</HasPermission>
 					);
 				},
 				meta: {
