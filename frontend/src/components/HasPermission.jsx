@@ -21,7 +21,7 @@ function HasPermission({ section, permission, children, hideError, pageLoading, 
 		return <Loading noLogo={loadingNoLogo} />;
 	}
 
-	const allowed = hasPermission(section, permission, data?.permissions, data?.roles);
+	const allowed = hasPermission(section, permission, data?.permissions, data?.npmplusIsAdmin);
 	if (allowed) {
 		return <>{children}</>;
 	}
