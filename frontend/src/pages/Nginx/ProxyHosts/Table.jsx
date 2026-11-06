@@ -1,4 +1,4 @@
-import { IconCopy, IconDotsVertical, IconEdit, IconPower, IconTrash } from "@tabler/icons-react";
+import { IconCopy, IconDotsVertical, IconPower, IconTrash } from "@tabler/icons-react";
 import {
 	createColumnHelper,
 	createPaginatedRowModel,
@@ -16,6 +16,7 @@ import {
 	AccessListFormatter,
 	CertificateFormatter,
 	DomainsFormatter,
+	EditButton,
 	EmptyData,
 	GravatarFormatter,
 	HasPermission,
@@ -154,69 +155,62 @@ export default function Table({
 			columnHelper.display({
 				id: "actions",
 				cell: (info) => (
-					<span className="dropdown">
-						<button
-							type="button"
-							className="btn dropdown-toggle btn-action btn-sm px-1"
-							data-bs-boundary="viewport"
-							data-bs-toggle="dropdown"
-							data-bs-popper-config='{"strategy":"fixed"}'
-						>
-							<IconDotsVertical />
-						</button>
-						<div className="dropdown-menu dropdown-menu-end">
-							<span className="dropdown-header">
-								<T
-									id="object.actions-title"
-									tData={{ object: "proxy-host" }}
-									data={{ id: info.row.original.id }}
-								/>
+					<div className="d-flex justify-content-end gap-1">
+						<EditButton section={PROXY_HOSTS} onClick={() => onEdit?.(info.row.original.id)} />
+						<HasPermission section={PROXY_HOSTS} permission={MANAGE} hideError>
+							<span className="dropdown">
+								<button
+									type="button"
+									className="btn dropdown-toggle btn-action btn-sm px-1"
+									data-bs-boundary="viewport"
+									data-bs-toggle="dropdown"
+									data-bs-popper-config='{"strategy":"fixed"}'
+								>
+									<IconDotsVertical />
+								</button>
+								<div className="dropdown-menu dropdown-menu-end">
+									<span className="dropdown-header">
+										<T
+											id="object.actions-title"
+											tData={{ object: "proxy-host" }}
+											data={{ id: info.row.original.id }}
+										/>
+									</span>
+									<button
+										type="button"
+										className="dropdown-item"
+										onClick={() => {
+											onClone?.(info.row.original.id);
+										}}
+									>
+										<IconCopy size={16} />
+										<T id="action.clone" />
+									</button>
+									<button
+										type="button"
+										className="dropdown-item"
+										onClick={() => {
+											onDisableToggle?.(info.row.original.id, !info.row.original.enabled);
+										}}
+									>
+										<IconPower size={16} />
+										<T id={info.row.original.enabled ? "action.disable" : "action.enable"} />
+									</button>
+									<div className="dropdown-divider" />
+									<button
+										type="button"
+										className="dropdown-item"
+										onClick={() => {
+											onDelete?.(info.row.original.id);
+										}}
+									>
+										<IconTrash size={16} />
+										<T id="action.delete" />
+									</button>
+								</div>
 							</span>
-							<button
-								type="button"
-								className="dropdown-item"
-								onClick={() => {
-									onEdit?.(info.row.original.id);
-								}}
-							>
-								<IconEdit size={16} />
-								<T id="action.edit" />
-							</button>
-							<HasPermission section={PROXY_HOSTS} permission={MANAGE} hideError>
-								<button
-									type="button"
-									className="dropdown-item"
-									onClick={() => {
-										onClone?.(info.row.original.id);
-									}}
-								>
-									<IconCopy size={16} />
-									<T id="action.clone" />
-								</button>
-								<button
-									type="button"
-									className="dropdown-item"
-									onClick={() => {
-										onDisableToggle?.(info.row.original.id, !info.row.original.enabled);
-									}}
-								>
-									<IconPower size={16} />
-									<T id={info.row.original.enabled ? "action.disable" : "action.enable"} />
-								</button>
-								<div className="dropdown-divider" />
-								<button
-									type="button"
-									className="dropdown-item"
-									onClick={() => {
-										onDelete?.(info.row.original.id);
-									}}
-								>
-									<IconTrash size={16} />
-									<T id="action.delete" />
-								</button>
-							</HasPermission>
-						</div>
-					</span>
+						</HasPermission>
+					</div>
 				),
 				meta: {
 					className: "text-end w-1",

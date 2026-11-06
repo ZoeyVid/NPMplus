@@ -1,4 +1,4 @@
-import { IconDotsVertical, IconEdit, IconTrash } from "@tabler/icons-react";
+import { IconDotsVertical, IconTrash } from "@tabler/icons-react";
 import {
 	createColumnHelper,
 	createPaginatedRowModel,
@@ -12,7 +12,7 @@ import {
 	useTable,
 } from "@tanstack/react-table";
 import { useMemo } from "react";
-import { EmptyData, GravatarFormatter, HasPermission, ValueWithDateFormatter } from "src/components";
+import { EditButton, EmptyData, GravatarFormatter, HasPermission, ValueWithDateFormatter } from "src/components";
 import { TableLayout } from "src/components/Table/TableLayout";
 import { intl, T } from "src/locale";
 import { ACCESS_LISTS, MANAGE } from "src/modules/Permissions";
@@ -86,49 +86,41 @@ export default function Table({ data, isFetching, isFiltered, onEdit, onDelete, 
 			columnHelper.display({
 				id: "actions",
 				cell: (info) => (
-					<span className="dropdown">
-						<button
-							type="button"
-							className="btn dropdown-toggle btn-action btn-sm px-1"
-							data-bs-boundary="viewport"
-							data-bs-toggle="dropdown"
-							data-bs-popper-config='{"strategy":"fixed"}'
-						>
-							<IconDotsVertical />
-						</button>
-						<div className="dropdown-menu dropdown-menu-end">
-							<span className="dropdown-header">
-								<T
-									id="object.actions-title"
-									tData={{ object: "access-list" }}
-									data={{ id: info.row.original.id }}
-								/>
-							</span>
-							<button
-								type="button"
-								className="dropdown-item"
-								onClick={() => {
-									onEdit?.(info.row.original.id);
-								}}
-							>
-								<IconEdit size={16} />
-								<T id="action.edit" />
-							</button>
-							<HasPermission section={ACCESS_LISTS} permission={MANAGE} hideError>
-								<div className="dropdown-divider" />
+					<div className="d-flex justify-content-end gap-1">
+						<EditButton section={ACCESS_LISTS} onClick={() => onEdit?.(info.row.original.id)} />
+						<HasPermission section={ACCESS_LISTS} permission={MANAGE} hideError>
+							<span className="dropdown">
 								<button
 									type="button"
-									className="dropdown-item"
-									onClick={() => {
-										onDelete?.(info.row.original.id);
-									}}
+									className="btn dropdown-toggle btn-action btn-sm px-1"
+									data-bs-boundary="viewport"
+									data-bs-toggle="dropdown"
+									data-bs-popper-config='{"strategy":"fixed"}'
 								>
-									<IconTrash size={16} />
-									<T id="action.delete" />
+									<IconDotsVertical />
 								</button>
-							</HasPermission>
-						</div>
-					</span>
+								<div className="dropdown-menu dropdown-menu-end">
+									<span className="dropdown-header">
+										<T
+											id="object.actions-title"
+											tData={{ object: "access-list" }}
+											data={{ id: info.row.original.id }}
+										/>
+									</span>
+									<button
+										type="button"
+										className="dropdown-item"
+										onClick={() => {
+											onDelete?.(info.row.original.id);
+										}}
+									>
+										<IconTrash size={16} />
+										<T id="action.delete" />
+									</button>
+								</div>
+							</span>
+						</HasPermission>
+					</div>
 				),
 				meta: {
 					className: "text-end w-1",
