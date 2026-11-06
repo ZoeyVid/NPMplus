@@ -10,8 +10,8 @@ export const MANAGE = "manage";
 export const VIEW = "view";
 const HIDDEN = "hidden";
 
-const hasPermission = (section, perm, userPerms, roles) => {
-	if (isAdmin(roles)) return true;
+const hasPermission = (section, perm, userPerms, isAdmin) => {
+	if (isAdmin) return true;
 	if (!userPerms) return false;
 	const acceptable = [MANAGE, perm];
 	// @ts-expect-error 7053
@@ -19,6 +19,4 @@ const hasPermission = (section, perm, userPerms, roles) => {
 	return acceptable.indexOf(v) !== -1;
 };
 
-const isAdmin = (roles) => roles?.includes("admin");
-
-export { hasPermission, isAdmin };
+export { hasPermission };

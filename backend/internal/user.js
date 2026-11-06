@@ -37,7 +37,6 @@ const internalUser = {
 		delete data.auth;
 
 		data.avatar ||= "";
-		data.roles ||= [];
 
 		data.email = data.email.toLowerCase();
 
@@ -63,7 +62,7 @@ const internalUser = {
 			// Create permissions row as well
 			await userPermissionModel.query(trx).insert({
 				user_id: insertedUser.id,
-				visibility: data.roles.includes("admin") ? "all" : "user",
+				visibility: data.npmplus_is_admin ? "all" : "user",
 				proxy_hosts: "hidden",
 				redirection_hosts: "hidden",
 				dead_hosts: "hidden",
@@ -173,8 +172,11 @@ const internalUser = {
 	 */
 	update: async (access, data) => {
 		access.canUser(data.id);
-		if (data.roles !== undefined) access.canAdmin();
-		if (data.id === access.token.getUserId(0) && (data.roles !== undefined || data.is_disabled !== undefined)) {
+		if (data.npmplus_is_admin !== undefined) access.canAdmin();
+		if (
+			data.id === access.token.getUserId(0) &&
+			(data.npmplus_is_admin !== undefined || data.is_disabled !== undefined)
+		) {
 			throw new errs.PermissionError("You cannot change your own roles or disable yourself.");
 		}
 		const existingUser = await internalUser.get(access, { id: data.id });
@@ -234,7 +236,7 @@ const internalUser = {
 		}
 
 		if (row.id === access.token.getUserId(0)) {
-			row.goaccess = process.env.GOA === "true" && row.roles.includes("admin");
+			row.goaccess = process.env.GOA === "true" && row.npmplus_is_admin;
 		}
 		return row;
 	},

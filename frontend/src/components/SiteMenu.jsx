@@ -188,7 +188,7 @@ export function SiteMenu() {
 													item.permissionSection,
 													item.permission,
 													user?.permissions,
-													user?.roles,
+													user?.npmplusIsAdmin,
 												);
 											}),
 										)

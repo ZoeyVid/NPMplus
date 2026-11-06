@@ -52,7 +52,7 @@ const setupDefaultUser = async () => {
 	await internalUser.create(access, {
 		email: initialAdminEmail,
 		name: "Administrator",
-		roles: ["admin"],
+		npmplus_is_admin: true,
 		auth: {
 			type: "password",
 			secret: initialAdminPassword,

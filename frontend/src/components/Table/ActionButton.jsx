@@ -18,7 +18,7 @@ export function ActionButton({ icon: Icon, label, onClick }) {
 
 export function EditButton({ section, onClick }) {
 	const { data } = useUser("me");
-	const canManage = hasPermission(section, MANAGE, data?.permissions, data?.roles);
+	const canManage = hasPermission(section, MANAGE, data?.permissions, data?.npmplusIsAdmin);
 	return (
 		<ActionButton
 			icon={canManage ? IconEdit : IconEye}
