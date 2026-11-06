@@ -1,41 +1,20 @@
 import { IconEye, IconEyeOff, IconX } from "@tabler/icons-react";
-import { useFormikContext } from "formik";
-import { useEffect, useState } from "react";
+import { Field, useFormikContext } from "formik";
+import { useState } from "react";
 import { intl, T } from "src/locale";
 
 const blankItem = { username: "", password: "" };
 
+export const toItemRows = (items) => (items.length ? items : [blankItem]);
+
 export function BasicAuthFields({ initialValues, name = "items" }) {
-	const [values, setValues] = useState(initialValues);
 	const [revealed, setRevealed] = useState([]);
-	const { setFieldValue } = useFormikContext();
-
-	useEffect(() => {
-		if (values.length === 0) {
-			setValues([blankItem]);
-		}
-	});
-
-	const handleAdd = () => {
-		setValues([...values, blankItem]);
-	};
+	const { values, setFieldValue } = useFormikContext();
+	const items = values[name];
 
 	const handleRemove = (idx) => {
-		const newValues = values.filter((_, i) => i !== idx);
-		setValues(newValues);
+		void setFieldValue(name, toItemRows(items.toSpliced(idx, 1)));
 		setRevealed(revealed.toSpliced(idx, 1));
-		setFormField(newValues);
-	};
-
-	const handleChange = (idx, field, fieldValue) => {
-		const newValues = values.map((v, i) => (i === idx ? { ...v, [field]: fieldValue } : v));
-		setValues(newValues);
-		setFormField(newValues);
-	};
-
-	const setFormField = (newValues) => {
-		const filtered = newValues.filter((v) => v?.username?.trim() !== "");
-		void setFieldValue(name, filtered);
 	};
 
 	return (
@@ -52,41 +31,47 @@ export function BasicAuthFields({ initialValues, name = "items" }) {
 					</div>
 				</div>
 			</div>
-			{values.map((item, idx) => (
+			{items.map((item, idx) => (
 				<div className="row mb-3" key={idx}>
 					<div className="col-6">
-						<input
-							type="text"
-							autoComplete="off"
-							className="form-control input-sm"
-							pattern="[^:\p{Cc}]{1,255}"
-							value={item.username}
-							onChange={(e) => handleChange(idx, "username", e.target.value)}
-						/>
+						<Field name={`${name}.${idx}.username`}>
+							{({ field }) => (
+								<input
+									type="text"
+									autoComplete="off"
+									className="form-control input-sm"
+									pattern="[^:\p{Cc}]{1,255}"
+									{...field}
+								/>
+							)}
+						</Field>
 					</div>
 					<div className="col-5">
 						<div className="input-group input-group-flat">
-							<input
-								type={revealed[idx] ? "text" : "password"}
-								autoComplete="new-password"
-								className="form-control"
-								ref={(input) =>
-									input?.setCustomValidity(
-										new TextEncoder().encode(item.password).length > 72
-											? intl.formatMessage({ id: "error.max-byte-length" }, { max: 72 })
-											: "",
-									)
-								}
-								required={
-									item.username.trim() !== "" &&
-									!initialValues.some((iv) => iv.username === item.username)
-								}
-								value={item.password}
-								placeholder={
-									initialValues.some((iv) => iv.username === item.username) ? "••••••••" : ""
-								}
-								onChange={(e) => handleChange(idx, "password", e.target.value)}
-							/>
+							<Field name={`${name}.${idx}.password`}>
+								{({ field }) => (
+									<input
+										type={revealed[idx] ? "text" : "password"}
+										autoComplete="new-password"
+										className="form-control"
+										ref={(input) =>
+											input?.setCustomValidity(
+												new TextEncoder().encode(item.password).length > 72
+													? intl.formatMessage({ id: "error.max-byte-length" }, { max: 72 })
+													: "",
+											)
+										}
+										required={
+											item.username.trim() !== "" &&
+											!initialValues.some((iv) => iv.username === item.username)
+										}
+										{...field}
+										placeholder={
+											initialValues.some((iv) => iv.username === item.username) ? "••••••••" : ""
+										}
+									/>
+								)}
+							</Field>
 
 							<span className="input-group-text">
 								<button
@@ -113,7 +98,11 @@ export function BasicAuthFields({ initialValues, name = "items" }) {
 				</div>
 			))}
 			<div>
-				<button type="button" className="btn btn-sm" onClick={handleAdd}>
+				<button
+					type="button"
+					className="btn btn-sm"
+					onClick={() => void setFieldValue(name, [...items, blankItem])}
+				>
 					<T id="action.add" />
 				</button>
 			</div>
