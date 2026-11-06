@@ -9,11 +9,11 @@
 	"devEngines": {
 		"packageManager": {
 			"name": "pnpm",
-			"version": "12.16.1"
+			"version": "12.18.0"
 		}
 	},
 	"dependencies": {
-		"@apidevtools/json-schema-ref-parser": "16.0.5",
+		"@apidevtools/json-schema-ref-parser": "16.0.6",
 		"ajv": "8.20.0",
 		"archiver": "8.0.0",
 		"bcryptjs": "3.0.3",
@@ -34,6 +34,6 @@
 	},
 	"devDependencies": {
 		"@apidevtools/swagger-parser": "13.1.0",
-		"@biomejs/biome": "2.6.5"
+		"@biomejs/biome": "2.6.6"
 	}
 }
