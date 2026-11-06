@@ -149,7 +149,10 @@ const StreamModal = EasyModal.create(({ id, visible, remove, close, formRef }) =
 									<div className="card-body">
 										<fieldset className="tab-content" disabled={!canManage}>
 											<div className="tab-pane active show" id="tab-details" role="tabpanel">
-												<Field name="incomingPort" validate={validateString(1, 11)}>
+												<Field
+													name="incomingPort"
+													validate={(value) => validateString(value, 1, 11)}
+												>
 													{({ field, form }) => (
 														<div className="mb-3">
 															<label className="form-label" htmlFor="incomingPort">
@@ -177,7 +180,10 @@ const StreamModal = EasyModal.create(({ id, visible, remove, close, formRef }) =
 														</div>
 													)}
 												</Field>
-												<Field name="npmplusDescription" validate={validateString(0, 255)}>
+												<Field
+													name="npmplusDescription"
+													validate={(value) => validateString(value, 0, 255)}
+												>
 													{({ field, form }) => (
 														<div className="mb-3">
 															<label className="form-label" htmlFor="npmplusDescription">
@@ -206,7 +212,10 @@ const StreamModal = EasyModal.create(({ id, visible, remove, close, formRef }) =
 												</Field>
 												<div className="row">
 													<div className="col-md-8">
-														<Field name="forwardingHost" validate={validateString(1, 253)}>
+														<Field
+															name="forwardingHost"
+															validate={(value) => validateString(value, 1, 253)}
+														>
 															{({ field, form }) => (
 																<div className="mb-3">
 																	<label
@@ -239,7 +248,10 @@ const StreamModal = EasyModal.create(({ id, visible, remove, close, formRef }) =
 														</Field>
 													</div>
 													<div className="col-md-4">
-														<Field name="forwardingPort" validate={validateString(0, 12)}>
+														<Field
+															name="forwardingPort"
+															validate={(value) => validateString(value, 0, 12)}
+														>
 															{({ field, form }) => (
 																<div className="mb-3">
 																	<label
