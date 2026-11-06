@@ -85,7 +85,7 @@ const ProxyHostModal = EasyModal.create(({ id, isClone, visible, remove }) => {
 	};
 
 	return (
-		<Modal show={visible} backdrop="static" onHide={isSubmitting ? undefined : remove}>
+		<Modal show={visible} backdrop={canManage ? "static" : true} onHide={isSubmitting ? undefined : remove}>
 			{error && (
 				<Alert variant="danger" className="m-3">
 					{error?.message}
