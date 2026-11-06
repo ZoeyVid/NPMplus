@@ -7,8 +7,7 @@ import {
 	IconWorld,
 	IconX,
 } from "@tabler/icons-react";
-import { useFormikContext } from "formik";
-import { useState } from "react";
+import { Field, getIn, useFormikContext } from "formik";
 import Select, { components } from "react-select";
 import { useAccessLists } from "src/hooks";
 import { formatDateTime, intl, T } from "src/locale";
@@ -34,19 +33,10 @@ const TypeOption = (props) => (
 	</components.Option>
 );
 
-export function AccessFields({
-	initialAccessListType,
-	location,
-	initialAccessListIds,
-	name,
-	typeFieldName,
-	onChange,
-	authRequest,
-	disabled,
-}) {
-	const [values, setValues] = useState(initialAccessListIds);
-	const [aclValue, setAclValue] = useState(initialAccessListType);
+export function AccessFields({ location, name, typeFieldName, authRequest, disabled }) {
 	const { values: formValues, setFieldValue } = useFormikContext();
+	const values = getIn(formValues, name);
+	const aclValue = getIn(formValues, typeFieldName);
 	const { isPending, isError, error, data } = useAccessLists(["owner", "items", "clients"]);
 
 	const createDefaultItem = (item) => ({
@@ -104,51 +94,19 @@ export function AccessFields({
 		return ret;
 	};
 
-	const applyUpdatedValues = (newValues) => {
-		setValues(newValues);
-		if (onChange) {
-			onChange({ npmplusAccessListIds: newValues });
-		} else {
-			void setFieldValue(name, newValues);
-		}
+	const handleTypeChange = (e) => {
+		void setFieldValue(typeFieldName, e.type);
+		if (e.type === "custom" && values.length === 0) void setFieldValue(name, [options[0].value]);
 	};
 
-	const onAccessListChange = (acl, idx) => {
-		const newValues = values.map((id, i) => (i === idx ? acl.id : id));
-		applyUpdatedValues(newValues);
-	};
-
-	const handleAdd = () => {
-		const newAccessOption = options[0];
-		const newValues = [...values, newAccessOption.meta.id];
-		applyUpdatedValues(newValues);
-	};
+	const onAccessListChange = (acl, idx) => void setFieldValue(name, values.with(idx, acl.id));
 
 	const handleMoveUp = (idx) => {
-		if (idx > 0) {
-			const newIdx = idx - 1;
-			const newValues = [...values];
-			const aclId = newValues[idx];
-			newValues[idx] = newValues[newIdx];
-			newValues[newIdx] = aclId;
-			applyUpdatedValues(newValues);
-		}
+		if (idx > 0) void setFieldValue(name, values.toSpliced(idx - 1, 2, values[idx], values[idx - 1]));
 	};
 
 	const handleMoveDown = (idx) => {
-		if (idx < values.length - 1) {
-			const newIdx = idx + 1;
-			const newValues = [...values];
-			const aclId = newValues[idx];
-			newValues[idx] = newValues[newIdx];
-			newValues[newIdx] = aclId;
-			applyUpdatedValues(newValues);
-		}
-	};
-
-	const handleRemove = (aclId) => {
-		const newValues = values.filter((id) => id !== aclId);
-		applyUpdatedValues(newValues);
+		if (idx < values.length - 1) void setFieldValue(name, values.toSpliced(idx, 2, values[idx + 1], values[idx]));
 	};
 
 	const acls = (
@@ -171,29 +129,22 @@ export function AccessFields({
 			<div className="row">
 				<div className="col-md-10">
 					<div className="input-group mb-3 shadow-none">
-						<Select
-							className="col-md-8"
-							unstyled
-							classNames={selectClassNames}
-							isSearchable={false}
-							isDisabled={disabled}
-							getOptionValue={(o) => o.type}
-							defaultValue={createOption(initialAccessListType)}
-							options={typeOptions()}
-							components={{ Option: TypeOption }}
-							onChange={(e) => {
-								const value = e.type;
-								const ids = value === "custom" && values.length === 0 ? [options[0].value] : values;
-								setAclValue(value);
-								setValues(ids);
-								if (onChange) {
-									onChange({ npmplusAccessListType: value, npmplusAccessListIds: ids });
-								} else {
-									void setFieldValue(typeFieldName, value);
-									void setFieldValue(name, ids);
-								}
-							}}
-						/>
+						<Field name={typeFieldName}>
+							{({ field }) => (
+								<Select
+									className="col-md-8"
+									unstyled
+									classNames={selectClassNames}
+									isSearchable={false}
+									isDisabled={disabled}
+									getOptionValue={(o) => o.type}
+									value={createOption(field.value)}
+									options={typeOptions()}
+									components={{ Option: TypeOption }}
+									onChange={handleTypeChange}
+								/>
+							)}
+						</Field>
 					</div>
 				</div>
 			</div>
@@ -211,9 +162,7 @@ export function AccessFields({
 								options={options}
 								components={{ Option }}
 								isDisabled={disabled}
-								onChange={(e) => {
-									onAccessListChange(e.meta, idx);
-								}}
+								onChange={(e) => onAccessListChange(e.meta, idx)}
 							/>
 
 							{idx > 0 ? (
@@ -221,9 +170,7 @@ export function AccessFields({
 									type="button"
 									aria-label="Move up"
 									className="btn mb-1 ms-1"
-									onClick={() => {
-										handleMoveUp(idx);
-									}}
+									onClick={() => handleMoveUp(idx)}
 								>
 									<IconArrowUp size={16} />
 								</button>
@@ -233,9 +180,7 @@ export function AccessFields({
 									type="button"
 									aria-label="Move down"
 									className="btn mb-1 ms-1"
-									onClick={() => {
-										handleMoveDown(idx);
-									}}
+									onClick={() => handleMoveDown(idx)}
 								>
 									<IconArrowDown size={16} />
 								</button>
@@ -245,9 +190,7 @@ export function AccessFields({
 									type="button"
 									aria-label="Remove"
 									className="btn btn-ghost btn-danger p-0 mb-1"
-									onClick={() => {
-										handleRemove(item);
-									}}
+									onClick={() => void setFieldValue(name, values.toSpliced(idx, 1))}
 								>
 									<IconX size={16} />
 								</button>
@@ -264,7 +207,11 @@ export function AccessFields({
 					) : null}
 					{options.length > 0 && ( // only show add button if there are more acls that can be added
 						<div className="text-center">
-							<button type="button" className="btn my-3" onClick={handleAdd}>
+							<button
+								type="button"
+								className="btn my-3"
+								onClick={() => void setFieldValue(name, [...values, options[0].value])}
+							>
 								<T id="action.add" />
 							</button>
 						</div>
