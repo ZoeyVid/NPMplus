@@ -126,7 +126,7 @@ const UserModal = EasyModal.create(({ id, visible, remove, close, formRef }) => 
 									</div>
 								)}
 								<div className="mb-3">
-									<Field name="name" validate={validateString(1, 255)}>
+									<Field name="name" validate={(value) => validateString(value, 1, 255)}>
 										{({ field, form }) => (
 											<div className="form-floating mb-3">
 												<input
@@ -153,7 +153,7 @@ const UserModal = EasyModal.create(({ id, visible, remove, close, formRef }) => 
 									</Field>
 								</div>
 								<div className="mb-3">
-									<Field name="email" validate={validateEmail()}>
+									<Field name="email" validate={validateEmail}>
 										{({ field, form }) => (
 											<div className="form-floating mb-3">
 												<input
