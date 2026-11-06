@@ -15,7 +15,7 @@ const showAccessListModal = (id) => {
 	EasyModal.show(AccessListModal, { id });
 };
 
-const AccessListModal = EasyModal.create(({ id, visible, remove }) => {
+const AccessListModal = EasyModal.create(({ id, visible, remove, close, formRef }) => {
 	const { data, isPending, error } = useAccessList(id);
 	const { mutate: setAccessList } = useSetAccessList();
 	const { data: currentUser } = useUser("me");
@@ -85,7 +85,7 @@ const AccessListModal = EasyModal.create(({ id, visible, remove }) => {
 	const toggleEnabled = cn(toggleClasses, "bg-cyan");
 
 	return (
-		<Modal show={visible} backdrop={canManage ? "static" : true} onHide={isSubmitting ? undefined : remove}>
+		<Modal show={visible} backdrop={canManage ? "static" : true} onHide={isSubmitting ? undefined : close}>
 			{error && (
 				<Alert variant="danger" className="m-3">
 					{error?.message}
@@ -94,6 +94,7 @@ const AccessListModal = EasyModal.create(({ id, visible, remove }) => {
 			{isPending && <Loading noLogo />}
 			{data && (
 				<Formik
+					innerRef={formRef}
 					initialValues={{
 						name: data?.name,
 						satisfyAny: data?.satisfyAny,
@@ -261,7 +262,7 @@ const AccessListModal = EasyModal.create(({ id, visible, remove }) => {
 								</div>
 							</Modal.Body>
 							<Modal.Footer>
-								<Button onClick={remove} disabled={isSubmitting}>
+								<Button onClick={close} disabled={isSubmitting}>
 									<T id={canManage ? "cancel" : "action.close"} />
 								</Button>
 								{canManage && (

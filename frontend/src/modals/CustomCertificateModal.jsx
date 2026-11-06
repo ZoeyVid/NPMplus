@@ -14,7 +14,7 @@ const showCustomCertificateModal = (cert, provider) => {
 	EasyModal.show(CustomCertificateModal, { cert, provider });
 };
 
-const CustomCertificateModal = EasyModal.create(({ visible, remove, cert, provider = "other" }) => {
+const CustomCertificateModal = EasyModal.create(({ visible, remove, close, formRef, cert, provider = "other" }) => {
 	const [errorMsg, setErrorMsg] = useState(null);
 	const [isSubmitting, setIsSubmitting] = useState(false);
 	const isEdit = Boolean(cert);
@@ -68,8 +68,9 @@ const CustomCertificateModal = EasyModal.create(({ visible, remove, cert, provid
 	};
 
 	return (
-		<Modal show={visible} backdrop="static" onHide={isSubmitting ? undefined : remove}>
+		<Modal show={visible} backdrop="static" onHide={isSubmitting ? undefined : close}>
 			<Formik
+				innerRef={formRef}
 				initialValues={{
 					niceName: cert?.niceName || "",
 
@@ -170,7 +171,7 @@ const CustomCertificateModal = EasyModal.create(({ visible, remove, cert, provid
 							</div>
 						</Modal.Body>
 						<Modal.Footer>
-							<Button onClick={remove} disabled={isSubmitting}>
+							<Button onClick={close} disabled={isSubmitting}>
 								<T id="cancel" />
 							</Button>
 							<Button
