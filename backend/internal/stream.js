@@ -2,6 +2,7 @@ import errs from "../lib/error.js";
 import streamModel from "../models/stream.js";
 import internalAuditLog from "./audit-log.js";
 import internalCertificate from "./certificate.js";
+import internalHost from "./host.js";
 import internalNginx from "./nginx.js";
 
 const cleanStreamData = (data, existingData) => {
@@ -52,6 +53,7 @@ const internalStream = {
 		}
 
 		access.can("streams:manage");
+		internalHost.checkCustomConfig(access, thisData);
 
 		thisData.owner_user_id = access.token.getUserId(1);
 
@@ -112,6 +114,7 @@ const internalStream = {
 		}
 
 		access.can("streams:manage");
+		internalHost.checkCustomConfig(access, thisData, existingRow);
 
 		if (createCertificate) {
 			const cert = await internalCertificate.createQuickCertificate(access, thisData);
