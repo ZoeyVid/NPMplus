@@ -685,10 +685,6 @@ const ProxyHostModal = EasyModal.create(({ id, isClone, visible, remove, close, 
 													</h4>
 													<AccessFields
 														disabled={!canManage}
-														initialAccessListType={data?.npmplusAccessListType}
-														initialAccessListIds={data?.accessLists.map(
-															(accessList) => accessList.id,
-														)}
 														name="npmplusAccessListIds"
 														typeFieldName="npmplusAccessListType"
 														authRequest={values.npmplusAuthRequest}
