@@ -181,11 +181,14 @@ export function AccessFields({
 							components={{ Option: TypeOption }}
 							onChange={(e) => {
 								const value = e.type;
+								const ids = value === "custom" && values.length === 0 ? [options[0].value] : values;
 								setAclValue(value);
+								setValues(ids);
 								if (onChange) {
-									onChange({ npmplusAccessListType: value });
+									onChange({ npmplusAccessListType: value, npmplusAccessListIds: ids });
 								} else {
 									void setFieldValue(typeFieldName, value);
+									void setFieldValue(name, ids);
 								}
 							}}
 						/>
@@ -234,16 +237,18 @@ export function AccessFields({
 									<IconArrowDown size={16} />
 								</button>
 							) : null}
-							<button
-								type="button"
-								aria-label="Remove"
-								className="btn btn-ghost btn-danger p-0 mb-1"
-								onClick={() => {
-									handleRemove(item);
-								}}
-							>
-								<IconX size={16} />
-							</button>
+							{values.length > 1 && (
+								<button
+									type="button"
+									aria-label="Remove"
+									className="btn btn-ghost btn-danger p-0 mb-1"
+									onClick={() => {
+										handleRemove(item);
+									}}
+								>
+									<IconX size={16} />
+								</button>
+							)}
 						</div>
 					))}
 					{values.length === 0 ? (
