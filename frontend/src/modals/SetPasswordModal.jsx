@@ -58,7 +58,7 @@ const SetPasswordModal = EasyModal.create(({ id, visible, remove, close, formRef
 								<T id="logout-other-devices" />
 							</Alert>
 							<div className="mb-3">
-								<Field name="new" validate={validateString(8, 255, false)}>
+								<Field name="new" validate={(value) => validateString(value, 8, 255, false)}>
 									{({ field, form }) => (
 										<div className="input-group input-group-flat">
 											<div className="form-floating">

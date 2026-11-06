@@ -159,7 +159,7 @@ const AccessListModal = EasyModal.create(({ id, visible, remove, close, formRef 
 									<div className="card-body">
 										<fieldset className="tab-content" disabled={!canManage}>
 											<div className="tab-pane active show" id="tab-details" role="tabpanel">
-												<Field name="name" validate={validateString(1, 255)}>
+												<Field name="name" validate={(value) => validateString(value, 1, 255)}>
 													{({ field, form }) => (
 														<div>
 															<label htmlFor="name" className="form-label">

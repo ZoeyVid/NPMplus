@@ -69,7 +69,7 @@ const ChangePasswordModal = EasyModal.create(({ id, visible, remove, close, form
 								<T id="logout-other-devices" />
 							</Alert>
 							<div className="mb-3">
-								<Field name="current" validate={validateString(1, 255, false)}>
+								<Field name="current" validate={(value) => validateString(value, 1, 255, false)}>
 									{({ field, form }) => (
 										<div className="input-group input-group-flat">
 											<div className="form-floating">
@@ -106,7 +106,7 @@ const ChangePasswordModal = EasyModal.create(({ id, visible, remove, close, form
 								<ErrorMessage name="current" component="div" className="invalid-feedback d-block" />
 							</div>
 							<div className="mb-3">
-								<Field name="new" validate={validateString(8, 255, false)}>
+								<Field name="new" validate={(value) => validateString(value, 8, 255, false)}>
 									{({ field, form }) => (
 										<div className="input-group input-group-flat">
 											<div className="form-floating">
@@ -143,7 +143,7 @@ const ChangePasswordModal = EasyModal.create(({ id, visible, remove, close, form
 								<ErrorMessage name="new" component="div" className="invalid-feedback d-block" />
 							</div>
 							<div className="mb-3">
-								<Field name="confirm" validate={validateString(8, 255, false)}>
+								<Field name="confirm" validate={(value) => validateString(value, 8, 255, false)}>
 									{({ field, form }) => (
 										<div className="input-group input-group-flat">
 											<div className="form-floating">

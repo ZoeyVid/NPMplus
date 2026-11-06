@@ -181,7 +181,7 @@ const MfaModal = EasyModal.create(({ id, visible, close, formRef }) => {
 					<Formik innerRef={formRef} initialValues={{ code: "" }} onSubmit={handleVerify}>
 						{() => (
 							<Form>
-								<Field name="code" validate={validateString(6, 6)}>
+								<Field name="code" validate={(value) => validateString(value, 6, 6)}>
 									{({ field, form }) => (
 										<label className="mb-3 d-block">
 											<span className="form-label">
@@ -277,7 +277,7 @@ const MfaModal = EasyModal.create(({ id, visible, close, formRef }) => {
 					<Formik innerRef={formRef} initialValues={{ code: "" }} onSubmit={handleDisable}>
 						{() => (
 							<Form>
-								<Field name="code" validate={validateString(6, 8)}>
+								<Field name="code" validate={(value) => validateString(value, 6, 8)}>
 									{({ field, form }) => (
 										<label className="mb-3 d-block">
 											<span className="form-label">
@@ -352,7 +352,7 @@ const MfaModal = EasyModal.create(({ id, visible, close, formRef }) => {
 					<Formik innerRef={formRef} initialValues={{ code: "" }} onSubmit={handleRegenerateBackup}>
 						{() => (
 							<Form>
-								<Field name="code" validate={validateString(6, 6)}>
+								<Field name="code" validate={(value) => validateString(value, 6, 6)}>
 									{({ field, form }) => (
 										<label className="mb-3 d-block">
 											<span className="form-label">
