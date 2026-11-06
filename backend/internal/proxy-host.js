@@ -90,6 +90,7 @@ const internalProxyHost = {
 		}
 
 		access.can("proxy_hosts:manage");
+		internalHost.checkCustomConfig(access, thisData);
 
 		if (hasDuplicateDomains(thisData.domain_names)) {
 			throw new errs.ValidationError("Domain names need to be unique");
@@ -184,6 +185,7 @@ const internalProxyHost = {
 		access.can("proxy_hosts:manage");
 
 		const existingRow = await internalProxyHost.get(access, { id: thisData.id });
+		internalHost.checkCustomConfig(access, thisData, existingRow);
 
 		// Get a list of the domain names and check each of them against existing records
 		if (thisData.domain_names !== undefined) {

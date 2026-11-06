@@ -145,7 +145,9 @@ const internalNginx = {
 				location.forward_upstream_name = `upstream_${host.id}_location_${idx}`;
 			}
 			if (["~ ", "~* "].includes(location.location_type)) {
-				location.path = `"${location.path.replaceAll('"', '\\"')}"`;
+				location.path = utils.nginxQuote(location.path);
+			} else {
+				location.path = utils.assertNginxValue(location.path);
 			}
 			renderedLocations += await renderEngine.parseAndRender(template, location);
 		}
@@ -241,7 +243,7 @@ const internalNginx = {
 		}
 
 		if (host.domain_names) {
-			host.server_names = host.domain_names.map(toAsciiDomain);
+			host.server_names = host.domain_names.map((domain) => utils.nginxQuote(toAsciiDomain(domain)));
 		}
 		if (host.npmplus_access_list_type === "custom") {
 			// note that there is access_lists -> an array in the correct order

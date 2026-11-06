@@ -19,7 +19,7 @@ import {
 import { useDirectorySuggestions, useProxyHost, useProxyHosts, useSetProxyHost, useUser } from "src/hooks";
 import { intl, T } from "src/locale";
 import EasyModal from "src/modules/easyModal";
-import { hasPermission, MANAGE, PROXY_HOSTS } from "src/modules/Permissions";
+import { hasPermission, isAdmin, MANAGE, PROXY_HOSTS } from "src/modules/Permissions";
 import { showTabOfInvalid, validateNumber, validateUpstreamUrl } from "src/modules/Validations";
 import { showObjectSuccess } from "src/notifications";
 
@@ -700,6 +700,7 @@ const ProxyHostModal = EasyModal.create(({ id, isClone, visible, remove, close, 
 																			id: "nginx-config.placeholder",
 																		})}
 																		rows={8}
+																		disabled={!isAdmin(currentUser?.roles)}
 																		{...field}
 																	/>
 																</div>
