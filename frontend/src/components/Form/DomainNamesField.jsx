@@ -17,6 +17,7 @@ export function DomainNamesField({
 	dnsProviderWildcardSupported,
 	forCertificate,
 	onChange,
+	disabled,
 }) {
 	const { setFieldValue } = useFormikContext();
 
@@ -56,6 +57,7 @@ export function DomainNamesField({
 						inputId={id}
 						closeMenuOnSelect={true}
 						isClearable={false}
+						isDisabled={disabled}
 						isValidNewOption={(input, selected) =>
 							validateDomain(
 								input,

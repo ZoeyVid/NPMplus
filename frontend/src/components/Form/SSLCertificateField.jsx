@@ -33,6 +33,7 @@ export function SSLCertificateField({
 	forHttp = true,
 	mtlsName = "npmplusMtlsCertificateId",
 	mtlsLabel = "mtls-certificate",
+	disabled,
 }) {
 	const { isPending, isError, error, data } = useCertificates();
 	const { data: user } = useUser("me");
@@ -129,7 +130,7 @@ export function SSLCertificateField({
 								options={options}
 								components={{ Option }}
 								onChange={handleChange}
-								isDisabled={v?.udpForwarding}
+								isDisabled={disabled || v?.udpForwarding}
 							/>
 						) : null}
 					</div>
@@ -164,7 +165,7 @@ export function SSLCertificateField({
 										void setFieldValue("npmplusMtlsVerifyClientOptional", false);
 									}
 								}}
-								isDisabled={v?.udpForwarding || !v?.certificateId}
+								isDisabled={disabled || v?.udpForwarding || !v?.certificateId}
 							/>
 						) : null}
 					</div>
