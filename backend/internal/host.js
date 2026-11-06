@@ -92,6 +92,21 @@ const internalHost = {
 		}
 		return { hostname, is_taken: false };
 	},
+
+	checkCustomConfig: (access, data, existingData = {}) => {
+		if (
+			["advanced_config", "npmplus_location_config", "npmplus_advanced_config"].some(
+				(field) => data[field] !== undefined && data[field] !== (existingData[field] ?? ""),
+			) ||
+			data.locations?.some(
+				({ advanced_config = "" }) =>
+					advanced_config !== "" &&
+					!existingData.locations?.some((location) => location.advanced_config === advanced_config),
+			)
+		) {
+			access.canAdmin();
+		}
+	},
 };
 
 export default internalHost;
