@@ -87,6 +87,12 @@ const validateUpstreamUrl = (value) => {
 	}
 };
 
+const validateUnixTarget = (value, isAdmin, ...allowed) => {
+	if (!isAdmin && value?.startsWith("unix:") && !allowed.includes(value)) {
+		return intl.formatMessage({ id: "proxy-host.target-admin-only" });
+	}
+};
+
 export {
 	showTabOfInvalid,
 	upstreamUrlPattern,
@@ -95,5 +101,6 @@ export {
 	validateEmail,
 	validateNumber,
 	validateString,
+	validateUnixTarget,
 	validateUpstreamUrl,
 };

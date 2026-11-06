@@ -86,20 +86,21 @@ const internalDeadHost = {
 	 */
 	update: async (access, data) => {
 		let thisData = data;
+		const existingRow = await internalDeadHost.get(access, { id: thisData.id });
 		const createCertificate = thisData.certificate_id === "new";
 
 		if (createCertificate) {
 			delete thisData.certificate_id;
-		} else if (thisData.certificate_id > 0) {
+		} else if (thisData.certificate_id > 0 && thisData.certificate_id !== existingRow.certificate_id) {
 			await internalCertificate.get(access, { id: thisData.certificate_id, mtls: false });
 		}
-		if (thisData.npmplus_mtls_certificate_id > 0) {
+		if (
+			thisData.npmplus_mtls_certificate_id > 0 &&
+			thisData.npmplus_mtls_certificate_id !== existingRow.npmplus_mtls_certificate_id
+		) {
 			await internalCertificate.get(access, { id: thisData.npmplus_mtls_certificate_id, mtls: true });
 		}
 
-		access.can("dead_hosts:manage");
-
-		const existingRow = await internalDeadHost.get(access, { id: thisData.id });
 		internalHost.checkCustomConfig(access, thisData, existingRow);
 
 		// Get a list of the domain names and check each of them against existing records

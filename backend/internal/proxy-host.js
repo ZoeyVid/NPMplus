@@ -91,6 +91,7 @@ const internalProxyHost = {
 
 		access.can("proxy_hosts:manage");
 		internalHost.checkCustomConfig(access, thisData);
+		internalHost.checkForwardTarget(access, thisData);
 
 		if (hasDuplicateDomains(thisData.domain_names)) {
 			throw new errs.ValidationError("Domain names need to be unique");
@@ -171,21 +172,23 @@ const internalProxyHost = {
 	 */
 	update: async (access, data) => {
 		let thisData = data;
+		const existingRow = await internalProxyHost.get(access, { id: thisData.id });
 		const createCertificate = thisData.certificate_id === "new";
 
 		if (createCertificate) {
 			delete thisData.certificate_id;
-		} else if (thisData.certificate_id > 0) {
+		} else if (thisData.certificate_id > 0 && thisData.certificate_id !== existingRow.certificate_id) {
 			await internalCertificate.get(access, { id: thisData.certificate_id, mtls: false });
 		}
-		if (thisData.npmplus_mtls_certificate_id > 0) {
+		if (
+			thisData.npmplus_mtls_certificate_id > 0 &&
+			thisData.npmplus_mtls_certificate_id !== existingRow.npmplus_mtls_certificate_id
+		) {
 			await internalCertificate.get(access, { id: thisData.npmplus_mtls_certificate_id, mtls: true });
 		}
 
-		access.can("proxy_hosts:manage");
-
-		const existingRow = await internalProxyHost.get(access, { id: thisData.id });
 		internalHost.checkCustomConfig(access, thisData, existingRow);
+		internalHost.checkForwardTarget(access, thisData, existingRow);
 
 		// Get a list of the domain names and check each of them against existing records
 		if (thisData.domain_names !== undefined) {
@@ -208,7 +211,7 @@ const internalProxyHost = {
 		if (hasAuthRequestUpstreamConflict(thisData)) {
 			throw new errs.ValidationError("Each auth request provider can only have one upstream");
 		}
-		await internalProxyHostAccessList.validateAccessLists(access, thisData);
+		await internalProxyHostAccessList.validateAccessLists(access, thisData, existingRow);
 
 		if (createCertificate) {
 			const cert = await internalCertificate.createQuickCertificate(access, {
