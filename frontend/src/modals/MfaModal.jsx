@@ -14,7 +14,7 @@ const showMfaModal = (id) => {
 	EasyModal.show(MfaModal, { id });
 };
 
-const MfaModal = EasyModal.create(({ id, visible, remove }) => {
+const MfaModal = EasyModal.create(({ id, visible, close, formRef }) => {
 	const [error, setError] = useState(null);
 	const [step, setStep] = useState("loading");
 	const [isEnabled, setIsEnabled] = useState(false);
@@ -178,7 +178,7 @@ const MfaModal = EasyModal.create(({ id, visible, remove }) => {
 							</span>
 						</div>
 					</label>
-					<Formik initialValues={{ code: "" }} onSubmit={handleVerify}>
+					<Formik innerRef={formRef} initialValues={{ code: "" }} onSubmit={handleVerify}>
 						{() => (
 							<Form>
 								<Field name="code" validate={validateString(6, 6)}>
@@ -274,7 +274,7 @@ const MfaModal = EasyModal.create(({ id, visible, remove }) => {
 					<Alert variant="warning">
 						<T id="totp.disable-warning" />
 					</Alert>
-					<Formik initialValues={{ code: "" }} onSubmit={handleDisable}>
+					<Formik innerRef={formRef} initialValues={{ code: "" }} onSubmit={handleDisable}>
 						{() => (
 							<Form>
 								<Field name="code" validate={validateString(6, 8)}>
@@ -349,7 +349,7 @@ const MfaModal = EasyModal.create(({ id, visible, remove }) => {
 					<p className="text-secondary mb-3">
 						<T id="mfa.regenerate-instructions" />
 					</p>
-					<Formik initialValues={{ code: "" }} onSubmit={handleRegenerateBackup}>
+					<Formik innerRef={formRef} initialValues={{ code: "" }} onSubmit={handleRegenerateBackup}>
 						{() => (
 							<Form>
 								<Field name="code" validate={validateString(6, 6)}>
@@ -419,7 +419,7 @@ const MfaModal = EasyModal.create(({ id, visible, remove }) => {
 	};
 
 	return (
-		<Modal show={visible} backdrop="static" onHide={isSubmitting || step === "backup" ? undefined : remove}>
+		<Modal show={visible} backdrop="static" onHide={isSubmitting || step === "backup" ? undefined : close}>
 			<Modal.Header closeButton={!isSubmitting && step !== "backup"}>
 				<Modal.Title>
 					<T id="mfa.title" />
@@ -433,7 +433,7 @@ const MfaModal = EasyModal.create(({ id, visible, remove }) => {
 			</Modal.Body>
 			{["loading", "error", "status"].includes(step) && (
 				<Modal.Footer>
-					<Button onClick={remove} disabled={isSubmitting}>
+					<Button onClick={close} disabled={isSubmitting}>
 						<T id="action.close" />
 					</Button>
 				</Modal.Footer>
