@@ -841,7 +841,7 @@ const internalCertificate = {
 	 * @returns
 	 */
 	testHttpsChallenge: async (access, payload) => {
-		access.can("certificates:view");
+		access.can("certificates:manage");
 
 		await writeFile("/data/tls/certbot/acme-challenge/.well-known/acme-challenge/test-challenge", "Success", {
 			encoding: "utf8",
