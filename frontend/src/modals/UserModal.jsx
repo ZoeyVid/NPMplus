@@ -15,7 +15,7 @@ const showUserModal = (id) => {
 	EasyModal.show(UserModal, { id });
 };
 
-const UserModal = EasyModal.create(({ id, visible, remove }) => {
+const UserModal = EasyModal.create(({ id, visible, remove, close, formRef }) => {
 	const { data, isPending, error } = useUser(id);
 	const { data: currentUser, isPending: currentIsPending } = useUser("me");
 	const { mutate: setUser } = useSetUser();
@@ -68,7 +68,7 @@ const UserModal = EasyModal.create(({ id, visible, remove }) => {
 	};
 
 	return (
-		<Modal show={visible} backdrop="static" onHide={isSubmitting ? undefined : remove}>
+		<Modal show={visible} backdrop="static" onHide={isSubmitting ? undefined : close}>
 			{error && (
 				<Alert variant="danger" className="m-3">
 					{error?.message}
@@ -77,6 +77,7 @@ const UserModal = EasyModal.create(({ id, visible, remove }) => {
 			{(isPending || currentIsPending) && <Loading noLogo />}
 			{data && currentUser && (
 				<Formik
+					innerRef={formRef}
 					initialValues={{
 						name: data?.name,
 						email: data?.email,
@@ -239,7 +240,7 @@ const UserModal = EasyModal.create(({ id, visible, remove }) => {
 								) : null}
 							</Modal.Body>
 							<Modal.Footer>
-								<Button onClick={remove} disabled={isSubmitting}>
+								<Button onClick={close} disabled={isSubmitting}>
 									<T id="cancel" />
 								</Button>
 								<Button
