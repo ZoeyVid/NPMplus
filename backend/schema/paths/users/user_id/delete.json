@@ -38,9 +38,7 @@
 								"email": "jc@jc21.com",
 								"name": "Jamie Curnow",
 								"avatar": "//www.gravatar.com/avatar/6193176330f8d38747f038c170ddb193?default=mm",
-								"roles": [
-									"admin"
-								]
+								"npmplus_is_admin": true
 							}
 						}
 					},

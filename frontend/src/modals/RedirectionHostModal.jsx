@@ -36,7 +36,7 @@ const RedirectionHostModal = EasyModal.create(({ id, visible, remove, close, for
 	const { data: allRedirectionHosts } = useRedirectionHosts();
 	const suggestions = useDirectorySuggestions(allRedirectionHosts);
 	const { data: currentUser } = useUser("me");
-	const canManage = hasPermission(REDIRECTION_HOSTS, MANAGE, currentUser?.permissions, currentUser?.roles);
+	const canManage = hasPermission(REDIRECTION_HOSTS, MANAGE, currentUser?.permissions, currentUser?.npmplusIsAdmin);
 	const [errorMsg, setErrorMsg] = useState(null);
 	const [isSubmitting, setIsSubmitting] = useState(false);
 

@@ -16,7 +16,6 @@ import { AccessFields } from "src/components";
 import { useUser } from "src/hooks";
 import { intl, T } from "src/locale";
 import { forwardSummary } from "src/modules/Forward";
-import { isAdmin } from "src/modules/Permissions";
 import { upstreamUrlPattern } from "src/modules/Validations";
 
 const authProvider = (authRequest) => authRequest?.replace("-send-basic-auth", "");
@@ -685,7 +684,7 @@ export function LocationsFields({ initialValues, name = "locations", disabled })
 									value={item.advancedConfig}
 									onChange={(e) => handleChange(idx, "advancedConfig", e.target.value)}
 									rows={8}
-									disabled={!isAdmin(currentUser?.roles)}
+									disabled={!currentUser?.npmplusIsAdmin}
 								/>
 							</div>
 						)}

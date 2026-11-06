@@ -19,7 +19,7 @@ import {
 import { useDirectorySuggestions, useProxyHost, useProxyHosts, useSetProxyHost, useUser } from "src/hooks";
 import { intl, T } from "src/locale";
 import EasyModal from "src/modules/easyModal";
-import { hasPermission, isAdmin, MANAGE, PROXY_HOSTS } from "src/modules/Permissions";
+import { hasPermission, MANAGE, PROXY_HOSTS } from "src/modules/Permissions";
 import { showTabOfInvalid, validateNumber, validateUpstreamUrl } from "src/modules/Validations";
 import { showObjectSuccess } from "src/notifications";
 
@@ -29,7 +29,7 @@ const ProxyHostModal = EasyModal.create(({ id, isClone, visible, remove, close, 
 	const suggestions = useDirectorySuggestions(allProxyHosts);
 	const { mutate: setProxyHost } = useSetProxyHost();
 	const { data: currentUser } = useUser("me");
-	const canManage = hasPermission(PROXY_HOSTS, MANAGE, currentUser?.permissions, currentUser?.roles);
+	const canManage = hasPermission(PROXY_HOSTS, MANAGE, currentUser?.permissions, currentUser?.npmplusIsAdmin);
 	const [errorMsg, setErrorMsg] = useState(null);
 	const [isSubmitting, setIsSubmitting] = useState(false);
 	const [advVisible, setAdvVisible] = useState(false);
@@ -700,7 +700,7 @@ const ProxyHostModal = EasyModal.create(({ id, isClone, visible, remove, close, 
 																			id: "nginx-config.placeholder",
 																		})}
 																		rows={8}
-																		disabled={!isAdmin(currentUser?.roles)}
+																		disabled={!currentUser?.npmplusIsAdmin}
 																		{...field}
 																	/>
 																</div>

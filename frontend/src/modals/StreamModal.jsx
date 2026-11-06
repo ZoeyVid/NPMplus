@@ -28,7 +28,7 @@ const StreamModal = EasyModal.create(({ id, visible, remove, close, formRef }) =
 	const suggestions = useDirectorySuggestions(allStreams);
 	const { mutate: setStream } = useSetStream();
 	const { data: currentUser } = useUser("me");
-	const canManage = hasPermission(STREAMS, MANAGE, currentUser?.permissions, currentUser?.roles);
+	const canManage = hasPermission(STREAMS, MANAGE, currentUser?.permissions, currentUser?.npmplusIsAdmin);
 	const [errorMsg, setErrorMsg] = useState(null);
 	const [isSubmitting, setIsSubmitting] = useState(false);
 
