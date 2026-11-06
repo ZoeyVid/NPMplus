@@ -13,6 +13,7 @@ import {
 } from "@tanstack/react-table";
 import { useMemo } from "react";
 import {
+	ActionButton,
 	CertificateInUseFormatter,
 	certificateProviderTranslation,
 	DateFormatter,
@@ -138,95 +139,95 @@ export default function Table({ data, isFetching, onDelete, onRenew, onDownload,
 				cell: (info) => {
 					const row = info.row.original;
 					const inUse = isInUse(row);
+					const expired = Date.parse(row.expiresOn) < Date.now();
 
 					return (
 						<HasPermission section={CERTIFICATES} permission={MANAGE} hideError>
-							<span className="dropdown">
-								<button
-									type="button"
-									className="btn dropdown-toggle btn-action btn-sm px-1"
-									data-bs-boundary="viewport"
-									data-bs-toggle="dropdown"
-									data-bs-popper-config='{"strategy":"fixed"}'
-								>
-									<IconDotsVertical />
-								</button>
-								<div className="dropdown-menu dropdown-menu-end">
-									<span className="dropdown-header">
-										<T
-											id="object.actions-title"
-											tData={{ object: "certificate" }}
-											data={{ id: row.id }}
-										/>
-									</span>
-
-									{row.provider === "letsencrypt" && !row.npmplusDnsProvider && (
-										<button
-											type="button"
-											className="dropdown-item"
-											onClick={() => {
-												onTest?.(row.domainNames);
-											}}
-										>
-											<IconFlask size={16} />
-											<T id="test" />
-										</button>
-									)}
-
-									{(row.provider === "other" || row.provider === "mtls") && (
-										<button
-											type="button"
-											className="dropdown-item"
-											onClick={() => {
-												onEdit?.(row);
-											}}
-										>
-											<IconEdit size={16} />
-											<T id="action.edit" />
-										</button>
-									)}
-
-									{row.provider === "letsencrypt" && (
-										<button
-											type="button"
-											className="dropdown-item"
-											onClick={() => {
-												onRenew?.(row.id);
-											}}
-										>
-											<IconRefresh size={16} />
-											<T id="action.renew" />
-										</button>
-									)}
-
+							<div className="d-flex justify-content-end gap-1">
+								{(row.provider === "other" || row.provider === "mtls") && (
+									<ActionButton icon={IconEdit} label="action.edit" onClick={() => onEdit?.(row)} />
+								)}
+								{row.provider === "letsencrypt" && expired && (
+									<ActionButton
+										icon={IconRefresh}
+										label="action.renew"
+										onClick={() => onRenew?.(row.id)}
+									/>
+								)}
+								<span className="dropdown">
 									<button
 										type="button"
-										className="dropdown-item"
-										onClick={() => {
-											onDownload?.(row.id);
-										}}
+										className="btn dropdown-toggle btn-action btn-sm px-1"
+										data-bs-boundary="viewport"
+										data-bs-toggle="dropdown"
+										data-bs-popper-config='{"strategy":"fixed"}'
 									>
-										<IconDownload size={16} />
-										<T id="action.download" />
+										<IconDotsVertical />
 									</button>
+									<div className="dropdown-menu dropdown-menu-end">
+										<span className="dropdown-header">
+											<T
+												id="object.actions-title"
+												tData={{ object: "certificate" }}
+												data={{ id: row.id }}
+											/>
+										</span>
 
-									{!inUse && (
-										<>
-											<div className="dropdown-divider" />
+										{row.provider === "letsencrypt" && !row.npmplusDnsProvider && (
 											<button
 												type="button"
 												className="dropdown-item"
 												onClick={() => {
-													onDelete?.(row.id);
+													onTest?.(row.domainNames);
 												}}
 											>
-												<IconTrash size={16} />
-												<T id="action.delete" />
+												<IconFlask size={16} />
+												<T id="test" />
 											</button>
-										</>
-									)}
-								</div>
-							</span>
+										)}
+
+										{row.provider === "letsencrypt" && !expired && (
+											<button
+												type="button"
+												className="dropdown-item"
+												onClick={() => {
+													onRenew?.(row.id);
+												}}
+											>
+												<IconRefresh size={16} />
+												<T id="action.renew" />
+											</button>
+										)}
+
+										<button
+											type="button"
+											className="dropdown-item"
+											onClick={() => {
+												onDownload?.(row.id);
+											}}
+										>
+											<IconDownload size={16} />
+											<T id="action.download" />
+										</button>
+
+										{!inUse && (
+											<>
+												<div className="dropdown-divider" />
+												<button
+													type="button"
+													className="dropdown-item"
+													onClick={() => {
+														onDelete?.(row.id);
+													}}
+												>
+													<IconTrash size={16} />
+													<T id="action.delete" />
+												</button>
+											</>
+										)}
+									</div>
+								</span>
+							</div>
 						</HasPermission>
 					);
 				},
