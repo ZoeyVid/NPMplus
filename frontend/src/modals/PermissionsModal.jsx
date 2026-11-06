@@ -8,7 +8,6 @@ import { Button, Loading } from "src/components";
 import { useUser } from "src/hooks";
 import { T } from "src/locale";
 import EasyModal from "src/modules/easyModal";
-import { isAdmin } from "src/modules/Permissions";
 import { showObjectSuccess } from "src/notifications";
 
 const showPermissionsModal = (id) => {
@@ -206,7 +205,7 @@ const PermissionsModal = EasyModal.create(({ id, visible, remove, close, formRef
 										)}
 									</Field>
 								</div>
-								{!isAdmin(data?.roles) && (
+								{!data?.npmplusIsAdmin && (
 									<>
 										<Alert variant="warning">
 											<T id="permissions.manage-warning" />
