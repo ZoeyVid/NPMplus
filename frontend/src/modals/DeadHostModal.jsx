@@ -23,7 +23,7 @@ const showDeadHostModal = (id) => {
 	EasyModal.show(DeadHostModal, { id });
 };
 
-const DeadHostModal = EasyModal.create(({ id, visible, remove }) => {
+const DeadHostModal = EasyModal.create(({ id, visible, remove, close, formRef }) => {
 	const { data, isPending, error } = useDeadHost(id);
 	const { mutate: setDeadHost } = useSetDeadHost();
 	const { data: allDeadHosts } = useDeadHosts();
@@ -66,7 +66,7 @@ const DeadHostModal = EasyModal.create(({ id, visible, remove }) => {
 	};
 
 	return (
-		<Modal show={visible} backdrop={canManage ? "static" : true} onHide={isSubmitting ? undefined : remove}>
+		<Modal show={visible} backdrop={canManage ? "static" : true} onHide={isSubmitting ? undefined : close}>
 			{error && (
 				<Alert variant="danger" className="m-3">
 					{error?.message}
@@ -75,6 +75,7 @@ const DeadHostModal = EasyModal.create(({ id, visible, remove }) => {
 			{isPending && <Loading noLogo />}
 			{data && (
 				<Formik
+					innerRef={formRef}
 					initialValues={{
 						domainNames: data?.domainNames,
 						certificateId: data?.certificateId,
@@ -177,7 +178,7 @@ const DeadHostModal = EasyModal.create(({ id, visible, remove }) => {
 								</div>
 							</Modal.Body>
 							<Modal.Footer>
-								<Button onClick={remove} disabled={isSubmitting}>
+								<Button onClick={close} disabled={isSubmitting}>
 									<T id={canManage ? "cancel" : "action.close"} />
 								</Button>
 								{canManage && (
