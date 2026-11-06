@@ -4,12 +4,11 @@ import { useAuthState } from "src/context";
 import { useUser } from "src/hooks";
 import { T } from "src/locale";
 import { showChangePasswordModal, showMfaModal, showUserModal } from "src/modals";
-import { isAdmin } from "src/modules/Permissions";
 import { showError } from "src/notifications";
 
 export function SiteHeader() {
 	const { data: currentUser } = useUser("me");
-	const role = isAdmin(currentUser?.roles) ? "role.admin" : "role.standard-user";
+	const role = currentUser?.npmplusIsAdmin ? "role.admin" : "role.standard-user";
 	const { logout, logoutEverywhere } = useAuthState();
 
 	return (

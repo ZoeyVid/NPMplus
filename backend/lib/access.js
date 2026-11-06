@@ -50,13 +50,8 @@ export default function (tokenString) {
 				}
 
 				// make sure user has all scopes of the token
-				// The `user` role is not added against the user row, so we have to just add it here to get past this check.
-				user.roles.push("user");
-
-				if (!user.roles.includes(tokenData.scope)) {
-					throw new errs.PermissionError("Invalid token scope for User");
-				}
-				isAdmin = user.roles.includes("admin");
+				if (tokenData.scope !== "user") throw new errs.PermissionError("Invalid token scope for User");
+				isAdmin = user.npmplus_is_admin;
 				permissions = user.permissions ?? {};
 			} else {
 				throw new errs.PermissionError("User cannot be loaded for Token");
