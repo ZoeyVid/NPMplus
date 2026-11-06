@@ -243,7 +243,20 @@
 						"$ref": "#/properties/npmplus_x_frame_options"
 					},
 					"npmplus_auth_request": {
-						"$ref": "#/properties/npmplus_auth_request"
+						"type": "string",
+						"enum": [
+							"global",
+							"none",
+							"anubis",
+							"tinyauth",
+							"oauth2proxy",
+							"voidauth",
+							"authelia",
+							"authentik",
+							"authentik-send-basic-auth"
+						],
+						"default": "global",
+						"example": "global"
 					},
 					"npmplus_auth_request_upstream": {
 						"$ref": "#/properties/npmplus_auth_request_upstream"
