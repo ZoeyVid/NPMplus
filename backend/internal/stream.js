@@ -54,6 +54,7 @@ const internalStream = {
 
 		access.can("streams:manage");
 		internalHost.checkCustomConfig(access, thisData);
+		internalHost.checkForwardTarget(access, thisData);
 
 		thisData.owner_user_id = access.token.getUserId(1);
 
@@ -106,15 +107,19 @@ const internalStream = {
 
 		if (createCertificate) {
 			delete thisData.certificate_id;
-		} else if (thisData.certificate_id > 0) {
+		} else if (thisData.certificate_id > 0 && thisData.certificate_id !== existingRow.certificate_id) {
 			await internalCertificate.get(access, { id: thisData.certificate_id, mtls: false });
 		}
-		if (thisData.npmplus_mtls_certificate_id > 0) {
+		if (
+			thisData.npmplus_mtls_certificate_id > 0 &&
+			thisData.npmplus_mtls_certificate_id !== existingRow.npmplus_mtls_certificate_id
+		) {
 			await internalCertificate.get(access, { id: thisData.npmplus_mtls_certificate_id, mtls: true });
 		}
 
 		access.can("streams:manage");
 		internalHost.checkCustomConfig(access, thisData, existingRow);
+		internalHost.checkForwardTarget(access, thisData, existingRow);
 
 		if (createCertificate) {
 			const cert = await internalCertificate.createQuickCertificate(access, thisData);
