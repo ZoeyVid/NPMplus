@@ -15,7 +15,7 @@ const showPermissionsModal = (id) => {
 	EasyModal.show(PermissionsModal, { id });
 };
 
-const PermissionsModal = EasyModal.create(({ id, visible, remove }) => {
+const PermissionsModal = EasyModal.create(({ id, visible, remove, close, formRef }) => {
 	const [errorMsg, setErrorMsg] = useState(null);
 	const { data, isPending, error } = useUser(id);
 	const [isSubmitting, setIsSubmitting] = useState(false);
@@ -129,7 +129,7 @@ const PermissionsModal = EasyModal.create(({ id, visible, remove }) => {
 	};
 
 	return (
-		<Modal show={visible} backdrop="static" onHide={isSubmitting ? undefined : remove}>
+		<Modal show={visible} backdrop="static" onHide={isSubmitting ? undefined : close}>
 			{error && (
 				<Alert variant="danger" className="m-3">
 					{error?.message}
@@ -138,6 +138,7 @@ const PermissionsModal = EasyModal.create(({ id, visible, remove }) => {
 			{isPending && <Loading noLogo />}
 			{data && (
 				<Formik
+					innerRef={formRef}
 					initialValues={{
 						visibility: data.permissions?.visibility ?? "user",
 						accessLists: data.permissions?.accessLists ?? "hidden",
@@ -262,7 +263,7 @@ const PermissionsModal = EasyModal.create(({ id, visible, remove }) => {
 								)}
 							</Modal.Body>
 							<Modal.Footer>
-								<Button onClick={remove} disabled={isSubmitting}>
+								<Button onClick={close} disabled={isSubmitting}>
 									<T id="cancel" />
 								</Button>
 								<Button
