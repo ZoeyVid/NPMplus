@@ -19,7 +19,7 @@ import { upstreamUrlPattern } from "src/modules/Validations";
 
 const authProvider = (authRequest) => authRequest?.replace("-send-basic-auth", "");
 
-export function LocationsFields({ initialValues, name = "locations" }) {
+export function LocationsFields({ initialValues, name = "locations", disabled }) {
 	const nextUiKey = useRef(0);
 	const createUiLocation = (item) => ({
 		npmplusEnabled: true,
@@ -142,7 +142,7 @@ export function LocationsFields({ initialValues, name = "locations" }) {
 	if (values.length === 0) {
 		return (
 			<div className="text-center">
-				<button type="button" className="btn my-3" onClick={handleAdd}>
+				<button type="button" className="btn my-3" onClick={handleAdd} disabled={disabled}>
 					<T id="action.add-location" />
 				</button>
 			</div>
@@ -180,7 +180,7 @@ export function LocationsFields({ initialValues, name = "locations" }) {
 					</div>
 				</div>
 				<div className="col-auto">
-					<button type="button" className="btn" onClick={handleAdd}>
+					<button type="button" className="btn" onClick={handleAdd} disabled={disabled}>
 						<IconPlus size={16} className="me-1" />
 						<T id="action.add-location" />
 					</button>
@@ -230,12 +230,14 @@ export function LocationsFields({ initialValues, name = "locations" }) {
 							title={intl.formatMessage({ id: "action.delete" })}
 							aria-label={intl.formatMessage({ id: "action.delete" })}
 							onClick={() => handleRemove(idx)}
+							disabled={disabled}
 						>
 							<IconTrash size={16} className="icon" />
 						</button>
 					</div>
-					<div
+					<fieldset
 						className={cn("card-body", !isOpen(item) && "d-none")}
+						disabled={disabled}
 						id={`location-body-${item.uiKey}`}
 						onInvalid={() =>
 							flushSync(() => {
@@ -660,11 +662,12 @@ export function LocationsFields({ initialValues, name = "locations" }) {
 									location={item.path}
 									initialAccessListIds={item?.npmplusAccessListIds}
 									onChange={(changes) => handleAccessFieldsChange(idx, changes)}
+									disabled={disabled}
 									authRequest={item.npmplusAuthRequest}
 								/>
 							</div>
 						</div>
-						{advVisible.includes(item.uiKey) && (
+						{(advVisible.includes(item.uiKey) || (disabled && item.advancedConfig?.trim())) && (
 							<div className="">
 								<textarea
 									className="form-control font-monospace"
@@ -678,7 +681,7 @@ export function LocationsFields({ initialValues, name = "locations" }) {
 								/>
 							</div>
 						)}
-					</div>
+					</fieldset>
 				</div>
 			))}
 		</>
