@@ -43,7 +43,7 @@ function TotpForm() {
 				{({ isSubmitting }) => (
 					<Form>
 						<div className="mb-3">
-							<Field name="code" validate={validateString(6, 8)}>
+							<Field name="code" validate={(value) => validateString(value, 6, 8)}>
 								{({ field, form }) => (
 									<label className="form-label">
 										<T id="login.totp-code" />
@@ -152,7 +152,7 @@ function PasswordForm() {
 					{({ isSubmitting }) => (
 						<Form>
 							<div className="mb-3">
-								<Field name="email" validate={validateEmail()}>
+								<Field name="email" validate={validateEmail}>
 									{({ field, form }) => (
 										<label className="form-label">
 											<T id="email-address" />
