@@ -671,12 +671,9 @@ export function LocationsFields({ name = "locations", disabled }) {
 									<T id="proxy-host.access-lists" />
 								</h4>
 								<AccessFields
-									initialAccessListType={item?.npmplusAccessListType}
 									location={item.path}
-									initialAccessListIds={item?.npmplusAccessListIds}
-									onChange={(changes) =>
-										void setFieldValue(`${name}.${idx}`, { ...item, ...changes })
-									}
+									name={`${name}.${idx}.npmplusAccessListIds`}
+									typeFieldName={`${name}.${idx}.npmplusAccessListType`}
 									disabled={disabled}
 									authRequest={item.npmplusAuthRequest.replace(
 										"global",
