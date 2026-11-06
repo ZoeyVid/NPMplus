@@ -22,12 +22,26 @@ const execFile = async (cmd, args) => {
 	}
 };
 
+const nginxUnsafePattern = /[;{}#"'\\]|\p{Cc}/u;
+const controlCharPattern = /\p{Cc}/u;
+const quoteEscapePattern = /["\\]/gu;
+
+const assertNginxValue = (value, pattern = nginxUnsafePattern) => {
+	if (pattern.test(value)) {
+		throw new errs.ValidationError(`${JSON.stringify(value)} can not be used in the nginx config`);
+	}
+	return value;
+};
+
+const nginxQuote = (value) => `"${assertNginxValue(value, controlCharPattern).replaceAll(quoteEscapePattern, "\\$&")}"`;
+
 /**
  * @returns {Object} Liquid render engine
  */
 const getRenderEngine = () => {
 	const renderEngine = new Liquid({
 		root: `${import.meta.dirname}/../templates/`,
+		outputEscape: assertNginxValue,
 	});
 
 	/**
@@ -36,12 +50,15 @@ const getRenderEngine = () => {
 	 * directive  string
 	 * address    string
 	 */
-	renderEngine.registerFilter("nginxAccessRule", (v) => {
-		if (v.directive && v.address) return `${v.directive} ${v.address};`;
-		return "";
+	renderEngine.registerFilter("nginxAccessRule", {
+		raw: true,
+		handler: (v) => {
+			if (v.directive && v.address) return `${assertNginxValue(v.directive)} ${assertNginxValue(v.address)};`;
+			return "";
+		},
 	});
 
 	return renderEngine;
 };
 
-export default { execFile, getRenderEngine };
+export default { assertNginxValue, execFile, getRenderEngine, nginxQuote };
