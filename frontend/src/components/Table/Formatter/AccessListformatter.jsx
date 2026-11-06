@@ -1,7 +1,7 @@
 import OverlayTrigger from "react-bootstrap/OverlayTrigger";
 import Popover from "react-bootstrap/Popover";
 import { intl } from "src/locale";
-import { showAccessListModal, showProxyHostModal } from "src/modals";
+import { showAccessListModal } from "src/modals";
 
 export function AccessListFormatter({ proxyHostId, access, type, locations }) {
 	const hasLocationAcls = locations.some((loc) => loc.accessLists.length > 0);
@@ -24,29 +24,29 @@ export function AccessListFormatter({ proxyHostId, access, type, locations }) {
 		</Popover>
 	);
 
-	const button = (
-		<button
-			type="button"
-			className="btn btn-link p-0 border-0 text-decoration-none align-baseline"
-			aria-label={triggerLabel}
-			onClick={(e) => {
-				e.preventDefault();
-				if (access.length === 1) {
+	const label = hasLocationAcls ? <strong>{triggerLabel}</strong> : triggerLabel;
+
+	if (access.length === 1) {
+		return (
+			<button
+				type="button"
+				className="btn btn-link p-0 border-0 text-decoration-none align-baseline"
+				aria-label={triggerLabel}
+				onClick={(e) => {
+					e.preventDefault();
 					showAccessListModal(access[0].id);
-				} else {
-					showProxyHostModal(proxyHostId);
-				}
-			}}
-		>
-			{hasLocationAcls ? <strong>{triggerLabel}</strong> : triggerLabel}
-		</button>
-	);
+				}}
+			>
+				{label}
+			</button>
+		);
+	}
 	if (access.length > 1) {
 		return (
 			<OverlayTrigger trigger={["hover", "focus"]} placement="bottom" overlay={popover}>
-				{button}
+				<span>{label}</span>
 			</OverlayTrigger>
 		);
 	}
-	return button;
+	return label;
 }
