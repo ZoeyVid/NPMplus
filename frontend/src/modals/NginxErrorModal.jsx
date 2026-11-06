@@ -8,7 +8,7 @@ const showNginxErrorModal = (nginxErr) => {
 };
 
 const NginxErrorModal = EasyModal.create(({ nginxErr, visible, remove }) => (
-	<Modal show={visible} backdrop="static" onHide={remove}>
+	<Modal show={visible} onHide={remove}>
 		<Modal.Header closeButton>
 			<Modal.Title>
 				<T id="offline" />
