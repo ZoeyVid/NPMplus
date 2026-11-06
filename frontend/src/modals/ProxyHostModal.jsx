@@ -198,8 +198,14 @@ const ProxyHostModal = EasyModal.create(({ id, isClone, visible, remove, close, 
 									</div>
 									<div className="card-body">
 										<div className="tab-content">
-											<div className="tab-pane active show" id="tab-details" role="tabpanel">
+											<fieldset
+												className="tab-pane active show"
+												id="tab-details"
+												role="tabpanel"
+												disabled={!canManage}
+											>
 												<DomainNamesField
+													disabled={!canManage}
 													isWildcardPermitted={
 														values.certificateId !== "new" || values.npmplusDnsChallenge
 													}
@@ -672,6 +678,7 @@ const ProxyHostModal = EasyModal.create(({ id, isClone, visible, remove, close, 
 														<T id="proxy-host.global-access-lists" />
 													</h4>
 													<AccessFields
+														disabled={!canManage}
 														initialAccessListType={data?.npmplusAccessListType}
 														initialAccessListIds={data?.accessLists.map(
 															(accessList) => accessList.id,
@@ -700,20 +707,34 @@ const ProxyHostModal = EasyModal.create(({ id, isClone, visible, remove, close, 
 														</>
 													)}
 												</Field>
-											</div>
+											</fieldset>
 											<div className="tab-pane" id="tab-locations" role="tabpanel">
-												<LocationsFields initialValues={initialLocations} />
+												<LocationsFields
+													disabled={!canManage}
+													initialValues={initialLocations}
+												/>
 											</div>
-											<div className="tab-pane" id="tab-ssl" role="tabpanel">
+											<fieldset
+												className="tab-pane"
+												id="tab-ssl"
+												role="tabpanel"
+												disabled={!canManage}
+											>
 												<SSLCertificateField
+													disabled={!canManage}
 													name="certificateId"
 													label="ssl-certificate"
 													allowNew
 												/>
 
 												<SSLOptionsFields color="bg-lime" forProxyHost />
-											</div>
-											<div className="tab-pane" id="tab-advanced" role="tabpanel">
+											</fieldset>
+											<fieldset
+												className="tab-pane"
+												id="tab-advanced"
+												role="tabpanel"
+												disabled={!canManage}
+											>
 												<NginxConfigField />
 												<div className="row mt-3">
 													<div className="col-md-12 mb-3">
@@ -724,7 +745,7 @@ const ProxyHostModal = EasyModal.create(({ id, isClone, visible, remove, close, 
 														/>
 													</div>
 												</div>
-											</div>
+											</fieldset>
 										</div>
 									</div>
 								</div>
