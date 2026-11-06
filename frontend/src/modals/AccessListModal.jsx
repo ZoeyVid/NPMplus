@@ -3,7 +3,7 @@ import { Field, Form, Formik } from "formik";
 import { useState } from "react";
 import { Alert } from "react-bootstrap";
 import Modal from "react-bootstrap/Modal";
-import { AccessClientFields, BasicAuthFields, Button, Loading } from "src/components";
+import { AccessClientFields, BasicAuthFields, Button, Loading, toClientRows } from "src/components";
 import { useAccessList, useSetAccessList, useUser } from "src/hooks";
 import { intl, T } from "src/locale";
 import EasyModal from "src/modules/easyModal";
@@ -42,7 +42,9 @@ const AccessListModal = EasyModal.create(({ id, visible, remove, close, formRef 
 	const onSubmit = (values, { setSubmitting }) => {
 		if (isSubmitting) return;
 
-		const vErr = validate(values);
+		const clients = values.clients.filter(({ address }) => address.trim());
+
+		const vErr = validate({ ...values, clients });
 		if (vErr) {
 			setErrorMsg(vErr);
 			return;
@@ -63,7 +65,7 @@ const AccessListModal = EasyModal.create(({ id, visible, remove, close, formRef 
 		}));
 
 		// Filter out "clients" to only use the "directive" and "address" fields
-		payload.clients = values.clients.map((i) => ({
+		payload.clients = clients.map((i) => ({
 			directive: i.directive,
 			address: i.address,
 		}));
@@ -100,7 +102,7 @@ const AccessListModal = EasyModal.create(({ id, visible, remove, close, formRef 
 						satisfyAny: data?.satisfyAny,
 						passAuth: data?.passAuth,
 						items: data?.items,
-						clients: data?.clients,
+						clients: toClientRows(data?.clients),
 					}}
 					onSubmit={onSubmit}
 				>
@@ -255,7 +257,7 @@ const AccessListModal = EasyModal.create(({ id, visible, remove, close, formRef 
 												<BasicAuthFields initialValues={data?.items} />
 											</div>
 											<div className="tab-pane" id="tab-rules" role="tabpanel">
-												<AccessClientFields initialValues={data?.clients} />
+												<AccessClientFields />
 											</div>
 										</fieldset>
 									</div>
