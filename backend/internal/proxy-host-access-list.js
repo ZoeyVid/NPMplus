@@ -198,7 +198,7 @@ const internalProxyHostAccessList = {
 	 * @param {*} proxyHost
 	 * @returns
 	 */
-	validateAccessLists: async (access, proxyHost) => {
+	validateAccessLists: async (access, proxyHost, existingHost = {}) => {
 		if (!proxyHost) {
 			return;
 		}
@@ -237,7 +237,13 @@ const internalProxyHostAccessList = {
 				.select("id");
 
 			if (access.visibility !== "all") {
-				query.andWhere("owner_user_id", access.token.getUserId(1));
+				const keptIds = [];
+				for (const item of [existingHost, ...(existingHost.locations ?? [])]) {
+					for (const accessList of item.access_lists ?? []) keptIds.push(accessList.id);
+				}
+				query.andWhere((builder) => {
+					builder.where("owner_user_id", access.token.getUserId(1)).orWhereIn("id", keptIds);
+				});
 			}
 
 			if (!aclIds.isSubsetOf(new Set((await query).map((row) => row.id)))) {

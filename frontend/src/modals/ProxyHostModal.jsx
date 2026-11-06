@@ -21,7 +21,7 @@ import { useDirectorySuggestions, useProxyHost, useProxyHosts, useSetProxyHost, 
 import { intl, T } from "src/locale";
 import EasyModal from "src/modules/easyModal";
 import { hasPermission, MANAGE, PROXY_HOSTS } from "src/modules/Permissions";
-import { showTabOfInvalid, validateNumber, validateUpstreamUrl } from "src/modules/Validations";
+import { showTabOfInvalid, validateNumber, validateUnixTarget, validateUpstreamUrl } from "src/modules/Validations";
 import { showObjectSuccess } from "src/notifications";
 
 const ProxyHostModal = EasyModal.create(({ id, isClone, visible, remove, close, formRef }) => {
@@ -263,7 +263,10 @@ const ProxyHostModal = EasyModal.create(({ id, isClone, visible, remove, close, 
 																	>
 																		<option value="http">http://</option>
 																		<option value="https">https://</option>
-																		<option value="path">path: </option>
+																		{(currentUser?.npmplusIsAdmin ||
+																			field.value === "path") && (
+																			<option value="path">path: </option>
+																		)}
 																		<option value="empty">empty</option>
 																		<option value="grpc">grpc://</option>
 																		<option value="grpcs">grpcs://</option>
@@ -273,7 +276,16 @@ const ProxyHostModal = EasyModal.create(({ id, isClone, visible, remove, close, 
 														</Field>
 													</div>
 													<div className="col-md-5">
-														<Field name="forwardHost">
+														<Field
+															name="forwardHost"
+															validate={(value) =>
+																validateUnixTarget(
+																	value,
+																	currentUser?.npmplusIsAdmin,
+																	data?.forwardHost,
+																)
+															}
+														>
 															{({ field, form }) => (
 																<div className="mb-3">
 																	<label className="form-label" htmlFor="forwardHost">
@@ -282,12 +294,22 @@ const ProxyHostModal = EasyModal.create(({ id, isClone, visible, remove, close, 
 																	<input
 																		id="forwardHost"
 																		type="text"
-																		className="form-control"
+																		className={`form-control ${form.errors.forwardHost && form.touched.forwardHost ? "is-invalid" : ""}`}
 																		placeholder="example.com"
 																		required={form.values.forwardScheme !== "empty"}
 																		pattern="(?=\S{0,255}$)[^\s\/]{0,253}(\/\S*)?"
+																		disabled={
+																			!currentUser?.npmplusIsAdmin &&
+																			form.values.forwardScheme === "path"
+																		}
 																		{...field}
 																	/>
+																	{form.errors.forwardHost &&
+																		form.touched.forwardHost && (
+																			<div className="invalid-feedback">
+																				{form.errors.forwardHost}
+																			</div>
+																		)}
 																</div>
 															)}
 														</Field>
@@ -309,6 +331,10 @@ const ProxyHostModal = EasyModal.create(({ id, isClone, visible, remove, close, 
 																		pattern="[1-9][0-9]*"
 																		className={`form-control ${form.errors.forwardPort && form.touched.forwardPort ? "is-invalid" : ""}`}
 																		placeholder="eg: 8081"
+																		disabled={
+																			!currentUser?.npmplusIsAdmin &&
+																			form.values.forwardScheme === "path"
+																		}
 																		{...field}
 																	/>
 
