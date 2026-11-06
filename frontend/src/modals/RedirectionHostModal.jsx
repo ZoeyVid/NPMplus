@@ -197,7 +197,7 @@ const RedirectionHostModal = EasyModal.create(({ id, visible, remove, close, for
 													<div className="col-md-8">
 														<Field
 															name="forwardDomainName"
-															validate={validateString(1, 253)}
+															validate={(value) => validateString(value, 1, 253)}
 														>
 															{({ field, form }) => (
 																<div className="mb-3">
