@@ -19,7 +19,7 @@ const AccessListModal = EasyModal.create(({ id, visible, remove, close, formRef 
 	const { data, isPending, error } = useAccessList(id);
 	const { mutate: setAccessList } = useSetAccessList();
 	const { data: currentUser } = useUser("me");
-	const canManage = hasPermission(ACCESS_LISTS, MANAGE, currentUser?.permissions, currentUser?.roles);
+	const canManage = hasPermission(ACCESS_LISTS, MANAGE, currentUser?.permissions, currentUser?.npmplusIsAdmin);
 	const [errorMsg, setErrorMsg] = useState(null);
 	const [isSubmitting, setIsSubmitting] = useState(false);
 
