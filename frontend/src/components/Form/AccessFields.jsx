@@ -42,6 +42,7 @@ export function AccessFields({
 	typeFieldName,
 	onChange,
 	authRequest,
+	disabled,
 }) {
 	const [values, setValues] = useState(initialAccessListIds);
 	const [aclValue, setAclValue] = useState(initialAccessListType);
@@ -175,6 +176,7 @@ export function AccessFields({
 							unstyled
 							classNames={selectClassNames}
 							isSearchable={false}
+							isDisabled={disabled}
 							getOptionValue={(o) => o.type}
 							defaultValue={createOption(initialAccessListType)}
 							options={typeOptions()}
@@ -208,6 +210,7 @@ export function AccessFields({
 								}
 								options={options}
 								components={{ Option }}
+								isDisabled={disabled}
 								onChange={(e) => {
 									onAccessListChange(e.meta, idx);
 								}}
