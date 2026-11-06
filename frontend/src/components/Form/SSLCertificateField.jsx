@@ -78,7 +78,7 @@ export function SSLCertificateField({
 	const mtlsOptions = certs.mtls?.map(toOption) ?? [];
 
 	// Prepend the Add New option
-	if (allowNew && hasPermission(CERTIFICATES, MANAGE, user?.permissions, user?.roles)) {
+	if (allowNew && hasPermission(CERTIFICATES, MANAGE, user?.permissions, user?.npmplusIsAdmin)) {
 		options?.unshift({
 			value: "new",
 			label: intl.formatMessage({ id: "certificates.request.title" }),

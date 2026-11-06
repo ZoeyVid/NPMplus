@@ -91,10 +91,10 @@ export default function Table({
 				header: intl.formatMessage({ id: "column.email" }),
 				cell: (info) => <EmailFormatter email={info.getValue()} />,
 			}),
-			columnHelper.accessor((row) => row.roles.join(", "), {
+			columnHelper.accessor((row) => row.npmplusIsAdmin, {
 				id: "roles",
 				header: intl.formatMessage({ id: "column.roles" }),
-				cell: (info) => <RolesFormatter roles={info.row.original.roles} />,
+				cell: (info) => <RolesFormatter isAdmin={info.getValue()} />,
 			}),
 			columnHelper.accessor((row) => row.isDisabled, {
 				id: "isDisabled",

@@ -89,7 +89,7 @@ router
 			await access.load(true);
 
 			// Force this first user to be an admin.
-			const user = await internalUser.create(access, { ...res.locals.body, roles: ["admin"] });
+			const user = await internalUser.create(access, { ...res.locals.body, npmplus_is_admin: true });
 			res.status(201).send(user);
 		} finally {
 			setupRunning = false;

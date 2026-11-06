@@ -29,7 +29,7 @@ const DeadHostModal = EasyModal.create(({ id, visible, remove, close, formRef })
 	const { data: allDeadHosts } = useDeadHosts();
 	const suggestions = useDirectorySuggestions(allDeadHosts);
 	const { data: currentUser } = useUser("me");
-	const canManage = hasPermission(DEAD_HOSTS, MANAGE, currentUser?.permissions, currentUser?.roles);
+	const canManage = hasPermission(DEAD_HOSTS, MANAGE, currentUser?.permissions, currentUser?.npmplusIsAdmin);
 	const [errorMsg, setErrorMsg] = useState(null);
 	const [isSubmitting, setIsSubmitting] = useState(false);
 

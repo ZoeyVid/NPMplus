@@ -1,13 +1,9 @@
 import { T } from "src/locale";
 
-export function RolesFormatter({ roles }) {
+export function RolesFormatter({ isAdmin }) {
 	return (
-		<>
-			{(roles.length ? roles : ["standard-user"]).map((role) => (
-				<span key={role} className="badge bg-yellow-lt me-1">
-					<T id={`role.${role}`} />
-				</span>
-			))}
-		</>
+		<span className="badge bg-yellow-lt me-1">
+			<T id={isAdmin ? "role.admin" : "role.standard-user"} />
+		</span>
 	);
 }
