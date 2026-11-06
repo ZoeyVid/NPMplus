@@ -37,7 +37,7 @@ export function LocationsFields({ initialValues, name = "locations", disabled })
 		npmplusUpstreamCompression: false,
 		npmplusFancyindex: false,
 		npmplusXFrameOptions: "SAMEORIGIN",
-		npmplusAuthRequest: "none",
+		npmplusAuthRequest: "global",
 		npmplusAuthRequestUpstream: "",
 		npmplusAccessListType: "global",
 		...item,
@@ -96,7 +96,7 @@ export function LocationsFields({ initialValues, name = "locations", disabled })
 			if (field === "npmplusCrowdsecAppsec" && fieldValue === false) {
 				updatedLocation.npmplusProxyRequestBuffering = false;
 			}
-			if (field === "npmplusAuthRequest" && fieldValue === "none") {
+			if (field === "npmplusAuthRequest" && ["none", "global"].includes(fieldValue)) {
 				updatedLocation.npmplusAuthRequestUpstream = "";
 			}
 			if (field === "forwardScheme" && fieldValue !== "empty") {
@@ -590,6 +590,7 @@ export function LocationsFields({ initialValues, name = "locations", disabled })
 														handleChange(idx, "npmplusAuthRequest", e.target.value)
 													}
 												>
+													<option value="global">global</option>
 													<option value="none">none</option>
 													<option value="anubis">anubis</option>
 													<option value="tinyauth">tinyauth</option>
@@ -604,7 +605,7 @@ export function LocationsFields({ initialValues, name = "locations", disabled })
 											</span>
 										</label>
 									</div>
-									{item?.npmplusAuthRequest?.length > 0 && item.npmplusAuthRequest !== "none" && (
+									{!["none", "global"].includes(item.npmplusAuthRequest) && (
 										<div>
 											<label
 												className="row cursor-pointer"
@@ -663,7 +664,10 @@ export function LocationsFields({ initialValues, name = "locations", disabled })
 									initialAccessListIds={item?.npmplusAccessListIds}
 									onChange={(changes) => handleAccessFieldsChange(idx, changes)}
 									disabled={disabled}
-									authRequest={item.npmplusAuthRequest}
+									authRequest={item.npmplusAuthRequest.replace(
+										"global",
+										hostValues.npmplusAuthRequest,
+									)}
 								/>
 							</div>
 						</div>
