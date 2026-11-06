@@ -8,6 +8,7 @@ import {
 	AccessFields,
 	Button,
 	CommandOutput,
+	createUiLocation,
 	DirectoryField,
 	DomainNamesField,
 	Loading,
@@ -33,10 +34,6 @@ const ProxyHostModal = EasyModal.create(({ id, isClone, visible, remove, close, 
 	const [errorMsg, setErrorMsg] = useState(null);
 	const [isSubmitting, setIsSubmitting] = useState(false);
 	const [advVisible, setAdvVisible] = useState(false);
-	const initialLocations = data?.locations.map(({ id: locationId, proxyHostId, accessLists, ...location }) => ({
-		...location,
-		npmplusAccessListIds: accessLists.map((accessList) => accessList.id),
-	}));
 
 	const onSubmit = (values, { setSubmitting, setFieldValue }) => {
 		if (isSubmitting) return;
@@ -55,11 +52,14 @@ const ProxyHostModal = EasyModal.create(({ id, isClone, visible, remove, close, 
 			...values,
 			npmplusAccessListIds: globalAclIds,
 			forwardPort: values.forwardPort || 0,
-			locations: values.locations.map((location) => ({
-				...location,
-				forwardPort: location.forwardPort || 0,
-				npmplusAccessListIds: location.npmplusAccessListType === "custom" ? location.npmplusAccessListIds : [],
-			})),
+			locations: values.locations
+				.filter((location) => location.path.trim())
+				.map(({ uiKey, ...location }) => ({
+					...location,
+					forwardPort: location.forwardPort || 0,
+					npmplusAccessListIds:
+						location.npmplusAccessListType === "custom" ? location.npmplusAccessListIds : [],
+				})),
 		};
 
 		setProxyHost(payload, {
@@ -104,7 +104,13 @@ const ProxyHostModal = EasyModal.create(({ id, isClone, visible, remove, close, 
 						npmplusAccessListIds: data?.accessLists.map((accessList) => accessList.id),
 						npmplusAccessListType: data?.npmplusAccessListType,
 						// Locations tab
-						locations: initialLocations,
+						locations: data?.locations.map(({ id: locationId, proxyHostId, accessLists, ...location }) =>
+							createUiLocation({
+								...location,
+								forwardPort: location.forwardPort || "",
+								npmplusAccessListIds: accessLists.map((accessList) => accessList.id),
+							}),
+						),
 						// SSL tab
 						certificateId: data?.certificateId,
 						sslForced: data?.sslForced,
@@ -710,10 +716,7 @@ const ProxyHostModal = EasyModal.create(({ id, isClone, visible, remove, close, 
 												</Field>
 											</fieldset>
 											<div className="tab-pane" id="tab-locations" role="tabpanel">
-												<LocationsFields
-													disabled={!canManage}
-													initialValues={initialLocations}
-												/>
+												<LocationsFields disabled={!canManage} />
 											</div>
 											<fieldset
 												className="tab-pane"
