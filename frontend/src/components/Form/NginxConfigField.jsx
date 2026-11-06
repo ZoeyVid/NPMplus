@@ -1,7 +1,6 @@
 import { Field } from "formik";
 import { useUser } from "src/hooks";
 import { intl, T } from "src/locale";
-import { isAdmin } from "src/modules/Permissions";
 
 export function NginxConfigField({ name = "advancedConfig", label = "nginx-config.label", id = "advancedConfig" }) {
 	const { data: currentUser } = useUser("me");
@@ -18,7 +17,7 @@ export function NginxConfigField({ name = "advancedConfig", label = "nginx-confi
 						spellCheck={false}
 						placeholder={intl.formatMessage({ id: "nginx-config.placeholder" })}
 						rows={9}
-						disabled={!isAdmin(currentUser?.roles)}
+						disabled={!currentUser?.npmplusIsAdmin}
 						{...field}
 					/>
 				</div>
