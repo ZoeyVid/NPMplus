@@ -107,6 +107,26 @@ const internalHost = {
 			access.canAdmin();
 		}
 	},
+
+	checkForwardTarget: (access, data, existingData = {}) => {
+		const existing = new Set();
+		for (const item of [existingData, ...(existingData.locations ?? [])]) {
+			if (item.forward_scheme === "path") existing.add(`path:${item.forward_host}:${item.forward_port}`);
+			if (item.forward_host?.toLowerCase().startsWith("unix:")) existing.add(item.forward_host);
+			if (item.forwarding_host?.toLowerCase().startsWith("unix:")) existing.add(item.forwarding_host);
+		}
+		for (const item of [{ ...existingData, ...data }, ...(data.locations ?? [])]) {
+			if (item.forward_scheme === "path" && !existing.has(`path:${item.forward_host}:${item.forward_port}`)) {
+				access.canAdmin();
+			}
+			if (item.forward_host?.toLowerCase().startsWith("unix:") && !existing.has(item.forward_host)) {
+				access.canAdmin();
+			}
+			if (item.forwarding_host?.toLowerCase().startsWith("unix:") && !existing.has(item.forwarding_host)) {
+				access.canAdmin();
+			}
+		}
+	},
 };
 
 export default internalHost;
