@@ -26,6 +26,7 @@ const internalRedirectionHost = {
 		}
 
 		access.can("redirection_hosts:manage");
+		internalHost.checkCustomConfig(access, thisData);
 
 		if (hasDuplicateDomains(thisData.domain_names)) {
 			throw new errs.ValidationError("Domain names need to be unique");
@@ -102,6 +103,7 @@ const internalRedirectionHost = {
 		access.can("redirection_hosts:manage");
 
 		const existingRow = await internalRedirectionHost.get(access, { id: thisData.id });
+		internalHost.checkCustomConfig(access, thisData, existingRow);
 
 		// Get a list of the domain names and check each of them against existing records
 		if (thisData.domain_names !== undefined) {
