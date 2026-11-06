@@ -1,4 +1,6 @@
 import cn from "clsx";
+import OverlayTrigger from "react-bootstrap/OverlayTrigger";
+import Tooltip from "react-bootstrap/Tooltip";
 import { T } from "src/locale";
 import { showNginxErrorModal } from "src/modals";
 
@@ -15,7 +17,7 @@ export function StatusFormatter({ enabled, nginxOnline, nginxErr }) {
 	}
 
 	const status = (
-		<span className={cn("status", `status-${color}`)} title={nginxErr}>
+		<span className={cn("status", `status-${color}`)}>
 			<span className="status-dot status-dot-animated" />
 			<T id={label} />
 		</span>
@@ -23,9 +25,22 @@ export function StatusFormatter({ enabled, nginxOnline, nginxErr }) {
 
 	if (enabled && !nginxOnline) {
 		return (
-			<button type="button" className="p-0 border-0 bg-transparent" onClick={() => showNginxErrorModal(nginxErr)}>
-				{status}
-			</button>
+			<OverlayTrigger
+				placement="top"
+				overlay={
+					<Tooltip>
+						<T id="action.view-details" />
+					</Tooltip>
+				}
+			>
+				<button
+					type="button"
+					className="p-0 border-0 bg-transparent"
+					onClick={() => showNginxErrorModal(nginxErr)}
+				>
+					{status}
+				</button>
+			</OverlayTrigger>
 		);
 	}
 
