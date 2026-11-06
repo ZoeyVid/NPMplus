@@ -3,7 +3,7 @@ import { Field, Form, Formik } from "formik";
 import { useState } from "react";
 import { Alert } from "react-bootstrap";
 import Modal from "react-bootstrap/Modal";
-import { AccessClientFields, BasicAuthFields, Button, Loading, toClientRows } from "src/components";
+import { AccessClientFields, BasicAuthFields, Button, Loading, toClientRows, toItemRows } from "src/components";
 import { useAccessList, useSetAccessList, useUser } from "src/hooks";
 import { intl, T } from "src/locale";
 import EasyModal from "src/modules/easyModal";
@@ -42,9 +42,10 @@ const AccessListModal = EasyModal.create(({ id, visible, remove, close, formRef 
 	const onSubmit = (values, { setSubmitting }) => {
 		if (isSubmitting) return;
 
+		const items = values.items.filter(({ username }) => username.trim());
 		const clients = values.clients.filter(({ address }) => address.trim());
 
-		const vErr = validate({ ...values, clients });
+		const vErr = validate({ ...values, items, clients });
 		if (vErr) {
 			setErrorMsg(vErr);
 			return;
@@ -59,7 +60,7 @@ const AccessListModal = EasyModal.create(({ id, visible, remove, close, formRef 
 		};
 
 		// Filter out "items" to only use the "username" and "password" fields
-		payload.items = values.items.map((i) => ({
+		payload.items = items.map((i) => ({
 			username: i.username,
 			password: i.password,
 		}));
@@ -101,7 +102,7 @@ const AccessListModal = EasyModal.create(({ id, visible, remove, close, formRef 
 						name: data?.name,
 						satisfyAny: data?.satisfyAny,
 						passAuth: data?.passAuth,
-						items: data?.items,
+						items: toItemRows(data?.items),
 						clients: toClientRows(data?.clients),
 					}}
 					onSubmit={onSubmit}
