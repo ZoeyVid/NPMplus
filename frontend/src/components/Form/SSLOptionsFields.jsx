@@ -23,7 +23,9 @@ export function SSLOptionsFields({ forHttp = true, forProxyHost, color }) {
 
 	const mtlsBypassAuthRequestPossible =
 		npmplusMtlsVerifyClientOptional &&
-		[v, ...(v.locations ?? [])].some(({ npmplusAuthRequest = "none" }) => npmplusAuthRequest !== "none");
+		[v, ...(v.locations ?? [])].some(
+			({ npmplusAuthRequest = "none" }) => !["none", "global"].includes(npmplusAuthRequest),
+		);
 	const mtlsRequired = npmplusMtlsCertificateId > 0 && !npmplusMtlsVerifyClientOptional;
 
 	useEffect(() => {
