@@ -30,7 +30,7 @@ const showRedirectionHostModal = (id) => {
 	EasyModal.show(RedirectionHostModal, { id });
 };
 
-const RedirectionHostModal = EasyModal.create(({ id, visible, remove }) => {
+const RedirectionHostModal = EasyModal.create(({ id, visible, remove, close, formRef }) => {
 	const { data, isPending, error } = useRedirectionHost(id);
 	const { mutate: setRedirectionHost } = useSetRedirectionHost();
 	const { data: allRedirectionHosts } = useRedirectionHosts();
@@ -73,7 +73,7 @@ const RedirectionHostModal = EasyModal.create(({ id, visible, remove }) => {
 	};
 
 	return (
-		<Modal show={visible} backdrop={canManage ? "static" : true} onHide={isSubmitting ? undefined : remove}>
+		<Modal show={visible} backdrop={canManage ? "static" : true} onHide={isSubmitting ? undefined : close}>
 			{error && (
 				<Alert variant="danger" className="m-3">
 					{error?.message}
@@ -82,6 +82,7 @@ const RedirectionHostModal = EasyModal.create(({ id, visible, remove }) => {
 			{isPending && <Loading noLogo />}
 			{data && (
 				<Formik
+					innerRef={formRef}
 					initialValues={{
 						// Details tab
 						domainNames: data?.domainNames,
@@ -318,7 +319,7 @@ const RedirectionHostModal = EasyModal.create(({ id, visible, remove }) => {
 								</div>
 							</Modal.Body>
 							<Modal.Footer>
-								<Button onClick={remove} disabled={isSubmitting}>
+								<Button onClick={close} disabled={isSubmitting}>
 									<T id={canManage ? "cancel" : "action.close"} />
 								</Button>
 								{canManage && (

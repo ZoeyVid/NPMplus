@@ -14,7 +14,7 @@ const showHTTPCertificateModal = () => {
 	EasyModal.show(HTTPCertificateModal);
 };
 
-const HTTPCertificateModal = EasyModal.create(({ visible, remove }) => {
+const HTTPCertificateModal = EasyModal.create(({ visible, remove, close, formRef }) => {
 	const [errorMsg, setErrorMsg] = useState(null);
 	const [isSubmitting, setIsSubmitting] = useState(false);
 	const [domains, setDomains] = useState([]);
@@ -96,8 +96,9 @@ const HTTPCertificateModal = EasyModal.create(({ visible, remove }) => {
 	);
 
 	return (
-		<Modal show={visible} backdrop="static" onHide={isSubmitting || isTesting ? undefined : remove}>
+		<Modal show={visible} backdrop="static" onHide={isSubmitting || isTesting ? undefined : close}>
 			<Formik
+				innerRef={formRef}
 				initialValues={{
 					domainNames: [],
 					provider: "letsencrypt",
@@ -162,7 +163,7 @@ const HTTPCertificateModal = EasyModal.create(({ visible, remove }) => {
 							</div>
 						</Modal.Body>
 						<Modal.Footer>
-							<Button onClick={remove} disabled={isSubmitting || isTesting}>
+							<Button onClick={close} disabled={isSubmitting || isTesting}>
 								<T id="cancel" />
 							</Button>
 							<div className="ms-auto">
