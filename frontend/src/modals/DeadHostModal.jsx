@@ -142,9 +142,10 @@ const DeadHostModal = EasyModal.create(({ id, visible, remove, close, formRef })
 										</ul>
 									</div>
 									<div className="card-body">
-										<div className="tab-content">
+										<fieldset className="tab-content" disabled={!canManage}>
 											<div className="tab-pane active show" id="tab-details" role="tabpanel">
 												<DomainNamesField
+													disabled={!canManage}
 													isWildcardPermitted={
 														values.certificateId !== "new" || values.npmplusDnsChallenge
 													}
@@ -154,6 +155,7 @@ const DeadHostModal = EasyModal.create(({ id, visible, remove, close, formRef })
 											</div>
 											<div className="tab-pane" id="tab-ssl" role="tabpanel">
 												<SSLCertificateField
+													disabled={!canManage}
 													name="certificateId"
 													label="ssl-certificate"
 													allowNew
@@ -173,7 +175,7 @@ const DeadHostModal = EasyModal.create(({ id, visible, remove, close, formRef })
 													</div>
 												</div>
 											</div>
-										</div>
+										</fieldset>
 									</div>
 								</div>
 							</Modal.Body>
