@@ -10,7 +10,7 @@ const fetchUser = (id) => {
 			isDisabled: false,
 			email: "",
 			name: "",
-			roles: [],
+			npmplusIsAdmin: false,
 			avatar: "",
 		});
 	}

@@ -7,7 +7,6 @@ import { Button, Loading } from "src/components";
 import { useSetUser, useUser } from "src/hooks";
 import { intl, T } from "src/locale";
 import EasyModal from "src/modules/easyModal";
-import { isAdmin } from "src/modules/Permissions";
 import { validateEmail, validateString } from "src/modules/Validations";
 import { showObjectSuccess } from "src/notifications";
 
@@ -39,20 +38,14 @@ const UserModal = EasyModal.create(({ id, visible, remove, close, formRef }) => 
 
 		const payload = {
 			id: id === "new" ? undefined : id,
-			roles: [],
 			...values,
 		};
 
 		if (data?.id === currentUser?.id) {
 			// Prevent user from locking themselves out
-			delete payload.roles;
+			delete payload.npmplusIsAdmin;
 			delete payload.isDisabled;
-		} else if (payload.isAdmin) {
-			payload.roles = ["admin"];
 		}
-
-		// this isn't a real field, just for the form
-		delete payload.isAdmin;
 
 		setUser(payload, {
 			onError: (err) => setErrorMsg(<T id={err.message} />),
@@ -81,7 +74,7 @@ const UserModal = EasyModal.create(({ id, visible, remove, close, formRef }) => 
 					initialValues={{
 						name: data?.name,
 						email: data?.email,
-						isAdmin: isAdmin(data?.roles),
+						npmplusIsAdmin: data?.npmplusIsAdmin,
 						isDisabled: data?.isDisabled,
 					}}
 					onSubmit={onSubmit}
@@ -194,17 +187,17 @@ const UserModal = EasyModal.create(({ id, visible, remove, close, formRef }) => 
 										</h4>
 										<div className="divide-y">
 											<div>
-												<label className="row cursor-pointer" htmlFor="isAdmin">
+												<label className="row cursor-pointer" htmlFor="npmplusIsAdmin">
 													<span className="col">
 														<T id="role.admin" />
 													</span>
 													<span className="col-auto">
-														<Field name="isAdmin" type="checkbox">
+														<Field name="npmplusIsAdmin" type="checkbox">
 															{({ field }) => (
 																<span className="form-check form-check-single form-switch">
 																	<input
 																		{...field}
-																		id="isAdmin"
+																		id="npmplusIsAdmin"
 																		className="form-check-input"
 																		type="checkbox"
 																	/>
