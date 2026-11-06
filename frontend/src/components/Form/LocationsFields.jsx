@@ -16,7 +16,7 @@ import { AccessFields } from "src/components";
 import { useUser } from "src/hooks";
 import { intl, T } from "src/locale";
 import { forwardSummary } from "src/modules/Forward";
-import { upstreamUrlPattern } from "src/modules/Validations";
+import { upstreamUrlPattern, validateUnixTarget } from "src/modules/Validations";
 
 const authProvider = (authRequest) => authRequest?.replace("-send-basic-auth", "");
 
@@ -47,7 +47,7 @@ export const createUiLocation = (item) => ({
 
 export function LocationsFields({ name = "locations", disabled }) {
 	const { data: currentUser } = useUser("me");
-	const { values: hostValues, setFieldValue } = useFormikContext();
+	const { values: hostValues, initialValues, setFieldValue } = useFormikContext();
 	const values = hostValues[name];
 	const [advVisible, setAdvVisible] = useState([]);
 	const [expanded, setExpanded] = useState([]);
@@ -316,7 +316,9 @@ export function LocationsFields({ name = "locations", disabled }) {
 											>
 												<option value="http">http://</option>
 												<option value="https">https://</option>
-												<option value="path">path: </option>
+												{(currentUser?.npmplusIsAdmin || field.value === "path") && (
+													<option value="path">path: </option>
+												)}
 												<option value="empty">empty</option>
 												<option value="grpc">grpc://</option>
 												<option value="grpcs">grpcs://</option>
@@ -330,17 +332,34 @@ export function LocationsFields({ name = "locations", disabled }) {
 									<label className="form-label" htmlFor={`forwardHost-${item.uiKey}`}>
 										<T id="proxy-host.forward-host-path" />
 									</label>
-									<Field name={`${name}.${idx}.forwardHost`}>
-										{({ field }) => (
-											<input
-												id={`forwardHost-${item.uiKey}`}
-												type="text"
-												className="form-control"
-												required={item.forwardScheme !== "empty"}
-												pattern="(?=\S{0,255}$)[^\s\/]{0,253}(\/\S*)?"
-												placeholder="eg: 10.0.0.1/path/"
-												{...field}
-											/>
+									<Field
+										name={`${name}.${idx}.forwardHost`}
+										validate={(value) =>
+											validateUnixTarget(
+												value,
+												currentUser?.npmplusIsAdmin,
+												...initialValues[name].map((location) => location.forwardHost),
+											)
+										}
+									>
+										{({ field, meta }) => (
+											<>
+												<input
+													id={`forwardHost-${item.uiKey}`}
+													type="text"
+													className={`form-control ${meta.touched && meta.error ? "is-invalid" : ""}`}
+													required={item.forwardScheme !== "empty"}
+													pattern="(?=\S{0,255}$)[^\s\/]{0,253}(\/\S*)?"
+													placeholder="eg: 10.0.0.1/path/"
+													disabled={
+														!currentUser?.npmplusIsAdmin && item.forwardScheme === "path"
+													}
+													{...field}
+												/>
+												{meta.touched && meta.error && (
+													<div className="invalid-feedback">{meta.error}</div>
+												)}
+											</>
 										)}
 									</Field>
 								</div>
@@ -359,6 +378,7 @@ export function LocationsFields({ name = "locations", disabled }) {
 												max={65535}
 												className="form-control"
 												placeholder="eg: 8081"
+												disabled={!currentUser?.npmplusIsAdmin && item.forwardScheme === "path"}
 												{...field}
 											/>
 										)}
