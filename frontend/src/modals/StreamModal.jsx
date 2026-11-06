@@ -15,7 +15,7 @@ import { useDirectorySuggestions, useSetStream, useStream, useStreams, useUser }
 import { intl, T } from "src/locale";
 import EasyModal from "src/modules/easyModal";
 import { hasPermission, MANAGE, STREAMS } from "src/modules/Permissions";
-import { showTabOfInvalid, validateString } from "src/modules/Validations";
+import { showTabOfInvalid, validateString, validateUnixTarget } from "src/modules/Validations";
 import { showObjectSuccess } from "src/notifications";
 
 const showStreamModal = (id) => {
@@ -214,7 +214,14 @@ const StreamModal = EasyModal.create(({ id, visible, remove, close, formRef }) =
 													<div className="col-md-8">
 														<Field
 															name="forwardingHost"
-															validate={(value) => validateString(value, 1, 253)}
+															validate={(value) =>
+																validateString(value, 1, 253) ||
+																validateUnixTarget(
+																	value,
+																	currentUser?.npmplusIsAdmin,
+																	data?.forwardingHost,
+																)
+															}
 														>
 															{({ field, form }) => (
 																<div className="mb-3">
