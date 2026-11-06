@@ -23,7 +23,7 @@ import { hasPermission, MANAGE, PROXY_HOSTS } from "src/modules/Permissions";
 import { showTabOfInvalid, validateNumber, validateUpstreamUrl } from "src/modules/Validations";
 import { showObjectSuccess } from "src/notifications";
 
-const ProxyHostModal = EasyModal.create(({ id, isClone, visible, remove }) => {
+const ProxyHostModal = EasyModal.create(({ id, isClone, visible, remove, close, formRef }) => {
 	const { data, isPending, error } = useProxyHost(id);
 	const { data: allProxyHosts } = useProxyHosts();
 	const suggestions = useDirectorySuggestions(allProxyHosts);
@@ -85,7 +85,7 @@ const ProxyHostModal = EasyModal.create(({ id, isClone, visible, remove }) => {
 	};
 
 	return (
-		<Modal show={visible} backdrop={canManage ? "static" : true} onHide={isSubmitting ? undefined : remove}>
+		<Modal show={visible} backdrop={canManage ? "static" : true} onHide={isSubmitting ? undefined : close}>
 			{error && (
 				<Alert variant="danger" className="m-3">
 					{error?.message}
@@ -94,6 +94,7 @@ const ProxyHostModal = EasyModal.create(({ id, isClone, visible, remove }) => {
 			{isPending && <Loading noLogo />}
 			{data && (
 				<Formik
+					innerRef={formRef}
 					initialValues={{
 						// Details tab
 						domainNames: data?.domainNames,
@@ -729,7 +730,7 @@ const ProxyHostModal = EasyModal.create(({ id, isClone, visible, remove }) => {
 								</div>
 							</Modal.Body>
 							<Modal.Footer>
-								<Button onClick={remove} disabled={isSubmitting}>
+								<Button onClick={close} disabled={isSubmitting}>
 									<T id={canManage ? "cancel" : "action.close"} />
 								</Button>
 								{canManage && (
