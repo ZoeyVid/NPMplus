@@ -293,7 +293,10 @@ const ProxyHostModal = EasyModal.create(({ id, isClone, visible, remove, close, 
 														</Field>
 													</div>
 													<div className="col-md-3">
-														<Field name="forwardPort" validate={validateNumber(-1, 65535)}>
+														<Field
+															name="forwardPort"
+															validate={(value) => validateNumber(value, -1, 65535)}
+														>
 															{({ field, form }) => (
 																<div className="mb-3">
 																	<label className="form-label" htmlFor="forwardPort">
@@ -642,7 +645,7 @@ const ProxyHostModal = EasyModal.create(({ id, isClone, visible, remove, close, 
 																	<span className="col-auto">
 																		<Field
 																			name="npmplusAuthRequestUpstream"
-																			validate={validateUpstreamUrl()}
+																			validate={validateUpstreamUrl}
 																		>
 																			{({ field, form }) => (
 																				<>

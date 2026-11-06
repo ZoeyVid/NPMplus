@@ -185,7 +185,7 @@ export default function DefaultSite() {
 							)}
 						</Field>
 						{values.value === "redirect" && (
-							<Field name="redirect" validate={validateString(1, 255)}>
+							<Field name="redirect" validate={(value) => validateString(value, 1, 255)}>
 								{({ field, form }) => (
 									<div className="mt-5 mb-3">
 										<label className="form-label" htmlFor="redirect">
