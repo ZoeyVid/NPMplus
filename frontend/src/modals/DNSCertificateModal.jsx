@@ -13,7 +13,7 @@ const showDNSCertificateModal = () => {
 	EasyModal.show(DNSCertificateModal);
 };
 
-const DNSCertificateModal = EasyModal.create(({ visible, remove }) => {
+const DNSCertificateModal = EasyModal.create(({ visible, remove, close, formRef }) => {
 	const [errorMsg, setErrorMsg] = useState(null);
 	const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -41,8 +41,9 @@ const DNSCertificateModal = EasyModal.create(({ visible, remove }) => {
 	const toggleEnabled = cn(toggleClasses, "bg-cyan");
 
 	return (
-		<Modal show={visible} backdrop="static" onHide={isSubmitting ? undefined : remove}>
+		<Modal show={visible} backdrop="static" onHide={isSubmitting ? undefined : close}>
 			<Formik
+				innerRef={formRef}
 				initialValues={{
 					domainNames: [],
 					provider: "letsencrypt",
@@ -90,7 +91,7 @@ const DNSCertificateModal = EasyModal.create(({ visible, remove }) => {
 							</div>
 						</Modal.Body>
 						<Modal.Footer>
-							<Button onClick={remove} disabled={isSubmitting}>
+							<Button onClick={close} disabled={isSubmitting}>
 								<T id="cancel" />
 							</Button>
 							<Button

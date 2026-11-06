@@ -14,7 +14,7 @@ const showSetPasswordModal = (id) => {
 	EasyModal.show(SetPasswordModal, { id });
 };
 
-const SetPasswordModal = EasyModal.create(({ id, visible, remove }) => {
+const SetPasswordModal = EasyModal.create(({ id, visible, remove, close, formRef }) => {
 	const [error, setError] = useState(null);
 	const [isSubmitting, setIsSubmitting] = useState(false);
 	const [showPassword, setShowPassword] = useState(false);
@@ -35,8 +35,9 @@ const SetPasswordModal = EasyModal.create(({ id, visible, remove }) => {
 	};
 
 	return (
-		<Modal show={visible} backdrop="static" onHide={isSubmitting ? undefined : remove}>
+		<Modal show={visible} backdrop="static" onHide={isSubmitting ? undefined : close}>
 			<Formik
+				innerRef={formRef}
 				initialValues={{
 					new: "",
 				}}
@@ -95,7 +96,7 @@ const SetPasswordModal = EasyModal.create(({ id, visible, remove }) => {
 							</div>
 						</Modal.Body>
 						<Modal.Footer>
-							<Button onClick={remove} disabled={isSubmitting}>
+							<Button onClick={close} disabled={isSubmitting}>
 								<T id="cancel" />
 							</Button>
 							<Button
