@@ -154,7 +154,7 @@ const AccessListModal = EasyModal.create(({ id, visible, remove, close, formRef 
 										</ul>
 									</div>
 									<div className="card-body">
-										<div className="tab-content">
+										<fieldset className="tab-content" disabled={!canManage}>
 											<div className="tab-pane active show" id="tab-details" role="tabpanel">
 												<Field name="name" validate={validateString(1, 255)}>
 													{({ field, form }) => (
@@ -257,7 +257,7 @@ const AccessListModal = EasyModal.create(({ id, visible, remove, close, formRef 
 											<div className="tab-pane" id="tab-rules" role="tabpanel">
 												<AccessClientFields initialValues={data?.clients} />
 											</div>
-										</div>
+										</fieldset>
 									</div>
 								</div>
 							</Modal.Body>
