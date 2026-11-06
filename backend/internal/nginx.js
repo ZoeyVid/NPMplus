@@ -258,6 +258,9 @@ const internalNginx = {
 
 		if (host.locations) {
 			for (const location of host.locations) {
+				if (location.npmplus_auth_request === "global") {
+					location.npmplus_auth_request = host.npmplus_auth_request;
+				}
 				if (location.npmplus_access_list_type === "global") {
 					location.access_list = host.access_list;
 				} else if (location.npmplus_access_list_type === "custom") {

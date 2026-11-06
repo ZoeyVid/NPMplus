@@ -67,7 +67,7 @@ const cleanForwardOptions = (item) => {
 		}
 	}
 	if (!item.npmplus_crowdsec_appsec) item.npmplus_proxy_request_buffering = false;
-	if ((item.npmplus_auth_request ?? "none") === "none") item.npmplus_auth_request_upstream = "";
+	if (["none", "global"].includes(item.npmplus_auth_request ?? "none")) item.npmplus_auth_request_upstream = "";
 };
 
 const internalProxyHost = {

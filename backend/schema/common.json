@@ -570,7 +570,10 @@
 											"properties": {
 												"npmplus_auth_request": {
 													"not": {
-														"const": "none"
+														"enum": [
+															"none",
+															"global"
+														]
 													}
 												}
 											}
@@ -779,7 +782,10 @@
 												"properties": {
 													"npmplus_auth_request": {
 														"not": {
-															"const": "none"
+															"enum": [
+																"none",
+																"global"
+															]
 														}
 													}
 												}
@@ -985,7 +991,10 @@
 					"if": {
 						"properties": {
 							"npmplus_auth_request": {
-								"const": "none"
+								"enum": [
+									"none",
+									"global"
+								]
 							}
 						}
 					},
