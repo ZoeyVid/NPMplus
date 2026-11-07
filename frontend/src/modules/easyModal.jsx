@@ -60,6 +60,7 @@ const create = (Comp) =>
 		}, []);
 
 		const close = async () => {
+			if (formRef.current?.isSubmitting) return;
 			if (!formRef.current?.dirty || (await NiceModal.show(DiscardChangesModal))) remove();
 		};
 

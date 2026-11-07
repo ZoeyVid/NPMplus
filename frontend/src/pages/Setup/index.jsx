@@ -17,7 +17,7 @@ export default function Setup() {
 	const [errorMsg, setErrorMsg] = useState(null);
 	const [showPassword, setShowPassword] = useState(false);
 
-	const onSubmit = async (values, { setSubmitting }) => {
+	const onSubmit = async (values) => {
 		setErrorMsg(null);
 
 		const { password, ...payload } = {
@@ -45,7 +45,6 @@ export default function Setup() {
 		} catch (err) {
 			setErrorMsg(<T id={err.message} />);
 		}
-		setSubmitting(false);
 	};
 
 	return (
@@ -84,13 +83,13 @@ export default function Setup() {
 								<div className="card-body">
 									<div className="mb-3">
 										<Field name="name" validate={(value) => validateString(value, 1, 255)}>
-											{({ field, form }) => (
+											{({ field, meta }) => (
 												<div className="form-floating mb-3">
 													<input
 														id="name"
 														autoComplete="name"
 														required
-														className={`form-control ${form.errors.name && form.touched.name ? "is-invalid" : ""}`}
+														className={`form-control ${meta.touched && meta.error ? "is-invalid" : ""}`}
 														placeholder={intl.formatMessage({
 															id: "user.full-name",
 														})}
@@ -100,25 +99,25 @@ export default function Setup() {
 													<label htmlFor="name">
 														<T id="user.full-name" />
 													</label>
-													{form.errors.name ? (
-														<div className="invalid-feedback">
-															{form.touched.name ? form.errors.name : null}
-														</div>
-													) : null}
+													<ErrorMessage
+														name="name"
+														component="div"
+														className="invalid-feedback"
+													/>
 												</div>
 											)}
 										</Field>
 									</div>
 									<div className="mb-3">
 										<Field name="email" validate={validateEmail}>
-											{({ field, form }) => (
+											{({ field, meta }) => (
 												<div className="form-floating mb-3">
 													<input
 														id="email"
 														type="email"
 														autoComplete="username"
 														required
-														className={`form-control ${form.errors.email && form.touched.email ? "is-invalid" : ""}`}
+														className={`form-control ${meta.touched && meta.error ? "is-invalid" : ""}`}
 														placeholder={intl.formatMessage({
 															id: "email-address",
 														})}
@@ -128,11 +127,11 @@ export default function Setup() {
 													<label htmlFor="email">
 														<T id="email-address" />
 													</label>
-													{form.errors.email ? (
-														<div className="invalid-feedback">
-															{form.touched.email ? form.errors.email : null}
-														</div>
-													) : null}
+													<ErrorMessage
+														name="email"
+														component="div"
+														className="invalid-feedback"
+													/>
 												</div>
 											)}
 										</Field>
@@ -142,7 +141,7 @@ export default function Setup() {
 											name="password"
 											validate={(value) => validateString(value, 8, 255, false)}
 										>
-											{({ field, form }) => (
+											{({ field, meta }) => (
 												<div className="input-group input-group-flat">
 													<div className="form-floating">
 														<input
@@ -150,7 +149,7 @@ export default function Setup() {
 															type={showPassword ? "text" : "password"}
 															autoComplete="new-password"
 															required
-															className={`form-control ${form.errors.password && form.touched.password ? "is-invalid" : ""}`}
+															className={`form-control ${meta.touched && meta.error ? "is-invalid" : ""}`}
 															placeholder={intl.formatMessage({
 																id: "user.new-password",
 															})}

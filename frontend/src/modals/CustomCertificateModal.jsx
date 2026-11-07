@@ -1,5 +1,6 @@
 import { IconAlertTriangle } from "@tabler/icons-react";
-import { Field, Form, Formik } from "formik";
+import cn from "clsx";
+import { ErrorMessage, Field, Form, Formik } from "formik";
 import { useState } from "react";
 import { Alert } from "react-bootstrap";
 import Modal from "react-bootstrap/Modal";
@@ -16,13 +17,10 @@ const showCustomCertificateModal = (cert, provider) => {
 
 const CustomCertificateModal = EasyModal.create(({ visible, remove, close, formRef, cert, provider = "other" }) => {
 	const [errorMsg, setErrorMsg] = useState(null);
-	const [isSubmitting, setIsSubmitting] = useState(false);
 	const isEdit = Boolean(cert);
 	const isMtls = (cert?.provider ?? provider) === "mtls";
 
-	const onSubmit = async (values, { setSubmitting }) => {
-		if (isSubmitting) return;
-		setIsSubmitting(true);
+	const onSubmit = async (values) => {
 		setErrorMsg(null);
 
 		try {
@@ -62,13 +60,10 @@ const CustomCertificateModal = EasyModal.create(({ visible, remove, close, formR
 		} catch (err) {
 			setErrorMsg(<T id={err.message} />);
 		}
-
-		setIsSubmitting(false);
-		setSubmitting(false);
 	};
 
 	return (
-		<Modal show={visible} backdrop="static" onHide={isSubmitting ? undefined : close}>
+		<Modal show={visible} backdrop="static" onHide={close}>
 			<Formik
 				innerRef={formRef}
 				initialValues={{
@@ -79,7 +74,7 @@ const CustomCertificateModal = EasyModal.create(({ visible, remove, close, formR
 				}}
 				onSubmit={onSubmit}
 			>
-				{() => (
+				{({ isSubmitting }) => (
 					<Form>
 						<Modal.Header closeButton={!isSubmitting}>
 							<Modal.Title>
@@ -103,7 +98,7 @@ const CustomCertificateModal = EasyModal.create(({ visible, remove, close, formR
 										name="niceName"
 										validate={isEdit ? undefined : (value) => validateString(value, 1, 255)}
 									>
-										{({ field, form }) => (
+										{({ field, meta }) => (
 											<div className="mb-3">
 												<label htmlFor="niceName" className="form-label">
 													<T id="column.name" />
@@ -115,15 +110,17 @@ const CustomCertificateModal = EasyModal.create(({ visible, remove, close, formR
 													autoComplete="off"
 													// Disable name editing in edit mode as we only update files
 													disabled={isEdit}
-													className={`form-control ${form.errors.niceName && form.touched.niceName ? "is-invalid" : ""}`}
+													className={cn("form-control", {
+														"is-invalid": meta.touched && meta.error,
+													})}
 													{...field}
 												/>
 
-												{form.errors.niceName ? (
-													<div className="invalid-feedback">
-														{form.touched.niceName ? form.errors.niceName : null}
-													</div>
-												) : null}
+												<ErrorMessage
+													name="niceName"
+													component="div"
+													className="invalid-feedback"
+												/>
 											</div>
 										)}
 									</Field>

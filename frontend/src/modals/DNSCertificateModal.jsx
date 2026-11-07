@@ -15,11 +15,8 @@ const showDNSCertificateModal = () => {
 
 const DNSCertificateModal = EasyModal.create(({ visible, remove, close, formRef }) => {
 	const [errorMsg, setErrorMsg] = useState(null);
-	const [isSubmitting, setIsSubmitting] = useState(false);
 
-	const onSubmit = async (values, { setSubmitting }) => {
-		if (isSubmitting) return;
-		setIsSubmitting(true);
+	const onSubmit = async (values) => {
 		setErrorMsg(null);
 
 		try {
@@ -33,15 +30,10 @@ const DNSCertificateModal = EasyModal.create(({ visible, remove, close, formRef 
 				setErrorMsg(<T id={err.message} />);
 			}
 		}
-		setIsSubmitting(false);
-		setSubmitting(false);
 	};
 
-	const toggleClasses = "form-check-input";
-	const toggleEnabled = cn(toggleClasses, "bg-cyan");
-
 	return (
-		<Modal show={visible} backdrop="static" onHide={isSubmitting ? undefined : close}>
+		<Modal show={visible} backdrop="static" onHide={close}>
 			<Formik
 				innerRef={formRef}
 				initialValues={{
@@ -52,7 +44,7 @@ const DNSCertificateModal = EasyModal.create(({ visible, remove, close, formRef 
 				}}
 				onSubmit={onSubmit}
 			>
-				{() => (
+				{({ isSubmitting }) => (
 					<Form>
 						<Modal.Header closeButton={!isSubmitting}>
 							<Modal.Title>
@@ -69,14 +61,15 @@ const DNSCertificateModal = EasyModal.create(({ visible, remove, close, formRef 
 									<DNSProviderFields />
 									<div className="row">
 										<div className="col-6">
-											<Field name="npmplusReuseKey">
+											<Field name="npmplusReuseKey" type="checkbox">
 												{({ field }) => (
 													<label className="form-check form-switch mt-1">
 														<input
 															{...field}
-															className={field.value ? toggleEnabled : toggleClasses}
 															type="checkbox"
-															checked={field.value}
+															className={cn("form-check-input", {
+																"bg-cyan": field.checked,
+															})}
 														/>
 
 														<span className="form-check-label">

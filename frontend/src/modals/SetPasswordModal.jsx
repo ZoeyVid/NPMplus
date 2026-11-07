@@ -16,12 +16,9 @@ const showSetPasswordModal = (id) => {
 
 const SetPasswordModal = EasyModal.create(({ id, visible, remove, close, formRef }) => {
 	const [error, setError] = useState(null);
-	const [isSubmitting, setIsSubmitting] = useState(false);
 	const [showPassword, setShowPassword] = useState(false);
 
-	const onSubmit = async (values, { setSubmitting }) => {
-		if (isSubmitting) return;
-		setIsSubmitting(true);
+	const onSubmit = async (values) => {
 		setError(null);
 		try {
 			await updateAuth(id, values.new);
@@ -30,12 +27,10 @@ const SetPasswordModal = EasyModal.create(({ id, visible, remove, close, formRef
 		} catch (err) {
 			setError(<T id={err.message} />);
 		}
-		setIsSubmitting(false);
-		setSubmitting(false);
 	};
 
 	return (
-		<Modal show={visible} backdrop="static" onHide={isSubmitting ? undefined : close}>
+		<Modal show={visible} backdrop="static" onHide={close}>
 			<Formik
 				innerRef={formRef}
 				initialValues={{
@@ -43,7 +38,7 @@ const SetPasswordModal = EasyModal.create(({ id, visible, remove, close, formRef
 				}}
 				onSubmit={onSubmit}
 			>
-				{() => (
+				{({ isSubmitting }) => (
 					<Form>
 						<Modal.Header closeButton={!isSubmitting}>
 							<Modal.Title>
@@ -59,7 +54,7 @@ const SetPasswordModal = EasyModal.create(({ id, visible, remove, close, formRef
 							</Alert>
 							<div className="mb-3">
 								<Field name="new" validate={(value) => validateString(value, 8, 255, false)}>
-									{({ field, form }) => (
+									{({ field, meta }) => (
 										<div className="input-group input-group-flat">
 											<div className="form-floating">
 												<input
@@ -67,7 +62,7 @@ const SetPasswordModal = EasyModal.create(({ id, visible, remove, close, formRef
 													type={showPassword ? "text" : "password"}
 													autoComplete="new-password"
 													required
-													className={`form-control ${form.errors.new && form.touched.new ? "is-invalid" : ""}`}
+													className={`form-control ${meta.touched && meta.error ? "is-invalid" : ""}`}
 													placeholder={intl.formatMessage({
 														id: "user.new-password",
 													})}
