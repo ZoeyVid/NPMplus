@@ -126,9 +126,9 @@ export function AccessFields({ location, name, typeFieldName, authRequest, disab
 					<T id={error.message} />
 				</div>
 			) : null}
-			<div className="row">
+			<div className="row mb-3">
 				<div className="col-md-10">
-					<div className="input-group mb-3 shadow-none">
+					<div className="input-group shadow-none">
 						<Field name={typeFieldName}>
 							{({ field }) => (
 								<Select
