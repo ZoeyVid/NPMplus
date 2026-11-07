@@ -1,4 +1,4 @@
-import { IconEye, IconEyeOff, IconX } from "@tabler/icons-react";
+import { IconArrowDown, IconArrowUp, IconEye, IconEyeOff, IconX } from "@tabler/icons-react";
 import { Field, FieldArray, useFormikContext } from "formik";
 import { useState } from "react";
 import { intl, T } from "src/locale";
@@ -16,23 +16,23 @@ export function BasicAuthFields({ name = "items" }) {
 	return (
 		<>
 			<div className="row">
-				<div className="col-6">
+				<div className="col-4">
 					<div className="form-label">
 						<T id="username" />
 					</div>
 				</div>
-				<div className="col-6">
+				<div className="col-8">
 					<div className="form-label">
 						<T id="password" />
 					</div>
 				</div>
 			</div>
 			<FieldArray name={name} validateOnChange={false}>
-				{({ push, remove, replace }) => (
+				{({ push, remove, replace, swap }) => (
 					<>
 						{items.map((item, idx) => (
 							<div className="row mb-3" key={idx}>
-								<div className="col-6">
+								<div className="col-4">
 									<Field name={`${name}.${idx}.username`}>
 										{({ field }) => (
 											<input
@@ -45,7 +45,7 @@ export function BasicAuthFields({ name = "items" }) {
 										)}
 									</Field>
 								</div>
-								<div className="col-5">
+								<div className="col-4">
 									<div className="input-group input-group-flat">
 										<Field name={`${name}.${idx}.password`}>
 											{({ field }) => (
@@ -88,10 +88,46 @@ export function BasicAuthFields({ name = "items" }) {
 										</span>
 									</div>
 								</div>
-								<div className="col-1">
+								<div className="col-4 d-flex gap-1">
+									{idx > 0 && (
+										<button
+											type="button"
+											aria-label="Move up"
+											className="btn"
+											onClick={() => {
+												swap(idx - 1, idx);
+												setRevealed(
+													Object.assign([...revealed], {
+														[idx - 1]: revealed[idx],
+														[idx]: revealed[idx - 1],
+													}),
+												);
+											}}
+										>
+											<IconArrowUp size={16} />
+										</button>
+									)}
+									{idx < items.length - 1 && (
+										<button
+											type="button"
+											aria-label="Move down"
+											className="btn"
+											onClick={() => {
+												swap(idx, idx + 1);
+												setRevealed(
+													Object.assign([...revealed], {
+														[idx]: revealed[idx + 1],
+														[idx + 1]: revealed[idx],
+													}),
+												);
+											}}
+										>
+											<IconArrowDown size={16} />
+										</button>
+									)}
 									<button
 										type="button"
-										className="btn btn-ghost btn-danger p-0"
+										className="btn btn-ghost btn-danger p-0 ms-auto"
 										onClick={() => {
 											if (items.length === 1) {
 												replace(idx, blankItem);
