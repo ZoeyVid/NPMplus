@@ -1,6 +1,6 @@
 import Access from "../access.js";
 
-export default () => async (req, res, next) => {
+export default async (req, res, next) => {
 	const token = req.signedCookies?.["__Host-Http-token"] || null;
 
 	//if (!token) {

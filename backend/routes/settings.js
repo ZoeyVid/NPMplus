@@ -20,7 +20,7 @@ router
 	 *
 	 * Retrieve all settings
 	 */
-	.get(jwtdecode(), validate, async (_, res) => {
+	.get(jwtdecode, validate, async (_, res) => {
 		const rows = await internalSetting.getAll(res.locals.access);
 		res.status(200).send(rows);
 	});
@@ -38,7 +38,7 @@ router
 	 *
 	 * Retrieve a specific setting
 	 */
-	.get(jwtdecode(), validate, async (_, res) => {
+	.get(jwtdecode, validate, async (_, res) => {
 		const row = await internalSetting.get(res.locals.access, {
 			id: res.locals.params.setting_id,
 		});
@@ -50,7 +50,7 @@ router
 	 *
 	 * Update and existing setting
 	 */
-	.put(jwtdecode(), validate, async (_, res) => {
+	.put(jwtdecode, validate, async (_, res) => {
 		const result = await internalSetting.update(res.locals.access, {
 			...res.locals.body,
 			id: res.locals.params.setting_id,
