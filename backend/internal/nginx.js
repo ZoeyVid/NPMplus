@@ -8,6 +8,7 @@ import internalProxyHostAccessList from "./proxy-host-access-list.js";
 
 const controlApi = new Client("http://localhost", { connect: { socketPath: "/run/nginx-control.sock" } });
 const authRequestProviders = ["anubis", "tinyauth", "oauth2proxy", "voidauth", "authelia", "authentik"];
+const rawPlaceholderPattern = /^[ \t]*npmplus#raw#(?<index>\d+);$/gmu;
 
 const internalNginx = {
 	/**
@@ -225,6 +226,12 @@ const internalNginx = {
 	generateConfig: async (host_type, host_row) => {
 		// Prevent modifying the original object:
 		const host = structuredClone(host_row);
+		const raws = [];
+		for (const item of [host, ...(host.locations ?? [])]) {
+			for (const field of ["advanced_config", "npmplus_location_config", "npmplus_advanced_config"]) {
+				if (item[field]) item[field] = `npmplus#raw#${raws.push(item[field]) - 1};`;
+			}
+		}
 
 		const renderEngine = utils.getRenderEngine();
 
@@ -319,7 +326,11 @@ const internalNginx = {
 			host,
 		);
 
-		await writeFile(filename, config_text, { encoding: "utf8" });
+		await writeFile(
+			filename,
+			utils.reindent(config_text).replace(rawPlaceholderPattern, (_, index) => raws[index].trimEnd()),
+			{ encoding: "utf8" },
+		);
 		logger.debug("Wrote config:", filename);
 
 		return true;
