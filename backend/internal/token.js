@@ -145,11 +145,12 @@ export default {
 	 */
 	getFreshToken: async (access, afterRevoke, data = {}) => {
 		const Token = TokenModel();
+		const userId = access?.token.getUserId(0);
 
-		if (access?.token.getUserId(0) && access.token.hasScope("user")) {
+		if (userId && access.token.hasScope("user")) {
 			const expiresIn = `${Math.min(data.expires_in ?? 1, process.env.TOKEN_MAX_EXPIRY)}h`;
 			const signed = await Token.create({
-				uid: access.token.getUserId(0),
+				uid: userId,
 				scope: "user",
 				expiresIn,
 				iat: Math.floor(Date.now() / 1000) + (afterRevoke ? 1 : 0),
@@ -159,9 +160,9 @@ export default {
 				await internalAuditLog.add(access, {
 					action: "updated",
 					object_type: "user",
-					object_id: access.token.getUserId(0),
+					object_id: userId,
 					meta: {
-						name: (await userModel.query().findById(access.token.getUserId(0))).name,
+						name: (await userModel.query().findById(userId)).name,
 						token_renewed: { ...decodeJwt(signed.token), expires: signed.expires, expires_in: expiresIn },
 					},
 				});

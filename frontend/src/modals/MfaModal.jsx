@@ -131,11 +131,12 @@ const MfaModal = EasyModal.create(({ id, visible, close, formRef }) => {
 							</p>
 						)}
 					</div>
-					{!isEnabled ? (
+					{!isEnabled && (
 						<Button fullWidth color="azure" onClick={handleStartSetup} isLoading={isSubmitting}>
 							<T id="totp.enable" />
 						</Button>
-					) : (
+					)}
+					{isEnabled && (
 						<div className="d-flex flex-column gap-2">
 							<Button fullWidth onClick={() => setStep("disable")}>
 								<T id="totp.disable" />
@@ -204,6 +205,7 @@ const MfaModal = EasyModal.create(({ id, visible, close, formRef }) => {
 														type="button"
 														tabIndex={-1}
 														aria-label="toggle visibility"
+														onMouseDown={(e) => e.preventDefault()}
 														className="p-0 border-0 bg-transparent text-secondary d-flex align-items-center cursor-pointer"
 														onClick={() => setShowCode((v) => !v)}
 													>
@@ -299,6 +301,7 @@ const MfaModal = EasyModal.create(({ id, visible, close, formRef }) => {
 														type="button"
 														tabIndex={-1}
 														aria-label="toggle visibility"
+														onMouseDown={(e) => e.preventDefault()}
 														className="p-0 border-0 bg-transparent text-secondary d-flex align-items-center cursor-pointer"
 														onClick={() => setShowCode((v) => !v)}
 													>
@@ -374,6 +377,7 @@ const MfaModal = EasyModal.create(({ id, visible, close, formRef }) => {
 														type="button"
 														tabIndex={-1}
 														aria-label="toggle visibility"
+														onMouseDown={(e) => e.preventDefault()}
 														className="p-0 border-0 bg-transparent text-secondary d-flex align-items-center cursor-pointer"
 														onClick={() => setShowCode((v) => !v)}
 													>
