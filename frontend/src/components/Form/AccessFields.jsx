@@ -100,14 +100,13 @@ export function AccessFields({ location, name, typeFieldName, authRequest, disab
 		if (e.type === "custom" && values.length === 0) push(options[0].value);
 	};
 
-	const acls = (
+	const aclIds =
 		{
 			custom: values,
 			global: formValues.npmplusAccessListType === "custom" ? formValues.npmplusAccessListIds : [],
-		}[aclValue] ?? []
-	)
-		.map((id) => data?.find((acl) => acl.id === id))
-		.filter(Boolean);
+		}[aclValue] ?? [];
+	const acls = aclIds.map((id) => data?.find((acl) => acl.id === id)).filter(Boolean);
+	const first = data?.find((acl) => acl.id === aclIds[0]);
 
 	return (
 		<div className="mb-3">
@@ -219,14 +218,31 @@ export function AccessFields({ location, name, typeFieldName, authRequest, disab
 				)}
 			</FieldArray>
 			{authRequest !== "none" &&
-				acls[0]?.satisfyAny &&
-				acls.some(
-					(acl) =>
-						acl.items?.length > 0 || acl.clients?.some((client) => client.address?.toLowerCase() !== "all"),
-				) && (
+				data &&
+				aclIds.length > 0 &&
+				(!first ||
+					(first.satisfyAny &&
+						(acls.length !== aclIds.length ||
+							acls.some(
+								(acl) =>
+									acl.items?.length > 0 ||
+									acl.clients?.some((client) => client.address?.toLowerCase() !== "all"),
+							)))) && (
 					<p className="text-warning">
 						<IconAlertTriangle size={16} className="me-1" />
-						<T id="access-list.satisfy-any-warning" data={{ name: acls[0].name }} />
+						<T
+							id="access-list.satisfy-any-warning"
+							data={{ name: first?.name ?? `#${aclIds[0]}`, visible: first ? "yes" : "no" }}
+						/>
+					</p>
+				)}
+			{data &&
+				(acls.length !== aclIds.length ||
+					(acls.some((acl) => acl.passAuth && acl.items?.length > 0) &&
+						acls.some((acl) => !acl.passAuth && acl.items?.length > 0))) && (
+					<p className="text-warning">
+						<IconAlertTriangle size={16} className="me-1" />
+						<T id="access-list.pass-auth-warning" />
 					</p>
 				)}
 		</div>
