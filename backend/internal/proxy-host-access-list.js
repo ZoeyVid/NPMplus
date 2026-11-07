@@ -234,7 +234,7 @@ const internalProxyHostAccessList = {
 				});
 			}
 
-			if (!aclIds.isSubsetOf(new Set((await query).map((row) => row.id)))) {
+			if ((await query).length !== aclIds.size) {
 				throw new errs.ValidationError("One or more selected Access Lists no longer exist");
 			}
 		}
