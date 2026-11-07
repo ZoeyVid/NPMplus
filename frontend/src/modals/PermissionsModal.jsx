@@ -17,11 +17,8 @@ const showPermissionsModal = (id) => {
 const PermissionsModal = EasyModal.create(({ id, visible, remove, close, formRef }) => {
 	const [errorMsg, setErrorMsg] = useState(null);
 	const { data, isPending, error } = useUser(id);
-	const [isSubmitting, setIsSubmitting] = useState(false);
 
-	const onSubmit = async (values, { setSubmitting }) => {
-		if (isSubmitting) return;
-		setIsSubmitting(true);
+	const onSubmit = async (values) => {
 		setErrorMsg(null);
 		try {
 			await setPermissions(id, values);
@@ -30,8 +27,6 @@ const PermissionsModal = EasyModal.create(({ id, visible, remove, close, formRef
 		} catch (err) {
 			setErrorMsg(<T id={err.message} />);
 		}
-		setSubmitting(false);
-		setIsSubmitting(false);
 	};
 
 	const getClasses = (active) =>
@@ -128,7 +123,7 @@ const PermissionsModal = EasyModal.create(({ id, visible, remove, close, formRef
 	};
 
 	return (
-		<Modal show={visible} backdrop="static" onHide={isSubmitting ? undefined : close}>
+		<Modal show={visible} backdrop="static" onHide={close}>
 			{error && (
 				<Alert variant="danger" className="m-3">
 					{error?.message}
@@ -149,7 +144,7 @@ const PermissionsModal = EasyModal.create(({ id, visible, remove, close, formRef
 					}}
 					onSubmit={onSubmit}
 				>
-					{() => (
+					{({ isSubmitting }) => (
 						<Form>
 							<Modal.Header closeButton={!isSubmitting}>
 								<Modal.Title>

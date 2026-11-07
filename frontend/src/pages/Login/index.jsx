@@ -19,7 +19,7 @@ function TotpForm() {
 	const [formErr, setFormErr] = useState("");
 	const { submitTotp, cancelTotp } = useAuthState();
 
-	const onSubmit = async (values, { setSubmitting, resetForm }) => {
+	const onSubmit = async (values, { resetForm }) => {
 		setFormErr("");
 		try {
 			await submitTotp(values);
@@ -27,7 +27,6 @@ function TotpForm() {
 			setFormErr(err.message);
 			resetForm();
 		}
-		setSubmitting(false);
 	};
 
 	useEffect(() => {
@@ -48,7 +47,7 @@ function TotpForm() {
 					<Form>
 						<div className="mb-3">
 							<Field name="code" validate={(value) => validateString(value, 6, 8)}>
-								{({ field, form }) => (
+								{({ field, meta }) => (
 									<label className="form-label">
 										<T id="login.totp-code" />
 										<div className="input-group input-group-flat">
@@ -59,7 +58,7 @@ function TotpForm() {
 												autoComplete="one-time-code"
 												required
 												maxLength={8}
-												className={`form-control ${form.errors.code && form.touched.code ? "is-invalid" : ""}`}
+												className={`form-control ${meta.touched && meta.error ? "is-invalid" : ""}`}
 												placeholder={intl.formatMessage({
 													id: "login.totp-code-placeholder",
 												})}
@@ -114,14 +113,13 @@ function PasswordForm() {
 	const { login } = useAuthState();
 	const health = useHealth();
 
-	const onSubmit = async (values, { setSubmitting }) => {
+	const onSubmit = async (values) => {
 		setFormErr("");
 		try {
 			await login(values.email, values.password);
 		} catch (err) {
 			setFormErr(err.message);
 		}
-		setSubmitting(false);
 	};
 
 	useEffect(() => {
@@ -153,7 +151,7 @@ function PasswordForm() {
 						<Form>
 							<div className="mb-3">
 								<Field name="email" validate={validateEmail}>
-									{({ field, form }) => (
+									{({ field, meta }) => (
 										<label className="form-label">
 											<T id="email-address" />
 											<input
@@ -162,13 +160,13 @@ function PasswordForm() {
 												type="email"
 												autoComplete="username"
 												required
-												className={`form-control ${form.errors.email && form.touched.email ? " is-invalid" : ""}`}
+												className={`form-control ${meta.touched && meta.error ? "is-invalid" : ""}`}
 												placeholder={intl.formatMessage({
 													id: "email-address",
 												})}
 											/>
 
-											<div className="invalid-feedback">{form.errors.email}</div>
+											<ErrorMessage name="email" component="div" className="invalid-feedback" />
 										</label>
 									)}
 								</Field>
