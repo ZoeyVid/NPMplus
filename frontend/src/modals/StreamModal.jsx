@@ -1,4 +1,4 @@
-import { Field, Form, Formik } from "formik";
+import { ErrorMessage, Field, Form, Formik } from "formik";
 import { useState } from "react";
 import { Alert } from "react-bootstrap";
 import Modal from "react-bootstrap/Modal";
@@ -26,15 +26,12 @@ const StreamModal = EasyModal.create(({ id, visible, remove, close, formRef }) =
 	const { data, isPending, error } = useStream(id);
 	const { data: allStreams } = useStreams();
 	const suggestions = useDirectorySuggestions(allStreams);
-	const { mutate: setStream } = useSetStream();
+	const { mutateAsync: setStream } = useSetStream();
 	const { data: currentUser } = useUser("me");
 	const canManage = hasPermission(STREAMS, MANAGE, currentUser?.permissions, currentUser?.npmplusIsAdmin);
 	const [errorMsg, setErrorMsg] = useState(null);
-	const [isSubmitting, setIsSubmitting] = useState(false);
 
-	const onSubmit = (values, { setSubmitting, setFieldValue }) => {
-		if (isSubmitting) return;
-		setIsSubmitting(true);
+	const onSubmit = async (values, { setFieldValue }) => {
 		setErrorMsg(null);
 
 		const payload = {
@@ -43,30 +40,24 @@ const StreamModal = EasyModal.create(({ id, visible, remove, close, formRef }) =
 			domainNames: values.certificateId === "new" ? values.domainNames : undefined,
 		};
 
-		setStream(payload, {
-			onError: (err) => {
-				if (err.payload?.error?.certificate_id) {
-					void setFieldValue("certificateId", err.payload.error.certificate_id);
-				}
-				if (err.payload?.error?.output) {
-					setErrorMsg(<CommandOutput output={err.payload.error.output} />);
-				} else {
-					setErrorMsg(<T id={err.message} />);
-				}
-			},
-			onSuccess: () => {
-				showObjectSuccess("stream", "saved");
-				remove();
-			},
-			onSettled: () => {
-				setIsSubmitting(false);
-				setSubmitting(false);
-			},
-		});
+		try {
+			await setStream(payload);
+			showObjectSuccess("stream", "saved");
+			remove();
+		} catch (err) {
+			if (err.payload?.error?.certificate_id) {
+				setFieldValue("certificateId", err.payload.error.certificate_id);
+			}
+			if (err.payload?.error?.output) {
+				setErrorMsg(<CommandOutput output={err.payload.error.output} />);
+			} else {
+				setErrorMsg(<T id={err.message} />);
+			}
+		}
 	};
 
 	return (
-		<Modal show={visible} backdrop={canManage ? "static" : true} onHide={isSubmitting ? undefined : close}>
+		<Modal show={visible} backdrop={canManage ? "static" : true} onHide={close}>
 			{error && (
 				<Alert variant="danger" className="m-3">
 					{error?.message}
@@ -93,7 +84,7 @@ const StreamModal = EasyModal.create(({ id, visible, remove, close, formRef }) =
 					}}
 					onSubmit={onSubmit}
 				>
-					{({ values, setFieldValue }) => (
+					{({ values, setFieldValue, setValues, isSubmitting }) => (
 						<Form onInvalid={showTabOfInvalid}>
 							<Modal.Header closeButton={!isSubmitting}>
 								<Modal.Title>
@@ -153,7 +144,7 @@ const StreamModal = EasyModal.create(({ id, visible, remove, close, formRef }) =
 													name="incomingPort"
 													validate={(value) => validateString(value, 1, 11)}
 												>
-													{({ field, form }) => (
+													{({ field, meta }) => (
 														<div className="mb-3">
 															<label className="form-label" htmlFor="incomingPort">
 																<T id="stream.incoming-port" />
@@ -164,27 +155,22 @@ const StreamModal = EasyModal.create(({ id, visible, remove, close, formRef }) =
 																minLength={1}
 																maxLength={11}
 																pattern="[0-9]{1,5}(-[0-9]{1,5})?"
-																className={`form-control ${form.errors.incomingPort && form.touched.incomingPort ? "is-invalid" : ""}`}
+																className={`form-control ${meta.touched && meta.error ? "is-invalid" : ""}`}
 																required
 																placeholder="eg: 8080"
 																{...field}
 															/>
 
-															{form.errors.incomingPort ? (
-																<div className="invalid-feedback">
-																	{form.touched.incomingPort
-																		? form.errors.incomingPort
-																		: null}
-																</div>
-															) : null}
+															<ErrorMessage
+																name="incomingPort"
+																component="div"
+																className="invalid-feedback"
+															/>
 														</div>
 													)}
 												</Field>
-												<Field
-													name="npmplusDescription"
-													validate={(value) => validateString(value, 0, 255)}
-												>
-													{({ field, form }) => (
+												<Field name="npmplusDescription">
+													{({ field }) => (
 														<div className="mb-3">
 															<label className="form-label" htmlFor="npmplusDescription">
 																<T id="stream.description" />
@@ -193,20 +179,12 @@ const StreamModal = EasyModal.create(({ id, visible, remove, close, formRef }) =
 																id="npmplusDescription"
 																type="text"
 																maxLength={255}
-																className={`form-control ${form.errors.npmplusDescription && form.touched.npmplusDescription ? "is-invalid" : ""}`}
+																className="form-control"
 																placeholder={intl.formatMessage({
 																	id: "stream.description.placeholder",
 																})}
 																{...field}
 															/>
-
-															{form.errors.npmplusDescription ? (
-																<div className="invalid-feedback">
-																	{form.touched.npmplusDescription
-																		? form.errors.npmplusDescription
-																		: null}
-																</div>
-															) : null}
 														</div>
 													)}
 												</Field>
@@ -223,7 +201,7 @@ const StreamModal = EasyModal.create(({ id, visible, remove, close, formRef }) =
 																)
 															}
 														>
-															{({ field, form }) => (
+															{({ field, meta }) => (
 																<div className="mb-3">
 																	<label
 																		className="form-label"
@@ -234,7 +212,7 @@ const StreamModal = EasyModal.create(({ id, visible, remove, close, formRef }) =
 																	<input
 																		id="forwardingHost"
 																		type="text"
-																		className={`form-control ${form.errors.forwardingHost && form.touched.forwardingHost ? "is-invalid" : ""}`}
+																		className={`form-control ${meta.touched && meta.error ? "is-invalid" : ""}`}
 																		required
 																		pattern="\S+"
 																		placeholder={intl.formatMessage({
@@ -243,23 +221,18 @@ const StreamModal = EasyModal.create(({ id, visible, remove, close, formRef }) =
 																		{...field}
 																	/>
 
-																	{form.errors.forwardingHost ? (
-																		<div className="invalid-feedback">
-																			{form.touched.forwardingHost
-																				? form.errors.forwardingHost
-																				: null}
-																		</div>
-																	) : null}
+																	<ErrorMessage
+																		name="forwardingHost"
+																		component="div"
+																		className="invalid-feedback"
+																	/>
 																</div>
 															)}
 														</Field>
 													</div>
 													<div className="col-md-4">
-														<Field
-															name="forwardingPort"
-															validate={(value) => validateString(value, 0, 12)}
-														>
-															{({ field, form }) => (
+														<Field name="forwardingPort">
+															{({ field }) => (
 																<div className="mb-3">
 																	<label
 																		className="form-label"
@@ -272,18 +245,10 @@ const StreamModal = EasyModal.create(({ id, visible, remove, close, formRef }) =
 																		type="text"
 																		maxLength={12}
 																		pattern="[0-9]{0,5}|\$server_port"
-																		className={`form-control ${form.errors.forwardingPort && form.touched.forwardingPort ? "is-invalid" : ""}`}
+																		className="form-control"
 																		placeholder="eg: 8081"
 																		{...field}
 																	/>
-
-																	{form.errors.forwardingPort ? (
-																		<div className="invalid-feedback">
-																			{form.touched.forwardingPort
-																				? form.errors.forwardingPort
-																				: null}
-																		</div>
-																	) : null}
 																</div>
 															)}
 														</Field>
@@ -307,46 +272,27 @@ const StreamModal = EasyModal.create(({ id, visible, remove, close, formRef }) =
 																		{({ field }) => (
 																			<span className="form-check form-check-single form-switch">
 																				<input
+																					{...field}
 																					id="tcpForwarding"
 																					className="form-check-input"
 																					type="checkbox"
-																					name={field.name}
-																					checked={field.value}
 																					onChange={(e) => {
-																						setFieldValue(
-																							field.name,
-																							e.target.checked,
-																						);
-																						if (!e.target.checked) {
-																							setFieldValue(
-																								"udpForwarding",
-																								true,
-																							);
-																							if (
-																								values.npmplusProxyProtocolForwarding ===
-																								1
-																							) {
-																								setFieldValue(
-																									"npmplusProxyProtocolForwarding",
-																									2,
-																								);
-																							}
-																							setFieldValue(
-																								"npmplusProxyTls",
-																								false,
-																							);
-																							setFieldValue(
-																								"certificateId",
-																								0,
-																							);
-																							setFieldValue(
-																								"npmplusMtlsCertificateId",
-																								0,
-																							);
-																							setFieldValue(
-																								"npmplusMtlsVerifyClientOptional",
-																								false,
-																							);
+																						if (e.target.checked) {
+																							field.onChange(e);
+																						} else {
+																							setValues({
+																								...values,
+																								tcpForwarding: false,
+																								udpForwarding: true,
+																								...(values.npmplusProxyProtocolForwarding ===
+																									1 && {
+																									npmplusProxyProtocolForwarding: 2,
+																								}),
+																								npmplusProxyTls: false,
+																								certificateId: 0,
+																								npmplusMtlsCertificateId: 0,
+																								npmplusMtlsVerifyClientOptional: false,
+																							});
 																						}
 																					}}
 																				/>
@@ -369,50 +315,30 @@ const StreamModal = EasyModal.create(({ id, visible, remove, close, formRef }) =
 																		{({ field }) => (
 																			<span className="form-check form-check-single form-switch">
 																				<input
+																					{...field}
 																					id="udpForwarding"
 																					className="form-check-input"
 																					type="checkbox"
-																					name={field.name}
-																					checked={field.value}
 																					onChange={(e) => {
-																						setFieldValue(
-																							field.name,
-																							e.target.checked,
-																						);
-
 																						if (e.target.checked) {
-																							if (
-																								values.npmplusProxyProtocolForwarding ===
-																								1
-																							) {
-																								setFieldValue(
-																									"npmplusProxyProtocolForwarding",
-																									2,
-																								);
-																							}
-																							setFieldValue(
-																								"npmplusProxyTls",
-																								false,
-																							);
-																							setFieldValue(
-																								"certificateId",
-																								0,
-																							);
-																							setFieldValue(
-																								"npmplusMtlsCertificateId",
-																								0,
-																							);
-																							setFieldValue(
-																								"npmplusMtlsVerifyClientOptional",
-																								false,
-																							);
-																						}
-
-																						if (!e.target.checked) {
-																							setFieldValue(
-																								"tcpForwarding",
-																								true,
-																							);
+																							setValues({
+																								...values,
+																								udpForwarding: true,
+																								...(values.npmplusProxyProtocolForwarding ===
+																									1 && {
+																									npmplusProxyProtocolForwarding: 2,
+																								}),
+																								npmplusProxyTls: false,
+																								certificateId: 0,
+																								npmplusMtlsCertificateId: 0,
+																								npmplusMtlsVerifyClientOptional: false,
+																							});
+																						} else {
+																							setValues({
+																								...values,
+																								udpForwarding: false,
+																								tcpForwarding: true,
+																							});
 																						}
 																					}}
 																				/>
@@ -435,18 +361,11 @@ const StreamModal = EasyModal.create(({ id, visible, remove, close, formRef }) =
 																		{({ field }) => (
 																			<span className="form-check form-check-single form-switch">
 																				<input
+																					{...field}
 																					id="npmplusProxyTls"
 																					className="form-check-input"
 																					type="checkbox"
-																					name={field.name}
-																					checked={field.value}
 																					disabled={values.udpForwarding}
-																					onChange={(e) => {
-																						setFieldValue(
-																							field.name,
-																							e.target.checked,
-																						);
-																					}}
 																				/>
 																			</span>
 																		)}

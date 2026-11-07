@@ -1,4 +1,4 @@
-import { Field, Form, Formik } from "formik";
+import { ErrorMessage, Field, Form, Formik } from "formik";
 import { useRef, useState } from "react";
 import { Alert } from "react-bootstrap";
 import Modal from "react-bootstrap/Modal";
@@ -17,9 +17,8 @@ const showUserModal = (id) => {
 const UserModal = EasyModal.create(({ id, visible, remove, close, formRef }) => {
 	const { data, isPending, error } = useUser(id);
 	const { data: currentUser, isPending: currentIsPending } = useUser("me");
-	const { mutate: setUser } = useSetUser();
+	const { mutateAsync: setUser } = useSetUser();
 	const [errorMsg, setErrorMsg] = useState(null);
-	const [isSubmitting, setIsSubmitting] = useState(false);
 	const fileInput = useRef(null);
 
 	const changeAvatar = async (fn) => {
@@ -31,9 +30,7 @@ const UserModal = EasyModal.create(({ id, visible, remove, close, formRef }) => 
 		}
 	};
 
-	const onSubmit = (values, { setSubmitting }) => {
-		if (isSubmitting) return;
-		setIsSubmitting(true);
+	const onSubmit = async (values) => {
 		setErrorMsg(null);
 
 		const payload = {
@@ -47,21 +44,17 @@ const UserModal = EasyModal.create(({ id, visible, remove, close, formRef }) => 
 			delete payload.isDisabled;
 		}
 
-		setUser(payload, {
-			onError: (err) => setErrorMsg(<T id={err.message} />),
-			onSuccess: () => {
-				showObjectSuccess("user", "saved");
-				remove();
-			},
-			onSettled: () => {
-				setIsSubmitting(false);
-				setSubmitting(false);
-			},
-		});
+		try {
+			await setUser(payload);
+			showObjectSuccess("user", "saved");
+			remove();
+		} catch (err) {
+			setErrorMsg(<T id={err.message} />);
+		}
 	};
 
 	return (
-		<Modal show={visible} backdrop="static" onHide={isSubmitting ? undefined : close}>
+		<Modal show={visible} backdrop="static" onHide={close}>
 			{error && (
 				<Alert variant="danger" className="m-3">
 					{error?.message}
@@ -79,7 +72,7 @@ const UserModal = EasyModal.create(({ id, visible, remove, close, formRef }) => 
 					}}
 					onSubmit={onSubmit}
 				>
-					{() => (
+					{({ isSubmitting }) => (
 						<Form>
 							<Modal.Header closeButton={!isSubmitting}>
 								<Modal.Title>
@@ -127,13 +120,13 @@ const UserModal = EasyModal.create(({ id, visible, remove, close, formRef }) => 
 								)}
 								<div className="mb-3">
 									<Field name="name" validate={(value) => validateString(value, 1, 255)}>
-										{({ field, form }) => (
+										{({ field, meta }) => (
 											<div className="form-floating mb-3">
 												<input
 													id="name"
 													autoComplete="off"
 													required
-													className={`form-control ${form.errors.name && form.touched.name ? "is-invalid" : ""}`}
+													className={`form-control ${meta.touched && meta.error ? "is-invalid" : ""}`}
 													placeholder={intl.formatMessage({
 														id: "user.full-name",
 													})}
@@ -143,25 +136,25 @@ const UserModal = EasyModal.create(({ id, visible, remove, close, formRef }) => 
 												<label htmlFor="name">
 													<T id="user.full-name" />
 												</label>
-												{form.errors.name ? (
-													<div className="invalid-feedback">
-														{form.touched.name ? form.errors.name : null}
-													</div>
-												) : null}
+												<ErrorMessage
+													name="name"
+													component="div"
+													className="invalid-feedback"
+												/>
 											</div>
 										)}
 									</Field>
 								</div>
 								<div className="mb-3">
 									<Field name="email" validate={validateEmail}>
-										{({ field, form }) => (
+										{({ field, meta }) => (
 											<div className="form-floating mb-3">
 												<input
 													id="email"
 													type="email"
 													autoComplete="off"
 													required
-													className={`form-control ${form.errors.email && form.touched.email ? "is-invalid" : ""}`}
+													className={`form-control ${meta.touched && meta.error ? "is-invalid" : ""}`}
 													placeholder={intl.formatMessage({
 														id: "email-address",
 													})}
@@ -171,11 +164,11 @@ const UserModal = EasyModal.create(({ id, visible, remove, close, formRef }) => 
 												<label htmlFor="email">
 													<T id="email-address" />
 												</label>
-												{form.errors.email ? (
-													<div className="invalid-feedback">
-														{form.touched.email ? form.errors.email : null}
-													</div>
-												) : null}
+												<ErrorMessage
+													name="email"
+													component="div"
+													className="invalid-feedback"
+												/>
 											</div>
 										)}
 									</Field>

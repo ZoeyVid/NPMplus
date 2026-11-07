@@ -25,17 +25,14 @@ const showDeadHostModal = (id) => {
 
 const DeadHostModal = EasyModal.create(({ id, visible, remove, close, formRef }) => {
 	const { data, isPending, error } = useDeadHost(id);
-	const { mutate: setDeadHost } = useSetDeadHost();
+	const { mutateAsync: setDeadHost } = useSetDeadHost();
 	const { data: allDeadHosts } = useDeadHosts();
 	const suggestions = useDirectorySuggestions(allDeadHosts);
 	const { data: currentUser } = useUser("me");
 	const canManage = hasPermission(DEAD_HOSTS, MANAGE, currentUser?.permissions, currentUser?.npmplusIsAdmin);
 	const [errorMsg, setErrorMsg] = useState(null);
-	const [isSubmitting, setIsSubmitting] = useState(false);
 
-	const onSubmit = (values, { setSubmitting, setFieldValue }) => {
-		if (isSubmitting) return;
-		setIsSubmitting(true);
+	const onSubmit = async (values, { setFieldValue }) => {
 		setErrorMsg(null);
 
 		const payload = {
@@ -43,30 +40,24 @@ const DeadHostModal = EasyModal.create(({ id, visible, remove, close, formRef })
 			...values,
 		};
 
-		setDeadHost(payload, {
-			onError: (err) => {
-				if (err.payload?.error?.certificate_id) {
-					void setFieldValue("certificateId", err.payload.error.certificate_id);
-				}
-				if (err.payload?.error?.output) {
-					setErrorMsg(<CommandOutput output={err.payload.error.output} />);
-				} else {
-					setErrorMsg(<T id={err.message} />);
-				}
-			},
-			onSuccess: () => {
-				showObjectSuccess("dead-host", "saved");
-				remove();
-			},
-			onSettled: () => {
-				setIsSubmitting(false);
-				setSubmitting(false);
-			},
-		});
+		try {
+			await setDeadHost(payload);
+			showObjectSuccess("dead-host", "saved");
+			remove();
+		} catch (err) {
+			if (err.payload?.error?.certificate_id) {
+				setFieldValue("certificateId", err.payload.error.certificate_id);
+			}
+			if (err.payload?.error?.output) {
+				setErrorMsg(<CommandOutput output={err.payload.error.output} />);
+			} else {
+				setErrorMsg(<T id={err.message} />);
+			}
+		}
 	};
 
 	return (
-		<Modal show={visible} backdrop={canManage ? "static" : true} onHide={isSubmitting ? undefined : close}>
+		<Modal show={visible} backdrop={canManage ? "static" : true} onHide={close}>
 			{error && (
 				<Alert variant="danger" className="m-3">
 					{error?.message}
@@ -90,7 +81,7 @@ const DeadHostModal = EasyModal.create(({ id, visible, remove, close, formRef })
 					}}
 					onSubmit={onSubmit}
 				>
-					{({ values }) => (
+					{({ values, isSubmitting }) => (
 						<Form onInvalid={showTabOfInvalid}>
 							<Modal.Header closeButton={!isSubmitting}>
 								<Modal.Title>

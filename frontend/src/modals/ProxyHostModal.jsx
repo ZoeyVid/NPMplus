@@ -1,6 +1,6 @@
 import { IconSettings } from "@tabler/icons-react";
 import cn from "clsx";
-import { Field, Form, Formik } from "formik";
+import { ErrorMessage, Field, Form, Formik } from "formik";
 import { useCallback, useMemo, useState } from "react";
 import { Alert } from "react-bootstrap";
 import Modal from "react-bootstrap/Modal";
@@ -30,11 +30,10 @@ const ProxyHostModal = EasyModal.create(({ id, isClone, visible, remove, close, 
 	const { data, isPending, error } = useProxyHost(id);
 	const { data: allProxyHosts } = useProxyHosts();
 	const suggestions = useDirectorySuggestions(allProxyHosts);
-	const { mutate: setProxyHost } = useSetProxyHost();
+	const { mutateAsync: setProxyHost } = useSetProxyHost();
 	const { data: currentUser } = useUser("me");
 	const canManage = hasPermission(PROXY_HOSTS, MANAGE, currentUser?.permissions, currentUser?.npmplusIsAdmin);
 	const [errorMsg, setErrorMsg] = useState(null);
-	const [isSubmitting, setIsSubmitting] = useState(false);
 	const [advVisible, setAdvVisible] = useState(false);
 	const validateForwardHost = useCallback(
 		(value) => validateUnixTarget(value, currentUser?.npmplusIsAdmin, data?.forwardHost),
@@ -84,9 +83,7 @@ const ProxyHostModal = EasyModal.create(({ id, isClone, visible, remove, close, 
 		[data],
 	);
 
-	const onSubmit = (values, { setSubmitting, setFieldValue }) => {
-		if (isSubmitting) return;
-		setIsSubmitting(true);
+	const onSubmit = async (values, { setFieldValue }) => {
 		setErrorMsg(null);
 
 		// Set the unrestricted acls here (remove any data in their acl lists)
@@ -111,30 +108,24 @@ const ProxyHostModal = EasyModal.create(({ id, isClone, visible, remove, close, 
 				})),
 		};
 
-		setProxyHost(payload, {
-			onError: (err) => {
-				if (err.payload?.error?.certificate_id) {
-					void setFieldValue("certificateId", err.payload.error.certificate_id);
-				}
-				if (err.payload?.error?.output) {
-					setErrorMsg(<CommandOutput output={err.payload.error.output} />);
-				} else {
-					setErrorMsg(<T id={err.message} />);
-				}
-			},
-			onSuccess: () => {
-				showObjectSuccess("proxy-host", "saved");
-				remove();
-			},
-			onSettled: () => {
-				setIsSubmitting(false);
-				setSubmitting(false);
-			},
-		});
+		try {
+			await setProxyHost(payload);
+			showObjectSuccess("proxy-host", "saved");
+			remove();
+		} catch (err) {
+			if (err.payload?.error?.certificate_id) {
+				setFieldValue("certificateId", err.payload.error.certificate_id);
+			}
+			if (err.payload?.error?.output) {
+				setErrorMsg(<CommandOutput output={err.payload.error.output} />);
+			} else {
+				setErrorMsg(<T id={err.message} />);
+			}
+		}
 	};
 
 	return (
-		<Modal show={visible} backdrop={canManage ? "static" : true} onHide={isSubmitting ? undefined : close}>
+		<Modal show={visible} backdrop={canManage ? "static" : true} onHide={close}>
 			{error && (
 				<Alert variant="danger" className="m-3">
 					{error?.message}
@@ -143,7 +134,7 @@ const ProxyHostModal = EasyModal.create(({ id, isClone, visible, remove, close, 
 			{isPending && <Loading noLogo />}
 			{data && (
 				<Formik innerRef={formRef} initialValues={initialValues} onSubmit={onSubmit}>
-					{({ values }) => (
+					{({ values, isSubmitting }) => (
 						<Form onInvalid={showTabOfInvalid}>
 							<Modal.Header closeButton={!isSubmitting}>
 								<Modal.Title>
@@ -284,7 +275,7 @@ const ProxyHostModal = EasyModal.create(({ id, isClone, visible, remove, close, 
 													</div>
 													<div className="col-md-5">
 														<Field name="forwardHost" validate={validateForwardHost}>
-															{({ field, form }) => (
+															{({ field, form, meta }) => (
 																<div className="mb-3">
 																	<label className="form-label" htmlFor="forwardHost">
 																		<T id="proxy-host.forward-host-path" />
@@ -292,7 +283,7 @@ const ProxyHostModal = EasyModal.create(({ id, isClone, visible, remove, close, 
 																	<input
 																		id="forwardHost"
 																		type="text"
-																		className={`form-control ${form.errors.forwardHost && form.touched.forwardHost ? "is-invalid" : ""}`}
+																		className={`form-control ${meta.touched && meta.error ? "is-invalid" : ""}`}
 																		placeholder="example.com"
 																		required={form.values.forwardScheme !== "empty"}
 																		pattern="(?=\S{0,255}$)[^\s\/]{0,253}(\/\S*)?"
@@ -302,19 +293,18 @@ const ProxyHostModal = EasyModal.create(({ id, isClone, visible, remove, close, 
 																		}
 																		{...field}
 																	/>
-																	{form.errors.forwardHost &&
-																		form.touched.forwardHost && (
-																			<div className="invalid-feedback">
-																				{form.errors.forwardHost}
-																			</div>
-																		)}
+																	<ErrorMessage
+																		name="forwardHost"
+																		component="div"
+																		className="invalid-feedback"
+																	/>
 																</div>
 															)}
 														</Field>
 													</div>
 													<div className="col-md">
 														<Field name="forwardPort" validate={validateForwardPort}>
-															{({ field, form }) => (
+															{({ field, form, meta }) => (
 																<div className="mb-3">
 																	<label className="form-label" htmlFor="forwardPort">
 																		<T id="host.forward-port" />
@@ -324,7 +314,7 @@ const ProxyHostModal = EasyModal.create(({ id, isClone, visible, remove, close, 
 																		type="text"
 																		inputMode="numeric"
 																		pattern="[1-9][0-9]*"
-																		className={`form-control ${form.errors.forwardPort && form.touched.forwardPort ? "is-invalid" : ""}`}
+																		className={`form-control ${meta.touched && meta.error ? "is-invalid" : ""}`}
 																		placeholder="eg: 8081"
 																		disabled={
 																			!currentUser?.npmplusIsAdmin &&
@@ -333,13 +323,11 @@ const ProxyHostModal = EasyModal.create(({ id, isClone, visible, remove, close, 
 																		{...field}
 																	/>
 
-																	{form.errors.forwardPort ? (
-																		<div className="invalid-feedback">
-																			{form.touched.forwardPort
-																				? form.errors.forwardPort
-																				: null}
-																		</div>
-																	) : null}
+																	<ErrorMessage
+																		name="forwardPort"
+																		component="div"
+																		className="invalid-feedback"
+																	/>
 																</div>
 															)}
 														</Field>
@@ -668,12 +656,12 @@ const ProxyHostModal = EasyModal.create(({ id, isClone, visible, remove, close, 
 																			name="npmplusAuthRequestUpstream"
 																			validate={validateUpstreamUrl}
 																		>
-																			{({ field, form }) => (
+																			{({ field, meta }) => (
 																				<>
 																					<input
 																						id="npmplusAuthRequestUpstream"
 																						type="text"
-																						className={`form-control ${form.errors.npmplusAuthRequestUpstream && form.touched.npmplusAuthRequestUpstream ? "is-invalid" : ""}`}
+																						className={`form-control ${meta.touched && meta.error ? "is-invalid" : ""}`}
 																						placeholder={intl.formatMessage(
 																							{
 																								id: "host.auth-request-upstream.placeholder",
@@ -684,16 +672,11 @@ const ProxyHostModal = EasyModal.create(({ id, isClone, visible, remove, close, 
 																						{...field}
 																					/>
 
-																					{form.errors
-																						.npmplusAuthRequestUpstream ? (
-																						<div className="invalid-feedback">
-																							{form.touched
-																								.npmplusAuthRequestUpstream
-																								? form.errors
-																										.npmplusAuthRequestUpstream
-																								: null}
-																						</div>
-																					) : null}
+																					<ErrorMessage
+																						name="npmplusAuthRequestUpstream"
+																						component="div"
+																						className="invalid-feedback"
+																					/>
 																				</>
 																			)}
 																		</Field>

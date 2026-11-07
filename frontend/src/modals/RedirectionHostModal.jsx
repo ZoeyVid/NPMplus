@@ -1,5 +1,5 @@
 import cn from "clsx";
-import { Field, Form, Formik } from "formik";
+import { ErrorMessage, Field, Form, Formik } from "formik";
 import { useState } from "react";
 import { Alert } from "react-bootstrap";
 import Modal from "react-bootstrap/Modal";
@@ -32,17 +32,14 @@ const showRedirectionHostModal = (id) => {
 
 const RedirectionHostModal = EasyModal.create(({ id, visible, remove, close, formRef }) => {
 	const { data, isPending, error } = useRedirectionHost(id);
-	const { mutate: setRedirectionHost } = useSetRedirectionHost();
+	const { mutateAsync: setRedirectionHost } = useSetRedirectionHost();
 	const { data: allRedirectionHosts } = useRedirectionHosts();
 	const suggestions = useDirectorySuggestions(allRedirectionHosts);
 	const { data: currentUser } = useUser("me");
 	const canManage = hasPermission(REDIRECTION_HOSTS, MANAGE, currentUser?.permissions, currentUser?.npmplusIsAdmin);
 	const [errorMsg, setErrorMsg] = useState(null);
-	const [isSubmitting, setIsSubmitting] = useState(false);
 
-	const onSubmit = (values, { setSubmitting, setFieldValue }) => {
-		if (isSubmitting) return;
-		setIsSubmitting(true);
+	const onSubmit = async (values, { setFieldValue }) => {
 		setErrorMsg(null);
 
 		const payload = {
@@ -50,30 +47,24 @@ const RedirectionHostModal = EasyModal.create(({ id, visible, remove, close, for
 			...values,
 		};
 
-		setRedirectionHost(payload, {
-			onError: (err) => {
-				if (err.payload?.error?.certificate_id) {
-					void setFieldValue("certificateId", err.payload.error.certificate_id);
-				}
-				if (err.payload?.error?.output) {
-					setErrorMsg(<CommandOutput output={err.payload.error.output} />);
-				} else {
-					setErrorMsg(<T id={err.message} />);
-				}
-			},
-			onSuccess: () => {
-				showObjectSuccess("redirection-host", "saved");
-				remove();
-			},
-			onSettled: () => {
-				setIsSubmitting(false);
-				setSubmitting(false);
-			},
-		});
+		try {
+			await setRedirectionHost(payload);
+			showObjectSuccess("redirection-host", "saved");
+			remove();
+		} catch (err) {
+			if (err.payload?.error?.certificate_id) {
+				setFieldValue("certificateId", err.payload.error.certificate_id);
+			}
+			if (err.payload?.error?.output) {
+				setErrorMsg(<CommandOutput output={err.payload.error.output} />);
+			} else {
+				setErrorMsg(<T id={err.message} />);
+			}
+		}
 	};
 
 	return (
-		<Modal show={visible} backdrop={canManage ? "static" : true} onHide={isSubmitting ? undefined : close}>
+		<Modal show={visible} backdrop={canManage ? "static" : true} onHide={close}>
 			{error && (
 				<Alert variant="danger" className="m-3">
 					{error?.message}
@@ -104,7 +95,7 @@ const RedirectionHostModal = EasyModal.create(({ id, visible, remove, close, for
 					}}
 					onSubmit={onSubmit}
 				>
-					{({ values }) => (
+					{({ values, isSubmitting }) => (
 						<Form onInvalid={showTabOfInvalid}>
 							<Modal.Header closeButton={!isSubmitting}>
 								<Modal.Title>
@@ -199,7 +190,7 @@ const RedirectionHostModal = EasyModal.create(({ id, visible, remove, close, for
 															name="forwardDomainName"
 															validate={(value) => validateString(value, 1, 253)}
 														>
-															{({ field, form }) => (
+															{({ field, meta }) => (
 																<div className="mb-3">
 																	<label
 																		className="form-label"
@@ -210,27 +201,25 @@ const RedirectionHostModal = EasyModal.create(({ id, visible, remove, close, for
 																	<input
 																		id="forwardDomainName"
 																		type="text"
-																		className={`form-control ${form.errors.forwardDomainName && form.touched.forwardDomainName ? "is-invalid" : ""}`}
+																		className={`form-control ${meta.touched && meta.error ? "is-invalid" : ""}`}
 																		required
 																		pattern="\S+"
 																		placeholder="example.com"
 																		{...field}
 																	/>
 
-																	{form.errors.forwardDomainName ? (
-																		<div className="invalid-feedback">
-																			{form.touched.forwardDomainName
-																				? form.errors.forwardDomainName
-																				: null}
-																		</div>
-																	) : null}
+																	<ErrorMessage
+																		name="forwardDomainName"
+																		component="div"
+																		className="invalid-feedback"
+																	/>
 																</div>
 															)}
 														</Field>
 													</div>
 												</div>
 												<Field name="forwardHttpCode">
-													{({ field }) => (
+													{({ field, form }) => (
 														<div className="mb-3">
 															<label className="form-label" htmlFor="forwardHttpCode">
 																<T id="redirection-host.forward-http-code" />
@@ -240,6 +229,12 @@ const RedirectionHostModal = EasyModal.create(({ id, visible, remove, close, for
 																className="form-select"
 																required
 																{...field}
+																onChange={(e) =>
+																	form.setFieldValue(
+																		field.name,
+																		Number(e.target.value),
+																	)
+																}
 															>
 																<option value="301">
 																	<T id="redirection-hosts.http-code.301" />
