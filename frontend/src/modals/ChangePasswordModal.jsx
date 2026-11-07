@@ -16,22 +16,12 @@ const showChangePasswordModal = (id) => {
 
 const ChangePasswordModal = EasyModal.create(({ id, visible, remove, close, formRef }) => {
 	const [error, setError] = useState(null);
-	const [isSubmitting, setIsSubmitting] = useState(false);
 	const [showCurrent, setShowCurrent] = useState(false);
 	const [showNew, setShowNew] = useState(false);
 	const [showConfirm, setShowConfirm] = useState(false);
 
-	const onSubmit = async (values, { setSubmitting }) => {
-		if (values.new !== values.confirm) {
-			setError(<T id="error.passwords-must-match" />);
-			setSubmitting(false);
-			return;
-		}
-
-		if (isSubmitting) return;
-		setIsSubmitting(true);
+	const onSubmit = async (values) => {
 		setError(null);
-
 		try {
 			await updateAuth(id, values.new, values.current);
 			showObjectSuccess("user", "updated");
@@ -39,12 +29,10 @@ const ChangePasswordModal = EasyModal.create(({ id, visible, remove, close, form
 		} catch (err) {
 			setError(<T id={err.message} />);
 		}
-		setIsSubmitting(false);
-		setSubmitting(false);
 	};
 
 	return (
-		<Modal show={visible} backdrop="static" onHide={isSubmitting ? undefined : close}>
+		<Modal show={visible} backdrop="static" onHide={close}>
 			<Formik
 				innerRef={formRef}
 				initialValues={{
@@ -52,9 +40,14 @@ const ChangePasswordModal = EasyModal.create(({ id, visible, remove, close, form
 					new: "",
 					confirm: "",
 				}}
+				validate={(values) => {
+					if (values.new !== values.confirm) {
+						return { confirm: intl.formatMessage({ id: "error.passwords-must-match" }) };
+					}
+				}}
 				onSubmit={onSubmit}
 			>
-				{() => (
+				{({ isSubmitting }) => (
 					<Form>
 						<Modal.Header closeButton={!isSubmitting}>
 							<Modal.Title>
@@ -70,7 +63,7 @@ const ChangePasswordModal = EasyModal.create(({ id, visible, remove, close, form
 							</Alert>
 							<div className="mb-3">
 								<Field name="current" validate={(value) => validateString(value, 1, 255, false)}>
-									{({ field, form }) => (
+									{({ field, meta }) => (
 										<div className="input-group input-group-flat">
 											<div className="form-floating">
 												<input
@@ -78,7 +71,7 @@ const ChangePasswordModal = EasyModal.create(({ id, visible, remove, close, form
 													type={showCurrent ? "text" : "password"}
 													autoComplete="current-password"
 													required
-													className={`form-control ${form.errors.current && form.touched.current ? "is-invalid" : ""}`}
+													className={`form-control ${meta.touched && meta.error ? "is-invalid" : ""}`}
 													placeholder={intl.formatMessage({
 														id: "user.current-password",
 													})}
@@ -107,7 +100,7 @@ const ChangePasswordModal = EasyModal.create(({ id, visible, remove, close, form
 							</div>
 							<div className="mb-3">
 								<Field name="new" validate={(value) => validateString(value, 8, 255, false)}>
-									{({ field, form }) => (
+									{({ field, meta }) => (
 										<div className="input-group input-group-flat">
 											<div className="form-floating">
 												<input
@@ -115,7 +108,7 @@ const ChangePasswordModal = EasyModal.create(({ id, visible, remove, close, form
 													type={showNew ? "text" : "password"}
 													autoComplete="new-password"
 													required
-													className={`form-control ${form.errors.new && form.touched.new ? "is-invalid" : ""}`}
+													className={`form-control ${meta.touched && meta.error ? "is-invalid" : ""}`}
 													placeholder={intl.formatMessage({
 														id: "user.new-password",
 													})}
@@ -144,7 +137,7 @@ const ChangePasswordModal = EasyModal.create(({ id, visible, remove, close, form
 							</div>
 							<div className="mb-3">
 								<Field name="confirm" validate={(value) => validateString(value, 8, 255, false)}>
-									{({ field, form }) => (
+									{({ field, meta }) => (
 										<div className="input-group input-group-flat">
 											<div className="form-floating">
 												<input
@@ -152,7 +145,7 @@ const ChangePasswordModal = EasyModal.create(({ id, visible, remove, close, form
 													type={showConfirm ? "text" : "password"}
 													autoComplete="new-password"
 													required
-													className={`form-control ${form.errors.confirm && form.touched.confirm ? "is-invalid" : ""}`}
+													className={`form-control ${meta.touched && meta.error ? "is-invalid" : ""}`}
 													placeholder={intl.formatMessage({
 														id: "user.confirm-password",
 													})}
