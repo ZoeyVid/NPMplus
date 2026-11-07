@@ -1,6 +1,6 @@
 import { IconX } from "@tabler/icons-react";
 import cn from "clsx";
-import { Field, useFormikContext } from "formik";
+import { Field, FieldArray, useFormikContext } from "formik";
 import { intl, T } from "src/locale";
 
 const blankClient = { directive: "allow", address: "" };
@@ -13,7 +13,7 @@ export const toClientRows = (clients) => {
 };
 
 export function AccessClientFields({ name = "clients" }) {
-	const { values, setFieldValue } = useFormikContext();
+	const { values } = useFormikContext();
 	const clients = values[name];
 
 	return (
@@ -21,66 +21,72 @@ export function AccessClientFields({ name = "clients" }) {
 			<p className="text-secondary">
 				<T id="access-list.help.rules-order" />
 			</p>
-			{clients.slice(0, -1).map((_, idx) => (
-				<div className="row mb-1" key={idx}>
-					<div className="col-11">
-						<div className="input-group mb-2">
-							<Field name={`${name}.${idx}.directive`}>
-								{({ field }) => (
-									<select
-										className={cn(
-											"form-select",
-											"w-auto",
-											"flex-grow-0",
-											field.value === "allow" ? "bg-lime-lt" : "bg-orange-lt",
-										)}
-										{...field}
+			<FieldArray name={name} validateOnChange={false}>
+				{({ insert, remove, replace }) => (
+					<>
+						{clients.slice(0, -1).map((_, idx) => (
+							<div className="row mb-1" key={idx}>
+								<div className="col-11">
+									<div className="input-group mb-2">
+										<Field name={`${name}.${idx}.directive`}>
+											{({ field }) => (
+												<select
+													className={cn(
+														"form-select",
+														"w-auto",
+														"flex-grow-0",
+														field.value === "allow" ? "bg-lime-lt" : "bg-orange-lt",
+													)}
+													{...field}
+												>
+													<option value="allow">
+														<T id="action.allow" />
+													</option>
+													<option value="deny">
+														<T id="action.deny" />
+													</option>
+												</select>
+											)}
+										</Field>
+										<Field name={`${name}.${idx}.address`}>
+											{({ field }) => (
+												<input
+													type="text"
+													className="form-control"
+													autoComplete="off"
+													pattern="[^\slL]{1,255}"
+													{...field}
+													placeholder={intl.formatMessage({
+														id: "access-list.rule-source.placeholder",
+													})}
+												/>
+											)}
+										</Field>
+									</div>
+								</div>
+								<div className="col-1">
+									<button
+										type="button"
+										className="btn btn-ghost btn-danger p-0"
+										onClick={() => (clients.length === 2 ? replace(idx, blankClient) : remove(idx))}
 									>
-										<option value="allow">
-											<T id="action.allow" />
-										</option>
-										<option value="deny">
-											<T id="action.deny" />
-										</option>
-									</select>
-								)}
-							</Field>
-							<Field name={`${name}.${idx}.address`}>
-								{({ field }) => (
-									<input
-										type="text"
-										className="form-control"
-										autoComplete="off"
-										pattern="[^\slL]{1,255}"
-										{...field}
-										placeholder={intl.formatMessage({
-											id: "access-list.rule-source.placeholder",
-										})}
-									/>
-								)}
-							</Field>
+										<IconX size={16} />
+									</button>
+								</div>
+							</div>
+						))}
+						<div className="mb-3">
+							<button
+								type="button"
+								className="btn btn-sm"
+								onClick={() => insert(clients.length - 1, blankClient)}
+							>
+								<T id="action.add" />
+							</button>
 						</div>
-					</div>
-					<div className="col-1">
-						<button
-							type="button"
-							className="btn btn-ghost btn-danger p-0"
-							onClick={() => void setFieldValue(name, toClientRows(clients.toSpliced(idx, 1)))}
-						>
-							<IconX size={16} />
-						</button>
-					</div>
-				</div>
-			))}
-			<div className="mb-3">
-				<button
-					type="button"
-					className="btn btn-sm"
-					onClick={() => void setFieldValue(name, clients.toSpliced(-1, 0, blankClient))}
-				>
-					<T id="action.add" />
-				</button>
-			</div>
+					</>
+				)}
+			</FieldArray>
 			<div className="row mb-3">
 				<p className="text-secondary">
 					<T id="access-list.help.rules-last" />
