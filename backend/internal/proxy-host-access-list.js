@@ -102,7 +102,7 @@ const internalProxyHostAccessList = {
 	 */
 	buildAclFile: (list) => {
 		const lists = list || [];
-		const first = lists[0] || null; // satisfy any/pass auth need to be specified in the first acl
+		const first = lists[0] || null; // satisfy any needs to be specified in the first acl
 
 		const last = (first?.clients || []).at(-1);
 		const catchAll =
@@ -118,7 +118,7 @@ const internalProxyHostAccessList = {
 			items: getMergedItems(lists),
 			clients,
 			satisfy_any: Boolean(first?.satisfy_any),
-			pass_auth: Boolean(first?.pass_auth),
+			pass_auth: lists.every((l) => l.pass_auth || !l.items?.length),
 			source_acl_ids: lists.map((l) => l.id).filter((id) => Number.isInteger(id)),
 		};
 	},
