@@ -123,7 +123,6 @@ export NGINX_FORCE_X25519MLKEM768="${NGINX_FORCE_X25519MLKEM768:-false}"
 export NGINX_DISABLE_TLS12="${NGINX_DISABLE_TLS12:-false}"
 export NGINX_TRUST_SECPR1="${NGINX_TRUST_SECPR1:-true}"
 export NGINX_TRUST_RSA_PKCS1="${NGINX_TRUST_RSA_PKCS1:-false}"
-export DISABLE_NGINX_BEAUTIFIER="${DISABLE_NGINX_BEAUTIFIER:-false}"
 export TRUST_CLOUDFLARE="${TRUST_CLOUDFLARE:-false}"
 export LOGROTATE="${LOGROTATE:-false}"
 export LOGROTATIONS="${LOGROTATIONS:-3}"
@@ -267,6 +266,11 @@ if [ -n "$CRT" ]; then
     sleep inf
 fi
 
+#tmp
+if [ -n "$DISABLE_NGINX_BEAUTIFIER" ]; then
+    echo "DISABLE_NGINX_BEAUTIFIER env is not supported anymore."
+    sleep inf
+fi
 
 #upstream
 if [ -n "$DISABLE_RESOLVER" ]; then
@@ -570,11 +574,6 @@ fi
 
 if ! echo "$NGINX_DISABLE_TLS12" | grep -q "^true$\|^false$"; then
     echo "NGINX_DISABLE_TLS12 needs to be true or false."
-    sleep inf
-fi
-
-if ! echo "$DISABLE_NGINX_BEAUTIFIER" | grep -q "^true$\|^false$"; then
-    echo "DISABLE_NGINX_BEAUTIFIER needs to be true or false."
     sleep inf
 fi
 
