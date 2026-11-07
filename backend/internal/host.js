@@ -94,17 +94,16 @@ const internalHost = {
 	},
 
 	checkCustomConfig: (access, data, existingData = {}) => {
-		if (
-			["advanced_config", "npmplus_location_config", "npmplus_advanced_config"].some(
-				(field) => data[field] !== undefined && data[field] !== (existingData[field] ?? ""),
-			) ||
-			data.locations?.some(
-				({ advanced_config = "" }) =>
-					advanced_config !== "" &&
-					!existingData.locations?.some((location) => location.advanced_config === advanced_config),
-			)
-		) {
-			access.canAdmin();
+		for (const field of ["advanced_config", "npmplus_location_config", "npmplus_advanced_config"]) {
+			if (data[field] !== undefined && data[field] !== (existingData[field] ?? "")) access.canAdmin();
+		}
+		for (const { advanced_config = "" } of data.locations ?? []) {
+			if (
+				advanced_config !== "" &&
+				!existingData.locations?.some((location) => location.advanced_config === advanced_config)
+			) {
+				access.canAdmin();
+			}
 		}
 	},
 
