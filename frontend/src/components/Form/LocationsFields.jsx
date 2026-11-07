@@ -1,5 +1,7 @@
 import {
 	IconAlertTriangle,
+	IconArrowDown,
+	IconArrowUp,
 	IconChevronDown,
 	IconChevronRight,
 	IconPlus,
@@ -120,7 +122,7 @@ export function LocationsFields({ name = "locations", disabled }) {
 
 	return (
 		<FieldArray name={name} validateOnChange={false}>
-			{({ push, remove }) => {
+			{({ push, remove, swap }) => {
 				if (values.length === 0) {
 					return (
 						<div className="text-center">
@@ -225,6 +227,28 @@ export function LocationsFields({ name = "locations", disabled }) {
 											</span>
 										)}
 									</button>
+									{!filter.trim() && idx > 0 && (
+										<button
+											type="button"
+											aria-label="Move up"
+											className="btn btn-action ms-2"
+											onClick={() => swap(idx - 1, idx)}
+											disabled={disabled}
+										>
+											<IconArrowUp size={16} className="icon" />
+										</button>
+									)}
+									{!filter.trim() && idx < values.length - 1 && (
+										<button
+											type="button"
+											aria-label="Move down"
+											className="btn btn-action ms-2"
+											onClick={() => swap(idx, idx + 1)}
+											disabled={disabled}
+										>
+											<IconArrowDown size={16} className="icon" />
+										</button>
+									)}
 									<button
 										type="button"
 										className="btn btn-action ms-2"
