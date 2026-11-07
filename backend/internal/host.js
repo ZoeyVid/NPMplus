@@ -97,10 +97,15 @@ const internalHost = {
 		for (const field of ["advanced_config", "npmplus_location_config", "npmplus_advanced_config"]) {
 			if (data[field] !== undefined && data[field] !== (existingData[field] ?? "")) access.canAdmin();
 		}
-		for (const { advanced_config = "" } of data.locations ?? []) {
+		for (const location of data.locations ?? []) {
 			if (
-				advanced_config !== "" &&
-				!existingData.locations?.some((location) => location.advanced_config === advanced_config)
+				location.advanced_config &&
+				location.advanced_config !==
+					existingData.locations?.find(
+						(existing) =>
+							existing.path === location.path &&
+							existing.location_type === (location.location_type ?? ""),
+					)?.advanced_config
 			) {
 				access.canAdmin();
 			}
@@ -111,20 +116,32 @@ const internalHost = {
 	},
 
 	checkForwardTarget: (access, data, existingData = {}) => {
-		const existing = new Set();
-		for (const item of [existingData, ...(existingData.locations ?? [])]) {
-			if (item.forward_scheme === "path") existing.add(`path:${item.forward_host}:${item.forward_port}`);
-			if (item.forward_host?.toLowerCase().startsWith("unix:")) existing.add(item.forward_host);
-			if (item.forwarding_host?.toLowerCase().startsWith("unix:")) existing.add(item.forwarding_host);
+		const items = [[{ ...existingData, ...data }, existingData]];
+		for (const location of data.locations ?? []) {
+			items.push([
+				location,
+				existingData.locations?.find(
+					(existing) =>
+						existing.path === location.path && existing.location_type === (location.location_type ?? ""),
+				) ?? {},
+			]);
 		}
-		for (const item of [{ ...existingData, ...data }, ...(data.locations ?? [])]) {
-			if (item.forward_scheme === "path" && !existing.has(`path:${item.forward_host}:${item.forward_port}`)) {
+		for (const [item, existing] of items) {
+			if (
+				item.forward_scheme === "path" &&
+				(existing.forward_scheme !== "path" ||
+					item.forward_host !== existing.forward_host ||
+					item.forward_port !== existing.forward_port)
+			) {
 				access.canAdmin();
 			}
-			if (item.forward_host?.toLowerCase().startsWith("unix:") && !existing.has(item.forward_host)) {
+			if (item.forward_host?.toLowerCase().startsWith("unix:") && item.forward_host !== existing.forward_host) {
 				access.canAdmin();
 			}
-			if (item.forwarding_host?.toLowerCase().startsWith("unix:") && !existing.has(item.forwarding_host)) {
+			if (
+				item.forwarding_host?.toLowerCase().startsWith("unix:") &&
+				item.forwarding_host !== existing.forwarding_host
+			) {
 				access.canAdmin();
 			}
 		}
