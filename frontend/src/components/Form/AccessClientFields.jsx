@@ -1,4 +1,4 @@
-import { IconX } from "@tabler/icons-react";
+import { IconArrowDown, IconArrowUp, IconX } from "@tabler/icons-react";
 import cn from "clsx";
 import { Field, FieldArray, useFormikContext } from "formik";
 import { intl, T } from "src/locale";
@@ -22,11 +22,11 @@ export function AccessClientFields({ name = "clients" }) {
 				<T id="access-list.help.rules-order" />
 			</p>
 			<FieldArray name={name} validateOnChange={false}>
-				{({ insert, remove, replace }) => (
+				{({ insert, remove, replace, swap }) => (
 					<>
 						{clients.slice(0, -1).map((_, idx) => (
 							<div className="row mb-1" key={idx}>
-								<div className="col-11">
+								<div className="col-8">
 									<div className="input-group mb-2">
 										<Field name={`${name}.${idx}.directive`}>
 											{({ field }) => (
@@ -64,10 +64,30 @@ export function AccessClientFields({ name = "clients" }) {
 										</Field>
 									</div>
 								</div>
-								<div className="col-1">
+								<div className="col-4 d-flex gap-1 mb-2">
+									{idx > 0 && (
+										<button
+											type="button"
+											aria-label="Move up"
+											className="btn"
+											onClick={() => swap(idx - 1, idx)}
+										>
+											<IconArrowUp size={16} />
+										</button>
+									)}
+									{idx < clients.length - 2 && (
+										<button
+											type="button"
+											aria-label="Move down"
+											className="btn"
+											onClick={() => swap(idx, idx + 1)}
+										>
+											<IconArrowDown size={16} />
+										</button>
+									)}
 									<button
 										type="button"
-										className="btn btn-ghost btn-danger p-0"
+										className="btn btn-ghost btn-danger p-0 ms-auto"
 										onClick={() => (clients.length === 2 ? replace(idx, blankClient) : remove(idx))}
 									>
 										<IconX size={16} />
@@ -91,7 +111,7 @@ export function AccessClientFields({ name = "clients" }) {
 				<p className="text-secondary">
 					<T id="access-list.help.rules-last" />
 				</p>
-				<div className="col-11">
+				<div className="col-8">
 					<div className="input-group mb-2">
 						<Field name={`${name}.${clients.length - 1}.directive`}>
 							{({ field }) => (
