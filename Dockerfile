@@ -214,7 +214,6 @@ ARG LRC_VER=873d072635fd408d81a0abd4187392f3f128ceb9 # v0.1.35rc2
 ARG LRL_VER=3ff6300e68b73ba20e909c7d16bd839aef2e5a4b # v0.15
 ARG LCSB_VER=92a8617ede3b781c33cd39e73734505597e318fd # main
 ARG COF_VER=da93e0cec7fdb1a80f4972f75b3638763d012c0e # main
-ARG NBF_VER=5cee8db2a505f2a253e24691399c828c043071fc # master
 ARG CERTBOT_VER=5.9.0
 
 COPY --from=nginx /usr/local/nginx            /usr/local/nginx
@@ -273,12 +272,6 @@ RUN apk upgrade --no-cache -a && \
     wget -q https://raw.githubusercontent.com/tomwassenberg/certbot-ocsp-fetcher/"$COF_VER"/certbot-ocsp-fetcher -O /usr/local/bin/certbot-ocsp-fetcher.sh && \
     echo "60148ed2ffef2f1354427d3e080400d008132f8e5fb014f721f5986f438dd621  /usr/local/bin/certbot-ocsp-fetcher.sh" | sha256sum -c - && \
     sed -i "s|/live||g" /usr/local/bin/certbot-ocsp-fetcher.sh && \
-    \
-    wget -q https://raw.githubusercontent.com/vasilevich/nginxbeautifier/"$NBF_VER"/index.js -O /usr/local/bin/nginxbeautifier && \
-    echo "316349857e6de63d21bec1eee155819237d67b338be7c35514879ac8b00848fc  /usr/local/bin/nginxbeautifier" | sha256sum -c - && \
-    wget -q https://raw.githubusercontent.com/vasilevich/nginxbeautifier/"$NBF_VER"/nginxbeautifier.js -O /usr/local/bin/nginxbeautifier.js && \
-    echo "406f715ae944cc46ae31e79a1bc3ea758f91605621113b8a29f5332fe13f0a83  /usr/local/bin/nginxbeautifier.js" | sha256sum -c - && \
-    sed -i "s|code.slice(0, startOfParanthesis - 1)|code.slice(0, startOfParanthesis)|g" /usr/local/bin/nginxbeautifier.js && \
     \
     ln -s /usr/local/nginx/sbin/nginx /usr/local/bin/nginx && \
     ln -s /app/password-reset.js /usr/local/bin/password-reset.js && \

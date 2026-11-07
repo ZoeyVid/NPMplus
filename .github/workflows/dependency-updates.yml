@@ -311,29 +311,6 @@ jobs:
           branch: update-certbot-ocsp-fetcher-version
           title: update certbot-ocsp-fetcher version
           body: ${{ steps.update.outputs.compare }}
-  nginxbeautifier-update:
-    runs-on: ubuntu-slim
-    steps:
-      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
-      - name: update nginxbeautifier version
-        id: update
-        run: |
-          NBF_SHA="$(git ls-remote https://github.com/vasilevich/nginxbeautifier master | cut -f1)"
-          if [ "$NBF_SHA" = "ac5fd769a49c79bf2d750b6456a4565c6c99578d" ]; then NBF_SHA="$(sed -n 's|^ARG NBF_VER=\(.*\) #.*|\1|p' Dockerfile)"; fi
-          echo "compare=https://github.com/vasilevich/nginxbeautifier/compare/$(sed -n 's|^ARG NBF_VER=\(.*\) #.*|\1|p' Dockerfile)...$NBF_SHA" >> $GITHUB_OUTPUT
-          sed -i "s|ARG NBF_VER=.*|ARG NBF_VER=$NBF_SHA # master|" Dockerfile
-          NBF_HASH="$(curl -sSfL https://raw.githubusercontent.com/vasilevich/nginxbeautifier/"$NBF_SHA"/index.js | sha256sum | cut -d" " -f1)"
-          sed -i "\|nginxbeautifier/\"\$NBF_VER\"/index.js|{n;s|[0-9a-f]\{64\}|$NBF_HASH|}" Dockerfile
-          NBF_HASH="$(curl -sSfL https://raw.githubusercontent.com/vasilevich/nginxbeautifier/"$NBF_SHA"/nginxbeautifier.js | sha256sum | cut -d" " -f1)"
-          sed -i "\|nginxbeautifier/\"\$NBF_VER\"/nginxbeautifier.js|{n;s|[0-9a-f]\{64\}|$NBF_HASH|}" Dockerfile
-      - uses: peter-evans/create-pull-request@5f6978faf089d4d20b00c7766989d076bb2fc7f1 # v8.1.1
-        with:
-          signoff: true
-          delete-branch: true
-          commit-message: update nginxbeautifier version
-          branch: update-nginxbeautifier-version
-          title: update nginxbeautifier version
-          body: ${{ steps.update.outputs.compare }}
 
   owasp-headers-remove-update:
     runs-on: ubuntu-slim
