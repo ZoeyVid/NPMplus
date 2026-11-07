@@ -23,7 +23,7 @@ router
 	 *
 	 * Retrieve all access-lists
 	 */
-	.get(jwtdecode(), validate, async (_, res) => {
+	.get(jwtdecode, validate, async (_, res) => {
 		const rows = await internalAccessList.getAll(res.locals.access, res.locals.query.expand);
 		res.status(200).send(rows);
 	})
@@ -33,7 +33,7 @@ router
 	 *
 	 * Create a new access-list
 	 */
-	.post(jwtdecode(), validate, async (_, res) => {
+	.post(jwtdecode, validate, async (_, res) => {
 		const result = await internalAccessList.create(res.locals.access, res.locals.body);
 		res.status(201).send(result);
 	});
@@ -51,7 +51,7 @@ router
 	 *
 	 * Retrieve a specific access-list
 	 */
-	.get(jwtdecode(), validate, async (_, res) => {
+	.get(jwtdecode, validate, async (_, res) => {
 		const row = await internalAccessList.get(res.locals.access, {
 			id: Number(res.locals.params.list_id),
 			expand: res.locals.query.expand,
@@ -64,7 +64,7 @@ router
 	 *
 	 * Update and existing access-list
 	 */
-	.put(jwtdecode(), validate, async (_, res) => {
+	.put(jwtdecode, validate, async (_, res) => {
 		const result = await internalAccessList.update(res.locals.access, {
 			...res.locals.body,
 			id: Number(res.locals.params.list_id),
@@ -77,7 +77,7 @@ router
 	 *
 	 * Delete and existing access-list
 	 */
-	.delete(jwtdecode(), validate, async (_, res) => {
+	.delete(jwtdecode, validate, async (_, res) => {
 		const result = await internalAccessList.delete(res.locals.access, {
 			id: Number(res.locals.params.list_id),
 		});

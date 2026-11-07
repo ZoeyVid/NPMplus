@@ -23,7 +23,7 @@ router
 	 *
 	 * Retrieve all proxy-hosts
 	 */
-	.get(jwtdecode(), validate, async (_, res) => {
+	.get(jwtdecode, validate, async (_, res) => {
 		const rows = await internalProxyHost.getAll(res.locals.access, res.locals.query.expand);
 		res.status(200).send(rows);
 	})
@@ -33,7 +33,7 @@ router
 	 *
 	 * Create a new proxy-host
 	 */
-	.post(jwtdecode(), validate, async (_, res) => {
+	.post(jwtdecode, validate, async (_, res) => {
 		const result = await internalProxyHost.create(res.locals.access, res.locals.body);
 		res.status(201).send(result);
 	});
@@ -51,7 +51,7 @@ router
 	 *
 	 * Retrieve a specific proxy-host
 	 */
-	.get(jwtdecode(), validate, async (_, res) => {
+	.get(jwtdecode, validate, async (_, res) => {
 		const row = await internalProxyHost.get(res.locals.access, {
 			id: Number(res.locals.params.host_id),
 		});
@@ -63,7 +63,7 @@ router
 	 *
 	 * Update an existing proxy-host
 	 */
-	.put(jwtdecode(), validate, async (_, res) => {
+	.put(jwtdecode, validate, async (_, res) => {
 		const result = await internalProxyHost.update(res.locals.access, {
 			...res.locals.body,
 			id: Number(res.locals.params.host_id),
@@ -76,7 +76,7 @@ router
 	 *
 	 * Delete a proxy-host
 	 */
-	.delete(jwtdecode(), validate, async (_, res) => {
+	.delete(jwtdecode, validate, async (_, res) => {
 		const result = await internalProxyHost.delete(res.locals.access, {
 			id: Number(res.locals.params.host_id),
 		});
@@ -94,7 +94,7 @@ router
 	/**
 	 * POST /api/nginx/proxy-hosts/123/enable
 	 */
-	.post(jwtdecode(), validate, async (_, res) => {
+	.post(jwtdecode, validate, async (_, res) => {
 		const result = await internalProxyHost.enable(res.locals.access, {
 			id: Number(res.locals.params.host_id),
 		});
@@ -112,7 +112,7 @@ router
 	/**
 	 * POST /api/nginx/proxy-hosts/123/disable
 	 */
-	.post(jwtdecode(), validate, async (_, res) => {
+	.post(jwtdecode, validate, async (_, res) => {
 		const result = await internalProxyHost.disable(res.locals.access, {
 			id: Number(res.locals.params.host_id),
 		});

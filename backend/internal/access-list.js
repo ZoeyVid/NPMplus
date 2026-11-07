@@ -260,33 +260,17 @@ const internalAccessList = {
 		// 3. reconfigure those hosts
 		// 4. audit log
 
-		const affectedHosts = (row.proxy_hosts || []).map((host) => {
-			const updatedHost = { ...host };
+		for (const host of row.proxy_hosts) {
 			// update the access_lists object
-			if (!Array.isArray(updatedHost.access_lists)) {
-				updatedHost.access_lists = [];
-			}
-			updatedHost.access_lists = updatedHost.access_lists.filter((acl) => acl.id !== row.id);
-
-			if (updatedHost.access_lists.length === 0) {
-				updatedHost.npmplus_access_list_type = "public";
-			}
-			if (!Array.isArray(updatedHost.locations)) {
-				throw new errs.ConfigurationError("Invalid location structure. Expected an array");
-			}
-			updatedHost.locations = updatedHost.locations.map((location) => {
-				const updatedLocation = { ...location };
-				updatedLocation.access_lists = updatedLocation.access_lists.filter((acl) => acl.id !== row.id);
-				if (
-					updatedLocation.access_lists.length === 0 &&
-					updatedLocation.npmplus_access_list_type === "custom"
-				) {
-					updatedLocation.npmplus_access_list_type = "global";
+			host.access_lists = host.access_lists.filter((acl) => acl.id !== row.id);
+			if (host.access_lists.length === 0) host.npmplus_access_list_type = "public";
+			for (const location of host.locations) {
+				location.access_lists = location.access_lists.filter((acl) => acl.id !== row.id);
+				if (location.access_lists.length === 0 && location.npmplus_access_list_type === "custom") {
+					location.npmplus_access_list_type = "global";
 				}
-				return updatedLocation;
-			});
-			return updatedHost;
-		});
+			}
+		}
 		const deletedRow = { ...row, proxy_hosts: undefined };
 
 		await accessListModel.transaction(async (trx) => {
@@ -296,7 +280,7 @@ const internalAccessList = {
 			await accessListClientModel.query(trx).where("access_list_id", row.id).delete();
 			await accessListModel.query(trx).deleteById(row.id);
 			// 2. update any proxy hosts that were using it (ignoring permissions)
-			for (const host of affectedHosts) {
+			for (const host of row.proxy_hosts) {
 				await proxyHostModel.query(trx).findById(host.id).patch({
 					npmplus_access_list_type: host.npmplus_access_list_type,
 				});
@@ -311,7 +295,7 @@ const internalAccessList = {
 		try {
 			// 3. Write the changes to the config
 			// Regenerate configs and htpasswd files
-			for (const host of affectedHosts) {
+			for (const host of row.proxy_hosts) {
 				await internalNginx.configure(proxyHostModel, "proxy_host", host, { skipReload: true });
 			}
 

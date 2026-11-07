@@ -23,7 +23,7 @@ router
 	 *
 	 * Retrieve all streams
 	 */
-	.get(jwtdecode(), validate, async (_, res) => {
+	.get(jwtdecode, validate, async (_, res) => {
 		const rows = await internalStream.getAll(res.locals.access, res.locals.query.expand);
 		res.status(200).send(rows);
 	})
@@ -33,7 +33,7 @@ router
 	 *
 	 * Create a new stream
 	 */
-	.post(jwtdecode(), validate, async (_, res) => {
+	.post(jwtdecode, validate, async (_, res) => {
 		const result = await internalStream.create(res.locals.access, res.locals.body);
 		res.status(201).send(result);
 	});
@@ -51,7 +51,7 @@ router
 	 *
 	 * Retrieve a specific stream
 	 */
-	.get(jwtdecode(), validate, async (_, res) => {
+	.get(jwtdecode, validate, async (_, res) => {
 		const row = await internalStream.get(res.locals.access, {
 			id: Number(res.locals.params.stream_id),
 		});
@@ -63,7 +63,7 @@ router
 	 *
 	 * Update an existing stream
 	 */
-	.put(jwtdecode(), validate, async (_, res) => {
+	.put(jwtdecode, validate, async (_, res) => {
 		const result = await internalStream.update(res.locals.access, {
 			...res.locals.body,
 			id: Number(res.locals.params.stream_id),
@@ -76,7 +76,7 @@ router
 	 *
 	 * Delete a stream
 	 */
-	.delete(jwtdecode(), validate, async (_, res) => {
+	.delete(jwtdecode, validate, async (_, res) => {
 		const result = await internalStream.delete(res.locals.access, {
 			id: Number(res.locals.params.stream_id),
 		});
@@ -94,7 +94,7 @@ router
 	/**
 	 * POST /api/nginx/streams/123/enable
 	 */
-	.post(jwtdecode(), validate, async (_, res) => {
+	.post(jwtdecode, validate, async (_, res) => {
 		const result = await internalStream.enable(res.locals.access, {
 			id: Number(res.locals.params.stream_id),
 		});
@@ -112,7 +112,7 @@ router
 	/**
 	 * POST /api/nginx/streams/123/disable
 	 */
-	.post(jwtdecode(), validate, async (_, res) => {
+	.post(jwtdecode, validate, async (_, res) => {
 		const result = await internalStream.disable(res.locals.access, {
 			id: Number(res.locals.params.stream_id),
 		});

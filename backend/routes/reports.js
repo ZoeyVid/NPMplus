@@ -1,6 +1,6 @@
 import express from "express";
 import internalReport from "../internal/report.js";
-import requireLogin from "../lib/express/require-login.js";
+import jwtdecode from "../lib/express/jwt-decode.js";
 import validate from "../lib/express/validate.js";
 
 const router = express.Router({
@@ -15,7 +15,7 @@ router
 	/**
 	 * GET /reports/hosts
 	 */
-	.get(requireLogin(), validate, async (_, res) => {
+	.get(jwtdecode, validate, async (_, res) => {
 		const data = await internalReport.getHostsReport(res.locals.access);
 		res.status(200).send(data);
 	});
