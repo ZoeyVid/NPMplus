@@ -105,6 +105,9 @@ const internalHost = {
 				access.canAdmin();
 			}
 		}
+		for (const domain of data.domain_names ?? []) {
+			if (domain.startsWith("~") && !existingData.domain_names?.includes(domain)) access.canAdmin();
+		}
 	},
 
 	checkForwardTarget: (access, data, existingData = {}) => {
