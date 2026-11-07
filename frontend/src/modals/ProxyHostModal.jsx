@@ -26,6 +26,13 @@ import { showObjectSuccess } from "src/notifications";
 
 const validateForwardPort = (value) => validateNumber(value, -1, 65535);
 
+const requestBufferingTitle = ({ npmplusCrowdsecAppsec, forwardScheme }) => {
+	if (!npmplusCrowdsecAppsec && ["http", "https"].includes(forwardScheme)) {
+		return intl.formatMessage({ id: "host.flags.disable-request-buffering.requires-appsec" });
+	}
+	return null;
+};
+
 const ProxyHostModal = EasyModal.create(({ id, isClone, visible, remove, close, formRef }) => {
 	const { data, isPending, error } = useProxyHost(id);
 	const { data: allProxyHosts } = useProxyHosts();
@@ -429,16 +436,9 @@ const ProxyHostModal = EasyModal.create(({ id, isClone, visible, remove, close, 
 																		{({ field, form }) => (
 																			<span
 																				className="form-check form-check-single form-switch"
-																				title={
-																					form.values.npmplusCrowdsecAppsec ||
-																					!["http", "https"].includes(
-																						form.values.forwardScheme,
-																					)
-																						? undefined
-																						: intl.formatMessage({
-																								id: "host.flags.disable-request-buffering.requires-appsec",
-																							})
-																				}
+																				title={requestBufferingTitle(
+																					form.values,
+																				)}
 																			>
 																				<input
 																					{...field}
