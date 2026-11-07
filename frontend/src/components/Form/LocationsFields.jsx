@@ -312,6 +312,14 @@ export function LocationsFields({ name = "locations", disabled }) {
 														<select
 															id={`locationType-${item.uiKey}`}
 															className="form-select w-auto flex-grow-0"
+															disabled={
+																!currentUser?.npmplusIsAdmin &&
+																(item.forwardScheme === "path" ||
+																	item.forwardHost
+																		?.toLowerCase()
+																		.startsWith("unix:") ||
+																	item.advancedConfig)
+															}
 															{...field}
 														>
 															<option value="" />
@@ -332,6 +340,14 @@ export function LocationsFields({ name = "locations", disabled }) {
 															autoComplete="off"
 															required
 															pattern="\S{1,255}"
+															disabled={
+																!currentUser?.npmplusIsAdmin &&
+																(item.forwardScheme === "path" ||
+																	item.forwardHost
+																		?.toLowerCase()
+																		.startsWith("unix:") ||
+																	item.advancedConfig)
+															}
 															{...field}
 														/>
 													)}
@@ -397,9 +413,11 @@ export function LocationsFields({ name = "locations", disabled }) {
 														validateUnixTarget(
 															value,
 															currentUser?.npmplusIsAdmin,
-															...initialValues[name].map(
-																(location) => location.forwardHost,
-															),
+															initialValues[name].find(
+																(location) =>
+																	location.path === item.path &&
+																	location.locationType === item.locationType,
+															)?.forwardHost,
 														)
 													}
 												>
