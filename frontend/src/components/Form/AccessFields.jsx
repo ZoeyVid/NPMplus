@@ -8,6 +8,7 @@ import {
 	IconX,
 } from "@tabler/icons-react";
 import { Field, getIn, useFormikContext } from "formik";
+import { useMemo } from "react";
 import Select, { components } from "react-select";
 import { useAccessLists } from "src/hooks";
 import { formatDateTime, intl, T } from "src/locale";
@@ -33,25 +34,25 @@ const TypeOption = (props) => (
 	</components.Option>
 );
 
+const createDefaultItem = (item) => ({
+	value: item.id,
+	label: item.name,
+	subLabel: intl.formatMessage(
+		{ id: "access-list.subtitle" },
+		{
+			users: item?.items?.length,
+			rules: item?.clients?.filter(({ address }) => address.toLowerCase() !== "all").length,
+			date: formatDateTime(item?.createdOn),
+		},
+	),
+	meta: item,
+});
+
 export function AccessFields({ location, name, typeFieldName, authRequest, disabled }) {
 	const { values: formValues, setFieldValue } = useFormikContext();
 	const values = getIn(formValues, name);
 	const aclValue = getIn(formValues, typeFieldName);
 	const { isPending, isError, error, data } = useAccessLists(["owner", "items", "clients"]);
-
-	const createDefaultItem = (item) => ({
-		value: item.id,
-		label: item.name,
-		subLabel: intl.formatMessage(
-			{ id: "access-list.subtitle" },
-			{
-				users: item?.items?.length,
-				rules: item?.clients?.length,
-				date: formatDateTime(item?.createdOn),
-			},
-		),
-		meta: item,
-	});
 
 	const createOption = (type) => {
 		if (type === "global") {
@@ -78,7 +79,7 @@ export function AccessFields({ location, name, typeFieldName, authRequest, disab
 		};
 	};
 
-	const defaultOptions = data?.map(createDefaultItem) || [];
+	const defaultOptions = useMemo(() => data?.map(createDefaultItem) || [], [data]);
 	const valuesSet = new Set(values);
 	const options = defaultOptions.filter((option) => !valuesSet.has(option.value));
 
