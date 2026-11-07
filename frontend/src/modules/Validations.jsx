@@ -87,8 +87,8 @@ const validateUpstreamUrl = (value) => {
 	}
 };
 
-const validateUnixTarget = (value, isAdmin, ...allowed) => {
-	if (!isAdmin && value?.toLowerCase().startsWith("unix:") && !allowed.includes(value)) {
+const validateUnixTarget = (value, isAdmin, allowed) => {
+	if (!isAdmin && value?.toLowerCase().startsWith("unix:") && value !== allowed) {
 		return intl.formatMessage({ id: "proxy-host.target-admin-only" });
 	}
 };
