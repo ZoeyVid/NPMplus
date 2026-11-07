@@ -1,6 +1,6 @@
 import express from "express";
 import swaggerUi from "swagger-ui-express";
-import requireLogin from "../lib/express/require-login.js";
+import jwtdecode from "../lib/express/jwt-decode.js";
 import validate from "../lib/express/validate.js";
 import { compiledSchema } from "../schema/index.js";
 
@@ -10,7 +10,7 @@ const router = express.Router({
 	mergeParams: true,
 });
 
-router.use("/", requireLogin(), swaggerUi.serve);
+router.use("/", jwtdecode, swaggerUi.serve);
 
 router
 	.route("/")

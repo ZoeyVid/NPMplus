@@ -1,6 +1,6 @@
 import express from "express";
 import internalRemoteVersion from "../internal/remote-version.js";
-import requireLogin from "../lib/express/require-login.js";
+import jwtdecode from "../lib/express/jwt-decode.js";
 import validate from "../lib/express/validate.js";
 
 const router = express.Router({
@@ -20,7 +20,7 @@ router
 	 *
 	 * Check for available updates
 	 */
-	.get(requireLogin(), validate, async (_, res) => {
+	.get(jwtdecode, validate, async (_, res) => {
 		res.status(200).send(await internalRemoteVersion.get());
 	});
 

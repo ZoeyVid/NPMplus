@@ -23,7 +23,7 @@ router
 	 *
 	 * Retrieve all redirection-hosts
 	 */
-	.get(jwtdecode(), validate, async (_, res) => {
+	.get(jwtdecode, validate, async (_, res) => {
 		const rows = await internalRedirectionHost.getAll(res.locals.access, res.locals.query.expand);
 		res.status(200).send(rows);
 	})
@@ -33,7 +33,7 @@ router
 	 *
 	 * Create a new redirection-host
 	 */
-	.post(jwtdecode(), validate, async (_, res) => {
+	.post(jwtdecode, validate, async (_, res) => {
 		const result = await internalRedirectionHost.create(res.locals.access, res.locals.body);
 		res.status(201).send(result);
 	});
@@ -51,7 +51,7 @@ router
 	 *
 	 * Retrieve a specific redirection-host
 	 */
-	.get(jwtdecode(), validate, async (_, res) => {
+	.get(jwtdecode, validate, async (_, res) => {
 		const row = await internalRedirectionHost.get(res.locals.access, {
 			id: Number(res.locals.params.host_id),
 		});
@@ -63,7 +63,7 @@ router
 	 *
 	 * Update an existing redirection-host
 	 */
-	.put(jwtdecode(), validate, async (_, res) => {
+	.put(jwtdecode, validate, async (_, res) => {
 		const result = await internalRedirectionHost.update(res.locals.access, {
 			...res.locals.body,
 			id: Number(res.locals.params.host_id),
@@ -76,7 +76,7 @@ router
 	 *
 	 * Delete a redirection-host
 	 */
-	.delete(jwtdecode(), validate, async (_, res) => {
+	.delete(jwtdecode, validate, async (_, res) => {
 		const result = await internalRedirectionHost.delete(res.locals.access, {
 			id: Number(res.locals.params.host_id),
 		});
@@ -94,7 +94,7 @@ router
 	/**
 	 * POST /api/nginx/redirection-hosts/123/enable
 	 */
-	.post(jwtdecode(), validate, async (_, res) => {
+	.post(jwtdecode, validate, async (_, res) => {
 		const result = await internalRedirectionHost.enable(res.locals.access, {
 			id: Number(res.locals.params.host_id),
 		});
@@ -112,7 +112,7 @@ router
 	/**
 	 * POST /api/nginx/redirection-hosts/123/disable
 	 */
-	.post(jwtdecode(), validate, async (_, res) => {
+	.post(jwtdecode, validate, async (_, res) => {
 		const result = await internalRedirectionHost.disable(res.locals.access, {
 			id: Number(res.locals.params.host_id),
 		});

@@ -1,6 +1,6 @@
 import express from "express";
 import errs from "../lib/error.js";
-import requireLogin from "../lib/express/require-login.js";
+import jwtdecode from "../lib/express/jwt-decode.js";
 import validate from "../lib/express/validate.js";
 import { readSecret } from "../lib/helpers.js";
 import { isSetup } from "../setup.js";
@@ -50,7 +50,7 @@ router.get("/api", validate, async (_, res /*, next*/) => {
  * Auth Check, used by the nginx auth_request directive
  * GET /api/auth
  */
-router.get("/api/auth", requireLogin(), validate, (_, res) => {
+router.get("/api/auth", jwtdecode, validate, (_, res) => {
 	res.sendStatus(200);
 });
 
@@ -58,7 +58,7 @@ router.get("/api/auth", requireLogin(), validate, (_, res) => {
  * Admin Auth Check, used by the nginx auth_request directive
  * GET /api/auth/admin
  */
-router.get("/api/auth/admin", requireLogin(), validate, (_, res) => {
+router.get("/api/auth/admin", jwtdecode, validate, (_, res) => {
 	res.locals.access.canAdmin();
 	res.sendStatus(200);
 });
