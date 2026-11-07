@@ -32,7 +32,7 @@ router
 	 * for services like Job board and Worker.
 	 */
 	.get(validate, jwtdecode, async (_, res) => {
-		const data = await internalToken.getFreshToken(res.locals.access, false, res.locals.query);
+		const data = await internalToken.getFreshToken(res.locals.access, false);
 
 		res.cookie("__Host-Http-token", data.token, {
 			signed: true,
