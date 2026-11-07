@@ -35,6 +35,24 @@ const assertNginxValue = (value, pattern = nginxUnsafePattern) => {
 
 const nginxQuote = (value) => `"${assertNginxValue(value, controlCharPattern).replaceAll(quoteEscapePattern, "\\$&")}"`;
 
+const quotedPattern = /"(?:\\.|[^"\\])*"|'(?:\\.|[^'\\])*'/gu;
+const commentPattern = /#.*/u;
+
+const reindent = (text) => {
+	let depth = 0;
+	return text
+		.split("\n")
+		.map((line) => line.trim())
+		.filter((line, index, lines) => line !== "" || lines[index - 1] !== "")
+		.map((line) => {
+			const code = line.replace(quotedPattern, "").replace(commentPattern, "");
+			const net = code.split("{").length - code.split("}").length;
+			depth += net;
+			return line && "  ".repeat(Math.max(0, depth - Math.max(0, net))) + line;
+		})
+		.join("\n");
+};
+
 /**
  * @returns {Object} Liquid render engine
  */
@@ -61,4 +79,4 @@ const getRenderEngine = () => {
 	return renderEngine;
 };
 
-export default { assertNginxValue, execFile, getRenderEngine, nginxQuote };
+export default { assertNginxValue, execFile, getRenderEngine, nginxQuote, reindent };
