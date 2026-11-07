@@ -69,6 +69,7 @@ function TotpForm() {
 													type="button"
 													tabIndex={-1}
 													aria-label="toggle visibility"
+													onMouseDown={(e) => e.preventDefault()}
 													className="p-0 border-0 bg-transparent text-secondary d-flex align-items-center cursor-pointer"
 													onClick={() => setShowCode((v) => !v)}
 												>
@@ -193,6 +194,7 @@ function PasswordForm() {
 															type="button"
 															tabIndex={-1}
 															aria-label="toggle visibility"
+															onMouseDown={(e) => e.preventDefault()}
 															className="p-0 border-0 bg-transparent text-secondary d-flex align-items-center cursor-pointer"
 															onClick={() => setShowPassword((v) => !v)}
 														>

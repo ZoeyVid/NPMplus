@@ -22,6 +22,23 @@ const showStreamModal = (id) => {
 	EasyModal.show(StreamModal, { id });
 };
 
+const udpOnlyValues = ({
+	npmplusReuseKey,
+	npmplusDnsChallenge,
+	npmplusDnsProvider,
+	npmplusDnsProviderCredentials,
+	npmplusPropagationSeconds,
+	...values
+}) => ({
+	...values,
+	udpForwarding: true,
+	...(values.npmplusProxyProtocolForwarding === 1 && { npmplusProxyProtocolForwarding: 2 }),
+	npmplusProxyTls: false,
+	certificateId: 0,
+	npmplusMtlsCertificateId: 0,
+	npmplusMtlsVerifyClientOptional: false,
+});
+
 const StreamModal = EasyModal.create(({ id, visible, remove, close, formRef }) => {
 	const { data, isPending, error } = useStream(id);
 	const { data: allStreams } = useStreams();
@@ -281,17 +298,10 @@ const StreamModal = EasyModal.create(({ id, visible, remove, close, formRef }) =
 																							field.onChange(e);
 																						} else {
 																							setValues({
-																								...values,
+																								...udpOnlyValues(
+																									values,
+																								),
 																								tcpForwarding: false,
-																								udpForwarding: true,
-																								...(values.npmplusProxyProtocolForwarding ===
-																									1 && {
-																									npmplusProxyProtocolForwarding: 2,
-																								}),
-																								npmplusProxyTls: false,
-																								certificateId: 0,
-																								npmplusMtlsCertificateId: 0,
-																								npmplusMtlsVerifyClientOptional: false,
 																							});
 																						}
 																					}}
@@ -321,18 +331,9 @@ const StreamModal = EasyModal.create(({ id, visible, remove, close, formRef }) =
 																					type="checkbox"
 																					onChange={(e) => {
 																						if (e.target.checked) {
-																							setValues({
-																								...values,
-																								udpForwarding: true,
-																								...(values.npmplusProxyProtocolForwarding ===
-																									1 && {
-																									npmplusProxyProtocolForwarding: 2,
-																								}),
-																								npmplusProxyTls: false,
-																								certificateId: 0,
-																								npmplusMtlsCertificateId: 0,
-																								npmplusMtlsVerifyClientOptional: false,
-																							});
+																							setValues(
+																								udpOnlyValues(values),
+																							);
 																						} else {
 																							setValues({
 																								...values,

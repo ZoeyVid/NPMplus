@@ -18,11 +18,12 @@ function EmptyData({
 		<tr>
 			<td colSpan={tableInstance.getAllFlatColumns().length}>
 				<div className="text-center my-4">
-					{isFiltered ? (
+					{isFiltered && (
 						<h2>
 							<T id="empty-search" />
 						</h2>
-					) : (
+					)}
+					{!isFiltered && (
 						<>
 							<h2>
 								<T id="object.empty" tData={{ objects }} />
