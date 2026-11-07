@@ -23,7 +23,7 @@ router
 	 *
 	 * Retrieve all logs
 	 */
-	.get(jwtdecode(), validate, async (_, res) => {
+	.get(jwtdecode, validate, async (_, res) => {
 		const rows = await internalAuditLog.getAll(res.locals.access, res.locals.query);
 		res.status(200).send(rows);
 	});
@@ -41,7 +41,7 @@ router
 	 *
 	 * Retrieve a specific entry
 	 */
-	.get(jwtdecode(), validate, async (_, res) => {
+	.get(jwtdecode, validate, async (_, res) => {
 		const item = await internalAuditLog.get(res.locals.access, {
 			id: Number(res.locals.params.event_id),
 			expand: res.locals.query.expand,

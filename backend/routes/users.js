@@ -46,7 +46,7 @@ router
 	 *
 	 * Retrieve all users
 	 */
-	.get(jwtdecode(), validate, async (_, res) => {
+	.get(jwtdecode, validate, async (_, res) => {
 		const users = await internalUser.getAll(res.locals.access);
 		res.status(200).send(users);
 	})
@@ -56,7 +56,7 @@ router
 	 *
 	 * Create a new User
 	 */
-	.post(jwtdecode(), validate, async (_, res) => {
+	.post(jwtdecode, validate, async (_, res) => {
 		const user = await internalUser.create(res.locals.access, res.locals.body);
 		res.status(201).send(user);
 	});
@@ -109,7 +109,7 @@ router
 	 *
 	 * Retrieve a specific user
 	 */
-	.get(jwtdecode(), userIdFromMe, validate, async (_, res) => {
+	.get(jwtdecode, userIdFromMe, validate, async (_, res) => {
 		const user = await internalUser.get(res.locals.access, {
 			id: Number(res.locals.params.user_id),
 			expand: res.locals.query.expand,
@@ -122,7 +122,7 @@ router
 	 *
 	 * Update and existing user
 	 */
-	.put(jwtdecode(), userIdFromMe, validate, async (_, res) => {
+	.put(jwtdecode, userIdFromMe, validate, async (_, res) => {
 		const result = await internalUser.update(res.locals.access, {
 			...res.locals.body,
 			id: Number(res.locals.params.user_id),
@@ -135,7 +135,7 @@ router
 	 *
 	 * Update and existing user
 	 */
-	.delete(jwtdecode(), userIdFromMe, validate, async (_, res) => {
+	.delete(jwtdecode, userIdFromMe, validate, async (_, res) => {
 		const result = await internalUser.delete(res.locals.access, {
 			id: Number(res.locals.params.user_id),
 		});
@@ -155,7 +155,7 @@ router
 	 *
 	 * Update password for a user
 	 */
-	.put(jwtdecode(), userIdFromMe, validate, async (_, res) => {
+	.put(jwtdecode, userIdFromMe, validate, async (_, res) => {
 		const result = await internalUser.setPassword(res.locals.access, {
 			...res.locals.body,
 			id: Number(res.locals.params.user_id),
@@ -186,7 +186,7 @@ router
 	 *
 	 * Set some or all permissions for a user
 	 */
-	.put(jwtdecode(), userIdFromMe, validate, async (_, res) => {
+	.put(jwtdecode, userIdFromMe, validate, async (_, res) => {
 		const result = await internalUser.setPermissions(res.locals.access, {
 			...res.locals.body,
 			id: Number(res.locals.params.user_id),
@@ -207,7 +207,7 @@ router
 	 *
 	 * Get MFA status for a user (all factors and backup codes)
 	 */
-	.get(jwtdecode(), userIdFromMe, validate, async (_, res) => {
+	.get(jwtdecode, userIdFromMe, validate, async (_, res) => {
 		const status = await internalMfa.getStatus(res.locals.access, Number(res.locals.params.user_id));
 		res.status(200).send(status);
 	})
@@ -217,7 +217,7 @@ router
 	 *
 	 * Admin reset: disable all second factors and backup codes for a user
 	 */
-	.delete(jwtdecode(), userIdFromMe, validate, async (_, res) => {
+	.delete(jwtdecode, userIdFromMe, validate, async (_, res) => {
 		await internalMfa.adminDisable(res.locals.access, Number(res.locals.params.user_id));
 		res.status(200).send(true);
 	});
@@ -235,7 +235,7 @@ router
 	 *
 	 * Start TOTP setup, returns QR code URL
 	 */
-	.post(jwtdecode(), userIdFromMe, validate, async (_, res) => {
+	.post(jwtdecode, userIdFromMe, validate, async (_, res) => {
 		const result = await internalTotp.startSetup(res.locals.access, Number(res.locals.params.user_id));
 		res.status(200).send(result);
 	});
@@ -253,7 +253,7 @@ router
 	 *
 	 * Verify code and enable TOTP
 	 */
-	.post(jwtdecode(), userIdFromMe, validate, async (_, res) => {
+	.post(jwtdecode, userIdFromMe, validate, async (_, res) => {
 		const result = await internalMfa.enableTotp(
 			res.locals.access,
 			Number(res.locals.params.user_id),
@@ -278,7 +278,7 @@ router
 	 *
 	 * Disable TOTP for a user
 	 */
-	.post(jwtdecode(), userIdFromMe, validate, async (_, res) => {
+	.post(jwtdecode, userIdFromMe, validate, async (_, res) => {
 		await internalMfa.disableTotp(res.locals.access, Number(res.locals.params.user_id), res.locals.body.code);
 		res.status(200).send(true);
 	});
@@ -296,7 +296,7 @@ router
 	 *
 	 * Regenerate backup codes
 	 */
-	.post(jwtdecode(), userIdFromMe, validate, async (_, res) => {
+	.post(jwtdecode, userIdFromMe, validate, async (_, res) => {
 		const result = await internalMfa.regenerateBackupCodes(
 			res.locals.access,
 			Number(res.locals.params.user_id),
@@ -321,7 +321,7 @@ router
 	 *
 	 * Revoke all of a user's sessions (self or admin)
 	 */
-	.delete(jwtdecode(), userIdFromMe, validate, async (_, res) => {
+	.delete(jwtdecode, userIdFromMe, validate, async (_, res) => {
 		await internalUser.revokeSessions(res.locals.access, Number(res.locals.params.user_id));
 		if (Number(res.locals.params.user_id) === res.locals.access.token.getUserId(0)) {
 			res.clearCookie("__Host-Http-token", {
@@ -352,7 +352,7 @@ router
 	 * Upload a custom avatar
 	 */
 	.post(
-		jwtdecode(),
+		jwtdecode,
 		userIdFromMe,
 		validate,
 		multer({ storage: multer.memoryStorage(), limits: { fileSize: 1024 * 1024 } }).single("avatar"),
@@ -367,7 +367,7 @@ router
 	 *
 	 * Remove the custom avatar, falling back to gravatar
 	 */
-	.delete(jwtdecode(), userIdFromMe, validate, async (_, res) => {
+	.delete(jwtdecode, userIdFromMe, validate, async (_, res) => {
 		const result = await internalUser.deleteAvatar(res.locals.access, Number(res.locals.params.user_id));
 		res.status(200).send(result);
 	});

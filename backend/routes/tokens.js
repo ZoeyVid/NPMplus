@@ -31,7 +31,7 @@ router
 	 * We also piggy back on to this method, allowing admins to get tokens
 	 * for services like Job board and Worker.
 	 */
-	.get(validate, jwtdecode(), async (_, res) => {
+	.get(validate, jwtdecode, async (_, res) => {
 		const data = await internalToken.getFreshToken(res.locals.access, false, res.locals.query);
 
 		res.cookie("__Host-Http-token", data.token, {
