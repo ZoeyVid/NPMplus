@@ -20,7 +20,7 @@ services:
 #      - DAC_OVERRIDE # required if you change PUID/PGID
 #      - NET_RAW # required if you need the ping command inside the NPMplus container
     security_opt:
-      - no-new-privileges:true
+      - no-new-privileges=true
 #    dns: # only set this if you need/want to override the default DNS server
 #      - 192.168.1.1 # default for unifi/opnsense/pfsense
 #      - 192.168.8.1 # default for glinet
