@@ -322,14 +322,6 @@ const internalNginx = {
 		await writeFile(filename, config_text, { encoding: "utf8" });
 		logger.debug("Wrote config:", filename);
 
-		if (process.env.DISABLE_NGINX_BEAUTIFIER === "false") {
-			try {
-				await utils.execFile("nginxbeautifier", ["-s", "2", filename]);
-			} catch {
-				// do nothing
-			}
-		}
-
 		return true;
 	},
 
