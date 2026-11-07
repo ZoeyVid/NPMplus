@@ -9,7 +9,6 @@ import internalCertificate from "../../internal/certificate.js";
 import errs from "../../lib/error.js";
 import idParam from "../../lib/express/id-param.js";
 import jwtdecode from "../../lib/express/jwt-decode.js";
-import requireLogin from "../../lib/express/require-login.js";
 import validate from "../../lib/express/validate.js";
 
 const router = express.Router({
@@ -45,7 +44,7 @@ router
 	 *
 	 * Retrieve all certificates
 	 */
-	.get(jwtdecode(), validate, async (_, res) => {
+	.get(jwtdecode, validate, async (_, res) => {
 		const rows = await internalCertificate.getAll(res.locals.access, res.locals.query.expand);
 		res.status(200).send(rows);
 	})
@@ -55,7 +54,7 @@ router
 	 *
 	 * Create a new certificate
 	 */
-	.post(jwtdecode(), validate, async (req, res) => {
+	.post(jwtdecode, validate, async (req, res) => {
 		req.setTimeout(900000); // 15 minutes timeout
 		const result = await internalCertificate.create(res.locals.access, res.locals.body);
 		res.status(201).send(result);
@@ -72,7 +71,7 @@ router
 	 *
 	 * Get list of all supported DNS providers
 	 */
-	.get(requireLogin(), validate, (_, res) => {
+	.get(jwtdecode, validate, (_, res) => {
 		res.status(200).send(
 			Object.entries(dnsPlugins)
 				.map(([id, { name, credentials }]) => ({ id, name, credentials }))
@@ -93,7 +92,7 @@ router
 	 *
 	 * Test HTTP challenge for domains
 	 */
-	.post(jwtdecode(), validate, async (req, res) => {
+	.post(jwtdecode, validate, async (req, res) => {
 		req.setTimeout(60000); // 1 minute timeout
 
 		const result = await internalCertificate.testHttpsChallenge(res.locals.access, res.locals.body);
@@ -113,7 +112,7 @@ router
 	 *
 	 * Validate certificates
 	 */
-	.post(jwtdecode(), validate, uploadCerts, (req, res) => {
+	.post(jwtdecode, validate, uploadCerts, (req, res) => {
 		if (!req.files?.certificate) throw new errs.ValidationError("certificate file is required");
 
 		const result = internalCertificate.validate(res.locals.access, {
@@ -135,7 +134,7 @@ router
 	 *
 	 * Retrieve a specific certificate
 	 */
-	.get(jwtdecode(), validate, async (_, res) => {
+	.get(jwtdecode, validate, async (_, res) => {
 		const row = await internalCertificate.get(res.locals.access, {
 			id: Number(res.locals.params.certificate_id),
 		});
@@ -147,7 +146,7 @@ router
 	 *
 	 * Update and existing certificate
 	 */
-	.delete(jwtdecode(), validate, async (_, res) => {
+	.delete(jwtdecode, validate, async (_, res) => {
 		const result = await internalCertificate.delete(res.locals.access, {
 			id: Number(res.locals.params.certificate_id),
 		});
@@ -167,7 +166,7 @@ router
 	 *
 	 * Upload certificates
 	 */
-	.post(jwtdecode(), validate, uploadCerts, async (req, res) => {
+	.post(jwtdecode, validate, uploadCerts, async (req, res) => {
 		if (!req.files?.certificate) throw new errs.ValidationError("certificate file is required");
 
 		const result = await internalCertificate.upload(res.locals.access, {
@@ -190,7 +189,7 @@ router
 	 *
 	 * Renew certificate
 	 */
-	.post(jwtdecode(), validate, async (req, res) => {
+	.post(jwtdecode, validate, async (req, res) => {
 		req.setTimeout(900000); // 15 minutes timeout
 		const result = await internalCertificate.renew(res.locals.access, {
 			id: Number(res.locals.params.certificate_id),
@@ -211,7 +210,7 @@ router
 	 *
 	 * Download certificate
 	 */
-	.get(jwtdecode(), validate, downloadLimiter, async (_, res) => {
+	.get(jwtdecode, validate, downloadLimiter, async (_, res) => {
 		await using dir = await mkdtempDisposable(path.join(tmpdir(), "npm-"));
 		const result = await internalCertificate.download(
 			res.locals.access,

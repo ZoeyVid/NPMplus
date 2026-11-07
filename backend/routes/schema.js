@@ -1,5 +1,5 @@
 import express from "express";
-import requireLogin from "../lib/express/require-login.js";
+import jwtdecode from "../lib/express/jwt-decode.js";
 import validate from "../lib/express/validate.js";
 import { compiledSchema } from "../schema/index.js";
 
@@ -15,7 +15,7 @@ router
 	/**
 	 * GET /schema
 	 */
-	.get(requireLogin(), validate, (req, res) => {
+	.get(jwtdecode, validate, (req, res) => {
 		res.status(200)
 			.type("json")
 			.send(JSON.stringify(compiledSchema, null, req.app.get("json spaces")));
