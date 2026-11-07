@@ -90,31 +90,27 @@ const internalCertificate = {
 				logger.error(err);
 			}
 
-			const certificates = await certificateModel.query().where("provider", "letsencrypt");
+			for (const certificate of await certificateModel.query().where("provider", "letsencrypt")) {
+				try {
+					const certInfo = await internalCertificate.getCertificateInfoFromFile(
+						`${internalCertificate.getLiveCertPath(certificate.id)}/fullchain.pem`,
+					);
 
-			if (certificates && certificates.length > 0) {
-				for (const certificate of certificates) {
-					try {
-						const certInfo = await internalCertificate.getCertificateInfoFromFile(
-							`${internalCertificate.getLiveCertPath(certificate.id)}/fullchain.pem`,
-						);
-
-						await certificateModel
-							.query()
-							.where("id", certificate.id)
-							.andWhere("provider", "letsencrypt")
-							.patch({
-								nice_name: getNiceName(certificate.domain_names),
-								expires_on: getExpiresOn(certInfo),
-							});
-					} catch (err) {
-						// Don't want to stop the train here, just log the error
-						logger.error(err);
-					}
+					await certificateModel
+						.query()
+						.where("id", certificate.id)
+						.andWhere("provider", "letsencrypt")
+						.patch({
+							nice_name: getNiceName(certificate.domain_names),
+							expires_on: getExpiresOn(certInfo),
+						});
+				} catch (err) {
+					// Don't want to stop the train here, just log the error
+					logger.error(err);
 				}
-
-				logger.info("Renew Complete");
 			}
+
+			logger.info("Renew Complete");
 		} catch (err) {
 			logger.error(err);
 		} finally {
@@ -474,19 +470,17 @@ const internalCertificate = {
 		access.can("certificates:manage");
 		const finalData = {};
 		for (const [name, [file]] of Object.entries(data.files)) {
-			if (internalCertificate.allowedSslFiles.includes(name)) {
-				const content = file.buffer.toString();
-				if (name === "certificate_key") {
-					finalData[name] = internalCertificate.checkPrivateKey(content);
-				} else {
-					if (
-						content.split("-----BEGIN CERTIFICATE-----").length - 1 !==
-						(content.match(certificatePattern)?.length ?? 0)
-					) {
-						throw new error.ValidationError("Certificate file contains an incomplete certificate");
-					}
-					finalData[name] = internalCertificate.getCertificateInfo(content, true);
-				}
+			if (!internalCertificate.allowedSslFiles.includes(name)) continue;
+			const content = file.buffer.toString();
+			if (name === "certificate_key") {
+				finalData[name] = internalCertificate.checkPrivateKey(content);
+			} else if (
+				content.split("-----BEGIN CERTIFICATE-----").length - 1 !==
+				(content.match(certificatePattern)?.length ?? 0)
+			) {
+				throw new error.ValidationError("Certificate file contains an incomplete certificate");
+			} else {
+				finalData[name] = internalCertificate.getCertificateInfo(content, true);
 			}
 		}
 

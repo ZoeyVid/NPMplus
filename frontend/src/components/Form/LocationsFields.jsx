@@ -47,6 +47,13 @@ export const createUiLocation = (item) => ({
 	uiKey: nextUiKey++,
 });
 
+const requestBufferingTitle = ({ npmplusCrowdsecAppsec, forwardScheme }) => {
+	if (!npmplusCrowdsecAppsec && ["http", "https"].includes(forwardScheme)) {
+		return intl.formatMessage({ id: "host.flags.disable-request-buffering.requires-appsec" });
+	}
+	return null;
+};
+
 export function LocationsFields({ name = "locations", disabled }) {
 	const { data: currentUser } = useUser("me");
 	const { values: hostValues, initialValues, setFieldValue } = useFormikContext();
@@ -525,14 +532,7 @@ export function LocationsFields({ name = "locations", disabled }) {
 														<span className="col-auto">
 															<span
 																className="form-check form-check-single form-switch"
-																title={
-																	item.npmplusCrowdsecAppsec ||
-																	!["http", "https"].includes(item.forwardScheme)
-																		? undefined
-																		: intl.formatMessage({
-																				id: "host.flags.disable-request-buffering.requires-appsec",
-																			})
-																}
+																title={requestBufferingTitle(item)}
 															>
 																<Field
 																	name={`${name}.${idx}.npmplusProxyRequestBuffering`}

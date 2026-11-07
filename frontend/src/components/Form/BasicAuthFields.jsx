@@ -53,16 +53,18 @@ export function BasicAuthFields({ name = "items" }) {
 													type={revealed[idx] ? "text" : "password"}
 													autoComplete="new-password"
 													className="form-control"
-													ref={(input) =>
-														input?.setCustomValidity(
-															new TextEncoder().encode(item.password).length > 72
-																? intl.formatMessage(
-																		{ id: "error.max-byte-length" },
-																		{ max: 72 },
-																	)
-																: "",
-														)
-													}
+													ref={(input) => {
+														if (new TextEncoder().encode(item.password).length > 72) {
+															input?.setCustomValidity(
+																intl.formatMessage(
+																	{ id: "error.max-byte-length" },
+																	{ max: 72 },
+																),
+															);
+														} else {
+															input?.setCustomValidity("");
+														}
+													}}
 													required={
 														item.username.trim() !== "" &&
 														!storedUsernames.has(item.username)
@@ -78,6 +80,7 @@ export function BasicAuthFields({ name = "items" }) {
 												type="button"
 												tabIndex={-1}
 												aria-label="toggle visibility"
+												onMouseDown={(e) => e.preventDefault()}
 												className="p-0 border-0 bg-transparent text-secondary d-flex align-items-center cursor-pointer"
 												onClick={() =>
 													setRevealed((r) => Object.assign([...r], { [idx]: !r[idx] }))
