@@ -99,7 +99,7 @@ services:
 #      - "DISABLE_GRAVATAR=true" # disables usage of gravatar images, users need to update theier profile for this to apply, default false
 #      - "COOKIE_SECRET=some-random-string" # by default a new secret to sign cookies is used after each restart, to keep cookies valid after restarts you can set a static secret here
 #      - "COOKIE_SECRET_FILE=/run/secrets/cookie_secret" # alternative to COOKIE_SECRET, path to a file (like a docker secret) containing the secret, needs to be readable by PUID/PGID
-#      - "TOKEN_MAX_EXPIRY=720" # Set how many hours a token requested via POST /api/tokens with {"expires_in": <hours>} or GET /api/tokens?expires_in=<hours> can be valid at most, longer requests get capped, set COOKIE_SECRET to keep these tokens valid after restarts, default 1
+#      - "TOKEN_MAX_EXPIRY=720" # Set how many hours a token requested via POST /api/tokens with {"expires_in": <hours>} can be valid at most, longer requests get capped, set COOKIE_SECRET to keep these tokens valid after restarts, default 1
 #      - "ENABLE_PRERUN=true" # see readme, default off
 #      - "NGINX_LOAD_NJS_MODULE=true" # loads the njs module, requires manual configuration, default false
 #      - "NGINX_LOAD_LDAP_MODULE=true" # loads the ldap module, requires manual configuration, default false
