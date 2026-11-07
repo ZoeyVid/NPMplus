@@ -60,11 +60,14 @@ export default function Table({ data, isFetching, isFiltered, onEdit, onDelete, 
 				header: intl.formatMessage({ id: "column.authorization" }),
 				cell: (info) => <T id="access-list.auth-count" data={{ count: info.getValue() }} />,
 			}),
-			columnHelper.accessor((row) => row.clients.length, {
-				id: "clients",
-				header: intl.formatMessage({ id: "column.access" }),
-				cell: (info) => <T id="access-list.access-count" data={{ count: info.getValue() }} />,
-			}),
+			columnHelper.accessor(
+				(row) => row.clients.filter(({ address }) => address.toLowerCase() !== "all").length,
+				{
+					id: "clients",
+					header: intl.formatMessage({ id: "column.access" }),
+					cell: (info) => <T id="access-list.access-count" data={{ count: info.getValue() }} />,
+				},
+			),
 			columnHelper.accessor((row) => row.satisfyAny, {
 				id: "satisfyAny",
 				header: intl.formatMessage({ id: "column.satisfy" }),
