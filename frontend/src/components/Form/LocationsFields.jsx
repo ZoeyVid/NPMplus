@@ -16,7 +16,7 @@ import { AccessFields } from "src/components";
 import { useUser } from "src/hooks";
 import { intl, T } from "src/locale";
 import { forwardSummary } from "src/modules/Forward";
-import { upstreamUrlPattern, validateUnixTarget } from "src/modules/Validations";
+import { validateUnixTarget, validateUpstreamUrl } from "src/modules/Validations";
 
 const authProvider = (authRequest) => authRequest?.replace("-send-basic-auth", "");
 
@@ -54,24 +54,25 @@ export function LocationsFields({ name = "locations", disabled }) {
 	const [filter, setFilter] = useState("");
 	const scrollToKey = useRef(null);
 
-	const authRequestUpstreamError = (item) => {
+	const upstreams = {};
+	for (const location of values) {
+		if (location.npmplusEnabled) {
+			const provider = authProvider(location.npmplusAuthRequest);
+			upstreams[provider] ??= new Set();
+			upstreams[provider].add(location.npmplusAuthRequestUpstream);
+		}
+	}
+
+	const authRequestUpstreamErrors = values.map((item) => {
 		const provider = authProvider(item.npmplusAuthRequest);
 		if (!item.npmplusEnabled) return "";
 		if (authProvider(hostValues.npmplusAuthRequest) === provider) {
 			if (!item.npmplusAuthRequestUpstream) return "";
-		} else if (
-			new Set(
-				values
-					.filter(
-						(location) => location.npmplusEnabled && authProvider(location.npmplusAuthRequest) === provider,
-					)
-					.map((location) => location.npmplusAuthRequestUpstream),
-			).size < 2
-		) {
+		} else if (upstreams[provider].size < 2) {
 			return "";
 		}
 		return intl.formatMessage({ id: "proxy-host.location-auth-request-upstream-error" });
-	};
+	});
 
 	const toggle = (key, list, set) => set(list.includes(key) ? list.filter((i) => i !== key) : [...list, key]);
 
@@ -311,6 +312,7 @@ export function LocationsFields({ name = "locations", disabled }) {
 											<select
 												id={`forwardScheme-${item.uiKey}`}
 												className="form-control"
+												required
 												{...field}
 												onChange={(e) => handleForwardSchemeChange(e, field, idx)}
 											>
@@ -592,6 +594,7 @@ export function LocationsFields({ name = "locations", disabled }) {
 														<select
 															id={`npmplusXFrameOptions-${item.uiKey}`}
 															className="form-select"
+															required
 															{...field}
 														>
 															<option value="SAMEORIGIN">SAMEORIGIN</option>
@@ -618,6 +621,7 @@ export function LocationsFields({ name = "locations", disabled }) {
 														<select
 															id={`npmplusAuthRequest-${item.uiKey}`}
 															className="form-select"
+															required
 															{...field}
 															onChange={(e) => handleAuthRequestChange(e, field, idx)}
 														>
@@ -648,36 +652,37 @@ export function LocationsFields({ name = "locations", disabled }) {
 													<T id="host.auth-request-upstream" />
 												</span>
 												<span className="col-auto">
-													<Field name={`${name}.${idx}.npmplusAuthRequestUpstream`}>
-														{({ field }) => (
-															<input
-																id={`npmplusAuthRequestUpstream-${item.uiKey}`}
-																type="text"
-																className={`form-control ${item.npmplusAuthRequestUpstream && !upstreamUrlPattern.test(item.npmplusAuthRequestUpstream) ? "is-invalid" : ""}`}
-																placeholder={intl.formatMessage({
-																	id: "host.auth-request-upstream.placeholder",
-																})}
-																maxLength={255}
-																pattern="^https?://(([^\s\/:]+|\[[a-fA-F0-9:]+\]):[0-9]+|cu_[^\s\/:]+)$"
-																{...field}
-																ref={(input) =>
-																	input?.setCustomValidity(
-																		authRequestUpstreamError(item),
-																	)
-																}
-															/>
+													<Field
+														name={`${name}.${idx}.npmplusAuthRequestUpstream`}
+														validate={validateUpstreamUrl}
+													>
+														{({ field, meta }) => (
+															<>
+																<input
+																	id={`npmplusAuthRequestUpstream-${item.uiKey}`}
+																	type="text"
+																	className={`form-control ${meta.touched && meta.error ? "is-invalid" : ""}`}
+																	placeholder={intl.formatMessage({
+																		id: "host.auth-request-upstream.placeholder",
+																	})}
+																	maxLength={255}
+																	pattern="^https?://(([^\s\/:]+|\[[a-fA-F0-9:]+\]):[0-9]+|cu_[^\s\/:]+)$"
+																	{...field}
+																	ref={(input) =>
+																		input?.setCustomValidity(
+																			authRequestUpstreamErrors[idx],
+																		)
+																	}
+																/>
+																{meta.touched && meta.error && (
+																	<div className="invalid-feedback">{meta.error}</div>
+																)}
+															</>
 														)}
 													</Field>
-
-													{item.npmplusAuthRequestUpstream &&
-													!upstreamUrlPattern.test(item.npmplusAuthRequestUpstream) ? (
-														<div className="invalid-feedback">
-															<T id="error.invalid-upstream-url" />
-														</div>
-													) : null}
-													{authRequestUpstreamError(item) && (
+													{authRequestUpstreamErrors[idx] && (
 														<div className="invalid-feedback d-block">
-															{authRequestUpstreamError(item)}
+															{authRequestUpstreamErrors[idx]}
 														</div>
 													)}
 												</span>
