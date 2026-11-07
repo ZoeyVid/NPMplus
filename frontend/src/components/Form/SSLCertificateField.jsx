@@ -1,5 +1,6 @@
 import { IconShield } from "@tabler/icons-react";
 import { Field, useFormikContext } from "formik";
+import { useMemo } from "react";
 import Select, { components } from "react-select";
 import { certificateProviderTranslation } from "src/components";
 import { useCertificates, useUser } from "src/hooks";
@@ -75,36 +76,40 @@ export function SSLCertificateField({
 		}
 	};
 
-	const certs = Object.groupBy(data ?? [], (cert) => (cert.provider === "mtls" ? "mtls" : "server"));
-	const options = certs.server?.map(toOption) ?? [];
-	const mtlsOptions = certs.mtls?.map(toOption) ?? [];
+	const { options, mtlsOptions } = useMemo(() => {
+		const certs = Object.groupBy(data ?? [], (cert) => (cert.provider === "mtls" ? "mtls" : "server"));
+		const server = certs.server?.map(toOption) ?? [];
+		const mtls = certs.mtls?.map(toOption) ?? [];
 
-	// Prepend the Add New option
-	if (allowNew && hasPermission(CERTIFICATES, MANAGE, user?.permissions, user?.npmplusIsAdmin)) {
-		options?.unshift({
-			value: "new",
-			label: intl.formatMessage({ id: "certificates.request.title" }),
-			subLabel: intl.formatMessage({ id: "certificates.request.subtitle" }),
-			icon: <IconShield size={14} className="text-lime" />,
+		// Prepend the Add New option
+		if (allowNew && hasPermission(CERTIFICATES, MANAGE, user?.permissions, user?.npmplusIsAdmin)) {
+			server.unshift({
+				value: "new",
+				label: intl.formatMessage({ id: "certificates.request.title" }),
+				subLabel: intl.formatMessage({ id: "certificates.request.subtitle" }),
+				icon: <IconShield size={14} className="text-lime" />,
+			});
+		}
+
+		// Prepend the None option
+		server.unshift({
+			value: 0,
+			label: intl.formatMessage({ id: "certificate.none.title" }),
+			subLabel: intl.formatMessage({
+				id: forHttp ? "certificate.none.subtitle.for-http" : "certificate.none.subtitle",
+			}),
+			icon: <IconShield size={14} className="text-red" />,
 		});
-	}
 
-	// Prepend the None option
-	options?.unshift({
-		value: 0,
-		label: intl.formatMessage({ id: "certificate.none.title" }),
-		subLabel: forHttp
-			? intl.formatMessage({ id: "certificate.none.subtitle.for-http" })
-			: intl.formatMessage({ id: "certificate.none.subtitle" }),
-		icon: <IconShield size={14} className="text-red" />,
-	});
+		mtls.unshift({
+			value: 0,
+			label: intl.formatMessage({ id: "certificate.none.title" }),
+			subLabel: intl.formatMessage({ id: "certificate.none.subtitle" }),
+			icon: <IconShield size={14} className="text-red" />,
+		});
 
-	mtlsOptions?.unshift({
-		value: 0,
-		label: intl.formatMessage({ id: "certificate.none.title" }),
-		subLabel: intl.formatMessage({ id: "certificate.none.subtitle" }),
-		icon: <IconShield size={14} className="text-red" />,
-	});
+		return { options: server, mtlsOptions: mtls };
+	}, [data, user, allowNew, forHttp]);
 
 	return (
 		<>

@@ -47,6 +47,7 @@ export function DNSProviderFields({ showBoundaryBox }) {
 							isSearchable
 							required
 							onChange={handleChange}
+							value={options?.find((o) => o.value === field.value) ?? null}
 							options={options}
 						/>
 					</div>

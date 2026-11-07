@@ -1,5 +1,5 @@
 import cn from "clsx";
-import { Field, Form, Formik } from "formik";
+import { ErrorMessage, Field, Form, Formik } from "formik";
 import { useState } from "react";
 import { Alert } from "react-bootstrap";
 import Modal from "react-bootstrap/Modal";
@@ -17,11 +17,10 @@ const showAccessListModal = (id) => {
 
 const AccessListModal = EasyModal.create(({ id, visible, remove, close, formRef }) => {
 	const { data, isPending, error } = useAccessList(id);
-	const { mutate: setAccessList } = useSetAccessList();
+	const { mutateAsync: setAccessList } = useSetAccessList();
 	const { data: currentUser } = useUser("me");
 	const canManage = hasPermission(ACCESS_LISTS, MANAGE, currentUser?.permissions, currentUser?.npmplusIsAdmin);
 	const [errorMsg, setErrorMsg] = useState(null);
-	const [isSubmitting, setIsSubmitting] = useState(false);
 
 	const validate = (values) => {
 		// either Auths or Clients must be defined
@@ -39,20 +38,16 @@ const AccessListModal = EasyModal.create(({ id, visible, remove, close, formRef 
 		return null;
 	};
 
-	const onSubmit = (values, { setSubmitting }) => {
-		if (isSubmitting) return;
-
+	const onSubmit = async (values) => {
 		const items = values.items.filter(({ username }) => username.trim());
 		const clients = values.clients.filter(({ address }) => address.trim());
 
 		const vErr = validate({ ...values, items, clients });
 		if (vErr) {
 			setErrorMsg(vErr);
-			setSubmitting(false);
 			return;
 		}
 
-		setIsSubmitting(true);
 		setErrorMsg(null);
 
 		const payload = {
@@ -72,21 +67,17 @@ const AccessListModal = EasyModal.create(({ id, visible, remove, close, formRef 
 			address: i.address,
 		}));
 
-		setAccessList(payload, {
-			onError: (err) => setErrorMsg(<T id={err.message} />),
-			onSuccess: () => {
-				showObjectSuccess("access-list", "saved");
-				remove();
-			},
-			onSettled: () => {
-				setIsSubmitting(false);
-				setSubmitting(false);
-			},
-		});
+		try {
+			await setAccessList(payload);
+			showObjectSuccess("access-list", "saved");
+			remove();
+		} catch (err) {
+			setErrorMsg(<T id={err.message} />);
+		}
 	};
 
 	return (
-		<Modal show={visible} backdrop={canManage ? "static" : true} onHide={isSubmitting ? undefined : close}>
+		<Modal show={visible} backdrop={canManage ? "static" : true} onHide={close}>
 			{error && (
 				<Alert variant="danger" className="m-3">
 					{error?.message}
@@ -105,7 +96,7 @@ const AccessListModal = EasyModal.create(({ id, visible, remove, close, formRef 
 					}}
 					onSubmit={onSubmit}
 				>
-					{() => (
+					{({ isSubmitting }) => (
 						<Form onInvalid={showTabOfInvalid}>
 							<Modal.Header closeButton={!isSubmitting}>
 								<Modal.Title>
@@ -158,7 +149,7 @@ const AccessListModal = EasyModal.create(({ id, visible, remove, close, formRef 
 										<fieldset className="tab-content" disabled={!canManage}>
 											<div className="tab-pane active show" id="tab-details" role="tabpanel">
 												<Field name="name" validate={(value) => validateString(value, 1, 255)}>
-													{({ field, form }) => (
+													{({ field, meta }) => (
 														<div>
 															<label htmlFor="name" className="form-label">
 																<T id="column.name" />
@@ -168,15 +159,15 @@ const AccessListModal = EasyModal.create(({ id, visible, remove, close, formRef 
 																type="text"
 																required
 																autoComplete="off"
-																className={`form-control ${form.errors.name && form.touched.name ? "is-invalid" : ""}`}
+																className={`form-control ${meta.touched && meta.error ? "is-invalid" : ""}`}
 																{...field}
 															/>
 
-															{form.errors.name ? (
-																<div className="invalid-feedback">
-																	{form.touched.name ? form.errors.name : null}
-																</div>
-															) : null}
+															<ErrorMessage
+																name="name"
+																component="div"
+																className="invalid-feedback"
+															/>
 														</div>
 													)}
 												</Field>
