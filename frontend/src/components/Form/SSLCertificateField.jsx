@@ -65,10 +65,12 @@ export function SSLCertificateField({
 			if (hstsSubdomains) void setFieldValue("hstsSubdomains", false);
 		}
 		if (newValue?.value !== "new") {
-			if (npmplusReuseKey) void setFieldValue("npmplusReuseKey", undefined);
-			if (npmplusDnsChallenge) void setFieldValue("npmplusDnsChallenge", undefined);
-			if (npmplusDnsProvider) void setFieldValue("npmplusDnsProvider", undefined);
-			if (npmplusDnsProviderCredentials) void setFieldValue("npmplusDnsProviderCredentials", undefined);
+			if (npmplusReuseKey !== undefined) void setFieldValue("npmplusReuseKey", undefined);
+			if (npmplusDnsChallenge !== undefined) void setFieldValue("npmplusDnsChallenge", undefined);
+			if (npmplusDnsProvider !== undefined) void setFieldValue("npmplusDnsProvider", undefined);
+			if (npmplusDnsProviderCredentials !== undefined) {
+				void setFieldValue("npmplusDnsProviderCredentials", undefined);
+			}
 			if (npmplusPropagationSeconds !== undefined) void setFieldValue("npmplusPropagationSeconds", undefined);
 		}
 	};

@@ -1,7 +1,7 @@
 import { IconSettings } from "@tabler/icons-react";
 import cn from "clsx";
 import { Field, Form, Formik } from "formik";
-import { useState } from "react";
+import { useCallback, useMemo, useState } from "react";
 import { Alert } from "react-bootstrap";
 import Modal from "react-bootstrap/Modal";
 import {
@@ -24,6 +24,8 @@ import { hasPermission, MANAGE, PROXY_HOSTS } from "src/modules/Permissions";
 import { showTabOfInvalid, validateNumber, validateUnixTarget, validateUpstreamUrl } from "src/modules/Validations";
 import { showObjectSuccess } from "src/notifications";
 
+const validateForwardPort = (value) => validateNumber(value, -1, 65535);
+
 const ProxyHostModal = EasyModal.create(({ id, isClone, visible, remove, close, formRef }) => {
 	const { data, isPending, error } = useProxyHost(id);
 	const { data: allProxyHosts } = useProxyHosts();
@@ -34,6 +36,53 @@ const ProxyHostModal = EasyModal.create(({ id, isClone, visible, remove, close, 
 	const [errorMsg, setErrorMsg] = useState(null);
 	const [isSubmitting, setIsSubmitting] = useState(false);
 	const [advVisible, setAdvVisible] = useState(false);
+	const validateForwardHost = useCallback(
+		(value) => validateUnixTarget(value, currentUser?.npmplusIsAdmin, data?.forwardHost),
+		[currentUser?.npmplusIsAdmin, data?.forwardHost],
+	);
+
+	const initialValues = useMemo(
+		() => ({
+			// Details tab
+			domainNames: data?.domainNames,
+			forwardScheme: data?.forwardScheme,
+			forwardHost: data?.forwardHost,
+			forwardPort: String(data?.forwardPort || ""),
+			npmplusAccessListIds: data?.accessLists.map((accessList) => accessList.id),
+			npmplusAccessListType: data?.npmplusAccessListType,
+			// Locations tab
+			locations: data?.locations.map(({ id: locationId, proxyHostId, accessLists, ...location }) =>
+				createUiLocation({
+					...location,
+					forwardPort: location.forwardPort || "",
+					npmplusAccessListIds: accessLists.map((accessList) => accessList.id),
+				}),
+			),
+			// SSL tab
+			certificateId: data?.certificateId,
+			sslForced: data?.sslForced,
+			npmplusHttp3Support: data?.npmplusHttp3Support,
+			hstsEnabled: data?.hstsEnabled,
+			hstsSubdomains: data?.hstsSubdomains,
+			// Advanced tab
+			advancedConfig: data?.advancedConfig,
+			npmplusLocationConfig: data?.npmplusLocationConfig,
+			npmplusDirectory: data?.npmplusDirectory,
+			npmplusMtlsCertificateId: data?.npmplusMtlsCertificateId,
+			npmplusMtlsVerifyClientOptional: data?.npmplusMtlsVerifyClientOptional,
+			npmplusMtlsBypassAuthRequest: data?.npmplusMtlsBypassAuthRequest,
+			npmplusNoindex: data?.npmplusNoindex,
+			npmplusCrowdsecAppsec: data?.npmplusCrowdsecAppsec,
+			npmplusProxyResponseBuffering: data?.npmplusProxyResponseBuffering,
+			npmplusProxyRequestBuffering: data?.npmplusProxyRequestBuffering,
+			npmplusUpstreamCompression: data?.npmplusUpstreamCompression,
+			npmplusFancyindex: data?.npmplusFancyindex,
+			npmplusXFrameOptions: data?.npmplusXFrameOptions,
+			npmplusAuthRequest: data?.npmplusAuthRequest,
+			npmplusAuthRequestUpstream: data?.npmplusAuthRequestUpstream,
+		}),
+		[data],
+	);
 
 	const onSubmit = (values, { setSubmitting, setFieldValue }) => {
 		if (isSubmitting) return;
@@ -93,49 +142,7 @@ const ProxyHostModal = EasyModal.create(({ id, isClone, visible, remove, close, 
 			)}
 			{isPending && <Loading noLogo />}
 			{data && (
-				<Formik
-					innerRef={formRef}
-					initialValues={{
-						// Details tab
-						domainNames: data?.domainNames,
-						forwardScheme: data?.forwardScheme,
-						forwardHost: data?.forwardHost,
-						forwardPort: data?.forwardPort || "",
-						npmplusAccessListIds: data?.accessLists.map((accessList) => accessList.id),
-						npmplusAccessListType: data?.npmplusAccessListType,
-						// Locations tab
-						locations: data?.locations.map(({ id: locationId, proxyHostId, accessLists, ...location }) =>
-							createUiLocation({
-								...location,
-								forwardPort: location.forwardPort || "",
-								npmplusAccessListIds: accessLists.map((accessList) => accessList.id),
-							}),
-						),
-						// SSL tab
-						certificateId: data?.certificateId,
-						sslForced: data?.sslForced,
-						npmplusHttp3Support: data?.npmplusHttp3Support,
-						hstsEnabled: data?.hstsEnabled,
-						hstsSubdomains: data?.hstsSubdomains,
-						// Advanced tab
-						advancedConfig: data?.advancedConfig,
-						npmplusLocationConfig: data?.npmplusLocationConfig,
-						npmplusDirectory: data?.npmplusDirectory,
-						npmplusMtlsCertificateId: data?.npmplusMtlsCertificateId,
-						npmplusMtlsVerifyClientOptional: data?.npmplusMtlsVerifyClientOptional,
-						npmplusMtlsBypassAuthRequest: data?.npmplusMtlsBypassAuthRequest,
-						npmplusNoindex: data?.npmplusNoindex,
-						npmplusCrowdsecAppsec: data?.npmplusCrowdsecAppsec,
-						npmplusProxyResponseBuffering: data?.npmplusProxyResponseBuffering,
-						npmplusProxyRequestBuffering: data?.npmplusProxyRequestBuffering,
-						npmplusUpstreamCompression: data?.npmplusUpstreamCompression,
-						npmplusFancyindex: data?.npmplusFancyindex,
-						npmplusXFrameOptions: data?.npmplusXFrameOptions,
-						npmplusAuthRequest: data?.npmplusAuthRequest,
-						npmplusAuthRequestUpstream: data?.npmplusAuthRequestUpstream,
-					}}
-					onSubmit={onSubmit}
-				>
+				<Formik innerRef={formRef} initialValues={initialValues} onSubmit={onSubmit}>
 					{({ values }) => (
 						<Form onInvalid={showTabOfInvalid}>
 							<Modal.Header closeButton={!isSubmitting}>
@@ -276,16 +283,7 @@ const ProxyHostModal = EasyModal.create(({ id, isClone, visible, remove, close, 
 														</Field>
 													</div>
 													<div className="col-md-5">
-														<Field
-															name="forwardHost"
-															validate={(value) =>
-																validateUnixTarget(
-																	value,
-																	currentUser?.npmplusIsAdmin,
-																	data?.forwardHost,
-																)
-															}
-														>
+														<Field name="forwardHost" validate={validateForwardHost}>
 															{({ field, form }) => (
 																<div className="mb-3">
 																	<label className="form-label" htmlFor="forwardHost">
@@ -315,10 +313,7 @@ const ProxyHostModal = EasyModal.create(({ id, isClone, visible, remove, close, 
 														</Field>
 													</div>
 													<div className="col-md">
-														<Field
-															name="forwardPort"
-															validate={(value) => validateNumber(value, -1, 65535)}
-														>
+														<Field name="forwardPort" validate={validateForwardPort}>
 															{({ field, form }) => (
 																<div className="mb-3">
 																	<label className="form-label" htmlFor="forwardPort">
@@ -719,26 +714,24 @@ const ProxyHostModal = EasyModal.create(({ id, isClone, visible, remove, close, 
 														authRequest={values.npmplusAuthRequest}
 													/>
 												</div>
-												<Field name="npmplusLocationConfig">
-													{({ field }) => (
-														<>
-															{advVisible && (
-																<div className="">
-																	<textarea
-																		className="form-control font-monospace"
-																		spellCheck={false}
-																		placeholder={intl.formatMessage({
-																			id: "nginx-config.placeholder",
-																		})}
-																		rows={8}
-																		disabled={!currentUser?.npmplusIsAdmin}
-																		{...field}
-																	/>
-																</div>
+												{advVisible && (
+													<div className="">
+														<Field name="npmplusLocationConfig">
+															{({ field }) => (
+																<textarea
+																	className="form-control font-monospace"
+																	spellCheck={false}
+																	placeholder={intl.formatMessage({
+																		id: "nginx-config.placeholder",
+																	})}
+																	rows={8}
+																	disabled={!currentUser?.npmplusIsAdmin}
+																	{...field}
+																/>
 															)}
-														</>
-													)}
-												</Field>
+														</Field>
+													</div>
+												)}
 											</fieldset>
 											<div className="tab-pane" id="tab-locations" role="tabpanel">
 												<LocationsFields disabled={!canManage} />
