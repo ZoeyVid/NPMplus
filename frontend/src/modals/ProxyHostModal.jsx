@@ -314,7 +314,7 @@ const ProxyHostModal = EasyModal.create(({ id, isClone, visible, remove, close, 
 															)}
 														</Field>
 													</div>
-													<div className="col-md-3">
+													<div className="col-md">
 														<Field
 															name="forwardPort"
 															validate={(value) => validateNumber(value, -1, 65535)}
@@ -349,7 +349,7 @@ const ProxyHostModal = EasyModal.create(({ id, isClone, visible, remove, close, 
 															)}
 														</Field>
 													</div>
-													<div className="col-md-1 text-end">
+													<div className="col-md-auto text-end">
 														<div className="mb-3">
 															<div className="form-label invisible">​</div>
 															<button
