@@ -48,6 +48,7 @@ const AccessListModal = EasyModal.create(({ id, visible, remove, close, formRef 
 		const vErr = validate({ ...values, items, clients });
 		if (vErr) {
 			setErrorMsg(vErr);
+			setSubmitting(false);
 			return;
 		}
 
@@ -84,9 +85,6 @@ const AccessListModal = EasyModal.create(({ id, visible, remove, close, formRef 
 		});
 	};
 
-	const toggleClasses = "form-check-input";
-	const toggleEnabled = cn(toggleClasses, "bg-cyan");
-
 	return (
 		<Modal show={visible} backdrop={canManage ? "static" : true} onHide={isSubmitting ? undefined : close}>
 			{error && (
@@ -107,7 +105,7 @@ const AccessListModal = EasyModal.create(({ id, visible, remove, close, formRef 
 					}}
 					onSubmit={onSubmit}
 				>
-					{({ setFieldValue }) => (
+					{() => (
 						<Form onInvalid={showTabOfInvalid}>
 							<Modal.Header closeButton={!isSubmitting}>
 								<Modal.Title>
@@ -197,21 +195,12 @@ const AccessListModal = EasyModal.create(({ id, visible, remove, close, formRef 
 																		{({ field }) => (
 																			<span className="form-check form-check-single form-switch">
 																				<input
+																					{...field}
 																					id="satisfyAny"
-																					className={
-																						field.value
-																							? toggleEnabled
-																							: toggleClasses
-																					}
+																					className={cn("form-check-input", {
+																						"bg-cyan": field.checked,
+																					})}
 																					type="checkbox"
-																					name={field.name}
-																					checked={field.value}
-																					onChange={(e) => {
-																						setFieldValue(
-																							field.name,
-																							e.target.checked,
-																						);
-																					}}
 																				/>
 																			</span>
 																		)}
@@ -229,21 +218,12 @@ const AccessListModal = EasyModal.create(({ id, visible, remove, close, formRef 
 																		{({ field }) => (
 																			<span className="form-check form-check-single form-switch">
 																				<input
+																					{...field}
 																					id="passAuth"
-																					className={
-																						field.value
-																							? toggleEnabled
-																							: toggleClasses
-																					}
+																					className={cn("form-check-input", {
+																						"bg-cyan": field.checked,
+																					})}
 																					type="checkbox"
-																					name={field.name}
-																					checked={field.value}
-																					onChange={(e) => {
-																						setFieldValue(
-																							field.name,
-																							e.target.checked,
-																						);
-																					}}
 																				/>
 																			</span>
 																		)}
@@ -255,7 +235,7 @@ const AccessListModal = EasyModal.create(({ id, visible, remove, close, formRef 
 												</div>
 											</div>
 											<div className="tab-pane" id="tab-auth" role="tabpanel">
-												<BasicAuthFields initialValues={data?.items} />
+												<BasicAuthFields />
 											</div>
 											<div className="tab-pane" id="tab-rules" role="tabpanel">
 												<AccessClientFields />

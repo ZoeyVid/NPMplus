@@ -9,6 +9,10 @@ import { intl, T } from "src/locale";
 import { getCookie } from "src/modules/Cookies";
 import { validateEmail, validateString } from "src/modules/Validations";
 
+const redirectToOIDC = () => {
+	window.location.href = "/api/oidc";
+};
+
 function TotpForm() {
 	const codeRef = useRef(null);
 	const [showCode, setShowCode] = useState(false);
@@ -110,10 +114,6 @@ function PasswordForm() {
 	const { login } = useAuthState();
 	const health = useHealth();
 
-	const redirectToOIDC = () => {
-		window.location.href = "/api/oidc";
-	};
-
 	const onSubmit = async (values, { setSubmitting }) => {
 		setFormErr("");
 		try {
@@ -133,7 +133,7 @@ function PasswordForm() {
 			emailRef.current?.focus();
 		}
 		window.cookieStore.delete("__Host-npmplus_oidc_no_redirect");
-	});
+	}, [health.data?.password]);
 
 	return (
 		<>

@@ -7,10 +7,11 @@ const blankItem = { username: "", password: "" };
 
 export const toItemRows = (items) => (items.length ? items : [blankItem]);
 
-export function BasicAuthFields({ initialValues, name = "items" }) {
+export function BasicAuthFields({ name = "items" }) {
 	const [revealed, setRevealed] = useState([]);
-	const { values, setFieldValue } = useFormikContext();
+	const { values, initialValues, setFieldValue } = useFormikContext();
 	const items = values[name];
+	const storedUsernames = new Set(initialValues[name].map(({ username }) => username).filter(Boolean));
 
 	const handleRemove = (idx) => {
 		void setFieldValue(name, toItemRows(items.toSpliced(idx, 1)));
@@ -61,14 +62,9 @@ export function BasicAuthFields({ initialValues, name = "items" }) {
 													: "",
 											)
 										}
-										required={
-											item.username.trim() !== "" &&
-											!initialValues.some((iv) => iv.username === item.username)
-										}
+										required={item.username.trim() !== "" && !storedUsernames.has(item.username)}
 										{...field}
-										placeholder={
-											initialValues.some((iv) => iv.username === item.username) ? "••••••••" : ""
-										}
+										placeholder={storedUsernames.has(item.username) ? "••••••••" : ""}
 									/>
 								)}
 							</Field>
