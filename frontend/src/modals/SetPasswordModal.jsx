@@ -76,6 +76,9 @@ const SetPasswordModal = EasyModal.create(({ id, visible, remove, close, formRef
 											<span className="input-group-text">
 												<button
 													type="button"
+													title={intl.formatMessage({
+														id: showPassword ? "password.hide" : "password.show",
+													})}
 													onMouseDown={(e) => e.preventDefault()}
 													className="p-0 border-0 bg-transparent text-secondary d-flex align-items-center cursor-pointer"
 													onClick={() => setShowPassword((v) => !v)}

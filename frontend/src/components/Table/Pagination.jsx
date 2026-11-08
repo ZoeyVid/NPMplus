@@ -1,4 +1,5 @@
 import { IconChevronLeft, IconChevronRight, IconChevronsLeft, IconChevronsRight } from "@tabler/icons-react";
+import { intl } from "src/locale";
 
 function Pagination({ top, total, page, pageSize, onChange }) {
 	if (total <= 25) return null;
@@ -24,6 +25,7 @@ function Pagination({ top, total, page, pageSize, onChange }) {
 			<div className="d-flex align-items-center gap-2 ms-auto">
 				<button
 					type="button"
+					title={intl.formatMessage({ id: "pagination.first" })}
 					className="btn btn-sm btn-icon"
 					disabled={!page}
 					onClick={() => onChange(0, pageSize)}
@@ -32,6 +34,7 @@ function Pagination({ top, total, page, pageSize, onChange }) {
 				</button>
 				<button
 					type="button"
+					title={intl.formatMessage({ id: "pagination.previous" })}
 					className="btn btn-sm btn-icon"
 					disabled={!page}
 					onClick={() => onChange(page - 1, pageSize)}
@@ -59,6 +62,7 @@ function Pagination({ top, total, page, pageSize, onChange }) {
 				</form>
 				<button
 					type="button"
+					title={intl.formatMessage({ id: "pagination.next" })}
 					className="btn btn-sm btn-icon"
 					disabled={page >= pages - 1}
 					onClick={() => onChange(page + 1, pageSize)}
@@ -67,6 +71,7 @@ function Pagination({ top, total, page, pageSize, onChange }) {
 				</button>
 				<button
 					type="button"
+					title={intl.formatMessage({ id: "pagination.last" })}
 					className="btn btn-sm btn-icon"
 					disabled={page >= pages - 1}
 					onClick={() => onChange(pages - 1, pageSize)}

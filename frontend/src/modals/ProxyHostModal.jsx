@@ -172,12 +172,7 @@ const ProxyHostModal = EasyModal.create(({ id, isClone, visible, remove, close, 
 												</a>
 											</li>
 											<li className="nav-item ms-auto">
-												<a
-													href="#tab-advanced"
-													className="nav-link"
-													title="Settings"
-													data-bs-toggle="tab"
-												>
+												<a href="#tab-advanced" className="nav-link" data-bs-toggle="tab">
 													<T id="domains.advanced" />
 													{values?.advancedConfig?.trim() ? "*" : ""}
 												</a>
@@ -298,7 +293,10 @@ const ProxyHostModal = EasyModal.create(({ id, isClone, visible, remove, close, 
 																		inputMode="numeric"
 																		pattern="[1-9][0-9]*"
 																		className={`form-control ${meta.touched && meta.error ? "is-invalid" : ""}`}
-																		placeholder="eg: 8081"
+																		placeholder={intl.formatMessage(
+																			{ id: "example" },
+																			{ value: "8081" },
+																		)}
 																		disabled={
 																			!currentUser?.npmplusIsAdmin &&
 																			form.values.forwardScheme === "path"
@@ -321,7 +319,7 @@ const ProxyHostModal = EasyModal.create(({ id, isClone, visible, remove, close, 
 															<button
 																type="button"
 																className="btn p-0"
-																title="LocationConfig"
+																title={intl.formatMessage({ id: "nginx-config.label" })}
 																onClick={() => setAdvVisible((prev) => !prev)}
 															>
 																<IconSettings size={20} />
@@ -673,7 +671,8 @@ const ProxyHostModal = EasyModal.create(({ id, isClone, visible, remove, close, 
 														authRequest={values.npmplusAuthRequest}
 													/>
 												</div>
-												{advVisible && (
+												{(advVisible ||
+													(!canManage && values?.npmplusLocationConfig?.trim())) && (
 													<div className="">
 														<Field name="npmplusLocationConfig">
 															{({ field }) => (
