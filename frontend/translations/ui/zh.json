@@ -141,6 +141,7 @@
 	"error.access.at-least-one": "需要至少一个授权用户或访问规则",
 	"error.access.duplicate-usernames": "授权用户名必须唯一",
 	"error.invalid-auth": "无效的邮箱或密码",
+	"error.invalid-challenge": "输入验证码的时间已过期，请重新登录。",
 	"error.invalid-code": "验证码无效",
 	"error.invalid-domain": "无效的域名: {domain}",
 	"error.invalid-email": "无效的邮箱地址",

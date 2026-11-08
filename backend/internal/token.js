@@ -11,6 +11,8 @@ const ERROR_MESSAGE_INVALID_AUTH = "Invalid email or password";
 const ERROR_MESSAGE_INVALID_AUTH_I18N = "error.invalid-auth";
 const ERROR_MESSAGE_INVALID_CODE = "Invalid verification code";
 const ERROR_MESSAGE_INVALID_CODE_I18N = "error.invalid-code";
+const ERROR_MESSAGE_INVALID_CHALLENGE = "Invalid or expired challenge token";
+const ERROR_MESSAGE_INVALID_CHALLENGE_I18N = "error.invalid-challenge";
 
 const consumedChallenges = new Map();
 const startTime = Math.floor(Date.now() / 1000);
@@ -177,22 +179,24 @@ export default {
 		try {
 			tokenData = await Token.load(challengeToken);
 		} catch (err) {
-			throw new errs.AuthError("Invalid or expired challenge token", undefined, { cause: err });
+			throw new errs.AuthError(ERROR_MESSAGE_INVALID_CHALLENGE, ERROR_MESSAGE_INVALID_CHALLENGE_I18N, {
+				cause: err,
+			});
 		}
 
 		// Check scope
 		if (tokenData.scope !== "mfa-challenge") {
-			throw new errs.AuthError("Invalid challenge token");
+			throw new errs.AuthError(ERROR_MESSAGE_INVALID_CHALLENGE, ERROR_MESSAGE_INVALID_CHALLENGE_I18N);
 		}
 
 		const userId = tokenData.uid;
 		if (!userId) {
-			throw new errs.AuthError("Invalid challenge token");
+			throw new errs.AuthError(ERROR_MESSAGE_INVALID_CHALLENGE, ERROR_MESSAGE_INVALID_CHALLENGE_I18N);
 		}
 
 		const user = await userModel.query().where("id", userId).andWhere("is_disabled", 0).first();
 		if (!user || tokenData.iat <= user.npmplus_token_valid_after || tokenData.iat <= startTime) {
-			throw new errs.AuthError("Invalid challenge token");
+			throw new errs.AuthError(ERROR_MESSAGE_INVALID_CHALLENGE, ERROR_MESSAGE_INVALID_CHALLENGE_I18N);
 		}
 
 		const now = Math.floor(Date.now() / 1000);
@@ -200,7 +204,7 @@ export default {
 
 		// Claim the challenge token before the code is checked, so no parallel or repeated request can consume a code
 		if (consumedChallenges.has(tokenData.jti)) {
-			throw new errs.AuthError("Invalid challenge token");
+			throw new errs.AuthError(ERROR_MESSAGE_INVALID_CHALLENGE, ERROR_MESSAGE_INVALID_CHALLENGE_I18N);
 		}
 		consumedChallenges.set(tokenData.jti, tokenData.exp);
 
