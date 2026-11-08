@@ -27,9 +27,6 @@ function AuthProvider({ children, tokenRefreshInterval = 15 * 60 * 1000 }) {
 	};
 
 	const submitTotp = async (data) => {
-		if (!totpChallenge) {
-			throw new Error("No TOTP challenge pending");
-		}
 		const response = await verifyTotp(data);
 		handleTokenUpdate(response);
 	};
@@ -95,12 +92,6 @@ function AuthProvider({ children, tokenRefreshInterval = 15 * 60 * 1000 }) {
 	return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 }
 
-function useAuthState() {
-	const context = useContext(AuthContext);
-	if (!context) {
-		throw new Error("useAuthState must be used within a AuthProvider");
-	}
-	return context;
-}
+const useAuthState = () => useContext(AuthContext);
 
 export { AuthProvider, useAuthState };

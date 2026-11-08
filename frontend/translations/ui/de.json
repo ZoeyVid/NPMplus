@@ -141,6 +141,7 @@
 	"error.access.at-least-one": "Entweder eine Autorisierung oder eine Zugriffsregel ist erforderlich.",
 	"error.access.duplicate-usernames": "Benutzernamen der Autorisierungen müssen eindeutig sein",
 	"error.invalid-auth": "Ungültige E-Mail-Adresse oder Passwort",
+	"error.invalid-challenge": "Die Zeit für die Code-Eingabe ist abgelaufen. Bitte melde dich erneut an.",
 	"error.invalid-code": "Ungültiger Verifizierungscode",
 	"error.invalid-domain": "Ungültige Domain: {domain}",
 	"error.invalid-email": "Ungültige E-Mail-Adresse",
