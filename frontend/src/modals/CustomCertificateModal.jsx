@@ -74,9 +74,9 @@ const CustomCertificateModal = EasyModal.create(({ visible, remove, close, formR
 				}}
 				onSubmit={onSubmit}
 			>
-				{({ isSubmitting }) => (
+				{() => (
 					<Form>
-						<Modal.Header closeButton={!isSubmitting}>
+						<Modal.Header closeButton>
 							<Modal.Title>
 								<T
 									id={isEdit ? "object.edit" : "object.add"}
@@ -171,16 +171,10 @@ const CustomCertificateModal = EasyModal.create(({ visible, remove, close, formR
 							</div>
 						</Modal.Body>
 						<Modal.Footer>
-							<Button onClick={close} disabled={isSubmitting}>
+							<Button onClick={close}>
 								<T id="cancel" />
 							</Button>
-							<Button
-								type="submit"
-								color="pink"
-								className="ms-auto"
-								isLoading={isSubmitting}
-								disabled={isSubmitting}
-							>
+							<Button type="submit" color="pink" className="ms-auto">
 								<T id="save" />
 							</Button>
 						</Modal.Footer>

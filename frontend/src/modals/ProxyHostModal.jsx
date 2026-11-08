@@ -146,7 +146,7 @@ const ProxyHostModal = EasyModal.create(({ id, isClone, visible, remove, close, 
 			{isPending && <Loading noLogo />}
 			{data && (
 				<Formik innerRef={formRef} initialValues={initialValues} onSubmit={onSubmit}>
-					{({ values, isSubmitting }) => (
+					{({ values }) => (
 						<Form onInvalid={showTabOfInvalid}>
 							<Modal.Body className="p-0">
 								<Alert variant="danger" show={errorMsg} onClose={() => setErrorMsg(null)} dismissible>
@@ -721,17 +721,11 @@ const ProxyHostModal = EasyModal.create(({ id, isClone, visible, remove, close, 
 								</div>
 							</Modal.Body>
 							<Modal.Footer>
-								<Button onClick={close} disabled={isSubmitting}>
+								<Button onClick={close}>
 									<T id={canManage ? "cancel" : "action.close"} />
 								</Button>
 								{canManage && (
-									<Button
-										type="submit"
-										color="lime"
-										className="ms-auto"
-										isLoading={isSubmitting}
-										disabled={isSubmitting}
-									>
+									<Button type="submit" color="lime" className="ms-auto">
 										<T id="save" />
 									</Button>
 								)}

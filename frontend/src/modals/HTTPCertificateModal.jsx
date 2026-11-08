@@ -97,9 +97,9 @@ const HTTPCertificateModal = EasyModal.create(({ visible, remove, close, formRef
 				}}
 				onSubmit={onSubmit}
 			>
-				{({ values, isSubmitting }) => (
+				{({ values }) => (
 					<Form>
-						<Modal.Header closeButton={!(isSubmitting || isTesting)}>
+						<Modal.Header closeButton>
 							<Modal.Title>
 								<T id="object.add" tData={{ object: "lets-encrypt-via-http" }} />
 							</Modal.Title>
@@ -149,7 +149,7 @@ const HTTPCertificateModal = EasyModal.create(({ visible, remove, close, formRef
 							</div>
 						</Modal.Body>
 						<Modal.Footer>
-							<Button onClick={close} disabled={isSubmitting || isTesting}>
+							<Button onClick={close} disabled={isTesting}>
 								<T id="cancel" />
 							</Button>
 							<div className="ms-auto">
@@ -157,18 +157,13 @@ const HTTPCertificateModal = EasyModal.create(({ visible, remove, close, formRef
 									type="button"
 									actionType="secondary"
 									className="me-3"
-									isLoading={isTesting}
-									disabled={isSubmitting || values.domainNames.length === 0}
+									isSubmitting={isTesting}
+									disabled={values.domainNames.length === 0}
 									onClick={() => handleTest(values.domainNames)}
 								>
 									<T id="test" />
 								</Button>
-								<Button
-									type="submit"
-									color="pink"
-									isLoading={isSubmitting}
-									disabled={isSubmitting || isTesting}
-								>
+								<Button type="submit" color="pink" disabled={isTesting}>
 									<T id="save" />
 								</Button>
 							</div>

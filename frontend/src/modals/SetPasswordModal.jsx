@@ -38,9 +38,9 @@ const SetPasswordModal = EasyModal.create(({ id, visible, remove, close, formRef
 				}}
 				onSubmit={onSubmit}
 			>
-				{({ isSubmitting }) => (
+				{() => (
 					<Form>
-						<Modal.Header closeButton={!isSubmitting}>
+						<Modal.Header closeButton>
 							<Modal.Title>
 								<T id="user.set-password" />
 							</Modal.Title>
@@ -93,16 +93,10 @@ const SetPasswordModal = EasyModal.create(({ id, visible, remove, close, formRef
 							</div>
 						</Modal.Body>
 						<Modal.Footer>
-							<Button onClick={close} disabled={isSubmitting}>
+							<Button onClick={close}>
 								<T id="cancel" />
 							</Button>
-							<Button
-								type="submit"
-								actionType="primary"
-								className="ms-auto"
-								isLoading={isSubmitting}
-								disabled={isSubmitting}
-							>
+							<Button type="submit" actionType="primary" className="ms-auto">
 								<T id="save" />
 							</Button>
 						</Modal.Footer>

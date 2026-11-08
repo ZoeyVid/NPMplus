@@ -21,7 +21,6 @@ const MfaModal = EasyModal.create(({ id, visible, close, formRef }) => {
 	const [backupCodesRemaining, setBackupCodesRemaining] = useState(0);
 	const [setupData, setSetupData] = useState(null);
 	const [backupCodes, setBackupCodes] = useState([]);
-	const [isSubmitting, setIsSubmitting] = useState(false);
 	const [showCode, setShowCode] = useState(false);
 
 	const loadStatus = useCallback(async () => {
@@ -42,7 +41,6 @@ const MfaModal = EasyModal.create(({ id, visible, close, formRef }) => {
 
 	const handleStartSetup = async () => {
 		setError(null);
-		setIsSubmitting(true);
 		try {
 			const data = await startTotpSetup(id);
 			setSetupData(data);
@@ -50,12 +48,10 @@ const MfaModal = EasyModal.create(({ id, visible, close, formRef }) => {
 		} catch (err) {
 			setError(<T id={err.message} />);
 		}
-		setIsSubmitting(false);
 	};
 
 	const handleVerify = async (values) => {
 		setError(null);
-		setIsSubmitting(true);
 		try {
 			const result = await enableTotp(id, values);
 			if (result.backupCodes) {
@@ -67,12 +63,10 @@ const MfaModal = EasyModal.create(({ id, visible, close, formRef }) => {
 		} catch (err) {
 			setError(<T id={err.message} />);
 		}
-		setIsSubmitting(false);
 	};
 
 	const handleDisable = async (values) => {
 		setError(null);
-		setIsSubmitting(true);
 		try {
 			await disableTotp(id, values);
 			setIsEnabled(false);
@@ -80,12 +74,10 @@ const MfaModal = EasyModal.create(({ id, visible, close, formRef }) => {
 		} catch (err) {
 			setError(<T id={err.message} />);
 		}
-		setIsSubmitting(false);
 	};
 
 	const handleRegenerateBackup = async (values) => {
 		setError(null);
-		setIsSubmitting(true);
 		try {
 			const result = await regenerateBackupCodes(id, values);
 			setBackupCodes(result.backupCodes);
@@ -93,7 +85,6 @@ const MfaModal = EasyModal.create(({ id, visible, close, formRef }) => {
 		} catch (err) {
 			setError(<T id={err.message} />);
 		}
-		setIsSubmitting(false);
 	};
 
 	const handleBackupDone = () => {
@@ -130,9 +121,13 @@ const MfaModal = EasyModal.create(({ id, visible, close, formRef }) => {
 						)}
 					</div>
 					{!isEnabled && (
-						<Button fullWidth color="azure" onClick={handleStartSetup} isLoading={isSubmitting}>
-							<T id="totp.enable" />
-						</Button>
+						<Formik innerRef={formRef} initialValues={{}} onSubmit={handleStartSetup}>
+							<Form>
+								<Button type="submit" fullWidth color="azure">
+									<T id="totp.enable" />
+								</Button>
+							</Form>
+						</Formik>
 					)}
 					{isEnabled && (
 						<div className="d-flex flex-column gap-2">
@@ -222,21 +217,10 @@ const MfaModal = EasyModal.create(({ id, visible, close, formRef }) => {
 									)}
 								</Field>
 								<div className="d-flex gap-2">
-									<Button
-										type="button"
-										fullWidth
-										onClick={() => setStep("status")}
-										disabled={isSubmitting}
-									>
+									<Button type="button" fullWidth onClick={() => setStep("status")}>
 										<T id="cancel" />
 									</Button>
-									<Button
-										type="submit"
-										fullWidth
-										color="azure"
-										isLoading={isSubmitting}
-										disabled={isSubmitting}
-									>
+									<Button type="submit" fullWidth color="azure">
 										<T id="totp.verify-enable" />
 									</Button>
 								</div>
@@ -320,21 +304,10 @@ const MfaModal = EasyModal.create(({ id, visible, close, formRef }) => {
 									)}
 								</Field>
 								<div className="d-flex gap-2">
-									<Button
-										type="button"
-										fullWidth
-										onClick={() => setStep("status")}
-										disabled={isSubmitting}
-									>
+									<Button type="button" fullWidth onClick={() => setStep("status")}>
 										<T id="cancel" />
 									</Button>
-									<Button
-										type="submit"
-										fullWidth
-										color="red"
-										isLoading={isSubmitting}
-										disabled={isSubmitting}
-									>
+									<Button type="submit" fullWidth color="red">
 										<T id="totp.disable-confirm" />
 									</Button>
 								</div>
@@ -398,21 +371,10 @@ const MfaModal = EasyModal.create(({ id, visible, close, formRef }) => {
 									)}
 								</Field>
 								<div className="d-flex gap-2">
-									<Button
-										type="button"
-										fullWidth
-										onClick={() => setStep("status")}
-										disabled={isSubmitting}
-									>
+									<Button type="button" fullWidth onClick={() => setStep("status")}>
 										<T id="cancel" />
 									</Button>
-									<Button
-										type="submit"
-										fullWidth
-										color="azure"
-										isLoading={isSubmitting}
-										disabled={isSubmitting}
-									>
+									<Button type="submit" fullWidth color="azure">
 										<T id="mfa.regenerate" />
 									</Button>
 								</div>
@@ -427,8 +389,8 @@ const MfaModal = EasyModal.create(({ id, visible, close, formRef }) => {
 	};
 
 	return (
-		<Modal show={visible} backdrop="static" onHide={isSubmitting || step === "backup" ? undefined : close}>
-			<Modal.Header closeButton={!isSubmitting && step !== "backup"}>
+		<Modal show={visible} backdrop="static" onHide={step === "backup" ? undefined : close}>
+			<Modal.Header closeButton={step !== "backup"}>
 				<Modal.Title>
 					<T id="mfa.title" />
 				</Modal.Title>
@@ -441,7 +403,7 @@ const MfaModal = EasyModal.create(({ id, visible, close, formRef }) => {
 			</Modal.Body>
 			{["loading", "error", "status"].includes(step) && (
 				<Modal.Footer>
-					<Button onClick={close} disabled={isSubmitting}>
+					<Button onClick={close}>
 						<T id="action.close" />
 					</Button>
 				</Modal.Footer>

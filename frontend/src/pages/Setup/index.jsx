@@ -69,7 +69,7 @@ export default function Setup() {
 						}}
 						onSubmit={onSubmit}
 					>
-						{({ isSubmitting }) => (
+						{() => (
 							<Form>
 								<div className="card-body text-center py-4 p-sm-5">
 									<h1 className="mt-5">
@@ -188,13 +188,7 @@ export default function Setup() {
 									</div>
 								</div>
 								<div className="text-center my-3 mx-3">
-									<Button
-										type="submit"
-										actionType="primary"
-										isLoading={isSubmitting}
-										disabled={isSubmitting}
-										className="w-100"
-									>
+									<Button type="submit" actionType="primary" className="w-100">
 										<T id="save" />
 									</Button>
 								</div>
