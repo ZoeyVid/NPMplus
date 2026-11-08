@@ -324,10 +324,11 @@ export function LocationsFields({ name = "locations", disabled }) {
 														>
 															<option value="" />
 															<option value="@">@</option>
-															<option value="= ">=</option>
-															<option value="~ ">~</option>
-															<option value="~* ">~*</option>
-															<option value="^~ ">^~</option>
+															<option value="$">$</option>
+															<option value="=">=</option>
+															<option value="~">~</option>
+															<option value="~*">~*</option>
+															<option value="^~">^~</option>
 														</select>
 													)}
 												</Field>
@@ -367,7 +368,7 @@ export function LocationsFields({ name = "locations", disabled }) {
 										</div>
 									</div>
 									{!item.path?.endsWith("/") &&
-										(item.locationType === "" || item.locationType === "^~ ") && (
+										(item.locationType === "" || item.locationType === "^~") && (
 											<p className="text-warning">
 												<IconAlertTriangle size={16} className="me-1" />
 												<T id="proxy-host.location-no-trailing-slash-warning" />
