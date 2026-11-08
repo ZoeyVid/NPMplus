@@ -22,21 +22,25 @@ const execFile = async (cmd, args) => {
 	}
 };
 
-const nginxUnsafePattern = /[;{}#"'\\]|\p{Cc}/u;
 const controlCharPattern = /\p{Cc}/u;
+const tokenBreakPattern = /[\s;{\\]/u;
+const tokenStartPattern = /^[}#"']/u;
 const quoteEscapePattern = /["\\]/gu;
 
-const assertNginxValue = (value, pattern = nginxUnsafePattern) => {
-	if (pattern.test(value)) {
+const assertNginxValue = (value, quoted = false) => {
+	if (
+		controlCharPattern.test(value) ||
+		(!quoted && (tokenBreakPattern.test(value) || tokenStartPattern.test(value)))
+	) {
 		throw new errs.ValidationError(`${JSON.stringify(value)} can not be used in the nginx config`);
 	}
 	return value;
 };
 
-const nginxQuote = (value) => `"${assertNginxValue(value, controlCharPattern).replaceAll(quoteEscapePattern, "\\$&")}"`;
+const nginxQuote = (value) => `"${assertNginxValue(value, true).replaceAll(quoteEscapePattern, "\\$&")}"`;
 
 const quotedPattern = /"(?:\\.|[^"\\])*"|'(?:\\.|[^'\\])*'/gu;
-const commentPattern = /#.*/u;
+const commentPattern = /(?:^|\s)#.*/u;
 
 const reindent = (text) => {
 	let depth = 0;
