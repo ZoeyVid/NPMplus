@@ -1,4 +1,5 @@
 import { useNavigate } from "react-router";
+import { focusMenuToggle } from "src/modules/Focus";
 
 export function NavLink({ children, to, href, isDropdownItem, active, onClick }) {
 	const navigate = useNavigate();
@@ -23,6 +24,7 @@ export function NavLink({ children, to, href, isDropdownItem, active, onClick })
 			href={to}
 			onClick={(e) => {
 				e.preventDefault();
+				if (isDropdownItem) focusMenuToggle(e.currentTarget);
 				if (onClick) {
 					onClick();
 				}

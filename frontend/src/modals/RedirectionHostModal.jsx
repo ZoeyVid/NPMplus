@@ -22,6 +22,7 @@ import {
 } from "src/hooks";
 import { T } from "src/locale";
 import EasyModal from "src/modules/easyModal";
+import { initTabs } from "src/modules/Focus";
 import { hasPermission, MANAGE, REDIRECTION_HOSTS } from "src/modules/Permissions";
 import { showTabOfInvalid, validateString } from "src/modules/Validations";
 import { showObjectSuccess } from "src/notifications";
@@ -108,7 +109,11 @@ const RedirectionHostModal = EasyModal.create(({ id, visible, remove, close, for
 								</Alert>
 								<div className="card m-0 border-0">
 									<div className="card-header">
-										<ul className="nav nav-tabs card-header-tabs" data-bs-toggle="tabs">
+										<ul
+											className="nav nav-tabs card-header-tabs"
+											data-bs-toggle="tabs"
+											ref={initTabs}
+										>
 											<li className="nav-item">
 												<a href="#tab-details" className="nav-link active" data-bs-toggle="tab">
 													<T id="column.details" />

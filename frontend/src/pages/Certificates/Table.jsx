@@ -25,6 +25,7 @@ import {
 import { TableLayout } from "src/components/Table/TableLayout";
 import { intl, T } from "src/locale";
 import { showCustomCertificateModal, showDNSCertificateModal, showHTTPCertificateModal } from "src/modals";
+import { focusMenuToggle } from "src/modules/Focus";
 import { CERTIFICATES, MANAGE } from "src/modules/Permissions";
 
 const features = tableFeatures({
@@ -206,7 +207,8 @@ export default function Table({ data, isFetching, onDelete, onRenew, onDownload,
 										<button
 											type="button"
 											className="dropdown-item"
-											onClick={() => {
+											onClick={(e) => {
+												focusMenuToggle(e.currentTarget);
 												onDownload?.(row.id);
 											}}
 										>

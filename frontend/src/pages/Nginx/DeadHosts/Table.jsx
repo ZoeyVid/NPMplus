@@ -23,6 +23,7 @@ import {
 } from "src/components";
 import { TableLayout } from "src/components/Table/TableLayout";
 import { intl, T } from "src/locale";
+import { focusMenuToggle } from "src/modules/Focus";
 import { DEAD_HOSTS, MANAGE } from "src/modules/Permissions";
 
 const features = tableFeatures({
@@ -142,7 +143,8 @@ export default function Table({
 									<button
 										type="button"
 										className="dropdown-item"
-										onClick={() => {
+										onClick={(e) => {
+											focusMenuToggle(e.currentTarget);
 											onDisableToggle?.(info.row.original.id, !info.row.original.enabled);
 										}}
 									>

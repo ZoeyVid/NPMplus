@@ -3,7 +3,7 @@ import { useEffect, useRef } from "react";
 import Modal from "react-bootstrap/Modal";
 import { Button } from "src/components/Button";
 import { T } from "src/locale";
-import { dropdownToggle } from "src/modules/Focus";
+import { focusMenuToggle } from "src/modules/Focus";
 
 const DiscardChangesModal = NiceModal.create(() => {
 	const { visible, resolve, remove } = useModal();
@@ -42,7 +42,7 @@ const DiscardChangesModal = NiceModal.create(() => {
 });
 
 const show = (modal, args) => {
-	dropdownToggle(document.activeElement?.closest(".dropdown"))?.focus();
+	focusMenuToggle(document.activeElement);
 	return NiceModal.show(modal, args);
 };
 

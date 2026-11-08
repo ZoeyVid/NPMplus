@@ -24,7 +24,7 @@ export function SiteContainer({ children }) {
 
 	useEffect(() => {
 		document.title = `${intl.formatMessage({ id: titles[pathname.replace(trailingSlash, "") || "/"] ?? "notfound.title" })} – NPMplus`;
-		if (previous.current !== pathname) main.current?.focus();
+		if (previous.current !== pathname && document.activeElement === document.body) main.current?.focus();
 		previous.current = pathname;
 		return () => {
 			document.title = "NPMplus";

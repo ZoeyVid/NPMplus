@@ -1,0 +1,5 @@
+.navbar-toggler:focus-visible {
+	background-color: var(--tblr-hover-bg);
+	outline: var(--tblr-focus-ring, var(--tblr-focus-ring-width) solid var(--tblr-focus-ring-color));
+	outline-offset: var(--tblr-focus-ring-offset);
+}
