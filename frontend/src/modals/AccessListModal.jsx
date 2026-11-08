@@ -78,6 +78,11 @@ const AccessListModal = EasyModal.create(({ id, visible, remove, close, formRef 
 
 	return (
 		<Modal show={visible} backdrop={canManage ? "static" : true} onHide={close}>
+			<Modal.Header closeButton>
+				<Modal.Title>
+					<T id={id !== "new" ? "object.edit" : "object.add"} tData={{ object: "access-list" }} />
+				</Modal.Title>
+			</Modal.Header>
 			{error && (
 				<Alert variant="danger" className="m-3">
 					{error?.message}
@@ -98,11 +103,6 @@ const AccessListModal = EasyModal.create(({ id, visible, remove, close, formRef 
 				>
 					{({ isSubmitting }) => (
 						<Form onInvalid={showTabOfInvalid}>
-							<Modal.Header closeButton={!isSubmitting}>
-								<Modal.Title>
-									<T id={data?.id ? "object.edit" : "object.add"} tData={{ object: "access-list" }} />
-								</Modal.Title>
-							</Modal.Header>
 							<Modal.Body className="p-0">
 								<Alert variant="danger" show={errorMsg} onClose={() => setErrorMsg(null)} dismissible>
 									{errorMsg}
@@ -110,36 +110,18 @@ const AccessListModal = EasyModal.create(({ id, visible, remove, close, formRef 
 								<div className="card m-0 border-0">
 									<div className="card-header">
 										<ul className="nav nav-tabs card-header-tabs" data-bs-toggle="tabs">
-											<li className="nav-item" role="presentation">
-												<a
-													href="#tab-details"
-													className="nav-link active"
-													data-bs-toggle="tab"
-													aria-selected="true"
-													role="tab"
-												>
+											<li className="nav-item">
+												<a href="#tab-details" className="nav-link active" data-bs-toggle="tab">
 													<T id="column.details" />
 												</a>
 											</li>
-											<li className="nav-item" role="presentation">
-												<a
-													href="#tab-auth"
-													className="nav-link"
-													data-bs-toggle="tab"
-													aria-selected="false"
-													role="tab"
-												>
+											<li className="nav-item">
+												<a href="#tab-auth" className="nav-link" data-bs-toggle="tab">
 													<T id="column.authorizations" />
 												</a>
 											</li>
-											<li className="nav-item" role="presentation">
-												<a
-													href="#tab-rules"
-													className="nav-link"
-													data-bs-toggle="tab"
-													aria-selected="false"
-													role="tab"
-												>
+											<li className="nav-item">
+												<a href="#tab-rules" className="nav-link" data-bs-toggle="tab">
 													<T id="column.rules" />
 												</a>
 											</li>
@@ -147,7 +129,7 @@ const AccessListModal = EasyModal.create(({ id, visible, remove, close, formRef 
 									</div>
 									<div className="card-body">
 										<fieldset className="tab-content" disabled={!canManage}>
-											<div className="tab-pane active show" id="tab-details" role="tabpanel">
+											<div className="tab-pane active show" id="tab-details">
 												<Field name="name" validate={(value) => validateString(value, 1, 255)}>
 													{({ field, meta }) => (
 														<div>
@@ -225,10 +207,10 @@ const AccessListModal = EasyModal.create(({ id, visible, remove, close, formRef 
 													</div>
 												</div>
 											</div>
-											<div className="tab-pane" id="tab-auth" role="tabpanel">
+											<div className="tab-pane" id="tab-auth">
 												<BasicAuthFields />
 											</div>
-											<div className="tab-pane" id="tab-rules" role="tabpanel">
+											<div className="tab-pane" id="tab-rules">
 												<AccessClientFields />
 											</div>
 										</fieldset>

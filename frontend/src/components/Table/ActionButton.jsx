@@ -9,7 +9,7 @@ export function ActionButton({ icon: Icon, label, onClick }) {
 	const text = intl.formatMessage({ id: label });
 	return (
 		<OverlayTrigger placement="top" overlay={<Tooltip>{text}</Tooltip>}>
-			<button type="button" className="btn btn-action btn-sm px-1" aria-label={text} onClick={onClick}>
+			<button type="button" className="btn btn-action btn-sm px-1" onClick={onClick}>
 				<Icon />
 			</button>
 		</OverlayTrigger>

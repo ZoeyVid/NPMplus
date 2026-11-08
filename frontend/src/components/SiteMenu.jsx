@@ -16,7 +16,7 @@ import React from "react";
 import { useLocation } from "react-router";
 import { NavLink } from "src/components";
 import { useUser } from "src/hooks";
-import { intl, T } from "src/locale";
+import { T } from "src/locale";
 import {
 	ACCESS_LISTS,
 	ADMIN,
@@ -134,7 +134,7 @@ const getMenuDropown = (item, onClick, pathname) => (
 		key={`item-${item.label}`}
 		className={`nav-item dropdown${item.items.some((subitem) => pathname.startsWith(subitem.to)) ? " active" : ""}`}
 	>
-		<button type="button" className="nav-link dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+		<button type="button" className="nav-link dropdown-toggle" data-bs-toggle="dropdown">
 			<span className="nav-link-icon">{React.createElement(item.icon, { height: 24, width: 24 })}</span>
 			<span className="nav-link-title">
 				<T id={item.label} />
@@ -171,7 +171,7 @@ export function SiteMenu() {
 		}, 300);
 
 	return (
-		<nav className="navbar-expand-lg" aria-label={intl.formatMessage({ id: "navigation" })}>
+		<nav className="navbar-expand-lg">
 			<div className="collapse navbar-collapse" id="navbar-menu">
 				<div className="navbar">
 					<div className="container-xl">

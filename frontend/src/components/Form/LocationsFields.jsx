@@ -157,7 +157,6 @@ export function LocationsFields({ name = "locations", disabled }) {
 										className="form-control"
 										autoComplete="off"
 										placeholder={intl.formatMessage({ id: "location.filter" })}
-										aria-label={intl.formatMessage({ id: "location.filter" })}
 										value={filter}
 										onChange={(e) => setFilter(e.target.value)}
 										onKeyDown={(e) => e.key === "Enter" && e.preventDefault()}
@@ -167,7 +166,6 @@ export function LocationsFields({ name = "locations", disabled }) {
 										type="button"
 										className="btn btn-icon"
 										title={intl.formatMessage({ id: "action.clear" })}
-										aria-label={intl.formatMessage({ id: "action.clear" })}
 										onClick={() => setFilter("")}
 									>
 										<IconX size={16} />
@@ -214,8 +212,6 @@ export function LocationsFields({ name = "locations", disabled }) {
 									<button
 										type="button"
 										className="d-flex flex-fill align-self-stretch align-items-center overflow-hidden p-0 text-start text-body bg-transparent border-0"
-										aria-expanded={isOpen(item)}
-										aria-controls={`location-body-${item.uiKey}`}
 										onClick={() => toggle(item.uiKey, expanded, setExpanded)}
 									>
 										{isOpen(item) ? <IconChevronDown size={16} /> : <IconChevronRight size={16} />}
@@ -226,9 +222,7 @@ export function LocationsFields({ name = "locations", disabled }) {
 										{item.advancedConfig?.trim() && (
 											<span
 												className="ms-2 text-secondary d-flex align-items-center flex-shrink-0"
-												role="img"
 												title={intl.formatMessage({ id: "nginx-config.label" })}
-												aria-label={intl.formatMessage({ id: "nginx-config.label" })}
 											>
 												<IconSettings size={16} />
 											</span>
@@ -237,7 +231,6 @@ export function LocationsFields({ name = "locations", disabled }) {
 									{!filter.trim() && idx > 0 && (
 										<button
 											type="button"
-											aria-label="Move up"
 											className="btn btn-action ms-2"
 											onClick={() => swap(idx - 1, idx)}
 											disabled={disabled}
@@ -248,7 +241,6 @@ export function LocationsFields({ name = "locations", disabled }) {
 									{!filter.trim() && idx < values.length - 1 && (
 										<button
 											type="button"
-											aria-label="Move down"
 											className="btn btn-action ms-2"
 											onClick={() => swap(idx, idx + 1)}
 											disabled={disabled}
@@ -260,7 +252,6 @@ export function LocationsFields({ name = "locations", disabled }) {
 										type="button"
 										className="btn btn-action ms-2"
 										title={intl.formatMessage({ id: "action.delete" })}
-										aria-label={intl.formatMessage({ id: "action.delete" })}
 										onClick={() => remove(idx)}
 										disabled={disabled}
 									>
@@ -270,7 +261,6 @@ export function LocationsFields({ name = "locations", disabled }) {
 								<fieldset
 									className={cn("card-body", !isOpen(item) && "d-none")}
 									disabled={disabled}
-									id={`location-body-${item.uiKey}`}
 									onInvalid={() =>
 										flushSync(() => {
 											setFilter("");
