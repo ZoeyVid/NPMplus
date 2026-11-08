@@ -242,6 +242,7 @@ export default function Table({
 	return (
 		<TableLayout
 			tableInstance={tableInstance}
+			isFiltered={isFiltered}
 			emptyState={
 				<EmptyData
 					object="user"
