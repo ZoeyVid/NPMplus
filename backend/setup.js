@@ -84,7 +84,13 @@ const setupDefaultSettings = async () => {
 
 	await settingModel.query().deleteById("oidc-config");
 
-	await internalNginx.generateConfig("default", await settingModel.query().where({ id: "default-site" }).first());
+	const defaultSite = await settingModel.query().where({ id: "default-site" }).first();
+	try {
+		await internalNginx.generateConfig("default", defaultSite);
+	} catch (err) {
+		logger.error(`Default site could not be generated, falling back to the congratulations page: ${err.message}`);
+		await internalNginx.generateConfig("default", { ...defaultSite, value: "congratulations" });
+	}
 };
 
 /**
