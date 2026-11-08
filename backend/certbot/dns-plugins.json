@@ -33,13 +33,13 @@
     "credentials": "dns_baidu_access_key = 12345678\ndns_baidu_secret_key = 1234567890abcdef1234567890abcdef",
     "full_plugin_name": "dns-baidu",
     "name": "baidu",
-    "package_name": "certbot-dns-baidu"
+    "package_name": "certbot-dns-baidu-bcd"
   },
   "beget": {
-    "credentials": "# Beget API credentials used by Certbot\nbeget_plugin_username = username\nbeget_plugin_password = password",
-    "full_plugin_name": "beget-plugin",
+    "credentials": "# Beget API credentials used by Certbot\n# Find on Settings -> Security -> BegetAPI\ndns_beget_plugin_username = username\ndns_beget_plugin_password = password",
+    "full_plugin_name": "dns-beget-plugin",
     "name": "Beget",
-    "package_name": "certbot-beget-plugin"
+    "package_name": "certbot-dns-beget-plugin"
   },
   "bunny": {
     "credentials": "# Bunny API token used by Certbot (see https://dash.bunny.net/account/settings)\ndns_bunny_api_key = xxxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxxxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxx",
@@ -298,6 +298,12 @@
     "full_plugin_name": "dns-ionos",
     "name": "IONOS",
     "package_name": "certbot-dns-ionos"
+  },
+  "ip-projects": {
+    "credentials": "dns_ipp_acme_api_key = <API key>",
+    "full_plugin_name": "dns-ipp",
+    "name": "ip-projects.de",
+    "package_name": "certbot-dns-ipp"
   },
   "ispconfig": {
     "credentials": "dns_ispconfig_username = myremoteuser\ndns_ispconfig_password = verysecureremoteuserpassword\ndns_ispconfig_endpoint = https://you.ipsconfig.host:8080/remote/json.php",

@@ -811,20 +811,10 @@ const internalCertificate = {
 			logger.error(err.message);
 		}
 
-		try {
-			const result = await utils.execFile("certbot", [
-				"--config",
-				"/etc/certbot.ini",
-				"delete",
-				"--cert-name",
-				`npm-${certificate.id}`,
-			]);
-			logger.info(result);
-		} catch (err) {
-			logger.error(err.message);
-		}
-
+		await rm(`/data/tls/certbot/live/npm-${certificate.id}`, { recursive: true, force: true });
 		await rm(`/data/tls/certbot/live/npm-${certificate.id}.der`, { force: true });
+		await rm(`/data/tls/certbot/archive/npm-${certificate.id}`, { recursive: true, force: true });
+		await rm(`/data/tls/certbot/renewal/npm-${certificate.id}.conf`, { force: true });
 		await rm(`/tmp/certbot-credentials/credentials-${certificate.id}`, { force: true });
 	},
 

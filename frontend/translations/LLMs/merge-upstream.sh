@@ -21,7 +21,7 @@ EOF
 git show "$NEW:$UP/en.json" > "$TMP/en.json" || exit 1
 
 for code in en $(git ls-tree --full-tree --name-only "$NEW:$UP" | sed -n 's/\.json$//p' | grep -vx -e en -e lang-list); do
-	ui="$SRC/ui/$code.json"
+	ui="$SRC/ui/$(echo "$code" | sed "s/^zh$/zh-cn/").json"
 
 	if [ ! -s "$ui" ]; then
 		echo "New language: $code"
@@ -44,6 +44,6 @@ for code in en $(git ls-tree --full-tree --name-only "$NEW:$UP" | sed -n 's/\.js
 		| reduce ($base | keys[] | select(in($theirs) | not)) as $k (.; if .file | has($k) then .notes += ["\($k): removed upstream"] end)
 	' "$ui" > "$TMP/out.json" || exit 1
 	jq --tab --sort-keys .file "$TMP/out.json" > "$ui"
-	jq -r --arg file "ui/$code.json" '.notes[] | "\($file): \(.)"' "$TMP/out.json"
+	jq -r --arg file "ui/${ui##*/}" '.notes[] | "\($file): \(.)"' "$TMP/out.json"
 done
 echo "Done"

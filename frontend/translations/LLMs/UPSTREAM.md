@@ -7,6 +7,7 @@ NPMplus is a fork of [Nginx Proxy Manager](https://github.com/NginxProxyManager/
 | | Upstream | NPMplus |
 |---|---|---|
 | UI strings | `frontend/src/locale/src/<code>.json` | `frontend/translations/ui/<code>.json` |
+| Simplified Chinese | `zh` | `zh-cn` |
 | Format | `"key": { "defaultMessage": "text" }` | `"key": "text"`, tabs, keys sorted with `sort-locale.sh` |
 | Help docs | `frontend/src/locale/src/HelpDoc/<code>/*.md` and `index.ts` | not used |
 | Language list | `"locale-<code>-<REGION>": { "defaultMessage": "<name>" }` | `"<code>": { "flag": "<region>", "name": "<native name>" }` |

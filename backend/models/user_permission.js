@@ -17,6 +17,11 @@ class UserPermission extends Model {
 		this.modified_on = now();
 	}
 
+	$parseDatabaseJson(json) {
+		const { meta, ...thisJson } = super.$parseDatabaseJson(json);
+		return thisJson;
+	}
+
 	static tableName = "user_permission";
 }
 
