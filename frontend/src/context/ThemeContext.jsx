@@ -26,10 +26,4 @@ export const ThemeProvider = ({ children }) => {
 	return <ThemeContext.Provider value={{ theme, setTheme }}>{children}</ThemeContext.Provider>;
 };
 
-export function useThemeState() {
-	const context = useContext(ThemeContext);
-	if (!context) {
-		throw new Error("useThemeState must be used within a ThemeProvider");
-	}
-	return context;
-}
+export const useThemeState = () => useContext(ThemeContext);
