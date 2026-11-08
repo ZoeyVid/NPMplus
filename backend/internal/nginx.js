@@ -286,6 +286,9 @@ const internalNginx = {
 					location.filename = htpasswdFileName;
 				}
 				if (location.npmplus_enabled === false) continue;
+				if (location.path === "/.well-known/acme-challenge/" && ["", "^~"].includes(location.location_type)) {
+					host.custom_acme_challenge_location = true;
+				}
 				const provider =
 					location.npmplus_auth_request === "authentik-send-basic-auth"
 						? "authentik"
