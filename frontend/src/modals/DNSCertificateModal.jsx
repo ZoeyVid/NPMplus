@@ -84,6 +84,9 @@ const DNSCertificateModal = EasyModal.create(({ visible, remove, close, formRef 
 							</div>
 						</Modal.Body>
 						<Modal.Footer>
+							<div role="status" className="visually-hidden">
+								{isSubmitting && <T id="please-wait" />}
+							</div>
 							<Button onClick={close} disabled={isSubmitting}>
 								<T id="cancel" />
 							</Button>

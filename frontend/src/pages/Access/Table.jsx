@@ -149,6 +149,7 @@ export default function Table({ data, isFetching, isFiltered, onEdit, onDelete, 
 	return (
 		<TableLayout
 			tableInstance={tableInstance}
+			isFiltered={isFiltered}
 			emptyState={
 				<EmptyData
 					object="access-list"
