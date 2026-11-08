@@ -100,7 +100,7 @@ const RedirectionHostModal = EasyModal.create(({ id, visible, remove, close, for
 					}}
 					onSubmit={onSubmit}
 				>
-					{({ values, isSubmitting }) => (
+					{({ values }) => (
 						<Form onInvalid={showTabOfInvalid}>
 							<Modal.Body className="p-0">
 								<Alert variant="danger" show={errorMsg} onClose={() => setErrorMsg(null)} dismissible>
@@ -294,17 +294,11 @@ const RedirectionHostModal = EasyModal.create(({ id, visible, remove, close, for
 								</div>
 							</Modal.Body>
 							<Modal.Footer>
-								<Button onClick={close} disabled={isSubmitting}>
+								<Button onClick={close}>
 									<T id={canManage ? "cancel" : "action.close"} />
 								</Button>
 								{canManage && (
-									<Button
-										type="submit"
-										color="yellow"
-										className="ms-auto"
-										isLoading={isSubmitting}
-										disabled={isSubmitting}
-									>
+									<Button type="submit" color="yellow" className="ms-auto">
 										<T id="save" />
 									</Button>
 								)}
