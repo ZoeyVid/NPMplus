@@ -1,5 +1,5 @@
 # syntax=docker/dockerfile:1.28.0@sha256:bb22d9815c728170f72750f4e5b0d672e06176142e1d602c7e66c050100b7e5b
-FROM alpine:3.24.4@sha256:93b41ef40b1677fce8fcc64ff4af09daddfacf5040afde618bc46c1e2d1cc7d4 AS nginx
+FROM alpine:3.24.4@sha256:f59abe656b692d901e184be3445e084786602108599d2a51d229c0f5a48c71bf AS nginx
 SHELL ["/bin/ash", "-eo", "pipefail", "-c"]
 
 ARG LUAJIT_INC=/usr/include/luajit-2.1
@@ -206,7 +206,7 @@ RUN apk upgrade --no-cache -a && \
     file /usr/local/bin/node
 
 
-FROM alpine:3.24.4@sha256:93b41ef40b1677fce8fcc64ff4af09daddfacf5040afde618bc46c1e2d1cc7d4
+FROM alpine:3.24.4@sha256:f59abe656b692d901e184be3445e084786602108599d2a51d229c0f5a48c71bf
 SHELL ["/bin/ash", "-eo", "pipefail", "-c"]
 ENV NODE_ENV=production
 ENV NODE_OPTIONS=--use-openssl-ca
