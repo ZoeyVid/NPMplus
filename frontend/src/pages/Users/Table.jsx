@@ -146,7 +146,7 @@ export default function Table({
 										type="button"
 										className="dropdown-item"
 										onClick={() => {
-											onEditPermissions?.(info.row.original.id);
+											onEditPermissions?.(info.row.original.id, info.row.original.name);
 										}}
 									>
 										<IconShield size={16} />

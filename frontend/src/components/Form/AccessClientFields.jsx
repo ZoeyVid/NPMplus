@@ -66,22 +66,12 @@ export function AccessClientFields({ name = "clients" }) {
 								</div>
 								<div className="col-4 d-flex gap-1 mb-2">
 									{idx > 0 && (
-										<button
-											type="button"
-											aria-label="Move up"
-											className="btn"
-											onClick={() => swap(idx - 1, idx)}
-										>
+										<button type="button" className="btn" onClick={() => swap(idx - 1, idx)}>
 											<IconArrowUp size={16} />
 										</button>
 									)}
 									{idx < clients.length - 2 && (
-										<button
-											type="button"
-											aria-label="Move down"
-											className="btn"
-											onClick={() => swap(idx, idx + 1)}
-										>
+										<button type="button" className="btn" onClick={() => swap(idx, idx + 1)}>
 											<IconArrowDown size={16} />
 										</button>
 									)}

@@ -133,6 +133,11 @@ const ProxyHostModal = EasyModal.create(({ id, isClone, visible, remove, close, 
 
 	return (
 		<Modal show={visible} backdrop={canManage ? "static" : true} onHide={close}>
+			<Modal.Header closeButton>
+				<Modal.Title>
+					<T id={id !== "new" && !isClone ? "object.edit" : "object.add"} tData={{ object: "proxy-host" }} />
+				</Modal.Title>
+			</Modal.Header>
 			{error && (
 				<Alert variant="danger" className="m-3">
 					{error?.message}
@@ -143,14 +148,6 @@ const ProxyHostModal = EasyModal.create(({ id, isClone, visible, remove, close, 
 				<Formik innerRef={formRef} initialValues={initialValues} onSubmit={onSubmit}>
 					{({ values, isSubmitting }) => (
 						<Form onInvalid={showTabOfInvalid}>
-							<Modal.Header closeButton={!isSubmitting}>
-								<Modal.Title>
-									<T
-										id={data?.id && !isClone ? "object.edit" : "object.add"}
-										tData={{ object: "proxy-host" }}
-									/>
-								</Modal.Title>
-							</Modal.Header>
 							<Modal.Body className="p-0">
 								<Alert variant="danger" show={errorMsg} onClose={() => setErrorMsg(null)} dismissible>
 									{errorMsg}
@@ -158,48 +155,28 @@ const ProxyHostModal = EasyModal.create(({ id, isClone, visible, remove, close, 
 								<div className="card m-0 border-0">
 									<div className="card-header">
 										<ul className="nav nav-tabs card-header-tabs" data-bs-toggle="tabs">
-											<li className="nav-item" role="presentation">
-												<a
-													href="#tab-details"
-													className="nav-link active"
-													data-bs-toggle="tab"
-													aria-selected="true"
-													role="tab"
-												>
+											<li className="nav-item">
+												<a href="#tab-details" className="nav-link active" data-bs-toggle="tab">
 													<T id="column.details" />
 												</a>
 											</li>
-											<li className="nav-item" role="presentation">
-												<a
-													href="#tab-locations"
-													className="nav-link"
-													data-bs-toggle="tab"
-													aria-selected="false"
-													role="tab"
-												>
+											<li className="nav-item">
+												<a href="#tab-locations" className="nav-link" data-bs-toggle="tab">
 													{<T id="column.custom-locations" />}
 													{values?.locations?.length > 0 ? "*" : ""}
 												</a>
 											</li>
-											<li className="nav-item" role="presentation">
-												<a
-													href="#tab-ssl"
-													className="nav-link"
-													data-bs-toggle="tab"
-													aria-selected="false"
-													role="tab"
-												>
+											<li className="nav-item">
+												<a href="#tab-ssl" className="nav-link" data-bs-toggle="tab">
 													<T id="column.ssl" />
 												</a>
 											</li>
-											<li className="nav-item ms-auto" role="presentation">
+											<li className="nav-item ms-auto">
 												<a
 													href="#tab-advanced"
 													className="nav-link"
 													title="Settings"
 													data-bs-toggle="tab"
-													aria-selected="false"
-													role="tab"
 												>
 													<T id="domains.advanced" />
 													{values?.advancedConfig?.trim() ? "*" : ""}
@@ -212,7 +189,6 @@ const ProxyHostModal = EasyModal.create(({ id, isClone, visible, remove, close, 
 											<fieldset
 												className="tab-pane active show"
 												id="tab-details"
-												role="tabpanel"
 												disabled={!canManage}
 											>
 												<DomainNamesField
@@ -716,15 +692,10 @@ const ProxyHostModal = EasyModal.create(({ id, isClone, visible, remove, close, 
 													</div>
 												)}
 											</fieldset>
-											<div className="tab-pane" id="tab-locations" role="tabpanel">
+											<div className="tab-pane" id="tab-locations">
 												<LocationsFields disabled={!canManage} />
 											</div>
-											<fieldset
-												className="tab-pane"
-												id="tab-ssl"
-												role="tabpanel"
-												disabled={!canManage}
-											>
+											<fieldset className="tab-pane" id="tab-ssl" disabled={!canManage}>
 												<SSLCertificateField
 													disabled={!canManage}
 													name="certificateId"
@@ -734,12 +705,7 @@ const ProxyHostModal = EasyModal.create(({ id, isClone, visible, remove, close, 
 
 												<SSLOptionsFields color="bg-lime" forProxyHost />
 											</fieldset>
-											<fieldset
-												className="tab-pane"
-												id="tab-advanced"
-												role="tabpanel"
-												disabled={!canManage}
-											>
+											<fieldset className="tab-pane" id="tab-advanced" disabled={!canManage}>
 												<NginxConfigField />
 												<div className="row mt-3">
 													<div className="col-md-12 mb-3">

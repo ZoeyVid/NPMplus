@@ -1,4 +1,4 @@
-import { IconChevronDown, IconChevronUp } from "@tabler/icons-react";
+import cn from "clsx";
 
 function TableHeader(props) {
 	const { tableInstance } = props;
@@ -12,13 +12,20 @@ function TableHeader(props) {
 						const { column } = header;
 						const { className } = column.columnDef.meta ?? {};
 						const sorted = column.getIsSorted();
+						const label = typeof column.columnDef.header === "string" ? column.columnDef.header : null;
 						return (
-							<th key={header.id} className={className} onClick={column.getToggleSortingHandler()}>
-								<span className="d-inline-flex align-items-center gap-1">
-									{typeof column.columnDef.header === "string" ? `${column.columnDef.header}` : null}
-									{sorted === "asc" ? <IconChevronUp size={14} /> : null}
-									{sorted === "desc" ? <IconChevronDown size={14} /> : null}
-								</span>
+							<th key={header.id} className={className}>
+								{label && column.getCanSort() ? (
+									<button
+										type="button"
+										className={cn("table-sort bg-transparent w-auto", sorted)}
+										onClick={column.getToggleSortingHandler()}
+									>
+										{label}
+									</button>
+								) : (
+									label
+								)}
 							</th>
 						);
 					})}

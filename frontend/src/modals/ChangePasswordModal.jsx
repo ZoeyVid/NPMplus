@@ -85,8 +85,6 @@ const ChangePasswordModal = EasyModal.create(({ id, visible, remove, close, form
 											<span className="input-group-text">
 												<button
 													type="button"
-													tabIndex={-1}
-													aria-label="toggle visibility"
 													onMouseDown={(e) => e.preventDefault()}
 													className="p-0 border-0 bg-transparent text-secondary d-flex align-items-center cursor-pointer"
 													onClick={() => setShowCurrent((v) => !v)}
@@ -123,8 +121,6 @@ const ChangePasswordModal = EasyModal.create(({ id, visible, remove, close, form
 											<span className="input-group-text">
 												<button
 													type="button"
-													tabIndex={-1}
-													aria-label="toggle visibility"
 													onMouseDown={(e) => e.preventDefault()}
 													className="p-0 border-0 bg-transparent text-secondary d-flex align-items-center cursor-pointer"
 													onClick={() => setShowNew((v) => !v)}
@@ -161,8 +157,6 @@ const ChangePasswordModal = EasyModal.create(({ id, visible, remove, close, form
 											<span className="input-group-text">
 												<button
 													type="button"
-													tabIndex={-1}
-													aria-label="toggle visibility"
 													onMouseDown={(e) => e.preventDefault()}
 													className="p-0 border-0 bg-transparent text-secondary d-flex align-items-center cursor-pointer"
 													onClick={() => setShowConfirm((v) => !v)}
