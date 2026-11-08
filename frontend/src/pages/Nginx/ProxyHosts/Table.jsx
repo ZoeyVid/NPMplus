@@ -238,6 +238,7 @@ export default function Table({
 	return (
 		<TableLayout
 			tableInstance={tableInstance}
+			isFiltered={isFiltered}
 			showHeader={showHeader}
 			groupBy={groupBy}
 			renderGroupLabel={renderGroupLabel}

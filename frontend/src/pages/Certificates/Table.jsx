@@ -308,6 +308,7 @@ export default function Table({ data, isFetching, onDelete, onRenew, onDownload,
 	return (
 		<TableLayout
 			tableInstance={tableInstance}
+			isFiltered={isFiltered}
 			emptyState={
 				<EmptyData
 					object="certificate"

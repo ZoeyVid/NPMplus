@@ -16,7 +16,7 @@ import React from "react";
 import { useLocation } from "react-router";
 import { NavLink } from "src/components";
 import { useUser } from "src/hooks";
-import { T } from "src/locale";
+import { intl, T } from "src/locale";
 import {
 	ACCESS_LISTS,
 	ADMIN,
@@ -171,7 +171,7 @@ export function SiteMenu() {
 		}, 300);
 
 	return (
-		<header className="navbar-expand-lg">
+		<nav className="navbar-expand-lg" aria-label={intl.formatMessage({ id: "navigation" })}>
 			<div className="collapse navbar-collapse" id="navbar-menu">
 				<div className="navbar">
 					<div className="container-xl">
@@ -209,6 +209,6 @@ export function SiteMenu() {
 					</div>
 				</div>
 			</div>
-		</header>
+		</nav>
 	);
 }

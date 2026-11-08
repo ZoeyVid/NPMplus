@@ -8,7 +8,7 @@ function TableLayout(props) {
 	const showHeader = props.showHeader ?? true;
 	const { pagination } = props.tableInstance.state;
 	const rowCount = props.tableInstance.getRowCount?.();
-	const lastRowCount = useRef(rowCount);
+	const lastFilter = useRef(props.isFiltered);
 	const paginationProps = pagination
 		? {
 				total: rowCount,
@@ -19,9 +19,12 @@ function TableLayout(props) {
 		: null;
 
 	useEffect(() => {
-		if (rowCount === lastRowCount.current) return;
-		lastRowCount.current = rowCount;
-		props.tableInstance.firstPage();
+		if (props.isFiltered !== lastFilter.current) {
+			lastFilter.current = props.isFiltered;
+			props.tableInstance.firstPage();
+		} else if (!hasRows && pagination?.pageIndex) {
+			props.tableInstance.lastPage();
+		}
 	});
 
 	return (
