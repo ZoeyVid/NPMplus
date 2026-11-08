@@ -18,7 +18,6 @@ const untrimmedPaths = new Set([
 	"/npmplus_advanced_config",
 	"/npmplus_location_config",
 	"/locations/advanced_config",
-	"/locations/location_type",
 	"/meta/html",
 ]);
 
