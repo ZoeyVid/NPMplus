@@ -78,8 +78,6 @@ export function BasicAuthFields({ name = "items" }) {
 										<span className="input-group-text">
 											<button
 												type="button"
-												tabIndex={-1}
-												aria-label="toggle visibility"
 												onMouseDown={(e) => e.preventDefault()}
 												className="p-0 border-0 bg-transparent text-secondary d-flex align-items-center cursor-pointer"
 												onClick={() =>
@@ -95,7 +93,6 @@ export function BasicAuthFields({ name = "items" }) {
 									{idx > 0 && (
 										<button
 											type="button"
-											aria-label="Move up"
 											className="btn"
 											onClick={() => {
 												swap(idx - 1, idx);
@@ -113,7 +110,6 @@ export function BasicAuthFields({ name = "items" }) {
 									{idx < items.length - 1 && (
 										<button
 											type="button"
-											aria-label="Move down"
 											className="btn"
 											onClick={() => {
 												swap(idx, idx + 1);

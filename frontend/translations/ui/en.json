@@ -209,7 +209,6 @@
 	"mfa.regenerate-instructions": "Enter a verification code to generate new backup codes. Your old codes will be invalidated.",
 	"mfa.title": "MFA",
 	"mtls-certificate": "mTLS Certificate",
-	"navigation": "Navigation",
 	"nginx-config.label": "Custom Nginx Configuration",
 	"nginx-config.placeholder": "# Enter your custom Nginx configuration here at your own risk!",
 	"no-permission-error": "You do not have access to view this.",

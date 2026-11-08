@@ -31,7 +31,6 @@ export function AccessListFormatter({ proxyHostId, access, type, locations }) {
 			<button
 				type="button"
 				className="btn btn-link p-0 border-0 text-decoration-none align-baseline"
-				aria-label={triggerLabel}
 				onClick={(e) => {
 					e.preventDefault();
 					showAccessListModal(access[0].id);
@@ -44,7 +43,9 @@ export function AccessListFormatter({ proxyHostId, access, type, locations }) {
 	if (access.length > 1) {
 		return (
 			<OverlayTrigger trigger={["hover", "focus"]} placement="bottom" overlay={popover}>
-				<span>{label}</span>
+				<button type="button" className="p-0 border-0 bg-transparent text-reset">
+					{label}
+				</button>
 			</OverlayTrigger>
 		);
 	}
