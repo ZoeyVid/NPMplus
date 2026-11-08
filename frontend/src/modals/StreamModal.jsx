@@ -75,6 +75,11 @@ const StreamModal = EasyModal.create(({ id, visible, remove, close, formRef }) =
 
 	return (
 		<Modal show={visible} backdrop={canManage ? "static" : true} onHide={close}>
+			<Modal.Header closeButton>
+				<Modal.Title>
+					<T id={id !== "new" ? "object.edit" : "object.add"} tData={{ object: "stream" }} />
+				</Modal.Title>
+			</Modal.Header>
 			{error && (
 				<Alert variant="danger" className="m-3">
 					{error?.message}
@@ -103,11 +108,6 @@ const StreamModal = EasyModal.create(({ id, visible, remove, close, formRef }) =
 				>
 					{({ values, setFieldValue, setValues, isSubmitting }) => (
 						<Form onInvalid={showTabOfInvalid}>
-							<Modal.Header closeButton={!isSubmitting}>
-								<Modal.Title>
-									<T id={data?.id ? "object.edit" : "object.add"} tData={{ object: "stream" }} />
-								</Modal.Title>
-							</Modal.Header>
 							<Modal.Body className="p-0">
 								<Alert variant="danger" show={errorMsg} onClose={() => setErrorMsg(null)} dismissible>
 									{errorMsg}
@@ -116,37 +116,26 @@ const StreamModal = EasyModal.create(({ id, visible, remove, close, formRef }) =
 								<div className="card m-0 border-0">
 									<div className="card-header">
 										<ul className="nav nav-tabs card-header-tabs" data-bs-toggle="tabs">
-											<li className="nav-item" role="presentation">
-												<a
-													href="#tab-details"
-													className="nav-link active"
-													data-bs-toggle="tab"
-													aria-selected="true"
-													role="tab"
-												>
+											<li className="nav-item">
+												<a href="#tab-details" className="nav-link active" data-bs-toggle="tab">
 													<T id="column.details" />
 												</a>
 											</li>
-											<li className="nav-item" role="presentation">
+											<li className="nav-item">
 												<a
 													href="#tab-ssl"
 													className={`nav-link ${values.udpForwarding ? "disabled" : ""}`}
 													data-bs-toggle={values.udpForwarding ? undefined : "tab"}
-													aria-selected="false"
-													aria-disabled={values.udpForwarding}
-													role="tab"
 												>
 													<T id="column.ssl" />
 												</a>
 											</li>
-											<li className="nav-item ms-auto" role="presentation">
+											<li className="nav-item ms-auto">
 												<a
 													href="#tab-advanced"
 													className="nav-link"
 													title="Settings"
 													data-bs-toggle="tab"
-													aria-selected="false"
-													role="tab"
 												>
 													<T id="domains.advanced" />
 													{values?.npmplusAdvancedConfig?.trim() ? "*" : ""}
@@ -156,7 +145,7 @@ const StreamModal = EasyModal.create(({ id, visible, remove, close, formRef }) =
 									</div>
 									<div className="card-body">
 										<fieldset className="tab-content" disabled={!canManage}>
-											<div className="tab-pane active show" id="tab-details" role="tabpanel">
+											<div className="tab-pane active show" id="tab-details">
 												<Field
 													name="incomingPort"
 													validate={(value) => validateString(value, 1, 11)}
@@ -424,7 +413,7 @@ const StreamModal = EasyModal.create(({ id, visible, remove, close, formRef }) =
 													</div>
 												</div>
 											</div>
-											<div className="tab-pane" id="tab-ssl" role="tabpanel">
+											<div className="tab-pane" id="tab-ssl">
 												<SSLCertificateField
 													disabled={!canManage}
 													name="certificateId"
@@ -435,7 +424,7 @@ const StreamModal = EasyModal.create(({ id, visible, remove, close, formRef }) =
 
 												<SSLOptionsFields color="bg-blue" forHttp={false} />
 											</div>
-											<div className="tab-pane" id="tab-advanced" role="tabpanel">
+											<div className="tab-pane" id="tab-advanced">
 												<NginxConfigField
 													name="npmplusAdvancedConfig"
 													id="npmplusAdvancedConfig"

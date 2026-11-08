@@ -84,7 +84,7 @@ const ReachabilityModal = EasyModal.create(({ visible, remove, domains }) => {
 					) : (
 						!errorMsg && (
 							<div className="card-footer">
-								<Spinner animation="border" role="status" />
+								<Spinner animation="border" />
 							</div>
 						)
 					)}

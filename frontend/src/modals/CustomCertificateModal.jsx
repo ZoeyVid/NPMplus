@@ -171,9 +171,6 @@ const CustomCertificateModal = EasyModal.create(({ visible, remove, close, formR
 							</div>
 						</Modal.Body>
 						<Modal.Footer>
-							<div role="status" className="visually-hidden">
-								{isSubmitting && <T id="please-wait" />}
-							</div>
 							<Button onClick={close} disabled={isSubmitting}>
 								<T id="cancel" />
 							</Button>
