@@ -135,6 +135,13 @@ export default function Table({
 							<span className="dropdown">
 								<button
 									type="button"
+									title={intl.formatMessage(
+										{ id: "object.actions" },
+										{
+											object: intl.formatMessage({ id: "redirection-host" }),
+											id: info.row.original.id,
+										},
+									)}
 									className="btn dropdown-toggle btn-action btn-sm px-1"
 									data-bs-boundary="viewport"
 									data-bs-toggle="dropdown"

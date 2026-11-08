@@ -131,12 +131,7 @@ const StreamModal = EasyModal.create(({ id, visible, remove, close, formRef }) =
 												</a>
 											</li>
 											<li className="nav-item ms-auto">
-												<a
-													href="#tab-advanced"
-													className="nav-link"
-													title="Settings"
-													data-bs-toggle="tab"
-												>
+												<a href="#tab-advanced" className="nav-link" data-bs-toggle="tab">
 													<T id="domains.advanced" />
 													{values?.npmplusAdvancedConfig?.trim() ? "*" : ""}
 												</a>
@@ -163,7 +158,10 @@ const StreamModal = EasyModal.create(({ id, visible, remove, close, formRef }) =
 																pattern="[0-9]{1,5}(-[0-9]{1,5})?"
 																className={`form-control ${meta.touched && meta.error ? "is-invalid" : ""}`}
 																required
-																placeholder="eg: 8080"
+																placeholder={intl.formatMessage(
+																	{ id: "example" },
+																	{ value: "8080" },
+																)}
 																{...field}
 															/>
 
@@ -252,7 +250,10 @@ const StreamModal = EasyModal.create(({ id, visible, remove, close, formRef }) =
 																		maxLength={12}
 																		pattern="[0-9]{0,5}|\$server_port"
 																		className="form-control"
-																		placeholder="eg: 8081"
+																		placeholder={intl.formatMessage(
+																			{ id: "example" },
+																			{ value: "8081" },
+																		)}
 																		{...field}
 																	/>
 																</div>

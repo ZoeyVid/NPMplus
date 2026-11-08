@@ -231,6 +231,7 @@ export function LocationsFields({ name = "locations", disabled }) {
 									{!filter.trim() && idx > 0 && (
 										<button
 											type="button"
+											title={intl.formatMessage({ id: "action.move-up" })}
 											className="btn btn-action ms-2"
 											onClick={() => swap(idx - 1, idx)}
 											disabled={disabled}
@@ -241,6 +242,7 @@ export function LocationsFields({ name = "locations", disabled }) {
 									{!filter.trim() && idx < values.length - 1 && (
 										<button
 											type="button"
+											title={intl.formatMessage({ id: "action.move-down" })}
 											className="btn btn-action ms-2"
 											onClick={() => swap(idx, idx + 1)}
 											disabled={disabled}
@@ -296,7 +298,9 @@ export function LocationsFields({ name = "locations", disabled }) {
 									<div className="row">
 										<div className="col-md-10">
 											<div className="input-group mb-3">
-												<span className="input-group-text">Location</span>
+												<span className="input-group-text">
+													<T id="location" />
+												</span>
 												<Field name={`${name}.${idx}.locationType`}>
 													{({ field }) => (
 														<select
@@ -349,7 +353,7 @@ export function LocationsFields({ name = "locations", disabled }) {
 											<button
 												type="button"
 												className="btn p-0"
-												title="Advanced"
+												title={intl.formatMessage({ id: "nginx-config.label" })}
 												onClick={() => toggle(item.uiKey, advVisible, setAdvVisible)}
 											>
 												<IconSettings size={20} />
@@ -420,7 +424,10 @@ export function LocationsFields({ name = "locations", disabled }) {
 																className={`form-control ${meta.touched && meta.error ? "is-invalid" : ""}`}
 																required={item.forwardScheme !== "empty"}
 																pattern="(?=\S{0,255}$)[^\s\/]{0,253}(\/\S*)?"
-																placeholder="eg: 10.0.0.1/path/"
+																placeholder={intl.formatMessage(
+																	{ id: "example" },
+																	{ value: "10.0.0.1/path/" },
+																)}
 																disabled={
 																	!currentUser?.npmplusIsAdmin &&
 																	item.forwardScheme === "path"
@@ -448,7 +455,10 @@ export function LocationsFields({ name = "locations", disabled }) {
 															min={1}
 															max={65535}
 															className="form-control"
-															placeholder="eg: 8081"
+															placeholder={intl.formatMessage(
+																{ id: "example" },
+																{ value: "8081" },
+															)}
 															disabled={
 																!currentUser?.npmplusIsAdmin &&
 																item.forwardScheme === "path"

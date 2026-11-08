@@ -78,6 +78,9 @@ export function BasicAuthFields({ name = "items" }) {
 										<span className="input-group-text">
 											<button
 												type="button"
+												title={intl.formatMessage({
+													id: revealed[idx] ? "password.hide" : "password.show",
+												})}
 												onMouseDown={(e) => e.preventDefault()}
 												className="p-0 border-0 bg-transparent text-secondary d-flex align-items-center cursor-pointer"
 												onClick={() =>
@@ -93,6 +96,7 @@ export function BasicAuthFields({ name = "items" }) {
 									{idx > 0 && (
 										<button
 											type="button"
+											title={intl.formatMessage({ id: "action.move-up" })}
 											className="btn"
 											onClick={() => {
 												swap(idx - 1, idx);
@@ -110,6 +114,7 @@ export function BasicAuthFields({ name = "items" }) {
 									{idx < items.length - 1 && (
 										<button
 											type="button"
+											title={intl.formatMessage({ id: "action.move-down" })}
 											className="btn"
 											onClick={() => {
 												swap(idx, idx + 1);
@@ -126,6 +131,7 @@ export function BasicAuthFields({ name = "items" }) {
 									)}
 									<button
 										type="button"
+										title={intl.formatMessage({ id: "action.delete" })}
 										className="btn btn-ghost btn-danger p-0 ms-auto"
 										onClick={() => {
 											if (items.length === 1) {
