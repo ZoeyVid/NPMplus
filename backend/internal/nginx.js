@@ -145,11 +145,12 @@ const internalNginx = {
 			} else {
 				location.forward_upstream_name = `upstream_${host.id}_location_${idx}`;
 			}
-			utils.assertNginxValue(location.location_type.trimEnd());
-			if (["~ ", "~* "].includes(location.location_type)) {
-				location.path = utils.nginxQuote(location.path);
+			if (["~", "~*"].includes(location.location_type)) {
+				location.path = utils.nginxQuote(`${location.location_type}${location.path}`);
+			} else if (["@", "=", "~", "~*", "^~", "$"].some((prefix) => location.path.startsWith(prefix))) {
+				throw new errs.ValidationError(`${JSON.stringify(location.path)} can not be used as a location path`);
 			} else {
-				location.path = utils.assertNginxValue(location.path);
+				location.path = `${utils.assertNginxValue(location.location_type)}${utils.assertNginxValue(location.path)}`;
 			}
 			renderedLocations += await renderEngine.parseAndRender(template, location);
 		}
