@@ -33,9 +33,9 @@ const internalNginx = {
 
 		await internalProxyHostAccessList.build(host_type, host);
 		await internalNginx.deleteConfig(host_type, host);
-		await internalNginx.generateConfig(host_type, host);
 
 		try {
+			await internalNginx.generateConfig(host_type, host);
 			await (skipReload ? internalNginx.test() : internalNginx.reload());
 			status = { npmplus_nginx_online: true, npmplus_nginx_err: "" };
 
@@ -145,6 +145,7 @@ const internalNginx = {
 			} else {
 				location.forward_upstream_name = `upstream_${host.id}_location_${idx}`;
 			}
+			utils.assertNginxValue(location.location_type.trimEnd());
 			if (["~ ", "~* "].includes(location.location_type)) {
 				location.path = utils.nginxQuote(location.path);
 			} else {
@@ -356,7 +357,11 @@ const internalNginx = {
 	renameConfigAsError: async (host_type, host) => {
 		const config_file = internalNginx.getConfigName(host_type, host?.id ?? 0);
 
-		await rename(config_file, `${config_file}.err`);
+		try {
+			await rename(config_file, `${config_file}.err`);
+		} catch (err) {
+			if (err.code !== "ENOENT") throw err;
+		}
 	},
 };
 
