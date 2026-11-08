@@ -1,6 +1,6 @@
 import cn from "clsx";
 import OverlayTrigger from "react-bootstrap/OverlayTrigger";
-import Tooltip from "react-bootstrap/Tooltip";
+import Popover from "react-bootstrap/Popover";
 import { T } from "src/locale";
 import { showNginxErrorModal } from "src/modals";
 
@@ -28,9 +28,11 @@ export function StatusFormatter({ enabled, nginxOnline, nginxErr }) {
 			<OverlayTrigger
 				placement="top"
 				overlay={
-					<Tooltip>
-						<T id="action.view-details" />
-					</Tooltip>
+					<Popover>
+						<Popover.Body>
+							<T id="action.view-details" />
+						</Popover.Body>
+					</Popover>
 				}
 			>
 				<button

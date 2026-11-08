@@ -3,7 +3,7 @@ import { useState } from "react";
 import Alert from "react-bootstrap/Alert";
 import { LoadingPage, Pagination } from "src/components";
 import { useAuditLogs } from "src/hooks";
-import { T } from "src/locale";
+import { intl, T } from "src/locale";
 import { showEventDetailsModal } from "src/modals";
 import Table from "./Table";
 
@@ -51,6 +51,7 @@ export default function TableWrapper() {
 										</span>
 										<input
 											type="search"
+											placeholder={intl.formatMessage({ id: "action.search" })}
 											className="form-control form-control-sm"
 											autoComplete="off"
 											onChange={(e) => {
