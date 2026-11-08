@@ -95,6 +95,10 @@ export default function Table({ data, isFetching, isFiltered, onEdit, onDelete, 
 							<span className="dropdown">
 								<button
 									type="button"
+									title={intl.formatMessage(
+										{ id: "object.actions" },
+										{ object: intl.formatMessage({ id: "access-list" }), id: info.row.original.id },
+									)}
 									className="btn dropdown-toggle btn-action btn-sm px-1"
 									data-bs-boundary="viewport"
 									data-bs-toggle="dropdown"

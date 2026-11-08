@@ -2,6 +2,8 @@ import { useEffect, useRef } from "react";
 import { useLocation } from "react-router";
 import { intl } from "src/locale";
 
+const trailingSlash = /\/$/u;
+
 const titles = {
 	"/": "dashboard",
 	"/certificates": "certificates",
@@ -21,7 +23,7 @@ export function SiteContainer({ children }) {
 	const previous = useRef(pathname);
 
 	useEffect(() => {
-		document.title = `${intl.formatMessage({ id: titles[pathname.replace(/\/$/u, "") || "/"] ?? "notfound.title" })} – NPMplus`;
+		document.title = `${intl.formatMessage({ id: titles[pathname.replace(trailingSlash, "") || "/"] ?? "notfound.title" })} – NPMplus`;
 		if (previous.current !== pathname) main.current?.focus();
 		previous.current = pathname;
 		return () => {

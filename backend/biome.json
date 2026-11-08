@@ -25,6 +25,7 @@
 				"noExcessiveLinesPerFunction": "off",
 				"noPlaywrightUselessAwait": "off",
 				"noVoid": "off",
+				"useMaxParams": "off",
 				"useSimplifiedLogicExpression": "off"
 			},
 			"correctness": {
