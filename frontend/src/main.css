@@ -1,4 +1,14 @@
-.btn-primary, .btn-secondary, .btn-blue, .btn-azure, .btn-pink, .btn-red, .btn-orange, .btn-yellow, .btn-lime, .btn-teal, .btn-cyan {
+.btn-primary,
+.btn-secondary,
+.btn-blue,
+.btn-azure,
+.btn-pink,
+.btn-red,
+.btn-orange,
+.btn-yellow,
+.btn-lime,
+.btn-teal,
+.btn-cyan {
 	--tblr-btn-border-color: transparent;
 	--tblr-btn-hover-border-color: transparent;
 	--tblr-btn-active-border-color: transparent;
