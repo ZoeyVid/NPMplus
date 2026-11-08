@@ -106,12 +106,7 @@ const DeadHostModal = EasyModal.create(({ id, visible, remove, close, formRef })
 												</a>
 											</li>
 											<li className="nav-item ms-auto">
-												<a
-													href="#tab-advanced"
-													className="nav-link"
-													title="Settings"
-													data-bs-toggle="tab"
-												>
+												<a href="#tab-advanced" className="nav-link" data-bs-toggle="tab">
 													<T id="domains.advanced" />
 													{values?.advancedConfig?.trim() ? "*" : ""}
 												</a>

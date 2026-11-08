@@ -6,7 +6,7 @@ import { Alert } from "react-bootstrap";
 import Modal from "react-bootstrap/Modal";
 import { disableTotp, enableTotp, getMfaStatus, regenerateBackupCodes, startTotpSetup } from "src/api/backend";
 import { Button, CopyButton } from "src/components";
-import { T } from "src/locale";
+import { intl, T } from "src/locale";
 import EasyModal from "src/modules/easyModal";
 import { validateString } from "src/modules/Validations";
 
@@ -201,6 +201,9 @@ const MfaModal = EasyModal.create(({ id, visible, close, formRef }) => {
 												<span className="input-group-text">
 													<button
 														type="button"
+														title={intl.formatMessage({
+															id: showCode ? "mfa.hide-code" : "mfa.show-code",
+														})}
 														onMouseDown={(e) => e.preventDefault()}
 														className="p-0 border-0 bg-transparent text-secondary d-flex align-items-center cursor-pointer"
 														onClick={() => setShowCode((v) => !v)}
@@ -295,6 +298,9 @@ const MfaModal = EasyModal.create(({ id, visible, close, formRef }) => {
 												<span className="input-group-text">
 													<button
 														type="button"
+														title={intl.formatMessage({
+															id: showCode ? "mfa.hide-code" : "mfa.show-code",
+														})}
 														onMouseDown={(e) => e.preventDefault()}
 														className="p-0 border-0 bg-transparent text-secondary d-flex align-items-center cursor-pointer"
 														onClick={() => setShowCode((v) => !v)}
@@ -369,6 +375,9 @@ const MfaModal = EasyModal.create(({ id, visible, close, formRef }) => {
 												<span className="input-group-text">
 													<button
 														type="button"
+														title={intl.formatMessage({
+															id: showCode ? "mfa.hide-code" : "mfa.show-code",
+														})}
 														onMouseDown={(e) => e.preventDefault()}
 														className="p-0 border-0 bg-transparent text-secondary d-flex align-items-center cursor-pointer"
 														onClick={() => setShowCode((v) => !v)}

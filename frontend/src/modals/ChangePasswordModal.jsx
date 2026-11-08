@@ -85,6 +85,9 @@ const ChangePasswordModal = EasyModal.create(({ id, visible, remove, close, form
 											<span className="input-group-text">
 												<button
 													type="button"
+													title={intl.formatMessage({
+														id: showCurrent ? "password.hide" : "password.show",
+													})}
 													onMouseDown={(e) => e.preventDefault()}
 													className="p-0 border-0 bg-transparent text-secondary d-flex align-items-center cursor-pointer"
 													onClick={() => setShowCurrent((v) => !v)}
@@ -121,6 +124,9 @@ const ChangePasswordModal = EasyModal.create(({ id, visible, remove, close, form
 											<span className="input-group-text">
 												<button
 													type="button"
+													title={intl.formatMessage({
+														id: showNew ? "password.hide" : "password.show",
+													})}
 													onMouseDown={(e) => e.preventDefault()}
 													className="p-0 border-0 bg-transparent text-secondary d-flex align-items-center cursor-pointer"
 													onClick={() => setShowNew((v) => !v)}
@@ -157,6 +163,9 @@ const ChangePasswordModal = EasyModal.create(({ id, visible, remove, close, form
 											<span className="input-group-text">
 												<button
 													type="button"
+													title={intl.formatMessage({
+														id: showConfirm ? "password.hide" : "password.show",
+													})}
 													onMouseDown={(e) => e.preventDefault()}
 													className="p-0 border-0 bg-transparent text-secondary d-flex align-items-center cursor-pointer"
 													onClick={() => setShowConfirm((v) => !v)}

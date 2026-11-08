@@ -2,7 +2,7 @@ import { IconDevicesX, IconLock, IconLogout, IconShieldLock, IconUser } from "@t
 import { LocalePicker, NavLink, ThemeSwitcher } from "src/components";
 import { useAuthState } from "src/context";
 import { useUser } from "src/hooks";
-import { T } from "src/locale";
+import { intl, T } from "src/locale";
 import { showChangePasswordModal, showMfaModal, showUserModal } from "src/modals";
 import { showError } from "src/notifications";
 
@@ -17,6 +17,7 @@ export function SiteHeader() {
 				<button
 					className="navbar-toggler"
 					type="button"
+					title={intl.formatMessage({ id: "navigation" })}
 					data-bs-toggle="collapse"
 					data-bs-target="#navbar-menu"
 					aria-expanded="false"
@@ -49,6 +50,7 @@ export function SiteHeader() {
 							<a href="/" className="nav-link d-flex lh-1" data-bs-toggle="dropdown">
 								<span
 									className="avatar avatar-square avatar-sm"
+									title={currentUser?.name}
 									style={{
 										backgroundImage: `url(${currentUser?.avatar || "/images/default-avatar.jpg"})`,
 									}}

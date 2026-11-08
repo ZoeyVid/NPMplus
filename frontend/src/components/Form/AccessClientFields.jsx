@@ -66,17 +66,28 @@ export function AccessClientFields({ name = "clients" }) {
 								</div>
 								<div className="col-4 d-flex gap-1 mb-2">
 									{idx > 0 && (
-										<button type="button" className="btn" onClick={() => swap(idx - 1, idx)}>
+										<button
+											type="button"
+											title={intl.formatMessage({ id: "action.move-up" })}
+											className="btn"
+											onClick={() => swap(idx - 1, idx)}
+										>
 											<IconArrowUp size={16} />
 										</button>
 									)}
 									{idx < clients.length - 2 && (
-										<button type="button" className="btn" onClick={() => swap(idx, idx + 1)}>
+										<button
+											type="button"
+											title={intl.formatMessage({ id: "action.move-down" })}
+											className="btn"
+											onClick={() => swap(idx, idx + 1)}
+										>
 											<IconArrowDown size={16} />
 										</button>
 									)}
 									<button
 										type="button"
+										title={intl.formatMessage({ id: "action.delete" })}
 										className="btn btn-ghost btn-danger p-0 ms-auto"
 										onClick={() => (clients.length === 2 ? replace(idx, blankClient) : remove(idx))}
 									>
