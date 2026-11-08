@@ -62,7 +62,7 @@ export default function TableWrapper() {
 											<IconSearch size={16} />
 										</span>
 										<input
-											type="text"
+											type="search"
 											className="form-control form-control-sm"
 											autoComplete="off"
 											onChange={(e) => setSearch(e.target.value.toLowerCase().trim())}
@@ -83,7 +83,7 @@ export default function TableWrapper() {
 					isFetching={isFetching}
 					currentUserId={currentUser?.id}
 					onEditUser={(id) => showUserModal(id)}
-					onEditPermissions={(id) => showPermissionsModal(id)}
+					onEditPermissions={(id, name) => showPermissionsModal(id, name)}
 					onSetPassword={(id) => showSetPasswordModal(id)}
 					onResetMfa={(id) => {
 						const user = data?.find((item) => item.id === id);

@@ -164,7 +164,6 @@ export function AccessFields({ location, name, typeFieldName, authRequest, disab
 										{idx > 0 ? (
 											<button
 												type="button"
-												aria-label="Move up"
 												className="btn mb-1 ms-1"
 												onClick={() => swap(idx - 1, idx)}
 											>
@@ -174,7 +173,6 @@ export function AccessFields({ location, name, typeFieldName, authRequest, disab
 										{idx < values.length - 1 ? (
 											<button
 												type="button"
-												aria-label="Move down"
 												className="btn mb-1 ms-1"
 												onClick={() => swap(idx, idx + 1)}
 											>
@@ -184,7 +182,6 @@ export function AccessFields({ location, name, typeFieldName, authRequest, disab
 										{values.length > 1 && (
 											<button
 												type="button"
-												aria-label="Remove"
 												className="btn btn-ghost btn-danger p-0 mb-1"
 												onClick={() => remove(idx)}
 											>

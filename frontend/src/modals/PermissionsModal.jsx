@@ -10,11 +10,11 @@ import { T } from "src/locale";
 import EasyModal from "src/modules/easyModal";
 import { showObjectSuccess } from "src/notifications";
 
-const showPermissionsModal = (id) => {
-	EasyModal.show(PermissionsModal, { id });
+const showPermissionsModal = (id, name) => {
+	EasyModal.show(PermissionsModal, { id, name });
 };
 
-const PermissionsModal = EasyModal.create(({ id, visible, remove, close, formRef }) => {
+const PermissionsModal = EasyModal.create(({ id, name, visible, remove, close, formRef }) => {
 	const [errorMsg, setErrorMsg] = useState(null);
 	const { data, isPending, error } = useUser(id);
 
@@ -124,6 +124,11 @@ const PermissionsModal = EasyModal.create(({ id, visible, remove, close, formRef
 
 	return (
 		<Modal show={visible} backdrop="static" onHide={close}>
+			<Modal.Header closeButton>
+				<Modal.Title>
+					<T id="user.set-permissions" data={{ name }} />
+				</Modal.Title>
+			</Modal.Header>
 			{error && (
 				<Alert variant="danger" className="m-3">
 					{error?.message}
@@ -146,11 +151,6 @@ const PermissionsModal = EasyModal.create(({ id, visible, remove, close, formRef
 				>
 					{({ isSubmitting }) => (
 						<Form>
-							<Modal.Header closeButton={!isSubmitting}>
-								<Modal.Title>
-									<T id="user.set-permissions" data={{ name: data?.name }} />
-								</Modal.Title>
-							</Modal.Header>
 							<Modal.Body>
 								<Alert variant="danger" show={errorMsg} onClose={() => setErrorMsg(null)} dismissible>
 									{errorMsg}

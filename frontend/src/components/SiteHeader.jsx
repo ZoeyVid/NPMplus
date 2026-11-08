@@ -19,9 +19,7 @@ export function SiteHeader() {
 					type="button"
 					data-bs-toggle="collapse"
 					data-bs-target="#navbar-menu"
-					aria-controls="navbar-menu"
 					aria-expanded="false"
-					aria-label="Toggle navigation"
 				>
 					<span className="navbar-toggler-icon" />
 				</button>
@@ -32,7 +30,7 @@ export function SiteHeader() {
 							width={40}
 							height={40}
 							className="navbar-brand-image object-fit-cover me-3"
-							alt="Logo"
+							alt=""
 						/>
 						NPMplus
 					</NavLink>
@@ -48,12 +46,7 @@ export function SiteHeader() {
 					</div>
 					<div className="nav-item d-md-flex">
 						<div className="nav-item dropdown">
-							<a
-								href="/"
-								className="nav-link d-flex lh-1"
-								data-bs-toggle="dropdown"
-								aria-label="Open user menu"
-							>
+							<a href="/" className="nav-link d-flex lh-1" data-bs-toggle="dropdown">
 								<span
 									className="avatar avatar-square avatar-sm"
 									style={{

@@ -67,8 +67,6 @@ function TotpForm() {
 											<span className="input-group-text">
 												<button
 													type="button"
-													tabIndex={-1}
-													aria-label="toggle visibility"
 													onMouseDown={(e) => e.preventDefault()}
 													className="p-0 border-0 bg-transparent text-secondary d-flex align-items-center cursor-pointer"
 													onClick={() => setShowCode((v) => !v)}
@@ -192,8 +190,6 @@ function PasswordForm() {
 													<span className="input-group-text">
 														<button
 															type="button"
-															tabIndex={-1}
-															aria-label="toggle visibility"
 															onMouseDown={(e) => e.preventDefault()}
 															className="p-0 border-0 bg-transparent text-secondary d-flex align-items-center cursor-pointer"
 															onClick={() => setShowPassword((v) => !v)}
@@ -249,7 +245,7 @@ export default function Login() {
 		<Page className="page-center">
 			<div className="container container-tight py-4">
 				<div className="d-flex justify-content-between align-items-center mb-4 ps-4 pe-3">
-					<img width={200} src="/images/logo-text-horizontal-grey.png" alt="NPMplus" />
+					<img width={200} src="/images/logo-text-horizontal-grey.png" alt="" />
 					<div className="d-flex align-items-center gap-1">
 						<LocalePicker />
 						<ThemeSwitcher />

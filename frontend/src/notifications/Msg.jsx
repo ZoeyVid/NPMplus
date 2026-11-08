@@ -17,14 +17,7 @@ function Msg({ data }) {
 	}
 
 	return (
-		<div
-			className={cns}
-			role="alert"
-			aria-live="assertive"
-			aria-atomic="true"
-			data-bs-autohide="false"
-			data-bs-toggle="toast"
-		>
+		<div className={cns} data-bs-autohide="false" data-bs-toggle="toast">
 			<div className="toast-header">
 				{icon} {data.title}
 			</div>

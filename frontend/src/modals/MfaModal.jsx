@@ -106,9 +106,7 @@ const MfaModal = EasyModal.create(({ id, visible, close, formRef }) => {
 		if (step === "loading") {
 			return (
 				<div className="text-center py-4">
-					<div className="spinner-border" role="status">
-						<span className="visually-hidden">Loading...</span>
-					</div>
+					<div className="spinner-border" />
 				</div>
 			);
 		}
@@ -203,8 +201,6 @@ const MfaModal = EasyModal.create(({ id, visible, close, formRef }) => {
 												<span className="input-group-text">
 													<button
 														type="button"
-														tabIndex={-1}
-														aria-label="toggle visibility"
 														onMouseDown={(e) => e.preventDefault()}
 														className="p-0 border-0 bg-transparent text-secondary d-flex align-items-center cursor-pointer"
 														onClick={() => setShowCode((v) => !v)}
@@ -299,8 +295,6 @@ const MfaModal = EasyModal.create(({ id, visible, close, formRef }) => {
 												<span className="input-group-text">
 													<button
 														type="button"
-														tabIndex={-1}
-														aria-label="toggle visibility"
 														onMouseDown={(e) => e.preventDefault()}
 														className="p-0 border-0 bg-transparent text-secondary d-flex align-items-center cursor-pointer"
 														onClick={() => setShowCode((v) => !v)}
@@ -375,8 +369,6 @@ const MfaModal = EasyModal.create(({ id, visible, close, formRef }) => {
 												<span className="input-group-text">
 													<button
 														type="button"
-														tabIndex={-1}
-														aria-label="toggle visibility"
 														onMouseDown={(e) => e.preventDefault()}
 														className="p-0 border-0 bg-transparent text-secondary d-flex align-items-center cursor-pointer"
 														onClick={() => setShowCode((v) => !v)}

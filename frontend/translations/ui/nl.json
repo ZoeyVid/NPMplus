@@ -209,7 +209,6 @@
 	"mfa.regenerate-instructions": "Voer een verificatiecode in om nieuwe back-upcodes te genereren. Oude codes worden ongeldig gemaakt.",
 	"mfa.title": "MFA",
 	"mtls-certificate": "mTLS-certificaat",
-	"navigation": "Navigatie",
 	"nginx-config.label": "Aangepaste Nginx-configuratie",
 	"nginx-config.placeholder": "# Voer hier je aangepaste Nginx-configuratie in op eigen risico!",
 	"no-permission-error": "Je hebt geen toegang om dit te bekijken.",
