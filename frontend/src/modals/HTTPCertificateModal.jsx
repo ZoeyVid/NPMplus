@@ -87,7 +87,12 @@ const HTTPCertificateModal = EasyModal.create(({ visible, remove, close, formRef
 	);
 
 	return (
-		<Modal show={visible} backdrop="static" onHide={isTesting ? undefined : close}>
+		<Modal
+			aria-labelledby="http-certificate-modal-title"
+			show={visible}
+			backdrop="static"
+			onHide={isTesting ? undefined : close}
+		>
 			<Formik
 				innerRef={formRef}
 				initialValues={{
@@ -100,7 +105,7 @@ const HTTPCertificateModal = EasyModal.create(({ visible, remove, close, formRef
 				{({ values, isSubmitting }) => (
 					<Form>
 						<Modal.Header closeButton={!(isSubmitting || isTesting)}>
-							<Modal.Title>
+							<Modal.Title id="http-certificate-modal-title">
 								<T id="object.add" tData={{ object: "lets-encrypt-via-http" }} />
 							</Modal.Title>
 						</Modal.Header>

@@ -74,7 +74,17 @@ const StreamModal = EasyModal.create(({ id, visible, remove, close, formRef }) =
 	};
 
 	return (
-		<Modal show={visible} backdrop={canManage ? "static" : true} onHide={close}>
+		<Modal
+			aria-labelledby="stream-modal-title"
+			show={visible}
+			backdrop={canManage ? "static" : true}
+			onHide={close}
+		>
+			<Modal.Header closeButton>
+				<Modal.Title id="stream-modal-title">
+					<T id={id !== "new" ? "object.edit" : "object.add"} tData={{ object: "stream" }} />
+				</Modal.Title>
+			</Modal.Header>
 			{error && (
 				<Alert variant="danger" className="m-3">
 					{error?.message}
@@ -103,11 +113,6 @@ const StreamModal = EasyModal.create(({ id, visible, remove, close, formRef }) =
 				>
 					{({ values, setFieldValue, setValues, isSubmitting }) => (
 						<Form onInvalid={showTabOfInvalid}>
-							<Modal.Header closeButton={!isSubmitting}>
-								<Modal.Title>
-									<T id={data?.id ? "object.edit" : "object.add"} tData={{ object: "stream" }} />
-								</Modal.Title>
-							</Modal.Header>
 							<Modal.Body className="p-0">
 								<Alert variant="danger" show={errorMsg} onClose={() => setErrorMsg(null)} dismissible>
 									{errorMsg}

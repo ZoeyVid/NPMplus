@@ -36,9 +36,14 @@ const DeleteConfirmModal = EasyModal.create(
 		};
 
 		return (
-			<Modal show={visible} backdrop="static" onHide={isSubmitting ? undefined : remove}>
+			<Modal
+				aria-labelledby="delete-confirm-modal-title"
+				show={visible}
+				backdrop="static"
+				onHide={isSubmitting ? undefined : remove}
+			>
 				<Modal.Header closeButton={!isSubmitting}>
-					<Modal.Title>{tTitle ? <T id={tTitle} /> : title}</Modal.Title>
+					<Modal.Title id="delete-confirm-modal-title">{tTitle ? <T id={tTitle} /> : title}</Modal.Title>
 				</Modal.Header>
 				<Modal.Body>
 					<Alert variant="danger" show={error} onClose={() => setError(null)} dismissible>

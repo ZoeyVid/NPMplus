@@ -4,7 +4,7 @@ import Alert from "react-bootstrap/Alert";
 import { adminDisableMfa, deleteUser, revokeSessions, toggleUser } from "src/api/backend";
 import { Button, LoadingPage } from "src/components";
 import { useUser, useUsers } from "src/hooks";
-import { T } from "src/locale";
+import { intl, T } from "src/locale";
 import { showDeleteConfirmModal, showPermissionsModal, showSetPasswordModal, showUserModal } from "src/modals";
 import { showError, showObjectSuccess } from "src/notifications";
 import Table from "./Table";
@@ -62,9 +62,10 @@ export default function TableWrapper() {
 											<IconSearch size={16} />
 										</span>
 										<input
-											type="text"
+											type="search"
 											className="form-control form-control-sm"
 											autoComplete="off"
+											aria-label={intl.formatMessage({ id: "action.search" })}
 											onChange={(e) => setSearch(e.target.value.toLowerCase().trim())}
 										/>
 									</div>
@@ -83,7 +84,7 @@ export default function TableWrapper() {
 					isFetching={isFetching}
 					currentUserId={currentUser?.id}
 					onEditUser={(id) => showUserModal(id)}
-					onEditPermissions={(id) => showPermissionsModal(id)}
+					onEditPermissions={(id, name) => showPermissionsModal(id, name)}
 					onSetPassword={(id) => showSetPasswordModal(id)}
 					onResetMfa={(id) => {
 						const user = data?.find((item) => item.id === id);

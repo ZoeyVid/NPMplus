@@ -44,7 +44,9 @@ export function AccessListFormatter({ proxyHostId, access, type, locations }) {
 	if (access.length > 1) {
 		return (
 			<OverlayTrigger trigger={["hover", "focus"]} placement="bottom" overlay={popover}>
-				<span>{label}</span>
+				<button type="button" className="p-0 border-0 bg-transparent text-reset">
+					{label}
+				</button>
 			</OverlayTrigger>
 		);
 	}

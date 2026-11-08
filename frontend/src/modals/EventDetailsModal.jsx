@@ -3,7 +3,7 @@ import Modal from "react-bootstrap/Modal";
 import { decamelizeKeys } from "src/api/backend/caseConvert";
 import { Button, EventFormatter, GravatarFormatter, Loading } from "src/components";
 import { useAuditLog } from "src/hooks";
-import { T } from "src/locale";
+import { intl, T } from "src/locale";
 import EasyModal from "src/modules/easyModal";
 
 const showEventDetailsModal = (id) => {
@@ -14,9 +14,9 @@ const EventDetailsModal = EasyModal.create(({ id, visible, remove }) => {
 	const { data, isPending, error } = useAuditLog(id);
 
 	return (
-		<Modal show={visible} onHide={remove}>
+		<Modal aria-labelledby="event-details-modal-title" show={visible} onHide={remove}>
 			<Modal.Header closeButton>
-				<Modal.Title>
+				<Modal.Title id="event-details-modal-title">
 					<T id="action.view-details" />
 				</Modal.Title>
 			</Modal.Header>
@@ -35,6 +35,7 @@ const EventDetailsModal = EasyModal.create(({ id, visible, remove }) => {
 						<textarea
 							className="form-control font-monospace"
 							spellCheck={false}
+							aria-label={intl.formatMessage({ id: "column.details" })}
 							rows={9}
 							readOnly
 							value={JSON.stringify(decamelizeKeys(data.meta), null, 2)}

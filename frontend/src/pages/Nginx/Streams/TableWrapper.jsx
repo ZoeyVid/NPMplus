@@ -4,7 +4,7 @@ import Alert from "react-bootstrap/Alert";
 import { deleteStream, toggleStream } from "src/api/backend";
 import { Button, HasPermission, LoadingPage } from "src/components";
 import { getDirectory, useStreams } from "src/hooks";
-import { T } from "src/locale";
+import { intl, T } from "src/locale";
 import { showDeleteConfirmModal, showStreamModal } from "src/modals";
 import { MANAGE, STREAMS } from "src/modules/Permissions";
 import { showError, showObjectSuccess } from "src/notifications";
@@ -99,9 +99,10 @@ export default function TableWrapper() {
 											<IconSearch size={16} />
 										</span>
 										<input
-											type="text"
+											type="search"
 											className="form-control form-control-sm"
 											autoComplete="off"
+											aria-label={intl.formatMessage({ id: "action.search" })}
 											onChange={(e) => setSearch(e.target.value.toLowerCase().trim())}
 										/>
 									</div>

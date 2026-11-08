@@ -40,6 +40,7 @@ export function BasicAuthFields({ name = "items" }) {
 												autoComplete="off"
 												className="form-control input-sm"
 												pattern="[^:\p{Cc}]{1,255}"
+												aria-label={intl.formatMessage({ id: "username" })}
 												{...field}
 											/>
 										)}
@@ -52,6 +53,7 @@ export function BasicAuthFields({ name = "items" }) {
 												<input
 													type={revealed[idx] ? "text" : "password"}
 													autoComplete="new-password"
+													aria-label={intl.formatMessage({ id: "password" })}
 													className="form-control"
 													ref={(input) => {
 														if (new TextEncoder().encode(item.password).length > 72) {
@@ -78,8 +80,8 @@ export function BasicAuthFields({ name = "items" }) {
 										<span className="input-group-text">
 											<button
 												type="button"
-												tabIndex={-1}
-												aria-label="toggle visibility"
+												aria-label={intl.formatMessage({ id: "password.show" })}
+												aria-pressed={Boolean(revealed[idx])}
 												onMouseDown={(e) => e.preventDefault()}
 												className="p-0 border-0 bg-transparent text-secondary d-flex align-items-center cursor-pointer"
 												onClick={() =>
@@ -131,6 +133,7 @@ export function BasicAuthFields({ name = "items" }) {
 									<button
 										type="button"
 										className="btn btn-ghost btn-danger p-0 ms-auto"
+										aria-label={intl.formatMessage({ id: "action.delete" })}
 										onClick={() => {
 											if (items.length === 1) {
 												replace(idx, blankItem);

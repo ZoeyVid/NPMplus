@@ -118,6 +118,10 @@ export default function Table({
 							className="btn dropdown-toggle btn-action btn-sm px-1"
 							data-bs-boundary="viewport"
 							data-bs-toggle="dropdown"
+							aria-label={intl.formatMessage(
+								{ id: "object.actions" },
+								{ object: intl.formatMessage({ id: "user" }), id: info.row.original.id },
+							)}
 							data-bs-popper-config='{"strategy":"fixed"}'
 						>
 							<IconDotsVertical />
@@ -146,7 +150,7 @@ export default function Table({
 										type="button"
 										className="dropdown-item"
 										onClick={() => {
-											onEditPermissions?.(info.row.original.id);
+											onEditPermissions?.(info.row.original.id, info.row.original.name);
 										}}
 									>
 										<IconShield size={16} />

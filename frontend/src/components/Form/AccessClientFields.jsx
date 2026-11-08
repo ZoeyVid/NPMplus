@@ -37,6 +37,9 @@ export function AccessClientFields({ name = "clients" }) {
 														"flex-grow-0",
 														field.value === "allow" ? "bg-lime-lt" : "bg-orange-lt",
 													)}
+													aria-label={intl.formatMessage({
+														id: "access-list.rule-directive",
+													})}
 													{...field}
 												>
 													<option value="allow">
@@ -55,6 +58,7 @@ export function AccessClientFields({ name = "clients" }) {
 													className="form-control"
 													autoComplete="off"
 													pattern="[^\slL]{1,255}"
+													aria-label={intl.formatMessage({ id: "access-list.rule-source" })}
 													{...field}
 													placeholder={intl.formatMessage({
 														id: "access-list.rule-source.placeholder",
@@ -88,6 +92,7 @@ export function AccessClientFields({ name = "clients" }) {
 									<button
 										type="button"
 										className="btn btn-ghost btn-danger p-0 ms-auto"
+										aria-label={intl.formatMessage({ id: "action.delete" })}
 										onClick={() => (clients.length === 2 ? replace(idx, blankClient) : remove(idx))}
 									>
 										<IconX size={16} />
@@ -122,6 +127,7 @@ export function AccessClientFields({ name = "clients" }) {
 										"flex-grow-0",
 										field.value === "allow" ? "bg-lime-lt" : "bg-orange-lt",
 									)}
+									aria-label={intl.formatMessage({ id: "access-list.rule-directive" })}
 									{...field}
 								>
 									<option value="allow">
@@ -133,7 +139,14 @@ export function AccessClientFields({ name = "clients" }) {
 								</select>
 							)}
 						</Field>
-						<input type="text" className="form-control" autoComplete="off" value="all" disabled />
+						<input
+							type="text"
+							className="form-control"
+							autoComplete="off"
+							aria-label={intl.formatMessage({ id: "access-list.rule-source" })}
+							value="all"
+							disabled
+						/>
 					</div>
 				</div>
 			</div>

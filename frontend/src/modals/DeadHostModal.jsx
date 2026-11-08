@@ -57,7 +57,17 @@ const DeadHostModal = EasyModal.create(({ id, visible, remove, close, formRef })
 	};
 
 	return (
-		<Modal show={visible} backdrop={canManage ? "static" : true} onHide={close}>
+		<Modal
+			aria-labelledby="dead-host-modal-title"
+			show={visible}
+			backdrop={canManage ? "static" : true}
+			onHide={close}
+		>
+			<Modal.Header closeButton>
+				<Modal.Title id="dead-host-modal-title">
+					<T id={id !== "new" ? "object.edit" : "object.add"} tData={{ object: "dead-host" }} />
+				</Modal.Title>
+			</Modal.Header>
 			{error && (
 				<Alert variant="danger" className="m-3">
 					{error?.message}
@@ -83,11 +93,6 @@ const DeadHostModal = EasyModal.create(({ id, visible, remove, close, formRef })
 				>
 					{({ values, isSubmitting }) => (
 						<Form onInvalid={showTabOfInvalid}>
-							<Modal.Header closeButton={!isSubmitting}>
-								<Modal.Title>
-									<T id={data?.id ? "object.edit" : "object.add"} tData={{ object: "dead-host" }} />
-								</Modal.Title>
-							</Modal.Header>
 							<Modal.Body className="p-0">
 								<Alert variant="danger" show={errorMsg} onClose={() => setErrorMsg(null)} dismissible>
 									{errorMsg}

@@ -3,7 +3,7 @@ import { useState } from "react";
 import Alert from "react-bootstrap/Alert";
 import { LoadingPage, Pagination } from "src/components";
 import { useAuditLogs } from "src/hooks";
-import { T } from "src/locale";
+import { intl, T } from "src/locale";
 import { showEventDetailsModal } from "src/modals";
 import Table from "./Table";
 
@@ -50,9 +50,10 @@ export default function TableWrapper() {
 											<IconSearch size={16} />
 										</span>
 										<input
-											type="text"
+											type="search"
 											className="form-control form-control-sm"
 											autoComplete="off"
+											aria-label={intl.formatMessage({ id: "action.search" })}
 											onChange={(e) => {
 												setSearch(e.target.value.trim());
 												setPage(0);

@@ -4,7 +4,7 @@ import Alert from "react-bootstrap/Alert";
 import { deleteAccessList } from "src/api/backend";
 import { Button, HasPermission, LoadingPage } from "src/components";
 import { useAccessLists } from "src/hooks";
-import { T } from "src/locale";
+import { intl, T } from "src/locale";
 import { showAccessListModal, showDeleteConfirmModal } from "src/modals";
 import { ACCESS_LISTS, MANAGE } from "src/modules/Permissions";
 import { showObjectSuccess } from "src/notifications";
@@ -54,9 +54,10 @@ export default function TableWrapper() {
 											<IconSearch size={16} />
 										</span>
 										<input
-											type="text"
+											type="search"
 											className="form-control form-control-sm"
 											autoComplete="off"
+											aria-label={intl.formatMessage({ id: "action.search" })}
 											onChange={(e) => setSearch(e.target.value.toLowerCase().trim())}
 										/>
 									</div>

@@ -4,7 +4,7 @@ import Alert from "react-bootstrap/Alert";
 import { deleteProxyHost, toggleProxyHost } from "src/api/backend";
 import { Button, HasPermission, LoadingPage } from "src/components";
 import { getDirectory, useProxyHosts } from "src/hooks";
-import { T } from "src/locale";
+import { intl, T } from "src/locale";
 import { showDeleteConfirmModal, showProxyHostModal } from "src/modals";
 import { forwardSummary } from "src/modules/Forward";
 import { MANAGE, PROXY_HOSTS } from "src/modules/Permissions";
@@ -98,9 +98,10 @@ export default function TableWrapper() {
 											<IconSearch size={16} />
 										</span>
 										<input
-											type="text"
+											type="search"
 											className="form-control form-control-sm"
 											autoComplete="off"
+											aria-label={intl.formatMessage({ id: "action.search" })}
 											onChange={(e) => setSearch(e.target.value.toLowerCase().trim())}
 										/>
 									</div>

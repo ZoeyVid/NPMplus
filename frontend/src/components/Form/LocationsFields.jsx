@@ -311,6 +311,7 @@ export function LocationsFields({ name = "locations", disabled }) {
 													{({ field }) => (
 														<select
 															id={`locationType-${item.uiKey}`}
+															aria-label={intl.formatMessage({ id: "location.type" })}
 															className="form-select w-auto flex-grow-0"
 															disabled={
 																!currentUser?.npmplusIsAdmin &&
@@ -338,6 +339,7 @@ export function LocationsFields({ name = "locations", disabled }) {
 															type="text"
 															className="form-control"
 															placeholder="/path"
+															aria-label={intl.formatMessage({ id: "location.path" })}
 															autoComplete="off"
 															required
 															pattern="\S{1,255}"
@@ -815,6 +817,7 @@ export function LocationsFields({ name = "locations", disabled }) {
 													<textarea
 														className="form-control font-monospace"
 														spellCheck={false}
+														aria-label={intl.formatMessage({ id: "nginx-config.label" })}
 														placeholder={intl.formatMessage({
 															id: "nginx-config.placeholder",
 														})}

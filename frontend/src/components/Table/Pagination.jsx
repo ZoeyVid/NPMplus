@@ -1,4 +1,5 @@
 import { IconChevronLeft, IconChevronRight, IconChevronsLeft, IconChevronsRight } from "@tabler/icons-react";
+import { intl } from "src/locale";
 
 function Pagination({ top, total, page, pageSize, onChange }) {
 	if (total <= 25) return null;
@@ -11,6 +12,7 @@ function Pagination({ top, total, page, pageSize, onChange }) {
 		>
 			<select
 				className="form-select form-select-sm w-auto me-auto"
+				aria-label={intl.formatMessage({ id: "pagination.page-size" })}
 				value={pageSize}
 				onChange={(e) => {
 					const size = Number(e.target.value);
@@ -25,6 +27,7 @@ function Pagination({ top, total, page, pageSize, onChange }) {
 				<button
 					type="button"
 					className="btn btn-sm btn-icon"
+					aria-label={intl.formatMessage({ id: "pagination.first" })}
 					disabled={!page}
 					onClick={() => onChange(0, pageSize)}
 				>
@@ -33,6 +36,7 @@ function Pagination({ top, total, page, pageSize, onChange }) {
 				<button
 					type="button"
 					className="btn btn-sm btn-icon"
+					aria-label={intl.formatMessage({ id: "pagination.previous" })}
 					disabled={!page}
 					onClick={() => onChange(page - 1, pageSize)}
 				>
@@ -48,6 +52,7 @@ function Pagination({ top, total, page, pageSize, onChange }) {
 					<input
 						key={page}
 						name="page"
+						aria-label={intl.formatMessage({ id: "pagination.page" }, { pages })}
 						type="number"
 						className="form-control form-control-sm text-center"
 						min={1}
@@ -60,6 +65,7 @@ function Pagination({ top, total, page, pageSize, onChange }) {
 				<button
 					type="button"
 					className="btn btn-sm btn-icon"
+					aria-label={intl.formatMessage({ id: "pagination.next" })}
 					disabled={page >= pages - 1}
 					onClick={() => onChange(page + 1, pageSize)}
 				>
@@ -68,6 +74,7 @@ function Pagination({ top, total, page, pageSize, onChange }) {
 				<button
 					type="button"
 					className="btn btn-sm btn-icon"
+					aria-label={intl.formatMessage({ id: "pagination.last" })}
 					disabled={page >= pages - 1}
 					onClick={() => onChange(pages - 1, pageSize)}
 				>

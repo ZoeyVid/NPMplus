@@ -30,7 +30,7 @@ const SetPasswordModal = EasyModal.create(({ id, visible, remove, close, formRef
 	};
 
 	return (
-		<Modal show={visible} backdrop="static" onHide={close}>
+		<Modal aria-labelledby="set-password-modal-title" show={visible} backdrop="static" onHide={close}>
 			<Formik
 				innerRef={formRef}
 				initialValues={{
@@ -41,7 +41,7 @@ const SetPasswordModal = EasyModal.create(({ id, visible, remove, close, formRef
 				{({ isSubmitting }) => (
 					<Form>
 						<Modal.Header closeButton={!isSubmitting}>
-							<Modal.Title>
+							<Modal.Title id="set-password-modal-title">
 								<T id="user.set-password" />
 							</Modal.Title>
 						</Modal.Header>
@@ -76,8 +76,8 @@ const SetPasswordModal = EasyModal.create(({ id, visible, remove, close, formRef
 											<span className="input-group-text">
 												<button
 													type="button"
-													tabIndex={-1}
-													aria-label="toggle visibility"
+													aria-label={intl.formatMessage({ id: "password.show" })}
+													aria-pressed={showPassword}
 													onMouseDown={(e) => e.preventDefault()}
 													className="p-0 border-0 bg-transparent text-secondary d-flex align-items-center cursor-pointer"
 													onClick={() => setShowPassword((v) => !v)}

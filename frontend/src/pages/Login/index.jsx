@@ -67,8 +67,8 @@ function TotpForm() {
 											<span className="input-group-text">
 												<button
 													type="button"
-													tabIndex={-1}
-													aria-label="toggle visibility"
+													aria-label={intl.formatMessage({ id: "mfa.show-code" })}
+													aria-pressed={showCode}
 													onMouseDown={(e) => e.preventDefault()}
 													className="p-0 border-0 bg-transparent text-secondary d-flex align-items-center cursor-pointer"
 													onClick={() => setShowCode((v) => !v)}
@@ -192,8 +192,8 @@ function PasswordForm() {
 													<span className="input-group-text">
 														<button
 															type="button"
-															tabIndex={-1}
-															aria-label="toggle visibility"
+															aria-label={intl.formatMessage({ id: "password.show" })}
+															aria-pressed={showPassword}
 															onMouseDown={(e) => e.preventDefault()}
 															className="p-0 border-0 bg-transparent text-secondary d-flex align-items-center cursor-pointer"
 															onClick={() => setShowPassword((v) => !v)}

@@ -4,7 +4,7 @@ import Alert from "react-bootstrap/Alert";
 import { deleteCertificate, downloadCertificate } from "src/api/backend";
 import { certificateProviderTranslation, HasPermission, LoadingPage } from "src/components";
 import { useCertificates } from "src/hooks";
-import { formatDateTime, T } from "src/locale";
+import { formatDateTime, intl, T } from "src/locale";
 import {
 	showCustomCertificateModal,
 	showDeleteConfirmModal,
@@ -82,9 +82,10 @@ export default function TableWrapper() {
 											<IconSearch size={16} />
 										</span>
 										<input
-											type="text"
+											type="search"
 											className="form-control form-control-sm"
 											autoComplete="off"
+											aria-label={intl.formatMessage({ id: "action.search" })}
 											onChange={(e) => setSearch(e.target.value.toLowerCase().trim())}
 										/>
 									</div>

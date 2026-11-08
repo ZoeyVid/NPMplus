@@ -98,6 +98,10 @@ export default function Table({ data, isFetching, isFiltered, onEdit, onDelete, 
 									className="btn dropdown-toggle btn-action btn-sm px-1"
 									data-bs-boundary="viewport"
 									data-bs-toggle="dropdown"
+									aria-label={intl.formatMessage(
+										{ id: "object.actions" },
+										{ object: intl.formatMessage({ id: "access-list" }), id: info.row.original.id },
+									)}
 									data-bs-popper-config='{"strategy":"fixed"}'
 								>
 									<IconDotsVertical />

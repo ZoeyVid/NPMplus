@@ -129,6 +129,7 @@ export function AccessFields({ location, name, typeFieldName, authRequest, disab
 												unstyled
 												classNames={selectClassNames}
 												isSearchable={false}
+												aria-label={intl.formatMessage({ id: "proxy-host.access-lists" })}
 												isDisabled={disabled}
 												getOptionValue={(o) => o.type}
 												value={createOption(field.value)}
@@ -148,6 +149,10 @@ export function AccessFields({ location, name, typeFieldName, authRequest, disab
 										<Select
 											className="col-md-8 mb-1"
 											unstyled
+											aria-label={intl.formatMessage(
+												{ id: "access-list.position" },
+												{ position: idx + 1 },
+											)}
 											classNames={selectClassNames}
 											value={
 												defaultOptions.find((o) => o.value === item) ?? {

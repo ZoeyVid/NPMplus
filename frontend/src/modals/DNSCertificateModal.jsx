@@ -33,7 +33,7 @@ const DNSCertificateModal = EasyModal.create(({ visible, remove, close, formRef 
 	};
 
 	return (
-		<Modal show={visible} backdrop="static" onHide={close}>
+		<Modal aria-labelledby="dns-certificate-modal-title" show={visible} backdrop="static" onHide={close}>
 			<Formik
 				innerRef={formRef}
 				initialValues={{
@@ -47,7 +47,7 @@ const DNSCertificateModal = EasyModal.create(({ visible, remove, close, formRef 
 				{({ isSubmitting }) => (
 					<Form>
 						<Modal.Header closeButton={!isSubmitting}>
-							<Modal.Title>
+							<Modal.Title id="dns-certificate-modal-title">
 								<T id="object.add" tData={{ object: "lets-encrypt-via-dns" }} />
 							</Modal.Title>
 						</Modal.Header>

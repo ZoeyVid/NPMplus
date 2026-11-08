@@ -132,7 +132,17 @@ const ProxyHostModal = EasyModal.create(({ id, isClone, visible, remove, close, 
 	};
 
 	return (
-		<Modal show={visible} backdrop={canManage ? "static" : true} onHide={close}>
+		<Modal
+			aria-labelledby="proxy-host-modal-title"
+			show={visible}
+			backdrop={canManage ? "static" : true}
+			onHide={close}
+		>
+			<Modal.Header closeButton>
+				<Modal.Title id="proxy-host-modal-title">
+					<T id={id !== "new" && !isClone ? "object.edit" : "object.add"} tData={{ object: "proxy-host" }} />
+				</Modal.Title>
+			</Modal.Header>
 			{error && (
 				<Alert variant="danger" className="m-3">
 					{error?.message}
@@ -143,14 +153,6 @@ const ProxyHostModal = EasyModal.create(({ id, isClone, visible, remove, close, 
 				<Formik innerRef={formRef} initialValues={initialValues} onSubmit={onSubmit}>
 					{({ values, isSubmitting }) => (
 						<Form onInvalid={showTabOfInvalid}>
-							<Modal.Header closeButton={!isSubmitting}>
-								<Modal.Title>
-									<T
-										id={data?.id && !isClone ? "object.edit" : "object.add"}
-										tData={{ object: "proxy-host" }}
-									/>
-								</Modal.Title>
-							</Modal.Header>
 							<Modal.Body className="p-0">
 								<Alert variant="danger" show={errorMsg} onClose={() => setErrorMsg(null)} dismissible>
 									{errorMsg}
@@ -704,6 +706,9 @@ const ProxyHostModal = EasyModal.create(({ id, isClone, visible, remove, close, 
 																<textarea
 																	className="form-control font-monospace"
 																	spellCheck={false}
+																	aria-label={intl.formatMessage({
+																		id: "nginx-config.label",
+																	})}
 																	placeholder={intl.formatMessage({
 																		id: "nginx-config.placeholder",
 																	})}

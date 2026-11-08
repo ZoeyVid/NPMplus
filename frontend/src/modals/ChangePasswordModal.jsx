@@ -32,7 +32,7 @@ const ChangePasswordModal = EasyModal.create(({ id, visible, remove, close, form
 	};
 
 	return (
-		<Modal show={visible} backdrop="static" onHide={close}>
+		<Modal aria-labelledby="change-password-modal-title" show={visible} backdrop="static" onHide={close}>
 			<Formik
 				innerRef={formRef}
 				initialValues={{
@@ -50,7 +50,7 @@ const ChangePasswordModal = EasyModal.create(({ id, visible, remove, close, form
 				{({ isSubmitting }) => (
 					<Form>
 						<Modal.Header closeButton={!isSubmitting}>
-							<Modal.Title>
+							<Modal.Title id="change-password-modal-title">
 								<T id="user.change-password" />
 							</Modal.Title>
 						</Modal.Header>
@@ -85,8 +85,8 @@ const ChangePasswordModal = EasyModal.create(({ id, visible, remove, close, form
 											<span className="input-group-text">
 												<button
 													type="button"
-													tabIndex={-1}
-													aria-label="toggle visibility"
+													aria-label={intl.formatMessage({ id: "password.show" })}
+													aria-pressed={showCurrent}
 													onMouseDown={(e) => e.preventDefault()}
 													className="p-0 border-0 bg-transparent text-secondary d-flex align-items-center cursor-pointer"
 													onClick={() => setShowCurrent((v) => !v)}
@@ -123,8 +123,8 @@ const ChangePasswordModal = EasyModal.create(({ id, visible, remove, close, form
 											<span className="input-group-text">
 												<button
 													type="button"
-													tabIndex={-1}
-													aria-label="toggle visibility"
+													aria-label={intl.formatMessage({ id: "password.show" })}
+													aria-pressed={showNew}
 													onMouseDown={(e) => e.preventDefault()}
 													className="p-0 border-0 bg-transparent text-secondary d-flex align-items-center cursor-pointer"
 													onClick={() => setShowNew((v) => !v)}
@@ -161,8 +161,8 @@ const ChangePasswordModal = EasyModal.create(({ id, visible, remove, close, form
 											<span className="input-group-text">
 												<button
 													type="button"
-													tabIndex={-1}
-													aria-label="toggle visibility"
+													aria-label={intl.formatMessage({ id: "password.show" })}
+													aria-pressed={showConfirm}
 													onMouseDown={(e) => e.preventDefault()}
 													className="p-0 border-0 bg-transparent text-secondary d-flex align-items-center cursor-pointer"
 													onClick={() => setShowConfirm((v) => !v)}

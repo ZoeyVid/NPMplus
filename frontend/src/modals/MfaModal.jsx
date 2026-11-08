@@ -6,7 +6,7 @@ import { Alert } from "react-bootstrap";
 import Modal from "react-bootstrap/Modal";
 import { disableTotp, enableTotp, getMfaStatus, regenerateBackupCodes, startTotpSetup } from "src/api/backend";
 import { Button, CopyButton } from "src/components";
-import { T } from "src/locale";
+import { intl, T } from "src/locale";
 import EasyModal from "src/modules/easyModal";
 import { validateString } from "src/modules/Validations";
 
@@ -203,8 +203,8 @@ const MfaModal = EasyModal.create(({ id, visible, close, formRef }) => {
 												<span className="input-group-text">
 													<button
 														type="button"
-														tabIndex={-1}
-														aria-label="toggle visibility"
+														aria-label={intl.formatMessage({ id: "mfa.show-code" })}
+														aria-pressed={showCode}
 														onMouseDown={(e) => e.preventDefault()}
 														className="p-0 border-0 bg-transparent text-secondary d-flex align-items-center cursor-pointer"
 														onClick={() => setShowCode((v) => !v)}
@@ -299,8 +299,8 @@ const MfaModal = EasyModal.create(({ id, visible, close, formRef }) => {
 												<span className="input-group-text">
 													<button
 														type="button"
-														tabIndex={-1}
-														aria-label="toggle visibility"
+														aria-label={intl.formatMessage({ id: "mfa.show-code" })}
+														aria-pressed={showCode}
 														onMouseDown={(e) => e.preventDefault()}
 														className="p-0 border-0 bg-transparent text-secondary d-flex align-items-center cursor-pointer"
 														onClick={() => setShowCode((v) => !v)}
@@ -375,8 +375,8 @@ const MfaModal = EasyModal.create(({ id, visible, close, formRef }) => {
 												<span className="input-group-text">
 													<button
 														type="button"
-														tabIndex={-1}
-														aria-label="toggle visibility"
+														aria-label={intl.formatMessage({ id: "mfa.show-code" })}
+														aria-pressed={showCode}
 														onMouseDown={(e) => e.preventDefault()}
 														className="p-0 border-0 bg-transparent text-secondary d-flex align-items-center cursor-pointer"
 														onClick={() => setShowCode((v) => !v)}
@@ -423,9 +423,14 @@ const MfaModal = EasyModal.create(({ id, visible, close, formRef }) => {
 	};
 
 	return (
-		<Modal show={visible} backdrop="static" onHide={isSubmitting || step === "backup" ? undefined : close}>
+		<Modal
+			aria-labelledby="mfa-modal-title"
+			show={visible}
+			backdrop="static"
+			onHide={isSubmitting || step === "backup" ? undefined : close}
+		>
 			<Modal.Header closeButton={!isSubmitting && step !== "backup"}>
-				<Modal.Title>
+				<Modal.Title id="mfa-modal-title">
 					<T id="mfa.title" />
 				</Modal.Title>
 			</Modal.Header>

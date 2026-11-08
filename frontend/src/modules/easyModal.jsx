@@ -14,6 +14,7 @@ const DiscardChangesModal = NiceModal.create(() => {
 
 	return (
 		<Modal
+			aria-labelledby="discard-changes-modal-title"
 			show={visible}
 			backdrop="static"
 			backdropClassName="d-none"
@@ -22,7 +23,7 @@ const DiscardChangesModal = NiceModal.create(() => {
 			onHide={() => close(false)}
 		>
 			<Modal.Header closeButton>
-				<Modal.Title>
+				<Modal.Title id="discard-changes-modal-title">
 					<T id="unsaved-changes" />
 				</Modal.Title>
 			</Modal.Header>

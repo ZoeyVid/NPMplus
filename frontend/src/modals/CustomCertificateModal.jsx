@@ -63,7 +63,7 @@ const CustomCertificateModal = EasyModal.create(({ visible, remove, close, formR
 	};
 
 	return (
-		<Modal show={visible} backdrop="static" onHide={close}>
+		<Modal aria-labelledby="custom-certificate-modal-title" show={visible} backdrop="static" onHide={close}>
 			<Formik
 				innerRef={formRef}
 				initialValues={{
@@ -77,7 +77,7 @@ const CustomCertificateModal = EasyModal.create(({ visible, remove, close, formR
 				{({ isSubmitting }) => (
 					<Form>
 						<Modal.Header closeButton={!isSubmitting}>
-							<Modal.Title>
+							<Modal.Title id="custom-certificate-modal-title">
 								<T
 									id={isEdit ? "object.edit" : "object.add"}
 									tData={{ object: "certificates.custom" }}
