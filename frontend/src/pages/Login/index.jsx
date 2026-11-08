@@ -13,10 +13,9 @@ const redirectToOIDC = () => {
 	window.location.href = "/api/oidc";
 };
 
-function TotpForm() {
+function TotpForm({ formErr, setFormErr }) {
 	const codeRef = useRef(null);
 	const [showCode, setShowCode] = useState(false);
-	const [formErr, setFormErr] = useState("");
 	const { submitTotp, cancelTotp } = useAuthState();
 
 	const onSubmit = async (values, { resetForm }) => {
@@ -26,6 +25,7 @@ function TotpForm() {
 		} catch (err) {
 			setFormErr(err.message);
 			resetForm();
+			if (err.message === "error.invalid-challenge") cancelTotp();
 		}
 	};
 
@@ -88,7 +88,15 @@ function TotpForm() {
 							</Field>
 						</div>
 						<div className="form-footer d-flex gap-2">
-							<Button type="button" fullWidth onClick={cancelTotp} disabled={isSubmitting}>
+							<Button
+								type="button"
+								fullWidth
+								onClick={() => {
+									setFormErr("");
+									cancelTotp();
+								}}
+								disabled={isSubmitting}
+							>
 								<T id="cancel" />
 							</Button>
 							<Button
@@ -108,10 +116,9 @@ function TotpForm() {
 	);
 }
 
-function PasswordForm() {
+function PasswordForm({ formErr, setFormErr }) {
 	const emailRef = useRef(null);
 	const [showPassword, setShowPassword] = useState(false);
-	const [formErr, setFormErr] = useState("");
 	const { login } = useAuthState();
 	const health = useHealth();
 
@@ -246,6 +253,7 @@ function PasswordForm() {
 
 export default function Login() {
 	const { totpChallenge } = useAuthState();
+	const [formErr, setFormErr] = useState("");
 
 	return (
 		<Page className="page-center">
@@ -258,7 +266,13 @@ export default function Login() {
 					</div>
 				</div>
 				<div className="card card-md">
-					<div className="card-body">{totpChallenge ? <TotpForm /> : <PasswordForm />}</div>
+					<div className="card-body">
+						{totpChallenge ? (
+							<TotpForm formErr={formErr} setFormErr={setFormErr} />
+						) : (
+							<PasswordForm formErr={formErr} setFormErr={setFormErr} />
+						)}
+					</div>
 				</div>
 			</div>
 		</Page>

@@ -141,6 +141,7 @@
 	"error.access.at-least-one": "Either one Authorization or one Access Rule is required",
 	"error.access.duplicate-usernames": "Authorization Usernames must be unique",
 	"error.invalid-auth": "Invalid email or password",
+	"error.invalid-challenge": "The time to enter the code has expired. Please log in again.",
 	"error.invalid-code": "Invalid verification code",
 	"error.invalid-domain": "Invalid domain: {domain}",
 	"error.invalid-email": "Invalid email address",
