@@ -149,7 +149,7 @@ const PermissionsModal = EasyModal.create(({ id, name, visible, remove, close, f
 					}}
 					onSubmit={onSubmit}
 				>
-					{({ isSubmitting }) => (
+					{() => (
 						<Form>
 							<Modal.Body>
 								<Alert variant="danger" show={errorMsg} onClose={() => setErrorMsg(null)} dismissible>
@@ -257,15 +257,10 @@ const PermissionsModal = EasyModal.create(({ id, name, visible, remove, close, f
 								)}
 							</Modal.Body>
 							<Modal.Footer>
-								<Button onClick={close} disabled={isSubmitting}>
+								<Button onClick={close}>
 									<T id="cancel" />
 								</Button>
-								<Button
-									type="submit"
-									className="ms-auto btn-orange"
-									isLoading={isSubmitting}
-									disabled={isSubmitting}
-								>
+								<Button type="submit" className="ms-auto btn-orange">
 									<T id="save" />
 								</Button>
 							</Modal.Footer>

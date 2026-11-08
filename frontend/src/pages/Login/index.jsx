@@ -38,7 +38,7 @@ function TotpForm({ formErr, setFormErr }) {
 			</p>
 			{formErr !== "" && <Alert variant="danger">{intl.formatMessage({ id: formErr })}</Alert>}
 			<Formik initialValues={{ code: "" }} onSubmit={onSubmit}>
-				{({ isSubmitting }) => (
+				{() => (
 					<Form>
 						<div className="mb-3">
 							<Field name="code" validate={(value) => validateString(value, 6, 8)}>
@@ -90,17 +90,10 @@ function TotpForm({ formErr, setFormErr }) {
 									setFormErr("");
 									cancelTotp();
 								}}
-								disabled={isSubmitting}
 							>
 								<T id="cancel" />
 							</Button>
-							<Button
-								type="submit"
-								fullWidth
-								color="azure"
-								isLoading={isSubmitting}
-								disabled={isSubmitting}
-							>
+							<Button type="submit" fullWidth color="azure">
 								<T id="login.totp-verify" />
 							</Button>
 						</div>
@@ -146,7 +139,7 @@ function PasswordForm({ formErr, setFormErr }) {
 					}}
 					onSubmit={onSubmit}
 				>
-					{({ isSubmitting }) => (
+					{() => (
 						<Form>
 							<div className="mb-3">
 								<Field name="email" validate={validateEmail}>
@@ -211,13 +204,7 @@ function PasswordForm({ formErr, setFormErr }) {
 								</Field>
 							</div>
 							<div className="form-footer">
-								<Button
-									type="submit"
-									fullWidth
-									color="azure"
-									isLoading={isSubmitting}
-									disabled={isSubmitting}
-								>
+								<Button type="submit" fullWidth color="azure">
 									<T id="sign-in" />
 								</Button>
 							</div>

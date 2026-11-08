@@ -180,16 +180,10 @@ const ChangePasswordModal = EasyModal.create(({ id, visible, remove, close, form
 							</div>
 						</Modal.Body>
 						<Modal.Footer>
-							<Button onClick={close} disabled={isSubmitting}>
+							<Button onClick={close}>
 								<T id="cancel" />
 							</Button>
-							<Button
-								type="submit"
-								actionType="primary"
-								className="ms-auto"
-								isLoading={isSubmitting}
-								disabled={isSubmitting}
-							>
+							<Button type="submit" actionType="primary" className="ms-auto">
 								<T id="save" />
 							</Button>
 						</Modal.Footer>

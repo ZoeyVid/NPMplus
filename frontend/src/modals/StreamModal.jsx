@@ -106,7 +106,7 @@ const StreamModal = EasyModal.create(({ id, visible, remove, close, formRef }) =
 					}}
 					onSubmit={onSubmit}
 				>
-					{({ values, setFieldValue, setValues, isSubmitting }) => (
+					{({ values, setFieldValue, setValues }) => (
 						<Form onInvalid={showTabOfInvalid}>
 							<Modal.Body className="p-0">
 								<Alert variant="danger" show={errorMsg} onClose={() => setErrorMsg(null)} dismissible>
@@ -446,17 +446,11 @@ const StreamModal = EasyModal.create(({ id, visible, remove, close, formRef }) =
 								</div>
 							</Modal.Body>
 							<Modal.Footer>
-								<Button onClick={close} disabled={isSubmitting}>
+								<Button onClick={close}>
 									<T id={canManage ? "cancel" : "action.close"} />
 								</Button>
 								{canManage && (
-									<Button
-										type="submit"
-										actionType="primary"
-										className="ms-auto"
-										isLoading={isSubmitting}
-										disabled={isSubmitting}
-									>
+									<Button type="submit" actionType="primary" className="ms-auto">
 										<T id="save" />
 									</Button>
 								)}

@@ -55,7 +55,6 @@ const DeleteConfirmModal = EasyModal.create(
 						actionType="primary"
 						className="ms-auto btn-red"
 						isLoading={isSubmitting}
-						disabled={isSubmitting}
 						onClick={onSubmit}
 					>
 						<T id={tTitle ?? "action.delete"} />

@@ -65,7 +65,7 @@ export default function DefaultSite() {
 			}}
 			onSubmit={onSubmit}
 		>
-			{({ values, isSubmitting }) => (
+			{({ values }) => (
 				<Form>
 					<div className="card-body">
 						<Alert variant="danger" show={errorMsg} onClose={() => setErrorMsg(null)} dismissible>
@@ -254,13 +254,7 @@ export default function DefaultSite() {
 					</div>
 					<div className="card-footer bg-transparent mt-auto">
 						<div className="btn-list justify-content-end">
-							<Button
-								type="submit"
-								color="teal"
-								className="ms-auto"
-								isLoading={isSubmitting}
-								disabled={isSubmitting}
-							>
+							<Button type="submit" color="teal" className="ms-auto">
 								<T id="save" />
 							</Button>
 						</div>

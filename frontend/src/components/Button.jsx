@@ -1,4 +1,6 @@
 import cn from "clsx";
+import { FormikContext } from "formik";
+import { useContext } from "react";
 
 function Button({
 	children,
@@ -14,6 +16,7 @@ function Button({
 	disabled,
 	autoFocus,
 }) {
+	const submitting = useContext(FormikContext)?.isSubmitting;
 	const cns = cn(
 		"btn",
 		className,
@@ -22,15 +25,15 @@ function Button({
 		size && `btn-${size}`,
 		color && `btn-${color}`,
 		fullWidth && "w-100",
-		isLoading && "btn-loading",
+		(isLoading || (submitting && type === "submit")) && "btn-loading",
 	);
 
 	return (
 		<button
 			type={type || "button"}
 			className={cns}
-			onClick={() => !isLoading && onClick?.()}
-			disabled={disabled}
+			onClick={onClick}
+			disabled={disabled || isLoading || submitting}
 			autoFocus={autoFocus}
 		>
 			{children}

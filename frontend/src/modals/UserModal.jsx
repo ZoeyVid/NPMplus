@@ -77,7 +77,7 @@ const UserModal = EasyModal.create(({ id, visible, remove, close, formRef }) => 
 					}}
 					onSubmit={onSubmit}
 				>
-					{({ isSubmitting }) => (
+					{() => (
 						<Form>
 							<Modal.Body>
 								<Alert variant="danger" show={errorMsg} onClose={() => setErrorMsg(null)} dismissible>
@@ -226,15 +226,10 @@ const UserModal = EasyModal.create(({ id, visible, remove, close, formRef }) => 
 								) : null}
 							</Modal.Body>
 							<Modal.Footer>
-								<Button onClick={close} disabled={isSubmitting}>
+								<Button onClick={close}>
 									<T id="cancel" />
 								</Button>
-								<Button
-									type="submit"
-									className="ms-auto btn-orange"
-									isLoading={isSubmitting}
-									disabled={isSubmitting}
-								>
+								<Button type="submit" className="ms-auto btn-orange">
 									<T id="save" />
 								</Button>
 							</Modal.Footer>

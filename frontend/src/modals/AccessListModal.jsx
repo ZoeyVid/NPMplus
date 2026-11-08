@@ -101,7 +101,7 @@ const AccessListModal = EasyModal.create(({ id, visible, remove, close, formRef 
 					}}
 					onSubmit={onSubmit}
 				>
-					{({ isSubmitting }) => (
+					{() => (
 						<Form onInvalid={showTabOfInvalid}>
 							<Modal.Body className="p-0">
 								<Alert variant="danger" show={errorMsg} onClose={() => setErrorMsg(null)} dismissible>
@@ -218,17 +218,11 @@ const AccessListModal = EasyModal.create(({ id, visible, remove, close, formRef 
 								</div>
 							</Modal.Body>
 							<Modal.Footer>
-								<Button onClick={close} disabled={isSubmitting}>
+								<Button onClick={close}>
 									<T id={canManage ? "cancel" : "action.close"} />
 								</Button>
 								{canManage && (
-									<Button
-										type="submit"
-										color="cyan"
-										className="ms-auto"
-										isLoading={isSubmitting}
-										disabled={isSubmitting}
-									>
+									<Button type="submit" color="cyan" className="ms-auto">
 										<T id="save" />
 									</Button>
 								)}
