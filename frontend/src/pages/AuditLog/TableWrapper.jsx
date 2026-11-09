@@ -54,6 +54,7 @@ export default function TableWrapper() {
 											placeholder={intl.formatMessage({ id: "action.search" })}
 											className="form-control form-control-sm"
 											autoComplete="off"
+											maxLength={255}
 											onChange={(e) => {
 												setSearch(e.target.value.trim());
 												setPage(0);
