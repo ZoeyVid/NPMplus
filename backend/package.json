@@ -29,7 +29,6 @@
 		"openid-client": "6.8.9",
 		"otplib": "13.6.0",
 		"pg": "8.23.1",
-		"swagger-ui-express": "5.0.1",
 		"undici": "8.12.4"
 	},
 	"devDependencies": {

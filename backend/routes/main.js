@@ -5,7 +5,6 @@ import validate from "../lib/express/validate.js";
 import { readSecret } from "../lib/helpers.js";
 import { isSetup } from "../setup.js";
 import auditLogRoutes from "./audit-log.js";
-import docsRoutes from "./docs.js";
 import accessListsRoutes from "./nginx/access_lists.js";
 import certificatesHostsRoutes from "./nginx/certificates.js";
 import deadHostsRoutes from "./nginx/dead_hosts.js";
@@ -65,7 +64,6 @@ router.get("/api/auth/admin", jwtdecode, validate, (_, res) => {
 
 router.options(/(?<path>.+)/u, (req, _, next) => next(new errs.ItemNotFoundError(req.params.path)));
 
-router.use("/api/docs", docsRoutes);
 router.use("/api/schema", schemaRoutes);
 router.use("/api/tokens", tokensRoutes);
 if (isOIDCenabled) router.use("/api/oidc", oidcRoutes);
