@@ -18,7 +18,7 @@ import { AccessFields } from "src/components";
 import { useUser } from "src/hooks";
 import { intl, T } from "src/locale";
 import { forwardSummary } from "src/modules/Forward";
-import { validateUnixTarget, validateUpstreamUrl } from "src/modules/Validations";
+import { isAdminTarget, validateAdminTarget, validateUpstreamUrl } from "src/modules/Validations";
 
 const authProvider = (authRequest) => authRequest?.replace("-send-basic-auth", "");
 
@@ -309,9 +309,7 @@ export function LocationsFields({ name = "locations", disabled }) {
 															disabled={
 																!currentUser?.npmplusIsAdmin &&
 																(item.forwardScheme === "path" ||
-																	item.forwardHost
-																		?.toLowerCase()
-																		.startsWith("unix:") ||
+																	isAdminTarget(item.forwardHost) ||
 																	item.advancedConfig)
 															}
 															{...field}
@@ -338,9 +336,7 @@ export function LocationsFields({ name = "locations", disabled }) {
 															disabled={
 																!currentUser?.npmplusIsAdmin &&
 																(item.forwardScheme === "path" ||
-																	item.forwardHost
-																		?.toLowerCase()
-																		.startsWith("unix:") ||
+																	isAdminTarget(item.forwardHost) ||
 																	item.advancedConfig)
 															}
 															{...field}
@@ -405,7 +401,7 @@ export function LocationsFields({ name = "locations", disabled }) {
 												<Field
 													name={`${name}.${idx}.forwardHost`}
 													validate={(value) =>
-														validateUnixTarget(
+														validateAdminTarget(
 															value,
 															currentUser?.npmplusIsAdmin,
 															initialValues[name].find(

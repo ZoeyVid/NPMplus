@@ -21,7 +21,7 @@ import { useDirectorySuggestions, useProxyHost, useProxyHosts, useSetProxyHost, 
 import { intl, T } from "src/locale";
 import EasyModal from "src/modules/easyModal";
 import { hasPermission, MANAGE, PROXY_HOSTS } from "src/modules/Permissions";
-import { showTabOfInvalid, validateNumber, validateUnixTarget, validateUpstreamUrl } from "src/modules/Validations";
+import { showTabOfInvalid, validateAdminTarget, validateNumber, validateUpstreamUrl } from "src/modules/Validations";
 import { showObjectSuccess } from "src/notifications";
 
 const validateForwardPort = (value) => validateNumber(value, -1, 65535);
@@ -43,7 +43,7 @@ const ProxyHostModal = EasyModal.create(({ id, isClone, visible, remove, close, 
 	const [errorMsg, setErrorMsg] = useState(null);
 	const [advVisible, setAdvVisible] = useState(false);
 	const validateForwardHost = useCallback(
-		(value) => validateUnixTarget(value, currentUser?.npmplusIsAdmin, data?.forwardHost),
+		(value) => validateAdminTarget(value, currentUser?.npmplusIsAdmin, data?.forwardHost),
 		[currentUser?.npmplusIsAdmin, data?.forwardHost],
 	);
 

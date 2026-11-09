@@ -278,7 +278,7 @@
 	"proxy-host.location-auth-request-upstream-error": "每个认证请求提供商只能有一个上游：如果主机使用该提供商，其位置不能设置自己的上游，否则所有使用该提供商的已启用位置都需要相同的上游。",
 	"proxy-host.location-no-trailing-slash-warning": "不以斜杠结尾的路径将按字节前缀而不是路径段进行匹配，可能导致过度匹配和/或路径穿越。除非您确实需要前缀匹配，否则请添加结尾斜杠。",
 	"proxy-host.no-directory": "未分组",
-	"proxy-host.target-admin-only": "只有管理员才能转发到 Unix 套接字。",
+	"proxy-host.target-admin-only": "只有管理员才能转发到 Unix 套接字或使用变量。",
 	"proxy-hosts": "代理主机列表",
 	"proxy-hosts.count": "{count} 个代理主机",
 	"public": "公开",
