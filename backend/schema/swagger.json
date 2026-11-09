@@ -23,6 +23,10 @@
 			"description": "Endpoints that do not require authentication"
 		},
 		{
+			"name": "health",
+			"description": "Endpoints for checking the API health"
+		},
+		{
 			"name": "auth",
 			"description": "Endpoints used by the nginx auth_request directive"
 		},
@@ -63,6 +67,10 @@
 			"description": "Endpoints for managing application settings"
 		},
 		{
+			"name": "oidc",
+			"description": "Endpoints for logging in via OIDC"
+		},
+		{
 			"name": "tokens",
 			"description": "Endpoints for managing authentication tokens"
 		},
@@ -73,6 +81,10 @@
 		{
 			"name": "version",
 			"description": "Endpoints related to the running version"
+		},
+		{
+			"name": "docs",
+			"description": "Endpoints related to this API documentation"
 		}
 	],
 	"paths": {
