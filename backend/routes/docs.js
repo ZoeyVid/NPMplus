@@ -21,7 +21,7 @@ router
 	.get(validate, (_, res) => {
 		res.status(200).send(
 			swaggerUi.generateHTML(compiledSchema, {
-				customSiteTitle: "NPMplus API – Swagger UI",
+				customSiteTitle: "NPMplus – API",
 				swaggerOptions: {
 					defaultModelRendering: "model",
 					filter: true,

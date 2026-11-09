@@ -21,7 +21,7 @@ export function SiteContainer({ children }) {
 	const { pathname } = useLocation();
 
 	useEffect(() => {
-		document.title = `${intl.formatMessage({ id: titles[pathname.replace(trailingSlash, "") || "/"] ?? "notfound.title" })} – NPMplus`;
+		document.title = `NPMplus – ${intl.formatMessage({ id: titles[pathname.replace(trailingSlash, "") || "/"] ?? "notfound.title" })}`;
 		return () => {
 			document.title = "NPMplus";
 		};
