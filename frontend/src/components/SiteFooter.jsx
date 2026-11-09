@@ -1,4 +1,4 @@
-import { IconBrandGithub } from "@tabler/icons-react";
+import { IconBook, IconBrandGithub } from "@tabler/icons-react";
 import { useCheckVersion } from "src/hooks";
 import { T } from "src/locale";
 
@@ -15,6 +15,12 @@ export function SiteFooter() {
 				<div className="row text-center align-items-center flex-row-reverse">
 					<div className="col-lg-auto ms-lg-auto">
 						<ul className="list-inline list-inline-dots mb-0">
+							<li className="list-inline-item">
+								<a href="/api/docs/" target="_blank" className="link-secondary" rel="noopener">
+									<IconBook className="icon icon-inline me-1" />
+									API
+								</a>
+							</li>
 							<li className="list-inline-item">
 								<a
 									href="https://github.com/ZoeyVid/NPMplus"
