@@ -9,7 +9,7 @@ const certificateDnsDomainPattern =
 const upstreamUrlPattern = /^https?:\/\/(?:(?:[^\s/:]+|\[[a-fA-F0-9:]+\]):[0-9]+|cu_[^\s/:]+)$/u;
 
 const validateString = (value, minLength = 0, maxLength = 0, trim = true) => {
-	const { length } = trim ? value.trim() : value;
+	const { length } = [...(trim ? value.trim() : value)];
 	if (minLength && length === 0) {
 		return intl.formatMessage({ id: "error.required" });
 	}
