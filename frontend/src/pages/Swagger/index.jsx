@@ -8,7 +8,11 @@ const Swagger = () => {
 
 	useEffect(() => {
 		document.documentElement.classList.toggle("dark-mode", theme === "dark");
-		return () => document.documentElement.classList.remove("dark-mode");
+		document.documentElement.style.background = "transparent";
+		return () => {
+			document.documentElement.classList.remove("dark-mode");
+			document.documentElement.style.removeProperty("background");
+		};
 	}, [theme]);
 
 	return (
