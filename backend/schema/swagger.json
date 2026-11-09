@@ -73,10 +73,6 @@
 		{
 			"name": "version",
 			"description": "Endpoints related to the running version"
-		},
-		{
-			"name": "docs",
-			"description": "Endpoints related to this API documentation"
 		}
 	],
 	"paths": {
@@ -93,11 +89,6 @@
 		"/auth/admin": {
 			"get": {
 				"$ref": "./paths/auth/admin/get.json"
-			}
-		},
-		"/docs": {
-			"get": {
-				"$ref": "./paths/docs/get.json"
 			}
 		},
 		"/oidc": {
