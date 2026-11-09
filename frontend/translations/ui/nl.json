@@ -282,7 +282,7 @@
 	"proxy-host.location-auth-request-upstream-error": "Per auth-request-provider is maar één upstream mogelijk: als de host de provider gebruikt, mogen de locaties geen eigen upstream hebben, anders hebben alle actieve locaties met deze provider dezelfde upstream nodig.",
 	"proxy-host.location-no-trailing-slash-warning": "Een locatie zonder afsluitende schuine streep wordt gekoppeld als een bytevoorvoegsel en niet als een padsegment, wat kan leiden tot overmatching en/of pad-traversal. Voeg een afsluitende schuine streep toe, tenzij u voorvoegselmatching wenst.",
 	"proxy-host.no-directory": "Geen groep",
-	"proxy-host.target-admin-only": "Alleen een beheerder kan naar een unix-socket doorsturen.",
+	"proxy-host.target-admin-only": "Alleen een beheerder kan naar een unix-socket doorsturen of variabelen gebruiken.",
 	"proxy-hosts": "Proxy Hosts",
 	"proxy-hosts.count": "{count} {count, plural, one {Proxy Host} other {Proxy Hosts}}",
 	"public": "Openbaar",

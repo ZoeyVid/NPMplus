@@ -126,6 +126,7 @@ const internalHost = {
 				) ?? {},
 			]);
 		}
+		const privileged = (host) => host?.toLowerCase().startsWith("unix:") || host?.includes("$");
 		for (const [item, existing] of items) {
 			if (
 				item.forward_scheme === "path" &&
@@ -135,13 +136,8 @@ const internalHost = {
 			) {
 				access.canAdmin();
 			}
-			if (item.forward_host?.toLowerCase().startsWith("unix:") && item.forward_host !== existing.forward_host) {
-				access.canAdmin();
-			}
-			if (
-				item.forwarding_host?.toLowerCase().startsWith("unix:") &&
-				item.forwarding_host !== existing.forwarding_host
-			) {
+			if (privileged(item.forward_host) && item.forward_host !== existing.forward_host) access.canAdmin();
+			if (privileged(item.forwarding_host) && item.forwarding_host !== existing.forwarding_host) {
 				access.canAdmin();
 			}
 		}

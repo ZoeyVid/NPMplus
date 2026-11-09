@@ -282,7 +282,7 @@
 	"proxy-host.location-auth-request-upstream-error": "Only one upstream per auth request provider is possible: if the host uses the provider, its locations can not have their own upstream, otherwise all enabled locations with this provider need the same upstream.",
 	"proxy-host.location-no-trailing-slash-warning": "A location without a trailing slash is matched as a byte prefix, not a path segment, which can lead to over-matching and/or path traversal. Add a trailing slash unless you intend prefix matching.",
 	"proxy-host.no-directory": "No group",
-	"proxy-host.target-admin-only": "Only an admin can forward to a unix socket.",
+	"proxy-host.target-admin-only": "Only an admin can forward to a unix socket or use variables.",
 	"proxy-hosts": "Proxy Hosts",
 	"proxy-hosts.count": "{count} {count, plural, one {Proxy Host} other {Proxy Hosts}}",
 	"public": "Public",
