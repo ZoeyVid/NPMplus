@@ -185,11 +185,11 @@ importers:
         specifier: 5.3.0
         version: 5.3.0
       express-rate-limit:
-        specifier: 8.7.3
-        version: 8.7.3(express@5.3.0)
+        specifier: 8.7.4
+        version: 8.7.4(express@5.3.0)
       jose:
-        specifier: 6.2.16
-        version: 6.2.16
+        specifier: 6.2.17
+        version: 6.2.17
       knex:
         specifier: 3.3.0
         version: 3.3.0(mysql2@3.24.6(@types/node@26.6.6))(pg@8.23.1)
@@ -607,8 +607,8 @@ packages:
     resolution: {integrity: sha512-mQw+2fkQbALzQ7V0MY0IqdnXNOeTtP4r0lN9z7AAawCXgqea7bDii20AYrIBrFd/Hx0M2Ocz6S111CaFkUcb0Q==}
     engines: {node: '>=0.8.x'}
 
-  express-rate-limit@8.7.3:
-    resolution: {integrity: sha512-zPLqDI2f0gV2WmGnacLf9XSSqn4VldRyP5LCzOwx0BKH40mO6+2PCFkoSsRO2jePx87/Kf6NUF6P2QOTKXHbQA==}
+  express-rate-limit@8.7.4:
+    resolution: {integrity: sha512-LKBXzX700wz3zAGNNmVnjRI5mEbYkLv7UbMI4+9Xa+JPcg2UZh6AgY/2CZh9RrJjFM5ttC/N1lD+KzyFoZITCw==}
     engines: {node: '>= 16'}
     peerDependencies:
       express: '>= 4.11'
@@ -714,8 +714,8 @@ packages:
   isarray@1.0.0:
     resolution: {integrity: sha512-VLghIWNM6ELQzo7zwmcg0NmTVyWKYjvIeM83yjp0wRDTmUnrM678fQbcKBo6n2CJEF0szoG//ytg+TKla89ALQ==}
 
-  jose@6.2.16:
-    resolution: {integrity: sha512-4LSJpbuBuPdGrONCdZUy0xnxtLf8eEz+EY0SMXdHQEBU7bgUHDVblU/JAjryv3wID9/LK7/YuwFwq+AQNfMscQ==}
+  jose@6.2.17:
+    resolution: {integrity: sha512-wOuK9V1yujQFH5S0ZWmLcDZN7+IKh9bUCC2ZPCf2HDlol3WWHy+PPyNjEI75FXRLMp3vDKQcupP59xhVU95hcg==}
 
   js-yaml@5.5.0:
     resolution: {integrity: sha512-paNr4LFIFPjeeSmwNYdrb8FafLLG/Cr2Af3GjbsHJ5CxIjH4r0c2emlmRdAtpPAieP1gRVzk6buBbVP5gBMGAg==}
@@ -1444,7 +1444,7 @@ snapshots:
 
   events@3.3.0: {}
 
-  express-rate-limit@8.7.3(express@5.3.0):
+  express-rate-limit@8.7.4(express@5.3.0):
     dependencies:
       debug: 4.4.3
       express: 5.3.0
@@ -1576,7 +1576,7 @@ snapshots:
 
   isarray@1.0.0: {}
 
-  jose@6.2.16: {}
+  jose@6.2.17: {}
 
   js-yaml@5.5.0:
     dependencies:
@@ -1697,7 +1697,7 @@ snapshots:
 
   openid-client@6.8.9:
     dependencies:
-      jose: 6.2.16
+      jose: 6.2.17
       oauth4webapi: 3.8.8
 
   otplib@13.6.0:
