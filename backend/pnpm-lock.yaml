@@ -214,9 +214,6 @@ importers:
       pg:
         specifier: 8.23.1
         version: 8.23.1
-      swagger-ui-express:
-        specifier: 5.0.1
-        version: 5.0.1(express@5.3.0)
       undici:
         specifier: 8.12.4
         version: 8.12.4
@@ -339,9 +336,6 @@ packages:
 
   '@otplib/uri@13.6.0':
     resolution: {integrity: sha512-CiLFMONTpCi3ara6yQQX3nlpYhafCALKJweA7+7Z+aDkRrW3QmD5a/9thKmQ0cGp2W70AMG/6BSTy82h74LHRw==}
-
-  '@scarf/scarf@1.4.0':
-    resolution: {integrity: sha512-xxeapPiUXdZAE3che6f3xogoJPeZgig6omHEy1rIY5WVsB3H2BHNnZH+gHG6x91SCWyQCzWGsuL2Hh3ClO5/qQ==}
 
   '@scure/base@2.4.0':
     resolution: {integrity: sha512-thZ1TuJwFwBblOhgsjDKvvGirBxNp+wSvY/DR6tJBJOTDhdAAcHJ8Vbr2eFnqaxeca4+t0i9KBf+uHYGWwZORg==}
@@ -1057,15 +1051,6 @@ packages:
     resolution: {integrity: sha512-ot0WnXS9fgdkgIcePe6RHNk1WA8+muPa6cSjeR3V8K27q9BB1rTE3R1p7Hv0z1ZyAc8s6Vvv8DIyWf681MAt0w==}
     engines: {node: '>= 0.4'}
 
-  swagger-ui-dist@5.34.1:
-    resolution: {integrity: sha512-VSr8fXfI93obYaQicLJbLUKGRxDojj/SfRJDDLCioGTUBj4BK/Nj4eE9jCeCAnJxVLi7iS+08PbiZLyrQKBkJQ==}
-
-  swagger-ui-express@5.0.1:
-    resolution: {integrity: sha512-SrNU3RiBGTLLmFU8GIJdOdanJTl4TOmT27tt3bWWHppqYmAZ6IDuEuBvMU6nZq0zLEe6b/1rACXCgLZqO6ZfrA==}
-    engines: {node: '>= v0.10.32'}
-    peerDependencies:
-      express: '>=4.0.0 || >=5.0.0-beta'
-
   tar-stream@3.2.2:
     resolution: {integrity: sha512-+8NeqHRjQWH9nYlwo2gamAMImZCVzI4UoEgDpWorBt9OEfppiZn+uSkskzQKPWIZyji/C8fpWO7u69G0DX0tbg==}
 
@@ -1217,8 +1202,6 @@ snapshots:
   '@otplib/uri@13.6.0':
     dependencies:
       '@otplib/core': 13.6.0
-
-  '@scarf/scarf@1.4.0': {}
 
   '@scure/base@2.4.0': {}
 
@@ -1919,15 +1902,6 @@ snapshots:
       safe-buffer: 5.2.1
 
   supports-preserve-symlinks-flag@1.0.0: {}
-
-  swagger-ui-dist@5.34.1:
-    dependencies:
-      '@scarf/scarf': 1.4.0
-
-  swagger-ui-express@5.0.1(express@5.3.0):
-    dependencies:
-      express: 5.3.0
-      swagger-ui-dist: 5.34.1
 
   tar-stream@3.2.2(bare-buffer@3.7.1):
     dependencies:
