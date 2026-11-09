@@ -2,7 +2,8 @@
 	"operationId": "requestToken",
 	"summary": "Request a new access token from credentials",
 	"tags": [
-		"tokens"
+		"tokens",
+		"public"
 	],
 	"security": [],
 	"requestBody": {

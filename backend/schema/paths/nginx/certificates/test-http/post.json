@@ -36,10 +36,41 @@
 				"application/json": {
 					"examples": {
 						"default": {
-							"value": {
-								"test.example.org": "ok",
-								"test.example.com": "other:Invalid domain or IP",
-								"nonexistent.example.com": "404"
+							"value": [
+								{
+									"domain": "test.example.org",
+									"status": "ok"
+								},
+								{
+									"domain": "test.example.com",
+									"status": "other:Invalid domain or IP"
+								},
+								{
+									"domain": "nonexistent.example.com",
+									"status": "404"
+								}
+							]
+						}
+					},
+					"schema": {
+						"type": "array",
+						"items": {
+							"type": "object",
+							"additionalProperties": false,
+							"required": [
+								"domain",
+								"status"
+							],
+							"properties": {
+								"domain": {
+									"type": "string",
+									"example": "test.example.org"
+								},
+								"status": {
+									"type": "string",
+									"description": "ok, failed, wrong-data, 404, no-host or other:<message>",
+									"example": "ok"
+								}
 							}
 						}
 					}

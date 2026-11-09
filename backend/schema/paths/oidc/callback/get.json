@@ -2,7 +2,8 @@
 	"operationId": "oidcCallback",
 	"summary": "Callback of the OIDC authorization code flow, sets the token cookie",
 	"tags": [
-		"public"
+		"public",
+		"oidc"
 	],
 	"security": [],
 	"responses": {

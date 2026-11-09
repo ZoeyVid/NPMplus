@@ -1,4 +1,5 @@
 import { IconBook, IconBrandGithub } from "@tabler/icons-react";
+import { Link } from "react-router";
 import { useCheckVersion } from "src/hooks";
 import { T } from "src/locale";
 
@@ -16,10 +17,10 @@ export function SiteFooter() {
 					<div className="col-lg-auto ms-lg-auto">
 						<ul className="list-inline list-inline-dots mb-0">
 							<li className="list-inline-item">
-								<a href="/api/docs/" target="_blank" className="link-secondary" rel="noopener">
+								<Link to="/swagger" className="link-secondary">
 									<IconBook className="icon icon-inline me-1" />
 									API
-								</a>
+								</Link>
 							</li>
 							<li className="list-inline-item">
 								<a
