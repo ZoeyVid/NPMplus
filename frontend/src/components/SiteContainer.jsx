@@ -15,13 +15,15 @@ const titles = {
 	"/nginx/redirection": "redirection-hosts",
 	"/nginx/404": "dead-hosts",
 	"/nginx/stream": "streams",
+	"/swagger": "API",
 };
 
 export function SiteContainer({ children }) {
 	const { pathname } = useLocation();
 
 	useEffect(() => {
-		document.title = `NPMplus – ${intl.formatMessage({ id: titles[pathname.replace(trailingSlash, "") || "/"] ?? "notfound.title" })}`;
+		const title = titles[pathname.replace(trailingSlash, "") || "/"] ?? "notfound.title";
+		document.title = `NPMplus – ${title in intl.messages ? intl.formatMessage({ id: title }) : title}`;
 		return () => {
 			document.title = "NPMplus";
 		};
