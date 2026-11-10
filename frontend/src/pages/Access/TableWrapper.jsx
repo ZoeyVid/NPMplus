@@ -1,5 +1,5 @@
 import { IconSearch } from "@tabler/icons-react";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import Alert from "react-bootstrap/Alert";
 import { deleteAccessList } from "src/api/backend";
 import { Button, HasPermission, LoadingPage } from "src/components";
@@ -14,12 +14,8 @@ export default function TableWrapper() {
 	const [search, setSearch] = useState("");
 	const { isFetching, isPending, isError, error, data } = useAccessLists(["owner", "items", "clients"]);
 
-	useEffect(() => {
-		// this can happen if someone deletes the last item while searching
-		if (search !== "" && !data?.length) {
-			setSearch("");
-		}
-	});
+	// this can happen if someone deletes the last item while searching
+	if (search !== "" && !data?.length) setSearch("");
 
 	if (isPending) {
 		return <LoadingPage />;
