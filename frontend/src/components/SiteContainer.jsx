@@ -1,4 +1,3 @@
-import { useEffect } from "react";
 import { useLocation } from "react-router";
 import { intl } from "src/locale";
 
@@ -20,17 +19,11 @@ const titles = {
 
 export function SiteContainer({ children }) {
 	const { pathname } = useLocation();
-
-	useEffect(() => {
-		const title = titles[pathname.replace(trailingSlash, "") || "/"] ?? "notfound.title";
-		document.title = `NPMplus – ${title in intl.messages ? intl.formatMessage({ id: title }) : title}`;
-		return () => {
-			document.title = "NPMplus";
-		};
-	}, [pathname]);
+	const title = titles[pathname.replace(trailingSlash, "") || "/"] ?? "notfound.title";
 
 	return (
 		<main tabIndex={-1} className="container-xl flex-fill py-3 min-w-0 overflow-x-auto">
+			<title>{`NPMplus – ${title in intl.messages ? intl.formatMessage({ id: title }) : title}`}</title>
 			{children}
 		</main>
 	);
