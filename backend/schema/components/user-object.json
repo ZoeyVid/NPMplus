@@ -67,6 +67,12 @@
 			"readOnly": true,
 			"example": 0
 		},
+		"mfa_enabled": {
+			"type": "boolean",
+			"description": "Is MFA enabled, only sent in the user list",
+			"readOnly": true,
+			"example": true
+		},
 		"goaccess": {
 			"type": "boolean",
 			"description": "Is goaccess enabled, only sent for the requesting user itself",

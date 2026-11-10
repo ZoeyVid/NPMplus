@@ -153,16 +153,18 @@ const HTTPCertificateModal = EasyModal.create(({ visible, remove, close, formRef
 								<T id="cancel" />
 							</Button>
 							<div className="ms-auto">
-								<Button
-									type="button"
-									actionType="secondary"
-									className="me-3"
-									isSubmitting={isTesting}
-									disabled={values.domainNames.length === 0}
-									onClick={() => handleTest(values.domainNames)}
-								>
-									<T id="test" />
-								</Button>
+								{values.domainNames.length <= 25 && (
+									<Button
+										type="button"
+										actionType="secondary"
+										className="me-3"
+										isSubmitting={isTesting}
+										disabled={values.domainNames.length === 0}
+										onClick={() => handleTest(values.domainNames)}
+									>
+										<T id="test" />
+									</Button>
+								)}
 								<Button type="submit" color="pink" disabled={isTesting}>
 									<T id="save" />
 								</Button>

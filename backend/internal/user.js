@@ -298,9 +298,12 @@ const internalUser = {
 	 * @param   {Access}  access
 	 * @returns {Promise}
 	 */
-	getAll: (access) => {
+	getAll: async (access) => {
 		access.canAdmin();
-		return userModel.query().groupBy("id").orderBy("name", "ASC");
+		const users = await userModel.query().groupBy("id").orderBy("name", "ASC");
+		const mfaUserIds = new Set((await authModel.query().where("type", "totp")).map(({ user_id }) => user_id));
+		for (const user of users) user.mfa_enabled = mfaUserIds.has(user.id);
+		return users;
 	},
 
 	/**

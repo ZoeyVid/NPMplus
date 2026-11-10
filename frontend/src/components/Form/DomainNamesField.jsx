@@ -1,5 +1,6 @@
 import { Field, useFormikContext } from "formik";
 import CreatableSelect from "react-select/creatable";
+import { useUser } from "src/hooks";
 import { intl, T } from "src/locale";
 import { selectClassNames } from "src/modules/Select";
 import { validateDomain, validateDomains } from "src/modules/Validations";
@@ -20,6 +21,7 @@ export function DomainNamesField({
 	disabled,
 }) {
 	const { setFieldValue } = useFormikContext();
+	const { data: currentUser } = useUser("me");
 
 	const handleChange = (v, _actionMeta) => {
 		const doms = [...new Set(v?.map((i) => i.value.trim()))];
@@ -63,7 +65,9 @@ export function DomainNamesField({
 								input,
 								isWildcardPermitted && dnsProviderWildcardSupported,
 								forCertificate,
-							) && !selected.some(({ value }) => normalizeDomain(value) === normalizeDomain(input.trim()))
+							) &&
+							(currentUser?.npmplusIsAdmin || !input.trim().startsWith("~")) &&
+							!selected.some(({ value }) => normalizeDomain(value) === normalizeDomain(input.trim()))
 						}
 						isMulti
 						required

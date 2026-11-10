@@ -29,7 +29,7 @@ const AccessListModal = EasyModal.create(({ id, visible, remove, close, formRef 
 		}
 
 		// ensure the items don't contain the same username twice
-		const usernames = values.items.map((i) => i.username);
+		const usernames = values.items.map((i) => i.username.trim());
 		const uniqueUsernames = Array.from(new Set(usernames));
 		if (usernames.length !== uniqueUsernames.length) {
 			return intl.formatMessage({ id: "error.access.duplicate-usernames" });

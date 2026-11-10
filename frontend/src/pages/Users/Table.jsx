@@ -166,16 +166,18 @@ export default function Table({
 										<IconLock size={16} />
 										<T id="user.set-password" />
 									</button>
-									<button
-										type="button"
-										className="dropdown-item"
-										onClick={() => {
-											onResetMfa?.(info.row.original.id);
-										}}
-									>
-										<IconShieldOff size={16} />
-										<T id="user.reset-mfa" />
-									</button>
+									{info.row.original.mfaEnabled && (
+										<button
+											type="button"
+											className="dropdown-item"
+											onClick={() => {
+												onResetMfa?.(info.row.original.id);
+											}}
+										>
+											<IconShieldOff size={16} />
+											<T id="user.reset-mfa" />
+										</button>
+									)}
 									<button
 										type="button"
 										className="dropdown-item"

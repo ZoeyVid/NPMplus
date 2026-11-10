@@ -19,9 +19,9 @@ export default function DefaultSite() {
 			id: "default-site",
 			value: values.value,
 			meta: {
-				redirect: values.redirect,
-				html: values.html,
-				status: values.status || undefined,
+				redirect: values.value === "redirect" ? values.redirect : undefined,
+				html: values.value === "html" ? values.html : undefined,
+				status: (values.value === "html" && values.status) || undefined,
 			},
 		};
 
