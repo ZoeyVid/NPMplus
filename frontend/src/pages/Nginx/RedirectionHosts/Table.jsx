@@ -11,7 +11,6 @@ import {
 	tableFeatures,
 	useTable,
 } from "@tanstack/react-table";
-import { useMemo } from "react";
 import {
 	CertificateFormatter,
 	DomainsFormatter,
@@ -53,154 +52,151 @@ export default function Table({
 	renderGroupLabel,
 }) {
 	const columnHelper = createColumnHelper();
-	const columns = useMemo(
-		() => [
-			columnHelper.accessor((row) => row.owner?.name, {
-				id: "owner",
+	const columns = [
+		columnHelper.accessor((row) => row.owner?.name, {
+			id: "owner",
+			cell: (info) => {
+				const value = info.row.original.owner;
+				return (
+					<GravatarFormatter
+						url={value ? value.avatar : ""}
+						name={value ? value.name : intl.formatMessage({ id: "user.deleted" })}
+					/>
+				);
+			},
+			meta: {
+				className: "w-1",
+			},
+		}),
+		columnHelper.accessor((row) => row.domainNames.join(", "), {
+			id: "domainNames",
+			header: intl.formatMessage({ id: "column.source" }),
+			cell: (info) => {
+				const value = info.row.original;
+				return <DomainsFormatter domains={value.domainNames} createdOn={value.createdOn} />;
+			},
+		}),
+		columnHelper.accessor((row) => row.forwardHttpCode, {
+			id: "forwardHttpCode",
+			header: intl.formatMessage({ id: "column.http-code" }),
+			cell: (info) => info.getValue(),
+		}),
+		columnHelper.accessor((row) => row.forwardScheme, {
+			id: "forwardScheme",
+			header: intl.formatMessage({ id: "column.scheme" }),
+			cell: (info) => (info.getValue() === "$scheme" ? "keep" : info.getValue()),
+		}),
+		columnHelper.accessor((row) => row.forwardDomainName, {
+			id: "forwardDomainName",
+			header: intl.formatMessage({ id: "column.destination" }),
+			cell: (info) => info.getValue(),
+		}),
+		columnHelper.accessor((row) => (row.certificate ? row.certificate.provider : "http-only"), {
+			id: "certificate",
+			header: intl.formatMessage({ id: "column.ssl" }),
+			cell: (info) => <CertificateFormatter certificate={info.row.original.certificate} />,
+		}),
+		columnHelper.accessor(
+			(row) => {
+				if (!row.enabled) return "3disabled";
+				if (row.npmplusNginxOnline) return "2online";
+				return "1offline";
+			},
+			{
+				id: "enabled",
+				header: intl.formatMessage({ id: "column.status" }),
 				cell: (info) => {
-					const value = info.row.original.owner;
+					const value = info.row.original;
 					return (
-						<GravatarFormatter
-							url={value ? value.avatar : ""}
-							name={value ? value.name : intl.formatMessage({ id: "user.deleted" })}
+						<StatusFormatter
+							enabled={value.enabled}
+							nginxOnline={value.npmplusNginxOnline}
+							nginxErr={value.npmplusNginxErr}
 						/>
 					);
 				},
-				meta: {
-					className: "w-1",
-				},
-			}),
-			columnHelper.accessor((row) => row.domainNames.join(", "), {
-				id: "domainNames",
-				header: intl.formatMessage({ id: "column.source" }),
-				cell: (info) => {
-					const value = info.row.original;
-					return <DomainsFormatter domains={value.domainNames} createdOn={value.createdOn} />;
-				},
-			}),
-			columnHelper.accessor((row) => row.forwardHttpCode, {
-				id: "forwardHttpCode",
-				header: intl.formatMessage({ id: "column.http-code" }),
-				cell: (info) => info.getValue(),
-			}),
-			columnHelper.accessor((row) => row.forwardScheme, {
-				id: "forwardScheme",
-				header: intl.formatMessage({ id: "column.scheme" }),
-				cell: (info) => (info.getValue() === "$scheme" ? "keep" : info.getValue()),
-			}),
-			columnHelper.accessor((row) => row.forwardDomainName, {
-				id: "forwardDomainName",
-				header: intl.formatMessage({ id: "column.destination" }),
-				cell: (info) => info.getValue(),
-			}),
-			columnHelper.accessor((row) => (row.certificate ? row.certificate.provider : "http-only"), {
-				id: "certificate",
-				header: intl.formatMessage({ id: "column.ssl" }),
-				cell: (info) => <CertificateFormatter certificate={info.row.original.certificate} />,
-			}),
-			columnHelper.accessor(
-				(row) => {
-					if (!row.enabled) return "3disabled";
-					if (row.npmplusNginxOnline) return "2online";
-					return "1offline";
-				},
-				{
-					id: "enabled",
-					header: intl.formatMessage({ id: "column.status" }),
-					cell: (info) => {
-						const value = info.row.original;
-						return (
-							<StatusFormatter
-								enabled={value.enabled}
-								nginxOnline={value.npmplusNginxOnline}
-								nginxErr={value.npmplusNginxErr}
-							/>
-						);
-					},
-				},
-			),
-			columnHelper.accessor((row) => row.id, {
-				id: "id",
-				header: "ID",
-				cell: (info) => info.getValue(),
-				meta: {
-					className: "text-end w-1",
-				},
-			}),
-			columnHelper.display({
-				id: "actions",
-				cell: (info) => (
-					<div className="d-flex justify-content-end gap-1">
-						<EditButton section={REDIRECTION_HOSTS} onClick={() => onEdit?.(info.row.original.id)} />
-						<HasPermission section={REDIRECTION_HOSTS} permission={MANAGE} hideError>
-							<span className="dropdown">
+			},
+		),
+		columnHelper.accessor((row) => row.id, {
+			id: "id",
+			header: "ID",
+			cell: (info) => info.getValue(),
+			meta: {
+				className: "text-end w-1",
+			},
+		}),
+		columnHelper.display({
+			id: "actions",
+			cell: (info) => (
+				<div className="d-flex justify-content-end gap-1">
+					<EditButton section={REDIRECTION_HOSTS} onClick={() => onEdit?.(info.row.original.id)} />
+					<HasPermission section={REDIRECTION_HOSTS} permission={MANAGE} hideError>
+						<span className="dropdown">
+							<button
+								type="button"
+								title={intl.formatMessage(
+									{ id: "object.actions" },
+									{
+										object: intl.formatMessage({ id: "redirection-host" }),
+										id: info.row.original.id,
+									},
+								)}
+								className="btn dropdown-toggle btn-action btn-sm px-1"
+								data-bs-boundary="viewport"
+								data-bs-toggle="dropdown"
+								data-bs-popper-config='{"strategy":"fixed"}'
+							>
+								<IconDotsVertical />
+							</button>
+							<div className="dropdown-menu dropdown-menu-end">
+								<span className="dropdown-header">
+									<T
+										id="object.actions-title"
+										tData={{ object: "redirection-host" }}
+										data={{ id: info.row.original.id }}
+									/>
+								</span>
 								<button
 									type="button"
-									title={intl.formatMessage(
-										{ id: "object.actions" },
-										{
-											object: intl.formatMessage({ id: "redirection-host" }),
-											id: info.row.original.id,
-										},
-									)}
-									className="btn dropdown-toggle btn-action btn-sm px-1"
-									data-bs-boundary="viewport"
-									data-bs-toggle="dropdown"
-									data-bs-popper-config='{"strategy":"fixed"}'
+									className="dropdown-item"
+									onClick={() => {
+										onClone?.(info.row.original.id);
+									}}
 								>
-									<IconDotsVertical />
+									<IconCopy size={16} />
+									<T id="action.clone" />
 								</button>
-								<div className="dropdown-menu dropdown-menu-end">
-									<span className="dropdown-header">
-										<T
-											id="object.actions-title"
-											tData={{ object: "redirection-host" }}
-											data={{ id: info.row.original.id }}
-										/>
-									</span>
-									<button
-										type="button"
-										className="dropdown-item"
-										onClick={() => {
-											onClone?.(info.row.original.id);
-										}}
-									>
-										<IconCopy size={16} />
-										<T id="action.clone" />
-									</button>
-									<button
-										type="button"
-										className="dropdown-item"
-										onClick={() => {
-											onDisableToggle?.(info.row.original.id, !info.row.original.enabled);
-										}}
-									>
-										<IconPower size={16} />
-										<T id={info.row.original.enabled ? "action.disable" : "action.enable"} />
-									</button>
-									<div className="dropdown-divider" />
-									<button
-										type="button"
-										className="dropdown-item"
-										onClick={() => {
-											onDelete?.(info.row.original.id);
-										}}
-									>
-										<IconTrash size={16} />
-										<T id="action.delete" />
-									</button>
-								</div>
-							</span>
-						</HasPermission>
-					</div>
-				),
-				meta: {
-					className: "text-end w-1",
-				},
-			}),
-		],
-		[columnHelper, onEdit, onDisableToggle, onDelete, onClone],
-	);
+								<button
+									type="button"
+									className="dropdown-item"
+									onClick={() => {
+										onDisableToggle?.(info.row.original.id, !info.row.original.enabled);
+									}}
+								>
+									<IconPower size={16} />
+									<T id={info.row.original.enabled ? "action.disable" : "action.enable"} />
+								</button>
+								<div className="dropdown-divider" />
+								<button
+									type="button"
+									className="dropdown-item"
+									onClick={() => {
+										onDelete?.(info.row.original.id);
+									}}
+								>
+									<IconTrash size={16} />
+									<T id="action.delete" />
+								</button>
+							</div>
+						</span>
+					</HasPermission>
+				</div>
+			),
+			meta: {
+				className: "text-end w-1",
+			},
+		}),
+	];
 
 	const tableInstance = useTable({
 		features,

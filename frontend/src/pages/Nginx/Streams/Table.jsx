@@ -11,7 +11,6 @@ import {
 	tableFeatures,
 	useTable,
 } from "@tanstack/react-table";
-import { useMemo } from "react";
 import {
 	CertificateFormatter,
 	EditButton,
@@ -53,201 +52,195 @@ export default function Table({
 	renderGroupLabel,
 }) {
 	const columnHelper = createColumnHelper();
-	const columns = useMemo(
-		() => [
-			columnHelper.accessor((row) => row.owner?.name, {
-				id: "owner",
+	const columns = [
+		columnHelper.accessor((row) => row.owner?.name, {
+			id: "owner",
+			cell: (info) => {
+				const value = info.row.original.owner;
+				return (
+					<GravatarFormatter
+						url={value ? value.avatar : ""}
+						name={value ? value.name : intl.formatMessage({ id: "user.deleted" })}
+					/>
+				);
+			},
+			meta: {
+				className: "w-1",
+			},
+		}),
+		columnHelper.accessor((row) => row.incomingPort, {
+			id: "incomingPort",
+			header: intl.formatMessage({ id: "column.incoming-port" }),
+			cell: (info) => {
+				const value = info.row.original;
+				return <ValueWithDateFormatter value={value.incomingPort} createdOn={value.createdOn} />;
+			},
+		}),
+		columnHelper.accessor((row) => row.npmplusDescription, {
+			id: "npmplusDescription",
+			header: intl.formatMessage({ id: "column.description" }),
+			cell: (info) => {
+				const value = info.row.original.npmplusDescription;
+				return value || <span className="text-secondary">—</span>;
+			},
+		}),
+		columnHelper.accessor((row) => `${row.forwardingHost}${row.forwardingPort ? `:${row.forwardingPort}` : ""}`, {
+			id: "destination",
+			header: intl.formatMessage({ id: "column.destination" }),
+			cell: (info) => info.getValue(),
+		}),
+		columnHelper.accessor(
+			(row) => {
+				const protocols = [];
+				if (row.tcpForwarding) protocols.push("TCP");
+				if (row.npmplusProxyProtocolForwarding) {
+					protocols.push(row.npmplusProxyProtocolForwarding === 1 ? "PPv1" : "PPv2");
+				}
+				if (row.npmplusProxyTls) protocols.push("TLS");
+				if (row.udpForwarding) protocols.push("UDP");
+				return protocols.join(" ");
+			},
+			{
+				id: "protocol",
+				header: intl.formatMessage({ id: "column.protocol" }),
 				cell: (info) => {
-					const value = info.row.original.owner;
+					const value = info.row.original;
 					return (
-						<GravatarFormatter
-							url={value ? value.avatar : ""}
-							name={value ? value.name : intl.formatMessage({ id: "user.deleted" })}
+						<>
+							{value.tcpForwarding ? (
+								<span className="badge badge-lg font-monospace">
+									<T id="streams.tcp" />
+								</span>
+							) : null}
+							{value.npmplusProxyProtocolForwarding ? (
+								<span className="badge badge-lg font-monospace">
+									<T
+										id={
+											value.npmplusProxyProtocolForwarding === 1
+												? "streams.pp.v1"
+												: "streams.pp.v2"
+										}
+									/>
+								</span>
+							) : null}
+							{value.npmplusProxyTls ? (
+								<span className="badge badge-lg font-monospace">
+									<T id="streams.tls" />
+								</span>
+							) : null}
+							{value.udpForwarding ? (
+								<span className="badge badge-lg font-monospace">
+									<T id="streams.udp" />
+								</span>
+							) : null}
+						</>
+					);
+				},
+			},
+		),
+		columnHelper.accessor((row) => (row.certificate ? row.certificate.provider : "http-only"), {
+			id: "certificate",
+			header: intl.formatMessage({ id: "column.ssl" }),
+			cell: (info) => <CertificateFormatter certificate={info.row.original.certificate} />,
+		}),
+		columnHelper.accessor(
+			(row) => {
+				if (!row.enabled) return "3disabled";
+				if (row.npmplusNginxOnline) return "2online";
+				return "1offline";
+			},
+			{
+				id: "enabled",
+				header: intl.formatMessage({ id: "column.status" }),
+				cell: (info) => {
+					const value = info.row.original;
+					return (
+						<StatusFormatter
+							enabled={value.enabled}
+							nginxOnline={value.npmplusNginxOnline}
+							nginxErr={value.npmplusNginxErr}
 						/>
 					);
 				},
-				meta: {
-					className: "w-1",
-				},
-			}),
-			columnHelper.accessor((row) => row.incomingPort, {
-				id: "incomingPort",
-				header: intl.formatMessage({ id: "column.incoming-port" }),
-				cell: (info) => {
-					const value = info.row.original;
-					return <ValueWithDateFormatter value={value.incomingPort} createdOn={value.createdOn} />;
-				},
-			}),
-			columnHelper.accessor((row) => row.npmplusDescription, {
-				id: "npmplusDescription",
-				header: intl.formatMessage({ id: "column.description" }),
-				cell: (info) => {
-					const value = info.row.original.npmplusDescription;
-					return value || <span className="text-secondary">—</span>;
-				},
-			}),
-			columnHelper.accessor(
-				(row) => `${row.forwardingHost}${row.forwardingPort ? `:${row.forwardingPort}` : ""}`,
-				{
-					id: "destination",
-					header: intl.formatMessage({ id: "column.destination" }),
-					cell: (info) => info.getValue(),
-				},
-			),
-			columnHelper.accessor(
-				(row) => {
-					const protocols = [];
-					if (row.tcpForwarding) protocols.push("TCP");
-					if (row.npmplusProxyProtocolForwarding) {
-						protocols.push(row.npmplusProxyProtocolForwarding === 1 ? "PPv1" : "PPv2");
-					}
-					if (row.npmplusProxyTls) protocols.push("TLS");
-					if (row.udpForwarding) protocols.push("UDP");
-					return protocols.join(" ");
-				},
-				{
-					id: "protocol",
-					header: intl.formatMessage({ id: "column.protocol" }),
-					cell: (info) => {
-						const value = info.row.original;
-						return (
-							<>
-								{value.tcpForwarding ? (
-									<span className="badge badge-lg font-monospace">
-										<T id="streams.tcp" />
-									</span>
-								) : null}
-								{value.npmplusProxyProtocolForwarding ? (
-									<span className="badge badge-lg font-monospace">
-										<T
-											id={
-												value.npmplusProxyProtocolForwarding === 1
-													? "streams.pp.v1"
-													: "streams.pp.v2"
-											}
-										/>
-									</span>
-								) : null}
-								{value.npmplusProxyTls ? (
-									<span className="badge badge-lg font-monospace">
-										<T id="streams.tls" />
-									</span>
-								) : null}
-								{value.udpForwarding ? (
-									<span className="badge badge-lg font-monospace">
-										<T id="streams.udp" />
-									</span>
-								) : null}
-							</>
-						);
-					},
-				},
-			),
-			columnHelper.accessor((row) => (row.certificate ? row.certificate.provider : "http-only"), {
-				id: "certificate",
-				header: intl.formatMessage({ id: "column.ssl" }),
-				cell: (info) => <CertificateFormatter certificate={info.row.original.certificate} />,
-			}),
-			columnHelper.accessor(
-				(row) => {
-					if (!row.enabled) return "3disabled";
-					if (row.npmplusNginxOnline) return "2online";
-					return "1offline";
-				},
-				{
-					id: "enabled",
-					header: intl.formatMessage({ id: "column.status" }),
-					cell: (info) => {
-						const value = info.row.original;
-						return (
-							<StatusFormatter
-								enabled={value.enabled}
-								nginxOnline={value.npmplusNginxOnline}
-								nginxErr={value.npmplusNginxErr}
-							/>
-						);
-					},
-				},
-			),
-			columnHelper.accessor((row) => row.id, {
-				id: "id",
-				header: "ID",
-				cell: (info) => info.getValue(),
-				meta: {
-					className: "text-end w-1",
-				},
-			}),
-			columnHelper.display({
-				id: "actions",
-				cell: (info) => (
-					<div className="d-flex justify-content-end gap-1">
-						<EditButton section={STREAMS} onClick={() => onEdit?.(info.row.original.id)} />
-						<HasPermission section={STREAMS} permission={MANAGE} hideError>
-							<span className="dropdown">
+			},
+		),
+		columnHelper.accessor((row) => row.id, {
+			id: "id",
+			header: "ID",
+			cell: (info) => info.getValue(),
+			meta: {
+				className: "text-end w-1",
+			},
+		}),
+		columnHelper.display({
+			id: "actions",
+			cell: (info) => (
+				<div className="d-flex justify-content-end gap-1">
+					<EditButton section={STREAMS} onClick={() => onEdit?.(info.row.original.id)} />
+					<HasPermission section={STREAMS} permission={MANAGE} hideError>
+						<span className="dropdown">
+							<button
+								type="button"
+								title={intl.formatMessage(
+									{ id: "object.actions" },
+									{ object: intl.formatMessage({ id: "stream" }), id: info.row.original.id },
+								)}
+								className="btn dropdown-toggle btn-action btn-sm px-1"
+								data-bs-boundary="viewport"
+								data-bs-toggle="dropdown"
+								data-bs-popper-config='{"strategy":"fixed"}'
+							>
+								<IconDotsVertical />
+							</button>
+							<div className="dropdown-menu dropdown-menu-end">
+								<span className="dropdown-header">
+									<T
+										id="object.actions-title"
+										tData={{ object: "stream" }}
+										data={{ id: info.row.original.id }}
+									/>
+								</span>
 								<button
 									type="button"
-									title={intl.formatMessage(
-										{ id: "object.actions" },
-										{ object: intl.formatMessage({ id: "stream" }), id: info.row.original.id },
-									)}
-									className="btn dropdown-toggle btn-action btn-sm px-1"
-									data-bs-boundary="viewport"
-									data-bs-toggle="dropdown"
-									data-bs-popper-config='{"strategy":"fixed"}'
+									className="dropdown-item"
+									onClick={() => {
+										onClone?.(info.row.original.id);
+									}}
 								>
-									<IconDotsVertical />
+									<IconCopy size={16} />
+									<T id="action.clone" />
 								</button>
-								<div className="dropdown-menu dropdown-menu-end">
-									<span className="dropdown-header">
-										<T
-											id="object.actions-title"
-											tData={{ object: "stream" }}
-											data={{ id: info.row.original.id }}
-										/>
-									</span>
-									<button
-										type="button"
-										className="dropdown-item"
-										onClick={() => {
-											onClone?.(info.row.original.id);
-										}}
-									>
-										<IconCopy size={16} />
-										<T id="action.clone" />
-									</button>
-									<button
-										type="button"
-										className="dropdown-item"
-										onClick={() => {
-											onDisableToggle?.(info.row.original.id, !info.row.original.enabled);
-										}}
-									>
-										<IconPower size={16} />
-										<T id={info.row.original.enabled ? "action.disable" : "action.enable"} />
-									</button>
-									<div className="dropdown-divider" />
-									<button
-										type="button"
-										className="dropdown-item"
-										onClick={() => {
-											onDelete?.(info.row.original.id);
-										}}
-									>
-										<IconTrash size={16} />
-										<T id="action.delete" />
-									</button>
-								</div>
-							</span>
-						</HasPermission>
-					</div>
-				),
-				meta: {
-					className: "text-end w-1",
-				},
-			}),
-		],
-		[columnHelper, onEdit, onDisableToggle, onDelete, onClone],
-	);
+								<button
+									type="button"
+									className="dropdown-item"
+									onClick={() => {
+										onDisableToggle?.(info.row.original.id, !info.row.original.enabled);
+									}}
+								>
+									<IconPower size={16} />
+									<T id={info.row.original.enabled ? "action.disable" : "action.enable"} />
+								</button>
+								<div className="dropdown-divider" />
+								<button
+									type="button"
+									className="dropdown-item"
+									onClick={() => {
+										onDelete?.(info.row.original.id);
+									}}
+								>
+									<IconTrash size={16} />
+									<T id="action.delete" />
+								</button>
+							</div>
+						</span>
+					</HasPermission>
+				</div>
+			),
+			meta: {
+				className: "text-end w-1",
+			},
+		}),
+	];
 
 	const tableInstance = useTable({
 		features,
