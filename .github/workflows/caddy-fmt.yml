@@ -24,7 +24,7 @@ jobs:
         run: echo "version=$(cat caddy/Dockerfile | grep "^COPY --from=caddy:.*$" | head -1 | sed "s|COPY --from=caddy:\([0-9.]\+\).*|\1|g")" >> $GITHUB_OUTPUT
       - name: caddy-fmt
         run: docker run --rm -v ./caddy/Caddyfile:/etc/caddy/Caddyfile caddy:${{ steps.version.outputs.version }} caddy fmt --overwrite /etc/caddy/Caddyfile
-      - uses: peter-evans/create-pull-request@15733dbdfeedb4f7fdb73d13c6f5ac83b710fab8 # v8.1.2
+      - uses: peter-evans/create-pull-request@3ffccacd46053766916f087ce41d627c0b8cf2d1 # v8.1.3
         with:
           signoff: true
           delete-branch: true

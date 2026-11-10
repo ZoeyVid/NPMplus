@@ -99,7 +99,7 @@ jobs:
           echo "compare=https://github.com/${{ matrix.repo }}/compare/$(sed -n 's|^ARG ${{ matrix.arg }}_VER=\(.*\) #.*|\1|p' Dockerfile)...$SHA" >> $GITHUB_OUTPUT
           sed -i "s|ARG ${{ matrix.arg }}_VER=.*|ARG ${{ matrix.arg }}_VER=$SHA # $VER|" Dockerfile
           echo "version=$VER" >> $GITHUB_OUTPUT
-      - uses: peter-evans/create-pull-request@15733dbdfeedb4f7fdb73d13c6f5ac83b710fab8 # v8.1.2
+      - uses: peter-evans/create-pull-request@3ffccacd46053766916f087ce41d627c0b8cf2d1 # v8.1.3
         with:
           signoff: true
           delete-branch: true
@@ -129,7 +129,7 @@ jobs:
           sed -i "s|crowdsec-npmplus-bouncer/.*\"|crowdsec-npmplus-bouncer/$LCSB_VER\"|" rootfs/usr/local/nginx/conf/conf.d/crowdsec.conf.disabled
           echo "version=$LCSB_VER" >> $GITHUB_OUTPUT
           curl -sSfL https://raw.githubusercontent.com/crowdsecurity/lua-cs-bouncer/refs/tags/"$LCSB_VER"/config_example.conf -o rootfs/etc/crowdsec.conf.original
-      - uses: peter-evans/create-pull-request@15733dbdfeedb4f7fdb73d13c6f5ac83b710fab8 # v8.1.2
+      - uses: peter-evans/create-pull-request@3ffccacd46053766916f087ce41d627c0b8cf2d1 # v8.1.3
         with:
           signoff: true
           delete-branch: true
@@ -145,7 +145,7 @@ jobs:
         run: |
           curl -sSfL https://raw.githubusercontent.com/crowdsecurity/cs-nginx-bouncer/main/nginx/crowdsec_nginx.conf -o rootfs/usr/local/nginx/conf/conf.d/crowdsec.conf.original
           sed -i "s|crowdsec-nginx-bouncer/.*\"|crowdsec-nginx-bouncer/version\"|" rootfs/usr/local/nginx/conf/conf.d/crowdsec.conf.original
-      - uses: peter-evans/create-pull-request@15733dbdfeedb4f7fdb73d13c6f5ac83b710fab8 # v8.1.2
+      - uses: peter-evans/create-pull-request@3ffccacd46053766916f087ce41d627c0b8cf2d1 # v8.1.3
         with:
           signoff: true
           delete-branch: true
@@ -179,7 +179,7 @@ jobs:
         run: |
           HASH="$(curl -sSfL https://patch-diff.githubusercontent.com/raw/${{ matrix.repo }}/pull/${{ matrix.pull }}.patch | sha256sum | cut -d" " -f1)"
           sed -i "\|pull/${{ matrix.pull }}.patch|{n;s|[0-9a-f]\{64\}|$HASH|}" Dockerfile
-      - uses: peter-evans/create-pull-request@15733dbdfeedb4f7fdb73d13c6f5ac83b710fab8 # v8.1.2
+      - uses: peter-evans/create-pull-request@3ffccacd46053766916f087ce41d627c0b8cf2d1 # v8.1.3
         with:
           signoff: true
           delete-branch: true
@@ -207,7 +207,7 @@ jobs:
           sed -i "\|dynamic_tls_records|{n;s|[0-9a-f]\{64\}|$DTR_HASH|}" Dockerfile
           rm -r ngx_http_tls_dyn_size
           echo "version=$DTR_VER" >> $GITHUB_OUTPUT
-      - uses: peter-evans/create-pull-request@15733dbdfeedb4f7fdb73d13c6f5ac83b710fab8 # v8.1.2
+      - uses: peter-evans/create-pull-request@3ffccacd46053766916f087ce41d627c0b8cf2d1 # v8.1.3
         with:
           signoff: true
           delete-branch: true
@@ -235,7 +235,7 @@ jobs:
           done
           rm -r openresty
           echo "version=$ORP_VER" >> $GITHUB_OUTPUT
-      - uses: peter-evans/create-pull-request@15733dbdfeedb4f7fdb73d13c6f5ac83b710fab8 # v8.1.2
+      - uses: peter-evans/create-pull-request@3ffccacd46053766916f087ce41d627c0b8cf2d1 # v8.1.3
         with:
           signoff: true
           delete-branch: true
@@ -262,7 +262,7 @@ jobs:
           sed -i "\|zlib-ng.patch|{n;s|[0-9a-f]\{64\}|$ZNP_HASH|}" Dockerfile
           rm -r zlib-ng-patches
           echo "version=$ZNP_VER" >> $GITHUB_OUTPUT
-      - uses: peter-evans/create-pull-request@15733dbdfeedb4f7fdb73d13c6f5ac83b710fab8 # v8.1.2
+      - uses: peter-evans/create-pull-request@3ffccacd46053766916f087ce41d627c0b8cf2d1 # v8.1.3
         with:
           signoff: true
           delete-branch: true
@@ -282,7 +282,7 @@ jobs:
           echo "compare=https://github.com/certbot/certbot/compare/v$(sed -n 's|^ARG CERTBOT_VER=||p' Dockerfile)...v$CERTBOT_VER" >> $GITHUB_OUTPUT
           sed -i "s|ARG CERTBOT_VER=.*|ARG CERTBOT_VER=$CERTBOT_VER|" Dockerfile
           echo "version=$CERTBOT_VER" >> $GITHUB_OUTPUT
-      - uses: peter-evans/create-pull-request@15733dbdfeedb4f7fdb73d13c6f5ac83b710fab8 # v8.1.2
+      - uses: peter-evans/create-pull-request@3ffccacd46053766916f087ce41d627c0b8cf2d1 # v8.1.3
         with:
           signoff: true
           delete-branch: true
@@ -303,7 +303,7 @@ jobs:
           sed -i "s|ARG COF_VER=.*|ARG COF_VER=$COF_SHA # main|" Dockerfile
           COF_HASH="$(curl -sSfL https://raw.githubusercontent.com/tomwassenberg/certbot-ocsp-fetcher/"$COF_SHA"/certbot-ocsp-fetcher | sha256sum | cut -d" " -f1)"
           sed -i "\|raw.githubusercontent.com/tomwassenberg|{n;s|[0-9a-f]\{64\}|$COF_HASH|}" Dockerfile
-      - uses: peter-evans/create-pull-request@15733dbdfeedb4f7fdb73d13c6f5ac83b710fab8 # v8.1.2
+      - uses: peter-evans/create-pull-request@3ffccacd46053766916f087ce41d627c0b8cf2d1 # v8.1.3
         with:
           signoff: true
           delete-branch: true
@@ -322,7 +322,7 @@ jobs:
           curl -sSfL https://raw.githubusercontent.com/OWASP/www-project-secure-headers/master/ci/headers_remove.json -o /tmp/headers_remove.json
           jq -r '.headers[] | select(. != "Server") | "more_clear_headers \(tojson);"' /tmp/headers_remove.json > rootfs/usr/local/nginx/conf/headers-remove.conf
           echo "version=$(jq -r .last_update_utc /tmp/headers_remove.json)" >> $GITHUB_OUTPUT
-      - uses: peter-evans/create-pull-request@15733dbdfeedb4f7fdb73d13c6f5ac83b710fab8 # v8.1.2
+      - uses: peter-evans/create-pull-request@3ffccacd46053766916f087ce41d627c0b8cf2d1 # v8.1.3
         with:
           signoff: true
           delete-branch: true
