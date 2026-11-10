@@ -20,7 +20,6 @@ import {
 	tableFeatures,
 	useTable,
 } from "@tanstack/react-table";
-import { useMemo } from "react";
 import {
 	EmailFormatter,
 	EmptyData,
@@ -59,178 +58,165 @@ export default function Table({
 	onNewUser,
 }) {
 	const columnHelper = createColumnHelper();
-	const columns = useMemo(
-		() => [
-			columnHelper.accessor((row) => row.name, {
-				id: "avatar",
-				cell: (info) => {
-					const value = info.row.original;
-					return <GravatarFormatter url={value.avatar} name={value.name} />;
-				},
-				meta: {
-					className: "w-1",
-				},
-			}),
-			columnHelper.accessor((row) => row.name, {
-				id: "name",
-				header: intl.formatMessage({ id: "column.name" }),
-				cell: (info) => {
-					const value = info.row.original;
-					// Hack to reuse domains formatter
-					return (
-						<ValueWithDateFormatter
-							value={value.name}
-							createdOn={value.createdOn}
-							disabled={value.isDisabled}
-						/>
-					);
-				},
-			}),
-			columnHelper.accessor((row) => row.email, {
-				id: "email",
-				header: intl.formatMessage({ id: "column.email" }),
-				cell: (info) => <EmailFormatter email={info.getValue()} />,
-			}),
-			columnHelper.accessor((row) => row.npmplusIsAdmin, {
-				id: "roles",
-				header: intl.formatMessage({ id: "column.roles" }),
-				cell: (info) => <RolesFormatter isAdmin={info.getValue()} />,
-			}),
-			columnHelper.accessor((row) => row.isDisabled, {
-				id: "isDisabled",
-				header: intl.formatMessage({ id: "column.status" }),
-				cell: (info) => <TrueFalseFormatter value={!info.getValue()} />,
-			}),
-			columnHelper.accessor((row) => row.id, {
-				id: "id",
-				header: "ID",
-				cell: (info) => info.getValue(),
-				meta: {
-					className: "text-end w-1",
-				},
-			}),
-			columnHelper.display({
-				id: "actions",
-				cell: (info) => (
-					<span className="dropdown">
+	const columns = [
+		columnHelper.accessor((row) => row.name, {
+			id: "avatar",
+			cell: (info) => {
+				const value = info.row.original;
+				return <GravatarFormatter url={value.avatar} name={value.name} />;
+			},
+			meta: {
+				className: "w-1",
+			},
+		}),
+		columnHelper.accessor((row) => row.name, {
+			id: "name",
+			header: intl.formatMessage({ id: "column.name" }),
+			cell: (info) => {
+				const value = info.row.original;
+				// Hack to reuse domains formatter
+				return (
+					<ValueWithDateFormatter
+						value={value.name}
+						createdOn={value.createdOn}
+						disabled={value.isDisabled}
+					/>
+				);
+			},
+		}),
+		columnHelper.accessor((row) => row.email, {
+			id: "email",
+			header: intl.formatMessage({ id: "column.email" }),
+			cell: (info) => <EmailFormatter email={info.getValue()} />,
+		}),
+		columnHelper.accessor((row) => row.npmplusIsAdmin, {
+			id: "roles",
+			header: intl.formatMessage({ id: "column.roles" }),
+			cell: (info) => <RolesFormatter isAdmin={info.getValue()} />,
+		}),
+		columnHelper.accessor((row) => row.isDisabled, {
+			id: "isDisabled",
+			header: intl.formatMessage({ id: "column.status" }),
+			cell: (info) => <TrueFalseFormatter value={!info.getValue()} />,
+		}),
+		columnHelper.accessor((row) => row.id, {
+			id: "id",
+			header: "ID",
+			cell: (info) => info.getValue(),
+			meta: {
+				className: "text-end w-1",
+			},
+		}),
+		columnHelper.display({
+			id: "actions",
+			cell: (info) => (
+				<span className="dropdown">
+					<button
+						type="button"
+						title={intl.formatMessage(
+							{ id: "object.actions" },
+							{ object: intl.formatMessage({ id: "user" }), id: info.row.original.id },
+						)}
+						className="btn dropdown-toggle btn-action btn-sm px-1"
+						data-bs-boundary="viewport"
+						data-bs-toggle="dropdown"
+						data-bs-popper-config='{"strategy":"fixed"}'
+					>
+						<IconDotsVertical />
+					</button>
+					<div className="dropdown-menu dropdown-menu-end">
+						<span className="dropdown-header">
+							<T
+								id="object.actions-title"
+								tData={{ object: "user" }}
+								data={{ id: info.row.original.id }}
+							/>
+						</span>
 						<button
 							type="button"
-							title={intl.formatMessage(
-								{ id: "object.actions" },
-								{ object: intl.formatMessage({ id: "user" }), id: info.row.original.id },
-							)}
-							className="btn dropdown-toggle btn-action btn-sm px-1"
-							data-bs-boundary="viewport"
-							data-bs-toggle="dropdown"
-							data-bs-popper-config='{"strategy":"fixed"}'
+							className="dropdown-item"
+							onClick={() => {
+								onEditUser?.(info.row.original.id);
+							}}
 						>
-							<IconDotsVertical />
+							<IconEdit size={16} />
+							<T id="action.edit" />
 						</button>
-						<div className="dropdown-menu dropdown-menu-end">
-							<span className="dropdown-header">
-								<T
-									id="object.actions-title"
-									tData={{ object: "user" }}
-									data={{ id: info.row.original.id }}
-								/>
-							</span>
-							<button
-								type="button"
-								className="dropdown-item"
-								onClick={() => {
-									onEditUser?.(info.row.original.id);
-								}}
-							>
-								<IconEdit size={16} />
-								<T id="action.edit" />
-							</button>
-							{currentUserId !== info.row.original.id ? (
-								<>
+						{currentUserId !== info.row.original.id ? (
+							<>
+								<button
+									type="button"
+									className="dropdown-item"
+									onClick={() => {
+										onEditPermissions?.(info.row.original.id, info.row.original.name);
+									}}
+								>
+									<IconShield size={16} />
+									<T id="action.permissions" />
+								</button>
+								<button
+									type="button"
+									className="dropdown-item"
+									onClick={() => {
+										onSetPassword?.(info.row.original.id);
+									}}
+								>
+									<IconLock size={16} />
+									<T id="user.set-password" />
+								</button>
+								{info.row.original.mfaEnabled && (
 									<button
 										type="button"
 										className="dropdown-item"
 										onClick={() => {
-											onEditPermissions?.(info.row.original.id, info.row.original.name);
+											onResetMfa?.(info.row.original.id);
 										}}
 									>
-										<IconShield size={16} />
-										<T id="action.permissions" />
+										<IconShieldOff size={16} />
+										<T id="user.reset-mfa" />
 									</button>
-									<button
-										type="button"
-										className="dropdown-item"
-										onClick={() => {
-											onSetPassword?.(info.row.original.id);
-										}}
-									>
-										<IconLock size={16} />
-										<T id="user.set-password" />
-									</button>
-									{info.row.original.mfaEnabled && (
-										<button
-											type="button"
-											className="dropdown-item"
-											onClick={() => {
-												onResetMfa?.(info.row.original.id);
-											}}
-										>
-											<IconShieldOff size={16} />
-											<T id="user.reset-mfa" />
-										</button>
-									)}
-									<button
-										type="button"
-										className="dropdown-item"
-										onClick={() => {
-											onRevokeSessions?.(info.row.original.id);
-										}}
-									>
-										<IconDevicesX size={16} />
-										<T id="user.revoke-sessions" />
-									</button>
-									<button
-										type="button"
-										className="dropdown-item"
-										onClick={() => {
-											onDisableToggle?.(info.row.original.id, info.row.original.isDisabled);
-										}}
-									>
-										<IconPower size={16} />
-										<T id={info.row.original.isDisabled ? "action.enable" : "action.disable"} />
-									</button>
-									<div className="dropdown-divider" />
-									<button
-										type="button"
-										className="dropdown-item"
-										onClick={() => {
-											onDeleteUser?.(info.row.original.id);
-										}}
-									>
-										<IconTrash size={16} />
-										<T id="action.delete" />
-									</button>
-								</>
-							) : null}
-						</div>
-					</span>
-				),
-				meta: {
-					className: "text-end w-1",
-				},
-			}),
-		],
-		[
-			columnHelper,
-			currentUserId,
-			onEditUser,
-			onDisableToggle,
-			onDeleteUser,
-			onEditPermissions,
-			onSetPassword,
-			onResetMfa,
-			onRevokeSessions,
-		],
-	);
+								)}
+								<button
+									type="button"
+									className="dropdown-item"
+									onClick={() => {
+										onRevokeSessions?.(info.row.original.id);
+									}}
+								>
+									<IconDevicesX size={16} />
+									<T id="user.revoke-sessions" />
+								</button>
+								<button
+									type="button"
+									className="dropdown-item"
+									onClick={() => {
+										onDisableToggle?.(info.row.original.id, info.row.original.isDisabled);
+									}}
+								>
+									<IconPower size={16} />
+									<T id={info.row.original.isDisabled ? "action.enable" : "action.disable"} />
+								</button>
+								<div className="dropdown-divider" />
+								<button
+									type="button"
+									className="dropdown-item"
+									onClick={() => {
+										onDeleteUser?.(info.row.original.id);
+									}}
+								>
+									<IconTrash size={16} />
+									<T id="action.delete" />
+								</button>
+							</>
+						) : null}
+					</div>
+				</span>
+			),
+			meta: {
+				className: "text-end w-1",
+			},
+		}),
+	];
 
 	const tableInstance = useTable({
 		features,
