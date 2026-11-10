@@ -1,9 +1,10 @@
 import { Page } from "src/components";
-import { T } from "src/locale";
+import { intl, T } from "src/locale";
 
 export function Unhealthy() {
 	return (
 		<Page className="page-center">
+			<title>{`NPMplus – ${intl.formatMessage({ id: "unhealthy" })}`}</title>
 			<div className="container-tight py-4">
 				<div className="empty">
 					<p className="empty-title">

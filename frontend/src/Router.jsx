@@ -12,6 +12,7 @@ import {
 } from "src/components";
 import { useAuthState } from "src/context";
 import { useHealth } from "src/hooks";
+import { intl } from "src/locale";
 
 const Setup = lazy(() => import("src/pages/Setup"));
 const Login = lazy(() => import("src/pages/Login"));
@@ -27,12 +28,19 @@ const DeadHosts = lazy(() => import("src/pages/Nginx/DeadHosts"));
 const Streams = lazy(() => import("src/pages/Nginx/Streams"));
 const Swagger = lazy(() => import("src/pages/Swagger"));
 
+const loadingPage = (
+	<>
+		<title>{`NPMplus – ${intl.formatMessage({ id: "loading" })}`}</title>
+		<LoadingPage />
+	</>
+);
+
 function Router() {
 	const health = useHealth();
 	const { authenticated } = useAuthState();
 
 	if (health.isPending) {
-		return <LoadingPage />;
+		return loadingPage;
 	}
 
 	if (health.isError || health.data?.status !== "OK") {
@@ -41,7 +49,7 @@ function Router() {
 
 	if (!health.data?.setup) {
 		return (
-			<Suspense fallback={<LoadingPage />}>
+			<Suspense fallback={loadingPage}>
 				<Setup />
 			</Suspense>
 		);
@@ -49,7 +57,7 @@ function Router() {
 
 	if (!authenticated) {
 		return (
-			<Suspense fallback={<LoadingPage />}>
+			<Suspense fallback={loadingPage}>
 				<Login />
 			</Suspense>
 		);
