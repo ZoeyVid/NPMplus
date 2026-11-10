@@ -31,7 +31,7 @@
 							"example": "123456"
 						},
 						"expires_in": {
-							"description": "Lifetime of the new token in hours, capped by the TOKEN_MAX_EXPIRY env (in hours, default 1)",
+							"description": "Lifetime of the new token in hours, capped by the TOKEN_MAX_EXPIRY env (in hours, default 1). Ignored if MFA is enabled and no code is sent, since the token from POST /tokens/totp is always valid for 1 hour; send the code with this request to use expires_in",
 							"type": "integer",
 							"minimum": 1,
 							"default": 1,

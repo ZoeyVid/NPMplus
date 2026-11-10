@@ -18,7 +18,7 @@ import { AccessFields } from "src/components";
 import { useUser } from "src/hooks";
 import { intl, T } from "src/locale";
 import { forwardSummary } from "src/modules/Forward";
-import { isAdminTarget, validateAdminTarget, validateUpstreamUrl } from "src/modules/Validations";
+import { isAdminTarget, validateAdminTarget, validateNumber, validateUpstreamUrl } from "src/modules/Validations";
 
 const authProvider = (authRequest) => authRequest?.replace("-send-basic-auth", "");
 
@@ -433,24 +433,32 @@ export function LocationsFields({ name = "locations", disabled, isClone }) {
 												<label className="form-label" htmlFor={`forwardPort-${item.uiKey}`}>
 													<T id="host.forward-port" />
 												</label>
-												<Field name={`${name}.${idx}.forwardPort`}>
-													{({ field }) => (
-														<input
-															id={`forwardPort-${item.uiKey}`}
-															type="number"
-															min={1}
-															max={65535}
-															className="form-control"
-															placeholder={intl.formatMessage(
-																{ id: "example" },
-																{ value: "8081" },
+												<Field
+													name={`${name}.${idx}.forwardPort`}
+													validate={(value) => validateNumber(value, -1, 65535)}
+												>
+													{({ field, meta }) => (
+														<>
+															<input
+																id={`forwardPort-${item.uiKey}`}
+																type="text"
+																inputMode="numeric"
+																pattern="[1-9][0-9]*"
+																className={`form-control ${meta.error ? "is-invalid" : ""}`}
+																placeholder={intl.formatMessage(
+																	{ id: "example" },
+																	{ value: "8081" },
+																)}
+																disabled={
+																	!currentUser?.npmplusIsAdmin &&
+																	item.forwardScheme === "path"
+																}
+																{...field}
+															/>
+															{meta.error && (
+																<div className="invalid-feedback">{meta.error}</div>
 															)}
-															disabled={
-																!currentUser?.npmplusIsAdmin &&
-																item.forwardScheme === "path"
-															}
-															{...field}
-														/>
+														</>
 													)}
 												</Field>
 											</div>

@@ -88,7 +88,7 @@ const UserModal = EasyModal.create(({ id, visible, remove, close, formRef }) => 
 										<span
 											className="avatar avatar-square avatar-lg me-3"
 											style={{
-												backgroundImage: `url(${data?.avatar})`,
+												backgroundImage: `url(${data?.avatar || "/images/default-avatar.jpg"})`,
 											}}
 										/>
 

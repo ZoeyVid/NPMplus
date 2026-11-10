@@ -40,7 +40,11 @@ function Router() {
 	}
 
 	if (!health.data?.setup) {
-		return <Setup />;
+		return (
+			<Suspense fallback={<LoadingPage />}>
+				<Setup />
+			</Suspense>
+		);
 	}
 
 	if (!authenticated) {

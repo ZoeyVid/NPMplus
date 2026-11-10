@@ -336,15 +336,20 @@ const internalDeadHost = {
 	/**
 	 * Report use
 	 *
-	 * @param   {Number}  user_id
-	 * @param   {String}  visibility
+	 * @param   {Access}  access
 	 * @returns {Promise}
 	 */
-	getCount: (user_id, visibility) => {
+	getCount: (access) => {
+		try {
+			access.can("dead_hosts:view");
+		} catch {
+			return 0;
+		}
+
 		const query = deadHostModel.query();
 
-		if (visibility !== "all") {
-			query.andWhere("owner_user_id", user_id);
+		if (access.visibility !== "all") {
+			query.andWhere("owner_user_id", access.token.getUserId(1));
 		}
 
 		return query.resultSize();
