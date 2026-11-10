@@ -18,8 +18,8 @@ import { hasPermission, MANAGE, STREAMS } from "src/modules/Permissions";
 import { showTabOfInvalid, validateAdminTarget, validateString } from "src/modules/Validations";
 import { showObjectSuccess } from "src/notifications";
 
-const showStreamModal = (id) => {
-	EasyModal.show(StreamModal, { id });
+const showStreamModal = (id, isClone) => {
+	EasyModal.show(StreamModal, { id, isClone });
 };
 
 const udpOnlyValues = ({
@@ -39,7 +39,7 @@ const udpOnlyValues = ({
 	npmplusMtlsVerifyClientOptional: false,
 });
 
-const StreamModal = EasyModal.create(({ id, visible, remove, close, formRef }) => {
+const StreamModal = EasyModal.create(({ id, isClone, visible, remove, close, formRef }) => {
 	const { data, isPending, error } = useStream(id);
 	const { data: allStreams } = useStreams();
 	const suggestions = useDirectorySuggestions(allStreams);
@@ -52,7 +52,7 @@ const StreamModal = EasyModal.create(({ id, visible, remove, close, formRef }) =
 		setErrorMsg(null);
 
 		const payload = {
-			id: id === "new" ? undefined : id,
+			id: id === "new" || isClone ? undefined : id,
 			...values,
 			domainNames: values.certificateId === "new" ? values.domainNames : undefined,
 		};
@@ -77,7 +77,7 @@ const StreamModal = EasyModal.create(({ id, visible, remove, close, formRef }) =
 		<Modal show={visible} backdrop={canManage ? "static" : true} onHide={close}>
 			<Modal.Header closeButton>
 				<Modal.Title>
-					<T id={id !== "new" ? "object.edit" : "object.add"} tData={{ object: "stream" }} />
+					<T id={id !== "new" && !isClone ? "object.edit" : "object.add"} tData={{ object: "stream" }} />
 				</Modal.Title>
 			</Modal.Header>
 			{error && (
@@ -98,7 +98,8 @@ const StreamModal = EasyModal.create(({ id, visible, remove, close, formRef }) =
 						npmplusProxyProtocolForwarding: data?.npmplusProxyProtocolForwarding,
 						npmplusProxyTls: data?.npmplusProxyTls,
 						certificateId: data?.certificateId,
-						npmplusAdvancedConfig: data?.npmplusAdvancedConfig,
+						npmplusAdvancedConfig:
+							isClone && !currentUser?.npmplusIsAdmin ? "" : data?.npmplusAdvancedConfig,
 						npmplusDirectory: data?.npmplusDirectory,
 						npmplusMtlsCertificateId: data?.npmplusMtlsCertificateId,
 						npmplusMtlsVerifyClientOptional: data?.npmplusMtlsVerifyClientOptional,
@@ -201,7 +202,7 @@ const StreamModal = EasyModal.create(({ id, visible, remove, close, formRef }) =
 																validateAdminTarget(
 																	value,
 																	currentUser?.npmplusIsAdmin,
-																	data?.forwardingHost,
+																	isClone ? undefined : data?.forwardingHost,
 																)
 															}
 														>

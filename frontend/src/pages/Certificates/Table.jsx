@@ -40,6 +40,7 @@ const features = tableFeatures({
 });
 
 const isInUse = (row) =>
+	row.isDefault ||
 	[
 		row.proxyHosts,
 		row.redirectionHosts,
@@ -122,6 +123,7 @@ export default function Table({ data, isFetching, onDelete, onRenew, onDownload,
 							redirectionHosts={[...r.redirectionHosts, ...r.mtlsRedirectionHosts]}
 							deadHosts={[...r.deadHosts, ...r.mtlsDeadHosts]}
 							streams={[...r.streams, ...r.mtlsStreams]}
+							isDefault={r.isDefault}
 						/>
 					);
 				},

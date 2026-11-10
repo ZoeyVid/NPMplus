@@ -1,7 +1,7 @@
 import { IconSettings } from "@tabler/icons-react";
 import cn from "clsx";
 import { ErrorMessage, Field, Form, Formik } from "formik";
-import { useCallback, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import { Alert } from "react-bootstrap";
 import Modal from "react-bootstrap/Modal";
 import {
@@ -42,15 +42,12 @@ const ProxyHostModal = EasyModal.create(({ id, isClone, visible, remove, close, 
 	const canManage = hasPermission(PROXY_HOSTS, MANAGE, currentUser?.permissions, currentUser?.npmplusIsAdmin);
 	const [errorMsg, setErrorMsg] = useState(null);
 	const [advVisible, setAdvVisible] = useState(false);
-	const validateForwardHost = useCallback(
-		(value) => validateAdminTarget(value, currentUser?.npmplusIsAdmin, data?.forwardHost),
-		[currentUser?.npmplusIsAdmin, data?.forwardHost],
-	);
 
+	const stripAdminConfig = isClone && !currentUser?.npmplusIsAdmin;
 	const initialValues = useMemo(
 		() => ({
 			// Details tab
-			domainNames: data?.domainNames,
+			domainNames: isClone ? [] : data?.domainNames,
 			forwardScheme: data?.forwardScheme,
 			forwardHost: data?.forwardHost,
 			forwardPort: String(data?.forwardPort || ""),
@@ -61,6 +58,7 @@ const ProxyHostModal = EasyModal.create(({ id, isClone, visible, remove, close, 
 				createUiLocation({
 					...location,
 					forwardPort: location.forwardPort || "",
+					advancedConfig: stripAdminConfig ? "" : location.advancedConfig,
 					npmplusAccessListIds: accessLists.map((accessList) => accessList.id),
 				}),
 			),
@@ -71,8 +69,8 @@ const ProxyHostModal = EasyModal.create(({ id, isClone, visible, remove, close, 
 			hstsEnabled: data?.hstsEnabled,
 			hstsSubdomains: data?.hstsSubdomains,
 			// Advanced tab
-			advancedConfig: data?.advancedConfig,
-			npmplusLocationConfig: data?.npmplusLocationConfig,
+			advancedConfig: stripAdminConfig ? "" : data?.advancedConfig,
+			npmplusLocationConfig: stripAdminConfig ? "" : data?.npmplusLocationConfig,
 			npmplusDirectory: data?.npmplusDirectory,
 			npmplusMtlsCertificateId: data?.npmplusMtlsCertificateId,
 			npmplusMtlsVerifyClientOptional: data?.npmplusMtlsVerifyClientOptional,
@@ -87,7 +85,7 @@ const ProxyHostModal = EasyModal.create(({ id, isClone, visible, remove, close, 
 			npmplusAuthRequest: data?.npmplusAuthRequest,
 			npmplusAuthRequestUpstream: data?.npmplusAuthRequestUpstream,
 		}),
-		[data],
+		[data, isClone, stripAdminConfig],
 	);
 
 	const onSubmit = async (values, { setFieldValue }) => {
@@ -252,7 +250,17 @@ const ProxyHostModal = EasyModal.create(({ id, isClone, visible, remove, close, 
 														</Field>
 													</div>
 													<div className="col-md-5">
-														<Field name="forwardHost" validate={validateForwardHost}>
+														<Field
+															name="forwardHost"
+															validate={(value) =>
+																validateAdminTarget(
+																	value,
+																	currentUser?.npmplusIsAdmin,
+																	isClone ? undefined : data?.forwardHost,
+																	values.forwardScheme,
+																)
+															}
+														>
 															{({ field, form, meta }) => (
 																<div className="mb-3">
 																	<label className="form-label" htmlFor="forwardHost">
@@ -692,7 +700,7 @@ const ProxyHostModal = EasyModal.create(({ id, isClone, visible, remove, close, 
 												)}
 											</fieldset>
 											<div className="tab-pane" id="tab-locations">
-												<LocationsFields disabled={!canManage} />
+												<LocationsFields disabled={!canManage} isClone={isClone} />
 											</div>
 											<fieldset className="tab-pane" id="tab-ssl" disabled={!canManage}>
 												<SSLCertificateField

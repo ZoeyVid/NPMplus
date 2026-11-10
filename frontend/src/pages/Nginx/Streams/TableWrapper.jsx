@@ -61,6 +61,7 @@ export default function TableWrapper() {
 		sorting,
 		onSortingChange: setSorting,
 		onEdit: (id) => showStreamModal(id),
+		onClone: (id) => showStreamModal(id, true),
 		onDelete: (id) => {
 			const stream = data?.find((item) => item.id === id);
 			showDeleteConfirmModal({

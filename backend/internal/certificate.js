@@ -378,7 +378,7 @@ const internalCertificate = {
 	 * @param   {Array}   [expand]
 	 * @returns {Promise}
 	 */
-	getAll: (access, expand) => {
+	getAll: async (access, expand) => {
 		access.can("certificates:view");
 
 		const query = certificateModel
@@ -395,7 +395,9 @@ const internalCertificate = {
 
 		if (expand) query.withGraphFetched(`[${expand.join(", ")}]`);
 
-		return query;
+		const rows = await query;
+		for (const row of rows) row.is_default = row.id === Number(process.env.DEFAULT_CERT_ID);
+		return rows;
 	},
 
 	/**

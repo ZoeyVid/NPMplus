@@ -278,7 +278,7 @@
 	"proxy-host.location-auth-request-upstream-error": "Pro Auth-Request-Anbieter ist nur ein Upstream möglich: Nutzt der Host den Anbieter, dürfen seine Locations keinen eigenen Upstream haben, sonst brauchen alle aktiven Locations mit diesem Anbieter denselben Upstream.",
 	"proxy-host.location-no-trailing-slash-warning": "Ein Pfad ohne abschließenden Schrägstrich wird als Byte-Präfix und nicht als Pfadsegment abgeglichen. Das kann zu ungewollt vielen Treffern und/oder Path Traversal führen. Füge einen abschließenden Schrägstrich hinzu, außer du willst bewusst nach Präfix abgleichen.",
 	"proxy-host.no-directory": "Keine Gruppe",
-	"proxy-host.target-admin-only": "Nur ein Administrator kann an einen Unix-Socket weiterleiten oder Variablen verwenden.",
+	"proxy-host.target-admin-only": "Nur ein Administrator kann an einen Pfad oder Unix-Socket weiterleiten oder Variablen verwenden.",
 	"proxy-hosts": "Proxy Hosts",
 	"proxy-hosts.count": "{count} {count, plural, one {Proxy Host} other {Proxy Hosts}}",
 	"public": "Öffentlich",

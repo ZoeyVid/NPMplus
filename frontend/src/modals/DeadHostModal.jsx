@@ -19,11 +19,11 @@ import { DEAD_HOSTS, hasPermission, MANAGE } from "src/modules/Permissions";
 import { showTabOfInvalid } from "src/modules/Validations";
 import { showObjectSuccess } from "src/notifications";
 
-const showDeadHostModal = (id) => {
-	EasyModal.show(DeadHostModal, { id });
+const showDeadHostModal = (id, isClone) => {
+	EasyModal.show(DeadHostModal, { id, isClone });
 };
 
-const DeadHostModal = EasyModal.create(({ id, visible, remove, close, formRef }) => {
+const DeadHostModal = EasyModal.create(({ id, isClone, visible, remove, close, formRef }) => {
 	const { data, isPending, error } = useDeadHost(id);
 	const { mutateAsync: setDeadHost } = useSetDeadHost();
 	const { data: allDeadHosts } = useDeadHosts();
@@ -36,7 +36,7 @@ const DeadHostModal = EasyModal.create(({ id, visible, remove, close, formRef })
 		setErrorMsg(null);
 
 		const payload = {
-			id: id === "new" ? undefined : id,
+			id: id === "new" || isClone ? undefined : id,
 			...values,
 		};
 
@@ -60,7 +60,7 @@ const DeadHostModal = EasyModal.create(({ id, visible, remove, close, formRef })
 		<Modal show={visible} backdrop={canManage ? "static" : true} onHide={close}>
 			<Modal.Header closeButton>
 				<Modal.Title>
-					<T id={id !== "new" ? "object.edit" : "object.add"} tData={{ object: "dead-host" }} />
+					<T id={id !== "new" && !isClone ? "object.edit" : "object.add"} tData={{ object: "dead-host" }} />
 				</Modal.Title>
 			</Modal.Header>
 			{error && (
@@ -73,10 +73,10 @@ const DeadHostModal = EasyModal.create(({ id, visible, remove, close, formRef })
 				<Formik
 					innerRef={formRef}
 					initialValues={{
-						domainNames: data?.domainNames,
+						domainNames: isClone ? [] : data?.domainNames,
 						certificateId: data?.certificateId,
 						sslForced: data?.sslForced,
-						advancedConfig: data?.advancedConfig,
+						advancedConfig: isClone && !currentUser?.npmplusIsAdmin ? "" : data?.advancedConfig,
 						npmplusHttp3Support: data?.npmplusHttp3Support,
 						hstsEnabled: data?.hstsEnabled,
 						hstsSubdomains: data?.hstsSubdomains,

@@ -54,7 +54,7 @@ const requestBufferingTitle = ({ npmplusCrowdsecAppsec, forwardScheme }) => {
 	return null;
 };
 
-export function LocationsFields({ name = "locations", disabled }) {
+export function LocationsFields({ name = "locations", disabled, isClone }) {
 	const { data: currentUser } = useUser("me");
 	const { values: hostValues, initialValues, setFieldValue } = useFormikContext();
 	const values = hostValues[name];
@@ -391,11 +391,14 @@ export function LocationsFields({ name = "locations", disabled }) {
 														validateAdminTarget(
 															value,
 															currentUser?.npmplusIsAdmin,
-															initialValues[name].find(
-																(location) =>
-																	location.path === item.path &&
-																	location.locationType === item.locationType,
-															)?.forwardHost,
+															isClone
+																? undefined
+																: initialValues[name].find(
+																		(location) =>
+																			location.path === item.path &&
+																			location.locationType === item.locationType,
+																	)?.forwardHost,
+															item.forwardScheme,
 														)
 													}
 												>

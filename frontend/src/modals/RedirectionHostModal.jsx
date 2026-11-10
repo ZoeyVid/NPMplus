@@ -26,11 +26,11 @@ import { hasPermission, MANAGE, REDIRECTION_HOSTS } from "src/modules/Permission
 import { showTabOfInvalid, validateString } from "src/modules/Validations";
 import { showObjectSuccess } from "src/notifications";
 
-const showRedirectionHostModal = (id) => {
-	EasyModal.show(RedirectionHostModal, { id });
+const showRedirectionHostModal = (id, isClone) => {
+	EasyModal.show(RedirectionHostModal, { id, isClone });
 };
 
-const RedirectionHostModal = EasyModal.create(({ id, visible, remove, close, formRef }) => {
+const RedirectionHostModal = EasyModal.create(({ id, isClone, visible, remove, close, formRef }) => {
 	const { data, isPending, error } = useRedirectionHost(id);
 	const { mutateAsync: setRedirectionHost } = useSetRedirectionHost();
 	const { data: allRedirectionHosts } = useRedirectionHosts();
@@ -43,7 +43,7 @@ const RedirectionHostModal = EasyModal.create(({ id, visible, remove, close, for
 		setErrorMsg(null);
 
 		const payload = {
-			id: id === "new" ? undefined : id,
+			id: id === "new" || isClone ? undefined : id,
 			...values,
 		};
 
@@ -67,7 +67,10 @@ const RedirectionHostModal = EasyModal.create(({ id, visible, remove, close, for
 		<Modal show={visible} backdrop={canManage ? "static" : true} onHide={close}>
 			<Modal.Header closeButton>
 				<Modal.Title>
-					<T id={id !== "new" ? "object.edit" : "object.add"} tData={{ object: "redirection-host" }} />
+					<T
+						id={id !== "new" && !isClone ? "object.edit" : "object.add"}
+						tData={{ object: "redirection-host" }}
+					/>
 				</Modal.Title>
 			</Modal.Header>
 			{error && (
@@ -81,7 +84,7 @@ const RedirectionHostModal = EasyModal.create(({ id, visible, remove, close, for
 					innerRef={formRef}
 					initialValues={{
 						// Details tab
-						domainNames: data?.domainNames,
+						domainNames: isClone ? [] : data?.domainNames,
 						forwardDomainName: data?.forwardDomainName,
 						forwardScheme: data?.forwardScheme,
 						forwardHttpCode: data?.forwardHttpCode,
@@ -93,7 +96,7 @@ const RedirectionHostModal = EasyModal.create(({ id, visible, remove, close, for
 						hstsEnabled: data?.hstsEnabled,
 						hstsSubdomains: data?.hstsSubdomains,
 						// Advanced tab
-						advancedConfig: data?.advancedConfig,
+						advancedConfig: isClone && !currentUser?.npmplusIsAdmin ? "" : data?.advancedConfig,
 						npmplusDirectory: data?.npmplusDirectory,
 						npmplusMtlsCertificateId: data?.npmplusMtlsCertificateId,
 						npmplusMtlsVerifyClientOptional: data?.npmplusMtlsVerifyClientOptional,

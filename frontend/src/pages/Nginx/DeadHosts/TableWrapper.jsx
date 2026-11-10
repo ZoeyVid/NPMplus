@@ -58,6 +58,7 @@ export default function TableWrapper() {
 		sorting,
 		onSortingChange: setSorting,
 		onEdit: (id) => showDeadHostModal(id),
+		onClone: (id) => showDeadHostModal(id, true),
 		onDelete: (id) => {
 			const host = data?.find((item) => item.id === id);
 			showDeleteConfirmModal({

@@ -1,4 +1,4 @@
-import { IconDotsVertical, IconPower, IconTrash } from "@tabler/icons-react";
+import { IconCopy, IconDotsVertical, IconPower, IconTrash } from "@tabler/icons-react";
 import {
 	createColumnHelper,
 	createPaginatedRowModel,
@@ -42,6 +42,7 @@ export default function Table({
 	isFetching,
 	isFiltered,
 	onEdit,
+	onClone,
 	onDelete,
 	onDisableToggle,
 	onNew,
@@ -208,6 +209,16 @@ export default function Table({
 										type="button"
 										className="dropdown-item"
 										onClick={() => {
+											onClone?.(info.row.original.id);
+										}}
+									>
+										<IconCopy size={16} />
+										<T id="action.clone" />
+									</button>
+									<button
+										type="button"
+										className="dropdown-item"
+										onClick={() => {
 											onDisableToggle?.(info.row.original.id, !info.row.original.enabled);
 										}}
 									>
@@ -235,7 +246,7 @@ export default function Table({
 				},
 			}),
 		],
-		[columnHelper, onEdit, onDisableToggle, onDelete],
+		[columnHelper, onEdit, onDisableToggle, onDelete, onClone],
 	);
 
 	const tableInstance = useTable({

@@ -66,6 +66,12 @@
 			"type": "string",
 			"example": "2025-10-28T04:17:54.000Z"
 		},
+		"is_default": {
+			"type": "boolean",
+			"description": "Is used as default certificate, only sent in the certificate list",
+			"readOnly": true,
+			"example": false
+		},
 		"owner": {
 			"$ref": "./user-object.json"
 		},
