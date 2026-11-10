@@ -40,19 +40,8 @@ const DiscardChangesModal = NiceModal.create(() => {
 	);
 });
 
-const dropdownToggle = (element) => element?.querySelector('[data-bs-toggle="dropdown"]');
-
-const show = (modal, args) => {
-	const row = document.activeElement?.closest("tr");
-	dropdownToggle(document.activeElement?.closest(".dropdown"))?.focus();
-	return NiceModal.show(modal, {
-		...args,
-		neighbours: [row?.nextElementSibling, row?.previousElementSibling].map(dropdownToggle),
-	});
-};
-
 const create = (Comp) =>
-	NiceModal.create(({ neighbours, ...props }) => {
+	NiceModal.create((props) => {
 		const { visible, remove } = useModal();
 		const formRef = useRef(null);
 
@@ -61,15 +50,8 @@ const create = (Comp) =>
 				if (formRef.current?.dirty) e.preventDefault();
 			};
 			addEventListener("beforeunload", warnBeforeUnload);
-			return () => {
-				removeEventListener("beforeunload", warnBeforeUnload);
-				setTimeout(() => {
-					if (document.activeElement === document.body) {
-						(neighbours.find((toggle) => toggle?.isConnected) ?? document.querySelector("main"))?.focus();
-					}
-				});
-			};
-		}, [neighbours]);
+			return () => removeEventListener("beforeunload", warnBeforeUnload);
+		}, []);
 
 		const close = async () => {
 			if (formRef.current?.isSubmitting) return;
@@ -79,4 +61,4 @@ const create = (Comp) =>
 		return <Comp {...props} visible={visible} remove={remove} close={close} formRef={formRef} />;
 	});
 
-export default { ...NiceModal, create, show };
+export default { ...NiceModal, create };

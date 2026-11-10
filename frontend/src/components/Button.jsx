@@ -32,8 +32,8 @@ function Button({
 		<button
 			type={type || "button"}
 			className={cns}
-			onClick={onClick}
-			disabled={disabled || isSubmitting || formSubmitting}
+			onClick={(e) => (isSubmitting || formSubmitting ? e.preventDefault() : onClick?.(e))}
+			disabled={disabled}
 			autoFocus={autoFocus}
 		>
 			{children}

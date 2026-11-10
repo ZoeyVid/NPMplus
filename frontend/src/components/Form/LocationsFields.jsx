@@ -130,23 +130,9 @@ export function LocationsFields({ name = "locations", disabled }) {
 	return (
 		<FieldArray name={name} validateOnChange={false}>
 			{({ push, remove, swap }) => {
-				if (values.length === 0) {
-					return (
-						<div className="text-center">
-							<button
-								type="button"
-								className="btn my-3"
-								onClick={() => handleAdd(push)}
-								disabled={disabled}
-							>
-								<T id="action.add-location" />
-							</button>
-						</div>
-					);
-				}
-				return (
-					<>
-						<div className="row g-2 mb-3">
+				const header = (
+					<div className={cn("row g-2", values.length ? "mb-3" : "justify-content-center my-3")}>
+						{values.length > 0 && (
 							<div className="col">
 								<div className="input-group">
 									<span className="input-group-text">
@@ -172,18 +158,19 @@ export function LocationsFields({ name = "locations", disabled }) {
 									</button>
 								</div>
 							</div>
-							<div className="col-auto">
-								<button
-									type="button"
-									className="btn"
-									onClick={() => handleAdd(push)}
-									disabled={disabled}
-								>
-									<IconPlus size={16} className="me-1" />
-									<T id="action.add-location" />
-								</button>
-							</div>
+						)}
+						<div className="col-auto">
+							<button type="button" className="btn" onClick={() => handleAdd(push)} disabled={disabled}>
+								<IconPlus size={16} className="me-1" />
+								<T id="action.add-location" />
+							</button>
 						</div>
+					</div>
+				);
+				if (values.length === 0) return header;
+				return (
+					<>
+						{header}
 						{!values.some(matchesFilter) && (
 							<div className="text-secondary text-center my-3">
 								<T id="empty-search" />
@@ -417,7 +404,7 @@ export function LocationsFields({ name = "locations", disabled }) {
 															<input
 																id={`forwardHost-${item.uiKey}`}
 																type="text"
-																className={`form-control ${meta.touched && meta.error ? "is-invalid" : ""}`}
+																className={`form-control ${meta.error ? "is-invalid" : ""}`}
 																required={item.forwardScheme !== "empty"}
 																pattern="(?=\S{0,255}$)[^\s\/]{0,253}(\/\S*)?"
 																placeholder={intl.formatMessage(
@@ -430,7 +417,7 @@ export function LocationsFields({ name = "locations", disabled }) {
 																}
 																{...field}
 															/>
-															{meta.touched && meta.error && (
+															{meta.error && (
 																<div className="invalid-feedback">{meta.error}</div>
 															)}
 														</>

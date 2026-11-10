@@ -245,7 +245,7 @@ const MfaModal = EasyModal.create(({ id, visible, close, formRef }) => {
 								</div>
 							))}
 						</div>
-						<CopyButton text={backupCodes.join("\n")} />
+						<CopyButton text={backupCodes.join("\n")} autoFocus />
 					</div>
 					<Button fullWidth color="azure" onClick={handleBackupDone}>
 						<T id="totp.done" />
@@ -403,7 +403,7 @@ const MfaModal = EasyModal.create(({ id, visible, close, formRef }) => {
 			</Modal.Body>
 			{["loading", "error", "status"].includes(step) && (
 				<Modal.Footer>
-					<Button onClick={close}>
+					<Button onClick={close} autoFocus>
 						<T id="action.close" />
 					</Button>
 				</Modal.Footer>
