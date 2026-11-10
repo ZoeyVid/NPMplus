@@ -403,15 +403,20 @@ const internalCertificate = {
 	/**
 	 * Report use
 	 *
-	 * @param   {Number}  userId
-	 * @param   {String}  visibility
+	 * @param   {Access}  access
 	 * @returns {Promise}
 	 */
-	getCount: (userId, visibility) => {
+	getCount: (access) => {
+		try {
+			access.can("certificates:view");
+		} catch {
+			return 0;
+		}
+
 		const query = certificateModel.query();
 
-		if (visibility !== "all") {
-			query.andWhere("owner_user_id", userId);
+		if (access.visibility !== "all") {
+			query.andWhere("owner_user_id", access.token.getUserId(1));
 		}
 
 		return query.resultSize();
@@ -722,7 +727,7 @@ const internalCertificate = {
 			} finally {
 				// Add to audit log
 				await internalAuditLog.add(access, {
-					action: "updated",
+					action: "renewed",
 					object_type: "certificate",
 					object_id: updatedCertificate.id,
 					meta: updatedCertificate,

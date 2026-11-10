@@ -24,8 +24,6 @@ import { hasPermission, MANAGE, PROXY_HOSTS } from "src/modules/Permissions";
 import { showTabOfInvalid, validateAdminTarget, validateNumber, validateUpstreamUrl } from "src/modules/Validations";
 import { showObjectSuccess } from "src/notifications";
 
-const validateForwardPort = (value) => validateNumber(value, -1, 65535);
-
 const requestBufferingTitle = ({ npmplusCrowdsecAppsec, forwardScheme }) => {
 	if (!npmplusCrowdsecAppsec && ["http", "https"].includes(forwardScheme)) {
 		return intl.formatMessage({ id: "host.flags.disable-request-buffering.requires-appsec" });
@@ -289,7 +287,10 @@ const ProxyHostModal = EasyModal.create(({ id, isClone, visible, remove, close, 
 														</Field>
 													</div>
 													<div className="col-md">
-														<Field name="forwardPort" validate={validateForwardPort}>
+														<Field
+															name="forwardPort"
+															validate={(value) => validateNumber(value, -1, 65535)}
+														>
 															{({ field, form, meta }) => (
 																<div className="mb-3">
 																	<label className="form-label" htmlFor="forwardPort">

@@ -94,7 +94,7 @@ export default function Table({ data, isFetching, onDelete, onRenew, onDownload,
 					cell: (info) => {
 						const r = info.row.original;
 						if (r.provider === "letsencrypt") {
-							if (r.npmplusDnsChallenge) {
+							if (r.npmplusDnsProvider) {
 								return (
 									<>
 										<T id="lets-encrypt" /> &ndash; {r.npmplusDnsProvider}

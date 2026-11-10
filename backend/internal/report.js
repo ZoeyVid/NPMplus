@@ -10,18 +10,14 @@ const internalReport = {
 	 * @param  {Access}   access
 	 * @return {Promise}
 	 */
-	getHostsReport: async (access) => {
-		const userId = access.token.getUserId(1);
-
-		return {
-			proxy: await internalProxyHost.getCount(userId, access.visibility),
-			redirection: await internalRedirectionHost.getCount(userId, access.visibility),
-			stream: await internalStream.getCount(userId, access.visibility),
-			dead: await internalDeadHost.getCount(userId, access.visibility),
-			access_list: await internalAccessList.getCount(userId, access.visibility),
-			certificate: await internalCertificate.getCount(userId, access.visibility),
-		};
-	},
+	getHostsReport: async (access) => ({
+		proxy: await internalProxyHost.getCount(access),
+		redirection: await internalRedirectionHost.getCount(access),
+		stream: await internalStream.getCount(access),
+		dead: await internalDeadHost.getCount(access),
+		access_list: await internalAccessList.getCount(access),
+		certificate: await internalCertificate.getCount(access),
+	}),
 };
 
 export default internalReport;

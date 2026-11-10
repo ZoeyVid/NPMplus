@@ -38,7 +38,7 @@ export function CertificateFormatter({ certificate }) {
 				</strong>
 				<div className="ms-1 mb-2">
 					<T id={certificateProviderTranslation(certificate.provider)} />
-					{certificate.npmplusDnsChallenge && <> &ndash; {certificate.npmplusDnsProvider}</>}
+					{certificate.npmplusDnsProvider && <> &ndash; {certificate.npmplusDnsProvider}</>}
 				</div>
 				<strong>
 					<T id="column.expires" />

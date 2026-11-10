@@ -1,6 +1,7 @@
 {
 	"operationId": "loginWithTotp",
 	"summary": "Verify TOTP code and get full token",
+	"description": "The issued token is always valid for 1 hour, expires_in of POST /tokens is not applied",
 	"tags": ["tokens", "public"],
 	"security": [],
 	"requestBody": {
