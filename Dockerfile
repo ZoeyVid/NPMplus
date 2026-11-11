@@ -214,7 +214,7 @@ ARG LRC_VER=873d072635fd408d81a0abd4187392f3f128ceb9 # v0.1.35rc2
 ARG LRL_VER=3ff6300e68b73ba20e909c7d16bd839aef2e5a4b # v0.15
 ARG LCSB_VER=92a8617ede3b781c33cd39e73734505597e318fd # main
 ARG COF_VER=da93e0cec7fdb1a80f4972f75b3638763d012c0e # main
-ARG CERTBOT_VER=5.9.0
+ARG CERTBOT_VER=5.10.0
 
 COPY --from=nginx /usr/local/nginx            /usr/local/nginx
 COPY --from=nginx /usr/local/bin/bssl         /usr/local/bin/bssl
