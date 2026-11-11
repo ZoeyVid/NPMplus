@@ -13,7 +13,7 @@
 		}
 	},
 	"dependencies": {
-		"@apidevtools/json-schema-ref-parser": "16.0.6",
+		"@apidevtools/json-schema-ref-parser": "16.0.8",
 		"ajv": "8.20.0",
 		"archiver": "8.0.0",
 		"bcryptjs": "3.0.3",
@@ -26,13 +26,13 @@
 		"multer": "2.5.0",
 		"mysql2": "3.24.6",
 		"objection": "4.4.3",
-		"openid-client": "6.8.9",
+		"openid-client": "6.9.0",
 		"otplib": "13.6.0",
 		"pg": "8.23.1",
 		"undici": "8.12.4"
 	},
 	"devDependencies": {
 		"@apidevtools/swagger-parser": "13.1.0",
-		"@biomejs/biome": "2.6.6"
+		"@biomejs/biome": "2.6.7"
 	}
 }
