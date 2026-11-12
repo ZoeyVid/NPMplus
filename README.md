@@ -158,7 +158,6 @@ location ~* [^/]\.php(?:$|/) {
 - Reuse Key: this will make the new cert always keep its key unless you force renew it, I recommend you to keep this disabled (not to keep the key), a reason to keep the key would be TLSA/pubkey pinning
 - TLS to upstream (for Streams): This can be used if your stream target already uses tls but you want to override it with a NPMplus cert, do not enable if you don't set a new cert, since this will downgrade the connecting to be unencrypted
 - X-Frame-Options: will control the X-Frame-Options header, none will remove the header, SAMEORIGIN/DENY will set it to these values and upstream will keep what upstream sends
-- Permissions: anyone who can manage hosts or streams can, regardless of their other permissions, run any command in the container, read all data including the database and private keys, gain admin rights, take over domains of other hosts and break NPMplus, so only grant this to people you trust
 
 ## Examples of implementing some services using auth_request
 
