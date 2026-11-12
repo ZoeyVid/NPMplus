@@ -94,6 +94,11 @@ export default function Table({
 			header: intl.formatMessage({ id: "column.roles" }),
 			cell: (info) => <RolesFormatter isAdmin={info.getValue()} />,
 		}),
+		columnHelper.accessor((row) => row.mfaEnabled, {
+			id: "mfaEnabled",
+			header: intl.formatMessage({ id: "user.mfa" }),
+			cell: (info) => <TrueFalseFormatter value={info.getValue()} />,
+		}),
 		columnHelper.accessor((row) => row.isDisabled, {
 			id: "isDisabled",
 			header: intl.formatMessage({ id: "column.status" }),
