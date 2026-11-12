@@ -267,7 +267,6 @@
 	"permissions.allowed-proxy-hosts-help": "Grants additional access to selected proxy hosts created by other users (in addition to the user's own created hosts).",
 	"permissions.hidden": "Hidden",
 	"permissions.manage": "Manage",
-	"permissions.manage-warning": "Anyone who can manage hosts or streams can, regardless of the other permissions, run any command in the container, read all data including the database and private keys, gain admin rights, take over domains of other hosts and break NPMplus. Only grant this to people you trust.",
 	"permissions.no-proxy-hosts": "No proxy hosts found",
 	"permissions.view": "View Only",
 	"permissions.visibility.all": "All Items",
