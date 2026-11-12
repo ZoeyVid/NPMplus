@@ -264,7 +264,6 @@
 	"password.show": "显示密码",
 	"permissions.hidden": "隐藏",
 	"permissions.manage": "管理",
-	"permissions.manage-warning": "任何可以管理主机或流的人都可以不受其他权限限制地在容器中执行任意命令、读取包括数据库和私钥在内的所有数据、获取管理员权限、接管其他主机的域名并使 NPMplus 瘫痪。请仅授予您信任的人。",
 	"permissions.view": "仅查看",
 	"permissions.visibility.all": "所有条目",
 	"permissions.visibility.title": "条目可见性",
