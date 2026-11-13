@@ -128,6 +128,18 @@
 			],
 			"example": null
 		},
+		"mtls_certificate": {
+			"oneOf": [
+				{
+					"type": "null",
+					"example": null
+				},
+				{
+					"$ref": "./certificate-object.json"
+				}
+			],
+			"example": null
+		},
 		"owner": {
 			"$ref": "./user-object.json"
 		}

@@ -321,7 +321,7 @@ const internalDeadHost = {
 		const query = deadHostModel
 			.query()
 			.groupBy("id")
-			.allowGraph("[owner,certificate]")
+			.allowGraph("[owner,certificate,mtls_certificate]")
 			.orderBy(castJsonIfNeed("domain_names"), "ASC");
 
 		if (access.visibility !== "all") {

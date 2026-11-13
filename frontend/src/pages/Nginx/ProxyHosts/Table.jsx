@@ -95,7 +95,12 @@ export default function Table({
 		columnHelper.accessor((row) => (row.certificate ? row.certificate.provider : "http-only"), {
 			id: "certificate",
 			header: intl.formatMessage({ id: "column.ssl" }),
-			cell: (info) => <CertificateFormatter certificate={info.row.original.certificate} />,
+			cell: (info) => (
+				<CertificateFormatter
+					certificate={info.row.original.certificate}
+					mtlsCertificate={info.row.original.mtlsCertificate}
+				/>
+			),
 		}),
 		columnHelper.accessor(
 			(row) => {

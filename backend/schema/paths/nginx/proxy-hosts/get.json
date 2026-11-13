@@ -24,7 +24,8 @@
 					"enum": [
 						"access_lists",
 						"owner",
-						"certificate"
+						"certificate",
+						"mtls_certificate"
 					]
 				}
 			}

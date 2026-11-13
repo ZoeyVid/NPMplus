@@ -114,6 +114,14 @@ class ProxyHost extends Model {
 					to: "certificate.id",
 				},
 			},
+			mtls_certificate: {
+				relation: Model.HasOneRelation,
+				modelClass: Certificate,
+				join: {
+					from: "proxy_host.npmplus_mtls_certificate_id",
+					to: "certificate.id",
+				},
+			},
 			locations: {
 				relation: Model.HasManyRelation,
 				modelClass: Location,

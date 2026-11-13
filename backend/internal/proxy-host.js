@@ -443,7 +443,7 @@ const internalProxyHost = {
 		const query = proxyHostModel
 			.query()
 			.groupBy("id")
-			.allowGraph("[owner,access_lists,certificate,locations.access_lists]")
+			.allowGraph("[owner,access_lists,certificate,mtls_certificate,locations.access_lists]")
 			.withGraphFetched("[access_lists, locations.access_lists]")
 			.orderBy(castJsonIfNeed("domain_names"), "ASC");
 

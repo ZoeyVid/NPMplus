@@ -70,6 +70,14 @@ class DeadHost extends Model {
 					to: "certificate.id",
 				},
 			},
+			mtls_certificate: {
+				relation: Model.HasOneRelation,
+				modelClass: Certificate,
+				join: {
+					from: "dead_host.npmplus_mtls_certificate_id",
+					to: "certificate.id",
+				},
+			},
 		};
 	}
 }

@@ -13,7 +13,11 @@ import Table from "./Table";
 export default function TableWrapper() {
 	const [search, setSearch] = useState("");
 	const [sorting, setSorting] = useState([{ id: "enabled", desc: false }]);
-	const { isFetching, isPending, isError, error, data } = useRedirectionHosts(["owner", "certificate"]);
+	const { isFetching, isPending, isError, error, data } = useRedirectionHosts([
+		"owner",
+		"certificate",
+		"mtls_certificate",
+	]);
 
 	// this can happen if someone deletes the last item while searching
 	if (search !== "" && !data?.length) setSearch("");
