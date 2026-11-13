@@ -23,7 +23,8 @@
 					"type": "string",
 					"enum": [
 						"owner",
-						"certificate"
+						"certificate",
+						"mtls_certificate"
 					]
 				}
 			}

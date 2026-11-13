@@ -14,7 +14,7 @@ export function certificateProviderTranslation(provider) {
 	return providerTranslations[provider];
 }
 
-export function CertificateFormatter({ certificate }) {
+export function CertificateFormatter({ certificate, mtlsCertificate }) {
 	if (!certificate) return <T id="no-tls" />;
 
 	const popover = (
@@ -48,6 +48,18 @@ export function CertificateFormatter({ certificate }) {
 				</div>
 				<strong>ID</strong>
 				<div className="ms-1">{certificate.id}</div>
+				{mtlsCertificate && (
+					<>
+						<strong className="d-block mt-2">
+							<T id="mtls-certificate" />
+						</strong>
+						<div className="ms-1">
+							<span className="badge bg-info-lt me-2">{mtlsCertificate.niceName}</span>
+							<DateFormatter value={mtlsCertificate.expiresOn} />
+							<div>ID: {mtlsCertificate.id}</div>
+						</div>
+					</>
+				)}
 			</Popover.Body>
 		</Popover>
 	);
@@ -60,6 +72,16 @@ export function CertificateFormatter({ certificate }) {
 				</span>
 				{certificate.provider !== "letsencrypt" && certificate.niceName && (
 					<div className="text-secondary small">{certificate.niceName}</div>
+				)}
+				{mtlsCertificate && (
+					<div
+						className={cn(
+							"small",
+							Date.parse(mtlsCertificate.expiresOn) < Date.now() ? "text-danger" : "text-secondary",
+						)}
+					>
+						mTLS: {mtlsCertificate.niceName}
+					</div>
 				)}
 			</button>
 		</OverlayTrigger>

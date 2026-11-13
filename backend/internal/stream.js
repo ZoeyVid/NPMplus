@@ -315,7 +315,7 @@ const internalStream = {
 		const query = streamModel
 			.query()
 			.groupBy("id")
-			.allowGraph("[owner,certificate]")
+			.allowGraph("[owner,certificate,mtls_certificate]")
 			.orderBy("incoming_port", "ASC");
 
 		if (access.visibility !== "all") {
