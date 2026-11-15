@@ -186,10 +186,18 @@
 			"example": false
 		},
 		"npmplus_proxy_response_buffering": {
-			"description": "Disable Response Buffering",
-			"type": "boolean",
-			"default": false,
-			"example": false
+			"description": "Response Buffering",
+			"type": "string",
+			"enum": [
+				"on_auto",
+				"on_forced",
+				"ram_only_auto",
+				"ram_only_forced",
+				"off_auto",
+				"off_forced"
+			],
+			"default": "on_auto",
+			"example": "on_auto"
 		},
 		"npmplus_upstream_compression": {
 			"description": "Enable compression by upstream",
@@ -915,8 +923,8 @@
 								"const": false
 							},
 							"npmplus_proxy_response_buffering": {
-								"type": "boolean",
-								"const": false
+								"type": "string",
+								"const": "on_auto"
 							}
 						}
 					}
@@ -1093,8 +1101,8 @@
 								"const": false
 							},
 							"npmplus_proxy_response_buffering": {
-								"type": "boolean",
-								"const": false
+								"type": "string",
+								"const": "on_auto"
 							}
 						}
 					}

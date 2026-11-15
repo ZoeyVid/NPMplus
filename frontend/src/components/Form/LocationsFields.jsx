@@ -35,7 +35,7 @@ export const createUiLocation = (item) => ({
 	npmplusAccessListIds: [],
 	npmplusNoindex: false,
 	npmplusDisableCrowdsecAppsec: false,
-	npmplusProxyResponseBuffering: false,
+	npmplusProxyResponseBuffering: "on_auto",
 	npmplusDisableProxyRequestBuffering: false,
 	npmplusUpstreamCompression: false,
 	npmplusFancyindex: false,
@@ -111,7 +111,7 @@ export function LocationsFields({ name = "locations", disabled, isClone }) {
 		if (scheme === "empty") return;
 		if (!["http", "https"].includes(scheme)) {
 			void setFieldValue(`${name}.${idx}.npmplusDisableProxyRequestBuffering`, false);
-			void setFieldValue(`${name}.${idx}.npmplusProxyResponseBuffering`, false);
+			void setFieldValue(`${name}.${idx}.npmplusProxyResponseBuffering`, "on_auto");
 		}
 		if (scheme === "path") {
 			void setFieldValue(`${name}.${idx}.npmplusUpstreamCompression`, false);
@@ -580,32 +580,45 @@ export function LocationsFields({ name = "locations", disabled, isClone }) {
 														htmlFor={`npmplusProxyResponseBuffering-${item.uiKey}`}
 													>
 														<span className="col">
-															<T id="host.flags.disable-response-buffering" />
+															<T id="host.flags.response-buffering" />
 														</span>
 														<span className="col-auto">
-															<span className="form-check form-check-single form-switch">
-																<Field
-																	name={`${name}.${idx}.npmplusProxyResponseBuffering`}
-																	type="checkbox"
-																>
-																	{({ field }) => (
-																		<input
-																			id={`npmplusProxyResponseBuffering-${item.uiKey}`}
-																			className={cn("form-check-input", {
-																				"bg-lime":
-																					item.npmplusProxyResponseBuffering,
-																			})}
-																			type="checkbox"
-																			{...field}
-																			disabled={
-																				!["http", "https"].includes(
-																					item.forwardScheme,
-																				)
-																			}
-																		/>
-																	)}
-																</Field>
-															</span>
+															<Field
+																name={`${name}.${idx}.npmplusProxyResponseBuffering`}
+															>
+																{({ field }) => (
+																	<select
+																		id={`npmplusProxyResponseBuffering-${item.uiKey}`}
+																		className="form-select"
+																		required
+																		{...field}
+																		disabled={
+																			!["http", "https"].includes(
+																				item.forwardScheme,
+																			)
+																		}
+																	>
+																		<option value="on_auto">
+																			<T id="host.flags.response-buffering.on-auto" />
+																		</option>
+																		<option value="on_forced">
+																			<T id="host.flags.response-buffering.on-forced" />
+																		</option>
+																		<option value="ram_only_auto">
+																			<T id="host.flags.response-buffering.ram-only-auto" />
+																		</option>
+																		<option value="ram_only_forced">
+																			<T id="host.flags.response-buffering.ram-only-forced" />
+																		</option>
+																		<option value="off_auto">
+																			<T id="host.flags.response-buffering.off-auto" />
+																		</option>
+																		<option value="off_forced">
+																			<T id="host.flags.response-buffering.off-forced" />
+																		</option>
+																	</select>
+																)}
+															</Field>
 														</span>
 													</label>
 												</div>

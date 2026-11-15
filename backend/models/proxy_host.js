@@ -21,7 +21,6 @@ const boolFields = [
 	"npmplus_noindex",
 	"npmplus_disable_crowdsec_appsec",
 	"npmplus_disable_proxy_request_buffering",
-	"npmplus_proxy_response_buffering",
 	"npmplus_upstream_compression",
 	"npmplus_fancyindex",
 	"npmplus_nginx_online",

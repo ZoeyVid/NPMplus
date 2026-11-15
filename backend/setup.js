@@ -187,7 +187,7 @@ const setupAio = async () => {
 			forward_port: 11000,
 			npmplus_disable_crowdsec_appsec: true,
 			npmplus_disable_proxy_request_buffering: true,
-			npmplus_proxy_response_buffering: true,
+			npmplus_proxy_response_buffering: "ram_only_forced",
 			npmplus_upstream_compression: true,
 			certificate_id: "new",
 			ssl_forced: true,

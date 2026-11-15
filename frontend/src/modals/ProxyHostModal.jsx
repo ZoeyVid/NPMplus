@@ -217,7 +217,7 @@ const ProxyHostModal = EasyModal.create(({ id, isClone, visible, remove, close, 
 																				);
 																				form.setFieldValue(
 																					"npmplusProxyResponseBuffering",
-																					false,
+																					"on_auto",
 																				);
 																			}
 																			if (scheme === "path") {
@@ -453,30 +453,42 @@ const ProxyHostModal = EasyModal.create(({ id, isClone, visible, remove, close, 
 																htmlFor="npmplusProxyResponseBuffering"
 															>
 																<span className="col">
-																	<T id="host.flags.disable-response-buffering" />
+																	<T id="host.flags.response-buffering" />
 																</span>
 																<span className="col-auto">
-																	<Field
-																		name="npmplusProxyResponseBuffering"
-																		type="checkbox"
-																	>
+																	<Field name="npmplusProxyResponseBuffering">
 																		{({ field, form }) => (
-																			<span className="form-check form-check-single form-switch">
-																				<input
-																					{...field}
-																					id="npmplusProxyResponseBuffering"
-																					className={cn("form-check-input", {
-																						"bg-lime": field.checked,
-																					})}
-																					type="checkbox"
-																					disabled={
-																						form.values.forwardScheme !==
-																							"http" &&
-																						form.values.forwardScheme !==
-																							"https"
-																					}
-																				/>
-																			</span>
+																			<select
+																				id="npmplusProxyResponseBuffering"
+																				className="form-select"
+																				required
+																				{...field}
+																				disabled={
+																					form.values.forwardScheme !==
+																						"http" &&
+																					form.values.forwardScheme !==
+																						"https"
+																				}
+																			>
+																				<option value="on_auto">
+																					<T id="host.flags.response-buffering.on-auto" />
+																				</option>
+																				<option value="on_forced">
+																					<T id="host.flags.response-buffering.on-forced" />
+																				</option>
+																				<option value="ram_only_auto">
+																					<T id="host.flags.response-buffering.ram-only-auto" />
+																				</option>
+																				<option value="ram_only_forced">
+																					<T id="host.flags.response-buffering.ram-only-forced" />
+																				</option>
+																				<option value="off_auto">
+																					<T id="host.flags.response-buffering.off-auto" />
+																				</option>
+																				<option value="off_forced">
+																					<T id="host.flags.response-buffering.off-forced" />
+																				</option>
+																			</select>
 																		)}
 																	</Field>
 																</span>
