@@ -71,11 +71,11 @@
 						"npmplus_noindex": {
 							"$ref": "../../../../components/proxy-host-object.json#/properties/npmplus_noindex"
 						},
-						"npmplus_crowdsec_appsec": {
-							"$ref": "../../../../components/proxy-host-object.json#/properties/npmplus_crowdsec_appsec"
+						"npmplus_disable_crowdsec_appsec": {
+							"$ref": "../../../../components/proxy-host-object.json#/properties/npmplus_disable_crowdsec_appsec"
 						},
-						"npmplus_proxy_request_buffering": {
-							"$ref": "../../../../components/proxy-host-object.json#/properties/npmplus_proxy_request_buffering"
+						"npmplus_disable_proxy_request_buffering": {
+							"$ref": "../../../../components/proxy-host-object.json#/properties/npmplus_disable_proxy_request_buffering"
 						},
 						"npmplus_proxy_response_buffering": {
 							"$ref": "../../../../components/proxy-host-object.json#/properties/npmplus_proxy_response_buffering"
@@ -163,8 +163,8 @@
 								"certificate_id": 0,
 								"ssl_forced": false,
 								"npmplus_noindex": false,
-								"npmplus_crowdsec_appsec": false,
-								"npmplus_proxy_request_buffering": false,
+								"npmplus_disable_crowdsec_appsec": false,
+								"npmplus_disable_proxy_request_buffering": false,
 								"npmplus_proxy_response_buffering": false,
 								"npmplus_upstream_compression": false,
 								"npmplus_fancyindex": false,

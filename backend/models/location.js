@@ -11,8 +11,8 @@ Model.knex(db());
 const boolFields = [
 	"npmplus_enabled",
 	"npmplus_noindex",
-	"npmplus_crowdsec_appsec",
-	"npmplus_proxy_request_buffering",
+	"npmplus_disable_crowdsec_appsec",
+	"npmplus_disable_proxy_request_buffering",
 	"npmplus_proxy_response_buffering",
 	"npmplus_upstream_compression",
 	"npmplus_fancyindex",

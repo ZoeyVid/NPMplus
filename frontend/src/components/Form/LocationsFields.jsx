@@ -34,9 +34,9 @@ export const createUiLocation = (item) => ({
 	forwardPort: "",
 	npmplusAccessListIds: [],
 	npmplusNoindex: false,
-	npmplusCrowdsecAppsec: false,
+	npmplusDisableCrowdsecAppsec: false,
 	npmplusProxyResponseBuffering: false,
-	npmplusProxyRequestBuffering: false,
+	npmplusDisableProxyRequestBuffering: false,
 	npmplusUpstreamCompression: false,
 	npmplusFancyindex: false,
 	npmplusXFrameOptions: "SAMEORIGIN",
@@ -47,8 +47,8 @@ export const createUiLocation = (item) => ({
 	uiKey: nextUiKey++,
 });
 
-const requestBufferingTitle = ({ npmplusCrowdsecAppsec, forwardScheme }) => {
-	if (!npmplusCrowdsecAppsec && ["http", "https"].includes(forwardScheme)) {
+const requestBufferingTitle = ({ npmplusDisableCrowdsecAppsec, forwardScheme }) => {
+	if (!npmplusDisableCrowdsecAppsec && ["http", "https"].includes(forwardScheme)) {
 		return intl.formatMessage({ id: "host.flags.disable-request-buffering.requires-appsec" });
 	}
 	return null;
@@ -93,9 +93,9 @@ export function LocationsFields({ name = "locations", disabled, isClone }) {
 		scrollToKey.current = item.uiKey;
 	};
 
-	const handleCrowdsecAppsecChange = (e, field, idx) => {
+	const handleDisableCrowdsecAppsecChange = (e, field, idx) => {
 		field.onChange(e);
-		if (!e.target.checked) void setFieldValue(`${name}.${idx}.npmplusProxyRequestBuffering`, false);
+		if (!e.target.checked) void setFieldValue(`${name}.${idx}.npmplusDisableProxyRequestBuffering`, false);
 	};
 
 	const handleAuthRequestChange = (e, field, idx) => {
@@ -110,7 +110,7 @@ export function LocationsFields({ name = "locations", disabled, isClone }) {
 		const scheme = e.target.value;
 		if (scheme === "empty") return;
 		if (!["http", "https"].includes(scheme)) {
-			void setFieldValue(`${name}.${idx}.npmplusProxyRequestBuffering`, false);
+			void setFieldValue(`${name}.${idx}.npmplusDisableProxyRequestBuffering`, false);
 			void setFieldValue(`${name}.${idx}.npmplusProxyResponseBuffering`, false);
 		}
 		if (scheme === "path") {
@@ -501,7 +501,7 @@ export function LocationsFields({ name = "locations", disabled, isClone }) {
 												<div>
 													<label
 														className="row cursor-pointer"
-														htmlFor={`npmplusCrowdsecAppsec-${item.uiKey}`}
+														htmlFor={`npmplusDisableCrowdsecAppsec-${item.uiKey}`}
 													>
 														<span className="col">
 															<T id="host.flags.disable-crowdsec-appsec" />
@@ -509,19 +509,20 @@ export function LocationsFields({ name = "locations", disabled, isClone }) {
 														<span className="col-auto">
 															<span className="form-check form-check-single form-switch">
 																<Field
-																	name={`${name}.${idx}.npmplusCrowdsecAppsec`}
+																	name={`${name}.${idx}.npmplusDisableCrowdsecAppsec`}
 																	type="checkbox"
 																>
 																	{({ field }) => (
 																		<input
-																			id={`npmplusCrowdsecAppsec-${item.uiKey}`}
+																			id={`npmplusDisableCrowdsecAppsec-${item.uiKey}`}
 																			className={cn("form-check-input", {
-																				"bg-lime": item.npmplusCrowdsecAppsec,
+																				"bg-lime":
+																					item.npmplusDisableCrowdsecAppsec,
 																			})}
 																			type="checkbox"
 																			{...field}
 																			onChange={(e) =>
-																				handleCrowdsecAppsecChange(
+																				handleDisableCrowdsecAppsecChange(
 																					e,
 																					field,
 																					idx,
@@ -537,7 +538,7 @@ export function LocationsFields({ name = "locations", disabled, isClone }) {
 												<div>
 													<label
 														className="row cursor-pointer"
-														htmlFor={`npmplusProxyRequestBuffering-${item.uiKey}`}
+														htmlFor={`npmplusDisableProxyRequestBuffering-${item.uiKey}`}
 													>
 														<span className="col">
 															<T id="host.flags.disable-request-buffering" />
@@ -548,20 +549,20 @@ export function LocationsFields({ name = "locations", disabled, isClone }) {
 																title={requestBufferingTitle(item)}
 															>
 																<Field
-																	name={`${name}.${idx}.npmplusProxyRequestBuffering`}
+																	name={`${name}.${idx}.npmplusDisableProxyRequestBuffering`}
 																	type="checkbox"
 																>
 																	{({ field }) => (
 																		<input
-																			id={`npmplusProxyRequestBuffering-${item.uiKey}`}
+																			id={`npmplusDisableProxyRequestBuffering-${item.uiKey}`}
 																			className={cn("form-check-input", {
 																				"bg-lime":
-																					item.npmplusProxyRequestBuffering,
+																					item.npmplusDisableProxyRequestBuffering,
 																			})}
 																			type="checkbox"
 																			{...field}
 																			disabled={
-																				!item.npmplusCrowdsecAppsec ||
+																				!item.npmplusDisableCrowdsecAppsec ||
 																				!["http", "https"].includes(
 																					item.forwardScheme,
 																				)

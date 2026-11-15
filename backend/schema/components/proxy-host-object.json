@@ -27,8 +27,8 @@
 		"hsts_enabled",
 		"hsts_subdomains",
 		"npmplus_noindex",
-		"npmplus_crowdsec_appsec",
-		"npmplus_proxy_request_buffering",
+		"npmplus_disable_crowdsec_appsec",
+		"npmplus_disable_proxy_request_buffering",
 		"npmplus_proxy_response_buffering",
 		"npmplus_upstream_compression",
 		"npmplus_fancyindex",
@@ -82,11 +82,11 @@
 		"npmplus_noindex": {
 			"$ref": "../common.json#/properties/npmplus_noindex"
 		},
-		"npmplus_crowdsec_appsec": {
-			"$ref": "../common.json#/properties/npmplus_crowdsec_appsec"
+		"npmplus_disable_crowdsec_appsec": {
+			"$ref": "../common.json#/properties/npmplus_disable_crowdsec_appsec"
 		},
-		"npmplus_proxy_request_buffering": {
-			"$ref": "../common.json#/properties/npmplus_proxy_request_buffering"
+		"npmplus_disable_proxy_request_buffering": {
+			"$ref": "../common.json#/properties/npmplus_disable_proxy_request_buffering"
 		},
 		"npmplus_proxy_response_buffering": {
 			"$ref": "../common.json#/properties/npmplus_proxy_response_buffering"
@@ -225,11 +225,11 @@
 					"npmplus_noindex": {
 						"$ref": "#/properties/npmplus_noindex"
 					},
-					"npmplus_crowdsec_appsec": {
-						"$ref": "#/properties/npmplus_crowdsec_appsec"
+					"npmplus_disable_crowdsec_appsec": {
+						"$ref": "#/properties/npmplus_disable_crowdsec_appsec"
 					},
-					"npmplus_proxy_request_buffering": {
-						"$ref": "#/properties/npmplus_proxy_request_buffering"
+					"npmplus_disable_proxy_request_buffering": {
+						"$ref": "#/properties/npmplus_disable_proxy_request_buffering"
 					},
 					"npmplus_proxy_response_buffering": {
 						"$ref": "#/properties/npmplus_proxy_response_buffering"

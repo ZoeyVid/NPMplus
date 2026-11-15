@@ -57,7 +57,7 @@ const cleanForwardOptions = (item) => {
 	if (scheme !== "empty") {
 		if (!item.forward_host) throw new errs.ValidationError(`Forward host is required for the ${scheme} scheme`);
 		if (!["http", "https"].includes(scheme)) {
-			item.npmplus_proxy_request_buffering = false;
+			item.npmplus_disable_proxy_request_buffering = false;
 			item.npmplus_proxy_response_buffering = false;
 		}
 		if (scheme === "path") {
@@ -66,7 +66,7 @@ const cleanForwardOptions = (item) => {
 			item.npmplus_fancyindex = false;
 		}
 	}
-	if (!item.npmplus_crowdsec_appsec) item.npmplus_proxy_request_buffering = false;
+	if (!item.npmplus_disable_crowdsec_appsec) item.npmplus_disable_proxy_request_buffering = false;
 	if (["none", "global"].includes(item.npmplus_auth_request ?? "none")) item.npmplus_auth_request_upstream = "";
 };
 

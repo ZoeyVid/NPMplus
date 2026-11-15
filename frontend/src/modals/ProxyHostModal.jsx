@@ -24,8 +24,8 @@ import { hasPermission, MANAGE, PROXY_HOSTS } from "src/modules/Permissions";
 import { showTabOfInvalid, validateAdminTarget, validateNumber, validateUpstreamUrl } from "src/modules/Validations";
 import { showObjectSuccess } from "src/notifications";
 
-const requestBufferingTitle = ({ npmplusCrowdsecAppsec, forwardScheme }) => {
-	if (!npmplusCrowdsecAppsec && ["http", "https"].includes(forwardScheme)) {
+const requestBufferingTitle = ({ npmplusDisableCrowdsecAppsec, forwardScheme }) => {
+	if (!npmplusDisableCrowdsecAppsec && ["http", "https"].includes(forwardScheme)) {
 		return intl.formatMessage({ id: "host.flags.disable-request-buffering.requires-appsec" });
 	}
 	return null;
@@ -74,9 +74,9 @@ const ProxyHostModal = EasyModal.create(({ id, isClone, visible, remove, close, 
 			npmplusMtlsVerifyClientOptional: data?.npmplusMtlsVerifyClientOptional,
 			npmplusMtlsBypassAuthRequest: data?.npmplusMtlsBypassAuthRequest,
 			npmplusNoindex: data?.npmplusNoindex,
-			npmplusCrowdsecAppsec: data?.npmplusCrowdsecAppsec,
+			npmplusDisableCrowdsecAppsec: data?.npmplusDisableCrowdsecAppsec,
 			npmplusProxyResponseBuffering: data?.npmplusProxyResponseBuffering,
-			npmplusProxyRequestBuffering: data?.npmplusProxyRequestBuffering,
+			npmplusDisableProxyRequestBuffering: data?.npmplusDisableProxyRequestBuffering,
 			npmplusUpstreamCompression: data?.npmplusUpstreamCompression,
 			npmplusFancyindex: data?.npmplusFancyindex,
 			npmplusXFrameOptions: data?.npmplusXFrameOptions,
@@ -212,7 +212,7 @@ const ProxyHostModal = EasyModal.create(({ id, isClone, visible, remove, close, 
 																			if (scheme === "empty") return;
 																			if (!["http", "https"].includes(scheme)) {
 																				form.setFieldValue(
-																					"npmplusProxyRequestBuffering",
+																					"npmplusDisableProxyRequestBuffering",
 																					false,
 																				);
 																				form.setFieldValue(
@@ -371,18 +371,21 @@ const ProxyHostModal = EasyModal.create(({ id, isClone, visible, remove, close, 
 														<div>
 															<label
 																className="row cursor-pointer"
-																htmlFor="npmplusCrowdsecAppsec"
+																htmlFor="npmplusDisableCrowdsecAppsec"
 															>
 																<span className="col">
 																	<T id="host.flags.disable-crowdsec-appsec" />
 																</span>
 																<span className="col-auto">
-																	<Field name="npmplusCrowdsecAppsec" type="checkbox">
+																	<Field
+																		name="npmplusDisableCrowdsecAppsec"
+																		type="checkbox"
+																	>
 																		{({ field, form }) => (
 																			<span className="form-check form-check-single form-switch">
 																				<input
 																					{...field}
-																					id="npmplusCrowdsecAppsec"
+																					id="npmplusDisableCrowdsecAppsec"
 																					className={cn("form-check-input", {
 																						"bg-lime": field.checked,
 																					})}
@@ -391,7 +394,7 @@ const ProxyHostModal = EasyModal.create(({ id, isClone, visible, remove, close, 
 																						field.onChange(e);
 																						if (!e.target.checked) {
 																							form.setFieldValue(
-																								"npmplusProxyRequestBuffering",
+																								"npmplusDisableProxyRequestBuffering",
 																								false,
 																							);
 																						}
@@ -406,14 +409,14 @@ const ProxyHostModal = EasyModal.create(({ id, isClone, visible, remove, close, 
 														<div>
 															<label
 																className="row cursor-pointer"
-																htmlFor="npmplusProxyRequestBuffering"
+																htmlFor="npmplusDisableProxyRequestBuffering"
 															>
 																<span className="col">
 																	<T id="host.flags.disable-request-buffering" />
 																</span>
 																<span className="col-auto">
 																	<Field
-																		name="npmplusProxyRequestBuffering"
+																		name="npmplusDisableProxyRequestBuffering"
 																		type="checkbox"
 																	>
 																		{({ field, form }) => (
@@ -425,14 +428,14 @@ const ProxyHostModal = EasyModal.create(({ id, isClone, visible, remove, close, 
 																			>
 																				<input
 																					{...field}
-																					id="npmplusProxyRequestBuffering"
+																					id="npmplusDisableProxyRequestBuffering"
 																					className={cn("form-check-input", {
 																						"bg-lime": field.checked,
 																					})}
 																					type="checkbox"
 																					disabled={
 																						!form.values
-																							.npmplusCrowdsecAppsec ||
+																							.npmplusDisableCrowdsecAppsec ||
 																						!["http", "https"].includes(
 																							form.values.forwardScheme,
 																						)

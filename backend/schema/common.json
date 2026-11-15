@@ -173,13 +173,13 @@
 			"default": false,
 			"example": false
 		},
-		"npmplus_crowdsec_appsec": {
+		"npmplus_disable_crowdsec_appsec": {
 			"description": "Disable Crowdsec Appsec",
 			"type": "boolean",
 			"default": false,
 			"example": false
 		},
-		"npmplus_proxy_request_buffering": {
+		"npmplus_disable_proxy_request_buffering": {
 			"description": "Disable Request Buffering",
 			"type": "boolean",
 			"default": false,
@@ -910,7 +910,7 @@
 					},
 					"then": {
 						"properties": {
-							"npmplus_proxy_request_buffering": {
+							"npmplus_disable_proxy_request_buffering": {
 								"type": "boolean",
 								"const": false
 							},
@@ -966,21 +966,21 @@
 				{
 					"if": {
 						"properties": {
-							"npmplus_proxy_request_buffering": {
+							"npmplus_disable_proxy_request_buffering": {
 								"type": "boolean",
 								"const": true
 							}
 						},
 						"required": [
-							"npmplus_proxy_request_buffering"
+							"npmplus_disable_proxy_request_buffering"
 						]
 					},
 					"then": {
 						"required": [
-							"npmplus_crowdsec_appsec"
+							"npmplus_disable_crowdsec_appsec"
 						],
 						"properties": {
-							"npmplus_crowdsec_appsec": {
+							"npmplus_disable_crowdsec_appsec": {
 								"type": "boolean",
 								"const": true
 							}
@@ -1088,7 +1088,7 @@
 					},
 					"then": {
 						"properties": {
-							"npmplus_proxy_request_buffering": {
+							"npmplus_disable_proxy_request_buffering": {
 								"type": "boolean",
 								"const": false
 							},
@@ -1147,18 +1147,18 @@
 				{
 					"if": {
 						"properties": {
-							"npmplus_proxy_request_buffering": {
+							"npmplus_disable_proxy_request_buffering": {
 								"type": "boolean",
 								"const": true
 							}
 						},
 						"required": [
-							"npmplus_proxy_request_buffering"
+							"npmplus_disable_proxy_request_buffering"
 						]
 					},
 					"then": {
 						"properties": {
-							"npmplus_crowdsec_appsec": {
+							"npmplus_disable_crowdsec_appsec": {
 								"type": "boolean",
 								"const": true
 							}
