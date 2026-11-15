@@ -210,34 +210,6 @@ jobs:
           branch: update-openresty-patches-version
           title: update openresty patches version to ${{ steps.update.outputs.version }}
           body: update openresty patches version to ${{ steps.update.outputs.version }}
-  zlib-ng-patch-update:
-    runs-on: ubuntu-slim
-    steps:
-      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
-      - name: update zlib-ng-patch version
-        id: update
-        run: |
-          git clone --depth 1 https://github.com/zlib-ng/patches zlib-ng-patches
-          ZNP_VER="$(
-          ls zlib-ng-patches/nginx/*-zlib-ng.patch \
-              | sed "s|zlib-ng-patches/nginx/\([0-9.]\+\)-zlib-ng.patch|\1|g" \
-              | sort -V \
-              | tail -1
-          )"
-          sed -i "s|ARG ZNP_VER=.*|ARG ZNP_VER=$ZNP_VER|" Dockerfile
-          ZNP_HASH="$(sha256sum zlib-ng-patches/nginx/"$ZNP_VER"-zlib-ng.patch | cut -d" " -f1)"
-          sed -i "\|zlib-ng.patch|{n;s|[0-9a-f]\{64\}|$ZNP_HASH|}" Dockerfile
-          rm -r zlib-ng-patches
-          echo "version=$ZNP_VER" >> $GITHUB_OUTPUT
-      - uses: peter-evans/create-pull-request@3ffccacd46053766916f087ce41d627c0b8cf2d1 # v8.1.3
-        with:
-          signoff: true
-          delete-branch: true
-          commit-message: update zlib-ng-patch version to ${{ steps.update.outputs.version }}
-          branch: update-zlib-ng-patch-version
-          title: update zlib-ng-patch version to ${{ steps.update.outputs.version }}
-          body: update zlib-ng-patch version to ${{ steps.update.outputs.version }}
-
   certbot-update:
     runs-on: ubuntu-slim
     steps:

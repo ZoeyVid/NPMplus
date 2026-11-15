@@ -1,0 +1,29 @@
+Origin: own patch (NPMplus)
+Author: Zoey <zoey@z0ey.de>
+
+diff --git a/external/njs_zlib_module.c b/external/njs_zlib_module.c
+index a7c0b76..86d79c9 100644
+--- a/external/njs_zlib_module.c
++++ b/external/njs_zlib_module.c
+@@ -7,7 +7,7 @@
+ #include <njs.h>
+ #include <limits.h>
+ #include <string.h>
+-#include <zlib.h>
++#include <zlib-ng-compat.h>
+ 
+ #define NJS_ZLIB_CHUNK_SIZE  1024
+ 
+diff --git a/external/qjs_zlib_module.c b/external/qjs_zlib_module.c
+index 20218c0..ae6b642 100644
+--- a/external/qjs_zlib_module.c
++++ b/external/qjs_zlib_module.c
+@@ -6,7 +6,7 @@
+ 
+ #include <qjs.h>
+ #include <limits.h>
+-#include <zlib.h>
++#include <zlib-ng-compat.h>
+ 
+ #define NJS_ZLIB_CHUNK_SIZE  1024
+

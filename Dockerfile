@@ -9,7 +9,6 @@ ARG AWSLC_VER=7821a7544c6dce1bb5fc927aa273d4ee7a536988 # v5.14.0
 
 ARG NGINX_VER=140aa942711868a8daeb95810bc9a81f272ada72 # release-1.31.8
 ARG ORP_VER=1.31.8
-ARG ZNP_VER=1.30.0
 
 ARG NB_VER=df036cc80cd4f5b0bf67b25b0a10d0ee86ba5bdb # master
 ARG NUB_VER=bce69c4295e43ae62e95a9ddff7902baf5b0cbd7 # 1.0.0
@@ -63,9 +62,7 @@ RUN git-clone-commit.sh https://github.com/nginx/nginx "$NGINX_VER" /src/nginx &
     wget -q https://raw.githubusercontent.com/openresty/openresty/master/patches/nginx/"$ORP_VER"/nginx-"$ORP_VER"-resolver_conf_parsing.patch -O /src/nginx/4.patch && \
     echo "24d6a51349551e65c16709122307a12ce84274cbbaa224adfa5853aa367608b8  /src/nginx/4.patch" | sha256sum -c - && \
     git apply /src/nginx/4.patch && \
-    wget -q https://raw.githubusercontent.com/zlib-ng/patches/master/nginx/"$ZNP_VER"-zlib-ng.patch -O /src/nginx/5.patch && \
-    echo "bcd0f2fb9723fc1f251f94cead8d5160e767f7d4a04365331396a72a9ba54c6b  /src/nginx/5.patch" | sha256sum -c - && \
-    git apply /src/nginx/5.patch && \
+    git apply /src/patches/nginx/zlib-ng.patch && \
     wget -q https://raw.githubusercontent.com/openresty/openresty/master/patches/nginx/"$ORP_VER"/nginx-"$ORP_VER"-resolver_hosts.patch -O /src/nginx/6.patch && \
     echo "7a3e9ebe4fafaef0a90773ed093bed83c3e753af5983718b0aee50881c32151b  /src/nginx/6.patch" | sha256sum -c - && \
     git apply /src/nginx/6.patch && \
@@ -98,6 +95,8 @@ RUN git-clone-commit.sh https://github.com/nginx/nginx "$NGINX_VER" /src/nginx &
     git apply /src/patches/lua-nginx-module/aws-lc.patch && \
     \
     git-clone-commit.sh https://github.com/nginx/njs "$NJS_VER" /src/njs && \
+    cd /src/njs && \
+    git apply /src/patches/njs/zlib-ng.patch && \
     git-clone-commit.sh https://github.com/kvspb/nginx-auth-ldap "$NAL_VER" /src/nginx-auth-ldap && \
     git-clone-commit.sh https://github.com/vozlt/nginx-module-vts "$VTS_VER" /src/nginx-module-vts && \
     git-clone-commit.sh https://github.com/gabihodoroaga/nginx-ntlm-module "$NNTLM_VER" /src/nginx-ntlm-module
