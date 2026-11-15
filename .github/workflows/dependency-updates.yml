@@ -154,34 +154,6 @@ jobs:
           title: update cs-nginx-bouncer config
           body: https://github.com/crowdsecurity/cs-nginx-bouncer/commits/main/nginx/crowdsec_nginx.conf
 
-  patch-hash-update:
-    name: ${{ matrix.name }}-${{ matrix.pull }}-patch-update
-    runs-on: ubuntu-slim
-    strategy:
-      fail-fast: false
-      matrix:
-        include:
-          - name: nginx
-            repo: nginx/nginx
-            pull: 1756
-          - name: fancyindex
-            repo: aperezdc/ngx-fancyindex
-            pull: 176
-    steps:
-      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
-      - name: update ${{ matrix.name }} ${{ matrix.pull }} patch hash
-        run: |
-          HASH="$(curl -sSfL https://patch-diff.githubusercontent.com/raw/${{ matrix.repo }}/pull/${{ matrix.pull }}.patch | sha256sum | cut -d" " -f1)"
-          sed -i "\|pull/${{ matrix.pull }}.patch|{n;s|[0-9a-f]\{64\}|$HASH|}" Dockerfile
-      - uses: peter-evans/create-pull-request@3ffccacd46053766916f087ce41d627c0b8cf2d1 # v8.1.3
-        with:
-          signoff: true
-          delete-branch: true
-          commit-message: update ${{ matrix.name }} ${{ matrix.pull }} patch hash
-          branch: update-${{ matrix.name }}-${{ matrix.pull }}-patch-hash
-          title: update ${{ matrix.name }} ${{ matrix.pull }} patch hash
-          body: https://github.com/${{ matrix.repo }}/pull/${{ matrix.pull }}
-
   openresty-patches-update:
     runs-on: ubuntu-slim
     steps:
