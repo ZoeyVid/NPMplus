@@ -42,11 +42,11 @@ elif [ -n "$ACME_EMAIL$ACME_EMAIL_FILE$ACME_EAB_KID$ACME_EAB_KID_FILE$ACME_EAB_H
 fi
 
 if [ "$ACME_OCSP_STAPLING" = "true" ]; then
-    certbot-ocsp-fetcher.sh -c /data/tls/certbot/live -o /data/tls/certbot/live --no-reload-webserver --force-update || true
+    ocsp.js /data/tls/certbot/live
     echo
 fi
 if [ "$CUSTOM_OCSP_STAPLING" = "true" ]; then
-    certbot-ocsp-fetcher.sh -c /data/tls/custom -o /data/tls/custom --no-reload-webserver --force-update || true
+    ocsp.js /data/tls/custom
     echo
 fi
 

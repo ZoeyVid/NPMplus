@@ -202,7 +202,6 @@ ENV NODE_OPTIONS=--use-openssl-ca
 ARG LRC_VER=873d072635fd408d81a0abd4187392f3f128ceb9 # v0.1.35rc2
 ARG LRL_VER=3ff6300e68b73ba20e909c7d16bd839aef2e5a4b # v0.15
 ARG LCSB_VER=92a8617ede3b781c33cd39e73734505597e318fd # main
-ARG COF_VER=da93e0cec7fdb1a80f4972f75b3638763d012c0e # main
 ARG CERTBOT_VER=5.10.0
 
 COPY --from=nginx /usr/local/nginx            /usr/local/nginx
@@ -221,7 +220,7 @@ WORKDIR /app
 RUN apk upgrade --no-cache -a && \
     apk add --no-cache tzdata tini dinit llvm-libunwind libc++ \
                        pcre2 luajit zlib-ng brotli zstd lua5.1-cjson libxml2 libldap quickjs-ng-libs libmaxminddb-libs \
-                       curl coreutils findutils grep jq openssl shadow su-exec util-linux-misc \
+                       curl coreutils findutils grep jq openssl shadow su-exec \
                        bash bash-completion nano \
                        logrotate goaccess fcgi \
                        luarocks5.1 git make \
@@ -258,12 +257,9 @@ RUN apk upgrade --no-cache -a && \
     uv pip freeze | tee /etc/pip-constraints.txt && \
     echo "certbot==$CERTBOT_VER" | tee /etc/pip-overrides.txt && \
     \
-    wget -q https://raw.githubusercontent.com/tomwassenberg/certbot-ocsp-fetcher/"$COF_VER"/certbot-ocsp-fetcher -O /usr/local/bin/certbot-ocsp-fetcher.sh && \
-    echo "60148ed2ffef2f1354427d3e080400d008132f8e5fb014f721f5986f438dd621  /usr/local/bin/certbot-ocsp-fetcher.sh" | sha256sum -c - && \
-    sed -i "s|/live||g" /usr/local/bin/certbot-ocsp-fetcher.sh && \
-    \
     ln -s /usr/local/nginx/sbin/nginx /usr/local/bin/nginx && \
     ln -s /app/password-reset.js /usr/local/bin/password-reset.js && \
+    ln -s /app/lib/ocsp.js /usr/local/bin/ocsp.js && \
     ln -s /app/index.js /usr/local/bin/index.js && \
     \
     chmod +x /usr/local/bin/*

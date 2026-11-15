@@ -9,10 +9,11 @@ const nodeExecFilePromises = promisify(nodeExecFile);
 /**
  * @param   {String} cmd
  * @param   {Array}  args
+ * @param   {Boolean} [silent]
  * @returns {Promise}
  */
-const execFile = async (cmd, args) => {
-	logger.debug(`CMD: ${cmd} ${args ? args.join(" ") : ""}`);
+const execFile = async (cmd, args, silent) => {
+	if (!silent) logger.debug(`CMD: ${cmd} ${args ? args.join(" ") : ""}`);
 
 	try {
 		const { stdout, stderr } = await nodeExecFilePromises(cmd, args);

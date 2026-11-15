@@ -2,6 +2,7 @@ import { readFile, rename, rm, writeFile } from "node:fs/promises";
 import { Client, fetch } from "undici";
 import errs from "../lib/error.js";
 import { toAsciiDomain } from "../lib/helpers.js";
+import updateOcspStaples from "../lib/ocsp.js";
 import utils from "../lib/utils.js";
 import { nginx as logger } from "../logger.js";
 import internalProxyHostAccessList from "./proxy-host-access-list.js";
@@ -65,31 +66,10 @@ const internalNginx = {
 	 * @returns {Promise}
 	 */
 	reload: async () => {
-		if (process.env.ACME_OCSP_STAPLING === "true") {
-			try {
-				await utils.execFile("certbot-ocsp-fetcher.sh", [
-					"-c",
-					"/data/tls/certbot/live",
-					"-o",
-					"/data/tls/certbot/live",
-					"--no-reload-webserver",
-					"--quiet",
-				]);
-			} catch {}
-		}
-
-		if (process.env.CUSTOM_OCSP_STAPLING === "true") {
-			try {
-				await utils.execFile("certbot-ocsp-fetcher.sh", [
-					"-c",
-					"/data/tls/custom",
-					"-o",
-					"/data/tls/custom",
-					"--no-reload-webserver",
-					"--quiet",
-				]);
-			} catch {}
-		}
+		const promises = [];
+		if (process.env.ACME_OCSP_STAPLING === "true") promises.push(updateOcspStaples("/data/tls/certbot/live"));
+		if (process.env.CUSTOM_OCSP_STAPLING === "true") promises.push(updateOcspStaples("/data/tls/custom"));
+		await Promise.all(promises);
 
 		const res = await fetch("http://localhost/1/control/config", { method: "PATCH", dispatcher: controlApi });
 		const logs = (await res.json()).logs.join("").trim();
