@@ -182,33 +182,6 @@ jobs:
           title: update ${{ matrix.name }} ${{ matrix.pull }} patch hash
           body: https://github.com/${{ matrix.repo }}/pull/${{ matrix.pull }}
 
-  dynamic_tls_records-update:
-    runs-on: ubuntu-slim
-    steps:
-      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
-      - name: update dynamic_tls_records version
-        id: update
-        run: |
-          git clone --depth 1 https://github.com/nginx-modules/ngx_http_tls_dyn_size ngx_http_tls_dyn_size
-          DTR_VER="$(
-          ls ngx_http_tls_dyn_size/nginx__dynamic_tls_records_*.patch \
-              | sed "s|ngx_http_tls_dyn_size/nginx__dynamic_tls_records_\([0-9.]\+\)+.patch|\1|g" \
-              | sort -V \
-              | tail -1
-          )"
-          sed -i "s|ARG DTR_VER=.*|ARG DTR_VER=$DTR_VER|" Dockerfile
-          DTR_HASH="$(sha256sum ngx_http_tls_dyn_size/nginx__dynamic_tls_records_"$DTR_VER"+.patch | cut -d" " -f1)"
-          sed -i "\|dynamic_tls_records|{n;s|[0-9a-f]\{64\}|$DTR_HASH|}" Dockerfile
-          rm -r ngx_http_tls_dyn_size
-          echo "version=$DTR_VER" >> $GITHUB_OUTPUT
-      - uses: peter-evans/create-pull-request@3ffccacd46053766916f087ce41d627c0b8cf2d1 # v8.1.3
-        with:
-          signoff: true
-          delete-branch: true
-          commit-message: update dynamic_tls_records version to ${{ steps.update.outputs.version }}
-          branch: update-dynamic_tls_records-version
-          title: update dynamic_tls_records version to ${{ steps.update.outputs.version }}
-          body: update dynamic_tls_records version to ${{ steps.update.outputs.version }}
   openresty-patches-update:
     runs-on: ubuntu-slim
     steps:
