@@ -1,0 +1,17 @@
+Origin: https://github.com/aperezdc/ngx-fancyindex/pull/176
+Author: ryuhaneul <luj.moonlight@gmail.com>
+Copyright: Adrian Perez
+License: BSD-2-Clause, see patches/licenses/ngx-fancyindex.txt
+
+diff --git a/ngx_http_fancyindex_module.c b/ngx_http_fancyindex_module.c
+index bc7b22c..a9fa1c0 100644
+--- a/ngx_http_fancyindex_module.c
++++ b/ngx_http_fancyindex_module.c
+@@ -282,6 +282,7 @@ ngx_fancyindex_conf_set_headerfooter(ngx_conf_t *cf, ngx_command_t *cmd, void *c
+ 
+             n -= r;
+         }
++        ngx_close_file(file.fd);
+         item->local.data[item->local.len] = '\0';
+     }
+
