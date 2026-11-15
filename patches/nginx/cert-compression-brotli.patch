@@ -1,3 +1,6 @@
+Origin: own patch (NPMplus)
+Author: Zoey <zoey@z0ey.de>
+
 diff --git a/src/event/ngx_event_openssl.c b/src/event/ngx_event_openssl.c
 index f77265fd6..6438d28be 100644
 --- a/src/event/ngx_event_openssl.c

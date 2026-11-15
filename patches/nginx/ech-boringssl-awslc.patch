@@ -1,3 +1,8 @@
+Origin: own patch (NPMplus), partially based on https://github.com/nginx/nginx/pull/973 ("ECH shared-mode with both BoringSSL and globbing")
+Author: Zoey <zoey@z0ey.de>, Stephen Farrell (sftcd) <stephen.farrell@cs.tcd.ie>
+Copyright: Igor Sysoev, Nginx, Inc.
+License: BSD-2-Clause, see patches/licenses/nginx.txt
+
 diff --git a/src/event/ngx_event_openssl.c b/src/event/ngx_event_openssl.c
 index 0e76b21b3..f77265fd6 100644
 --- a/src/event/ngx_event_openssl.c

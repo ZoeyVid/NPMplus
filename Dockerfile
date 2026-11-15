@@ -28,7 +28,7 @@ ARG NNTLM_VER=3da77b0cb30e517dfee01d7e7f7d649144d24051 # master
 
 
 WORKDIR /src
-COPY patches/*.patch /src
+COPY patches /src/patches
 COPY rootfs/usr/local/bin/git-clone-commit.sh /usr/local/bin/git-clone-commit.sh
 
 RUN apk upgrade --no-cache -a && \
@@ -53,7 +53,7 @@ RUN git config --global advice.detachedHead false && \
 
 RUN git-clone-commit.sh https://github.com/aws/aws-lc "$AWSLC_VER" /src/aws-lc && \
     cd /src/aws-lc && \
-    git apply /src/aws-lc-tls13-cipher-preference.patch && \
+    git apply /src/patches/aws-lc/tls13-cipher-preference.patch && \
     cmake /src/aws-lc -G Ninja -DCMAKE_BUILD_TYPE=Release -DBUILD_SHARED_LIBS=ON -DDISABLE_GO=ON -DDISABLE_PERL=ON -DBUILD_TESTING=OFF && \
     ninja install
 
@@ -84,11 +84,11 @@ RUN git-clone-commit.sh https://github.com/nginx/nginx "$NGINX_VER" /src/nginx &
     wget -q https://raw.githubusercontent.com/openresty/openresty/master/patches/nginx/"$ORP_VER"/nginx-"$ORP_VER"-reuseport_close_unused_fds.patch -O /src/nginx/8.patch && \
     echo "7f1c3eefcd841502515f529e3a0c0a17492e7e44ba5c47fc50ae6a3123d8937f  /src/nginx/8.patch" | sha256sum -c - && \
     git apply -C1 /src/nginx/8.patch && \
-    git apply /src/nginx-footer.patch && \
-    git apply /src/nginx-ip-sni.patch && \
-    git apply /src/nginx-buffer-log.patch && \
-    git apply /src/nginx-ech-boringssl-awslc.patch && \
-    git apply /src/nginx-cert-compression-brotli.patch && \
+    git apply /src/patches/nginx/footer.patch && \
+    git apply /src/patches/nginx/ip-sni.patch && \
+    git apply /src/patches/nginx/buffer-log.patch && \
+    git apply /src/patches/nginx/ech-boringssl-awslc.patch && \
+    git apply /src/patches/nginx/cert-compression-brotli.patch && \
     \
     git-clone-commit.sh https://github.com/HanadaLee/ngx_http_brotli_module "$NB_VER" /src/ngx_http_brotli_module && \
     git-clone-commit.sh https://github.com/HanadaLee/ngx_http_unbrotli_filter_module "$NUB_VER" /src/ngx_http_unbrotli_filter_module && \
@@ -103,7 +103,7 @@ RUN git-clone-commit.sh https://github.com/nginx/nginx "$NGINX_VER" /src/nginx &
     git-clone-commit.sh https://github.com/vision5/ngx_devel_kit "$NDK_VER" /src/ngx_devel_kit && \
     git-clone-commit.sh https://github.com/openresty/lua-nginx-module "$LNM_VER" /src/lua-nginx-module && \
     cd /src/lua-nginx-module && \
-    git apply /src/lua-nginx-module-aws-lc.patch && \
+    git apply /src/patches/lua-nginx-module/aws-lc.patch && \
     \
     git-clone-commit.sh https://github.com/nginx/njs "$NJS_VER" /src/njs && \
     git-clone-commit.sh https://github.com/kvspb/nginx-auth-ldap "$NAL_VER" /src/nginx-auth-ldap && \

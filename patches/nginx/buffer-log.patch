@@ -1,3 +1,6 @@
+Origin: own patch (NPMplus)
+Author: Zoey <zoey@z0ey.de>
+
 diff --git a/src/http/ngx_http_core_module.c b/src/http/ngx_http_core_module.c
 index c75ddb849..0d6f2f0f1 100644
 --- a/src/http/ngx_http_core_module.c

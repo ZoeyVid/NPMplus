@@ -1,3 +1,6 @@
+Origin: own patch (NPMplus)
+Author: Zoey <zoey@z0ey.de>
+
 diff --git a/src/http/ngx_http_special_response.c b/src/http/ngx_http_special_response.c
 index eaf42e399..67a6bf375 100644
 --- a/src/http/ngx_http_special_response.c
