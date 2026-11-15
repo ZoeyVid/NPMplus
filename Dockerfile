@@ -8,7 +8,6 @@ ARG LUAJIT_LIB=/usr/lib
 ARG AWSLC_VER=7821a7544c6dce1bb5fc927aa273d4ee7a536988 # v5.14.0
 
 ARG NGINX_VER=140aa942711868a8daeb95810bc9a81f272ada72 # release-1.31.8
-ARG ORP_VER=1.31.8
 
 ARG NB_VER=df036cc80cd4f5b0bf67b25b0a10d0ee86ba5bdb # master
 ARG NUB_VER=bce69c4295e43ae62e95a9ddff7902baf5b0cbd7 # 1.0.0
@@ -58,19 +57,6 @@ RUN git-clone-commit.sh https://github.com/aws/aws-lc "$AWSLC_VER" /src/aws-lc &
 RUN git-clone-commit.sh https://github.com/nginx/nginx "$NGINX_VER" /src/nginx && \
     cd /src/nginx && \
     git apply /src/patches/nginx/*.patch && \
-    wget -q https://raw.githubusercontent.com/openresty/openresty/master/patches/nginx/"$ORP_VER"/nginx-"$ORP_VER"-resolver_conf_parsing.patch -O /src/nginx/4.patch && \
-    echo "24d6a51349551e65c16709122307a12ce84274cbbaa224adfa5853aa367608b8  /src/nginx/4.patch" | sha256sum -c - && \
-    git apply /src/nginx/4.patch && \
-    wget -q https://raw.githubusercontent.com/openresty/openresty/master/patches/nginx/"$ORP_VER"/nginx-"$ORP_VER"-resolver_hosts.patch -O /src/nginx/6.patch && \
-    echo "7a3e9ebe4fafaef0a90773ed093bed83c3e753af5983718b0aee50881c32151b  /src/nginx/6.patch" | sha256sum -c - && \
-    git apply /src/nginx/6.patch && \
-    sed -i "s|ngx_destroy_pool(r->hosts->pool);|r->hosts->pool->log = r->log; &|" /src/nginx/src/core/ngx_resolver.c && \
-    wget -q https://raw.githubusercontent.com/openresty/openresty/master/patches/nginx/"$ORP_VER"/nginx-"$ORP_VER"-upstream_pipelining.patch -O /src/nginx/7.patch && \
-    echo "f147c9724a0ad33084a3cb51acdafbd4dbd2c40ba5840af1684b7b9595b24ae2  /src/nginx/7.patch" | sha256sum -c - && \
-    git apply /src/nginx/7.patch && \
-    wget -q https://raw.githubusercontent.com/openresty/openresty/master/patches/nginx/"$ORP_VER"/nginx-"$ORP_VER"-reuseport_close_unused_fds.patch -O /src/nginx/8.patch && \
-    echo "7f1c3eefcd841502515f529e3a0c0a17492e7e44ba5c47fc50ae6a3123d8937f  /src/nginx/8.patch" | sha256sum -c - && \
-    git apply -C1 /src/nginx/8.patch && \
     \
     git-clone-commit.sh https://github.com/HanadaLee/ngx_http_brotli_module "$NB_VER" /src/ngx_http_brotli_module && \
     git-clone-commit.sh https://github.com/HanadaLee/ngx_http_unbrotli_filter_module "$NUB_VER" /src/ngx_http_unbrotli_filter_module && \

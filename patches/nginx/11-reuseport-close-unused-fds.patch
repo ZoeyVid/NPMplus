@@ -1,0 +1,45 @@
+Origin: https://github.com/openresty/openresty/blob/master/patches/nginx/1.31.8/nginx-1.31.8-reuseport_close_unused_fds.patch
+Author: OpenResty
+Copyright: Yichun "agentzh" Zhang, OpenResty Inc. and others
+License: BSD-2-Clause, see patches/licenses/openresty.txt
+
+diff --git a/src/core/ngx_connection.c b/src/core/ngx_connection.c
+index 41d86e8e3..e64098c4e 100644
+--- a/src/core/ngx_connection.c
++++ b/src/core/ngx_connection.c
+@@ -1143,6 +1143,12 @@ ngx_close_listening_sockets(ngx_cycle_t *cycle)
+         }
+ #endif
+ 
++#if (NGX_HAVE_REUSEPORT)
++        if (ls[i].fd == (ngx_socket_t) -1) {
++            continue;
++        }
++#endif
++
+         c = ls[i].connection;
+ 
+         if (c) {
+diff --git a/src/event/ngx_event.c b/src/event/ngx_event.c
+index a53192260..64c013249 100644
+--- a/src/event/ngx_event.c
++++ b/src/event/ngx_event.c
+@@ -802,6 +802,18 @@ ngx_event_process_init(ngx_cycle_t *cycle)
+ 
+ #if (NGX_HAVE_REUSEPORT)
+         if (ls[i].reuseport && ls[i].worker != ngx_worker) {
++            ngx_log_debug2(NGX_LOG_DEBUG_CORE, cycle->log, 0,
++                           "closing unused fd:%d listening on %V",
++                           ls[i].fd, &ls[i].addr_text);
++
++            if (ngx_close_socket(ls[i].fd) == -1) {
++                ngx_log_error(NGX_LOG_EMERG, cycle->log, ngx_socket_errno,
++                              ngx_close_socket_n " %V failed",
++                              &ls[i].addr_text);
++            }
++
++            ls[i].fd = (ngx_socket_t) -1;
++
+             continue;
+         }
+ #endif

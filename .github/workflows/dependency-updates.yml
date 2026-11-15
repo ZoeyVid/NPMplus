@@ -154,34 +154,6 @@ jobs:
           title: update cs-nginx-bouncer config
           body: https://github.com/crowdsecurity/cs-nginx-bouncer/commits/main/nginx/crowdsec_nginx.conf
 
-  openresty-patches-update:
-    runs-on: ubuntu-slim
-    steps:
-      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
-      - name: update openresty patches version
-        id: update
-        run: |
-          git clone --depth 1 https://github.com/openresty/openresty openresty
-          ORP_VER="$(
-          ls openresty/patches/nginx \
-              | sort -V \
-              | tail -1
-          )"
-          sed -i "s|ARG ORP_VER=.*|ARG ORP_VER=$ORP_VER|" Dockerfile
-          for ORP_PATCH in resolver_conf_parsing resolver_hosts upstream_pipelining reuseport_close_unused_fds; do
-            ORP_HASH="$(sha256sum openresty/patches/nginx/"$ORP_VER"/nginx-"$ORP_VER"-"$ORP_PATCH".patch | cut -d" " -f1)"
-            sed -i "\|$ORP_PATCH|{n;s|[0-9a-f]\{64\}|$ORP_HASH|}" Dockerfile
-          done
-          rm -r openresty
-          echo "version=$ORP_VER" >> $GITHUB_OUTPUT
-      - uses: peter-evans/create-pull-request@3ffccacd46053766916f087ce41d627c0b8cf2d1 # v8.1.3
-        with:
-          signoff: true
-          delete-branch: true
-          commit-message: update openresty patches version to ${{ steps.update.outputs.version }}
-          branch: update-openresty-patches-version
-          title: update openresty patches version to ${{ steps.update.outputs.version }}
-          body: update openresty patches version to ${{ steps.update.outputs.version }}
   certbot-update:
     runs-on: ubuntu-slim
     steps:
