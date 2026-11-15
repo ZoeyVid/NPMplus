@@ -4,7 +4,7 @@ Copyright: Igor Sysoev, Nginx, Inc.
 License: BSD-2-Clause, see patches/licenses/nginx.txt
 
 diff --git a/src/event/ngx_event_openssl.c b/src/event/ngx_event_openssl.c
-index 670dfefb0..3027ded3e 100644
+index bd411f3af..5a922eb9b 100644
 --- a/src/event/ngx_event_openssl.c
 +++ b/src/event/ngx_event_openssl.c
 @@ -1841,6 +1841,24 @@ ngx_ssl_ecdh_curve(ngx_conf_t *cf, ngx_ssl_t *ssl, ngx_str_t *name)

@@ -2,7 +2,7 @@ Origin: own patch (NPMplus)
 Author: Zoey <zoey@z0ey.de>
 
 diff --git a/src/http/ngx_http_special_response.c b/src/http/ngx_http_special_response.c
-index eaf42e399..67a6bf375 100644
+index 2984ffe42..13b65d880 100644
 --- a/src/http/ngx_http_special_response.c
 +++ b/src/http/ngx_http_special_response.c
 @@ -19,21 +19,21 @@ static ngx_int_t ngx_http_send_refresh(ngx_http_request_t *r);

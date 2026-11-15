@@ -57,12 +57,10 @@ RUN git-clone-commit.sh https://github.com/aws/aws-lc "$AWSLC_VER" /src/aws-lc &
 
 RUN git-clone-commit.sh https://github.com/nginx/nginx "$NGINX_VER" /src/nginx && \
     cd /src/nginx && \
-    git apply /src/patches/nginx/js-mime.patch && \
-    git apply /src/patches/nginx/ssl-sigalgs.patch && \
+    git apply /src/patches/nginx/*.patch && \
     wget -q https://raw.githubusercontent.com/openresty/openresty/master/patches/nginx/"$ORP_VER"/nginx-"$ORP_VER"-resolver_conf_parsing.patch -O /src/nginx/4.patch && \
     echo "24d6a51349551e65c16709122307a12ce84274cbbaa224adfa5853aa367608b8  /src/nginx/4.patch" | sha256sum -c - && \
     git apply /src/nginx/4.patch && \
-    git apply /src/patches/nginx/zlib-ng.patch && \
     wget -q https://raw.githubusercontent.com/openresty/openresty/master/patches/nginx/"$ORP_VER"/nginx-"$ORP_VER"-resolver_hosts.patch -O /src/nginx/6.patch && \
     echo "7a3e9ebe4fafaef0a90773ed093bed83c3e753af5983718b0aee50881c32151b  /src/nginx/6.patch" | sha256sum -c - && \
     git apply /src/nginx/6.patch && \
@@ -73,11 +71,6 @@ RUN git-clone-commit.sh https://github.com/nginx/nginx "$NGINX_VER" /src/nginx &
     wget -q https://raw.githubusercontent.com/openresty/openresty/master/patches/nginx/"$ORP_VER"/nginx-"$ORP_VER"-reuseport_close_unused_fds.patch -O /src/nginx/8.patch && \
     echo "7f1c3eefcd841502515f529e3a0c0a17492e7e44ba5c47fc50ae6a3123d8937f  /src/nginx/8.patch" | sha256sum -c - && \
     git apply -C1 /src/nginx/8.patch && \
-    git apply /src/patches/nginx/footer.patch && \
-    git apply /src/patches/nginx/ip-sni.patch && \
-    git apply /src/patches/nginx/buffer-log.patch && \
-    git apply /src/patches/nginx/ech-boringssl-awslc.patch && \
-    git apply /src/patches/nginx/cert-compression-brotli.patch && \
     \
     git-clone-commit.sh https://github.com/HanadaLee/ngx_http_brotli_module "$NB_VER" /src/ngx_http_brotli_module && \
     git-clone-commit.sh https://github.com/HanadaLee/ngx_http_unbrotli_filter_module "$NUB_VER" /src/ngx_http_unbrotli_filter_module && \

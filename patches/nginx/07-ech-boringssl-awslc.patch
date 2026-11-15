@@ -4,7 +4,7 @@ Copyright: Igor Sysoev, Nginx, Inc.
 License: BSD-2-Clause, see patches/licenses/nginx.txt
 
 diff --git a/src/event/ngx_event_openssl.c b/src/event/ngx_event_openssl.c
-index 0e76b21b3..f77265fd6 100644
+index 5a922eb9b..1d9c77398 100644
 --- a/src/event/ngx_event_openssl.c
 +++ b/src/event/ngx_event_openssl.c
 @@ -13,6 +13,10 @@
@@ -215,7 +215,7 @@ index 0e76b21b3..f77265fd6 100644
  ngx_int_t
  ngx_ssl_ecdh_curve(ngx_conf_t *cf, ngx_ssl_t *ssl, ngx_str_t *name)
  {
-@@ -6146,10 +6326,17 @@ ngx_ssl_get_ech_status(ngx_connection_t *c, ngx_pool_t *pool, ngx_str_t *s)
+@@ -6107,10 +6287,17 @@ ngx_ssl_get_ech_status(ngx_connection_t *c, ngx_pool_t *pool, ngx_str_t *s)
          break;
      }
  
@@ -234,7 +234,7 @@ index 0e76b21b3..f77265fd6 100644
      return NGX_OK;
  }
 diff --git a/src/event/ngx_event_openssl.h b/src/event/ngx_event_openssl.h
-index dbb6d2183..fe4c33ae3 100644
+index 3c32b51dd..49ce8e5a8 100644
 --- a/src/event/ngx_event_openssl.h
 +++ b/src/event/ngx_event_openssl.h
 @@ -47,6 +47,12 @@

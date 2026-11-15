@@ -200,7 +200,7 @@ index 000000000..a21f43887
 +
 +#endif /* ZLIB_NG_COMPAT_H_ */
 diff --git a/src/event/ngx_event_openssl.c b/src/event/ngx_event_openssl.c
-index 3027ded3e..5a922eb9b 100644
+index 670dfefb0..bd411f3af 100644
 --- a/src/event/ngx_event_openssl.c
 +++ b/src/event/ngx_event_openssl.c
 @@ -10,7 +10,7 @@

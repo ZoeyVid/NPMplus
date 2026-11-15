@@ -2,10 +2,10 @@ Origin: own patch (NPMplus)
 Author: Zoey <zoey@z0ey.de>
 
 diff --git a/src/http/ngx_http_request.c b/src/http/ngx_http_request.c
-index 41c1cda04..ecb615d9f 100644
+index c8ada1cec..a5baed109 100644
 --- a/src/http/ngx_http_request.c
 +++ b/src/http/ngx_http_request.c
-@@ -877,6 +877,7 @@ ngx_http_ssl_servername(ngx_ssl_conn_t *ssl_conn, int *ad, void *arg)
+@@ -887,6 +887,7 @@ ngx_http_ssl_servername(ngx_ssl_conn_t *ssl_conn, int *ad, void *arg)
  {
      ngx_int_t                  rc;
      ngx_str_t                  host;
@@ -13,7 +13,7 @@ index 41c1cda04..ecb615d9f 100644
      const char                *servername;
      ngx_connection_t          *c;
      ngx_http_connection_t     *hc;
-@@ -908,7 +909,22 @@ ngx_http_ssl_servername(ngx_ssl_conn_t *ssl_conn, int *ad, void *arg)
+@@ -918,7 +919,22 @@ ngx_http_ssl_servername(ngx_ssl_conn_t *ssl_conn, int *ad, void *arg)
          if (host.data == NULL) {
              ngx_log_debug0(NGX_LOG_DEBUG_HTTP, c->log, 0,
                             "SSL server name: null");
@@ -37,7 +37,7 @@ index 41c1cda04..ecb615d9f 100644
          }
  
      } else {
-@@ -917,11 +933,26 @@ ngx_http_ssl_servername(ngx_ssl_conn_t *ssl_conn, int *ad, void *arg)
+@@ -927,11 +943,26 @@ ngx_http_ssl_servername(ngx_ssl_conn_t *ssl_conn, int *ad, void *arg)
          if (servername == NULL) {
              ngx_log_debug0(NGX_LOG_DEBUG_HTTP, c->log, 0,
                             "SSL server name: null");
