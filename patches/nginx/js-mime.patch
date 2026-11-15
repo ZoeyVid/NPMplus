@@ -1,0 +1,30 @@
+Origin: modified patch (NPMplus), based on https://github.com/nginx/nginx/pull/689 ("MIME: fix .js MIME type")
+Author: Mohamed Akram <mohd.akram@outlook.com>, Zoey <zoey@z0ey.de>
+Copyright: Igor Sysoev, Nginx, Inc.
+License: BSD-2-Clause, see patches/licenses/nginx.txt
+
+diff --git a/src/http/modules/ngx_http_autoindex_module.c b/src/http/modules/ngx_http_autoindex_module.c
+index 8f594d170..f897c908b 100644
+--- a/src/http/modules/ngx_http_autoindex_module.c
++++ b/src/http/modules/ngx_http_autoindex_module.c
+@@ -253,7 +253,7 @@ ngx_http_autoindex_handler(ngx_http_request_t *r)
+         break;
+ 
+     case NGX_HTTP_AUTOINDEX_JSONP:
+-        ngx_str_set(&r->headers_out.content_type, "application/javascript");
++        ngx_str_set(&r->headers_out.content_type, "text/javascript");
+         break;
+ 
+     case NGX_HTTP_AUTOINDEX_XML:
+diff --git a/src/http/modules/ngx_http_charset_filter_module.c b/src/http/modules/ngx_http_charset_filter_module.c
+index e2bbb0cac..24d9f67d5 100644
+--- a/src/http/modules/ngx_http_charset_filter_module.c
++++ b/src/http/modules/ngx_http_charset_filter_module.c
+@@ -128,6 +128,7 @@ static ngx_str_t  ngx_http_charset_default_types[] = {
+     ngx_string("text/xml"),
+     ngx_string("text/plain"),
+     ngx_string("text/vnd.wap.wml"),
++    ngx_string("text/javascript"),
+     ngx_string("application/javascript"),
+     ngx_string("application/rss+xml"),
+     ngx_null_string

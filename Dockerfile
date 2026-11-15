@@ -59,12 +59,8 @@ RUN git-clone-commit.sh https://github.com/aws/aws-lc "$AWSLC_VER" /src/aws-lc &
 
 RUN git-clone-commit.sh https://github.com/nginx/nginx "$NGINX_VER" /src/nginx && \
     cd /src/nginx && \
-    wget -q https://patch-diff.githubusercontent.com/raw/nginx/nginx/pull/689.patch -O /src/nginx/1.patch && \
-    echo "73fdee62748f1624f87015a951a2480fd0d4fe566a81d92b852b51536d954b91  /src/nginx/1.patch" | sha256sum -c - && \
-    git apply /src/nginx/1.patch && \
-    wget -q https://patch-diff.githubusercontent.com/raw/nginx/nginx/pull/1333.patch -O /src/nginx/2.patch && \
-    echo "01bf75b130b8f91075ec913a400a8debfab6da0ac609711c7d412ddbe59dd898  /src/nginx/2.patch" | sha256sum -c - && \
-    git apply /src/nginx/2.patch && \
+    git apply /src/patches/nginx/js-mime.patch && \
+    git apply /src/patches/nginx/ssl-sigalgs.patch && \
     wget -q https://raw.githubusercontent.com/nginx-modules/ngx_http_tls_dyn_size/master/nginx__dynamic_tls_records_"$DTR_VER"%2B.patch -O /src/nginx/3.patch && \
     echo "0aa9c73e7515dbbd48ecc798f7894412c1a50e96e98aee25847e823059faf821  /src/nginx/3.patch" | sha256sum -c - && \
     git apply /src/nginx/3.patch && \

@@ -163,13 +163,7 @@ jobs:
         include:
           - name: nginx
             repo: nginx/nginx
-            pull: 689
-          - name: nginx
-            repo: nginx/nginx
             pull: 1756
-          - name: nginx
-            repo: nginx/nginx
-            pull: 1333
           - name: fancyindex
             repo: aperezdc/ngx-fancyindex
             pull: 176
