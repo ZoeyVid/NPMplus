@@ -1,0 +1,220 @@
+Origin: https://github.com/nginx/nginx/pull/1333
+Author: Jakub Onderka <jakub.onderka@gmail.com>
+Copyright: Igor Sysoev, Nginx, Inc.
+License: BSD-2-Clause, see patches/licenses/nginx.txt
+
+diff --git a/src/event/ngx_event_openssl.c b/src/event/ngx_event_openssl.c
+index 670dfefb0..3027ded3e 100644
+--- a/src/event/ngx_event_openssl.c
++++ b/src/event/ngx_event_openssl.c
+@@ -1841,6 +1841,24 @@ ngx_ssl_ecdh_curve(ngx_conf_t *cf, ngx_ssl_t *ssl, ngx_str_t *name)
+ }
+ 
+ 
++ngx_int_t
++ngx_ssl_sigalgs(ngx_conf_t *cf, ngx_ssl_t *ssl, ngx_str_t *sigalgs)
++{
++    if (sigalgs->len == 0) {
++        return NGX_OK;
++    }
++
++    if (SSL_CTX_set1_sigalgs_list(ssl->ctx, (char *) sigalgs->data) == 0) {
++        ngx_ssl_error(NGX_LOG_EMERG, ssl->log, 0,
++                      "SSL_CTX_set1_sigalgs_list(\"%V\") failed",
++                      sigalgs);
++        return NGX_ERROR;
++    }
++
++    return NGX_OK;
++}
++
++
+ ngx_int_t
+ ngx_ssl_early_data(ngx_conf_t *cf, ngx_ssl_t *ssl, ngx_uint_t enable)
+ {
+diff --git a/src/event/ngx_event_openssl.h b/src/event/ngx_event_openssl.h
+index 010711481..3c32b51dd 100644
+--- a/src/event/ngx_event_openssl.h
++++ b/src/event/ngx_event_openssl.h
+@@ -280,6 +280,7 @@ ngx_int_t ngx_ssl_dhparam(ngx_conf_t *cf, ngx_ssl_t *ssl, ngx_str_t *file);
+ ngx_int_t ngx_ssl_ech_files(ngx_conf_t *cf, ngx_ssl_t *ssl,
+     ngx_array_t *filename);
+ ngx_int_t ngx_ssl_ecdh_curve(ngx_conf_t *cf, ngx_ssl_t *ssl, ngx_str_t *name);
++ngx_int_t ngx_ssl_sigalgs(ngx_conf_t *cf, ngx_ssl_t *ssl, ngx_str_t *sigalgs);
+ ngx_int_t ngx_ssl_early_data(ngx_conf_t *cf, ngx_ssl_t *ssl,
+     ngx_uint_t enable);
+ ngx_int_t ngx_ssl_conf_commands(ngx_conf_t *cf, ngx_ssl_t *ssl,
+diff --git a/src/http/modules/ngx_http_ssl_module.c b/src/http/modules/ngx_http_ssl_module.c
+index f4cb6765d..6cd5e5b38 100644
+--- a/src/http/modules/ngx_http_ssl_module.c
++++ b/src/http/modules/ngx_http_ssl_module.c
+@@ -152,6 +152,13 @@ static ngx_command_t  ngx_http_ssl_commands[] = {
+       offsetof(ngx_http_ssl_srv_conf_t, ecdh_curve),
+       NULL },
+ 
++    { ngx_string("ssl_sigalgs"),
++      NGX_HTTP_MAIN_CONF|NGX_HTTP_SRV_CONF|NGX_CONF_TAKE1,
++      ngx_conf_set_str_slot,
++      NGX_HTTP_SRV_CONF_OFFSET,
++      offsetof(ngx_http_ssl_srv_conf_t, sigalgs),
++      NULL },
++
+     { ngx_string("ssl_protocols"),
+       NGX_HTTP_MAIN_CONF|NGX_HTTP_SRV_CONF|NGX_CONF_1MORE,
+       ngx_conf_set_bitmask_slot,
+@@ -640,6 +647,7 @@ ngx_http_ssl_create_srv_conf(ngx_conf_t *cf)
+      *     sscf->certificate_values = NULL;
+      *     sscf->dhparam = { 0, NULL };
+      *     sscf->ecdh_curve = { 0, NULL };
++     *     sscf->sigalgs = { 0, NULL };
+      *     sscf->client_certificate = { 0, NULL };
+      *     sscf->trusted_certificate = { 0, NULL };
+      *     sscf->crl = { 0, NULL };
+@@ -727,6 +735,8 @@ ngx_http_ssl_merge_srv_conf(ngx_conf_t *cf, void *parent, void *child)
+     ngx_conf_merge_str_value(conf->ecdh_curve, prev->ecdh_curve,
+                          NGX_DEFAULT_ECDH_CURVE);
+ 
++    ngx_conf_merge_str_value(conf->sigalgs, prev->sigalgs, "");
++
+     ngx_conf_merge_str_value(conf->ciphers, prev->ciphers, NGX_DEFAULT_CIPHERS);
+ 
+     ngx_conf_merge_ptr_value(conf->conf_commands, prev->conf_commands, NULL);
+@@ -908,6 +918,10 @@ ngx_http_ssl_merge_srv_conf(ngx_conf_t *cf, void *parent, void *child)
+         return NGX_CONF_ERROR;
+     }
+ 
++    if (ngx_ssl_sigalgs(cf, &conf->ssl, &conf->sigalgs) != NGX_OK) {
++        return NGX_CONF_ERROR;
++    }
++
+     ngx_conf_merge_value(conf->builtin_session_cache,
+                          prev->builtin_session_cache, NGX_SSL_NONE_SCACHE);
+ 
+diff --git a/src/http/modules/ngx_http_ssl_module.h b/src/http/modules/ngx_http_ssl_module.h
+index a078d44f8..16fd19801 100644
+--- a/src/http/modules/ngx_http_ssl_module.h
++++ b/src/http/modules/ngx_http_ssl_module.h
+@@ -43,6 +43,7 @@ typedef struct {
+ 
+     ngx_str_t                       dhparam;
+     ngx_str_t                       ecdh_curve;
++    ngx_str_t                       sigalgs;
+     ngx_str_t                       client_certificate;
+     ngx_str_t                       trusted_certificate;
+     ngx_str_t                       crl;
+diff --git a/src/mail/ngx_mail_ssl_module.c b/src/mail/ngx_mail_ssl_module.c
+index 079d0e773..42e0ddce7 100644
+--- a/src/mail/ngx_mail_ssl_module.c
++++ b/src/mail/ngx_mail_ssl_module.c
+@@ -118,6 +118,13 @@ static ngx_command_t  ngx_mail_ssl_commands[] = {
+       offsetof(ngx_mail_ssl_conf_t, ecdh_curve),
+       NULL },
+ 
++    { ngx_string("ssl_sigalgs"),
++      NGX_MAIL_MAIN_CONF|NGX_MAIL_SRV_CONF|NGX_CONF_TAKE1,
++      ngx_conf_set_str_slot,
++      NGX_MAIL_SRV_CONF_OFFSET,
++      offsetof(ngx_mail_ssl_conf_t, sigalgs),
++      NULL },
++
+     { ngx_string("ssl_protocols"),
+       NGX_MAIL_MAIN_CONF|NGX_MAIL_SRV_CONF|NGX_CONF_1MORE,
+       ngx_conf_set_bitmask_slot,
+@@ -308,6 +315,7 @@ ngx_mail_ssl_create_conf(ngx_conf_t *cf)
+      *     scf->protocols = 0;
+      *     scf->dhparam = { 0, NULL };
+      *     scf->ecdh_curve = { 0, NULL };
++     *     scf->sigalgs = { 0, NULL };
+      *     scf->client_certificate = { 0, NULL };
+      *     scf->trusted_certificate = { 0, NULL };
+      *     scf->crl = { 0, NULL };
+@@ -371,6 +379,8 @@ ngx_mail_ssl_merge_conf(ngx_conf_t *cf, void *parent, void *child)
+     ngx_conf_merge_str_value(conf->ecdh_curve, prev->ecdh_curve,
+                          NGX_DEFAULT_ECDH_CURVE);
+ 
++    ngx_conf_merge_str_value(conf->sigalgs, prev->sigalgs, "");
++
+     ngx_conf_merge_str_value(conf->client_certificate,
+                          prev->client_certificate, "");
+     ngx_conf_merge_str_value(conf->trusted_certificate,
+@@ -505,6 +515,10 @@ ngx_mail_ssl_merge_conf(ngx_conf_t *cf, void *parent, void *child)
+         return NGX_CONF_ERROR;
+     }
+ 
++    if (ngx_ssl_sigalgs(cf, &conf->ssl, &conf->sigalgs) != NGX_OK) {
++        return NGX_CONF_ERROR;
++    }
++
+     ngx_conf_merge_value(conf->builtin_session_cache,
+                          prev->builtin_session_cache, NGX_SSL_NONE_SCACHE);
+ 
+diff --git a/src/mail/ngx_mail_ssl_module.h b/src/mail/ngx_mail_ssl_module.h
+index a0e9a173a..4727c4328 100644
+--- a/src/mail/ngx_mail_ssl_module.h
++++ b/src/mail/ngx_mail_ssl_module.h
+@@ -41,6 +41,7 @@ typedef struct {
+ 
+     ngx_str_t        dhparam;
+     ngx_str_t        ecdh_curve;
++    ngx_str_t        sigalgs;
+     ngx_str_t        client_certificate;
+     ngx_str_t        trusted_certificate;
+     ngx_str_t        crl;
+diff --git a/src/stream/ngx_stream_ssl_module.c b/src/stream/ngx_stream_ssl_module.c
+index c68333a1c..5c9c48442 100644
+--- a/src/stream/ngx_stream_ssl_module.c
++++ b/src/stream/ngx_stream_ssl_module.c
+@@ -161,6 +161,13 @@ static ngx_command_t  ngx_stream_ssl_commands[] = {
+       offsetof(ngx_stream_ssl_srv_conf_t, ecdh_curve),
+       NULL },
+ 
++    { ngx_string("ssl_sigalgs"),
++      NGX_STREAM_MAIN_CONF|NGX_STREAM_SRV_CONF|NGX_CONF_TAKE1,
++      ngx_conf_set_str_slot,
++      NGX_STREAM_SRV_CONF_OFFSET,
++      offsetof(ngx_stream_ssl_srv_conf_t, sigalgs),
++      NULL },
++
+     { ngx_string("ssl_protocols"),
+       NGX_STREAM_MAIN_CONF|NGX_STREAM_SRV_CONF|NGX_CONF_1MORE,
+       ngx_conf_set_bitmask_slot,
+@@ -900,6 +907,7 @@ ngx_stream_ssl_create_srv_conf(ngx_conf_t *cf)
+      *     sscf->certificate_values = NULL;
+      *     sscf->dhparam = { 0, NULL };
+      *     sscf->ecdh_curve = { 0, NULL };
++     *     sscf->sigalgs = { 0, NULL };
+      *     sscf->client_certificate = { 0, NULL };
+      *     sscf->trusted_certificate = { 0, NULL };
+      *     sscf->crl = { 0, NULL };
+@@ -987,6 +995,8 @@ ngx_stream_ssl_merge_srv_conf(ngx_conf_t *cf, void *parent, void *child)
+     ngx_conf_merge_str_value(conf->ecdh_curve, prev->ecdh_curve,
+                          NGX_DEFAULT_ECDH_CURVE);
+ 
++    ngx_conf_merge_str_value(conf->sigalgs, prev->sigalgs, "");
++
+     ngx_conf_merge_str_value(conf->ciphers, prev->ciphers, NGX_DEFAULT_CIPHERS);
+ 
+     ngx_conf_merge_ptr_value(conf->conf_commands, prev->conf_commands, NULL);
+@@ -1162,6 +1172,10 @@ ngx_stream_ssl_merge_srv_conf(ngx_conf_t *cf, void *parent, void *child)
+         return NGX_CONF_ERROR;
+     }
+ 
++    if (ngx_ssl_sigalgs(cf, &conf->ssl, &conf->sigalgs) != NGX_OK) {
++        return NGX_CONF_ERROR;
++    }
++
+     ngx_conf_merge_value(conf->builtin_session_cache,
+                          prev->builtin_session_cache, NGX_SSL_NONE_SCACHE);
+ 
+diff --git a/src/stream/ngx_stream_ssl_module.h b/src/stream/ngx_stream_ssl_module.h
+index 6fdd8f88c..cfbea0961 100644
+--- a/src/stream/ngx_stream_ssl_module.h
++++ b/src/stream/ngx_stream_ssl_module.h
+@@ -42,6 +42,7 @@ typedef struct {
+ 
+     ngx_str_t         dhparam;
+     ngx_str_t         ecdh_curve;
++    ngx_str_t         sigalgs;
+     ngx_str_t         client_certificate;
+     ngx_str_t         trusted_certificate;
+     ngx_str_t         crl;
