@@ -1,3 +1,6 @@
+Origin: own patch (NPMplus)
+Author: Zoey <zoey@z0ey.de>
+
 diff --git a/src/ngx_http_lua_common.h b/src/ngx_http_lua_common.h
 index 28538cc2..ce006401 100644
 --- a/src/ngx_http_lua_common.h

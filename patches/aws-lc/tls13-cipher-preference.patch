@@ -1,3 +1,6 @@
+Origin: own patch (NPMplus)
+Author: Zoey <zoey@z0ey.de>
+
 diff --git a/ssl/s3_both.cc b/ssl/s3_both.cc
 index 2d363eacb..1b46fc9f0 100644
 --- a/ssl/s3_both.cc
