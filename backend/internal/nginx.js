@@ -1,4 +1,4 @@
-import { readFile, rename, rm, writeFile } from "node:fs/promises";
+import { rename, rm, writeFile } from "node:fs/promises";
 import { Client, fetch } from "undici";
 import errs from "../lib/error.js";
 import { toAsciiDomain } from "../lib/helpers.js";
@@ -97,11 +97,6 @@ const internalNginx = {
 	 * @returns {Promise}
 	 */
 	renderLocations: async (host) => {
-		const template = await readFile(`${import.meta.dirname}/../templates/_proxy_host_custom_location.conf`, {
-			encoding: "utf8",
-		});
-
-		const renderEngine = utils.getRenderEngine();
 		let renderedLocations = "";
 
 		for (const [idx, location] of (host.locations || []).entries()) {
@@ -132,7 +127,7 @@ const internalNginx = {
 			} else {
 				location.path = `${utils.assertNginxValue(location.location_type)}${utils.assertNginxValue(location.path)}`;
 			}
-			renderedLocations += await renderEngine.parseAndRender(template, location);
+			renderedLocations += await utils.renderEngine.renderFile("_proxy_host_custom_location.conf", location);
 		}
 
 		return renderedLocations;
@@ -144,11 +139,6 @@ const internalNginx = {
 	 * @returns {Promise}
 	 */
 	renderUpstreams: async (host) => {
-		const template = await readFile(`${import.meta.dirname}/../templates/_upstream.conf`, {
-			encoding: "utf8",
-		});
-
-		const renderEngine = utils.getRenderEngine();
 		let renderedUpstreams = "";
 
 		if (["http", "https", "grpc", "grpcs"].includes(host.forward_scheme)) {
@@ -166,7 +156,7 @@ const internalNginx = {
 				host.forward_upstream_name = host.forward_host;
 			} else {
 				host.forward_upstream_name = `upstream_${host.id}`;
-				renderedUpstreams += await renderEngine.parseAndRender(template, host);
+				renderedUpstreams += await utils.renderEngine.renderFile("_upstream.conf", host);
 			}
 		}
 
@@ -193,7 +183,7 @@ const internalNginx = {
 				location.forward_upstream_name = location.forward_host;
 			} else {
 				location.forward_upstream_name = `upstream_${host.id}_location_${idx}`;
-				renderedUpstreams += await renderEngine.parseAndRender(template, location);
+				renderedUpstreams += await utils.renderEngine.renderFile("_upstream.conf", location);
 			}
 		}
 
@@ -214,8 +204,6 @@ const internalNginx = {
 				if (item[field]) item[field] = `npmplus#raw#${raws.push(item[field]) - 1};`;
 			}
 		}
-
-		const renderEngine = utils.getRenderEngine();
 
 		const filename = internalNginx.getConfigName(host_type, host.id);
 
@@ -306,10 +294,7 @@ const internalNginx = {
 			}
 		}
 
-		const config_text = await renderEngine.parseAndRender(
-			await readFile(`${import.meta.dirname}/../templates/${host_type}.conf`, { encoding: "utf8" }),
-			host,
-		);
+		const config_text = await utils.renderEngine.renderFile(`${host_type}.conf`, host);
 
 		await writeFile(
 			filename,

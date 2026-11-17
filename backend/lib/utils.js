@@ -58,30 +58,24 @@ const reindent = (text) => {
 		.join("\n");
 };
 
+const renderEngine = new Liquid({
+	root: `${import.meta.dirname}/../templates/`,
+	outputEscape: assertNginxValue,
+	cache: true,
+});
+
 /**
- * @returns {Object} Liquid render engine
+ * nginxAccessRule expects the object given to have 2 properties:
+ *
+ * directive  string
+ * address    string
  */
-const getRenderEngine = () => {
-	const renderEngine = new Liquid({
-		root: `${import.meta.dirname}/../templates/`,
-		outputEscape: assertNginxValue,
-	});
+renderEngine.registerFilter("nginxAccessRule", {
+	raw: true,
+	handler: (v) => {
+		if (v.directive && v.address) return `${assertNginxValue(v.directive)} ${assertNginxValue(v.address)};`;
+		return "";
+	},
+});
 
-	/**
-	 * nginxAccessRule expects the object given to have 2 properties:
-	 *
-	 * directive  string
-	 * address    string
-	 */
-	renderEngine.registerFilter("nginxAccessRule", {
-		raw: true,
-		handler: (v) => {
-			if (v.directive && v.address) return `${assertNginxValue(v.directive)} ${assertNginxValue(v.address)};`;
-			return "";
-		},
-	});
-
-	return renderEngine;
-};
-
-export default { assertNginxValue, execFile, getRenderEngine, nginxQuote, reindent };
+export default { assertNginxValue, execFile, nginxQuote, reindent, renderEngine };
