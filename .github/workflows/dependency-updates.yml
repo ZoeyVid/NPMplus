@@ -32,8 +32,7 @@ jobs:
           - name: ngx_http_brotli_module
             arg: NB
             repo: HanadaLee/ngx_http_brotli_module
-            bad: "v1.0.0rc"
-            fine: master
+            filter: ^[0-9.]\+$
           - name: ngx_http_unbrotli_filter_module
             arg: NUB
             repo: HanadaLee/ngx_http_unbrotli_filter_module
@@ -89,6 +88,7 @@ jobs:
           VER="$(
           git ls-remote --tags --refs https://github.com/${{ matrix.repo }} \
               | cut -d/ -f3 \
+              | grep "${{ matrix.filter || '.' }}" \
               | sed 's|rc|~&|I' \
               | sort -V \
               | sed 's|~||' \
