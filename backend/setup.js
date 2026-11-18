@@ -102,7 +102,7 @@ const setupCertbotPlugins = async () => {
 	const plugins = [];
 
 	for (const certificate of await certificateModel.query().where("provider", "letsencrypt")) {
-		if (certificate.npmplus_dns_challenge) {
+		if (certificate.npmplus_dns_provider) {
 			if (dnsPlugins[certificate.npmplus_dns_provider]?.package_name === undefined) {
 				logger.warn(
 					`Unknown DNS provider '${certificate.npmplus_dns_provider}' for Cert #${certificate.id}, skipping Certbot plugin installation`,
