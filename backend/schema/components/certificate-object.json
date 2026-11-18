@@ -11,7 +11,6 @@
 		"domain_names",
 		"expires_on",
 		"npmplus_reuse_key",
-		"npmplus_dns_challenge",
 		"npmplus_dns_provider",
 		"npmplus_propagation_seconds"
 	],
@@ -77,12 +76,6 @@
 		},
 		"npmplus_reuse_key": {
 			"description": "Reuse the private key on renewal",
-			"type": "boolean",
-			"default": false,
-			"example": false
-		},
-		"npmplus_dns_challenge": {
-			"description": "Use the DNS challenge",
 			"type": "boolean",
 			"default": false,
 			"example": false

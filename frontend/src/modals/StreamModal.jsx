@@ -24,7 +24,6 @@ const showStreamModal = (id, isClone) => {
 
 const udpOnlyValues = ({
 	npmplusReuseKey,
-	npmplusDnsChallenge,
 	npmplusDnsProvider,
 	npmplusDnsProviderCredentials,
 	npmplusPropagationSeconds,
