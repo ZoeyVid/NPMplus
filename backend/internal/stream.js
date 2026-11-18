@@ -18,7 +18,7 @@ const cleanStreamData = (data, existingData) => {
 		combinedData.certificate_id = 0;
 	}
 
-	if (combinedData.certificate_id === "new" && !combinedData.npmplus_dns_challenge) {
+	if (combinedData.certificate_id === "new" && !combinedData.npmplus_dns_provider) {
 		throw new errs.ValidationError("New certificates for streams require the DNS challenge");
 	}
 
