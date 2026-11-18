@@ -39,7 +39,6 @@ const DNSCertificateModal = EasyModal.create(({ visible, remove, close, formRef 
 				initialValues={{
 					domainNames: [],
 					provider: "letsencrypt",
-					npmplusDnsChallenge: true,
 					npmplusReuseKey: false,
 				}}
 				onSubmit={onSubmit}

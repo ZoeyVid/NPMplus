@@ -443,24 +443,6 @@
 				{
 					"if": {
 						"properties": {
-							"npmplus_dns_challenge": {
-								"type": "boolean",
-								"const": true
-							}
-						},
-						"required": [
-							"npmplus_dns_challenge"
-						]
-					},
-					"then": {
-						"required": [
-							"npmplus_dns_provider"
-						]
-					}
-				},
-				{
-					"if": {
-						"properties": {
 							"certificate_id": {
 								"const": "new"
 							}
@@ -472,13 +454,13 @@
 					"then": {
 						"if": {
 							"properties": {
-								"npmplus_dns_challenge": {
-									"type": "boolean",
-									"const": true
+								"npmplus_dns_provider": {
+									"type": "string",
+									"minLength": 1
 								}
 							},
 							"required": [
-								"npmplus_dns_challenge"
+								"npmplus_dns_provider"
 							]
 						},
 						"then": {
@@ -660,24 +642,6 @@
 				{
 					"if": {
 						"properties": {
-							"npmplus_dns_challenge": {
-								"type": "boolean",
-								"const": true
-							}
-						},
-						"required": [
-							"npmplus_dns_challenge"
-						]
-					},
-					"then": {
-						"required": [
-							"npmplus_dns_provider"
-						]
-					}
-				},
-				{
-					"if": {
-						"properties": {
 							"certificate_id": {
 								"const": "new"
 							}
@@ -689,13 +653,13 @@
 					"then": {
 						"if": {
 							"properties": {
-								"npmplus_dns_challenge": {
-									"type": "boolean",
-									"const": true
+								"npmplus_dns_provider": {
+									"type": "string",
+									"minLength": 1
 								}
 							},
 							"required": [
-								"npmplus_dns_challenge"
+								"npmplus_dns_provider"
 							]
 						},
 						"then": {
@@ -1250,13 +1214,12 @@
 					"then": {
 						"required": [
 							"domain_names",
-							"npmplus_dns_challenge",
 							"npmplus_dns_provider"
 						],
 						"properties": {
-							"npmplus_dns_challenge": {
-								"type": "boolean",
-								"const": true
+							"npmplus_dns_provider": {
+								"type": "string",
+								"minLength": 1
 							}
 						}
 					}
@@ -1339,13 +1302,12 @@
 					"then": {
 						"required": [
 							"domain_names",
-							"npmplus_dns_challenge",
 							"npmplus_dns_provider"
 						],
 						"properties": {
-							"npmplus_dns_challenge": {
-								"type": "boolean",
-								"const": true
+							"npmplus_dns_provider": {
+								"type": "string",
+								"minLength": 1
 							}
 						}
 					}

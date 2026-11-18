@@ -185,7 +185,7 @@ const ProxyHostModal = EasyModal.create(({ id, isClone, visible, remove, close, 
 												<DomainNamesField
 													disabled={!canManage}
 													isWildcardPermitted={
-														values.certificateId !== "new" || values.npmplusDnsChallenge
+														values.certificateId !== "new" || values.npmplusDnsProvider
 													}
 													dnsProviderWildcardSupported
 													forCertificate={values.certificateId === "new"}

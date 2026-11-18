@@ -119,7 +119,7 @@ const DeadHostModal = EasyModal.create(({ id, isClone, visible, remove, close, f
 												<DomainNamesField
 													disabled={!canManage}
 													isWildcardPermitted={
-														values.certificateId !== "new" || values.npmplusDnsChallenge
+														values.certificateId !== "new" || values.npmplusDnsProvider
 													}
 													dnsProviderWildcardSupported
 													forCertificate={values.certificateId === "new"}

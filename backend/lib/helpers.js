@@ -21,7 +21,6 @@ const convertBoolFieldsToInt = (obj, fields) => {
 
 const certificateFields = [
 	"npmplus_reuse_key",
-	"npmplus_dns_challenge",
 	"npmplus_dns_provider",
 	"npmplus_dns_provider_credentials",
 	"npmplus_propagation_seconds",
