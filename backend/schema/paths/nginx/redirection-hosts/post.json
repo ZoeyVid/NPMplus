@@ -72,9 +72,6 @@
 						"npmplus_reuse_key": {
 							"$ref": "../../../components/certificate-object.json#/properties/npmplus_reuse_key"
 						},
-						"npmplus_dns_challenge": {
-							"$ref": "../../../components/certificate-object.json#/properties/npmplus_dns_challenge"
-						},
 						"npmplus_dns_provider": {
 							"$ref": "../../../components/certificate-object.json#/properties/npmplus_dns_provider"
 						},

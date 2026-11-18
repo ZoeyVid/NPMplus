@@ -38,7 +38,6 @@
 								"properties": {
 									"domain_names": false,
 									"npmplus_reuse_key": false,
-									"npmplus_dns_challenge": false,
 									"npmplus_dns_provider": false,
 									"npmplus_dns_provider_credentials": false,
 									"npmplus_propagation_seconds": false
@@ -48,19 +47,16 @@
 						{
 							"if": {
 								"properties": {
-									"npmplus_dns_challenge": {
-										"type": "boolean",
-										"const": true
+									"npmplus_dns_provider": {
+										"type": "string",
+										"minLength": 1
 									}
 								},
 								"required": [
-									"npmplus_dns_challenge"
+									"npmplus_dns_provider"
 								]
 							},
 							"then": {
-								"required": [
-									"npmplus_dns_provider"
-								],
 								"properties": {
 									"domain_names": {
 										"$ref": "../../../components/certificate-object.json#/properties/domain_names_dns"
@@ -123,9 +119,6 @@
 						"npmplus_reuse_key": {
 							"$ref": "../../../components/certificate-object.json#/properties/npmplus_reuse_key"
 						},
-						"npmplus_dns_challenge": {
-							"$ref": "../../../components/certificate-object.json#/properties/npmplus_dns_challenge"
-						},
 						"npmplus_dns_provider": {
 							"$ref": "../../../components/certificate-object.json#/properties/npmplus_dns_provider"
 						},
@@ -165,7 +158,6 @@
 									"test.example.com"
 								],
 								"npmplus_reuse_key": false,
-								"npmplus_dns_challenge": false,
 								"npmplus_dns_provider": "",
 								"npmplus_propagation_seconds": 0
 							}

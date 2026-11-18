@@ -136,7 +136,7 @@ const RedirectionHostModal = EasyModal.create(({ id, isClone, visible, remove, c
 												<DomainNamesField
 													disabled={!canManage}
 													isWildcardPermitted={
-														values.certificateId !== "new" || values.npmplusDnsChallenge
+														values.certificateId !== "new" || values.npmplusDnsProvider
 													}
 													dnsProviderWildcardSupported
 													forCertificate={values.certificateId === "new"}
