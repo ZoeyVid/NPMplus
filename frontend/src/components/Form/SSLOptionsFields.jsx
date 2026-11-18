@@ -1,6 +1,6 @@
 import cn from "clsx";
 import { Field, useFormikContext } from "formik";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { DNSProviderFields, DomainNamesField } from "src/components";
 import { T } from "src/locale";
 
@@ -14,12 +14,12 @@ export function SSLOptionsFields({ forHttp = true, forProxyHost, color }) {
 		npmplusHttp3Support,
 		hstsEnabled,
 		hstsSubdomains,
-		npmplusDnsChallenge: dnsChallenge,
 		npmplusReuseKey: reuseKey,
 		npmplusMtlsCertificateId,
 		npmplusMtlsVerifyClientOptional,
 		npmplusMtlsBypassAuthRequest,
 	} = v;
+	const [dnsChallenge, setDnsChallenge] = useState(!forHttp || Boolean(v.npmplusDnsProvider));
 
 	const mtlsBypassAuthRequestPossible =
 		npmplusMtlsVerifyClientOptional &&
@@ -29,20 +29,23 @@ export function SSLOptionsFields({ forHttp = true, forProxyHost, color }) {
 	const mtlsRequired = npmplusMtlsCertificateId > 0 && !npmplusMtlsVerifyClientOptional;
 
 	useEffect(() => {
-		if (!forHttp && newCertificate && !dnsChallenge) void setFieldValue("npmplusDnsChallenge", true);
 		if (forHttp && mtlsRequired && !sslForced) void setFieldValue("sslForced", true);
 		if (npmplusMtlsBypassAuthRequest && !mtlsBypassAuthRequestPossible) {
 			void setFieldValue("npmplusMtlsBypassAuthRequest", false);
 		}
 	});
 
-	const handleToggleChange = (e, fieldName) => {
-		void setFieldValue(fieldName, e.target.checked);
-		if (fieldName === "npmplusDnsChallenge" && !e.target.checked) {
+	const handleDnsChallengeChange = (e) => {
+		setDnsChallenge(e.target.checked);
+		if (!e.target.checked) {
 			void setFieldValue("npmplusDnsProvider", undefined);
 			void setFieldValue("npmplusDnsProviderCredentials", undefined);
 			void setFieldValue("npmplusPropagationSeconds", undefined);
 		}
+	};
+
+	const handleToggleChange = (e, fieldName) => {
+		void setFieldValue(fieldName, e.target.checked);
 		if (fieldName === "sslForced" && !e.target.checked) {
 			void setFieldValue("hstsEnabled", false);
 			void setFieldValue("hstsSubdomains", false);
@@ -210,23 +213,19 @@ export function SSLOptionsFields({ forHttp = true, forProxyHost, color }) {
 						</Field>
 					</div>
 					<div className="col-6">
-						<Field name="npmplusDnsChallenge">
-							{({ field }) => (
-								<label className="form-check form-switch mt-1">
-									<input
-										className={dnsChallenge ? toggleEnabled : toggleClasses}
-										type="checkbox"
-										checked={!forHttp || Boolean(dnsChallenge)}
-										onChange={(e) => handleToggleChange(e, field.name)}
-										disabled={!forHttp}
-									/>
+						<label className="form-check form-switch mt-1">
+							<input
+								className={dnsChallenge ? toggleEnabled : toggleClasses}
+								type="checkbox"
+								checked={dnsChallenge}
+								onChange={handleDnsChallengeChange}
+								disabled={!forHttp}
+							/>
 
-									<span className="form-check-label">
-										<T id="domains.use-dns" />
-									</span>
-								</label>
-							)}
-						</Field>
+							<span className="form-check-label">
+								<T id="domains.use-dns" />
+							</span>
+						</label>
 					</div>
 					{forHttp ? null : (
 						<DomainNamesField isWildcardPermitted dnsProviderWildcardSupported forCertificate />

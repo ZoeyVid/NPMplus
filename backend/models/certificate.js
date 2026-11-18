@@ -13,7 +13,7 @@ import userModel from "./user.js";
 
 Model.knex(db());
 
-const boolFields = ["npmplus_reuse_key", "npmplus_dns_challenge"];
+const boolFields = ["npmplus_reuse_key"];
 
 class Certificate extends Model {
 	$beforeInsert() {

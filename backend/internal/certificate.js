@@ -131,8 +131,7 @@ const internalCertificate = {
 			throw new error.ValidationError("DNS challenge and reuse key require a Let's Encrypt certificate");
 		}
 
-		if (!data.npmplus_dns_challenge) {
-			delete data.npmplus_dns_provider;
+		if (!data.npmplus_dns_provider) {
 			delete data.npmplus_dns_provider_credentials;
 			delete data.npmplus_propagation_seconds;
 		}
@@ -160,7 +159,7 @@ const internalCertificate = {
 		try {
 			if (certificate.provider === "letsencrypt") {
 				// Request a new Cert with Certbot. Let the fun begin.
-				if (certificate.npmplus_dns_challenge) {
+				if (certificate.npmplus_dns_provider) {
 					await internalCertificate.requestCertbotWithDnsChallenge(certificate);
 				} else {
 					await internalCertificate.requestCertbot(certificate);
@@ -745,8 +744,8 @@ const internalCertificate = {
 	 * @returns {Promise}
 	 */
 	renewCertbot: async (certificate) => {
-		const dnsPlugin = certificate.npmplus_dns_challenge ? dnsPlugins[certificate.npmplus_dns_provider] : null;
-		if (certificate.npmplus_dns_challenge && !dnsPlugin) {
+		const dnsPlugin = dnsPlugins[certificate.npmplus_dns_provider];
+		if (certificate.npmplus_dns_provider && !dnsPlugin) {
 			throw new error.ValidationError(`Unknown DNS provider '${certificate.npmplus_dns_provider}'`);
 		}
 
