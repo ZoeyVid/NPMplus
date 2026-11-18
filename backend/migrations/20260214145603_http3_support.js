@@ -11,35 +11,13 @@ const migrateName = "npmplus_http3_support";
  * @returns {Promise}
  */
 const up = async (knex) => {
-	const proxyHostHasHttp3Column = await knex.schema.hasColumn("proxy_host", "npmplus_http3_support");
-	const redirectHostHasHttp3Column = await knex.schema.hasColumn("redirection_host", "npmplus_http3_support");
-	const deadHostHasHttp3Column = await knex.schema.hasColumn("dead_host", "npmplus_http3_support");
-
-	if (proxyHostHasHttp3Column && redirectHostHasHttp3Column && deadHostHasHttp3Column) {
-		return;
-	}
-
 	logger.info(`[${migrateName}] Migrating Up...`);
 
-	if (!proxyHostHasHttp3Column) {
-		await knex.schema.table("proxy_host", (proxy_host) => {
-			proxy_host.integer("npmplus_http3_support").notNull().unsigned().defaultTo(0);
+	for (const tableName of ["proxy_host", "redirection_host", "dead_host"]) {
+		await knex.schema.table(tableName, (table) => {
+			table.integer("npmplus_http3_support").notNull().unsigned().defaultTo(0);
 		});
-		logger.info(`[${migrateName}] proxy_host Table altered`);
-	}
-
-	if (!redirectHostHasHttp3Column) {
-		await knex.schema.table("redirection_host", (redirection_host) => {
-			redirection_host.integer("npmplus_http3_support").notNull().unsigned().defaultTo(0);
-		});
-		logger.info(`[${migrateName}] redirection_host Table altered`);
-	}
-
-	if (!deadHostHasHttp3Column) {
-		await knex.schema.table("dead_host", (dead_host) => {
-			dead_host.integer("npmplus_http3_support").notNull().unsigned().defaultTo(0);
-		});
-		logger.info(`[${migrateName}] dead_host Table altered`);
+		logger.info(`[${migrateName}] ${tableName} Table altered`);
 	}
 };
 
