@@ -14,7 +14,7 @@ jobs:
   shellcheck:
     runs-on: ubuntu-slim
     steps:
-      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
-      - uses: ludeeus/action-shellcheck@00b27aa7cb85167568cb48a3838b75f4265f2bca # master
+      - uses: actions/checkout@v7.0.1
+      - uses: ludeeus/action-shellcheck@master
         with:
           check_together: 'yes'
