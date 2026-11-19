@@ -14,7 +14,7 @@ services:
 #      - BPF # required if you set NGINX_QUIC_BPF to true
 #      - PERFMON # required if you set NGINX_QUIC_BPF to true
 #      - NET_ADMIN # required if you set NGINX_QUIC_BPF to true
-#      - SETUID # required if you change PUID/PGID or you enable the inbuilt php-fpm
+#      - SETUID # required if you change PUID/PGID
 #      - CHOWN # required if you change PUID/PGID
 #      - FOWNER # required if you change PUID/PGID
 #      - DAC_OVERRIDE # required if you change PUID/PGID
@@ -83,13 +83,6 @@ services:
 #      - "ECH_ROTATION_INTERVAL=3" # Set how many hours should be between the runs of your ech cron script, default 1
 #      - "GOA=true" # Enables goaccess (and overrides LOGROTATE to true), served under /goaccess of the NPMplus web UI, only reachable for logged in admins, default false --- if you download the GeoLite2-Country.mmdb, GeoLite2-City.mmdb AND GeoLite2-ASN.mmdb file from MaxMind and place them in /opt/npmplus/goaccess/geoip it will automatically enable GeoIP in goaccess after restarting NPMplus (no need to change GOACLA below), you may also enable the geoipupdate container below (please change the timezone)
 #      - "GOACLA=--agent-list --real-os --double-decode --anonymize-ip --anonymize-level=2 --keep-last=7 --with-output-resolver --no-query-string" # Arguments that should be passed to goaccess, default: --agent-list --real-os --double-decode --anonymize-ip --anonymize-level=1 --keep-last=30 --with-output-resolver --no-query-string
-#      - "PHP83=true" # Activate PHP83, default false, supported, but not recommended, you should prefer to use a dedicated php-fpm container
-#      - "PHP83_APKS=php83-curl php83-openssl" # Add php extensions, also enables PHP83, see available packages here: https://pkgs.alpinelinux.org/packages?branch=v3.21&repo=community&arch=x86_64&name=php83-*, default none, requires PHP83
-#      - "PHP84=true" # Activate PHP84, default false, supported, but not recommended, you should prefer to use a dedicated php-fpm container
-#      - "PHP84_APKS=php84-curl php84-openssl" # Add php extensions, also enables PHP84, see available packages here: https://pkgs.alpinelinux.org/packages?branch=v3.21&repo=community&arch=x86_64&name=php84-*, default none, requires PHP84
-#      - "PHP85=true" # Activate PHP85, default false, supported, but not recommended, you should prefer to use a dedicated php-fpm container
-#      - "PHP85_APKS=php85-curl php85-openssl" # Add php extensions, also enables PHP85, see available packages here: https://pkgs.alpinelinux.org/packages?branch=v3.21&repo=community&arch=x86_64&name=php85-*, default none, requires PHP85
-#      - "PHP_APKS=php-pecl-apcu php-pecl-redis" # Add php extensions, see available packages here: https://pkgs.alpinelinux.org/packages?branch=v3.21&repo=community&arch=x86_64&name=php-*, default none, requires PHP83, PHP84 and/or PHP85, not recommended, please use PHP83_APKS, PHP84_APKS or PHP85_APKS
 #      - "INITIAL_ADMIN_EMAIL=<initial@email.tld>" # email of the initial admin user, only used together with INITIAL_ADMIN_PASSWORD on the initial NPMplus start, without both the setup wizard creates the user
 #      - "INITIAL_ADMIN_EMAIL_FILE=/run/secrets/initial_admin_email" # alternative to INITIAL_ADMIN_EMAIL, path to a file (like a docker secret) containing the email address, needs to be readable by PUID/PGID
 #      - "INITIAL_ADMIN_PASSWORD=<initial-password>" # password of the initial admin user, only used together with INITIAL_ADMIN_EMAIL on the initial NPMplus start, without both the setup wizard creates the user

@@ -76,25 +76,6 @@ fi
 if ! nginx -tq; then
     sleep inf
 fi
-if [ "$PHP83" = "true" ]; then
-    if ! PHP_INI_SCAN_DIR=/data/php/83/conf.d php-fpm83 -c /data/php/83 -y /data/php/83/php-fpm.conf -FORt > /dev/null 2>&1; then
-        PHP_INI_SCAN_DIR=/data/php/83/conf.d php-fpm83 -c /data/php/83 -y /data/php/83/php-fpm.conf -FORt
-        sleep inf
-    fi
-fi
-if [ "$PHP84" = "true" ]; then
-    if ! PHP_INI_SCAN_DIR=/data/php/84/conf.d php-fpm84 -c /data/php/84 -y /data/php/84/php-fpm.conf -FORt > /dev/null 2>&1; then
-        PHP_INI_SCAN_DIR=/data/php/84/conf.d php-fpm84 -c /data/php/84 -y /data/php/84/php-fpm.conf -FORt
-        sleep inf
-    fi
-fi
-if [ "$PHP85" = "true" ]; then
-    if ! PHP_INI_SCAN_DIR=/data/php/85/conf.d php-fpm85 -c /data/php/85 -y /data/php/85/php-fpm.conf -FORt > /dev/null 2>&1; then
-        PHP_INI_SCAN_DIR=/data/php/85/conf.d php-fpm85 -c /data/php/85 -y /data/php/85/php-fpm.conf -FORt
-        sleep inf
-    fi
-fi
-
 
 echo "0 */$ECH_ROTATION_INTERVAL * * * cron-ech.sh" | tee "/tmp/crontabs/$(id -un)"
 if [ "$LOGROTATE" = "true" ]; then
@@ -104,9 +85,6 @@ fi
 
 set -- backend nginx crond
 [ "$GOA" = "true" ] && set -- "$@" goaccess
-[ "$PHP83" = "true" ] && set -- "$@" php-fpm83
-[ "$PHP84" = "true" ] && set -- "$@" php-fpm84
-[ "$PHP85" = "true" ] && set -- "$@" php-fpm85
 
 echo "Starting services..."
 exec dinit -s "$@"

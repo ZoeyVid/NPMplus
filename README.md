@@ -129,7 +129,7 @@ labels:
 nginx writes the client IP itself, so bans can not be forged. The request line however is written out as the client sent it, a crafted one can put any value into `target_fqdn`, so do not build whitelists on the domain of an error log alert.
 Failed basic auth attempts are written to both logs, so `crowdsecurity/http-generic-bf` counts each of them twice and bans after roughly half as many failed attempts (3 instead of 6 in quick succession).
 
-## Use of external php-fpm (recommended)
+## Use of php-fpm
 To set it per location: press the gear button, set the scheme to `path`, put in the path and paste the following in the new text field at the bottom, you need to adjust the last line:
 ```
 location ~* [^/]\.php(?:$|/) {
@@ -139,15 +139,11 @@ location ~* [^/]\.php(?:$|/) {
 }
 ```
 
-## Use of inbuilt php-fpm (not recommended)
-1. First enable php inside your compose file (you can add more php extension using envs in the compose file)
-2. Set the forwarding port to the php version you want to use and is supported by NPMplus (like 83/84/85)
-
 ## Comments on some buttons
 - Forward Hostname / IP / Path: if the scheme is set to path you can just put here a path in and nginx works as a file server, otherwise you need to input ip/domain, you can also append a path to the ip/domain like `127.0.0.1/path` to proxy to a subpath.
   - For custom locations with a set path, the path of the location will be stripped. So a request `GET /cdf/abc` to a custom location `/cdf` which proxies to `127.0.0.1/abc` will proxy to `127.0.0.1/abc/abc`, a custom location `/cdf/` which proxies to `127.0.0.1/` will proxy to `127.0.0.1/abc`  and a custom location `/cdf` which proxies to `127.0.0.1` will proxy to `127.0.0.1/cdf/abc`
   - If the scheme is set to `path`, a path ending with a `/` will be searched relative to the custom location (is uses nginx alias) and a path ending without a `/` will be searched relative to the main `/` location (it uses nginx root)
-- Forward Port (optional): port of upstream or php version if scheme is `path`
+- Forward Port (optional): port of upstream, not used if scheme is `path`
 - Send noindex header and block some user agents: This does what is says, it appends a header to all responses which says that the site should not be indexed while blocking requests of crawlers based on the user agent sent with the request
 - Disable Crowdsec Appsec: this will disable crowdsec appsec only for one host/one location, this will only do something if appsec is configured
 - Response Buffering: this effects the connection from the upstream server to NPMplus, with the auto options the upstream can override this for single responses by sending the `X-Accel-Buffering: yes` or `X-Accel-Buffering: no` header, the forced options ignore this header
@@ -345,7 +341,7 @@ If you need to run scripts before NPMplus launches put them under: `/opt/npmplus
 3. If you use crowdsec, and you do **not** [disable sharing in crowdsec](https://docs.crowdsec.net/docs/next/configuration/crowdsec_configuration/#sharing), you need to mention that [this](https://docs.crowdsec.net/docs/central_api/intro/#signal-meta-data) is sent to crowdsec in your privacy policy.
 4. If you're blocking IPs — for example, using access lists, GeoIP filtering, or CrowdSec block lists — make sure to mention this as well.
 5. If GoAccess is enabled, it processes access logs to generate statistics, which are saved on disk for a time you can configure. These statistics include user information (like IPs), so make sure to also mention this.
-6. If you use the PHP-FPM option, error logs from PHP-FPM will also be written to Docker logs. These include user information (like IPs), so make sure to also mention this.
+6. If you use an external PHP-FPM server, it will most likely also write (error) logs. These can include user information (like IPs), so make sure to also mention this.
 7. If you collect any user information (like through other custom nginx modules, modules you can load via env, lua scripts, etc.), also mention it.
 8. If you use the caddy http to https redirect container, you should also mention the data collected by it, since it will also collect (error) logs.
 9. If use use anubis, see here: https://anubis.techaro.lol/docs/admin/configuration/impressum
@@ -365,7 +361,6 @@ If you need to run scripts before NPMplus launches put them under: `/opt/npmplus
 - if used to pypi to download certbot plugins
 - if used to your dns provider for acme dns challenges
 - if used to www.site24x7.com for the reachability check
-- if enabled to the alpine package repositories to install the inbuilt php-fpm and its extensions
 - if enabled to cloudflare to download their IPs
 - if enabled to the crowdsec (container) lapi
 - if enabled to your captcha provider for the crowdsec captcha remediation

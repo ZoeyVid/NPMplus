@@ -449,10 +449,7 @@ export function LocationsFields({ name = "locations", disabled, isClone }) {
 																	{ id: "example" },
 																	{ value: "8081" },
 																)}
-																disabled={
-																	!currentUser?.npmplusIsAdmin &&
-																	item.forwardScheme === "path"
-																}
+																disabled={item.forwardScheme === "path"}
 																{...field}
 															/>
 															{meta.error && (
