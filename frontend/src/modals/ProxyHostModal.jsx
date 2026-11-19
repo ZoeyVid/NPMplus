@@ -306,10 +306,7 @@ const ProxyHostModal = EasyModal.create(({ id, isClone, visible, remove, close, 
 																			{ id: "example" },
 																			{ value: "8081" },
 																		)}
-																		disabled={
-																			!currentUser?.npmplusIsAdmin &&
-																			form.values.forwardScheme === "path"
-																		}
+																		disabled={form.values.forwardScheme === "path"}
 																		{...field}
 																	/>
 
