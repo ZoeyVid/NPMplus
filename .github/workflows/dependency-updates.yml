@@ -101,6 +101,7 @@ jobs:
           echo "version=$VER" >> $GITHUB_OUTPUT
       - uses: peter-evans/create-pull-request@v8.1.3
         with:
+          author: github-actions[bot] <41898282+github-actions[bot]@users.noreply.github.com>
           signoff: true
           delete-branch: true
           commit-message: update ${{ matrix.name }} version to ${{ steps.update.outputs.version }}
@@ -131,6 +132,7 @@ jobs:
           curl -sSfL https://raw.githubusercontent.com/crowdsecurity/lua-cs-bouncer/refs/tags/"$LCSB_VER"/config_example.conf -o rootfs/etc/crowdsec.conf.original
       - uses: peter-evans/create-pull-request@v8.1.3
         with:
+          author: github-actions[bot] <41898282+github-actions[bot]@users.noreply.github.com>
           signoff: true
           delete-branch: true
           commit-message: update lua-cs-bouncer version to ${{ steps.update.outputs.version }}
@@ -147,6 +149,7 @@ jobs:
           sed -i "s|crowdsec-nginx-bouncer/.*\"|crowdsec-nginx-bouncer/version\"|" rootfs/usr/local/nginx/conf/conf.d/crowdsec.conf.original
       - uses: peter-evans/create-pull-request@v8.1.3
         with:
+          author: github-actions[bot] <41898282+github-actions[bot]@users.noreply.github.com>
           signoff: true
           delete-branch: true
           commit-message: update cs-nginx-bouncer config
@@ -167,6 +170,7 @@ jobs:
           echo "version=$CERTBOT_VER" >> $GITHUB_OUTPUT
       - uses: peter-evans/create-pull-request@v8.1.3
         with:
+          author: github-actions[bot] <41898282+github-actions[bot]@users.noreply.github.com>
           signoff: true
           delete-branch: true
           commit-message: update certbot version to ${{ steps.update.outputs.version }}
@@ -187,6 +191,7 @@ jobs:
           echo "version=$(jq -r .last_update_utc /tmp/headers_remove.json)" >> $GITHUB_OUTPUT
       - uses: peter-evans/create-pull-request@v8.1.3
         with:
+          author: github-actions[bot] <41898282+github-actions[bot]@users.noreply.github.com>
           signoff: true
           delete-branch: true
           commit-message: update owasp headers-remove list to ${{ steps.update.outputs.version }}
