@@ -6,17 +6,13 @@
 
 export GOA="${GOA:-false}"
 
-export PHP83="${PHP83:-false}"
-export PHP84="${PHP84:-false}"
-export PHP85="${PHP85:-false}"
-
 export NPM_PORT="${NPM_PORT:-81}"
 export NPM_IPV4_BINDING="${NPM_IPV4_BINDING:-0.0.0.0}"
 if [ "$NPM_IPV4_BINDING" = "0.0.0.0" ] || [ "$NPM_LISTEN_LOCALHOST" = "true" ]; then
     export NPM_IPV4_BINDING="127.0.0.1"
 fi
 
-if (if [ "$GOA" = "true" ]; then [ -f /tmp/goa/index.html ] && [ -S /run/goaccess.sock ]; fi && if [ "$PHP83" = true ]; then cgi-fcgi -bind -connect /run/php83.sock > /dev/null; fi && if [ "$PHP84" = true ]; then cgi-fcgi -bind -connect /run/php84.sock > /dev/null; fi && if [ "$PHP85" = true ]; then cgi-fcgi -bind -connect /run/php85.sock > /dev/null; fi && [ "$(curl -A "NPMplus/healthcheck" -sSk https://"$NPM_IPV4_BINDING":"$NPM_PORT"/api | jq --raw-output .status)" = "OK" ]); then
+if (if [ "$GOA" = "true" ]; then [ -f /tmp/goa/index.html ] && [ -S /run/goaccess.sock ]; fi && [ "$(curl -A "NPMplus/healthcheck" -sSk https://"$NPM_IPV4_BINDING":"$NPM_PORT"/api | jq --raw-output .status)" = "OK" ]); then
 	echo "OK"
 	exit 0
 else

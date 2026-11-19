@@ -201,7 +201,7 @@ RUN apk upgrade --no-cache -a && \
                        pcre2 luajit zlib-ng brotli zstd lua5.1-cjson libxml2 libldap quickjs-ng-libs libmaxminddb-libs \
                        curl coreutils findutils grep jq openssl shadow su-exec \
                        bash bash-completion nano \
-                       logrotate goaccess fcgi \
+                       logrotate goaccess \
                        luarocks5.1 git make \
                        libatomic libstdc++ \
                        python3 uv && \
