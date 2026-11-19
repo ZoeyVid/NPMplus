@@ -99,7 +99,7 @@ services:
 #      - "NGINX_LOAD_VHOST_TRAFFIC_STATUS_MODULE=true" # loads the virtual host traffic status module, requires manual configuration, default false
 #      - "OIDC_REDIRECT_DOMAIN=<domain-ip>[:<port>]" # redirect domain/ip (+ port) for oidc, without scheme and without path, redirect url will be https://$OIDC_REDIRECT_DOMAIN/api/oidc/callback
 #      - "OIDC_ISSUER_URL=https://..." # issuer url for oidc
-#      - "NODE_TLS_REJECT_UNAUTHORIZED=0" # if your issuer uses a self signed cert you may need to set this, but please note that this will disable cert verification for all requests done by the backend (not nginx), like to github for version checks, gravatar, reachability checks or cloudflare for IP updates
+#      - "NODE_EXTRA_CA_CERTS=/data/tls/trusted.crt" # if your issuer uses a self signed cert you may need to set this, mount your self signed cert into NPMplus and point his env to it
 #      - "OIDC_CLIENT_ID=..." # client id for oidc
 #      - "OIDC_CLIENT_ID_FILE=/run/secrets/oidc_client_id" # alternative to OIDC_CLIENT_ID, path to a file (like a docker secret) containing the client id, needs to be readable by PUID/PGID
 #      - "OIDC_CLIENT_SECRET=..." # client secret for oidc
