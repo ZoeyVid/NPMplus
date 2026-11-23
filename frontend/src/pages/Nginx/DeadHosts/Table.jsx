@@ -73,7 +73,13 @@ export default function Table({
 			header: intl.formatMessage({ id: "column.source" }),
 			cell: (info) => {
 				const value = info.row.original;
-				return <DomainsFormatter domains={value.domainNames} createdOn={value.createdOn} />;
+				return (
+					<DomainsFormatter
+						domains={value.domainNames}
+						createdOn={value.createdOn}
+						ssl={value.certificateId > 0}
+					/>
+				);
 			},
 		}),
 		columnHelper.accessor((row) => (row.certificate ? row.certificate.provider : "http-only"), {

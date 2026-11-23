@@ -1,7 +1,7 @@
 import cn from "clsx";
 import { formatDateTime, T } from "src/locale";
 
-const DomainLink = ({ domain, color }) => {
+const DomainLink = ({ domain, color, ssl }) => {
 	// when domain contains a wildcard, make the link go nowhere.
 	let onClick;
 	if (domain.includes("*")) {
@@ -10,7 +10,7 @@ const DomainLink = ({ domain, color }) => {
 	return (
 		<a
 			key={domain}
-			href={`http://${domain}`}
+			href={`${ssl ? "https" : "http"}://${domain}`}
 			target="_blank"
 			rel="noopener"
 			onClick={onClick}
@@ -21,7 +21,7 @@ const DomainLink = ({ domain, color }) => {
 	);
 };
 
-export function DomainsFormatter({ domains, createdOn, niceName, provider, color }) {
+export function DomainsFormatter({ domains, createdOn, niceName, provider, color, ssl }) {
 	const elms = [];
 
 	if (domains.length === 0 && !niceName) {
@@ -39,7 +39,7 @@ export function DomainsFormatter({ domains, createdOn, niceName, provider, color
 		);
 	}
 
-	elms.push(...domains.map((domain) => <DomainLink key={domain} domain={domain} color={color} />));
+	elms.push(...domains.map((domain) => <DomainLink key={domain} domain={domain} color={color} ssl={ssl} />));
 
 	return (
 		<div className="flex-fill">
