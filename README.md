@@ -181,6 +181,7 @@ status_codes:
 
 ### OAuth2Proxy
 1. Set the AUTH_REQUEST_OAUTH2PROXY_UPSTREAM env in the NPMplus compose.yaml and select oauth2proxy in the Auth Request selection, no custom/advanced config/locations needed
+2. Optionally you can pass query parameters (like allowed_groups, allowed_emails or allowed_email_domains) to the /oauth2/auth endpoint of oauth2proxy by putting for example `set $oauth2proxy_query "allowed_groups=admins,devs";` in the text field at the bottom after pressing the gear button (on the details tab or on a custom location), putting it in the advanced tab instead sets it for the entire host and overrides the values set per location
 
 ### VoidAuth
 1. Set the AUTH_REQUEST_VOIDAUTH_UPSTREAM env in the NPMplus compose.yaml and select voidauth in the Auth Request selection, no custom/advanced config/locations needed
