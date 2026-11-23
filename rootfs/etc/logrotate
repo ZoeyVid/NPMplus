@@ -1,7 +1,9 @@
 /data/nginx/logs/*.log {
         daily
+        #maxsize
         rotate 3
         missingok
         notifempty
         copytruncate
+        compress
 }

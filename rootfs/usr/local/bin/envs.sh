@@ -126,6 +126,7 @@ export NGINX_TRUST_RSA_PKCS1="${NGINX_TRUST_RSA_PKCS1:-false}"
 export TRUST_CLOUDFLARE="${TRUST_CLOUDFLARE:-false}"
 export LOGROTATE="${LOGROTATE:-false}"
 export LOGROTATIONS="${LOGROTATIONS:-3}"
+export LOGROTATE_MAXSIZE="${LOGROTATE_MAXSIZE:-}"
 export CERTBOT_RUN_INTERVAL="${CERTBOT_RUN_INTERVAL:-3}"
 export ECH_ROTATION_INTERVAL="${ECH_ROTATION_INTERVAL:-1}"
 export TOKEN_MAX_EXPIRY="${TOKEN_MAX_EXPIRY:-1}"
@@ -597,6 +598,11 @@ fi
 
 if [ -n "$LOGROTATIONS" ] && ! echo "$LOGROTATIONS" | grep -q "^[0-9]\+$"; then
     echo "LOGROTATIONS needs to be a number."
+    sleep inf
+fi
+
+if [ -n "$LOGROTATE_MAXSIZE" ] && ! echo "$LOGROTATE_MAXSIZE" | grep -q "^[0-9]\+[kKMG]\?$"; then
+    echo "LOGROTATE_MAXSIZE needs to be a number optionally followed by k, K, M or G."
     sleep inf
 fi
 

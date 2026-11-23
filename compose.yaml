@@ -77,6 +77,7 @@ services:
 #      - "NGINX_TRUST_RSA_PKCS1=true" # enables rsa_pkcs1_sha512:rsa_pkcs1_sha384:rsa_pkcs1_sha256 sigalgs, default false, enable if your use a RSA key and your client doesn't support RSA-PSS sigalgs
 #      - "LOGROTATE=true" # Enables writing http access logs to /opt/npmplus/nginx/logs/access.log, stream access logs to /opt/npmplus/nginx/logs/stream.log and enables daily logrotation, default false
 #      - "LOGROTATIONS=7" # Set how often the access.log should be rotated until it is deleted, default 3
+#      - "LOGROTATE_MAXSIZE=1G" # Additionally rotates the logs (checked hourly) if they are bigger than this size (k, K, M or G suffix possible), default empty (disabled)
 #      - "TRUST_IP=10.0.0.0/8 192.168.1.5" # Space separated list of reverse proxy IPs/subnets to trust for the X-Forwarded-For header, so nginx will see the real client IPs (other X-Forwarded-* headers are ignored, so they should connect via https), default empty
 #      - "TRUST_CLOUDFLARE=true" # Enables fetching/whitelisting IPs from cloudflare, so nginx will see the real client IPs, default false
 #      - "CERTBOT_RUN_INTERVAL=72" # Set how many hours should be between certbot trying to renew your certs if needed, default 3

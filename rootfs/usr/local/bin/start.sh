@@ -360,6 +360,7 @@ fi
 
 if [ "$LOGROTATE" = "true" ]; then
     sed -i "s|rotate [0-9]\+|rotate $LOGROTATIONS|g" /etc/logrotate
+    if [ -n "$LOGROTATE_MAXSIZE" ]; then sed -i "s|#maxsize|maxsize $LOGROTATE_MAXSIZE|g" /etc/logrotate; fi
     sed -i "s|access_log off; # http|access_log /data/nginx/logs/access.log alog;|g" /usr/local/nginx/conf/nginx.conf
     sed -i "s|access_log off; # stream|access_log /data/nginx/logs/stream.log slog;|g" /usr/local/nginx/conf/nginx.conf
     sed -i "s|#error_log|error_log|g" /usr/local/nginx/conf/nginx.conf
@@ -377,6 +378,7 @@ if [ "$LOGROTATE" = "true" ]; then
     if [ ! -L /data/nginx/stream.log ]; then rm -f /data/nginx/stream.log; ln -rs /data/nginx/logs/stream.log /data/nginx/stream.log; fi
     if [ ! -L /data/nginx/error.log ]; then rm -f /data/nginx/error.log; ln -rs /data/nginx/logs/error.log /data/nginx/error.log; fi
     rm -f /data/logrotate.state
+    find /data/nginx/logs -name "*.log.[0-9]*" ! -name "*.gz" -exec gzip {} +
 fi
 
 find /data/tls \
