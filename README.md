@@ -109,7 +109,7 @@ labels:
 11. Redeploy the `compose.yaml`
 12. It is recommended to block at the earliest possible point, so if possible set up a firewall bouncer: https://docs.crowdsec.net/u/bouncers/firewall, make sure to also include the docker iptables in the firewall bouncer config
 13. Note that when crowdsec appsec is enabled for a host/location, request bodies will always be buffered, so setting `proxy_request_buffering` to off will not work there, response buffering is not affected
-14. Note that appsec blocks requests with a body bigger than 10 MiB by default, so you may want to enable "Disable Crowdsec Appsec" for hosts/locations which receive bigger uploads (like Nextcloud)
+14. Note that appsec blocks requests with a body bigger than 10 MiB by default, so you may want to enable "Disable CrowdSec AppSec" for hosts/locations which receive bigger uploads (like Nextcloud)
 
 ## Bot detection (optional)
 Bot detection challenges every request without a valid cookie, so clients which can not solve it, like apps, get blocked. Full documentation: https://doc.crowdsec.net/docs/next/appsec/bot_detection/enable, the short version:
@@ -145,7 +145,7 @@ location ~* [^/]\.php(?:$|/) {
   - If the scheme is set to `path`, a path ending with a `/` will be searched relative to the custom location (is uses nginx alias) and a path ending without a `/` will be searched relative to the main `/` location (it uses nginx root)
 - Forward Port (optional): port of upstream, not used if scheme is `path`
 - Send noindex header and block some user agents: This does what is says, it appends a header to all responses which says that the site should not be indexed while blocking requests of crawlers based on the user agent sent with the request
-- Disable Crowdsec Appsec: this will disable crowdsec appsec only for one host/one location, this will only do something if appsec is configured
+- Disable CrowdSec AppSec: this will disable crowdsec appsec only for one host/one location, this will only do something if appsec is configured
 - Response Buffering: this effects the connection from the upstream server to NPMplus, with the auto options the upstream can override this for single responses by sending the `X-Accel-Buffering: yes` or `X-Accel-Buffering: no` header, the forced options ignore this header
   - On (auto): responses are buffered in RAM and if needed on disk, most time you want to keep this
   - On (forced): like On (auto), you may want to use this if the upstream sends `X-Accel-Buffering: no` for responses which do not need it, note that realtime responses of this upstream may arrive delayed

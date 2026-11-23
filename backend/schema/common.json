@@ -174,7 +174,7 @@
 			"example": false
 		},
 		"npmplus_disable_crowdsec_appsec": {
-			"description": "Disable Crowdsec Appsec",
+			"description": "Disable CrowdSec AppSec",
 			"type": "boolean",
 			"default": false,
 			"example": false
