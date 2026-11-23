@@ -21,7 +21,7 @@ EOF
 git show "$NEW:$UP/en.json" > "$TMP/en.json" || exit 1
 
 for code in en $(git ls-tree --full-tree --name-only "$NEW:$UP" | sed -n 's/\.json$//p' | grep -vx -e en -e lang-list); do
-	ui="$SRC/ui/$(echo "$code" | sed "s/^zh$/zh-cn/").json"
+	ui="$SRC/ui/$(echo "$code" | sed -e "s/^zh$/zh-cn/" -e "s/^pt$/pt-pt/").json"
 
 	if [ ! -s "$ui" ]; then
 		echo "New language: $code"
@@ -29,7 +29,7 @@ for code in en $(git ls-tree --full-tree --name-only "$NEW:$UP" | sed -n 's/\.js
 		git show "$NEW:$UP/lang-list.json" > "$TMP/list.json"
 		jq --tab --sort-keys --arg code "$code" --slurpfile up "$TMP/list.json" \
 			--argjson rtl "$(git show "$NEW:frontend/src/locale/IntlProvider.tsx" | grep -q "rtlLocales = .*\"$code\"" && echo true || echo false)" \
-			'.[$code] = {flag: $code, name: $code} + (first($up[0] | to_entries[] | select(.key | startswith("locale-\($code)-")) | {flag: (.key | split("-")[2] | ascii_downcase), name: .value.defaultMessage}) // {}) + if $rtl then {rtl: true} else {} end' \
+			'.[$code] = {flag: $code, name: $code} + (first($up[0] | to_entries[] | select(.key | ascii_downcase | . == "locale-\($code)" or startswith("locale-\($code)-")) | {flag: (.key | split("-") | last | ascii_downcase), name: .value.defaultMessage}) // {}) + if $rtl then {rtl: true} else {} end' \
 			"$SRC/lang-list.json" > "$TMP/out.json" && mv "$TMP/out.json" "$SRC/lang-list.json"
 	fi
 

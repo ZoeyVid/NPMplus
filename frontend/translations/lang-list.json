@@ -72,7 +72,11 @@
 		"flag": "pl",
 		"name": "Polski"
 	},
-	"pt": {
+	"pt-br": {
+		"flag": "br",
+		"name": "Português (Brasileiro)"
+	},
+	"pt-pt": {
 		"flag": "pt",
 		"name": "Português (Europeu)"
 	},

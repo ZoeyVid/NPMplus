@@ -8,6 +8,7 @@ NPMplus is a fork of [Nginx Proxy Manager](https://github.com/NginxProxyManager/
 |---|---|---|
 | UI strings | `frontend/src/locale/src/<code>.json` | `frontend/translations/ui/<code>.json` |
 | Simplified Chinese | `zh` | `zh-cn` |
+| European Portuguese | `pt` | `pt-pt` |
 | Format | `"key": { "defaultMessage": "text" }` | `"key": "text"`, tabs, keys sorted with `sort-locale.sh` |
 | Help docs | `frontend/src/locale/src/HelpDoc/<code>/*.md` and `index.ts` | not used |
 | Language list | `"locale-<code>-<REGION>": { "defaultMessage": "<name>" }` | `"<code>": { "flag": "<region>", "name": "<native name>" }` |
@@ -71,7 +72,7 @@ Everything else is printed:
 The script handles a new upstream language like an update with an empty old version. It:
 
 - creates `ui/<code>.json` from the upstream file, without the keys NPMplus rewords (they are printed)
-- adds `<code>` to `lang-list.json`: `flag` is the region of the upstream key `locale-<code>-<REGION>` in lowercase, `name` is its `defaultMessage` and `rtl` is set if upstream lists the language in `rtlLocales`
+- adds `<code>` to `lang-list.json`: `flag` is the region of the upstream key `locale-<code>-<REGION>` (or `locale-<code>` if `<code>` already contains the region, for example `pt-br`) in lowercase, `name` is its `defaultMessage` and `rtl` is set if upstream lists the language in `rtlLocales`
 
 Check by hand:
 

@@ -383,6 +383,12 @@
     "name": "Name.com",
     "package_name": "certbot-dns-namecom"
   },
+  "neostrada": {
+    "credentials": "dns_neostrada_api_key = your-api-key",
+    "full_plugin_name": "dns-neostrada",
+    "name": "Neostrada",
+    "package_name": "certbot-dns-neostrada"
+  },
   "netcup": {
     "credentials": "dns_netcup_customer_id  = 123456\ndns_netcup_api_key      = 0123456789abcdef0123456789abcdef01234567\ndns_netcup_api_password = abcdef0123456789abcdef01234567abcdef0123",
     "full_plugin_name": "dns-netcup",
