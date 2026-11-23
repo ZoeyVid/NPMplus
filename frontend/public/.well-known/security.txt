@@ -2,14 +2,21 @@
 Hash: SHA512
 
 Contact: mailto:zoeyvid@zvcdn.de
+Contact: mailto:zoey@z0ey.de
+# Key for zoeyvid@zvcdn.de
 Encryption: https://zvcdn.de/publickey.asc
+# Key for zoey@z0ey.de
+Encryption: https://github.com/Zoey2936.gpg
 Preferred-Languages: de, en
 Canonical: https://raw.githubusercontent.com/ZoeyVid/NPMplus/refs/heads/develop/frontend/public/.well-known/security.txt
 Canonical: https://github.com/ZoeyVid/NPMplus/security
+
 -----BEGIN PGP SIGNATURE-----
 
-iHUEARYKAB0WIQQZsl0LheH0mUz2hsVuOQn3bP/+fAUCZ3+ZwQAKCRBuOQn3bP/+
-fHOpAP9IW1mFtZ+EvFvJiqwaRIcwix5AkIJZewQRscDjRrS0QAD/X6mBQ/2uCCbS
-QDl1VlLrb0pZv7gWsRPj4mDTzB1yRgw=
-=CgAR
+iHUEARYKAB0WIQQZsl0LheH0mUz2hsVuOQn3bP/+fAUCawSuzAAKCRBuOQn3bP/+
+fIzQAQDPmoZjk3qQijPh78haZ2I8md54Wnp0us1uY0qf56RLdAEAu4JRqB3bk3oi
+AauyaQbOLRXWjf+Jd4cxeit9fAyQPAOIdQQBFgoAHRYhBMuBVBRpKq2x7d5pKQKj
+kZ609nMoBQJrBK7MAAoJEAKjkZ609nMok7sA/0IJJEAJEnYTdCxfHcOB9x8YZMsy
+iYAjzKYgh+MQIrbRAPsF/nPzZjuizlelCxaDfa0GFoJ/fhNLe53swPxhp3C1CA==
+=zqyr
 -----END PGP SIGNATURE-----
