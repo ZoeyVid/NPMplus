@@ -30,7 +30,7 @@
 		"swagger-ui-react": "5.36.0"
 	},
 	"devDependencies": {
-		"@biomejs/biome": "2.6.8",
+		"@biomejs/biome": "2.6.9",
 		"@vitejs/plugin-react": "6.3.0",
 		"vite": "8.3.8"
 	}
