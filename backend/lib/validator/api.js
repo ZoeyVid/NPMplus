@@ -51,8 +51,14 @@ const apiValidator = (schema, payload, dataVar /*, description*/) => {
 
 	if (validate(data)) return data;
 
-	const message = ajv.errorsText(validate.errors, { dataVar });
-	const err = new errs.ValidationError(message);
+	const err = new errs.ValidationError(
+		validate.errors
+			.map(
+				({ keyword, instancePath, message, params }) =>
+					`${dataVar ?? "data"}${instancePath} ${message}${keyword === "additionalProperties" ? `: ${params.additionalProperty}` : ""}`,
+			)
+			.join(", "),
+	);
 	err.debug = { validationErrors: validate.errors, payload };
 	throw err;
 };
