@@ -12,9 +12,11 @@ concurrency:
   cancel-in-progress: false
 jobs:
   jsoncheck:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-slim
     steps:
       - uses: actions/checkout@v7.0.1
-      - uses: limitusus/json-syntax-check@v2.0.3
-        with:
-          pattern: "\\.json"
+      - run: |
+          for file in $(find * -name "*.json"); do
+            jq empty "$file" || { echo "::error file=$file::invalid JSON"; failed=1; }
+          done
+          exit ${failed:-0}
