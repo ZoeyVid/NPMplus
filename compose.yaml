@@ -2,9 +2,8 @@ name: npmplus
 services:
   npmplus:
     container_name: npmplus
-    restart: unless-stopped
     image: docker.io/zoeyvid/npmplus:latest # or ghcr.io/zoeyvid/npmplus:latest
-    pull_policy: always
+    restart: unless-stopped
     network_mode: host
     cap_drop:
       - ALL
@@ -29,10 +28,6 @@ services:
 #      - 94.140.15.16 # Public AdGuard DNS
 #      - 2a10:50c0::bad1:ff # Public AdGuard DNS
 #      - 2a10:50c0::bad2:ff # Public AdGuard DNS
-    volumes:
-      - "/opt/npmplus:/data"
-#      - "/var/www:/var/www" # optional, if you want to use NPMplus directly as a webserver for html/php
-#      - "/path/to/old/npm/letsencrypt/folder:/etc/letsencrypt" # Only needed for initial migration from original nginx-proxy-manager to this fork, remove after migration
     environment:
       - "TZ=your-timezone" # set timezone, required, set it to one of the values from the "TZ identifier" https://en.wikipedia.org/wiki/List_of_tz_database_time_zones#List
 #      - "ACME_EMAIL=your-email" # email address to use for acme, required for zerossl and google public ca
@@ -123,6 +118,10 @@ services:
 #      - cookie_secret
 #      - oidc_client_id
 #      - oidc_client_secret
+    volumes:
+      - "/opt/npmplus:/data"
+#      - "/var/www:/var/www" # optional, if you want to use NPMplus directly as a webserver for html/php
+#      - "/path/to/old/npm/letsencrypt/folder:/etc/letsencrypt" # Only needed for initial migration from original nginx-proxy-manager to this fork, remove after migration
 
 # This can be used to enable crowdsec, see README for a guide
 #  crowdsec:
@@ -174,11 +173,11 @@ services:
 #      - "GEOIPUPDATE_LICENSE_KEY=<your-license-key>" # needs to be changed
 #      - "GEOIPUPDATE_LICENSE_KEY_FILE=/run/secrets/geoipupdate_license_key" # alternative to GEOIPUPDATE_LICENSE_KEY, path to a file (like a docker secret) containing the license key
 #      - "GEOIPUPDATE_FREQUENCY=24"
-#    volumes:
-#      - "/opt/npmplus/goaccess/geoip:/usr/share/GeoIP"
 #    secrets: # optional, mounts the secrets defined at the end of this file to /run/secrets/<name>, requires the matching *_FILE env to be set
 #      - geoipupdate_account_id
 #      - geoipupdate_license_key
+#    volumes:
+#      - "/opt/npmplus/goaccess/geoip:/usr/share/GeoIP"
 
 # This can be used with DISABLE_HTTP=true, to force HTTPS redirects for every host
 #  npmplus-caddy:
@@ -191,6 +190,7 @@ services:
 #      - "80:80"
 #    environment:
 #      - "TZ=your-timezone"
+
 
 # This can be used together with the secrets of the npmplus and geoipupdate services and the matching *_FILE envs, make sure the npmplus secrets are readable by your set PUID/PGID, do not put them inside /opt/npmplus
 #secrets:
