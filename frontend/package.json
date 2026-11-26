@@ -23,7 +23,7 @@
 		"react": "19.3.1",
 		"react-bootstrap": "2.10.10",
 		"react-dom": "19.3.1",
-		"react-intl": "12.2.1",
+		"react-intl": "12.2.2",
 		"react-router": "8.5.3",
 		"react-select": "5.10.2",
 		"react-toastify": "11.2.0",
@@ -32,6 +32,6 @@
 	"devDependencies": {
 		"@biomejs/biome": "2.6.9",
 		"@vitejs/plugin-react": "6.3.0",
-		"vite": "8.3.8"
+		"vite": "8.4.0"
 	}
 }
