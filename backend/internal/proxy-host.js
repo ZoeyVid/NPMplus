@@ -56,7 +56,6 @@ const replaceLocationsAndAccessLists = async (trx, proxyHostId, data) => {
 const cleanForwardOptions = (item) => {
 	const scheme = item.forward_scheme ?? "http";
 	if (scheme !== "empty") {
-		if (!item.forward_host) throw new errs.ValidationError(`Forward host is required for the ${scheme} scheme`);
 		if (!["http", "https"].includes(scheme)) {
 			item.npmplus_disable_proxy_request_buffering = false;
 			item.npmplus_proxy_response_buffering = "on_auto";
@@ -128,7 +127,6 @@ const internalProxyHost = {
 		if (createCertificate) {
 			thisData.certificate_id = (await internalCertificate.createQuickCertificate(access, thisData)).id;
 		}
-		internalProxyHost.validateLoadBalancing(thisData);
 		let row;
 		try {
 			await proxyHostModel.transaction(async (trx) => {

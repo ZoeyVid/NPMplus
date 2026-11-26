@@ -117,28 +117,38 @@ const internalHost = {
 
 	checkForwardTarget: (access, data, existingData = {}) => {
 		const items = [[{ ...existingData, ...data }, existingData]];
+
 		for (const location of data.locations ?? []) {
-			items.push([
-				location,
+			const existingLocation =
 				existingData.locations?.find(
 					(existing) =>
 						existing.path === location.path && existing.location_type === (location.location_type ?? ""),
-				) ?? {},
-			]);
+				) ?? {};
+
+			items.push([{ ...existingLocation, ...location }, existingLocation]);
 		}
+
 		const privileged = (host) => host?.toLowerCase().startsWith("unix:") || host?.includes("$");
+
 		for (const [item, existing] of items) {
+			const upstreamServers = item.npmplus_upstream_servers ?? [];
+			const existingUpstreamServers = existing.npmplus_upstream_servers ?? [];
+			const firstUpstream = upstreamServers[0];
+			const existingFirstUpstream = existingUpstreamServers[0];
+
 			if (
 				item.forward_scheme === "path" &&
 				(existing.forward_scheme !== "path" ||
-					item.forward_host !== existing.forward_host ||
-					item.forward_port !== existing.forward_port)
+					firstUpstream?.host !== existingFirstUpstream?.host ||
+					firstUpstream?.port !== existingFirstUpstream?.port)
 			) {
 				access.canAdmin();
 			}
-			if (privileged(item.forward_host) && item.forward_host !== existing.forward_host) access.canAdmin();
-			if (privileged(item.forwarding_host) && item.forwarding_host !== existing.forwarding_host) {
-				access.canAdmin();
+
+			for (const [index, server] of upstreamServers.entries()) {
+				if (privileged(server.host) && server.host !== existingUpstreamServers[index]?.host) {
+					access.canAdmin();
+				}
 			}
 		}
 	},

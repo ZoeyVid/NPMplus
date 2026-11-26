@@ -50,6 +50,7 @@ export const createUiLocation = (item) => ({
 			failTimeout: null,
 			backup: false,
 			down: false,
+			custom: false,
 		},
 	],
 	npmplusAccessListIds: [],

@@ -83,8 +83,7 @@ const migrateUp = async () => {
 			])
 			.delete();
 	}
-	const [completedMigrations, pendingMigrations] =
-	await db().migrate.list(migrationConfig);
+	const [completedMigrations, pendingMigrations] = await db().migrate.list(migrationConfig);
 
 	const shouldBackup = isSqlite() && completedMigrations.length > 0 && pendingMigrations.length > 0;
 

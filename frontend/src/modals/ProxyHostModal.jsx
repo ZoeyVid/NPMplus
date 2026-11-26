@@ -54,24 +54,23 @@ const ProxyHostModal = EasyModal.create(({ id, isClone, visible, remove, close, 
 				? data.npmplusUpstreamServers
 				: [
 						{
-							host: data?.forwardHost || "",
-							port: data?.forwardPort ?? null,
-							weight: 1,
-							maxFails: 1,
-							failTimeout: 10,
+							host: "",
+							port: null,
 							backup: false,
-							enabled: true,
+							down: false,
+							custom: false,
 						},
 					],
-			npmplusAccessListIds: data?.accessLists.map((accessList) => accessList.id),
+			npmplusForwardPath: data?.npmplusForwardPath,
+			npmplusAccessListIds: data?.accessLists?.map((accessList) => accessList.id) ?? [],
 			npmplusAccessListType: data?.npmplusAccessListType,
 			// Locations tab
 			locations: data?.locations.map(({ id: locationId, proxyHostId, accessLists, ...location }) =>
 				createUiLocation({
 					...location,
-					forwardPort: location.forwardPort || "",
 					advancedConfig: stripAdminConfig ? "" : location.advancedConfig,
-					npmplusAccessListIds: accessLists.map((accessList) => accessList.id),
+					npmplusAccessListIds:
+						accessLists?.map((accessList) => accessList.id) ?? location.npmplusAccessListIds ?? [],
 				}),
 			),
 			// SSL tab
