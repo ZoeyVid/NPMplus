@@ -211,7 +211,7 @@ importers:
         version: 6.2.18
       knex:
         specifier: 3.3.0
-        version: 3.3.0(mysql2@3.24.6(@types/node@26.6.6))(pg@8.23.1)
+        version: 3.3.0(mysql2@3.24.6(@types/node@26.6.11))(pg@8.23.1)
       liquidjs:
         specifier: 10.30.1
         version: 10.30.1
@@ -220,10 +220,10 @@ importers:
         version: 2.5.0
       mysql2:
         specifier: 3.24.6
-        version: 3.24.6(@types/node@26.6.6)
+        version: 3.24.6(@types/node@26.6.11)
       objection:
         specifier: 4.4.4
-        version: 4.4.4(knex@3.3.0(mysql2@3.24.6(@types/node@26.6.6))(pg@8.23.1))
+        version: 4.4.4(knex@3.3.0(mysql2@3.24.6(@types/node@26.6.11))(pg@8.23.1))
       openid-client:
         specifier: 6.9.1
         version: 6.9.1
@@ -362,8 +362,8 @@ packages:
   '@types/json-schema@7.0.15':
     resolution: {integrity: sha512-5+fP8P8MFNC+AyZCDxrB2pkZFPGzqQWUzpSeuuVLvm8VMcorNYavBqoFcxK8bQz4Qsbn4oUEEem4wDLfcysGHA==}
 
-  '@types/node@26.6.6':
-    resolution: {integrity: sha512-MzQj+8Kx3XI40OmUAE6Qoh58ZMNstNNMwn2nfd3qWsfe7nDNSqJNzes4njhz6AHwrSHOffSLwXU6yb474Q4aog==}
+  '@types/node@26.6.11':
+    resolution: {integrity: sha512-uUyQ2XLEz+EXh34lmS3GhKrkqn/8FU7KUiKRpk347At2bmnMVWss45yz8b4FG/tUtmV1tV/+TVkITItPROyeeQ==}
 
   abort-controller@3.0.0:
     resolution: {integrity: sha512-h8lQ8tacZYnR3vNQTgibj+tODHI5/+l06Au2Pcriv/Gmet0eaj4TwWH41sO9wnHDiQsEj19q0drzdWdeAHtweg==}
@@ -433,8 +433,8 @@ packages:
       bare-abort-controller:
         optional: true
 
-  bare-fs@4.8.6:
-    resolution: {integrity: sha512-hLRF+WNFxEVe9QE7qSQ+sJBF2XkFHZmlCveokj6YoOe4AYegi3ifKRog/hqMr6Du+LrEVmGKRASvxDzpYR2Vgg==}
+  bare-fs@4.8.7:
+    resolution: {integrity: sha512-bNBjq+x9Wezp3risJs7TaPH3jjVnyFmmSSxfpES8tp9xjvL4t6Bk9v2nC+xm5lfxJeDzChK7NBryK+JciM/pfQ==}
     engines: {bare: '>=1.28.0'}
     peerDependencies:
       bare-buffer: '*'
@@ -473,8 +473,8 @@ packages:
     resolution: {integrity: sha512-Ifk1KcLrxaGt1occQagQNFNNOqRt1LFuehEnHHzB8Z6cRgIxRU1TBaiIsUiCdA+gy5PL7Y1IX31DNKkRmxtXjQ==}
     engines: {node: '>=18'}
 
-  brace-expansion@5.0.13:
-    resolution: {integrity: sha512-Vh3dmFbc4wZeox7M9I/0L9GfFd83Su4+yCck/OF9Gi/P/dAHn0RT7X4K9R7gMNMhDck3DvhR6QXsnQdjjgwNvQ==}
+  brace-expansion@5.1.0:
+    resolution: {integrity: sha512-aa11Dv491GKnYqxaul3aRJ0szew7yMJMfZPnqD44NjGrZXoj62l41OEDDpdpC4eE2P88vBFfLuSyRhpG91NUvg==}
     engines: {node: 20 || >=22}
 
   buffer-crc32@1.0.0:
@@ -1226,7 +1226,7 @@ snapshots:
 
   '@types/json-schema@7.0.15': {}
 
-  '@types/node@26.6.6':
+  '@types/node@26.6.11':
     dependencies:
       undici-types: 8.9.0
 
@@ -1286,7 +1286,7 @@ snapshots:
 
   bare-events@2.9.2: {}
 
-  bare-fs@4.8.6(bare-buffer@3.7.3):
+  bare-fs@4.8.7(bare-buffer@3.7.3):
     dependencies:
       bare-events: 2.9.2
       bare-path: 3.1.3
@@ -1335,7 +1335,7 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  brace-expansion@5.0.13:
+  brace-expansion@5.1.0:
     dependencies:
       balanced-match: 4.0.4
 
@@ -1586,7 +1586,7 @@ snapshots:
 
   json-schema-traverse@1.0.0: {}
 
-  knex@3.3.0(mysql2@3.24.6(@types/node@26.6.6))(pg@8.23.1):
+  knex@3.3.0(mysql2@3.24.6(@types/node@26.6.11))(pg@8.23.1):
     dependencies:
       colorette: 2.0.19
       commander: 10.0.1
@@ -1603,7 +1603,7 @@ snapshots:
       tarn: 3.1.2
       tildify: 2.0.0
     optionalDependencies:
-      mysql2: 3.24.6(@types/node@26.6.6)
+      mysql2: 3.24.6(@types/node@26.6.11)
       pg: 8.23.1
     transitivePeerDependencies:
       - supports-color
@@ -1644,7 +1644,7 @@ snapshots:
 
   minimatch@10.2.6:
     dependencies:
-      brace-expansion: 5.0.13
+      brace-expansion: 5.1.0
 
   ms@2.1.2: {}
 
@@ -1656,9 +1656,9 @@ snapshots:
       busboy: 1.6.0
       type-is: 1.6.18
 
-  mysql2@3.24.6(@types/node@26.6.6):
+  mysql2@3.24.6(@types/node@26.6.11):
     dependencies:
-      '@types/node': 26.6.6
+      '@types/node': 26.6.11
       aws-ssl-profiles: 1.1.2
       generate-function: 2.3.1
       iconv-lite: 0.7.3
@@ -1681,11 +1681,11 @@ snapshots:
 
   object-inspect@1.14.0: {}
 
-  objection@4.4.4(knex@3.3.0(mysql2@3.24.6(@types/node@26.6.6))(pg@8.23.1)):
+  objection@4.4.4(knex@3.3.0(mysql2@3.24.6(@types/node@26.6.11))(pg@8.23.1)):
     dependencies:
       ajv: 8.20.0
       ajv-formats: 3.0.1(ajv@8.20.0)
-      knex: 3.3.0(mysql2@3.24.6(@types/node@26.6.6))(pg@8.23.1)
+      knex: 3.3.0(mysql2@3.24.6(@types/node@26.6.11))(pg@8.23.1)
 
   on-finished@2.4.2:
     dependencies:
@@ -1925,7 +1925,7 @@ snapshots:
   tar-stream@3.3.0(bare-buffer@3.7.3):
     dependencies:
       b4a: 1.9.0
-      bare-fs: 4.8.6(bare-buffer@3.7.3)
+      bare-fs: 4.8.7(bare-buffer@3.7.3)
       fast-fifo: 1.3.2
       streamx: 2.28.1
     transitivePeerDependencies:
