@@ -22,7 +22,7 @@ import {
 	isHttpForwardScheme,
 	isTlsForwardScheme,
 } from "src/modules/Forward";
-import { validateNumber } from "src/modules/Validations";
+import { validateAdminTarget, validateNumber } from "src/modules/Validations";
 
 const BACKUP_INCOMPATIBLE_METHODS = [
 	"hash",
@@ -150,6 +150,9 @@ export function ForwardHostFields({
 	loadBalanceMethod,
 	upstreamServers,
 	initialForwardPath,
+	initialUpstreamServers = [],
+	isAdmin,
+	isClone,
 	onChange,
 	loadBalanceMethodFieldName,
 	namePrefix = "",
@@ -575,6 +578,18 @@ export function ForwardHostFields({
 											if (!value?.trim()) {
 												return intl.formatMessage({ id: "error.required" });
 											}
+
+											const allowedHost = isClone
+												? undefined
+												: initialUpstreamServers.find(
+														(initialServer) => initialServer.host === value,
+													)?.host;
+											return validateAdminTarget(
+												value,
+												isAdmin,
+												allowedHost,
+												streams ? undefined : scheme,
+											);
 										}}
 									>
 										{({ field, meta }) => (

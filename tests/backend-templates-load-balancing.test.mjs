@@ -16,6 +16,8 @@ const runtimeDirectories = [
 	"/data/tls/ech",
 ];
 const runtimeFiles = [
+	"/data/nginx/default.conf",
+	"/data/nginx/ip_ranges.conf",
 	"/data/tls/ech/nginx.conf",
 	"/data/custom_nginx/root.conf",
 	"/data/custom_nginx/root_top.conf",
@@ -52,7 +54,7 @@ for (const file of runtimeFiles) {
 	}
 }
 
-const keysFile = "/data/npmplus/keys-ec.json";
+const keysFile = "/data/npmplus/keys-ed25519.json";
 const keysFileExisted = await pathExists(keysFile);
 const nginxConfigFile = "/usr/local/nginx/conf/conf.d/npmplus.conf";
 const originalNginxConfig = await readFile(nginxConfigFile, "utf8");
@@ -82,7 +84,7 @@ after(async () => {
 
 const renderTemplate = async (templateName, data) => {
 	const template = await readFile(new URL(`../backend/templates/${templateName}`, import.meta.url), "utf8");
-	return utils.getRenderEngine().parseAndRender(template, data);
+	return utils.renderEngine.parseAndRender(template, data);
 };
 
 const compact = (config) => config.replace(/\s+/g, " ").trim();

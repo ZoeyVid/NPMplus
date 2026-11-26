@@ -15,7 +15,7 @@ import { useDirectorySuggestions, useSetStream, useStream, useStreams, useUser }
 import { intl, T } from "src/locale";
 import EasyModal from "src/modules/easyModal";
 import { hasPermission, MANAGE, STREAMS } from "src/modules/Permissions";
-import { showTabOfInvalid, validateAdminTarget, validateString } from "src/modules/Validations";
+import { showTabOfInvalid, validateString } from "src/modules/Validations";
 import { showObjectSuccess } from "src/notifications";
 import { CleanLoadBalanceMethod, CleanUpstreamServers, ForwardHostFields } from "../components/Form/ForwardHostFields";
 
@@ -210,6 +210,9 @@ const StreamModal = EasyModal.create(({ id, isClone, visible, remove, close, for
 												<div className="row">
 													<ForwardHostFields
 														idPrefix="stream-host"
+														initialUpstreamServers={data?.npmplusUpstreamServers}
+														isAdmin={currentUser?.npmplusIsAdmin}
+														isClone={isClone}
 														loadBalanceMethod={values.npmplusLoadBalanceMethod}
 														loadBalanceMethodFieldName="npmplusLoadBalanceMethod"
 														upstreamServers={values.npmplusUpstreamServers}

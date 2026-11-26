@@ -2,6 +2,7 @@ import assert from "node:assert/strict";
 import { readdir, readFile } from "node:fs/promises";
 import { createRequire } from "node:module";
 import test from "node:test";
+import sqliteEngine from "../backend/lib/knex-node-sqlite.js";
 import { down, up } from "../backend/migrations/20261014000000_proxy_host_load_balancing.js";
 
 const require = createRequire(new URL("../backend/package.json", import.meta.url));
@@ -35,7 +36,7 @@ const readMigrationReports = async () => {
 
 const createLegacyDatabase = async () => {
 	const knex = knexFactory({
-		client: "better-sqlite3",
+		client: sqliteEngine,
 		connection: {
 			filename: ":memory:",
 		},

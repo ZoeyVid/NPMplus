@@ -110,19 +110,21 @@ const ProxyHostModal = EasyModal.create(({ id, isClone, visible, remove, close, 
 			globalAclIds = [];
 		}
 		const locations = (values.locations || [])
-			.filter((location) => location.path.trim()).map((uiKey, loc) => {
-			const newLoc = { 
-				...loc, 
-				// remove entries that are null or undefined or empty to pass schema validation
-				npmplusUpstreamServers: CleanUpstreamServers(loc.npmplusUpstreamServers),
-				npmplusAccessListIds: loc.npmplusAccessListType === "custom" ? (loc.npmplusAccessListIds ?? []) : [],
-			};
-			newLoc = CleanLoadBalanceMethod(newLoc);
-			if (!newLoc.npmplusForwardPath) {
-				delete newLoc.npmplusForwardPath;
-			}
-			return newLoc;
-		});
+			.filter((location) => location.path.trim())
+			.map(({ uiKey, ...loc }) => {
+				let newLoc = {
+					...loc,
+					// remove entries that are null or undefined or empty to pass schema validation
+					npmplusUpstreamServers: CleanUpstreamServers(loc.npmplusUpstreamServers),
+					npmplusAccessListIds:
+						loc.npmplusAccessListType === "custom" ? (loc.npmplusAccessListIds ?? []) : [],
+				};
+				newLoc = CleanLoadBalanceMethod(newLoc);
+				if (!newLoc.npmplusForwardPath) {
+					delete newLoc.npmplusForwardPath;
+				}
+				return newLoc;
+			});
 
 		const payload = {
 			id: id === "new" || isClone ? undefined : id,
@@ -237,6 +239,9 @@ const ProxyHostModal = EasyModal.create(({ id, isClone, visible, remove, close, 
 												</div>
 												<ForwardHostFields
 													idPrefix="proxy-host"
+													initialUpstreamServers={initialValues.npmplusUpstreamServers}
+													isAdmin={currentUser?.npmplusIsAdmin}
+													isClone={isClone}
 													scheme={values.forwardScheme}
 													initialForwardPath={values.npmplusForwardPath}
 													loadBalanceMethod={values.npmplusLoadBalanceMethod}

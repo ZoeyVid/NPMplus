@@ -77,7 +77,7 @@ const requestBufferingTitle = ({ npmplusDisableCrowdsecAppsec, forwardScheme }) 
 
 export function LocationsFields({ name = "locations", disabled, isClone }) {
 	const { data: currentUser } = useUser("me");
-	const { values: hostValues, setFieldValue } = useFormikContext();
+	const { initialValues, values: hostValues, setFieldValue } = useFormikContext();
 	const values = hostValues[name];
 	const [advVisible, setAdvVisible] = useState([]);
 	const [expanded, setExpanded] = useState([]);
@@ -132,12 +132,6 @@ export function LocationsFields({ name = "locations", disabled, isClone }) {
 
 	const matchesFilter = (item) =>
 		`${locationLabel(item)} ${forwardSearchText(item)}`.toLowerCase().includes(filter.trim().toLowerCase());
-
-	const handleForwardFieldsChange  = (idx, changes) => {
-		void setFieldValue(`${name}.${idx}.forwardScheme`, forwarding.scheme);
-		void setFieldValue(`${name}.${idx}.npmplusLoadBalanceMethod`, forwarding.method);
-		void setFieldValue(`${name}.${idx}.npmplusUpstreamServers`, forwarding.servers);
-	};
 
 	const forwardPopover = (item) => (
 		<Popover id={`location-upstreams-${item.uiKey}`}>
@@ -226,7 +220,11 @@ export function LocationsFields({ name = "locations", disabled, isClone }) {
 										{isOpen(item) ? <IconChevronDown size={16} /> : <IconChevronRight size={16} />}
 										<span className="ms-2 fw-medium text-truncate">{locationLabel(item)}</span>
 										{populatedUpstreams(item).length > 2 ? (
-											<OverlayTrigger trigger="hover" placement="bottom" overlay={forwardPopover(item)}>
+											<OverlayTrigger
+												trigger="hover"
+												placement="bottom"
+												overlay={forwardPopover(item)}
+											>
 												<span className="ms-2 text-secondary text-truncate">
 													{forwardSummary(item)}
 												</span>
@@ -326,7 +324,9 @@ export function LocationsFields({ name = "locations", disabled, isClone }) {
 															disabled={
 																!currentUser?.npmplusIsAdmin &&
 																(item.forwardScheme === "path" ||
-																	item.npmplusUpstreamServers?.some((server) => isAdminTarget(server.host)) ||
+																	item.npmplusUpstreamServers?.some((server) =>
+																		isAdminTarget(server.host),
+																	) ||
 																	item.advancedConfig)
 															}
 															{...field}
@@ -353,7 +353,9 @@ export function LocationsFields({ name = "locations", disabled, isClone }) {
 															disabled={
 																!currentUser?.npmplusIsAdmin &&
 																(item.forwardScheme === "path" ||
-																	item.npmplusUpstreamServers?.some((server) => isAdminTarget(server.host)) ||
+																	item.npmplusUpstreamServers?.some((server) =>
+																		isAdminTarget(server.host),
+																	) ||
 																	item.advancedConfig)
 															}
 															{...field}
@@ -384,12 +386,17 @@ export function LocationsFields({ name = "locations", disabled, isClone }) {
 									<div className="row">
 										<ForwardHostFields
 											idPrefix={`location-${item.uiKey}`}
+											initialUpstreamServers={
+												initialValues[name]?.find((location) => location.uiKey === item.uiKey)
+													?.npmplusUpstreamServers
+											}
+											isAdmin={currentUser?.npmplusIsAdmin}
+											isClone={isClone}
 											namePrefix={`${name}[${idx}]`}
 											scheme={item.forwardScheme}
 											loadBalanceMethod={item.npmplusLoadBalanceMethod}
 											loadBalanceMethodFieldName={`${name}[${idx}].npmplusLoadBalanceMethod`}
 											upstreamServers={item.npmplusUpstreamServers}
-											onChange={(next) => handleForwardFieldsChange(idx, next)}
 											streams={false}
 										/>
 										<div className="my-3">
@@ -518,7 +525,9 @@ export function LocationsFields({ name = "locations", disabled, isClone }) {
 																		className="form-select"
 																		required
 																		{...field}
-																		disabled={!isHttpForwardScheme(item.forwardScheme)}
+																		disabled={
+																			!isHttpForwardScheme(item.forwardScheme)
+																		}
 																	>
 																		<option value="on_auto">
 																			<T id="host.flags.response-buffering.on-auto" />
