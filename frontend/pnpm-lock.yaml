@@ -219,8 +219,8 @@ importers:
         specifier: 19.3.1
         version: 19.3.1(react@19.3.1)
       react-intl:
-        specifier: 12.2.1
-        version: 12.2.1(@types/react@19.3.0)(react@19.3.1)
+        specifier: 12.2.2
+        version: 12.2.2(@types/react@19.3.0)(react@19.3.1)
       react-router:
         specifier: 8.5.3
         version: 8.5.3(@types/react@19.3.0)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)
@@ -1509,8 +1509,8 @@ packages:
     peerDependencies:
       react: ^16.8.4 || ^17.0.0 || ^18.0.0
 
-  react-intl@12.2.1:
-    resolution: {integrity: sha512-RAvv36BaFDw/4HAUDmTBStvdfrKxmg0UOMv3ojeB4qPBs7tXbv8qeSThKrpe3MeSaRijJtUeZK9SP/WBcFoKDg==}
+  react-intl@12.2.2:
+    resolution: {integrity: sha512-98Cf56W6JvChOHLdqgPi5PenkptaBh364rDbt/bUAHSAdFTVTrwvYYyVUvAxI0IoHTFwtQgHhMuMoYYY7LRdRg==}
     peerDependencies:
       '@types/react': '>=18.0.0'
       react: '>=18.0.0'
@@ -3364,7 +3364,7 @@ snapshots:
     dependencies:
       react: 19.3.1
 
-  react-intl@12.2.1(@types/react@19.3.0)(react@19.3.1):
+  react-intl@12.2.2(@types/react@19.3.0)(react@19.3.1):
     dependencies:
       '@formatjs/icu-messageformat-parser': 3.5.23
       '@formatjs/intl': 6.2.1
