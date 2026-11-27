@@ -4,6 +4,8 @@ import test from "node:test";
 import { fileURLToPath } from "node:url";
 import $RefParser from "@apidevtools/json-schema-ref-parser";
 import Ajv from "ajv/dist/2020.js";
+import apiValidator from "../backend/lib/validator/api.js";
+import { getValidationSchema } from "../backend/schema/index.js";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const schema = await $RefParser.dereference(resolve(
@@ -112,4 +114,43 @@ for (const [field, value] of forbiddenCustomUpstreamFields) {
 
 test("upstream schema requires the custom flag", () => {
 	assertInvalid([{ host: "one.example.com" }]);
+});
+
+const proxyHostUpdateSchema = getValidationSchema("/nginx/proxy-hosts/{host_id}", "put");
+
+for (const scheme of ["http", "https", "grpc", "grpcs"]) {
+	test(`proxy host PUT accepts an explicit null forward path for ${scheme} without coercion`, () => {
+		const result = apiValidator(proxyHostUpdateSchema, {
+			forward_scheme: scheme,
+			npmplus_forward_path: null,
+		});
+		assert.equal(result.forward_scheme, scheme);
+		assert.equal(result.npmplus_forward_path, null);
+	});
+
+	test(`proxy host PUT accepts an omitted forward path for ${scheme}`, () => {
+		const result = apiValidator(proxyHostUpdateSchema, { forward_scheme: scheme });
+		assert.equal(Object.hasOwn(result, "npmplus_forward_path"), false);
+	});
+
+	test(`proxy host PUT ${["http", "https"].includes(scheme) ? "accepts" : "rejects"} a non-null forward path for ${scheme}`, () => {
+		const payload = { forward_scheme: scheme, npmplus_forward_path: "/example" };
+		if (["http", "https"].includes(scheme)) {
+			assert.equal(apiValidator(proxyHostUpdateSchema, payload).npmplus_forward_path, "/example");
+		} else {
+			assert.throws(() => apiValidator(proxyHostUpdateSchema, payload));
+		}
+	});
+}
+
+test("proxy host PUT preserves explicit null when only clearing the forward path", () => {
+	const result = apiValidator(proxyHostUpdateSchema, { npmplus_forward_path: null });
+	assert.equal(result.npmplus_forward_path, null);
+});
+
+test("proxy host PUT rejects an invalid HTTP forward path", () => {
+	assert.throws(() => apiValidator(proxyHostUpdateSchema, {
+		forward_scheme: "http",
+		npmplus_forward_path: "missing-leading-slash",
+	}));
 });
