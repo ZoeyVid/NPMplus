@@ -213,7 +213,9 @@
 			"if": {
 				"properties": {
 					"npmplus_forward_path": {
-						"type": "string"
+						"not": {
+							"const": null
+						}
 					}
 				},
 				"required": [

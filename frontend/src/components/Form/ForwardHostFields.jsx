@@ -305,8 +305,8 @@ export function ForwardHostFields({
 		}
 		if (newScheme !== "empty") {
 			if (!isHttpForwardScheme(newScheme)) {
-				changes.npmplusProxyRequestBuffering = false;
-				changes.npmplusProxyResponseBuffering = false;
+				changes.npmplusDisableProxyRequestBuffering = false;
+				changes.npmplusProxyResponseBuffering = "on_auto";
 			}
 
 			if (newScheme === "path") {

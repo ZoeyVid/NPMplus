@@ -64,7 +64,6 @@ export const createUiLocation = (item) => ({
 	npmplusAuthRequest: "global",
 	npmplusAuthRequestUpstream: "",
 	npmplusAccessListType: "global",
-	id: null,
 	...item,
 	uiKey: nextUiKey++,
 });
@@ -395,6 +394,7 @@ export function LocationsFields({ name = "locations", disabled, isClone }) {
 											isClone={isClone}
 											namePrefix={`${name}[${idx}]`}
 											scheme={item.forwardScheme}
+											initialForwardPath={item.npmplusForwardPath}
 											loadBalanceMethod={item.npmplusLoadBalanceMethod}
 											loadBalanceMethodFieldName={`${name}[${idx}].npmplusLoadBalanceMethod`}
 											upstreamServers={item.npmplusUpstreamServers}

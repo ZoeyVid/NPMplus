@@ -1,8 +1,11 @@
 import cn from "clsx";
 import OverlayTrigger from "react-bootstrap/OverlayTrigger";
 import Popover from "react-bootstrap/Popover";
-import { T } from "src/locale";
+import { intl, T } from "src/locale";
 import { forwardDestination, hasCustomUpstream, isCustomUpstream, isNetworkForwardScheme } from "src/modules/Forward";
+
+const DownMarker = ({ server }) =>
+	server.down ? <span title={intl.formatMessage({ id: "disabled" })}> *</span> : null;
 
 const ForwardHostLink = ({ item, server, streams }) => {
 	const destination = forwardDestination(item, server, { streams });
@@ -11,9 +14,13 @@ const ForwardHostLink = ({ item, server, streams }) => {
 	return isNetworkDestination ? (
 		<a href={destination} target="_blank" rel="noopener" className={cn("badge")}>
 			{destination}
+			<DownMarker server={server} />
 		</a>
 	) : (
-		<span>{destination}</span>
+		<span>
+			{destination}
+			<DownMarker server={server} />
+		</span>
 	);
 };
 
@@ -78,6 +85,7 @@ export function ForwardHostFormatter({
 						.map((server, index) => (
 							<div key={`${server.host}-${server.port}-${index}`}>
 								{forwardDestination(item, server, { streams })}
+								<DownMarker server={server} />
 							</div>
 						))}
 			</Popover.Body>
