@@ -490,7 +490,7 @@ export function ForwardHostFields({
 										{...field}
 										id={controlId("npmplusForwardPath")}
 										type="text"
-										pattern="^\\/\\S*"
+										pattern="^/\S*"
 										maxLength={255}
 										className={`form-control ${meta.touched && meta.error ? "is-invalid" : ""}`}
 										placeholder="/example/path"
