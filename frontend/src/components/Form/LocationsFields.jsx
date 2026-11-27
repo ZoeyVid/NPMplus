@@ -13,12 +13,21 @@ import {
 import cn from "clsx";
 import { Field, FieldArray, useFormikContext } from "formik";
 import { useRef, useState } from "react";
+import OverlayTrigger from "react-bootstrap/OverlayTrigger";
+import Popover from "react-bootstrap/Popover";
 import { flushSync } from "react-dom";
 import { AccessFields } from "src/components";
 import { useUser } from "src/hooks";
 import { intl, T } from "src/locale";
-import { forwardSummary } from "src/modules/Forward";
-import { isAdminTarget, validateAdminTarget, validateNumber, validateUpstreamUrl } from "src/modules/Validations";
+import {
+	forwardDestination,
+	forwardSearchText,
+	forwardSummary,
+	isHttpForwardScheme,
+	populatedUpstreams,
+} from "src/modules/Forward";
+import { isAdminTarget, validateUpstreamUrl } from "src/modules/Validations";
+import { ForwardHostFields } from "./ForwardHostFields";
 
 const authProvider = (authRequest) => authRequest?.replace("-send-basic-auth", "");
 
@@ -30,8 +39,20 @@ export const createUiLocation = (item) => ({
 	locationType: "",
 	advancedConfig: "",
 	forwardScheme: "http",
-	forwardHost: "",
-	forwardPort: "",
+	npmplusLoadBalanceMethod: "round_robin",
+	npmplusUpstreamServers: [
+		{
+			host: item?.host || "",
+			port: item?.port ?? null,
+			weight: null,
+			maxFails: null,
+			maxConns: null,
+			failTimeout: null,
+			backup: false,
+			down: false,
+			custom: false,
+		},
+	],
 	npmplusAccessListIds: [],
 	npmplusNoindex: false,
 	npmplusDisableCrowdsecAppsec: false,
@@ -48,7 +69,7 @@ export const createUiLocation = (item) => ({
 });
 
 const requestBufferingTitle = ({ npmplusDisableCrowdsecAppsec, forwardScheme }) => {
-	if (!npmplusDisableCrowdsecAppsec && ["http", "https"].includes(forwardScheme)) {
+	if (!npmplusDisableCrowdsecAppsec && isHttpForwardScheme(forwardScheme)) {
 		return intl.formatMessage({ id: "host.flags.disable-request-buffering.requires-appsec" });
 	}
 	return null;
@@ -56,7 +77,7 @@ const requestBufferingTitle = ({ npmplusDisableCrowdsecAppsec, forwardScheme }) 
 
 export function LocationsFields({ name = "locations", disabled, isClone }) {
 	const { data: currentUser } = useUser("me");
-	const { values: hostValues, initialValues, setFieldValue } = useFormikContext();
+	const { initialValues, values: hostValues, setFieldValue } = useFormikContext();
 	const values = hostValues[name];
 	const [advVisible, setAdvVisible] = useState([]);
 	const [expanded, setExpanded] = useState([]);
@@ -105,27 +126,22 @@ export function LocationsFields({ name = "locations", disabled, isClone }) {
 		}
 	};
 
-	const handleForwardSchemeChange = (e, field, idx) => {
-		field.onChange(e);
-		const scheme = e.target.value;
-		if (scheme === "empty") return;
-		if (!["http", "https"].includes(scheme)) {
-			void setFieldValue(`${name}.${idx}.npmplusDisableProxyRequestBuffering`, false);
-			void setFieldValue(`${name}.${idx}.npmplusProxyResponseBuffering`, "on_auto");
-		}
-		if (scheme === "path") {
-			void setFieldValue(`${name}.${idx}.npmplusUpstreamCompression`, false);
-		} else {
-			void setFieldValue(`${name}.${idx}.npmplusFancyindex`, false);
-		}
-	};
-
 	const isOpen = (item) => expanded.includes(item.uiKey);
 
-	const locationLabel = (item) => `${item.locationType}${item.path}`;
+	const locationLabel = (item) => `${item.locationType ?? ""}${item.path ?? ""}`;
 
 	const matchesFilter = (item) =>
-		`${locationLabel(item)} ${forwardSummary(item)}`.toLowerCase().includes(filter.trim().toLowerCase());
+		`${locationLabel(item)} ${forwardSearchText(item)}`.toLowerCase().includes(filter.trim().toLowerCase());
+
+	const forwardPopover = (item) => (
+		<Popover id={`location-upstreams-${item.uiKey}`}>
+			<Popover.Body>
+				{populatedUpstreams(item).map((server, index) => (
+					<div key={`${server.host}-${server.port}-${index}`}>{forwardDestination(item, server)}</div>
+				))}
+			</Popover.Body>
+		</Popover>
+	);
 
 	return (
 		<FieldArray name={name} validateOnChange={false}>
@@ -203,9 +219,21 @@ export function LocationsFields({ name = "locations", disabled, isClone }) {
 									>
 										{isOpen(item) ? <IconChevronDown size={16} /> : <IconChevronRight size={16} />}
 										<span className="ms-2 fw-medium text-truncate">{locationLabel(item)}</span>
-										<span className="ms-2 text-secondary text-truncate">
-											{forwardSummary(item)}
-										</span>
+										{populatedUpstreams(item).length > 2 ? (
+											<OverlayTrigger
+												trigger="hover"
+												placement="bottom"
+												overlay={forwardPopover(item)}
+											>
+												<span className="ms-2 text-secondary text-truncate">
+													{forwardSummary(item)}
+												</span>
+											</OverlayTrigger>
+										) : (
+											<span className="ms-2 text-secondary text-truncate">
+												{forwardSummary(item)}
+											</span>
+										)}
 										{item.advancedConfig?.trim() && (
 											<span
 												className="ms-2 text-secondary d-flex align-items-center flex-shrink-0"
@@ -296,7 +324,9 @@ export function LocationsFields({ name = "locations", disabled, isClone }) {
 															disabled={
 																!currentUser?.npmplusIsAdmin &&
 																(item.forwardScheme === "path" ||
-																	isAdminTarget(item.forwardHost) ||
+																	item.npmplusUpstreamServers?.some((server) =>
+																		isAdminTarget(server.host),
+																	) ||
 																	item.advancedConfig)
 															}
 															{...field}
@@ -323,7 +353,9 @@ export function LocationsFields({ name = "locations", disabled, isClone }) {
 															disabled={
 																!currentUser?.npmplusIsAdmin &&
 																(item.forwardScheme === "path" ||
-																	isAdminTarget(item.forwardHost) ||
+																	item.npmplusUpstreamServers?.some((server) =>
+																		isAdminTarget(server.host),
+																	) ||
 																	item.advancedConfig)
 															}
 															{...field}
@@ -352,115 +384,22 @@ export function LocationsFields({ name = "locations", disabled, isClone }) {
 											</p>
 										)}
 									<div className="row">
-										<div className="col-md-3">
-											<div className="mb-3">
-												<label className="form-label" htmlFor={`forwardScheme-${item.uiKey}`}>
-													<T id="host.forward-scheme" />
-												</label>
-												<Field name={`${name}.${idx}.forwardScheme`}>
-													{({ field }) => (
-														<select
-															id={`forwardScheme-${item.uiKey}`}
-															className="form-control"
-															required
-															{...field}
-															onChange={(e) => handleForwardSchemeChange(e, field, idx)}
-														>
-															<option value="http">http://</option>
-															<option value="https">https://</option>
-															{(currentUser?.npmplusIsAdmin ||
-																field.value === "path") && (
-																<option value="path">path: </option>
-															)}
-															<option value="empty">empty</option>
-															<option value="grpc">grpc://</option>
-															<option value="grpcs">grpcs://</option>
-														</select>
-													)}
-												</Field>
-											</div>
-										</div>
-										<div className="col-md-6">
-											<div className="mb-3">
-												<label className="form-label" htmlFor={`forwardHost-${item.uiKey}`}>
-													<T id="proxy-host.forward-host-path" />
-												</label>
-												<Field
-													name={`${name}.${idx}.forwardHost`}
-													validate={(value) =>
-														validateAdminTarget(
-															value,
-															currentUser?.npmplusIsAdmin,
-															isClone
-																? undefined
-																: initialValues[name].find(
-																		(location) =>
-																			location.path === item.path &&
-																			location.locationType === item.locationType,
-																	)?.forwardHost,
-															item.forwardScheme,
-														)
-													}
-												>
-													{({ field, meta }) => (
-														<>
-															<input
-																id={`forwardHost-${item.uiKey}`}
-																type="text"
-																className={`form-control ${meta.error ? "is-invalid" : ""}`}
-																required={item.forwardScheme !== "empty"}
-																pattern="(?=\S{0,255}$)[^\s\/]{0,253}(\/\S*)?"
-																placeholder={intl.formatMessage(
-																	{ id: "example" },
-																	{ value: "10.0.0.1/path/" },
-																)}
-																disabled={
-																	!currentUser?.npmplusIsAdmin &&
-																	item.forwardScheme === "path"
-																}
-																{...field}
-															/>
-															{meta.error && (
-																<div className="invalid-feedback">{meta.error}</div>
-															)}
-														</>
-													)}
-												</Field>
-											</div>
-										</div>
-										<div className="col-md-3">
-											<div className="mb-3">
-												<label className="form-label" htmlFor={`forwardPort-${item.uiKey}`}>
-													<T id="host.forward-port" />
-												</label>
-												<Field
-													name={`${name}.${idx}.forwardPort`}
-													validate={(value) => validateNumber(value, -1, 65535)}
-												>
-													{({ field, meta }) => (
-														<>
-															<input
-																id={`forwardPort-${item.uiKey}`}
-																type="text"
-																inputMode="numeric"
-																pattern="[1-9][0-9]*"
-																className={`form-control ${meta.error ? "is-invalid" : ""}`}
-																placeholder={intl.formatMessage(
-																	{ id: "example" },
-																	{ value: "8081" },
-																)}
-																disabled={item.forwardScheme === "path"}
-																{...field}
-															/>
-															{meta.error && (
-																<div className="invalid-feedback">{meta.error}</div>
-															)}
-														</>
-													)}
-												</Field>
-											</div>
-										</div>
-
+										<ForwardHostFields
+											idPrefix={`location-${item.uiKey}`}
+											initialUpstreamServers={
+												initialValues[name]?.find((location) => location.uiKey === item.uiKey)
+													?.npmplusUpstreamServers
+											}
+											isAdmin={currentUser?.npmplusIsAdmin}
+											isClone={isClone}
+											namePrefix={`${name}[${idx}]`}
+											scheme={item.forwardScheme}
+											initialForwardPath={item.npmplusForwardPath}
+											loadBalanceMethod={item.npmplusLoadBalanceMethod}
+											loadBalanceMethodFieldName={`${name}[${idx}].npmplusLoadBalanceMethod`}
+											upstreamServers={item.npmplusUpstreamServers}
+											streams={false}
+										/>
 										<div className="my-3">
 											<h4 className="py-2">
 												<T id="options" />
@@ -560,9 +499,7 @@ export function LocationsFields({ name = "locations", disabled, isClone }) {
 																			{...field}
 																			disabled={
 																				!item.npmplusDisableCrowdsecAppsec ||
-																				!["http", "https"].includes(
-																					item.forwardScheme,
-																				)
+																				!isHttpForwardScheme(item.forwardScheme)
 																			}
 																		/>
 																	)}
@@ -590,9 +527,7 @@ export function LocationsFields({ name = "locations", disabled, isClone }) {
 																		required
 																		{...field}
 																		disabled={
-																			!["http", "https"].includes(
-																				item.forwardScheme,
-																			)
+																			!isHttpForwardScheme(item.forwardScheme)
 																		}
 																	>
 																		<option value="on_auto">

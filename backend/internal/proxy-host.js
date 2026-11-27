@@ -7,6 +7,7 @@ import internalCertificate from "./certificate.js";
 import internalHost from "./host.js";
 import internalNginx from "./nginx.js";
 import internalProxyHostAccessList from "./proxy-host-access-list.js";
+import internalUpstreamServers from "./upstream-servers.js";
 
 const authProvider = (authRequest) => authRequest?.replace("-send-basic-auth", "");
 
@@ -55,7 +56,6 @@ const replaceLocationsAndAccessLists = async (trx, proxyHostId, data) => {
 const cleanForwardOptions = (item) => {
 	const scheme = item.forward_scheme ?? "http";
 	if (scheme !== "empty") {
-		if (!item.forward_host) throw new errs.ValidationError(`Forward host is required for the ${scheme} scheme`);
 		if (!["http", "https"].includes(scheme)) {
 			item.npmplus_disable_proxy_request_buffering = false;
 			item.npmplus_proxy_response_buffering = "on_auto";
@@ -116,11 +116,17 @@ const internalProxyHost = {
 			throw new errs.ValidationError("Each auth request provider can only have one upstream");
 		}
 		await internalProxyHostAccessList.validateAccessLists(access, thisData);
+		// for UX if the user put a host as host/path and left forward_path blank, then split
+		// split it automatically, but only for the first item. Validation later will catch
+		// invalid data.
+		// E.g. host="10.0.0.1/some/path", forward_path="" -> host="10.0.0.1",forward_path="/some/path"
+		thisData = internalUpstreamServers.splitHostAndPath(thisData);
+		thisData = internalUpstreamServers.cleanUpstreamServers(thisData);
+		internalUpstreamServers.validateLoadBalancing(thisData);
 
 		if (createCertificate) {
 			thisData.certificate_id = (await internalCertificate.createQuickCertificate(access, thisData)).id;
 		}
-
 		let row;
 		try {
 			await proxyHostModel.transaction(async (trx) => {
@@ -206,6 +212,14 @@ const internalProxyHost = {
 		thisData = internalHost.cleanSslHstsData(createCertificate, thisData, existingRow);
 		thisData = internalProxyHostAccessList.cleanAccessListTypes(thisData);
 		for (const item of [thisData, ...(thisData.locations ?? [])]) cleanForwardOptions(item);
+		// for UX if the user put a host as host/path and left forward_path blank, then split
+		// split it automatically, but only for the first item. Validation later will catch
+		// invalid data.
+		// E.g. host="10.0.0.1/some/path", forward_path="" -> host="10.0.0.1",forward_path="/some/path"
+		thisData = internalUpstreamServers.splitHostAndPath(thisData, existingRow);
+		// always remove the load balance method if there is only 1 item in the array
+		thisData = internalUpstreamServers.cleanUpstreamServers(thisData);
+		internalUpstreamServers.validateLoadBalancing(thisData, existingRow);
 		if (thisData.locations?.some(({ path }) => !path)) {
 			throw new errs.ValidationError("Location paths can not be empty");
 		}

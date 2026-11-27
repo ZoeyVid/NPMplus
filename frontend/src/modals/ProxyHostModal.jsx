@@ -20,12 +20,14 @@ import {
 import { useDirectorySuggestions, useProxyHost, useProxyHosts, useSetProxyHost, useUser } from "src/hooks";
 import { intl, T } from "src/locale";
 import EasyModal from "src/modules/easyModal";
+import { isHttpForwardScheme } from "src/modules/Forward";
 import { hasPermission, MANAGE, PROXY_HOSTS } from "src/modules/Permissions";
-import { showTabOfInvalid, validateAdminTarget, validateNumber, validateUpstreamUrl } from "src/modules/Validations";
+import { showTabOfInvalid, validateUpstreamUrl } from "src/modules/Validations";
 import { showObjectSuccess } from "src/notifications";
+import { CleanLoadBalanceMethod, CleanUpstreamServers, ForwardHostFields } from "../components/Form/ForwardHostFields";
 
 const requestBufferingTitle = ({ npmplusDisableCrowdsecAppsec, forwardScheme }) => {
-	if (!npmplusDisableCrowdsecAppsec && ["http", "https"].includes(forwardScheme)) {
+	if (!npmplusDisableCrowdsecAppsec && isHttpForwardScheme(forwardScheme)) {
 		return intl.formatMessage({ id: "host.flags.disable-request-buffering.requires-appsec" });
 	}
 	return null;
@@ -46,18 +48,29 @@ const ProxyHostModal = EasyModal.create(({ id, isClone, visible, remove, close, 
 		() => ({
 			// Details tab
 			domainNames: isClone ? [] : data?.domainNames,
-			forwardScheme: data?.forwardScheme,
-			forwardHost: data?.forwardHost,
-			forwardPort: String(data?.forwardPort || ""),
-			npmplusAccessListIds: data?.accessLists.map((accessList) => accessList.id),
+			forwardScheme: data?.forwardScheme || "http",
+			npmplusLoadBalanceMethod: data?.npmplusLoadBalanceMethod || "round_robin",
+			npmplusUpstreamServers: data?.npmplusUpstreamServers?.length
+				? data.npmplusUpstreamServers
+				: [
+						{
+							host: "",
+							port: null,
+							backup: false,
+							down: false,
+							custom: false,
+						},
+					],
+			npmplusForwardPath: data?.npmplusForwardPath,
+			npmplusAccessListIds: data?.accessLists?.map((accessList) => accessList.id) ?? [],
 			npmplusAccessListType: data?.npmplusAccessListType,
 			// Locations tab
 			locations: data?.locations.map(({ id: locationId, proxyHostId, accessLists, ...location }) =>
 				createUiLocation({
 					...location,
-					forwardPort: location.forwardPort || "",
 					advancedConfig: stripAdminConfig ? "" : location.advancedConfig,
-					npmplusAccessListIds: accessLists.map((accessList) => accessList.id),
+					npmplusAccessListIds:
+						accessLists?.map((accessList) => accessList.id) ?? location.npmplusAccessListIds ?? [],
 				}),
 			),
 			// SSL tab
@@ -95,24 +108,41 @@ const ProxyHostModal = EasyModal.create(({ id, isClone, visible, remove, close, 
 		if (globalType === "public") {
 			globalAclIds = [];
 		}
+		const locations = (values.locations || [])
+			.filter((location) => location.path.trim())
+			.map(({ uiKey, ...loc }) => {
+				let newLoc = {
+					...loc,
+					// remove entries that are null or undefined or empty to pass schema validation
+					npmplusUpstreamServers: CleanUpstreamServers(loc.npmplusUpstreamServers),
+					npmplusAccessListIds:
+						loc.npmplusAccessListType === "custom" ? (loc.npmplusAccessListIds ?? []) : [],
+				};
+				newLoc = CleanLoadBalanceMethod(newLoc);
+				if (!newLoc.npmplusForwardPath) {
+					delete newLoc.npmplusForwardPath;
+				}
+				return newLoc;
+			});
 
 		const payload = {
 			id: id === "new" || isClone ? undefined : id,
 			...values,
+			npmplusUpstreamServers: CleanUpstreamServers(values.npmplusUpstreamServers),
 			npmplusAccessListIds: globalAclIds,
-			forwardPort: values.forwardPort || 0,
-			locations: values.locations
-				.filter((location) => location.path.trim())
-				.map(({ uiKey, ...location }) => ({
-					...location,
-					forwardPort: location.forwardPort || 0,
-					npmplusAccessListIds:
-						location.npmplusAccessListType === "custom" ? location.npmplusAccessListIds : [],
-				})),
+			locations,
 		};
-
+		// Keep payload construction separate from submission cleanup so future cleanup steps remain explicit
+		const cleanPayload = CleanLoadBalanceMethod(payload);
+		if (!cleanPayload.npmplusForwardPath) {
+			if (id === "new" || isClone) {
+				delete cleanPayload.npmplusForwardPath;
+			} else {
+				cleanPayload.npmplusForwardPath = null;
+			}
+		}
 		try {
-			await setProxyHost(payload);
+			await setProxyHost(cleanPayload);
 			showObjectSuccess("proxy-host", "saved");
 			remove();
 		} catch (err) {
@@ -182,143 +212,15 @@ const ProxyHostModal = EasyModal.create(({ id, isClone, visible, remove, close, 
 												id="tab-details"
 												disabled={!canManage}
 											>
-												<DomainNamesField
-													disabled={!canManage}
-													isWildcardPermitted={
-														values.certificateId !== "new" || values.npmplusDnsProvider
-													}
-													dnsProviderWildcardSupported
-													forCertificate={values.certificateId === "new"}
-												/>
 												<div className="row">
-													<div className="col-md-3">
-														<Field name="forwardScheme">
-															{({ field, form }) => (
-																<div className="mb-3">
-																	<label
-																		className="form-label"
-																		htmlFor="forwardScheme"
-																	>
-																		<T id="host.forward-scheme" />
-																	</label>
-																	<select
-																		id="forwardScheme"
-																		className="form-select"
-																		required
-																		{...field}
-																		onChange={(e) => {
-																			field.onChange(e);
-																			const scheme = e.target.value;
-																			if (scheme === "empty") return;
-																			if (!["http", "https"].includes(scheme)) {
-																				form.setFieldValue(
-																					"npmplusDisableProxyRequestBuffering",
-																					false,
-																				);
-																				form.setFieldValue(
-																					"npmplusProxyResponseBuffering",
-																					"on_auto",
-																				);
-																			}
-																			if (scheme === "path") {
-																				form.setFieldValue(
-																					"npmplusUpstreamCompression",
-																					false,
-																				);
-																			} else {
-																				form.setFieldValue(
-																					"npmplusFancyindex",
-																					false,
-																				);
-																			}
-																		}}
-																	>
-																		<option value="http">http://</option>
-																		<option value="https">https://</option>
-																		{(currentUser?.npmplusIsAdmin ||
-																			field.value === "path") && (
-																			<option value="path">path: </option>
-																		)}
-																		<option value="empty">empty</option>
-																		<option value="grpc">grpc://</option>
-																		<option value="grpcs">grpcs://</option>
-																	</select>
-																</div>
-															)}
-														</Field>
-													</div>
-													<div className="col-md-5">
-														<Field
-															name="forwardHost"
-															validate={(value) =>
-																validateAdminTarget(
-																	value,
-																	currentUser?.npmplusIsAdmin,
-																	isClone ? undefined : data?.forwardHost,
-																	values.forwardScheme,
-																)
-															}
-														>
-															{({ field, form, meta }) => (
-																<div className="mb-3">
-																	<label className="form-label" htmlFor="forwardHost">
-																		<T id="proxy-host.forward-host-path" />
-																	</label>
-																	<input
-																		id="forwardHost"
-																		type="text"
-																		className={`form-control ${meta.touched && meta.error ? "is-invalid" : ""}`}
-																		placeholder="example.com"
-																		required={form.values.forwardScheme !== "empty"}
-																		pattern="(?=\S{0,255}$)[^\s\/]{0,253}(\/\S*)?"
-																		disabled={
-																			!currentUser?.npmplusIsAdmin &&
-																			form.values.forwardScheme === "path"
-																		}
-																		{...field}
-																	/>
-																	<ErrorMessage
-																		name="forwardHost"
-																		component="div"
-																		className="invalid-feedback"
-																	/>
-																</div>
-															)}
-														</Field>
-													</div>
-													<div className="col-md">
-														<Field
-															name="forwardPort"
-															validate={(value) => validateNumber(value, -1, 65535)}
-														>
-															{({ field, form, meta }) => (
-																<div className="mb-3">
-																	<label className="form-label" htmlFor="forwardPort">
-																		<T id="host.forward-port" />
-																	</label>
-																	<input
-																		id="forwardPort"
-																		type="text"
-																		inputMode="numeric"
-																		pattern="[1-9][0-9]*"
-																		className={`form-control ${meta.touched && meta.error ? "is-invalid" : ""}`}
-																		placeholder={intl.formatMessage(
-																			{ id: "example" },
-																			{ value: "8081" },
-																		)}
-																		disabled={form.values.forwardScheme === "path"}
-																		{...field}
-																	/>
-
-																	<ErrorMessage
-																		name="forwardPort"
-																		component="div"
-																		className="invalid-feedback"
-																	/>
-																</div>
-															)}
-														</Field>
-													</div>
+													<DomainNamesField
+														disabled={!canManage}
+														isWildcardPermitted={
+															values.certificateId !== "new" || values.npmplusDnsProvider
+														}
+														dnsProviderWildcardSupported
+														forCertificate={values.certificateId === "new"}
+													/>
 													<div className="col-md-auto text-end">
 														<div className="mb-3">
 															<div className="form-label invisible">​</div>
@@ -334,6 +236,18 @@ const ProxyHostModal = EasyModal.create(({ id, isClone, visible, remove, close, 
 														</div>
 													</div>
 												</div>
+												<ForwardHostFields
+													idPrefix="proxy-host"
+													initialUpstreamServers={initialValues.npmplusUpstreamServers}
+													isAdmin={currentUser?.npmplusIsAdmin}
+													isClone={isClone}
+													scheme={values.forwardScheme}
+													initialForwardPath={values.npmplusForwardPath}
+													loadBalanceMethod={values.npmplusLoadBalanceMethod}
+													loadBalanceMethodFieldName="npmplusLoadBalanceMethod"
+													upstreamServers={values.npmplusUpstreamServers}
+													streams={false}
+												/>
 												<div className="my-3">
 													<h4 className="py-2">
 														<T id="options" />
@@ -433,7 +347,7 @@ const ProxyHostModal = EasyModal.create(({ id, isClone, visible, remove, close, 
 																					disabled={
 																						!form.values
 																							.npmplusDisableCrowdsecAppsec ||
-																						!["http", "https"].includes(
+																						!isHttpForwardScheme(
 																							form.values.forwardScheme,
 																						)
 																					}

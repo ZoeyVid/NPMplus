@@ -2,6 +2,7 @@ import OverlayTrigger from "react-bootstrap/OverlayTrigger";
 import Popover from "react-bootstrap/Popover";
 import { TrueFalseFormatter } from "src/components";
 import { T } from "src/locale";
+import { forwardDestinations } from "src/modules/Forward";
 
 const getSection = (title, items) => {
 	if (items.length === 0) {
@@ -36,7 +37,7 @@ const getSectionStream = (items) => {
 			</div>
 			{items.map((stream) => (
 				<div key={stream.id} className="ms-1">
-					{`${stream.forwardingHost}${stream.forwardingPort ? `:${stream.forwardingPort}` : ""}`}
+					{forwardDestinations(stream, { streams: true }).join(", ")}
 				</div>
 			))}
 		</>
