@@ -80,14 +80,12 @@ export function ForwardHostFormatter({
 					</div>
 				) : null}
 				{upstreamServers.length > 2 &&
-					upstreamServers
-						.slice(2)
-						.map((server, index) => (
-							<div key={`${server.host}-${server.port}-${index}`}>
-								{forwardDestination(item, server, { streams })}
-								<DownMarker server={server} />
-							</div>
-						))}
+					upstreamServers.slice(2).map((server, index) => (
+						<div key={`${server.host}-${server.port}-${index}`}>
+							{forwardDestination(item, server, { streams })}
+							<DownMarker server={server} />
+						</div>
+					))}
 			</Popover.Body>
 		</Popover>
 	);
